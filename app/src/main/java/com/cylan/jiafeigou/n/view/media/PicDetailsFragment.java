@@ -123,7 +123,7 @@ public class PicDetailsFragment extends LazyFragment {
         AppLogger.d("onDestroyView: " + mPosition);
     }
 
-    protected void startPostponedEnterTransition() {
+    public void startPostponedEnterTransition() {
         if (mPosition == mStartPosition) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AppLogger.d("transition: startPostponedEnterTransition: " + mPosition + "\n" +

@@ -262,7 +262,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             lazyLoad();
         }
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (TextUtils.isEmpty(account.getPhotoUrl())) {
+        if (account != null && TextUtils.isEmpty(account.getPhotoUrl())) {
             BaseApplication.getAppComponent().getCmd().getAccount();
         }
     }

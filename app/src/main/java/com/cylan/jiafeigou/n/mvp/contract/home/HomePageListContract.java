@@ -17,7 +17,7 @@ public interface HomePageListContract {
     interface View extends BaseView<Presenter> {
 
         @UiThread
-        void onItemsInsert(List<Device> DeviceList);
+        void onItemsRsp(List<Device> DeviceList);
 
         /**
          * 对单个设备操作

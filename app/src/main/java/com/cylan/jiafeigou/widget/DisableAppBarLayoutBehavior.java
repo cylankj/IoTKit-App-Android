@@ -12,7 +12,6 @@ import android.view.View;
  */
 
 public class DisableAppBarLayoutBehavior extends AppBarLayout.ScrollingViewBehavior {
-    private boolean mEnabled;
 
     public DisableAppBarLayoutBehavior() {
         super();
@@ -22,18 +21,18 @@ public class DisableAppBarLayoutBehavior extends AppBarLayout.ScrollingViewBehav
         super(context, attrs);
     }
 
-    public void setEnabled(boolean enabled) {
-        mEnabled = enabled;
-        Log.d("setEnabled", "setEnabled:" + enabled);
-    }
-
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child, View directTargetChild, View target, int nestedScrollAxes) {
-        return mEnabled && super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
+        return canDragChecker != null && canDragChecker.canDrag() && super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
     }
 
+    public void setCanDragChecker(CanDragChecker canDragChecker) {
+        this.canDragChecker = canDragChecker;
+    }
 
-    public boolean isEnabled() {
-        return mEnabled;
+    private CanDragChecker canDragChecker;
+
+    public interface CanDragChecker {
+        boolean canDrag();
     }
 }

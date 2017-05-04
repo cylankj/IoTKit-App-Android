@@ -145,7 +145,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        getView().onItemsInsert(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+        getView().onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
         getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
@@ -211,7 +211,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .delay(1, TimeUnit.SECONDS)
                 .map((Boolean aBoolean) -> {
-//                    if (manually)
+                    if (manually)
+                        BaseApplication.getAppComponent().getCmd().refreshDevList();
                     BaseApplication.getAppComponent().getSourceManager().syncAllDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;

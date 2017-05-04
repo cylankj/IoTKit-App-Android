@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'project-report'
 
 //apply plugin: 'io.fabric'
 
@@ -363,6 +364,9 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+    compile('com.mikepenz:fastadapter:2.5.2@aar') {
+        transitive = true
+    }
 }
 
 //谷歌推送

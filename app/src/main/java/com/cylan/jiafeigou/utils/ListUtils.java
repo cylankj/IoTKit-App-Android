@@ -377,4 +377,16 @@ public class ListUtils {
             return null;
         return sourList.get(size - 1);
     }
+
+    /**
+     * @param listA
+     * @param listB
+     * @param <V>
+     * @return
+     */
+    public static <V> List<V> getDiff(List<V> listA, List<V> listB) {
+        List<V> rawList = new ArrayList<>(listA);
+        rawList.removeAll(listB);
+        return rawList;
+    }
 }

@@ -1,11 +1,9 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lLayout_dialog_share_wonderful"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:orientation="vertical"
-    tools:context="com.cylan.jiafeigou.n.view.bind.BindDeviceListFragment">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -115,7 +115,8 @@ public class SuperWaveView extends View {
     }
 
     private int generateWaterLevel(final int index) {
-        return (int) (dp2px(getHeight() * index / 10) + generateAmplitude());
+        return (int) (dp2px(getHeight() * index / 10));
+//        + generateAmplitude());
     }
 
 

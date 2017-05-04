@@ -18,7 +18,7 @@
         android:id="@+id/rLayout_forget_pwd_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        hunt:ct_icon="@drawable/login_btn_close"
+        hunt:ct_icon="@drawable/nav_icon_close_gary"
         hunt:ct_title="@string/FORGOT_PWD" />
 
     <ViewSwitcher

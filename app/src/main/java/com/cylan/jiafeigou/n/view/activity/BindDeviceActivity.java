@@ -27,6 +27,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         setContentView(R.layout.activity_bind_device);
         ButterKnife.bind(this);
         initTopBar();
+        boolean show = getResources().getBoolean(R.bool.show_ruishi_interface);
+        findViewById(R.id.v_to_bind_rs_cam).setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
 

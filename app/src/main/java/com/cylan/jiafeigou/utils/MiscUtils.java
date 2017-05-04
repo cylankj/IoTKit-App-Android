@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -495,5 +496,23 @@ public class MiscUtils {
 
     public static boolean isLand() {
         return ContextUtils.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    public static List<String> getUUidListFromItem(List<HomeItem> list) {
+        if (list == null || list.size() == 0) return new ArrayList<>();
+        List<String> list1 = new ArrayList<>(list.size());
+        for (HomeItem item : list) {
+            list1.add(item.getUUid());
+        }
+        return list1;
+    }
+
+    public static List<HomeItem> getHomeItemListFromDevice(List<Device> list) {
+        if (list == null || list.size() == 0) return new ArrayList<>();
+        List<HomeItem> list1 = new ArrayList<>(list.size());
+        for (Device item : list) {
+            list1.add(new HomeItem().withUUID(item.uuid, item));
+        }
+        return list1;
     }
 }

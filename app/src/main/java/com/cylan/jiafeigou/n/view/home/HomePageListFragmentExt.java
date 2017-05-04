@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
@@ -14,7 +15,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -43,27 +42,32 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
-import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
+import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
+import com.cylan.jiafeigou.widget.WrapContentLinearLayoutManager;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -74,7 +78,7 @@ import butterknife.OnClick;
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
-        OnItemClickListener, BaseDialog.BaseDialogAction {
+        FastAdapter.OnClickListener<HomeItem>, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
@@ -108,7 +112,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     FrameLayout fLayoutHeaderBg;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
-    private HomePageListAdapter homePageListAdapter;
+    private ItemAdapter<HomeItem> mItemAdapter;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
@@ -160,8 +164,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
-        homePageListAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -177,12 +179,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
-        homePageListAdapter.clear();
         appbar.addOnOffsetChangedListener(this);
         srLayoutMainContentHolder.setOnRefreshListener(this);
-        enableNestedScroll();
-        initProgressBarColor();
         initListAdapter();
+        initProgressBarColor();
         initSomeViewMargin();
         need2ShowUseCase();
     }
@@ -198,47 +198,34 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void initListAdapter() {
-        rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()) {
-            @Override
-            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-                try {
-                    super.onLayoutChildren(recycler, state);
-                } catch (Exception e) {
-                    AppLogger.e("homepageList" + e.getMessage());
-                }
-            }
-        });
-        rVDevicesList.setAdapter(homePageListAdapter);
+        rVDevicesList.setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
+        mItemAdapter = new ItemAdapter<>();
+        FastAdapter<HomeItem> itemFastAdapter = new FastAdapter<>();
+        itemFastAdapter.withOnClickListener(this);
+        mItemAdapter.withComparator(null);
+        rVDevicesList.setAdapter(mItemAdapter.wrap(itemFastAdapter));
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setFitsSystemWindowsCompat(fLayoutHomeHeaderContainer);
-        ViewUtils.setViewMarginStatusBar(lLayoutHomeGreet);
-        ViewUtils.setViewMarginStatusBar(toolbar);
+        if (getView() != null) getView().post(() -> {
+            ViewUtils.setFitsSystemWindowsCompat(fLayoutHomeHeaderContainer);
+            ViewUtils.setViewMarginStatusBar(lLayoutHomeGreet);
+            ViewUtils.setViewMarginStatusBar(toolbar);
+        });
     }
 
     /**
      * 水波纹动画初始化
      */
     private void initWaveAnimation() {
-        vWaveAnimation.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                vWaveAnimation.startAnimation();
-            }
-        }, 500);
+        vWaveAnimation.postDelayed(() -> vWaveAnimation.startAnimation(), 500);
     }
 
     /**
      * 初始化,progressBar的位置.
      */
     private void initProgressBarColor() {
-        rVDevicesList.post(new Runnable() {
-            @Override
-            public void run() {
-                srLayoutMainContentHolder.setColorSchemeColors(Color.parseColor("#36BDFF"));
-            }
-        });
+        rVDevicesList.post(() -> srLayoutMainContentHolder.setColorSchemeColors(Color.parseColor("#36BDFF")));
     }
 
     @OnClick(R.id.imgV_add_devices)
@@ -284,54 +271,88 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @UiThread
     @Override
-    public void onItemsInsert(List<Device> resultList) {
+    public void onItemsRsp(List<Device> resultList) {
         if (getView() != null) {
             getView().removeCallbacks(runnable);
-            getView().postDelayed(runnable, (homePageListAdapter.getCount() == 0) ? 1 : 150);
+            getView().postDelayed(runnable, (mItemAdapter.getItemCount() == 0) ? 1 : 10);
         }
     }
 
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
-            List<Device> resultList = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
-            if (resultList != null && resultList.size() > 0)
-                homePageListAdapter.addAll(resultList);
-            emptyViewState.setVisibility(homePageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+            //mItemAdapter.clear();//别暴力刷新,存在闪烁.不推荐.
+            List<Device> resultList = new ArrayList<>(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+            List<HomeItem> uiList = mItemAdapter.getAdapterItems();
+            List<HomeItem> newList = MiscUtils.getHomeItemListFromDevice(resultList);
+            List<HomeItem> toRemoveList = ListUtils.getDiff(uiList, newList);
+            if (toRemoveList != null) {
+                for (HomeItem item : toRemoveList) {
+                    int index = mItemAdapter.getAdapterItems().indexOf(item);
+                    if (index == -1) continue;
+                    mItemAdapter.remove(index);
+                }
+            }
+            int size = ListUtils.getSize(resultList);
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    int count = mItemAdapter.getAdapterItemCount();
+                    if (i < count) {
+                        mItemAdapter.getAdapterItems().set(i, newList.get(i));
+                        mItemAdapter.notifyItemChanged(i);
+                    } else {
+                        //应该一次性加载
+                        mItemAdapter.add(newList.get(i));
+                        Log.d("xxxxx", "xxxx:" + count);
+                    }
+                }
+                AppLogger.e("测试专用");
+            }
+            emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
             onRefreshFinish();
             enableNestedScroll();
-            Log.d("onItemsInsert", "onItemsInsert:" + resultList);
+            Log.d("onItemsRsp", "onItemsRsp:" + resultList);
         }
     };
 
     private void enableNestedScroll() {
-        boolean enable = homePageListAdapter.getCount() > 4;
+        boolean enable = mItemAdapter.getItemCount() > 4;
         if (appbar.getLayoutParams() != null) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
             if (enable) {
-                if (!(layoutParams.getBehavior() instanceof AppBarLayout.Behavior))
+                CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
+                if (!(behavior instanceof AppBarLayout.Behavior)) {
                     layoutParams.setBehavior(new AppBarLayout.Behavior());
+                } else {
+                    ((AppBarLayout.Behavior) behavior).setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+                        @Override
+                        public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                            return !srLayoutMainContentHolder.isRefreshing();
+                        }
+                    });
+                }
             } else {
-                if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior))
+                if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior)) {
                     layoutParams.setBehavior(new DisableAppBarLayoutBehavior());
+                }
             }
         }
         if (srLayoutMainContentHolder.getLayoutParams() != null) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) srLayoutMainContentHolder.getLayoutParams();
             CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
             if (behavior != null && behavior instanceof DisableAppBarLayoutBehavior) {
-                ((DisableAppBarLayoutBehavior) behavior).setEnabled(enable);
-                Log.d("what", "what 1" + layoutParams.getBehavior() + " ,enable:" + enable);
+                ((DisableAppBarLayoutBehavior) behavior).setCanDragChecker(() ->
+                        enable && !srLayoutMainContentHolder.isRefreshing());
+                Log.d("what", "what 1," + layoutParams.getBehavior() + " ,enable:" + enable);
             }
         }
     }
 
     @Override
     public void onItemUpdate(int index) {
-        if (homePageListAdapter != null
-                && MiscUtils.isInRange(0, homePageListAdapter.getCount(), index)) {
-            homePageListAdapter.notifyItemChanged(index);
+        if (mItemAdapter != null
+                && MiscUtils.isInRange(0, mItemAdapter.getItemCount(), index)) {
+            mItemAdapter.notifyItemChanged(index);
         }
     }
 
@@ -462,7 +483,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onRefresh() {
         //不使用post,因为会泄露
         srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
-//        enableNestedScroll();
         Log.d("refresh", "refresh:initSubscription ");
         if (basePresenter != null)
             basePresenter.fetchDeviceList(true);
@@ -500,23 +520,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    @Override
-    public void onItemClick(View itemView, int viewType, int position) {
-        if (position != -1) {
-            prepareNext(position);
-        } else {
-            Object tag = itemView.getTag();
-            int l = 0;
-            if (tag != null && tag instanceof Integer) {
-                l = (int) tag;
-                prepareNext(l);
-            }
-            AppLogger.e("dis match position : " + position + ",L:" + l);
-        }
-    }
-
     private void prepareNext(int position) {
-        Device device = homePageListAdapter.getItem(position);
+        Device device = mItemAdapter.getItem(position).getDevice();
         if (device != null && !TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
@@ -546,5 +551,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
         PreferencesUtils.putBoolean(JConstant.CLIENT_UPDATAE_TAB, true);
         PreferencesUtils.putLong(JConstant.CLIENT_UPDATAE_TIME_TAB, System.currentTimeMillis());
+    }
+
+    @Override
+    public boolean onClick(View v, IAdapter<HomeItem> adapter, HomeItem item, int position) {
+        if (position != -1) {
+            prepareNext(position);
+        } else {
+            AppLogger.e("dis match position : " + position);
+        }
+        return true;
     }
 }
