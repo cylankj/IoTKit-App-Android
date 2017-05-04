@@ -36,6 +36,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
         if (device != null) {
             mView.onShowProperty(device);
         }
+        AppLogger.e("需要刷新门铃的电量");
     }
 
 

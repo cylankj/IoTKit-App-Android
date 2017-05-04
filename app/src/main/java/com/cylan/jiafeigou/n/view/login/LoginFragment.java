@@ -415,10 +415,19 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             R.id.tv_facebookLogin_commit,
             R.id.tv_toolbar_icon,
             R.id.tv_toolbar_right,
-            R.id.tv_agreement
+            R.id.tv_agreement,
+            R.id.rLayout_login,
+            R.id.rLayout_register_box,
+            R.id.layout_login
     })
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.layout_login:
+            case R.id.rLayout_register_box:
+            case R.id.rLayout_login:
+                if (getActivity() != null)
+                    IMEUtils.hide(getActivity());
+                break;
             case R.id.iv_login_clear_pwd:
                 etLoginPwd.getText().clear();
                 break;

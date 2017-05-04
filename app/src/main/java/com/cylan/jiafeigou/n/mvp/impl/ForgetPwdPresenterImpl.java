@@ -120,6 +120,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -156,6 +157,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             //store the token .
                             PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN,
                                     smsCodeResult.token);
+                            PreferencesUtils.putLong(JConstant.KEY_REGISTER_SMS_TOKEN_TIME, System.currentTimeMillis());
                             AppLogger.d("code:" + smsCodeResult.token);
                         }
                     }
@@ -267,6 +269,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(compositeSubscription);
         unSubscribe(subscription);
     }

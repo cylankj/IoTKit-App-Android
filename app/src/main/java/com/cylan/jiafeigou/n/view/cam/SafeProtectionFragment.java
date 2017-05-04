@@ -141,7 +141,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 //自动录像选择 侦测到异常时 需要弹框
                 int oldOption = aDevice.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
                 if (oldOption != 0) {
+                    DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
+                    wFlag.value = false;
+                    basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                     showDetail(false);
+                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     return;
                 }
                 new AlertDialog.Builder(getActivity())

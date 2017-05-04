@@ -112,7 +112,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     public void onNeverAskAgainCameraPermission() {
         new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "", getString(R.string.CAMERA)))
+                .setMessage(getString(R.string.permission_auth, getString(R.string.CAMERA)))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
                         ((BindDeviceActivity) getActivity()).finishExt();
@@ -241,6 +241,10 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                             .commitAllowingStateLoss();
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindBellActivity.class));
+                } else {
+                    AppLogger.d("不支持的设备类型");
+                    ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_QR_Fail));
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
                 zxVScan.stop();
             }

@@ -62,9 +62,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         this.hasSdcard = status.hasSdcard && status.err == 0;
     }
 
-    private boolean hasSdcard() {
+    /**
+     * 是否有卡,不检查卡的读写失败
+     * @return
+     */
+    private boolean justHasSdcard() {
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        this.hasSdcard = status.hasSdcard && status.err == 0;
+        this.hasSdcard = status.hasSdcard;// && status.err == 0;读写失败也是需要显示的.不过需要跳转到设备详情页,尼玛.
         return hasSdcard;
     }
 
@@ -173,7 +177,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private boolean showLiveBtn(long time) {
-        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard() && online();
+        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && justHasSdcard();
     }
 
     /**

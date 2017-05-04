@@ -244,6 +244,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         }
     }
 
+    @OnClick(R.id.vs_set_account_pwd)
+    public void dismissIME() {
+        if (getActivity() != null) IMEUtils.hide(getActivity());
+    }
+
     @OnClick(R.id.tv_meter_get_code)
     public void reGetVerificationCode() {
         if (presenter.checkOverCount(ViewUtils.getTextViewContent(etForgetUsername))) {
