@@ -45,8 +45,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:fontFamily="sans-serif-thin"
                 android:textColor="@color/color_36BDFF"
-                android:textSize="57sp" />
+                android:textSize="@dimen/sp57" />
         </FrameLayout>
 
         <RelativeLayout

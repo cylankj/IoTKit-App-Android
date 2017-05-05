@@ -186,6 +186,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
         if (ListUtils.isEmpty(devices)) emptyViewState.setVisibility(View.VISIBLE);
         onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+        view.post(updateAccount);
     }
 
     @Override
@@ -389,7 +390,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onAccountUpdate(JFGAccount greetBean) {
         if (isResumed() && getView() != null) {
             getView().removeCallbacks(updateAccount);
-            getView().postDelayed(updateAccount, 150);
+            getView().post(updateAccount);
         }
     }
 

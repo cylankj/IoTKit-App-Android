@@ -151,9 +151,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void updateLayoutParameters(int height) {
         if (videoView == null) {
-            AppLogger.e("这是bug: " + height);
             return;
         }
+        AppLogger.e("更新: " + height);
         RelativeLayout.LayoutParams parentLp = (RelativeLayout.LayoutParams) getLayoutParams();
         parentLp.height = height;
         setLayoutParams(parentLp);
