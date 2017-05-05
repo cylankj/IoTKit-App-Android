@@ -639,9 +639,19 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
         float ratio = isNormalView ? (float) resolution.height / resolution.width : 1.0f;
+        if (isLand()) {
+            //需要考虑下横屏,match_parent
+            ratio = (float) Resources.getSystem().getDisplayMetrics().heightPixels /
+                    Resources.getSystem().getDisplayMetrics().widthPixels;
+        }
         updateLiveViewRectHeight(ratio);
     }
 
+    /**
+     * 分辨率 (float)h/w
+     *
+     * @param ratio
+     */
     private void updateLiveViewRectHeight(float ratio) {
         liveViewWithThumbnail.updateLayoutParameters((int) (Resources.getSystem().getDisplayMetrics().widthPixels * ratio));
     }
