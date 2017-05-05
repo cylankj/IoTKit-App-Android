@@ -195,7 +195,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void addInputItem() {
         String suggestion = mEtSuggestion.getText().toString();
-
+        itemPosition = suggestionAdapter.getItemCount() - 1;
         MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
         suggestionBean.setType(1);
 
@@ -216,18 +216,16 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
         if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
             suggestionBean.pro_falag = 1;
-            presenter.saveIntoDb(suggestionBean);
-            suggestionAdapter.add(suggestionBean);
-            suggestionAdapter.notifyDataSetHasChanged();
-            mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
-            return;
         } else {
             suggestionBean.pro_falag = 0;
         }
+        presenter.saveIntoDb(suggestionBean);
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
-        presenter.sendFeedBack(suggestionBean);
+        if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+            presenter.sendFeedBack(suggestionBean);
+        }
     }
 
     @Override
@@ -353,9 +351,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 //            ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
 //            send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
             item.setPro_falag(0);
-            suggestionAdapter.notifyDataSetHasChanged();
+            suggestionAdapter.notifyItemChanged(position);
+            presenter.update(item);
             presenter.sendFeedBack(item);
-            presenter.deleteOnItemFromDb(item);
             dialog.dismiss();
         }).show();
     }

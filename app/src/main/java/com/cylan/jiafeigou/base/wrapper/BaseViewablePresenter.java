@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.text.TextUtils;
@@ -10,15 +11,19 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -185,6 +190,17 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
+                            appCmd.screenshot(false, new CallBack<Bitmap>() {
+                                @Override
+                                public void onSucceed(Bitmap bitmap) {
+                                    BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + File.separator + "." + mUUID + ".jpg");
+                                }
+
+                                @Override
+                                public void onFailure(String s) {
+                                    AppLogger.d("保存门铃画像失败" + s);
+                                }
+                            });
                             hasLiveStream = false;
                             appCmd.stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();

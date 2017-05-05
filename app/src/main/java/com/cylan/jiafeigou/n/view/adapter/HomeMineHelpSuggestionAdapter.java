@@ -3,15 +3,10 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -105,12 +100,9 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
                 send_pro.setVisibility(View.GONE);
             }
 
-            holder.setOnClickListener(R.id.iv_send_pro, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (resendFeedBack != null) {
-                        resendFeedBack.onResend(holder, item, layoutPosition);
-                    }
+            holder.setOnClickListener(R.id.iv_send_pro, v -> {
+                if (resendFeedBack != null) {
+                    resendFeedBack.onResend(holder, item, layoutPosition);
                 }
             });
 

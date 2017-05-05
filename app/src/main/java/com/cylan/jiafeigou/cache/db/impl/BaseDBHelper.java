@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -74,6 +75,9 @@ public class BaseDBHelper implements IDBHelper {
         historyFileDao = daoSession.getHistoryFileDao();
     }
 
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
 
     private DPEntity unique(QueryBuilder<DPEntity> builder) {
         DPEntity result = null;
@@ -481,6 +485,7 @@ public class BaseDBHelper implements IDBHelper {
                                 this.dpAccount = account1;
                                 dpAccount.setAccount(account);
                                 dpAccount.setState(DBState.ACTIVE);
+                                dpAccount.setToken(UUID.randomUUID().toString());
                                 changed.add(dpAccount);
                                 continue;
                             }

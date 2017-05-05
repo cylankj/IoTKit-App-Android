@@ -54,7 +54,7 @@ public class Account extends BasePropertyHolder<Account> {
         this.accountJson = new Gson().toJson(account);
         this.account = account.getAccount();
         this.phone = account.getPhone();
-        this.token = account.getToken();
+//        this.token = account.getToken();
         this.alias = account.getAlias();
         this.enablePush = account.isEnablePush();
         this.enableSound = account.isEnableSound();

@@ -74,14 +74,11 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     private void initKeyBoard() {
         KeyboardUtil.attach(getActivity(), panelRoot);
         KPSwitchConflictUtil.attach(panelRoot, tvHomeMineSuggestion, etHomeMineSuggestion,
-                new KPSwitchConflictUtil.SwitchClickListener() {
-                    @Override
-                    public void onClickSwitch(boolean switchToPanel) {
-                        if (switchToPanel) {
-                            etHomeMineSuggestion.clearFocus();
-                        } else {
-                            etHomeMineSuggestion.requestFocus();
-                        }
+                switchToPanel -> {
+                    if (switchToPanel) {
+                        etHomeMineSuggestion.clearFocus();
+                    } else {
+                        etHomeMineSuggestion.requestFocus();
                     }
                 });
 

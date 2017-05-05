@@ -10,9 +10,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 
@@ -20,7 +19,7 @@ import com.cylan.jiafeigou.R;
 /**
  * Created by cylan-hunt on 16-8-9.
  */
-public class DragLayout extends FrameLayout {
+public class DragLayout extends RelativeLayout {
 
     private static final String TAG = "DragLayout";
     private ViewDragHelper viewDragHelper;
@@ -127,16 +126,16 @@ public class DragLayout extends FrameLayout {
     }
 
     private void adjustAnimationView() {
-        final int width = draggedView.getMeasuredWidth();
-        final int height = draggedView.getMeasuredHeight();
-        ViewGroup.LayoutParams p = leftView.getLayoutParams();
-        p.width = width;
-        p.height = height;
-        leftView.requestLayout();
-        p = rightView.getLayoutParams();
-        p.width = width;
-        p.height = height;
-        rightView.requestLayout();
+//        final int width = draggedView.getMeasuredWidth();
+//        final int height = draggedView.getMeasuredHeight();
+//        ViewGroup.LayoutParams p = leftView.getLayoutParams();
+//        p.width = width;
+//        p.height = height;
+//        leftView.requestLayout();
+//        p = rightView.getLayoutParams();
+//        p.width = width;
+//        p.height = height;
+//        rightView.requestLayout();
     }
 
     @Override

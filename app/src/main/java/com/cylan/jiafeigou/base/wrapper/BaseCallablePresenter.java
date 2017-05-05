@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -82,6 +83,10 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                             mCaller = mHolderCaller;
                                             mHolderCaller = null;
                                             startViewer();
+                                            File file = new File(JConstant.MEDIA_PATH, "." + mUUID + ".jpg");
+                                            if (file.exists()) {
+                                                mView.onPreviewPicture(file.toString());
+                                            }
                                             break;
                                     }
                                     return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);

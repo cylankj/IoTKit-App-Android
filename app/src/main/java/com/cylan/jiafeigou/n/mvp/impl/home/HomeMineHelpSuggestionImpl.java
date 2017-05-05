@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
@@ -15,8 +16,6 @@ import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
-import com.cylan.jiafeigou.support.db.DbManager;
-import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -33,7 +32,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -51,14 +49,16 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         implements HomeMineHelpSuggestionContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
-    private DbManager dbManager;
+    private BaseDBHelper helper;
     private JFGAccount userInfomation;
     private boolean isOpenLogin;
     private boolean hasSendLog;
     private File outFile;
+    private boolean isSending = false;
 
     public HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
         super(view);
+        helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
         view.setPresenter(this);
     }
 
@@ -75,7 +75,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription.add(sendLogBack());
             compositeSubscription.add(getSystemAutoReplyCallBack());
         }
-        getSystemAutoReply();
+//        getSystemAutoReply();
     }
 
     @Override
@@ -96,29 +96,21 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     @Override
                     public Observable<ArrayList<MineHelpSuggestionBean>> call(Object o) {
                         ArrayList<MineHelpSuggestionBean> tempList = new ArrayList<MineHelpSuggestionBean>();
-                        if (dbManager == null) {
+                        if (helper == null) {
                             return Observable.just(tempList);
                         }
-                        try {
-                            List<MineHelpSuggestionBean> list = dbManager.findAll(MineHelpSuggestionBean.class);
-                            if (list != null && list.size() != 0) {
-                                tempList.addAll(list);
-                                Collections.sort(tempList, new SortComparator());
-                            }
-                        } catch (DbException e) {
-                            e.printStackTrace();
-                            return Observable.just(tempList);
+                        List<MineHelpSuggestionBean> list = helper.getDaoSession().getMineHelpSuggestionBeanDao().loadAll();
+                        if (list != null && list.size() != 0) {
+                            tempList.addAll(list);
+                            Collections.sort(tempList, new SortComparator());
                         }
                         return Observable.just(tempList);
                     }
                 })
-                .subscribe(new Action1<ArrayList<MineHelpSuggestionBean>>() {
-                    @Override
-                    public void call(ArrayList<MineHelpSuggestionBean> list) {
-                        if (getView() != null) {
-                            getView().initRecycleView(list);
-                            AppLogger.d("database_size:" + list.size());
-                        }
+                .subscribe(list -> {
+                    if (getView() != null) {
+                        getView().initRecycleView(list);
+                        AppLogger.d("database_size:" + list.size());
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
@@ -128,11 +120,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void onClearAllTalk() {
-        try {
-            dbManager.delete(MineHelpSuggestionBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+        helper.getDaoSession().getMineHelpSuggestionBeanDao().deleteAll();
     }
 
     /**
@@ -142,14 +130,11 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public Subscription getAccountInfo() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo userInfo) {
-                        if (userInfo != null) {
-                            userInfomation = userInfo.jfgAccount;
-                            dbManager = DataBaseUtil.getInstance(userInfo.jfgAccount.getAccount()).dbManager;
-                            initData();
-                        }
+                .subscribe(userInfo -> {
+                    if (userInfo != null) {
+                        userInfomation = userInfo.jfgAccount;
+                        helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+                        initData();
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
@@ -161,11 +146,11 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void saveIntoDb(MineHelpSuggestionBean bean) {
-        try {
-            dbManager.save(bean);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+        helper.getDaoSession().getMineHelpSuggestionBeanDao().save(bean);
+    }
+
+    public void update(MineHelpSuggestionBean bean) {
+        helper.getDaoSession().getMineHelpSuggestionBeanDao().update(bean);
     }
 
     /**
@@ -221,14 +206,13 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public void sendFeedBack(MineHelpSuggestionBean bean) {
         rx.Observable.just(bean)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<MineHelpSuggestionBean>() {
-                    @Override
-                    public void call(MineHelpSuggestionBean bean) {
-                        BaseApplication.getAppComponent().getCmd().sendFeedback((Long.parseLong(bean.getDate())) / 1000, bean.getText(), !hasSendLog);
-                        if (!hasSendLog) {
-                            upLoadLogFile(bean);
-                        }
+                .subscribe(bean1 -> {
+                    BaseApplication.getAppComponent().getCmd().sendFeedback((Long.parseLong(bean1.getDate())) / 1000, bean1.getText(), !hasSendLog);
+                    if (!hasSendLog) {
+                        upLoadLogFile(bean1);
                     }
+                    hasSendLog = true;//只发送一次
+
                 }, throwable -> {
                     AppLogger.d("sendFeedBack" + throwable.getLocalizedMessage());
                 });
@@ -241,12 +225,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public void getSystemAutoReply() {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        int req = BaseApplication.getAppComponent().getCmd().getFeedbackList();
-                        AppLogger.d("getSystemAutoReply:" + req);
-                    }
+                .subscribe(o -> {
+                    int req = BaseApplication.getAppComponent().getCmd().getFeedbackList();
+                    AppLogger.d("getSystemAutoReply:" + req);
                 }, throwable -> {
                     AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
                 });
@@ -261,16 +242,13 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public Subscription getSystemAutoReplyCallBack() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetFeedBackRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetFeedBackRsp>() {
-                    @Override
-                    public void call(RxEvent.GetFeedBackRsp getFeedBackRsp) {
-                        if (getFeedBackRsp != null) {
-                            if (getView() != null && getFeedBackRsp.arrayList.size() != 0) {
-                                JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
-                                AppLogger.d("getSystemAuto:" + jfgFeedbackInfo.time);
-                                AppLogger.d("getSystemAuto2:" + System.currentTimeMillis());
-                                getView().addSystemAutoReply(jfgFeedbackInfo.time, jfgFeedbackInfo.msg);
-                            }
+                .subscribe(getFeedBackRsp -> {
+                    if (getFeedBackRsp != null) {
+                        if (getView() != null && getFeedBackRsp.arrayList.size() != 0) {
+                            JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
+                            AppLogger.d("getSystemAuto:" + jfgFeedbackInfo.time);
+                            AppLogger.d("getSystemAuto2:" + System.currentTimeMillis());
+                            getView().addSystemAutoReply(jfgFeedbackInfo.time, jfgFeedbackInfo.msg);
                         }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
@@ -294,11 +272,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     @Override
     public void deleteOnItemFromDb(MineHelpSuggestionBean bean) {
-        try {
-            dbManager.delete(bean);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+        helper.getDaoSession().getMineHelpSuggestionBeanDao().delete(bean);
     }
 
     /**
@@ -310,12 +284,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public Subscription isOpenLogin() {
         return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        isOpenLogin = aBoolean;
-                    }
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                .subscribe(aBoolean -> isOpenLogin = aBoolean, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -352,6 +321,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String remoteUrl = null;
         try {
             remoteUrl = "/log/" + Security.getVId() + "/" + userInfomation.getAccount() + "/" + fileName;
+            isSending = true;
             BaseApplication.getAppComponent().getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             AppLogger.d("upload log:" + remoteUrl);
         } catch (JfgException e) {
@@ -365,10 +335,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     @Override
     public Subscription sendLogBack() {
         return RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
+                .filter(ret -> isSending)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((JFGMsgHttpResult jfgMsgHttpResult) -> {
-                    if (jfgMsgHttpResult != null) {
+                    if (jfgMsgHttpResult != null && jfgMsgHttpResult.ret == 200) {
                         hasSendLog = true;
+                        isSending = false;
                         getView().sendLogResult(0);
                         getView().refrshRecycleView(0);
                         deleteLocalLogFile();

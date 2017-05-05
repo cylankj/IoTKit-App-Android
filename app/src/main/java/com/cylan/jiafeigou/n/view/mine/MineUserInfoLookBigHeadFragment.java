@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
@@ -31,6 +26,8 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.widget.LoadingDialog.dismissLoading;
 
 /**
  * 作者：zsl
@@ -64,6 +61,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         loadBigImage(iamgeUrl);
         return view;
     }
+
 
     /**
      * 初始化大图大小
@@ -123,8 +121,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
         @Override
         public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-            if (managerWeakReference.get() == null) return false;
-            LoadingDialog.dismissLoading(managerWeakReference.get());
+          if (managerWeakReference.get() == null) return false;
+
+              LoadingDialog.dismissLoading(managerWeakReference.get());
             loadResult = false;
             ToastUtil.showNegativeToast(totas);
             return false;
@@ -134,7 +133,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
             if (managerWeakReference.get() == null) return false;
             loadResult = true;
-            LoadingDialog.dismissLoading(managerWeakReference.get());
+            dismissLoading(managerWeakReference.get());
             return false;
         }
     }
@@ -171,7 +170,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @Override
     public void hideLoadImageProgress() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        dismissLoading(getFragmentManager());
     }
 
     @Override

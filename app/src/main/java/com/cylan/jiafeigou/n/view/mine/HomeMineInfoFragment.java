@@ -37,10 +37,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
@@ -326,14 +328,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                     photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
                 }
             }
-
-            if (!TextUtils.isEmpty(photoUrl) && getContext() != null) {
+            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+            if (!TextUtils.isEmpty(photoUrl) && getContext() != null || account != null) {
                 Glide.with(getContext()).load(photoUrl)
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .signature(new StringSignature(account.getToken()))
                         .into(myViewTarget);
             }
 

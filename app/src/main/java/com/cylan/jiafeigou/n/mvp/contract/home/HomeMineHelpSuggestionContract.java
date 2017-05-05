@@ -85,6 +85,8 @@ public interface HomeMineHelpSuggestionContract {
          */
         void saveIntoDb(MineHelpSuggestionBean bean);
 
+        void update(MineHelpSuggestionBean bean);
+
         /**
          * 获取到用户的头像地址
          */

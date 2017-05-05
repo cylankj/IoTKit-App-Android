@@ -164,6 +164,7 @@
         <attr name="ll_big_outer_color" format="reference|color" />
         <attr name="ll_big_inner_color" format="reference|color" />
         <attr name="ll_reverse" format="boolean" />
+        <attr name="ll_big_interval" format="dimension" />
     </declare-styleable>
     <declare-styleable name="LSViewStyle">
         <attr name="ls_min_radius" format="dimension" />

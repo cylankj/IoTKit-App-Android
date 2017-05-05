@@ -289,7 +289,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
         muteAudio(false);
         clearHeadSetEventReceiver();
-
+        presenter.dismiss();
     }
 
     private void clearHeadSetEventReceiver() {
@@ -324,6 +324,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mBellLiveBack.setText(null);
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
         } else {
+            hideStatusBar();
             setHideBackMargin();
             ViewUtils.updateViewMatchScreenHeight(fLayoutBellLiveHolder);
             mBellLiveBack.setText(mLiveTitle);
@@ -336,6 +337,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onBackPressed();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideStatusBar();
+    }
 
     /**
      * 初始化 Layer层view，横屏全屏时候，需要在上层
@@ -444,7 +450,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onTakeSnapShotSuccess(Bitmap bitmap) {
         if (bitmap != null) {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
-            showPopupWindow(bitmap);
+            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+                showPopupWindow(bitmap);
+
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
         }
@@ -467,11 +475,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 }
             }, v -> {
                 roundCardPopup.dismiss();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
                 Bundle bundle = new Bundle();
-                bundle.putByteArray(JConstant.KEY_SHARE_ELEMENT_BYTE, byteArray);
+                bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
                 NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
                 ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment,
                         android.R.id.content);
@@ -637,10 +642,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onPreviewPicture(String URL) {
-        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
+//        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).
                 placeholder(R.drawable.default_diagram_mask)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(mBellLiveVideoPicture);
     }
 
@@ -831,4 +837,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void setActivityComponent(ActivityComponent activityComponent) {
         activityComponent.inject(this);
     }
+
+//    protected void hideBottomUIMenu() {
+//        //隐藏虚拟按键，并且全屏
+//        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+//            View v = this.getWindow().getDecorView();
+//            v.setSystemUiVisibility(View.GONE);
+//        } else if (Build.VERSION.SDK_INT >= 19) {
+//            //for new api versions.
+//            View decorView = getWindow().getDecorView();
+//            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+//            decorView.setSystemUiVisibility(uiOptions);
+//        }
+//    }
 }

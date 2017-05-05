@@ -162,7 +162,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
 
     private void slide() {
-        if (mHeadContainer.isShown()) {
+        if (mHeadContainer.getTranslationY() == 0) {
             AnimatorUtils.slideOut(mHeadContainer, true);
             AnimatorUtils.slideOut(mBellContainer, false);
         } else {

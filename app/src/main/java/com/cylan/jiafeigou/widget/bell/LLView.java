@@ -21,8 +21,11 @@ import java.lang.ref.WeakReference;
  */
 public class LLView extends View {
 
+    private int mH;
+    private int mW;
 
     private float itemInterval = 10;
+    private float bigInterval = 20;
 
     private int maxCount = 4;
     /**
@@ -94,7 +97,7 @@ public class LLView extends View {
         bIRadius = a.getDimension(R.styleable.LLViewStyle_ll_big_inner_radius, bIRadius);
         sRadius = a.getDimension(R.styleable.LLViewStyle_ll_small_radius, sRadius);
         itemInterval = a.getDimension(R.styleable.LLViewStyle_ll_small_interval, itemInterval);
-
+        bigInterval = a.getDimension(R.styleable.LLViewStyle_ll_big_interval, bigInterval);
 
         reverse = a.getBoolean(R.styleable.LLViewStyle_ll_reverse, false);
         a.recycle();
@@ -132,6 +135,9 @@ public class LLView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        mH = h;
+        mW = w;
+        invalidate();
         initAnimator();
     }
 
@@ -142,8 +148,7 @@ public class LLView extends View {
         int w_size = MeasureSpec.getSize(widthMeasureSpec);
         int h_size = MeasureSpec.getSize(heightMeasureSpec);
         h_size = h_mode == MeasureSpec.AT_MOST ? (int) (bORadius * 2 + getPaddingBottom() + getPaddingTop()) : h_size;
-        w_size = w_mode == MeasureSpec.AT_MOST ? (int) (getPaddingLeft() + getPaddingRight()
-                + h_size
+        w_size = w_mode == MeasureSpec.AT_MOST ? (int) (getPaddingLeft() + getPaddingRight() + h_size + bigInterval
                 + sRadius * maxCount * 2
                 + (maxCount - 1) * itemInterval) : computeWidth(w_size);
 
@@ -168,7 +173,7 @@ public class LLView extends View {
             if (i == currentLightIndex) {
                 paint.setColor(bIColor);
             } else paint.setColor(sColor);
-            canvas.drawCircle(getSmallCircleX(i), getMeasuredHeight() / 2, sRadius, paint);
+            canvas.drawCircle(getSmallCircleX(i), mH / 2, sRadius, paint);
         }
     }
 
@@ -184,14 +189,14 @@ public class LLView extends View {
     private float getSmallCircleX(final int index) {
         final int factor = reverse ? -1 : 1;
         return getBigCircleX()
-                + factor * getMeasuredHeight() / 2
+                + factor * mH / 2 + factor * bigInterval
                 + factor * sRadius
                 + factor * (itemInterval + sRadius) * index;
     }
 
     private float getBigCircleX() {
-        final int x = getMeasuredHeight() / 2;
-        return reverse ? getMeasuredWidth() - x : x;
+        final int x = mH / 2;
+        return reverse ? mW - x : x;
     }
 
 
