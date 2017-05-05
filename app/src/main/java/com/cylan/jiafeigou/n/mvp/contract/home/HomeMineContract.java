@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.UiThread;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -15,7 +16,7 @@ import rx.Subscription;
  */
 public interface HomeMineContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseFragmentView<Presenter> {
         /**
          * @param url: 返回url,可以使用`glide`或者`uil`直接加载
          */

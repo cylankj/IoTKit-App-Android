@@ -6,7 +6,9 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +30,7 @@ public interface HomePageListContract {
 
         void onItemDelete(int index);
 
-//        ArrayList<String> getUuidList();
+        List<HomeItem> getUuidList();
 
         /**
          * @param greetBean: 从presenter处理后返回.

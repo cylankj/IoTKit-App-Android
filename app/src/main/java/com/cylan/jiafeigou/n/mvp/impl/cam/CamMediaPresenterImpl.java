@@ -54,15 +54,14 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                 .filter(new RxHelper.Filter<>("", bitmap != null))
                 .subscribeOn(Schedulers.newThread())
                 .map((Bitmap bMap) -> {
-                    String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                    return BitmapUtils.saveBitmap2file(bMap, filePath);
+                    String fileName = System.currentTimeMillis() + ".png";
+                    String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+                    BitmapUtils.saveBitmap2file(bMap, filePath);
+                    MiscUtils.insertImage(filePath, fileName);
+                    return true;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Boolean aBoolean) -> {
-                    getView().savePicResult(aBoolean);
-                }, (Throwable throwable) -> {
-                    AppLogger.e(throwable.getLocalizedMessage());
-                });
+                .subscribe(r -> getView().savePicResult(r), AppLogger::e);
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.XmlResourceParser;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -20,10 +23,12 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -514,5 +519,19 @@ public class MiscUtils {
             list1.add(new HomeItem().withUUID(item.uuid, item));
         }
         return list1;
+    }
+
+    public static boolean insertImage(String filePath, String fileName) {
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(ContextUtils.getContext().getContentResolver(),
+                    filePath, fileName, null);
+        } catch (FileNotFoundException e) {
+            AppLogger.e("err: " + MiscUtils.getErr(e));
+        }
+        // 最后通知图库更新
+        ContextUtils.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + filePath)));
+        return true;
     }
 }

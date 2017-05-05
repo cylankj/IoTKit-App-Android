@@ -402,7 +402,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ////////////////////////////net////////////////////////////////////////
 
         boolean isMobileNet = net.net > 1;
-        svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? "" : net.ssid) : getString(R.string.OFF_LINE));
+        svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
         svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileLayout(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);

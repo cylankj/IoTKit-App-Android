@@ -67,7 +67,6 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -137,7 +136,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (basePresenter != null) {
             basePresenter.fetchDeviceList(false);
         } else AppLogger.e("presenter is null");
-
     }
 
     private void need2ShowUseCase() {
@@ -185,6 +183,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initProgressBarColor();
         initSomeViewMargin();
         need2ShowUseCase();
+        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        if (ListUtils.isEmpty(devices)) emptyViewState.setVisibility(View.VISIBLE);
+        onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
     }
 
     @Override
@@ -272,48 +273,43 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsRsp(List<Device> resultList) {
-        if (getView() != null) {
-            getView().removeCallbacks(runnable);
-            getView().postDelayed(runnable, (mItemAdapter.getItemCount() == 0) ? 1 : 10);
-        }
-    }
-
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            //mItemAdapter.clear();//别暴力刷新,存在闪烁.不推荐.
-            List<Device> resultList = new ArrayList<>(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
-            List<HomeItem> uiList = mItemAdapter.getAdapterItems();
-            List<HomeItem> newList = MiscUtils.getHomeItemListFromDevice(resultList);
-            List<HomeItem> toRemoveList = ListUtils.getDiff(uiList, newList);
-            if (toRemoveList != null) {
-                for (HomeItem item : toRemoveList) {
-                    int index = mItemAdapter.getAdapterItems().indexOf(item);
-                    if (index == -1) continue;
-                    mItemAdapter.remove(index);
-                }
-            }
-            int size = ListUtils.getSize(resultList);
-            if (size > 0) {
-                for (int i = 0; i < size; i++) {
-                    int count = mItemAdapter.getAdapterItemCount();
-                    if (i < count) {
-                        mItemAdapter.getAdapterItems().set(i, newList.get(i));
-                        mItemAdapter.notifyItemChanged(i);
-                    } else {
-                        //应该一次性加载
-                        mItemAdapter.add(newList.get(i));
-                        Log.d("xxxxx", "xxxx:" + count);
+        try {
+            if (getView() != null) {
+                //mItemAdapter.clear();//别暴力刷新,存在闪烁.不推荐.
+                List<HomeItem> uiList = mItemAdapter.getAdapterItems();
+                List<HomeItem> newList = MiscUtils.getHomeItemListFromDevice(resultList);
+                List<HomeItem> toRemoveList = ListUtils.getDiff(uiList, newList);
+                if (toRemoveList != null) {
+                    for (HomeItem item : toRemoveList) {
+                        int index = mItemAdapter.getAdapterItems().indexOf(item);
+                        if (index == -1) continue;
+                        mItemAdapter.remove(index);
                     }
                 }
-                AppLogger.e("测试专用");
+                int size = ListUtils.getSize(resultList);
+                if (size > 0) {
+                    for (int i = 0; i < size; i++) {
+                        int count = mItemAdapter.getAdapterItemCount();
+                        if (i < count) {
+                            mItemAdapter.getAdapterItems().set(i, newList.get(i));
+                            mItemAdapter.notifyItemChanged(i);
+                        } else {
+                            //应该一次性加载
+                            mItemAdapter.add(newList.get(i));
+                            Log.d("xxxxx", "xxxx:" + count);
+                        }
+                    }
+                    AppLogger.e("测试专用");
+                }
+                emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                onRefreshFinish();
+                enableNestedScroll();
+                Log.d("onItemsRsp", "onItemsRsp:" + resultList);
             }
-            emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-            onRefreshFinish();
-            enableNestedScroll();
-            Log.d("onItemsRsp", "onItemsRsp:" + resultList);
+        } catch (Exception e) {
+            AppLogger.e("err:" + MiscUtils.getErr(e));
         }
-    };
+    }
 
     private void enableNestedScroll() {
         boolean enable = mItemAdapter.getItemCount() > 4;
@@ -362,6 +358,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
+    public List<HomeItem> getUuidList() {
+        return mItemAdapter == null ? null : mItemAdapter.getAdapterItems();
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, isVisibleToUser);
@@ -373,6 +374,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private Runnable updateAccount = new Runnable() {
         @Override
         public void run() {
+            if (!isAdded()) return;
             JFGAccount greetBean = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
             tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)

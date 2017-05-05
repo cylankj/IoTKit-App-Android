@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +20,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -111,10 +109,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void onStart() {
         if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             //访客状态
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-            basePresenter.portraitBlur(bm);
+            basePresenter.portraitBlur(null);
             setAliasName(getString(R.string.Tap3_LogIn));
         }
         super.onStart();
@@ -231,16 +227,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onPortraitUpdate(String url) {
-//        if (getActivity() != null) {
-//            ivHomeMinePortrait.setImageResource(R.drawable.clouds);
-//            if (basePresenter != null) basePresenter.portraitBlur(R.drawable.clouds);
-//            tvHomeMineMsgCount.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    tvHomeMineMsgCount.setText("99+");
-//                }
-//            });
-//        }
     }
 
     @Override
@@ -254,9 +240,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isAdded()) {
             if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-                //访客状态
-                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-                basePresenter.portraitBlur(bm);
+                //访客状态,使用null表示默认头像
+                basePresenter.portraitBlur(null);
                 setAliasName(getString(R.string.Tap3_LogIn));
             }
             lazyLoad();
@@ -266,7 +251,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             BaseApplication.getAppComponent().getCmd().getAccount();
         }
     }
-
     /**
      * 设置昵称
      *

@@ -190,7 +190,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceSystemVersion.setTvSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(JFGRules.isDeviceOnline(net) ? u : 0));
-        tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+        boolean isMobileNet = net.net > 1;
+        tvDeviceWifiState.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         String softWare = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvDeviceSoftwareVersion.setTvSubTitle(softWare);
     }

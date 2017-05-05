@@ -3,7 +3,8 @@
     android:id="@+id/lLayout_home_page_list_empty_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/imgv_empty_layout_icon"

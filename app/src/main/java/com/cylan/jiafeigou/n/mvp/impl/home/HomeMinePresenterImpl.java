@@ -1,21 +1,21 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
-import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -33,7 +33,6 @@ import java.util.Random;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -41,11 +40,9 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by hunt on 16-5-23.
  */
-public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
+public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
-    private Subscription onBlurSubscribtion;
     private CompositeSubscription subscription;
-    private JFGAccount userInfo;                          //用户信息bean
 
     private boolean isOpenLogin = false;
     private boolean hasUnRead;
@@ -77,37 +74,20 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public void portraitBlur(Bitmap bitmap) {
-        onBlurSubscribtion = Observable.just(bitmap)
-                .subscribeOn(Schedulers.computation())
-                .map(new Func1<Bitmap, Bitmap>() {
-                    @Override
-                    public Bitmap call(Bitmap bm) {
-                        if (getView() == null) {
-                            return null;
-                        }
-                        Bitmap b = BitmapUtils.zoomBitmap(bm, 160, 160);
-                        return FastBlurUtil.blur(b, 20, 2);
+        //使用默认的图片
+        Observable.just(bitmap)
+                .subscribeOn(Schedulers.newThread())
+                .map(b -> {
+                    if (b == null) {
+                        b = BitmapFactory.decodeResource(mView.getContext().getResources(), R.drawable.me_bg_top_image);
                     }
+                    Bitmap result = BitmapUtils.zoomBitmap(b, 160, 160);
+                    Bitmap blur = FastBlurUtil.blur(result, 20, 2);
+                    return new BitmapDrawable(ContextUtils.getContext().getResources(), blur);
                 })
-                .map(new Func1<Bitmap, Drawable>() {
-                    @Override
-                    public Drawable call(Bitmap bitmap) {
-                        if (getView() == null
-                                || getView().getContext() == null
-                                || getView().getContext().getResources() == null)
-                            return null;
-                        return new BitmapDrawable(ContextUtils.getContext().getResources(), bitmap);
-                    }
-                })
+                .filter(result -> check())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Drawable>() {
-                    @Override
-                    public void call(Drawable drawable) {
-                        if (getView() == null || drawable == null)
-                            return;
-                        getView().onBlur(drawable);
-                    }
-                }, AppLogger::e);
+                .subscribe(result -> getView().onBlur(result), AppLogger::e);
     }
 
     @Override
@@ -149,7 +129,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public JFGAccount getUserInfoBean() {
-        return userInfo;
+        return BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
     }
 
     /**
@@ -237,23 +217,12 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public Subscription getAccountBack() {
-        return Observable.just(BaseApplication.getAppComponent().getSourceManager()).map(s -> {
-            Account account = s.getAccount();
-            JFGAccount jfgAccount = s.getJFGAccount();
-            RxEvent.AccountArrived arrived = null;
-            if (account != null && jfgAccount != null) {
-                arrived = new RxEvent.AccountArrived(account);
-                arrived.jfgAccount = jfgAccount;
-            }
-            return arrived;
-        }).mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class))
-                .filter(accountArrived -> accountArrived != null)
-                .first()
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getUserInfo -> {
-                    if (getUserInfo != null) {
-                        userInfo = getUserInfo.jfgAccount;
-                        String photoUrl = userInfo.getPhotoUrl();
+                .subscribe(accountBack -> {
+                    if (accountBack != null && accountBack.jfgAccount != null) {
+                        JFGAccount account = accountBack.jfgAccount;
+                        String photoUrl = account.getPhotoUrl();
                         String alias = null;
                         RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
                         isOpenLogin = event != null && event.isThird;
@@ -261,24 +230,24 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
                             photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
                         }
-                        if (isOpenLogin && TextUtils.isEmpty(userInfo.getAlias())) {
+                        if (isOpenLogin && TextUtils.isEmpty(account.getAlias())) {
                             try {
-                                BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
+                                BaseApplication.getAppComponent().getCmd().setAccount(account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
-                            userInfo.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
+                            account.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
                         }
-                        if (userInfo.getAlias() == null || TextUtils.isEmpty(userInfo.getAlias())) {
-                            boolean isEmail = JConstant.EMAIL_REG.matcher(userInfo.getAccount()).find();
+                        if (account.getAlias() == null || TextUtils.isEmpty(account.getAlias())) {
+                            boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
                             if (isEmail) {
-                                String[] split = userInfo.getAccount().split("@");
-                                userInfo.setAlias(split[0]);
+                                String[] split = account.getAccount().split("@");
+                                account.setAlias(split[0]);
                             } else {
-                                userInfo.setAlias(userInfo.getAccount());
+                                account.setAlias(account.getAccount());
                             }
                         }
-                        alias = userInfo.getAlias();
+                        alias = account.getAlias();
                         if (getView() != null && !TextUtils.isEmpty(photoUrl))
                             getView().setUserImageHeadByUrl(photoUrl);
                         if (getView() != null && !TextUtils.isEmpty(alias))
