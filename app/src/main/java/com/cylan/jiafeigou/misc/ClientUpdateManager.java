@@ -238,7 +238,7 @@ public class ClientUpdateManager {
      * @param url         文件url
      * @param destFileDir 存储目标目录
      */
-    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener listener) {
+    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener downloadListener) {
 
         
 
