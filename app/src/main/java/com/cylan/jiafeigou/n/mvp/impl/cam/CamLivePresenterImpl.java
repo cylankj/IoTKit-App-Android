@@ -128,7 +128,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
                         .subscribeOn(Schedulers.newThread())
-                        .filter(ret -> ret.hasNew))
+                        .filter(ret -> {
+                            if (!ret.hasNew) {
+                                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
+                            }
+                            return ret.hasNew;
+                        }))
                 .map(ret -> {
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
                     return ret;
