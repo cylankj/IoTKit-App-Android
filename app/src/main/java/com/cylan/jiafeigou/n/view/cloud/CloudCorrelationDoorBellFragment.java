@@ -100,6 +100,11 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick(R.id.imgV_top_bar_center)
     public void onClick(View view) {
         switch (view.getId()) {

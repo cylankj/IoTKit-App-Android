@@ -191,6 +191,11 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.iv_look_big_image})
     public void onClick(View view) {
         switch (view.getId()) {

@@ -181,6 +181,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.rl_change_name, R.id.rl_delete_relativeandfriend,
             R.id.tv_share_device, R.id.iv_detail_user_head})
     public void onClick(View view) {

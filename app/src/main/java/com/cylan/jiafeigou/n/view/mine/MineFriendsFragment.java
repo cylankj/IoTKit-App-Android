@@ -258,6 +258,11 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void setPresenter(MineFriendsContract.Presenter presenter) {
     }
 
+    @Override
+    public String getUuid() {
+        return "";
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {

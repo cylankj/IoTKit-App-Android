@@ -7,8 +7,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public interface CamLiveContract {
     int TYPE_HISTORY = 2;
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseFragmentView<Presenter> {
 
         boolean isLocalMicOn();
 
@@ -80,6 +80,8 @@ public interface CamLiveContract {
          * @param start :开始显示loading
          */
         void shouldWaitFor(boolean start);
+
+        void showFirmwareDialog();
 
         /**
          * 保存了每一份数据的第一条的时间戳

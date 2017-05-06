@@ -98,6 +98,11 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnTextChanged(R.id.et_mine_set_remarkname_new_name)
     public void onEditChange(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(getEditName());

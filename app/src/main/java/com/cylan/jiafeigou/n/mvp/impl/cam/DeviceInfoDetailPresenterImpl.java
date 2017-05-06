@@ -40,7 +40,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     private boolean isInitSd;
 
     public DeviceInfoDetailPresenterImpl(CamInfoContract.View view, String uuid) {
-        super(view, uuid);
+        super(view);
         view.setPresenter(this);
     }
 

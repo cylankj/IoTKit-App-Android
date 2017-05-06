@@ -92,6 +92,11 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     }
 
     @Override
+    public String getUuid() {
+        return null;
+    }
+
+    @Override
     public void initEditText(String alids) {
         if (!TextUtils.isEmpty(alids)) {
             ivMineAddContactClearText.setVisibility(View.VISIBLE);

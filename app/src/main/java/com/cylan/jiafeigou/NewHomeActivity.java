@@ -252,7 +252,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             if (desc == null) desc = "";
             upgradeVersionDialogRef = new WeakReference<>(
                     new AlertDialog.Builder(this)
-                            .setMessage(desc)
+                            .setMessage(getString(R.string.UPGRADE))
                             .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
                                 /**
                                  * 安装apk

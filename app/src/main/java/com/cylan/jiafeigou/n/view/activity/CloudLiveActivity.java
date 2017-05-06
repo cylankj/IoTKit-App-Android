@@ -174,6 +174,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         return ContextUtils.getContext();
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.imgV_nav_back, R.id.imgV_cloud_live_top_setting, R.id.iv_cloud_share_pic, R.id.iv_cloud_videochat, R.id.iv_cloud_talk})
     public void onClick(View view) {
         switch (view.getId()) {

@@ -143,6 +143,11 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.iv_mine_personal_information_old_password_clear,
             R.id.iv_mine_personal_information_new_password_clear, R.id.tv_toolbar_right})
     public void onClick(View view) {

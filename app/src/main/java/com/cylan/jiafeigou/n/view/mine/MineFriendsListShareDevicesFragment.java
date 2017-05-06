@@ -109,6 +109,11 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {

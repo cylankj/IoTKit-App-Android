@@ -547,6 +547,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     }
 
+    @Override
+    public String getUuid() {
+        return "";
+    }
+
     /**
      * 删除亲友对话框
      */

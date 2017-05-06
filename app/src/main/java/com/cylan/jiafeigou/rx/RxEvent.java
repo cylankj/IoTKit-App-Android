@@ -1066,4 +1066,12 @@ public class RxEvent {
             this.slow = slow;
         }
     }
+
+    public static final class FirmwareUpdate {
+        public String uuid;
+
+        public FirmwareUpdate(String uuid) {
+            this.uuid = uuid;
+        }
+    }
 }

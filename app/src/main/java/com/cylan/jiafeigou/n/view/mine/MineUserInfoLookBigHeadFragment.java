@@ -177,4 +177,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     public void setPresenter(MineUserInfoLookBigHeadContract.Presenter presenter) {
 
     }
+
+    @Override
+    public String getUuid() {
+        return null;
+    }
 }

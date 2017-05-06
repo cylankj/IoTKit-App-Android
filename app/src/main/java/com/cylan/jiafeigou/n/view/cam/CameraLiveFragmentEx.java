@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -86,7 +85,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public Rect mLiveViewRectInWindow = new Rect();
     @BindView(R.id.cam_live_control_layer)
     CamLiveControllerEx camLiveControlLayer;
-    private String uuid;
     private boolean isNormalView;
 
     public CameraLiveFragmentEx() {
@@ -102,14 +100,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        basePresenter = new CamLivePresenterImpl(this, uuid);
+        basePresenter = new CamLivePresenterImpl(this);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = getDevice();
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
     }
 
@@ -126,7 +123,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //2w显示双排视图  3.1.0功能
-        camLiveControlLayer.initView(basePresenter, uuid);
+        camLiveControlLayer.initView(basePresenter, getUuid());
         camLiveControlLayer.initLiveViewRect(isNormalView ? basePresenter.getVideoPortHeightRatio() : 1.0f, mLiveViewRectInWindow);
         camLiveControlLayer.setLoadingRectAction(new ILiveControl.Action() {
             @Override
@@ -351,7 +348,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     getString(R.string.CANCEL), null);
         }
         if (msgId == 509) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
             String _509 = device.$(509, "0");
             camLiveControlLayer.updateLiveViewMode(_509);
         }
@@ -366,7 +363,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onLiveStarted(int type) {
         if (getView() != null) getView().setKeepScreenOn(true);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         camLiveControlLayer.onLiveStart(basePresenter, device);
         camLiveControlLayer.setMicSpeakerListener(mic -> {
             int tag = camLiveControlLayer.getMicState();
@@ -443,7 +440,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         camLiveControlLayer.orientationChanged(basePresenter, device, this.getResources().getConfiguration().orientation);
     }
 
@@ -459,7 +456,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private void jump2Setting() {
         //跳转到...
         Intent intent = new Intent(getContext(), CamSettingActivity.class);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
         ((Activity) getContext()).startActivityForResult(intent, REQUEST_CODE,
                 ActivityOptionsCompat.makeCustomAnimation(getActivity(),
                         R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
@@ -491,7 +488,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onLiveStop(int playType, int errId) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         if (getView() != null)
             getView().post(() -> {
                 if (getView() != null)
@@ -536,6 +533,17 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         });
         Log.d("shouldWaitFor", "shouldWaitFor: " + start);
+    }
+
+    @Override
+    public void showFirmwareDialog() {
+        getAlertDialogManager().showDialog(getActivity(),
+                getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
+                    intent.putExtra(getUuid(), JConstant.KEY_DEVICE_ITEM_UUID);
+                    startActivity(intent);
+                }, getString(R.string.CANCEL), null);
     }
 
     @Override
@@ -630,7 +638,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //                    "update", getString(R.string.Tap1_Device_UpgradeTips),
 //                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
 //                        Bundle bundle = new Bundle();
-//                        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//                        bundle.putString(JConstant.KEY_DEVICE_ITEM_getUuid(), getUuid());
 //                        bundle.putSerializable("version_content", rsp);
 //                        AppLogger.d("使用activity");
 //                        FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);

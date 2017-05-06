@@ -114,6 +114,11 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
     public void onClick(View view) {
         switch (view.getId()) {

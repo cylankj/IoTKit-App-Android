@@ -169,6 +169,11 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.iv_mine_personal_information_new_name_clear})
     public void onClick(View view) {
         switch (view.getId()) {

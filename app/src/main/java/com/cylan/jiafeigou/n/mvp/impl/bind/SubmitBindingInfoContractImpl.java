@@ -45,7 +45,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     private long startTick;
 
     public SubmitBindingInfoContractImpl(SubmitBindingInfoContract.View view, String uuid) {
-        super(view, uuid);
+        super(view);
         view.setPresenter(this);
         simulatePercent = new SimulatePercent();
         simulatePercent.setOnAction(this);

@@ -182,6 +182,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_meter_get_code, R.id.iv_mine_bind_phone_clear, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {

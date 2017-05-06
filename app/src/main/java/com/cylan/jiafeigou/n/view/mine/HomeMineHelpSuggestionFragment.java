@@ -372,6 +372,11 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         this.presenter = presenter;
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     private void initKeyBoard() {
         KeyboardUtil.attach(getActivity(), panelRoot, isShowing -> {
             if (suggestionAdapter == null) return;

@@ -17,6 +17,8 @@ public interface BasePresenter {
     @NonNull
     Device getDevice();
 
+    String getUuid();
+
     void start();
 
     void stop();

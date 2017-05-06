@@ -106,6 +106,11 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick(R.id.iv_home_mine_friends_add_from_contact_back)
     public void onClick(View view) {
         switch (view.getId()) {

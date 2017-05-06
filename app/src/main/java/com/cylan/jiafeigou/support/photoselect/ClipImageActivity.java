@@ -173,7 +173,12 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
 
     @Override
     public Context getContext() {
-        return null;
+        return getApplicationContext();
+    }
+
+    @Override
+    public String getUuid() {
+        return "";
     }
 
     /**

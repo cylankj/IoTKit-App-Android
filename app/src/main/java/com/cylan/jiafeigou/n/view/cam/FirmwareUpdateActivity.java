@@ -8,22 +8,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.mvp.contract.cam.HardwareUpdateContract;
-import com.cylan.jiafeigou.n.mvp.impl.cam.HardwareUpdatePresenterImpl;
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
+import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
+import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
-
-public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<HardwareUpdateContract.Presenter>
-        implements HardwareUpdateContract.View {
+public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
+        implements FirmwareUpdateContract.View {
     @BindView(R.id.tv_hardware_now_version)
-    TextView tvHardwareNowVersion;
-    @BindView(R.id.tv_hardware_new_version)
-    TextView tvHardwareNewVersion;
+    TextView tvCurrentVersion;
     @BindView(R.id.hardware_update_point)
     View hardwareUpdatePoint;
     @BindView(R.id.tv_download_soft_file)
@@ -36,32 +38,43 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Hardw
     TextView tvVersionDescribe;
     @BindView(R.id.tv_loading_show)
     TextView tvLoadingShow;
-
-    private String uuid;
-    private RxEvent.CheckDevVersionRsp checkDevVersion;
-    private String fileSize;
-
-    private FirmwareFragment.OnUpdateListener listener;
-
-    public interface OnUpdateListener {
-        void onUpdateResult(boolean hasNew);
-    }
-
-    public void setOnUpdateListener(FirmwareFragment.OnUpdateListener listener) {
-        this.listener = listener;
-    }
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+    @BindView(R.id.tv_hardware_new_version)
+    TextView tvHardwareNewVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_hardware_update);
-        this.uuid = getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID);
-        this.checkDevVersion = getIntent().getParcelableExtra("version_content");
-        basePresenter = new HardwareUpdatePresenterImpl(this, uuid, checkDevVersion);
+        ButterKnife.bind(this);
+        basePresenter = new FirmwareUpdatePresenterImpl(this);
+        customToolbar.setBackAction(v -> onBackPressed());
     }
 
     @Override
-    public void setPresenter(HardwareUpdateContract.Presenter presenter) {
+    protected void onStart() {
+        super.onStart();
+        Device device = basePresenter.getDevice();
+        String currentVersion = device.$(207, "");
+        tvCurrentVersion.setText(currentVersion);
+        try {
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            FirmwareCheckerService.FirmwareDescription description = new Gson().fromJson(content, FirmwareCheckerService.FirmwareDescription.class);
+            tvHardwareNewVersion.setText(description.version);
+        } catch (Exception e) {
+        }
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        finishExt();
+    }
+
+    @Override
+    public void setPresenter(FirmwareUpdateContract.Presenter presenter) {
 
     }
 
@@ -70,58 +83,5 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Hardw
         return ContextUtils.getContext();
     }
 
-    @Override
-    public void handlerResult(int code) {
 
-    }
-
-    @Override
-    public void onDownloadStart() {
-
-    }
-
-    @Override
-    public void onDownloadFinish() {
-
-    }
-
-    @Override
-    public void onDownloading(double percent, long downloadedLength) {
-
-    }
-
-    @Override
-    public void onDownloadErr(int reason) {
-
-    }
-
-    @Override
-    public void beginUpdate() {
-
-    }
-
-    @Override
-    public void onUpdateing(int percent) {
-
-    }
-
-    @Override
-    public void initFileSize(String size) {
-
-    }
-
-    @Override
-    public void showPingLoading() {
-
-    }
-
-    @Override
-    public void hidePingLoading() {
-
-    }
-
-    @Override
-    public void deviceNoRsp() {
-
-    }
 }

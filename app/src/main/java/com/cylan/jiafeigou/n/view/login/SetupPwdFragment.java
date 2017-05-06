@@ -194,6 +194,11 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         this.pwdPresenter = presenter;
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
 
     @Override
     public void submitResult(RxEvent.ResultRegister register) {

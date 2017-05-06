@@ -2,10 +2,14 @@ package com.cylan.jiafeigou.n.base;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.DebugUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 /**
  * Created by cylan-hunt on 16-11-11.
@@ -24,6 +28,14 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(TAG, TAG + ",onAttach");
+    }
+
+    public String getUuid() {
+        return getArguments().getString(KEY_DEVICE_ITEM_UUID);
+    }
+
+    public Device getDevice() {
+        return BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
     }
 
     @Override

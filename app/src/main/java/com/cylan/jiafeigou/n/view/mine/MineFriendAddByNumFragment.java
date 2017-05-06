@@ -136,6 +136,11 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     /**
      * 用来点击空白处隐藏键盘
      *

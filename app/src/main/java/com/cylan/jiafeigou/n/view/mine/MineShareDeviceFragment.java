@@ -103,6 +103,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     @Override
+    public String getUuid() {
+        return null;
+    }
+
+    @Override
     public void showShareDialog(final int layoutPosition, final DeviceBean item) {
         whichClick = item;
         position = layoutPosition;

@@ -97,6 +97,11 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     }
 
     @Override
+    public String getUuid() {
+        return null;
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initTopBar();
     }

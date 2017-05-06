@@ -328,6 +328,11 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     }
 
     @Override
+    public String getUuid() {
+        return null;
+    }
+
+    @Override
     public void showLoadingView() {
         tvLoading.setVisibility(View.VISIBLE);
         tvConnetText.setVisibility(View.VISIBLE);

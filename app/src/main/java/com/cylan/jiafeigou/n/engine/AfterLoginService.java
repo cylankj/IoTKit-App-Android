@@ -142,9 +142,11 @@ public class AfterLoginService extends IntentService {
                                 .flatMap(clientCheckVersion -> {
                                     AppLogger.d("check_version result: " + clientCheckVersion);
 //                                    clientCheckVersion.result = "VRJz6f";
+//                                    2iYjQr
                                     if (TextUtils.isEmpty(clientCheckVersion.result))
                                         return Observable.just(false);
-                                    String finalUrl = JConstant.assembleUrl(clientCheckVersion.result, getApplicationContext().getPackageName());
+                                    String result = clientCheckVersion.result.replace("http://yun.app8h.com/s?id=", "");
+                                    String finalUrl = JConstant.assembleUrl(result, getApplicationContext().getPackageName());
                                     Request.Builder requestBuilder = new Request.Builder().url(finalUrl);
                                     requestBuilder.method("GET", null);
                                     OkHttpClient client = new OkHttpClient();

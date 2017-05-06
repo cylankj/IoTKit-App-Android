@@ -160,6 +160,11 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         this.presenter = presenter;
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.iv_detail_user_head, R.id.tv_add_as_relative_and_friend})
     public void onClick(View view) {
         switch (view.getId()) {

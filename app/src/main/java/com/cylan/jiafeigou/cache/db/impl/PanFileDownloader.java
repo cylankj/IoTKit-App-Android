@@ -5,12 +5,12 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.cylan.jiafeigou.cache.db.module.DaoMaster;
-import com.cylan.jiafeigou.cache.db.module.DaoSession;
 import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.cache.db.module.DownloadFileDao;
 import com.cylan.jiafeigou.cache.db.view.IPanFileDbHelper;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.model.DaoMaster;
+import com.cylan.jiafeigou.n.mvp.model.DaoSession;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 

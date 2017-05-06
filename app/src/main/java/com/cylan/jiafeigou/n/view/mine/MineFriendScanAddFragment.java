@@ -92,6 +92,11 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         this.presenter = presenter;
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick(R.id.tv_toolbar_icon)
     public void onClick(View view) {
         switch (view.getId()) {

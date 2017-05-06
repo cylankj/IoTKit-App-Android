@@ -100,6 +100,11 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     }
 
     @Override
+    public String getUuid() {
+        return null;
+    }
+
+    @Override
     public void onClick(View v) {
         MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
         suggestionBean.setType(1);

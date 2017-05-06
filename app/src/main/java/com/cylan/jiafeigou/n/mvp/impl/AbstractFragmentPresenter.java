@@ -44,11 +44,12 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
 
     public AbstractFragmentPresenter(T view) {
         mView = view;
+        this.uuid = mView.getUuid();
     }
 
-    public AbstractFragmentPresenter(T view, String uuid) {
-        mView = view;
-        this.uuid = uuid;
+    @Override
+    public String getUuid() {
+        return this.uuid;
     }
 
     protected boolean check() {

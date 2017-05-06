@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.NotifyManager;
-import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
@@ -49,6 +49,10 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         if (BuildConfig.DEBUG) {
             ViewServer.get(this).addWindow(this);
         }
+    }
+
+    public String getUuid() {
+        return getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.greenrobot.greendao.annotation.Id;
 
 import java.util.Arrays;
 import java.util.Objects;
+import com.cylan.jiafeigou.n.mvp.model.DaoSession;
 
 /**
  * Created by yanzhendong on 2017/2/27.

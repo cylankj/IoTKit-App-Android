@@ -34,7 +34,9 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -82,7 +84,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 /**
  * Created by cylan-hunt on 16-7-27.
  */
-public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
+public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
     private IData historyDataProvider;
     private MapSubscription liveSubscription = new MapSubscription();
@@ -95,12 +97,18 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
-    public CamLivePresenterImpl(CamLiveContract.View view, String uuid) {
-        super(view, uuid);
+    public CamLivePresenterImpl(CamLiveContract.View view) {
+        super(view);
         view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
+        FirmwareCheckerService.checkVersion(uuid);
     }
 
+    @Override
+    public void start() {
+        super.start();
+
+    }
 
     /**
      * 视频断开连接
@@ -788,7 +796,21 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync()};
+        return new Subscription[]{robotDataSync(), firmwareUpdate()};
+    }
+
+    private Subscription firmwareUpdate() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdate.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> TextUtils.equals(uuid, ret.uuid))
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null && mView.isAdded())
+                .map(ret -> {
+                    mView.showFirmwareDialog();
+                    return ret;
+                })
+                .retry()
+                .subscribe();
     }
 
     /**

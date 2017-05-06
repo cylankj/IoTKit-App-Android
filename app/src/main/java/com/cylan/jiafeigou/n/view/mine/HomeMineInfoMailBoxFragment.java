@@ -64,6 +64,11 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     }
 
     @Override
+    public String getUuid() {
+        return null;
+    }
+
+    @Override
     public void showMailHasBindDialog() {
         ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_EMAIL));
     }

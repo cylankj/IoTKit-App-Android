@@ -123,6 +123,11 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.iv_mine_share_to_contact_back, R.id.iv_mine_share_to_contact_search})
     public void onClick(View view) {
         switch (view.getId()) {

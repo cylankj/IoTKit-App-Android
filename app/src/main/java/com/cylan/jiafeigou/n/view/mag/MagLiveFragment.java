@@ -149,6 +149,11 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.btn_switch, R.id.tv_clear_mag_open_record})
     public void onClick(View view) {
         switch (view.getId()) {

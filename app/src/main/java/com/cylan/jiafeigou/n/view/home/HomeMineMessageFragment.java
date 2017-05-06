@@ -148,6 +148,11 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_check_all, R.id.tv_delete})
     public void onClick(View view) {
         switch (view.getId()) {

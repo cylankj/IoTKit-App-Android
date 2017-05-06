@@ -235,6 +235,7 @@ public class ClientUpdateManager {
      */
     public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener downloadListener) {
         final File file = new File(destFileDir, fileName);
+        new File(destFileDir).mkdir();
         if (file.exists()) {
             try {
                 Request request = new Request.Builder()

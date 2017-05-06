@@ -143,6 +143,11 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
 
     }
 
+    @Override
+    public String getUuid() {
+        return null;
+    }
+
     @OnClick({R.id.iv_information_back, R.id.lLayout_information_facility_name})
     public void onClick(View view) {
         switch (view.getId()) {

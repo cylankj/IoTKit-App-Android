@@ -97,4 +97,9 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
         return this;
     }
 
+    @Override
+    public String getUuid() {
+        return "";
+    }
+
 }

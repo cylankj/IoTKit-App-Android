@@ -42,7 +42,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private List<WonderIndicatorWheelView.WheelItem> dateItemList = new ArrayList<>();
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
-        super(view, uuid);
+        super(view);
         view.setPresenter(this);
     }
 

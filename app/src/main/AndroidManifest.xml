@@ -628,7 +628,7 @@
 
         <service
             android:name=".n.engine.FirmwareCheckerService"
-            android:exported="false"></service>
+            android:exported="true" />
     </application>
 
 </manifest>
