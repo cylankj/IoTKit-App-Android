@@ -1025,6 +1025,7 @@ public class RxEvent {
         public long totalByte;
         public int state;
         public Throwable throwable;
+        public int forceUpdate;
 
         public ClientUpdateEvent setCurrentByte(long currentByte) {
             this.currentByte = currentByte;
@@ -1043,6 +1044,11 @@ public class RxEvent {
 
         public ClientUpdateEvent setThrowable(Throwable throwable) {
             this.throwable = throwable;
+            return this;
+        }
+
+        public ClientUpdateEvent setForceUpdate(int forceUpdate) {
+            this.forceUpdate = forceUpdate;
             return this;
         }
     }

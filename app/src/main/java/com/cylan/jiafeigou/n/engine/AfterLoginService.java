@@ -163,7 +163,7 @@ public class AfterLoginService extends IntentService {
                                                     String result = response.body().string();
                                                     AppLogger.d("check_version result: " + result);
                                                     PreferencesUtils.putString(JConstant.KEY_CLIENT_UPDATE_DESC, result);
-                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpdateEvent());
+                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpdateEvent().setForceUpdate(clientCheckVersion.forceUpgrade));
                                                 }
                                             });
                                     return Observable.just(true);

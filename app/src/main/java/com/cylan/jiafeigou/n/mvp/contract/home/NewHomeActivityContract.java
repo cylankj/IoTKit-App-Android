@@ -31,6 +31,6 @@ public interface NewHomeActivityContract {
 
         //void doSample();
 
-        void startUpdate();
+//        void startUpdate();
     }
 }

@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
@@ -41,7 +40,6 @@ import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +61,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     private SharedElementCallBackListener sharedElementCallBackListener;
     private Subscription subscribe;
     private Subscription resetPwdSubscribe;
-    private WeakReference<AlertDialog> upgradeVersionDialogRef;
+//    private WeakReference<AlertDialog> upgradeVersionDialogRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,9 +219,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     @Override
     public void updateProcess(long currentByte, long totalByte) {
-        if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null) {
-
-        }
     }
 
     @Override
@@ -233,10 +228,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     @Override
     public void finished(File file) {
-        if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null
-                && upgradeVersionDialogRef.get().isShowing()) {
-            upgradeVersionDialogRef.get().dismiss();
-        }
     }
 
     @Override
@@ -246,28 +237,16 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     @Override
     public void needUpdate(String desc, String filePath) {
-        if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null && upgradeVersionDialogRef.get().isShowing())
-            return;
-        if (upgradeVersionDialogRef == null) {
-            if (desc == null) desc = "";
-            upgradeVersionDialogRef = new WeakReference<>(
-                    new AlertDialog.Builder(this)
-                            .setMessage(getString(R.string.UPGRADE))
-                            .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                /**
-                                 * 安装apk
-                                 */
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
-                                startActivity(i);
-                            })
-                            .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                                upgradeVersionDialogRef.get().dismiss();
-                            })
-                            .create());
-        }
-        upgradeVersionDialogRef.get().show();
+        getAlertDialogManager().showDialog(this, getString(R.string.UPGRADE), getString(R.string.UPGRADE),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    /**
+                     * 安装apk
+                     */
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
+                    startActivity(i);
+                }, getString(R.string.CANCEL), null);
     }
 
     @Override

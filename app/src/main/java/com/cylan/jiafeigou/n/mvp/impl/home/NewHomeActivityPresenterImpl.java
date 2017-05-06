@@ -39,7 +39,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(ret -> {
                     RxBus.getCacheInstance().removeStickyEvent(RxEvent.ClientUpdateEvent.class);
-                    startUpdate();
+                    startUpdate(ret.forceUpdate);
                 }, throwable -> {
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                     addSubscription(updateRsp());
@@ -52,8 +52,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
         addSubscription(updateRsp());
     }
 
-    @Override
-    public void startUpdate() {
+    public void startUpdate(int force) {
         try {
             AppLogger.d("开始升级");
             String result = PreferencesUtils.getString(JConstant.KEY_CLIENT_UPDATE_DESC);
@@ -83,7 +82,9 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                             .observeOn(AndroidSchedulers.mainThread())
                             .filter(ret -> mView != null)
                             .subscribe(f -> {
-                                        mView.needUpdate(desc, f.getAbsolutePath());
+                                        long time = System.currentTimeMillis() - PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
+                                        if (force == 1 || (time == -1 || System.currentTimeMillis() - time > 24 * 1000 * 3600))
+                                            mView.needUpdate(desc, f.getAbsolutePath());
                                     },
                                     AppLogger::e);
                 }

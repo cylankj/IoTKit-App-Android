@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
@@ -49,6 +50,10 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         if (BuildConfig.DEBUG) {
             ViewServer.get(this).addWindow(this);
         }
+    }
+
+    public AlertDialogManager getAlertDialogManager() {
+        return AlertDialogManager.getInstance();
     }
 
     public String getUuid() {
