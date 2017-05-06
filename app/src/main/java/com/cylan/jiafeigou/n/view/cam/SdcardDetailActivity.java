@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -48,9 +48,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     TextView tvClearRestart;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private AlertDialog alertDialog;
-    private AlertDialog formatSdcardDialog;
-    private AlertDialog noSdcardDialog;
+    //    private AlertDialog alertDialog;
+//    private AlertDialog formatSdcardDialog;
+//    private AlertDialog noSdcardDialog;
     private String uuid;
 
     @Override
@@ -74,14 +74,6 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         super.onStart();
     }
 
-    private void dismissDialog(AlertDialog... dialogs) {
-        if (dialogs != null) {
-            for (AlertDialog dialog : dialogs) {
-                if (dialog != null && dialog.isShowing()) dialog.dismiss();
-            }
-        }
-    }
-
     @OnClick({R.id.tv_clear_sdcard})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -100,21 +92,13 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         if ("0.0MB".equals(split[0])) {
             ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
         } else {
-            if (formatSdcardDialog != null && formatSdcardDialog.isShowing()) return;
-            if (formatSdcardDialog == null) {
-                formatSdcardDialog = new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.Clear_Sdcard_tips))
-                        .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                            basePresenter.updateInfoReq();
-                            showLoading();
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create();
-            }
-            dismissDialog(noSdcardDialog, alertDialog);
-            formatSdcardDialog.show();
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Clear_Sdcard_tips),
+                    getString(R.string.Clear_Sdcard_tips),
+                    getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                        basePresenter.updateInfoReq();
+                        showLoading();
+                    }, getString(R.string.CANCEL), null);
         }
-
     }
 
     @Override
@@ -155,6 +139,8 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         switch (code) {
             case 0:
                 ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
+                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                initSdUseDetailRsp(device.$(204, new DpMsgDefine.DPSdStatus()));
                 break;
             case 1:
                 ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
@@ -181,15 +167,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 
     @Override
     public void showSdPopDialog() {
-        if (alertDialog != null && alertDialog.isShowing()) return;
-        if (alertDialog == null)
-            alertDialog = new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.MSG_SD_OFF))
-                    .setNegativeButton(getString(R.string.CANCEL), null)
-                    .setPositiveButton(getString(R.string.OK), null)
-                    .create();
-        alertDialog.show();
-        dismissDialog(noSdcardDialog, alertDialog);
+        AlertDialogManager.getInstance()
+                .showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
+                        getString(R.string.OK), null, getString(R.string.CANCEL), null);
     }
 
     private void initDetailData() {
@@ -213,17 +193,10 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 
 
     private void showHasNoSdDialog() {
-        if (noSdcardDialog != null && noSdcardDialog.isShowing()) return;
-        if (noSdcardDialog == null) {
-            noSdcardDialog = new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.MSG_SD_OFF))
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        finishExt();
-                    })
-                    .create();
-        }
-        noSdcardDialog.show();
-        dismissDialog(formatSdcardDialog, alertDialog);
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    finishExt();
+                });
     }
 
     @Override

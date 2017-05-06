@@ -314,7 +314,7 @@ public class JConstant {
 
 
     public static final String BINDING_DEVICE = "key_need_bind";//
-    public static final String CHECK_HARDWARE_TIME = "check_hardware_time";
+    public static final String KEY_FIRMWARE_CONTENT = "firmware_content";
     public static final String PREF_NAME = "config_pref";      //2.x Sp 的key
     public static final String KEY_PHONE = "PhoneNum";//2.x account key
     public static final String SESSIONID = "sessid";// 2.x sessid key
@@ -344,4 +344,10 @@ public class JConstant {
     public static final String SHOW_GCM_DIALOG = "gcm_check";
 
     public static final String KEY_SHOW_SUGGESTION = "key_show_suggestion";
+
+    public static final class D {
+        public static int FAILED = -1;
+        public static int DOWNLOADING = 1;
+        public static int SUCCESS = 2;
+    }
 }

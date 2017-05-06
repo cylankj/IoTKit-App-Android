@@ -156,23 +156,23 @@ android {
             ]
         }
         _test1 {
-            applicationId "com.cylan.jiafeigou.test1"
+            applicationId "com.cylan.jiafeigou"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.test1.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 10865640",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "HW_APP_ID"          : "\\ 10515998",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
-                                    "qqAppKey"           : "\\ 1106028314",
+                                    "qqAppKey"           : "\\ 1103156296",
                                     "mtaAppKey"          : "Aqc1103156296",
-                                    "weChatAppKey"       : "wx1b350d7d8d8920ed",
+                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "test1.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "xxx",
-                                    "XiaoMiAppKey"       : "xxx"
+                                    "XiaoMiAppId"        : "\\ 5241757040488",
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
             ]
         }
         _doby {
@@ -219,40 +219,20 @@ android {
             applicationId "com.cylan.jiafeigou.yf"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.yf.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 10826402",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "HW_APP_ID"          : "\\ 10515998",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
-                                    "qqAppKey"           : "\\ 1106028314",
+                                    "qqAppKey"           : "\\ 1103156296",
                                     "mtaAppKey"          : "Aqc1103156296",
-                                    "weChatAppKey"       : "wx82878b30fc6c0a6d",
+                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yf.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "xxx",
-                                    "XiaoMiAppKey"       : "xxx"
-            ]
-        }
-        _ps {
-            applicationId "com.panoview"
-            versionName vName
-            versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.panoview.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 10863475",
-                                    "VID"                : "\\ 0015",
-                                    "VKEY"               : "yzL5ygkRzNkOiUT2a07IxjOJ109AhKF0",
-                                    "qqAppKey"           : "",
-                                    "mtaAppKey"          : "Aqc1103156296",
-                                    "weChatAppKey"       : "",
-                                    "sinaAppKey"         : "",
-                                    "SERVER"             : "yf.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "",
-                                    "GCM_APP_ID"         : "\\ 985304692675",
-                                    "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "xxx",
-                                    "XiaoMiAppKey"       : "xxx"
+                                    "XiaoMiAppId"        : "\\ 5241757040488",
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
             ]
         }
     }

@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imgv_live_thumbnail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/default_diagram_mask"
-        android:visibility="gone" />
+    <!--<ImageView-->
+    <!--android:id="@+id/imgv_live_thumbnail"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawable/default_diagram_mask"-->
+    <!--android:visibility="gone" />-->
 
     <TextView
         android:id="@+id/tv_live_flow"

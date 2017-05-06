@@ -280,7 +280,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
         AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + s + ":" + s1 + ":" + s2 + ":" + s3);
-        RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b, s, s1, s2, s3));
+        RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b, s, s1, s2, s3).setSeq(0));
     }
 
     @Override

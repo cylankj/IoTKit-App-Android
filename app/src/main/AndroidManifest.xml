@@ -625,6 +625,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service
+            android:name=".n.engine.FirmwareCheckerService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

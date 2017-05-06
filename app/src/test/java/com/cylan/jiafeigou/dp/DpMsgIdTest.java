@@ -7,6 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Created by cylan-hunt on 16-11-8.
  */
@@ -33,6 +37,25 @@ public class DpMsgIdTest {
 //            System.out.println("i: " + i + " " + clazz);
 //            System.out.println(clazz.isInstance(int.class));
 //        }
+    }
+
+    @Test
+    public void testGood() {
+        Map<String, String> dateMap = new HashMap<>();
+
+        for (int i = 0; i < 10; i++) {
+            dateMap.put(10 + "" + i, i + "");
+        }
+
+        Iterator<String> keySet = dateMap.keySet().iterator();
+        String uuid = 10 + "";
+        while (keySet.hasNext()) {
+            String key = keySet.next();
+            if (key != null && key.startsWith(uuid)) {
+                dateMap.remove(key);
+            }
+        }
+        System.out.println(dateMap);
     }
 
 }
