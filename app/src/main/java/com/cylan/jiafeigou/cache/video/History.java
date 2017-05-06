@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.cache.video;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
@@ -10,11 +11,11 @@ import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -49,9 +51,24 @@ public class History {
         return history;
     }
 
+    private Subscription sdFormatSub;
 
     private History() {
-
+        sdFormatSub = RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                .subscribeOn(Schedulers.io())
+                .map(setDataRsp -> {
+                    int size = ListUtils.getSize(setDataRsp.rets);
+                    for (int i = 0; i < size; i++) {
+                        JFGDPMsgRet ret = setDataRsp.rets.get(i);
+                        if (ret.id == 218 && ret.ret == 0) {
+                            //格式化了sd卡.
+                            clearHistoryFile(setDataRsp.uuid);
+                        }
+                    }
+                    return null;
+                })
+                .retry()
+                .subscribe();
     }
 
     /**
@@ -99,9 +116,16 @@ public class History {
         if (historyVideo == null || historyVideo.list == null || historyVideo.list.size() == 0)
             return;
         Observable.just(historyVideo)
-                .onBackpressureBuffer()
-                .filter(ret -> ListUtils.getSize(historyVideo.list) > 0)
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
+                .filter(ret -> {
+                    if (ListUtils.isEmpty(ret.list)) {
+                        //清空
+
+                        return false;
+                    }
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
                 .flatMap(historyVideo1 -> {
                     //设备端已经排好序了.
                     long time = System.currentTimeMillis();
@@ -166,6 +190,15 @@ public class History {
 
 
     public boolean clearHistoryFile(String uuid) {
+        DataExt.getInstance().clean();
+        Iterator<String> keySet = dateMap.keySet().iterator();
+        while (keySet.hasNext()) {
+            String key = keySet.next();
+            if (key != null && key.startsWith(uuid)) {
+                dateMap.remove(key);
+            }
+        }
+
         BaseApplication.getAppComponent().getDBHelper().deleteAllHistoryFile(uuid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(ret -> {

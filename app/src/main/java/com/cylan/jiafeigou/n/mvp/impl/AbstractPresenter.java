@@ -22,11 +22,8 @@ import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**

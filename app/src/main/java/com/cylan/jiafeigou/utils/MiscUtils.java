@@ -49,6 +49,9 @@ import static com.cylan.jiafeigou.utils.ContextUtils.getContext;
 
 public class MiscUtils {
 
+    private static final int BYTE = 1024;
+    private static final int MEGA_BYTE = 1024 * 1024;
+    private static final int GIGA_BYTE = 1024 * 1024 * 1024;
 
     public static boolean isInRange(int start, int end, int dst) {
         return dst >= start && dst <= end;
@@ -85,15 +88,15 @@ public class MiscUtils {
     }
 
     public static String getFlowResult(long byteData) {
-        if (byteData < 1024)
+        if (byteData < BYTE)
             return byteData + "K/s";
-        if (byteData >= 1024 && byteData < 1024 * 1024) {
+        if (byteData >= BYTE && byteData < MEGA_BYTE) {
             return (byteData >>> 10) + "M/s";
         }
-        if (byteData >= 1024 * 1024 && byteData < 1024 * 1024 * 1024) {
+        if (byteData >= MEGA_BYTE && byteData < GIGA_BYTE) {
             return (byteData >>> 20) + "G/s";
         }
-        if (byteData >= 1024 * 1024 * 1024 && byteData < 1024 * 1024 * 1024 * 1024L) {
+        if (byteData >= GIGA_BYTE && byteData < 1024L * GIGA_BYTE) {
             return (byteData >>> 30) + "T/s";
         }
         return "";

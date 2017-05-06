@@ -9,14 +9,12 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import rx.Observable;
-import rx.Subscription;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -82,10 +80,6 @@ public interface CamLiveContract {
          * @param start :开始显示loading
          */
         void shouldWaitFor(boolean start);
-
-//        void countdownFinish();
-
-        void hardwareResult(RxEvent.CheckDevVersionRsp rsp);
 
         /**
          * 保存了每一份数据的第一条的时间戳
@@ -210,16 +204,8 @@ public interface CamLiveContract {
          * @param value
          * @param id
          */
-        public <T extends DataPoint> void updateInfoReq(T value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
 
-//        void startCountForDismissPop();
-
-        /**
-         * 每天检测一次新固件
-         */
-        void checkNewHardWare();
-
-        Subscription checkNewHardWareBack();
 
         /**
          * 某一天的凌晨时间戳

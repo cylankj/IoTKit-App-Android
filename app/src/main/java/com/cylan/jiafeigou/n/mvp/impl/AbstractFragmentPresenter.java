@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.lang.ref.WeakReference;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 

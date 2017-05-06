@@ -2,9 +2,13 @@ package com.cylan.jiafeigou.utils;
 
 
 import android.content.Context;
+import android.databinding.repacked.apache.commons.codec.digest.DigestUtils;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.danikula.videocache.file.Md5FileNameGenerator;
+import com.sina.weibo.sdk.utils.MD5;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -864,6 +868,15 @@ public class FileUtils {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public static String getFileMd5(String filePath) {
+        try {
+            byte[] data = DigestUtils.md5(new FileInputStream(filePath));
+            return MD5Util.MD5(data);
+        } catch (IOException e) {
+            return "";
         }
     }
 }

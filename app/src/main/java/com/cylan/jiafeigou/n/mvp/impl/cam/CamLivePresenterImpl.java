@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -194,7 +195,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     public void assembleTheDay(ArrayList<HistoryFile> files) {
         if (historyDataProvider == null) {
-            historyDataProvider = new DataExt();
+            historyDataProvider = DataExt.getInstance();
         }
         if (historyDataProvider.getDataCount() == 0) {
             Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
@@ -242,6 +243,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     //    @Override
     public void fetchHistoryDataList() {
 //        test();
+        if (ListUtils.isEmpty(History.getHistory().getDateList(uuid))) {
+            if (historyDataProvider != null) historyDataProvider.clean();
+        }
         if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
             AppLogger.d("有历史录像了.");
             return;
@@ -784,7 +788,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync(), checkNewHardWareBack()};
+        return new Subscription[]{robotDataSync()};
     }
 
     /**
@@ -902,38 +906,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         }
     }
 
-    /**
-     * 每天检测一次是否有新固件
-     */
-    @Override
-    public void checkNewHardWare() {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
-                    if (TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CHECK_HARDWARE_TIME, 0))) {
-                        return;
-                    }
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    try {
-                        String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
-                        BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
-                    } catch (Exception e) {
-                        AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
-                    }
-                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
-    }
-
-    @Override
-    public Subscription checkNewHardWareBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
-                    if (checkDevVersionRsp != null && checkDevVersionRsp.hasNew) {
-                        getView().hardwareResult(checkDevVersionRsp);
-                        PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME, System.currentTimeMillis());
-                    }
-                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
-    }
 
     private static class SaveAndShare extends Thread {
         private String uuid;

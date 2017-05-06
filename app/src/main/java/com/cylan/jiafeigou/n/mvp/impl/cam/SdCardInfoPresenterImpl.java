@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -125,6 +126,13 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .map(ret -> ret.rets)
                 .flatMap(Observable::from)
                 .filter(msg -> msg.id == 218)
+                .map(msg -> {
+                    if (msg.ret == 0) {
+                        History.getHistory().clearHistoryFile(uuid);
+                        AppLogger.d("清空历史录像");
+                    }
+                    return msg;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result.ret == 0) {

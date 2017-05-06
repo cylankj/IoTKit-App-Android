@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,7 +52,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -90,8 +88,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     CamLiveControllerEx camLiveControlLayer;
     private String uuid;
     private boolean isNormalView;
-    private SoftReference<AlertDialog> sdcardPulloutDlg;
-    private SoftReference<AlertDialog> sdcardFormatDlg;
 
     public CameraLiveFragmentEx() {
         // Required empty public constructor
@@ -314,31 +310,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         camLiveControlLayer.onLiveDestroy();
     }
 
-
-    private void initSdcardStateDialog() {
-        if (sdcardPulloutDlg == null || sdcardPulloutDlg.get() == null) {
-            AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.MSG_SD_OFF))
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface d, int which) -> {
-                        if (basePresenter.getPlayState() != PLAY_STATE_PLAYING)
-                            basePresenter.startPlay();
-                    })
-                    .create();
-            sdcardPulloutDlg = new SoftReference<>(dialog);
-        }
-    }
-
-    private void initSdcardFormatDialog() {
-        if (sdcardFormatDlg == null || sdcardFormatDlg.get() == null) {
-            AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.Clear_Sdcard_tips6))
-                    .setPositiveButton(getString(R.string.OK), null)
-                    .setNegativeButton(getString(R.string.CANCEL), null)
-                    .create();
-            sdcardFormatDlg = new SoftReference<>(dialog);
-        }
-    }
-
     @Override
     public void onDeviceInfoChanged(JFGDPMsg msg) throws IOException {
         int msgId = (int) msg.id;
@@ -347,18 +318,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
             if (!sdStatus.hasSdcard) {
                 AppLogger.d("sdcard 被拔出");
-                if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing())
-                    return;
                 if (!getUserVisibleHint()) {
                     AppLogger.d("隐藏了，sd卡更新");
                     return;
                 }
-                initSdcardStateDialog();
-                sdcardPulloutDlg.get().show();
+                getAlertDialogManager().showDialog(getActivity(), getString(R.string.MSG_SD_OFF),
+                        getString(R.string.MSG_SD_OFF),
+                        getString(R.string.OK), (DialogInterface d, int which) -> {
+                            if (basePresenter.getPlayState() != PLAY_STATE_PLAYING)
+                                basePresenter.startPlay();
+                        });
                 if (basePresenter.getPlayType() == TYPE_HISTORY) {
                     basePresenter.stopPlayVideo(TYPE_HISTORY).subscribe(ret -> {
                     }, AppLogger::e);
-                    ;
                 }
             }
             AppLogger.e("sdcard数据被清空，唐宽，还没实现");
@@ -373,12 +345,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
             if (basePresenter.getPlayType() != TYPE_HISTORY)
                 return;
-            if (sdcardFormatDlg != null && sdcardFormatDlg.get() != null && sdcardFormatDlg.get().isShowing())
-                return;
-            if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing()) {
-                sdcardPulloutDlg.get().dismiss();//其他对话框要隐藏。
-            }
-            initSdcardFormatDialog();
+            getAlertDialogManager().showDialog(getActivity(), getString(R.string.Clear_Sdcard_tips6),
+                    getString(R.string.Clear_Sdcard_tips6),
+                    getString(R.string.OK), null,
+                    getString(R.string.CANCEL), null);
         }
         if (msgId == 509) {
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -619,7 +589,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionDenied() {
         if (!isResumed()) return;
-        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth)));
+        getAlertDialogManager().showDialog(getActivity(),
+                "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.sound_auth)),
+                getString(R.string.OK), null);
     }
 
     @Override
@@ -635,43 +607,39 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionNeverAsk() {
         if (!isResumed()) return;
-        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth)));
+        getAlertDialogManager().showDialog(getActivity(),
+                "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.permission_auth, getString(R.string.sound_auth))),
+                getString(R.string.OK), null);
     }
 
     @OnShowRationale({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionRational(PermissionRequest request) {
         if (!isResumed()) return;
-        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth)));
+        getAlertDialogManager().showDialog(getActivity(),
+                "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.permission_auth, getString(R.string.sound_auth))),
+                getString(R.string.OK), null);
     }
 
-    private AlertDialog firmwareDialog;
-
-    @Override
-    public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
-        if (rsp.hasNew) {
-            Device device = basePresenter.getDevice();
-            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-            if (!JFGRules.isDeviceOnline(net)) return;//离线不显示
-            if (firmwareDialog != null && firmwareDialog.isShowing()) return;
-            if (firmwareDialog == null) {
-                firmwareDialog = new AlertDialog.Builder(getActivity())
-                        .setMessage(getString(R.string.Tap1_Device_UpgradeTips))
-                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                            Bundle bundle = new Bundle();
-                            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                            bundle.putSerializable("version_content", rsp);
-                            AppLogger.d("使用activity");
-                            FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
-                            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                                    hardwareUpdateFragment, android.R.id.content);
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create();
-            }
-            firmwareDialog.show();
-            AppLogger.e("新固件");
-        }
-    }
+//    @Override
+//    public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
+//        if (rsp.hasNew) {
+//            Device device = basePresenter.getDevice();
+//            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+//            if (!JFGRules.isDeviceOnline(net)) return;//离线不显示
+//            getAlertDialogManager().showDialog(getActivity(),
+//                    "update", getString(R.string.Tap1_Device_UpgradeTips),
+//                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//                        bundle.putSerializable("version_content", rsp);
+//                        AppLogger.d("使用activity");
+//                        FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
+//                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+//                                hardwareUpdateFragment, android.R.id.content);
+//                    }, getString(R.string.CANCEL), null);
+//            AppLogger.e("新固件");
+//        }
+//    }
 
     @Override
     public void onHistoryDateListUpdate(ArrayList<Long> dateList) {

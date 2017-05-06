@@ -776,8 +776,17 @@ public class RxEvent {
 
 
     public static class CheckDevVersionRsp implements Serializable {
+        public long seq;
         public boolean hasNew;
         public String url;
+        public String version;
+        public String tip;
+        public String md5;
+
+        public CheckDevVersionRsp setSeq(long seq) {
+            this.seq = seq;
+            return this;
+        }
 
         public CheckDevVersionRsp(boolean hasNew, String url, String version, String tip, String md5) {
             this.hasNew = hasNew;
@@ -787,9 +796,6 @@ public class RxEvent {
             this.md5 = md5;
         }
 
-        public String version;
-        public String tip;
-        public String md5;
     }
 
     public static class LiveResponse {

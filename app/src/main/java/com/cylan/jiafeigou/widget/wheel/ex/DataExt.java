@@ -20,6 +20,20 @@ import java.util.Map;
  */
 
 public class DataExt implements IData {
+    private static DataExt instance;
+
+    public static DataExt getInstance() {
+        if (instance == null)
+            synchronized (DataExt.class) {
+                if (instance == null)
+                    instance = new DataExt();
+            }
+        return instance;
+    }
+
+    private DataExt() {
+    }
+
     private static boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "DataExt";
     private int index = 0;
@@ -233,6 +247,14 @@ public class DataExt implements IData {
     @Override
     public HistoryFile getMinHistoryFile() {
         return ListUtils.getSize(rawList) > 0 ? rawList.get(rawList.size() - 1) : null;
+    }
+
+    @Override
+    public void clean() {
+        dateFormatMap.clear();
+        timeWithType.clear();
+        rawList.clear();
+        flattenDataList.clear();
     }
 
     private HistoryFile getVideo(long time) {
