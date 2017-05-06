@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -227,13 +229,19 @@ public class ClientUpdateManager {
         downLoadFile(url, versionName + ".apk", JConstant.MISC_PATH, downloadListener);
     }
 
+
+    private Map<String, DownloadListener> map = new HashMap<>();
+
     /**
      * 下载文件
      *
      * @param url         文件url
      * @param destFileDir 存储目标目录
      */
-    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener downloadListener) {
+    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener listener) {
+
+        
+
         final File file = new File(destFileDir, fileName);
         new File(destFileDir).mkdir();
         if (file.exists()) {

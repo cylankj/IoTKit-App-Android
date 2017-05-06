@@ -159,7 +159,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
             float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
-            sdUseDetail(MiscUtils.FormetSDcardSize(sdcardUsedCapacity) + "/" + MiscUtils.FormetSDcardSize(sdcardTotalCapacity), v);
+            sdUseDetail(MiscUtils.FormatSdCardSize(sdcardUsedCapacity) + "/" + MiscUtils.FormatSdCardSize(sdcardTotalCapacity), v);
         } else {
             showSdPopDialog();
         }

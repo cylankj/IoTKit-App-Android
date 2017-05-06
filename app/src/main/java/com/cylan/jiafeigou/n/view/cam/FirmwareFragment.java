@@ -63,7 +63,7 @@ public class FirmwareFragment extends IBaseFragment<HardwareUpdateContract.Prese
     LinearLayout llDownloadPgContainer;
     @BindView(R.id.tv_version_describe)
     TextView tvVersionDescribe;
-    @BindView(R.id.tv_loading_show)
+    @BindView(R.id.tv_percent)
     TextView tvLoadingShow;
 
     private String uuid;
@@ -325,7 +325,7 @@ public class FirmwareFragment extends IBaseFragment<HardwareUpdateContract.Prese
     public void onDownloading(double percent, long downloadedLength) {
         tvDownloadSoftFile.setEnabled(false);
         llDownloadPgContainer.setVisibility(View.VISIBLE);
-        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), MiscUtils.FormetSDcardSize(downloadedLength) + "/" + fileSize));
+        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), MiscUtils.FormatSdCardSize(downloadedLength) + "/" + fileSize));
         downloadProgress.setProgress((int) (percent * 100));
     }
 

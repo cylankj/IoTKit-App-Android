@@ -321,7 +321,7 @@ public class MiscUtils {
      * @param fileS
      * @return
      */
-    public static String FormetSDcardSize(long fileS) {
+    public static String FormatSdCardSize(long fileS) {
         DecimalFormat df = new DecimalFormat("#.00");
         String fileSizeString = "";
         if (fileS == 0) {

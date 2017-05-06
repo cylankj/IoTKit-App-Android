@@ -214,7 +214,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                                     AppLogger.d("update_file_del:" + delete);
                                 }
                             }
-                            return Observable.just(MiscUtils.FormetSDcardSize(length));
+                            return Observable.just(MiscUtils.FormatSdCardSize(length));
                         } catch (Exception e) {
                             e.printStackTrace();
                             return Observable.just("");
