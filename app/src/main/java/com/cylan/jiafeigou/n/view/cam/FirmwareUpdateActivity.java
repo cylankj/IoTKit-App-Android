@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -60,11 +61,10 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         tvCurrentVersion.setText(currentVersion);
         try {
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            FirmwareCheckerService.FirmwareDescription description = new Gson().fromJson(content, FirmwareCheckerService.FirmwareDescription.class);
+            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
             tvHardwareNewVersion.setText(description.version);
         } catch (Exception e) {
         }
-
     }
 
 

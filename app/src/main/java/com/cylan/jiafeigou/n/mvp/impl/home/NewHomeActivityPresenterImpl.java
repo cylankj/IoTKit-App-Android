@@ -82,7 +82,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                             .observeOn(AndroidSchedulers.mainThread())
                             .filter(ret -> mView != null)
                             .subscribe(f -> {
-                                        long time = System.currentTimeMillis() - PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
+                                        long time = PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
                                         if (force == 1 || (time == -1 || System.currentTimeMillis() - time > 24 * 1000 * 3600))
                                             mView.needUpdate(desc, f.getAbsolutePath());
                                     },

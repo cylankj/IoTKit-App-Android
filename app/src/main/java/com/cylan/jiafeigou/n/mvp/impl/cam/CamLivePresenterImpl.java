@@ -34,10 +34,8 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
-import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -96,18 +94,51 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 帧率记录
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
+    private static long checkNewVersionTime = 0;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
         view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
-        FirmwareCheckerService.checkVersion(uuid);
     }
 
     @Override
     public void start() {
         super.start();
+        checkNewVersion();
+    }
 
+    private Subscription checkNewVersion() {
+        if (checkNewVersionTime != 0 && System.currentTimeMillis() - checkNewVersionTime < 2 * 60 * 1000L)
+            return null;
+        checkNewVersionTime = System.currentTimeMillis();
+        Subscription s = Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .delay(3, TimeUnit.SECONDS)
+                .flatMap(what -> {
+                    long seq;
+                    try {
+                        String version = getDevice().$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
+                        seq = BaseApplication.getAppComponent().getCmd().checkDevVersion(getDevice().pid, uuid, version);
+                    } catch (Exception e) {
+                        AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
+                        seq = -1L;
+                    }
+                    return Observable.just(seq);
+                })
+                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .filter(ret -> ret.hasNew))
+                .map(ret -> {
+                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
+                    return ret;
+                })
+//                                .filter()seq
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> check())
+                .subscribe(ret -> mView.showFirmwareDialog(), AppLogger::e);
+        addSubscription(s, "tryGet");
+        return null;
     }
 
     /**
@@ -796,22 +827,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync(), firmwareUpdate()};
+        return new Subscription[]{robotDataSync()};
     }
 
-    private Subscription firmwareUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdate.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter(ret -> TextUtils.equals(uuid, ret.uuid))
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null && mView.isAdded())
-                .map(ret -> {
-                    mView.showFirmwareDialog();
-                    return ret;
-                })
-                .retry()
-                .subscribe();
-    }
 
     /**
      * robot同步数据

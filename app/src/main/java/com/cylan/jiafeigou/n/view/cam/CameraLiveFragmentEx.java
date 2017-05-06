@@ -541,7 +541,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
-                    intent.putExtra(getUuid(), JConstant.KEY_DEVICE_ITEM_UUID);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
                     startActivity(intent);
                 }, getString(R.string.CANCEL), null);
     }
@@ -628,26 +628,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 getString(R.string.OK), null);
     }
 
-//    @Override
-//    public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
-//        if (rsp.hasNew) {
-//            Device device = basePresenter.getDevice();
-//            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-//            if (!JFGRules.isDeviceOnline(net)) return;//离线不显示
-//            getAlertDialogManager().showDialog(getActivity(),
-//                    "update", getString(R.string.Tap1_Device_UpgradeTips),
-//                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString(JConstant.KEY_DEVICE_ITEM_getUuid(), getUuid());
-//                        bundle.putSerializable("version_content", rsp);
-//                        AppLogger.d("使用activity");
-//                        FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
-//                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-//                                hardwareUpdateFragment, android.R.id.content);
-//                    }, getString(R.string.CANCEL), null);
-//            AppLogger.e("新固件");
-//        }
-//    }
 
     @Override
     public void onHistoryDateListUpdate(ArrayList<Long> dateList) {

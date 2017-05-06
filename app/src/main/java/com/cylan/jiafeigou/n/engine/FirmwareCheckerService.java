@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -52,24 +51,58 @@ public class FirmwareCheckerService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             String uuid = intent.getStringExtra(UUID_TAG);
-            //更新时间
-            FirmwareDescription description = null;
-            try {
-                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-                description = new Gson().fromJson(content, FirmwareDescription.class);
-            } catch (Exception e) {
-                description = null;
-            }
-            if (validateContent(description)) {
-                //可以升级了.包是好的
-                long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + description.uuid, -1L);
-                if (time != -1 && System.currentTimeMillis() - time < 24 * 3600 * 1000) return;
-                //一天提示一次.
-                RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdate(description.uuid));
-            } else {
+//            //更新时间
+//            FirmwareDescription description = null;
+//            try {
+//                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
+//                description = new Gson().fromJson(content, FirmwareDescription.class);
+//            } catch (Exception e) {
+//                description = null;
+//            }
+//            if (validateContent(description)) {
+//                //可以升级了.包是好的
+//                long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + description.uuid, -1L);
+//                if (time != -1 && System.currentTimeMillis() - time < 24 * 3600 * 1000) return;
+//                //一天提示一次.
+//            } else {
+            //需要下载更新的.
+            //如果下载失败,都会去下载.
+            //发送请求
+            Observable.just("go")
+                    .map(s -> {
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        try {
+                            String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
+                            return BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
+                        } catch (Exception e) {
+                            AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
+                            return -1L;
+                        }
+                    })
+                    .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class))
+//                                .filter(checkDevVersionRsp -> checkDevVersionRsp.seq == aLong))
+                    .subscribe(result -> {
+                        AppLogger.d("开始下载固件?");
+                        if (result.hasNew) {
+                        }
+//                            PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
+//                            FirmwareDescription desc = new FirmwareDescription();
+//                            desc.description = result.tip;
+//                            desc.url = result.url;
+//                            desc.md5 = result.md5;
+//                            desc.version = result.version;
+//                            desc.fileDir = JConstant.MISC_PATH;
+//                            desc.fileName = "." + uuid;
+//                            desc.uuid = uuid;
+//                            try {
+//                                FileUtils.deleteFile(desc.fileDir + File.separator + desc.fileName);
+//                            } catch (Exception e) {
+//                            }
+//                            startDownloadFirmware(desc);
+                    }, AppLogger::e);
 
-            }
         }
+//        }
     }
 
     /**
@@ -111,7 +144,6 @@ public class FirmwareCheckerService extends IntentService {
                 @Override
                 public void failed(Throwable throwable) {
                     AppLogger.d("下载失败: " + MiscUtils.getErr(throwable));
-                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + desc.uuid);
                     PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + desc.uuid);
                 }
 
@@ -119,15 +151,12 @@ public class FirmwareCheckerService extends IntentService {
                 public void finished(File file) {
                     AppLogger.d("下载完成");
                     desc.downloadState = JConstant.D.SUCCESS;
-                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + desc.uuid, gson.toJson(desc));
-                    RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdate(desc.uuid));
                 }
 
                 @Override
                 public void process(long currentByte, long totalByte) {
                     desc.downloadState = JConstant.D.DOWNLOADING;
                     desc.downloadUpdateTime = System.currentTimeMillis();
-                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + desc.uuid, gson.toJson(desc));
                     Log.d("FirmwareCheckerService", "downloading: " + (float) currentByte / totalByte);
                 }
             });

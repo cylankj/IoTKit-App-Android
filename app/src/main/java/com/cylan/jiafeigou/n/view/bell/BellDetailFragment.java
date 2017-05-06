@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.bell;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -17,10 +18,9 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
-import com.cylan.jiafeigou.n.view.cam.FirmwareFragment;
+import com.cylan.jiafeigou.n.view.cam.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -195,12 +195,9 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
                 break;
             case R.id.rl_hardware_update:
                 if (checkDevVersion != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-                    bundle.putSerializable("version_content", checkDevVersion);
-                    FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
-                    ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                            hardwareUpdateFragment, android.R.id.content);
+                    Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+                    getActivity().startActivity(intent);
                 }
                 break;
         }

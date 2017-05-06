@@ -251,17 +251,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 固件升级
      */
     private void jump2HardwareUpdateFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putSerializable("version_content", checkDevVersion);
-        FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                hardwareUpdateFragment, android.R.id.content);
-        hardwareUpdateFragment.setOnUpdateListener(lis -> {
-            if (lis) {
-                onStart();
-            }
-        });
+        Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
+        intent.putExtra(getUuid(), JConstant.KEY_DEVICE_ITEM_UUID);
+        startActivity(intent);
     }
 
     /**

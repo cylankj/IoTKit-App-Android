@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.rx;
 
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -775,7 +777,7 @@ public class RxEvent {
 //    }
 
 
-    public static class CheckDevVersionRsp implements Serializable {
+    public static class CheckDevVersionRsp implements Parcelable {
         public long seq;
         public boolean hasNew;
         public String url;
@@ -796,6 +798,41 @@ public class RxEvent {
             this.md5 = md5;
         }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(this.seq);
+            dest.writeByte(this.hasNew ? (byte) 1 : (byte) 0);
+            dest.writeString(this.url);
+            dest.writeString(this.version);
+            dest.writeString(this.tip);
+            dest.writeString(this.md5);
+        }
+
+        protected CheckDevVersionRsp(Parcel in) {
+            this.seq = in.readLong();
+            this.hasNew = in.readByte() != 0;
+            this.url = in.readString();
+            this.version = in.readString();
+            this.tip = in.readString();
+            this.md5 = in.readString();
+        }
+
+        public static final Creator<CheckDevVersionRsp> CREATOR = new Creator<CheckDevVersionRsp>() {
+            @Override
+            public CheckDevVersionRsp createFromParcel(Parcel source) {
+                return new CheckDevVersionRsp(source);
+            }
+
+            @Override
+            public CheckDevVersionRsp[] newArray(int size) {
+                return new CheckDevVersionRsp[size];
+            }
+        };
     }
 
     public static class LiveResponse {
@@ -1072,12 +1109,12 @@ public class RxEvent {
             this.slow = slow;
         }
     }
-
-    public static final class FirmwareUpdate {
-        public String uuid;
-
-        public FirmwareUpdate(String uuid) {
-            this.uuid = uuid;
-        }
-    }
+//
+//    public static final class FirmwareUpdate {
+//        public String uuid;
+//
+//        public FirmwareUpdate(String uuid) {
+//            this.uuid = uuid;
+//        }
+//    }
 }
