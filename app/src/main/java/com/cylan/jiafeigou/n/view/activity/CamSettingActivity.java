@@ -261,7 +261,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 //设备在线
                 String localSSid = NetUtils.getNetName(ContextUtils.getContext());
                 String remoteSSid = net.ssid;
-                if (!TextUtils.equals(localSSid, remoteSSid)) {
+                if (!TextUtils.equals(localSSid, remoteSSid) && net.net == 1) {
                     new AlertDialog.Builder(this)
                             .setMessage(getString(R.string.setwifi_check, remoteSSid))
                             .setNegativeButton(getString(R.string.CANCEL), null)

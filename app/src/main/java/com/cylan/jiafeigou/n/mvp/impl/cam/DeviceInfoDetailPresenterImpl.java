@@ -28,8 +28,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
-
 /**
  * Created by cylan-hunt on 16-11-25.
  */
@@ -47,7 +45,6 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                checkNewSoftVersionBack(),
                 robotDeviceDataSync(),
                 clearSdcardReqBack(),
                 onClearSdReqBack(),
@@ -102,31 +99,6 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
-    }
-
-    @Override
-    public void checkNewSoftVersion() {
-        // TODO 检测是否有新的固件
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    try {
-                        BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, "0.0"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, AppLogger::e);
-    }
-
-    @Override
-    public Subscription checkNewSoftVersionBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
-                    if (checkDevVersionRsp != null)
-                        getView().checkDevResult(checkDevVersionRsp);
-                }, AppLogger::e);
     }
 
     @Override

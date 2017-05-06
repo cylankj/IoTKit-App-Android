@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.ViewServer;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
@@ -285,5 +287,10 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
             overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
         }
     }
+
+    public Context getContext() {
+        return ContextUtils.getContext();
+    }
+
 
 }

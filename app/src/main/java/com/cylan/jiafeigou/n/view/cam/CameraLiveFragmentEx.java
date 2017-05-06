@@ -538,7 +538,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void showFirmwareDialog() {
         getAlertDialogManager().showDialog(getActivity(),
-                getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
+                getString(R.string.DEVICE_UPGRADE_TIPS), getString(R.string.DEVICE_UPGRADE_TIPS),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());

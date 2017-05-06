@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -34,6 +35,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -94,7 +96,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     private String uuid;
     private EditFragmentDialog editDialogFragment;
-    private RxEvent.CheckDevVersionRsp checkDevVersion;
     private Device device;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
@@ -136,7 +137,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onStart() {
         super.onStart();
         updateDetails();
-        basePresenter.checkNewSoftVersion();
+        checkDevResult();
     }
 
     private void updateDetails() {
@@ -364,13 +365,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         basePresenter = presenter;
     }
 
-    @Override
-    public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+    public void checkDevResult() {
         String s = device.$(207, "");
-        checkDevVersion = checkDevVersionRsp;
-        rlHardwareUpdate.setTvSubTitle(checkDevVersionRsp.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
-        rlHardwareUpdate.showRedHint(checkDevVersionRsp.hasNew);
+        rlHardwareUpdate.setTvSubTitle(s);
+        try {
+            if (JFGRules.isPanoramicCam(getDevice().pid)) return;//全景不显示
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            rlHardwareUpdate.setTvSubTitle(description.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
+            rlHardwareUpdate.showRedHint(description.hasNew);
+        } catch (Exception e) {
+        }
     }
 
     @Override

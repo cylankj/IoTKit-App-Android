@@ -64,6 +64,9 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -111,6 +114,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private Subscription checkNewVersion() {
         if (checkNewVersionTime != 0 && System.currentTimeMillis() - checkNewVersionTime < 2 * 60 * 1000L)
             return null;
+        if (JFGRules.isShareDevice(uuid)) return null;//分享设备不显示
+        if (JFGRules.isPanoramicCam(getDevice().pid)) return null;//全景设备不显示
         checkNewVersionTime = System.currentTimeMillis();
         Subscription s = Observable.just("go")
                 .subscribeOn(Schedulers.newThread())
@@ -135,12 +140,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             return ret.hasNew;
                         }))
                 .map(ret -> {
-                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
-                    return ret;
+                    try {
+                        Request request = new Request.Builder()
+                                .url(ret.url)
+                                .build();
+                        Response response = new OkHttpClient().newCall(request).execute();
+                        ret.fileSize = response.body().contentLength();
+                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
+                        return ret;
+                    } catch (IOException e) {
+                        return null;
+                    }
                 })
 //                                .filter()seq
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> check())
+                .filter(ret -> ret != null && check())
                 .subscribe(ret -> mView.showFirmwareDialog(), AppLogger::e);
         addSubscription(s, "tryGet");
         return null;

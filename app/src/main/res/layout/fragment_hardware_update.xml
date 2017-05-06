@@ -116,9 +116,7 @@
                 style="@style/information_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_hardware_new_version"
-                android:textColor="#8c8c8c"
-                android:visibility="gone" />
+                android:textColor="#8c8c8c" />
 
         </LinearLayout>
 
@@ -141,8 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/y64"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
@@ -155,7 +152,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y19"
-            android:text="3.5MB/34MB"
             android:textColor="@color/color_8c8c8c"
             android:textSize="@dimen/sp13" />
 

@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -780,10 +779,13 @@ public class RxEvent {
     public static class CheckDevVersionRsp implements Parcelable {
         public long seq;
         public boolean hasNew;
+        public long fileSize;
         public String url;
         public String version;
         public String tip;
         public String md5;
+        public String fileDir;
+        public String fileName;
 
         public CheckDevVersionRsp setSeq(long seq) {
             this.seq = seq;

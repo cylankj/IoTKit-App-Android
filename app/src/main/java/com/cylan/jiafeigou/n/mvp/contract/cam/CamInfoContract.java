@@ -18,7 +18,6 @@ import rx.Subscription;
 public interface CamInfoContract {
 
     interface View extends BaseView<Presenter> {
-        void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp);
 
         void showLoading();
 
@@ -37,18 +36,6 @@ public interface CamInfoContract {
          * @param id
          */
         <T extends DataPoint> void updateInfoReq(T value, long id);
-
-        /**
-         * 检测是否有新固件
-         */
-        void checkNewSoftVersion();
-
-        /**
-         * 新固件检测回调
-         *
-         * @return
-         */
-        Subscription checkNewSoftVersionBack();
 
         /**
          * 清空Sd卡
