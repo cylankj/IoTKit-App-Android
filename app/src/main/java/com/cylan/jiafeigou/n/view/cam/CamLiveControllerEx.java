@@ -504,6 +504,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 livePlayState = PLAY_STATE_PREPARE;
                 setLoadingState(null, null);
                 break;
+            case JError.ErrorSDHistoryAll:
+                ToastUtil.showToast(getContext().getString(R.string.ACCOUNT_ID));
+                break;
             default:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.GLOBAL_NO_NETWORK), null);

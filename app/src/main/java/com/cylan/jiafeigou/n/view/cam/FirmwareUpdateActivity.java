@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -28,10 +27,7 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
         implements FirmwareUpdateContract.View, ClientUpdateManager.DownloadListener {
@@ -76,30 +72,60 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvHardwareNewVersion.setText(description.version);
             hardwareUpdatePoint.setVisibility(description.hasNew ? View.VISIBLE : View.INVISIBLE);
             tvVersionDescribe.setText(description.tip);
-            invalidateFile();
+            if (validateFile(description)) {
+                tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+            } else if (description.downloadState == JConstant.D.DOWNLOADING && System.currentTimeMillis() - description.lastUpdateTime < 3 * 1000) {
+                tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, "0/" + MiscUtils.FormatSdCardSize(description.fileSize)));
+                ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
+            } else {
+                tvDownloadSoftFile.setText(getString(R.string.Tap1_Album_DownloadFailed));
+            }
         } catch (Exception e) {
+            AppLogger.e("err :" + MiscUtils.getErr(e));
         }
     }
 
+    private boolean validateFile(RxEvent.CheckDevVersionRsp description) {
+        File file = new File(description.fileDir, description.fileName);
+        return description.downloadState == JConstant.D.SUCCESS
+                && file.exists() && file.length() == description.fileSize;
+    }
+
     @Override
-    public void start() {
-        llDownloadPgContainer.setVisibility(View.VISIBLE);
-        tvLoadingShow.setText("0/" + MiscUtils.FormatSdCardSize(description.fileSize / 8));
+    public void start(long totalByte) {
+        llDownloadPgContainer.post(() -> {
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, "0/" + MiscUtils.FormatSdCardSize(totalByte)));
+            llDownloadPgContainer.setVisibility(View.VISIBLE);
+            tvLoadingShow.setText("0/" + MiscUtils.FormatSdCardSize(totalByte));
+        });
     }
 
     @Override
     public void failed(Throwable throwable) {
-
+        tvDownloadSoftFile.post(() -> {
+            tvDownloadSoftFile.setEnabled(true);
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_Album_DownloadFailed));
+        });
     }
 
     @Override
     public void finished(File file) {
-
+        tvDownloadSoftFile.post(() -> {
+            tvDownloadSoftFile.setEnabled(true);
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+            downloadProgress.setProgress(100);
+        });
     }
 
     @Override
     public void process(long currentByte, long totalByte) {
-        tvLoadingShow.setText(MiscUtils.FormatSdCardSize(currentByte / 8) + "/" + MiscUtils.FormatSdCardSize(totalByte / 8));
+        tvDownloadSoftFile.post(() -> {
+            tvDownloadSoftFile.setEnabled(false);
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, MiscUtils.FormatSdCardSize(currentByte) + "/" + MiscUtils.FormatSdCardSize(totalByte)));
+            tvLoadingShow.setText(MiscUtils.FormatSdCardSize(currentByte / 8) + "/" + MiscUtils.FormatSdCardSize(totalByte));
+            if (totalByte == 0) return;
+            downloadProgress.setProgress((int) ((float) currentByte / totalByte * 100));
+        });
     }
 
 
@@ -112,10 +138,10 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
 
         @Override
-        public void start() {
+        public void start(long totalByte) {
             if (updateActivityWeakReference == null || updateActivityWeakReference.get() == null)
                 return;
-            updateActivityWeakReference.get().start();
+            updateActivityWeakReference.get().start(totalByte);
         }
 
         @Override
@@ -143,46 +169,24 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     @OnClick(R.id.tv_download_soft_file)
     public void downloadOrUpdate() {
-        if (TextUtils.equals(tvDownloadSoftFile.getText(), getString(R.string.Tap1_Update))) {
+        String txt = tvDownloadSoftFile.getText().toString();
+        if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级
+        } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
+            //Tap1_FirmwareDownloading:正在下载(%s),
         } else {
+            //1.下载失败
+            //2.Tap1a_DownloadInstall 下载并安装(%s)
             try {
                 String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
                 final RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
-                ClientUpdateManager.getInstance().downLoadFile(description.url, description.fileName, description.fileDir,
-                        new Download(this));
+                ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
             } catch (Exception e) {
                 AppLogger.e("err:" + MiscUtils.getErr(e));
             }
         }
     }
 
-    private void invalidateFile() {
-        subscription = Observable.just("check")
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(ret -> {
-                    RxEvent.CheckDevVersionRsp description = null;
-                    try {
-                        String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                        description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
-                    } catch (Exception e) {
-                        description = null;
-                    }
-                    if (validateContent(description))
-                        return Observable.just(new Pair<>(description, 0L));
-                    return Observable.just(new Pair<>(description, description.fileSize));
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> tvDownloadSoftFile.setEnabled(true))
-                .doOnError(throwable -> tvDownloadSoftFile.setEnabled(true))
-                .subscribe(ret -> {
-                    if (ret == null) {
-                        tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-                    } else {
-                        tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(ret.second / 8)));
-                    }
-                }, AppLogger::e);
-    }
 
     @Override
     protected void onStop() {

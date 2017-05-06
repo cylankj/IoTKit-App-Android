@@ -15,11 +15,14 @@ import android.widget.RemoteViews;
 import com.cylan.jiafeigou.IRemoteService;
 import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +37,10 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -230,7 +236,8 @@ public class ClientUpdateManager {
     }
 
 
-    private Map<String, DownloadListener> map = new HashMap<>();
+    private Map<String, DownloadListener> listenerHashMap = new HashMap<>();
+    private Map<String, Action1<String>> actionMap = new HashMap<>();
 
     /**
      * 下载文件
@@ -238,85 +245,234 @@ public class ClientUpdateManager {
      * @param url         文件url
      * @param destFileDir 存储目标目录
      */
-    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener downloadListener) {
-
-        
-
-        final File file = new File(destFileDir, fileName);
-        new File(destFileDir).mkdir();
-        if (file.exists()) {
-            try {
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-                Response response = new OkHttpClient().newCall(request).execute();
-                long fileSize = response.body().contentLength();
-                AppLogger.d("文件大小:" + fileSize);
-                if (fileSize == file.length()) {
-                    AppLogger.d("文件存在,完整");
-                    if (downloadListener != null) downloadListener.finished(file);
-                    return;
-                }
-                FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
-            } catch (IOException e) {
-                AppLogger.e("err:" + MiscUtils.getErr(e));
-            }
+    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener l) {
+        if (listenerHashMap.get(fileName) != null) return;
+        listenerHashMap.put(fileName, l);
+        if (actionMap.get(fileName) != null) {
+            listenerHashMap.put(fileName, l);
+            return;
         }
-        final Request request = new Request.Builder().url(url).build();
-        final Call call = new OkHttpClient().newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, e.toString());
-                FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len = 0;
-                FileOutputStream fos = null;
-                if (downloadListener != null) downloadListener.start();
+        Action1<String> action1 = o -> {
+            final File file = new File(destFileDir, fileName);
+            new File(destFileDir).mkdir();
+            if (file.exists()) {
                 try {
-                    long total = response.body().contentLength();
-                    Log.d(TAG, "total------>" + total);
-                    long current = 0;
-                    is = response.body().byteStream();
-                    fos = new FileOutputStream(file);
-                    while ((len = is.read(buf)) != -1) {
-                        current += len;
-                        fos.write(buf, 0, len);
-                        Log.d(TAG, "current------>" + current);
-                        if (downloadListener != null) downloadListener.process(current, total);
+                    Request request = new Request.Builder()
+                            .url(url)
+                            .build();
+                    Response response = new OkHttpClient().newCall(request).execute();
+                    long fileSize = response.body().contentLength();
+                    AppLogger.d("文件大小:" + fileSize);
+                    if (fileSize == file.length()) {
+                        AppLogger.d("文件存在,完整");
+                        DownloadListener listener = listenerHashMap.get(fileName);
+                        if (listener != null) {
+                            listener.finished(file);
+                        }
+                        listenerHashMap.remove(fileName);
+                        actionMap.remove(fileName);
+                        return;
                     }
-                    fos.flush();
-                    if (downloadListener != null)
-                        downloadListener.finished(new File(destFileDir, fileName));
-                } catch (IOException e) {
-                    Log.d(TAG, e.toString());
-                    if (downloadListener != null)
-                        downloadListener.failed(e);
                     FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
-                } finally {
-                    try {
-                        if (is != null) {
-                            is.close();
-                        }
-                        if (fos != null) {
-                            fos.close();
-                        }
-                    } catch (IOException e) {
-                        Log.d(TAG, e.toString());
-                    }
+                } catch (IOException e) {
+                    AppLogger.e("err:" + MiscUtils.getErr(e));
                 }
             }
-        });
+            final Request request = new Request.Builder().url(url).build();
+            final Call call = new OkHttpClient().newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d(TAG, e.toString());
+                    FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    InputStream is = null;
+                    byte[] buf = new byte[2048];
+                    int len = 0;
+                    FileOutputStream fos = null;
+                    DownloadListener listener = listenerHashMap.get(fileName);
+                    try {
+                        long total = response.body().contentLength();
+                        if (listener != null) listener.start(total);
+                        Log.d(TAG, "total------>" + total);
+                        long current = 0;
+                        is = response.body().byteStream();
+                        fos = new FileOutputStream(file);
+                        while ((len = is.read(buf)) != -1) {
+                            current += len;
+                            fos.write(buf, 0, len);
+                            Log.d(TAG, "current------>" + current);
+                            listener = listenerHashMap.get(fileName);
+                            if (listener != null) listener.process(current, total);
+                        }
+                        fos.flush();
+                        listener = listenerHashMap.get(fileName);
+                        if (listener != null)
+                            listener.finished(new File(destFileDir, fileName));
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                        listener = listenerHashMap.get(fileName);
+                        if (listener != null)
+                            listener.failed(e);
+                        actionMap.remove(fileName);
+                        listenerHashMap.remove(fileName);
+                        FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
+                    } finally {
+                        try {
+                            if (is != null) {
+                                is.close();
+                            }
+                            if (fos != null) {
+                                fos.close();
+                            }
+                        } catch (IOException e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    }
+                }
+            });
+        };
+        actionMap.put(fileName, action1);
+        Observable.just("go").
+                subscribeOn(Schedulers.newThread())
+                .subscribe(action1, AppLogger::e);
+    }
+
+    /**
+     * 下载文件
+     */
+    public void downLoadFile(RxEvent.CheckDevVersionRsp rsp, DownloadListener l) {
+        Log.d(TAG, "开始下载: " + rsp);
+        if (rsp == null) return;
+        if (listenerHashMap.get(rsp.fileName) != null) return;
+        listenerHashMap.put(rsp.fileName, l);
+        if (actionMap.get(rsp.fileName) != null) {
+            listenerHashMap.put(rsp.fileName, l);
+            return;
+        }
+        Action1<String> action1 = o -> {
+            final File file = new File(rsp.fileDir, rsp.fileName);
+            new File(rsp.fileDir).mkdir();
+            if (file.exists()) {
+                try {
+                    Request request = new Request.Builder()
+                            .url(rsp.url)
+                            .build();
+                    Response response = new OkHttpClient().newCall(request).execute();
+                    long fileSize = response.body().contentLength();
+                    AppLogger.d("文件大小:" + fileSize);
+                    if (fileSize == file.length()) {
+                        AppLogger.d("文件存在,完整");
+                        DownloadListener listener = listenerHashMap.get(rsp.fileName);
+                        if (listener != null) {
+                            listener.finished(file);
+                            rsp.downloadState = JConstant.D.SUCCESS;
+                            rsp.lastUpdateTime = System.currentTimeMillis();
+                            updateInfo(rsp.uuid, rsp);
+                        }
+                        listenerHashMap.remove(rsp.fileName);
+                        actionMap.remove(rsp.fileName);
+                        return;
+                    }
+                } catch (IOException e) {
+                    AppLogger.e("err:" + MiscUtils.getErr(e));
+                }
+            }
+            //文件失败了
+            FileUtils.delete(JConstant.MISC_PATH, rsp.fileDir + File.separator + rsp.fileName);
+            final Request request = new Request.Builder().url(rsp.url).build();
+            final Call call = new OkHttpClient().newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d(TAG, e.toString());
+                    FileUtils.delete(JConstant.MISC_PATH, rsp.fileDir + File.separator + rsp.fileName);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    InputStream is = null;
+                    byte[] buf = new byte[2048];
+                    int len = 0;
+                    FileOutputStream fos = null;
+                    DownloadListener listener = listenerHashMap.get(rsp.fileName);
+                    try {
+                        long total = response.body().contentLength();
+                        if (listener != null) {
+                            listener.start(total);
+                            rsp.downloadState = JConstant.D.DOWNLOADING;
+                            rsp.lastUpdateTime = System.currentTimeMillis();
+                            updateInfo(rsp.uuid, rsp);
+                        }
+                        Log.d(TAG, "total------>" + total);
+                        long current = 0;
+                        is = response.body().byteStream();
+                        fos = new FileOutputStream(file);
+                        while ((len = is.read(buf)) != -1) {
+                            current += len;
+                            fos.write(buf, 0, len);
+                            Log.d(TAG, "current------>" + current);
+                            listener = listenerHashMap.get(rsp.fileName);
+                            if (listener != null) {
+                                listener.process(current, total);
+                                rsp.downloadState = JConstant.D.DOWNLOADING;
+                                rsp.lastUpdateTime = System.currentTimeMillis();
+                                updateInfo(rsp.uuid, rsp);
+                            }
+                        }
+                        fos.flush();
+                        listener = listenerHashMap.get(rsp.fileName);
+                        if (listener != null) {
+                            listener.finished(new File(rsp.fileDir, rsp.fileName));
+                            rsp.downloadState = JConstant.D.SUCCESS;
+                            rsp.lastUpdateTime = System.currentTimeMillis();
+                            updateInfo(rsp.uuid, rsp);
+                        }
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                        listener = listenerHashMap.get(rsp.fileName);
+                        if (listener != null) {
+                            listener.failed(e);
+                            rsp.downloadState = JConstant.D.FAILED;
+                            rsp.lastUpdateTime = System.currentTimeMillis();
+                            updateInfo(rsp.uuid, rsp);
+                        }
+                        actionMap.remove(rsp.fileName);
+                        listenerHashMap.remove(rsp.fileName);
+                        FileUtils.delete(JConstant.MISC_PATH, rsp.fileDir + File.separator + rsp.fileName);
+                    } finally {
+                        try {
+                            if (is != null) {
+                                is.close();
+                            }
+                            if (fos != null) {
+                                fos.close();
+                            }
+                        } catch (IOException e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    }
+                }
+            });
+        };
+        actionMap.put(rsp.fileName, action1);
+        Observable.just("go").
+                subscribeOn(Schedulers.newThread())
+                .subscribe(action1, AppLogger::e);
+    }
+
+    private Gson gson = new Gson();
+
+    private void updateInfo(String uuid, RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, gson.toJson(checkDevVersionRsp));
     }
 
     public interface DownloadListener {
 
-        void start();
+        void start(long totalByte);
 
         void failed(Throwable throwable);
 

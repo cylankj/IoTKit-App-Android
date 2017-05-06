@@ -146,6 +146,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 .build();
                         Response response = new OkHttpClient().newCall(request).execute();
                         ret.fileSize = response.body().contentLength();
+                        ret.fileDir = JConstant.MISC_PATH;
+                        ret.fileName = "." + uuid;
                         PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
                         long checkTime = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, -1);
                         if (checkTime == -1 || System.currentTimeMillis() - checkTime > 24 * 3600 * 1000L) {

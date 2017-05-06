@@ -64,7 +64,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
             final String desc = jsonObject.getString("desc");
             ClientUpdateManager.getInstance().enqueue(url, versionName, shortVersion, new ClientUpdateManager.DownloadListener() {
                 @Override
-                public void start() {
+                public void start(long totalByte) {
                     AppLogger.d("开始下载");
                 }
 
@@ -96,6 +96,11 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
         } catch (Exception e) {
             AppLogger.e(MiscUtils.getErr(e));
         }
+    }
+
+    @Override
+    public void start(long totalByte) {
+
     }
 
     @Override

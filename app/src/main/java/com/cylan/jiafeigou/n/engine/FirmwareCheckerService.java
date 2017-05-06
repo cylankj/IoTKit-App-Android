@@ -137,7 +137,7 @@ public class FirmwareCheckerService extends IntentService {
             AppLogger.d("开始升级");
             ClientUpdateManager.getInstance().downLoadFile(desc.url, desc.fileName, desc.fileDir, new ClientUpdateManager.DownloadListener() {
                 @Override
-                public void start() {
+                public void start(long totalByte) {
                     AppLogger.d("开始下载");
                 }
 

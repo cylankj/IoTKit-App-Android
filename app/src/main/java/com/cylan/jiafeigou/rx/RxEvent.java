@@ -780,12 +780,15 @@ public class RxEvent {
         public long seq;
         public boolean hasNew;
         public long fileSize;
+        public int downloadState;
+        public long lastUpdateTime;
         public String url;
         public String version;
         public String tip;
         public String md5;
         public String fileDir;
         public String fileName;
+        public String uuid;
 
         public CheckDevVersionRsp setSeq(long seq) {
             this.seq = seq;
