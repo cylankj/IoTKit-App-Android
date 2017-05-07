@@ -90,8 +90,14 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
             return;
         }
         if ("0.0MB".equals(split[0])) {
-            ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
         } else {
+            Device device =
+                    BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+            if (!JFGRules.isDeviceOnline(dpNet)) {
+                ToastUtil.showToast(getString(R.string.RET_EUNONLINE_CID));
+                return;
+            }
             AlertDialogManager.getInstance().showDialog(this, getString(R.string.Clear_Sdcard_tips),
                     getString(R.string.Clear_Sdcard_tips),
                     getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
@@ -169,7 +175,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     public void showSdPopDialog() {
         AlertDialogManager.getInstance()
                 .showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
-                        getString(R.string.OK), null, getString(R.string.CANCEL), null);
+                        getString(R.string.OK), null);
     }
 
     private void initDetailData() {
@@ -197,11 +203,6 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     finishExt();
                 });
-    }
-
-    @Override
-    public void setPresenter(SdCardInfoContract.Presenter presenter) {
-
     }
 
     @Override

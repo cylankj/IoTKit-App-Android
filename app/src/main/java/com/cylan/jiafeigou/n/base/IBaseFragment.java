@@ -2,12 +2,12 @@ package com.cylan.jiafeigou.n.base;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.DebugUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.jiafeigou.n.mvp.contract.cam.FUpdatingContract;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
@@ -62,6 +62,10 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     public void onDetach() {
         Log.d(TAG, TAG + ",onDetach");
         super.onDetach();
+    }
+
+    public void setPresenter(FUpdatingContract.Presenter presenter) {
+
     }
 
     public CallBack callBack;

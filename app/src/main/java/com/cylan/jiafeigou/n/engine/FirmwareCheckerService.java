@@ -4,11 +4,9 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -16,7 +14,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -135,31 +132,6 @@ public class FirmwareCheckerService extends IntentService {
         try {
             Gson gson = new Gson();
             AppLogger.d("开始升级");
-            ClientUpdateManager.getInstance().downLoadFile(desc.url, desc.fileName, desc.fileDir, new ClientUpdateManager.DownloadListener() {
-                @Override
-                public void start(long totalByte) {
-                    AppLogger.d("开始下载");
-                }
-
-                @Override
-                public void failed(Throwable throwable) {
-                    AppLogger.d("下载失败: " + MiscUtils.getErr(throwable));
-                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + desc.uuid);
-                }
-
-                @Override
-                public void finished(File file) {
-                    AppLogger.d("下载完成");
-                    desc.downloadState = JConstant.D.SUCCESS;
-                }
-
-                @Override
-                public void process(long currentByte, long totalByte) {
-                    desc.downloadState = JConstant.D.DOWNLOADING;
-                    desc.downloadUpdateTime = System.currentTimeMillis();
-                    Log.d("FirmwareCheckerService", "downloading: " + (float) currentByte / totalByte);
-                }
-            });
         } catch (Exception e) {
             AppLogger.e(MiscUtils.getErr(e));
         }

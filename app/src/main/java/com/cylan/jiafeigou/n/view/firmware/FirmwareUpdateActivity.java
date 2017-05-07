@@ -1,6 +1,9 @@
-package com.cylan.jiafeigou.n.view.cam;
+package com.cylan.jiafeigou.n.view.firmware;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -9,6 +12,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -16,7 +21,10 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.gson.Gson;
@@ -27,7 +35,6 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscription;
 
 public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
         implements FirmwareUpdateContract.View, ClientUpdateManager.DownloadListener {
@@ -49,7 +56,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     CustomToolbar customToolbar;
     @BindView(R.id.tv_hardware_new_version)
     TextView tvHardwareNewVersion;
-    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +73,44 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         String currentVersion = device.$(207, "");
         tvCurrentVersion.setText(currentVersion);
         try {
-            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            ClientUpdateManager.PackageDownloadTask packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+            RxEvent.CheckDevVersionRsp description = null;
+            if (packageDownloadAction == null) {
+                //没下载,下载失败,或者下载成功.
+                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+                description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            } else {
+                //下载中
+                packageDownloadAction.setDownloadListener(new FirmwareUpdateActivity.Download(this));
+                description = packageDownloadAction.getCheckDevVersionRsp();
+            }
             tvHardwareNewVersion.setText(description.version);
             hardwareUpdatePoint.setVisibility(description.hasNew ? View.VISIBLE : View.INVISIBLE);
             tvVersionDescribe.setText(description.tip);
             if (validateFile(description)) {
+                //下载成功
                 tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
             } else if (description.downloadState == JConstant.D.DOWNLOADING && System.currentTimeMillis() - description.lastUpdateTime < 3 * 1000) {
+                //下载中
                 tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, "0/" + MiscUtils.FormatSdCardSize(description.fileSize)));
                 ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
-            } else {
+            } else if (description.downloadState == JConstant.D.FAILED) {
                 tvDownloadSoftFile.setText(getString(R.string.Tap1_Album_DownloadFailed));
+            } else {
+                //异常.下载中App挂了.
+                //失败
+                tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(description.fileSize)));
             }
         } catch (Exception e) {
             AppLogger.e("err :" + MiscUtils.getErr(e));
+        }
+        ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+        updatingTask = new ClientUpdateManager.FirmWareUpdatingTask("200000046267");
+        if (updatingTask != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
+            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                    FirmwareUpdatingFragment.newInstance(bundle), android.R.id.content);
         }
     }
 
@@ -124,6 +153,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, MiscUtils.FormatSdCardSize(currentByte) + "/" + MiscUtils.FormatSdCardSize(totalByte)));
             tvLoadingShow.setText(MiscUtils.FormatSdCardSize(currentByte / 8) + "/" + MiscUtils.FormatSdCardSize(totalByte));
             if (totalByte == 0) return;
+            llDownloadPgContainer.setVisibility(View.VISIBLE);
             downloadProgress.setProgress((int) ((float) currentByte / totalByte * 100));
         });
     }
@@ -166,12 +196,34 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
     }
 
+    private boolean checkNet() {
+        Device device = basePresenter.getDevice();
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+        String remoteSSid = net.ssid;
+        AppLogger.d("" + localSSid + "," + remoteSSid);
+        if (!TextUtils.equals(localSSid, remoteSSid) || net.net != 1) {
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
+                    getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }, getString(R.string.CANCEL), null);
+            return false;
+        }
+        //简单地认为是同一个局域网
+        return true;
+    }
 
     @OnClick(R.id.tv_download_soft_file)
     public void downloadOrUpdate() {
         String txt = tvDownloadSoftFile.getText().toString();
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级
+            //1.网络环境{是否同一局域网}
+            if (!checkNet()) return;
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
+            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                    FirmwareUpdatingFragment.newInstance(bundle), android.R.id.content);
         } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
             //Tap1_FirmwareDownloading:正在下载(%s),
         } else {
@@ -191,42 +243,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     protected void onStop() {
         super.onStop();
-        if (subscription != null) subscription.unsubscribe();
     }
 
-    /**
-     * 24小时的规则,只有下载成功的前提下生效
-     *
-     * @param description
-     * @return
-     */
-    private boolean validateContent(RxEvent.CheckDevVersionRsp description) {
-        if (description == null) return false;//没有下载过
-//        if (description.downloadState == JConstant.D.FAILED) return false;//下载失败
-        if (TextUtils.isEmpty(description.fileDir)) return false;//文件路径出错
-        File file = new File(description.fileDir, description.fileName);
-        if (!file.exists()) return false;//文件不存在
-        //下载中,App异常了.这个条件优先级比较低,如果很就之前就下载好了呢.
-//        if (System.currentTimeMillis() - description.downloadUpdateTime > 2 * 1000 * 60)
-//            return false;
-        //
-        //        String localFileMd5 = FileUtils.getFileMd5(description.filePath);
-//        AppLogger.d("localFileMd5:" + localFileMd5);
-//        if (!TextUtils.equals(localFileMd5, description.md5)) {
-//            FileUtils.deleteFile(description.filePath);
-//            return false;
-//        }
-        return true;
-    }
 
     @Override
     public void onBackPressed() {
         finishExt();
-    }
-
-    @Override
-    public void setPresenter(FirmwareUpdateContract.Presenter presenter) {
-
     }
 
 }

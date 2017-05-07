@@ -264,7 +264,7 @@ public class JFGRules {
             case 22://金鑫智慧科技智能猫眼
             case 24://普顺达门铃
             case 1160:
-            case 27:
+            case 27://乐视猫眼
                 return true;
         }
         return false;

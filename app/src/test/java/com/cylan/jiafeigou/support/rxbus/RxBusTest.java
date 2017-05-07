@@ -506,4 +506,28 @@ public class RxBusTest {
         Thread.sleep(3000);
     }
 
+    @Test
+    public void testTimeout1() throws InterruptedException {
+        RxBus.getCacheInstance().toObservable(String.class)
+                .timeout(10, TimeUnit.MILLISECONDS)
+                .filter(ret -> ret.length() == 0)
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        System.out.println("" + throwable);
+                    }
+                });
+        RxBus.getCacheInstance().post("");
+        RxBus.getCacheInstance().post("");
+        RxBus.getCacheInstance().post("00");
+        Thread.sleep(15);
+        RxBus.getCacheInstance().post("000");
+        System.out.println("fadfa");
+    }
+
 }
