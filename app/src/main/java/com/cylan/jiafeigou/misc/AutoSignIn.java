@@ -105,6 +105,9 @@ public class AutoSignIn {
                 .timeout(5, TimeUnit.SECONDS, Observable.just(new RxEvent.ResultLogin(JError.LoginTimeOut)))
                 .subscribe(resultLogin -> {
                     if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
+                        if (resultLogin.code == JError.LoginTimeOut) {
+                            BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                        }
                         RxBus.getCacheInstance().post(resultLogin);
                     }
                 }, AppLogger::e);
