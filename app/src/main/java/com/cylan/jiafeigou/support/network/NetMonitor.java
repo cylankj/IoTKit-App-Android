@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,10 +47,14 @@ public class NetMonitor {
         @Override
         public void onReceive(Context context, Intent intent) {
             AppLogger.d("networkCallbackList:" + networkCallbackList);
+            String action = intent.getAction();
             if (networkCallbackList != null) {
                 Iterator<String> iterator = networkCallbackList.keySet().iterator();
                 while (iterator.hasNext()) {
-                    networkCallbackList.get(iterator.next()).onNetworkChanged(context, intent);
+                    String key = iterator.next();
+                    ArrayList<String> filterList = filterMap.get(key);
+                    if (filterList.contains(action))
+                        networkCallbackList.get(iterator.next()).onNetworkChanged(context, intent);
                 }
             }
         }
@@ -61,6 +66,7 @@ public class NetMonitor {
         void onNetworkChanged(Context context, Intent intent);
     }
 
+    private HashMap<String, ArrayList<String>> filterMap = new HashMap<>();
 
     public void registerNet(NetworkCallback callbacks, String[] actions) {
         if (actions != null && actions.length > 0) {
@@ -68,9 +74,17 @@ public class NetMonitor {
                 network = new Network();
             try {
                 IntentFilter intentFilter = new IntentFilter();
-                for (String action : actions)
-                    intentFilter.addAction(action);
+                Iterator<String> keySet = filterMap.keySet().iterator();
+                while (keySet.hasNext()) {
+                    ArrayList<String> list = filterMap.get(callbacks.getClass().getSimpleName());
+                    if (list != null) {
+                        for (String action : list) {
+                            intentFilter.addAction(action);
+                        }
+                    }
+                }
                 ContextUtils.getContext().registerReceiver(network, intentFilter);
+                filterMap.put(callbacks.getClass().getSimpleName(), toList(actions));
                 networkCallbackList.remove(callbacks.getClass().getSimpleName());
                 networkCallbackList.put(callbacks.getClass().getSimpleName(), callbacks);
             } catch (Exception e) {
@@ -81,11 +95,23 @@ public class NetMonitor {
         }
     }
 
+    private ArrayList<String> toList(String[] actions) {
+        if (actions == null) return new ArrayList<>();
+        ArrayList<String> l = new ArrayList<>();
+        for (String s : actions) {
+            l.add(s);
+        }
+        return l;
+    }
+
     public void unregister(NetworkCallback callback) {
         try {
 //            if (network != null) ContextUtils.getContext().unregisterReceiver(network);
             if (networkCallbackList != null)
                 networkCallbackList.remove(callback.getClass().getSimpleName());
+            if (filterMap != null) {
+                filterMap.remove(callback.getClass().getSimpleName());
+            }
             AppLogger.d("networkCallback remove:" + callback);
         } catch (Exception e) {
 

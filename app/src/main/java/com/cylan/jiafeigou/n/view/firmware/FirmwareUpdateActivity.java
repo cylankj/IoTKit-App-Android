@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.gson.Gson;
 
@@ -105,7 +106,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             AppLogger.e("err :" + MiscUtils.getErr(e));
         }
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
-        updatingTask = new ClientUpdateManager.FirmWareUpdatingTask("200000046267");
         if (updatingTask != null) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
@@ -215,6 +215,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     @OnClick(R.id.tv_download_soft_file)
     public void downloadOrUpdate() {
+        int net = NetUtils.getJfgNetType();
+        if (net == 0) {
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return;
+        }
         String txt = tvDownloadSoftFile.getText().toString();
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级

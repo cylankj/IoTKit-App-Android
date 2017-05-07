@@ -5,7 +5,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.ConnectivityManager;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.NotificationCompat;
@@ -23,6 +25,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.utils.CloseUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
@@ -57,6 +60,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
 import static com.cylan.jiafeigou.misc.bind.UdpConstant.F_ACK;
 import static com.cylan.jiafeigou.misc.bind.UdpConstant.F_PING_ACK;
 
@@ -215,6 +219,23 @@ public class ClientUpdateManager {
         nm.cancelAll();
     }
 
+    private NetMonitor netMonitor;
+
+
+    private void prepareNetMonitor() {
+        AppLogger.d("注册网络 广播");
+        if (netMonitor == null)
+            netMonitor = NetMonitor.getNetMonitor();
+        netMonitor.registerNet((Context context, Intent intent) -> {
+            int net = NetUtils.getJfgNetType();
+            if (net == 0) {
+                //失败了.
+                //升级过程,认定失败
+                updatingTaskHashMap.clear();
+            }
+        }, new String[]{ConnectivityManager.CONNECTIVITY_ACTION,
+                NETWORK_STATE_CHANGED_ACTION});
+    }
 
     public void release(Context context) {
         try {
@@ -317,6 +338,7 @@ public class ClientUpdateManager {
     }
 
     private Map<String, PackageDownloadTask> downloadMap = new HashMap<>();
+    private HashMap<String, FirmWareUpdatingTask> updatingTaskHashMap = new HashMap<>();
 
     /**
      * 下载文件
@@ -324,6 +346,7 @@ public class ClientUpdateManager {
     public void downLoadFile(RxEvent.CheckDevVersionRsp rsp, DownloadListener listener) {
         Log.d(TAG, "开始下载: " + rsp);
         if (rsp == null) return;
+        prepareNetMonitor();
         PackageDownloadTask packageDownloadAction = downloadMap.get(rsp.uuid);
         if (packageDownloadAction != null) {
             packageDownloadAction.setDownloadListener(listener);
@@ -468,7 +491,6 @@ public class ClientUpdateManager {
                         }
                     }
                 }
-
             });
         }
 
@@ -481,7 +503,7 @@ public class ClientUpdateManager {
 
     /**
      * 固件升级的 进度模拟流程.
-     * <p>
+     * <pnet>
      * 因为升级只需要发送一个udp消息{带上}
      */
     public static final class FirmWareUpdatingTask implements Action1<String>, SimulatePercent.OnAction {
@@ -720,6 +742,7 @@ public class ClientUpdateManager {
     }
 
     public void enqueue(String uuid, FUpdatingListener listener) {
+        prepareNetMonitor();
         FirmWareUpdatingTask task = getUpdatingTask(uuid);
         if (task == null) {
             task = new FirmWareUpdatingTask(uuid);
@@ -738,5 +761,5 @@ public class ClientUpdateManager {
         return updatingTaskHashMap.get(uuid);
     }
 
-    private HashMap<String, FirmWareUpdatingTask> updatingTaskHashMap = new HashMap<>();
+
 }
