@@ -136,7 +136,9 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
                 prepareNextPage(errCode);
             } else if (errCode == JConstant.U.FAILED_60S || errCode == JConstant.U.FAILED_DEVICE_FAILED) {
                 //失败
-
+                showNextSafe();
+                tvUpdateResult.setText(getString(R.string.Tap1_FirmwareUpdateFai));
+                btnUpdateResult.setText(getString(R.string.TRY_AGAIN));
             }
         });
     }

@@ -219,7 +219,7 @@ public class ClientUpdateManager {
         nm.cancelAll();
     }
 
-    private NetMonitor netMonitor;
+    private static NetMonitor netMonitor;
 
 
     private void prepareNetMonitor() {
@@ -346,7 +346,6 @@ public class ClientUpdateManager {
     public void downLoadFile(RxEvent.CheckDevVersionRsp rsp, DownloadListener listener) {
         Log.d(TAG, "开始下载: " + rsp);
         if (rsp == null) return;
-        prepareNetMonitor();
         PackageDownloadTask packageDownloadAction = downloadMap.get(rsp.uuid);
         if (packageDownloadAction != null) {
             packageDownloadAction.setDownloadListener(listener);
@@ -379,7 +378,7 @@ public class ClientUpdateManager {
     /**
      * call方法跑了一个 okhttp的文件下载.
      */
-    public static final class PackageDownloadTask implements Action1<Object> {
+    public final class PackageDownloadTask implements Action1<Object> {
 
         private RxEvent.CheckDevVersionRsp rsp;
         private DownloadListener downloadListener;
@@ -398,6 +397,7 @@ public class ClientUpdateManager {
 
         @Override
         public void call(Object o) {
+            prepareNetMonitor();
             final File file = new File(rsp.fileDir, rsp.fileName);
             new File(rsp.fileDir).mkdir();
             if (file.exists()) {
@@ -506,7 +506,7 @@ public class ClientUpdateManager {
      * <pnet>
      * 因为升级只需要发送一个udp消息{带上}
      */
-    public static final class FirmWareUpdatingTask implements Action1<String>, SimulatePercent.OnAction {
+    public final class FirmWareUpdatingTask implements Action1<String>, SimulatePercent.OnAction {
         private FUpdatingListener listener;
         private String uuid;
         private SimulatePercent simulatePercent;
@@ -541,6 +541,7 @@ public class ClientUpdateManager {
 
         @Override
         public void call(String s) {
+            prepareNetMonitor();
             //1.发送一个fping,等待fpingRsp,从中读取ip,port.
             RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                     .subscribeOn(Schedulers.newThread())
@@ -667,6 +668,7 @@ public class ClientUpdateManager {
         private void handleTimeout(int code) {
             if (listener != null) listener.err(code);
             AppLogger.d("fping timeout : " + uuid + " " + listener);
+            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid);
         }
 
         private void handleResult(String uuid, int tag, byte[] data) {
@@ -677,6 +679,7 @@ public class ClientUpdateManager {
                     this.updateState = JConstant.U.FAILED_DEVICE_FAILED;
                     if (listener != null) listener.err(this.updateState);
                     if (simulatePercent != null) simulatePercent.stop();
+                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid);
                 } else if (fAck != null) {//相应,成功了.
                     this.updateState = JConstant.U.SUCCESS;
                     if (simulatePercent != null) simulatePercent.boost();
@@ -745,7 +748,7 @@ public class ClientUpdateManager {
     }
 
     public void enqueue(String uuid, FUpdatingListener listener) {
-        prepareNetMonitor();
+
         FirmWareUpdatingTask task = getUpdatingTask(uuid);
         if (task == null) {
             task = new FirmWareUpdatingTask(uuid);

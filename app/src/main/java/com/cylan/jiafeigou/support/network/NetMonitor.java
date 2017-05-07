@@ -54,7 +54,7 @@ public class NetMonitor {
                     String key = iterator.next();
                     ArrayList<String> filterList = filterMap.get(key);
                     if (filterList.contains(action))
-                        networkCallbackList.get(iterator.next()).onNetworkChanged(context, intent);
+                        networkCallbackList.get(key).onNetworkChanged(context, intent);
                 }
             }
         }
@@ -76,12 +76,16 @@ public class NetMonitor {
                 IntentFilter intentFilter = new IntentFilter();
                 Iterator<String> keySet = filterMap.keySet().iterator();
                 while (keySet.hasNext()) {
-                    ArrayList<String> list = filterMap.get(callbacks.getClass().getSimpleName());
+                    String key = keySet.next();
+                    ArrayList<String> list = filterMap.get(key);
                     if (list != null) {
                         for (String action : list) {
                             intentFilter.addAction(action);
                         }
                     }
+                }
+                for (String action : actions) {
+                    intentFilter.addAction(action);
                 }
                 ContextUtils.getContext().registerReceiver(network, intentFilter);
                 filterMap.put(callbacks.getClass().getSimpleName(), toList(actions));
