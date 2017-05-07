@@ -653,7 +653,7 @@ public class ClientUpdateManager {
                     }, throwable -> {
                         if (throwable instanceof HelperBreaker) {
                             //此处发生之后,表明整个订阅链结束了,不会再发生60s超时的回调
-                            handleResult(timeout, ((HelperBreaker) throwable).localUdpMsg.data);
+                            handleResult(uuid, timeout, ((HelperBreaker) throwable).localUdpMsg.data);
                             Log.d(TAG, "Client: " + ((HelperBreaker) throwable).localUdpMsg);
                         } else if (throwable instanceof TimeoutException) {
                             int err = timeout == 30 ? JConstant.U.FAILED_30S : JConstant.U.FAILED_60S;
@@ -669,7 +669,7 @@ public class ClientUpdateManager {
             AppLogger.d("fping timeout : " + uuid + " " + listener);
         }
 
-        private void handleResult(int tag, byte[] data) {
+        private void handleResult(String uuid, int tag, byte[] data) {
             if (simulatePercent != null) simulatePercent.stop();
             try {
                 UdpConstant.FAck fAck = DpUtils.unpackData(data, UdpConstant.FAck.class);
@@ -680,9 +680,12 @@ public class ClientUpdateManager {
                 } else if (fAck != null) {//相应,成功了.
                     this.updateState = JConstant.U.SUCCESS;
                     if (simulatePercent != null) simulatePercent.boost();
+                    AppLogger.d("升级成功,清空配置");
+                    PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
+                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
                 }
             } catch (IOException e) {
-
+                AppLogger.e("err:" + MiscUtils.getErr(e));
             }
             AppLogger.d(String.format(Locale.getDefault(), "got %s firmware rsp :,uuid,%s,data:%s ", tag, uuid, data));
         }
