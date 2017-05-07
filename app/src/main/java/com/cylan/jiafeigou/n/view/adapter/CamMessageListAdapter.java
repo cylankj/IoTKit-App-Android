@@ -64,6 +64,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     /**
      * 是否有卡,不检查卡的读写失败
+     *
      * @return
      */
     private boolean justHasSdcard() {
@@ -180,6 +181,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && justHasSdcard();
     }
 
+    private boolean showSdBtn() {
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        return status.hasSdcard && status.err != 0;// 有卡但是失败了.
+    }
+
     /**
      * 来自一个全局的通知消息
      */
@@ -203,7 +209,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.tv_jump_next, showSdBtn() ? View.VISIBLE : View.INVISIBLE);
         if (hasSdcard && onClickListener != null)
             holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }

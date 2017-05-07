@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
+import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
+
 /**
  * Created by cylan-hunt on 16-11-10.
  */
@@ -12,6 +15,7 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 public class UdpConstant {
     public static final String IP = "255.255.255.255";
     public static final short PORT = 10008;
+    public static final String F_ACK = "f_ack";
     public static final String PING_ACK = "ping_ack";
     public static final String F_PING_ACK = "f_ping_ack";
     public static final String UPGRADE_VERSION = "0.0.0.0";
@@ -118,5 +122,33 @@ public class UdpConstant {
                     "state=" + state +
                     '}';
         }
+    }
+
+    @Message
+    public static class UdpFirmwareUpdate extends JfgUdpMsg.UdpHeader {
+        @Index(1)
+        public String cid;
+        @Index(2)
+        public String ip;
+        @Index(3)
+        public int port;
+        @Index(4)
+        public String url;
+
+        public UdpFirmwareUpdate(String url, String cid, String ip, int port) {
+            this.url = url;
+            this.cmd = "f_upgrade";
+            this.ip = ip;
+            this.port = port;
+            this.cid = cid;
+        }
+    }
+
+    @Message
+    public static final class FAck extends JfgUdpMsg.UdpRecvHeard {
+        @Index(2)
+        public int ack;
+        @Index(3)
+        public int ret;
     }
 }

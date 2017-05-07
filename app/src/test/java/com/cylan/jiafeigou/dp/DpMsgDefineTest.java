@@ -4,9 +4,10 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
-import org.apache.tools.ant.taskdefs.Sleep;
 import org.junit.Test;
 import org.msgpack.MessagePack;
+import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
 import org.robolectric.annotation.Config;
 
 import java.io.IOException;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -53,6 +52,26 @@ public class DpMsgDefineTest {
 //        System.out.println(unpackData(data, int.class));
         System.out.println(unpackData(new byte[]{-108, -81, 100, 111, 95, 115, 101, 116, 95, 119, 105, 102, 105, 95, 97, 99, 107, -84, 50, 56, 48, 48, 48, 48, 48, 48, 48, 48, 48, 57, -96, 0},
                 JfgUdpMsg.UdpRecvHeard.class));
+
+        System.out.println(unpackData(new byte[]{-108, -91, 102, 95, 97, 99, 107, -84, 50, 48, 48, 48, 48, 48, 48, 52, 54, 50, 54, 55, -51, 6, 16, -46, -7, -1, -1, -1},
+                TTTest.class));
+    }
+
+    @Message
+    public static class TTTest extends JfgUdpMsg.UdpRecvHeard {
+
+        @Index(2)
+        public int ack;
+        @Index(3)
+        public int ret;
+
+        @Override
+        public String toString() {
+            return "TTTest{" +
+                    "ack=" + ack +
+                    ", ret=" + ret +
+                    '}';
+        }
     }
 
     private void setData(long version) {

@@ -66,6 +66,10 @@ public class SimulatePercent implements Handler.Callback {
         handler.sendEmptyMessage(MSG_STEP_1);
     }
 
+    public int getProgress() {
+        return index;
+    }
+
     public void resume() {
 
     }

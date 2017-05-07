@@ -426,4 +426,20 @@ public class NetUtils {
         }
         return false;
     }
+
+    public static String getReadableIp() {
+        WifiManager mWifi = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        if (mWifi.isWifiEnabled()) {
+            WifiInfo wifiInfo = mWifi.getConnectionInfo();
+            return intToIp(wifiInfo.getIpAddress());
+        }
+        return "";
+    }
+
+    private static String intToIp(int i) {
+        return (i & 0xFF) + "." +
+                ((i >> 8) & 0xFF) + "." +
+                ((i >> 16) & 0xFF) + "." +
+                (i >> 24 & 0xFF);
+    }
 }

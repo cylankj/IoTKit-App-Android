@@ -119,12 +119,10 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         String alias = device.alias;
         String shareAccount = device.shareAccount;
-        final int onLineState = net != null ? net.net : (device.pid == JConstant.OS_MAGNET ? 1 : 0);
-//        final int deviceType = bean.device.pid;
         Log.d("handleState", "handleState: " + uuid + " " + net);
         int online = JConstant.getOnlineIcon(device.pid);
         int offline = JConstant.getOfflineIcon(device.pid);
-        int iconRes = (onLineState != 0 && onLineState != -1) ? online : offline;
+        int iconRes = JFGRules.isDeviceOnline(net) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!isPrimaryAccount(shareAccount))

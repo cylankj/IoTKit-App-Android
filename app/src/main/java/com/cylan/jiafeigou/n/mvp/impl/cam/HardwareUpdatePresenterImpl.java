@@ -37,7 +37,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.MessagePack;
-import org.msgpack.annotation.Index;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -338,7 +337,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         AppLogger.d("localUrl2:" + localUrl);
                         firmwareUpdateState = 1;
                         if (TextUtils.equals(cid, uuid)) {
-                            updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(Ip, port, new UpdatePing(localUrl, uuid, ip, 8765).toBytes());
+                            updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(Ip, port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, ip, 8765).toBytes());
                             AppLogger.d("beginUpdate2:" + updateTime);
                         }
                     } catch (JfgException e) {
@@ -393,26 +392,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
             simulatePercent.stop();
     }
 
-
-    @org.msgpack.annotation.Message
-    public static class UpdatePing extends JfgUdpMsg.UdpHeader {
-        @Index(1)
-        public String cid;
-        @Index(2)
-        public String ip;
-        @Index(3)
-        public int port;
-        @Index(4)
-        public String url;
-
-        public UpdatePing(String url, String cid, String ip, int port) {
-            this.url = url;
-            this.cmd = "f_upgrade";
-            this.ip = ip;
-            this.port = port;
-            this.cid = cid;
-        }
-    }
 
     @Override
     public void stop() {
