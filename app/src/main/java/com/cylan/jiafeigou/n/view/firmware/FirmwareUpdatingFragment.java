@@ -186,7 +186,6 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
                     });
         }
         if (next == JConstant.U.SUCCESS) {
-            customToolbar.setToolbarLeftTitle("");
             tvUpdateResult.setText(getString(R.string.RE_ADD_LABEL));
             btnUpdateResult.setText(getString(R.string.FINISHED));
             showNextSafe();
@@ -208,6 +207,7 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
     }
 
     private void showPreviousSafe() {
+        customToolbar.setToolbarLeftTitle(getString(R.string.DEVICE_UPGRADE));
         View v = vsLayoutSwitch.getCurrentView();
         if (v != null && v.getId() == R.id.v_second)
             vsLayoutSwitch.showPrevious();
@@ -217,11 +217,11 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
         View v = vsLayoutSwitch.getCurrentView();
         if (v != null && v.getId() == R.id.v_first)
             vsLayoutSwitch.showNext();
+        customToolbar.setToolbarLeftTitle("");
     }
 
     private void startAgain() {
         showPreviousSafe();
-        customToolbar.setToolbarLeftTitle(getString(R.string.DEVICE_UPGRADE));
         progressLoading.post(() -> progressLoading.run());
     }
 
