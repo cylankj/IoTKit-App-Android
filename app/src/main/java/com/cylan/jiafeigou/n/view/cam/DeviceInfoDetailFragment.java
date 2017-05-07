@@ -254,7 +254,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void jump2HardwareUpdateFragment() {
         Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
-        intent.putExtra(getUuid(), JConstant.KEY_DEVICE_ITEM_UUID);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
         startActivity(intent);
     }
 
