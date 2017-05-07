@@ -68,12 +68,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                             //账号和密码
                         }
-                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
-                        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                         AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                                 .subscribe(ret -> {
-                                    PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
                         AppLogger.d("logresult:" + o.toString());
                     } catch (Exception e) {
@@ -99,13 +96,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void executeLogin(final LoginAccountBean login) {
         //加入
         Observable.zip(loginObservable(login), loginResultObservable(),
-
                 (Object o, RxEvent.ResultUserLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
                 })
-                .filter(resultAutoLogin1 -> resultAutoLogin1.code != JError.StartLoginPage)
-                .timeout(30 * 1000L, TimeUnit.MILLISECONDS, Observable.just(null)
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
                             Log.d("CYLAN_TAG", "login timeout: ");
@@ -113,7 +108,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             return null;
                         }))
                 .subscribeOn(Schedulers.io())
-                .delay(1000, TimeUnit.MILLISECONDS)
+                .delay(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultUserLogin o) -> {
                     Log.d("CYLAN_TAG", "login subscribe: " + o);

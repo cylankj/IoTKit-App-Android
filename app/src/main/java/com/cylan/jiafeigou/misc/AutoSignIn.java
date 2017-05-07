@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -24,7 +25,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class AutoSignIn {
-
+    public boolean finish = false;
     private JFGAccount jfgAccount;
     private static final String TAG = "AutoSignIn";
     private static AutoSignIn instance;
@@ -49,86 +50,65 @@ public class AutoSignIn {
     private AutoSignIn() {
     }
 
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
     public static final String KEY = "fxxx";
 
 
-    public Observable<Integer> autoLogin() {
+    public void autoLogin() {
         RxBus.getCacheInstance().removeAllStickyEvents();
-        return Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false))
-                .filter(s -> s)
+        Observable.just(PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY))
                 .subscribeOn(Schedulers.io())
-                .flatMap(s -> {
-                    try {
-                        String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                        AppLogger.d("autoLogin");
-                        if (TextUtils.isEmpty(aesAccount)) {
-                            AppLogger.d("account is null");
-                            return Observable.just(-1);
-                        }
-                        String decryption = AESUtil.decrypt(aesAccount);
-                        SignType signType = new Gson().fromJson(decryption, SignType.class);
-                        if (signType != null) {
-                            StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
-                            if (!TextUtils.isEmpty(pwd)) {
-                                AppLogger.d("log pwd: " + pwd.length());
-                                String finalPwd = AESUtil.decrypt(pwd.toString());
-                                if (signType.type == 1) {
-                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                    BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd);
-                                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
-                                } else if (signType.type >= 3) {
-                                    //效验本地token是否过期
-                                    if (checkTokenOut(signType.type)) {
-                                        AppLogger.d("isout:ee");
-                                        autoSave(signType.account, 1, "");
-                                        return Observable.just(-1);
-                                    } else {
-                                        AppLogger.d("isout:no");
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                        BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
+                .flatMap(account -> {
+                            try {
+                                AppLogger.d("autoLogin");
+                                String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE, "");
+                                String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID, "");
+                                String decryption = AESUtil.decrypt(account);
+                                SignType signType = new Gson().fromJson(decryption, SignType.class);
+                                if (signType != null) {
+                                    String finalPwd = TextUtils.isEmpty(account2x) ? AESUtil.decrypt("" + FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + account + ".dat", "UTF-8")) : pwd2x;
+                                    String finalAccount = TextUtils.isEmpty(account2x) ? signType.account : account2x;
+                                    if (TextUtils.isEmpty(finalAccount) || TextUtils.isEmpty(finalPwd)) {
+                                        throw new IllegalArgumentException("用户名或者密码不能为空");
                                     }
+                                    if (signType.type == 1) {
+                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
+                                        BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd);
+                                    } else if (signType.type >= 3) {
+                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
+                                        BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
+                                    }
+                                    PreferencesUtils.putString(JConstant.KEY_PHONE, "");
+                                    PreferencesUtils.putString(JConstant.SESSIONID, "");
+                                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                                    autoSave(finalAccount, signType.type, finalPwd);
                                 }
-                                AppLogger.d("log type: " + signType);
-                                return Observable.just(0);
-                            } else {
-                                return Observable.just(-1);
+
+                            } catch (Exception e) {
+                                AppLogger.e("no sign type" + e.getLocalizedMessage());
+                                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+                                if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
+                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
+                                }
                             }
+                            return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
                         }
-                        AppLogger.d("signType is :" + signType);
-                        return Observable.just(-1);
-                    } catch (Exception e) {
-                        AppLogger.e("no sign type" + e.getLocalizedMessage());
-                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-                        return Observable.just(-1);
+                )
+                .observeOn(Schedulers.io())
+                .timeout(5, TimeUnit.SECONDS, Observable.just(new RxEvent.ResultLogin(JError.LoginTimeOut)))
+                .subscribe(resultLogin -> {
+                    if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
+                        RxBus.getCacheInstance().post(resultLogin);
                     }
-                });
+                }, AppLogger::e);
     }
-
-    private boolean checkTokenOut(int type) {
-        boolean isOut = false;
-        switch (type) {
-            case 3:
-//                isOut = !TencentInstance.getInstance((Activity) ContextUtils.getContext()).mTencent.isSessionValid();
-//                AppLogger.d("isout:" + isOut);
-                break;
-            case 4:
-//                Oauth2AccessToken oauth2AccessToken = AccessTokenKeeper.readAccessToken(ContextUtils.getContext());
-//                isOut = !(oauth2AccessToken != null && oauth2AccessToken.isSessionValid());
-                break;
-            case 6:
-//                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
-//                TwitterAuthToken authToken = activeSession.getAuthToken();
-//                if (authToken != null)
-//                    isOut = !authToken.isExpired();
-                break;
-            case 7:
-//                isOut = !AccessToken.getCurrentAccessToken().isExpired();
-                break;
-        }
-        return isOut;
-    }
-
 
     public Observable<Integer> autoSave(String account, int type, String pwd) {
         return Observable.just("save")
@@ -153,6 +133,12 @@ public class AutoSignIn {
                         return -1;
                     }
                 });
+    }
+
+    public void clearPsw() {
+        FileUtils.writeFile(ContextUtils.getContext().getFilesDir() + File.separator + PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY) + ".dat", "");
+        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+        PreferencesUtils.putString(JConstant.SESSIONID, "");
     }
 
     public static class SignType {

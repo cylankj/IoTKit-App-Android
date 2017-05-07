@@ -22,8 +22,7 @@
             android:id="@+id/act_bell_live_video_picture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/default_diagram_mask" />
+            android:scaleType="fitXY" />
 
         <com.cylan.jiafeigou.widget.live.LivePlayControlView
             android:id="@+id/act_bell_live_video_play_controller"

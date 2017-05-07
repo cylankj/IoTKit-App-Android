@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.base.module;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -16,7 +14,7 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
-import com.cylan.jiafeigou.n.engine.TryLogin;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -107,7 +105,6 @@ public final class BaseInitializationManager {
         initLeakCanary();
         initGlobalSubscription();
         initDialogManager();
-        TryLogin.tryLogin();//只有等所有资源初始化完成之后才能走 login 流程
         initPushResult();
     }
 
@@ -127,7 +124,7 @@ public final class BaseInitializationManager {
             Log.d("BaseInitialization", "initPushResultFailed:" + MiscUtils.getErr(e));
         }
         hasInitFinished = true;
-        TryLogin.tryLogin();
+        AutoSignIn.getInstance().autoLogin();//只有等所有资源初始化完成之后才能走 login 流程
     }
 
     private void initDialogManager() {

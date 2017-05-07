@@ -114,6 +114,11 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         if (presenter != null) presenter.stop();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
         switch (v.getId()) {
@@ -148,12 +153,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             return;
         }
 
-        if (suggestionAdapter.getItemCount() == 1 || suggestionAdapter.getItemCount() == 2) {
+        if ((suggestionAdapter.getItemCount() == 1 || suggestionAdapter.getItemCount() == 2) || (suggestionAdapter.getCount() > 2 && suggestionAdapter.getItem(suggestionAdapter.getCount() - 1).type != 0)) {
             addAutoReply();
-        } else {
-            if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 2).getDate())) {
-                addAutoReply();
-            }
         }
     }
 
@@ -297,11 +298,11 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 2;
                 presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
             }
-            autoReply();
             mRvMineSuggestion.setAdapter(suggestionAdapter);
+            autoReply();
 
             //系统后台回复
-            presenter.getSystemAutoReply();
+//            presenter.getSystemAutoReply();
         }
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
     }
@@ -327,11 +328,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             list.add(addSystemAutoReply());
         }
         for (MineHelpSuggestionBean bean : list) {
-            bean.icon = presenter.getUserPhotoUrl();
-            if (bean.pro_falag == 0) {
-                bean.pro_falag = 1;//初始化
-                presenter.update(bean);
-            }
+            if (bean.pro_falag == 0) bean.pro_falag = 2;
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRvMineSuggestion.setLayoutManager(layoutManager);

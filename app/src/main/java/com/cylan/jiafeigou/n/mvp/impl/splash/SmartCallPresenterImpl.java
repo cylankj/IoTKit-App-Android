@@ -8,9 +8,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -34,13 +31,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     }
 
     private void selectNext() {
-        if (getView().hasSplashView()) {
-            Observable.just("delay").delay(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(ret -> {
-                if (getView().hasSplashView()) getView().splashOver();
-            }, AppLogger::e);
-        } else {
-            getView().splashOver();
-        }
         subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -9,7 +9,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
@@ -28,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -74,15 +74,26 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription.add(sendFeedBackReq());
             compositeSubscription.add(sendLogBack());
             compositeSubscription.add(getSystemAutoReplyCallBack());
+            compositeSubscription.add(getBadNetBack());
         }
 //        getSystemAutoReply();
+    }
+
+    private Subscription getBadNetBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .throttleFirst(5, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    if (!event.isOnLine) {
+                        getView().refrshRecycleView(-100);
+                    }
+                }, AppLogger::e);
     }
 
     @Override
     public void stop() {
         super.stop();
         unSubscribe(compositeSubscription);
-        DataBaseUtil.release();
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
@@ -346,6 +357,11 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         deleteLocalLogFile();
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+    }
+
+    @Override
+    public boolean isSending() {
+        return isSending;
     }
 
     /**

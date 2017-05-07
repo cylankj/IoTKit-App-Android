@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -85,7 +86,7 @@ public class HomeMineHelpFragment extends Fragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        String agreementUrl = getString(R.string.help_url);
+        String agreementUrl = getString(R.string.help_url, OptionsImpl.getServer().split(":")[0]);
         if (agreementUrl.contains("–")) {
             agreementUrl = agreementUrl.replace("–", "-");
         }

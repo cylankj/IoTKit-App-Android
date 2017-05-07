@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -63,7 +61,6 @@ public class SmartcallActivity extends NeedLoginActivity
     @Nullable
     private SplashContract.Presenter presenter;
     private boolean isPermissionDialogShowing = false;
-    private boolean firstSignIn;
     private boolean from_log_out;
 
     //这个页面先请求 sd卡权限
@@ -113,12 +110,6 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
             from_log_out = false;
-            firstSignIn = true;
-            if (PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)
-                    && PreferencesUtils.getBoolean(JConstant.SHOW_PASSWORD_CHANGED, false)
-                    && getIntent().getBooleanExtra("PSWC", false)) {
-                pswChanged();
-            }
         }
     }
 
@@ -213,31 +204,23 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public void loginResult(int code) {
-        if (isFinishing()) {
-            Log.d("loginResult", "loginResult is finishing");
-            return;
-        }
-        if (code == JError.ErrorOK || code == JError.LoginTimeOut || code == JError.NoNet) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                startActivity(new Intent(this, NewHomeActivity.class),
-                        ActivityOptionsCompat.makeCustomAnimation(getContext(),
-                                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
-            } else {
-                startActivity(new Intent(this, NewHomeActivity.class));
-            }
+        if (code == JError.ErrorOK || code == JError.LoginTimeOut) {
+            startActivity(new Intent(this, NewHomeActivity.class),
+                    ActivityOptionsCompat.makeCustomAnimation(getContext(),
+                            R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
             if (basePresenter != null) basePresenter.stop();
             finish();
-        } else if (code == JError.StartLoginPage && !firstSignIn) {
+        } else {
+            AutoSignIn.getInstance().clearPsw();
             splashOver();
-            firstSignIn = true;
-        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist || code == 162) && PreferencesUtils.getBoolean(JConstant.SHOW_PASSWORD_CHANGED, false)) {
-//          密码错误且是自动登录才走此
-            splashOver();
+        }
+        if (PreferencesUtils.getBoolean(JConstant.SHOW_PASSWORD_CHANGED, false)) {
             pswChanged();
         }
     }
 
     private void pswChanged() {
+        PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(R.string.PWD_CHANGED)
                 .setTitle(R.string.LOGIN_ERR)
@@ -246,8 +229,9 @@ public class SmartcallActivity extends NeedLoginActivity
                     bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
                     LoginFragment loginFragment = LoginFragment.newInstance(bundle);
                     loginFragment.setArguments(bundle);
-                    if (getSupportFragmentManager().findFragmentByTag(loginFragment.getClass().getSimpleName()) != null)
+                    if (getSupportFragmentManager().findFragmentByTag(loginFragment.getClass().getSimpleName()) != null) {
                         return;
+                    }
                     View v = findViewById(R.id.rLayout_login);
                     if (v != null) {
                         try {
@@ -262,12 +246,6 @@ public class SmartcallActivity extends NeedLoginActivity
                             loginFragment, android.R.id.content, 0);
                 });
         builder.show();
-        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-        if (account != null && !TextUtils.isEmpty(account.getAccount()))
-            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "");
-        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
-        PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, false);
     }
 
     /**

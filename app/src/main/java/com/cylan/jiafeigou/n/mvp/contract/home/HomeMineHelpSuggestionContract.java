@@ -157,5 +157,8 @@ public interface HomeMineHelpSuggestionContract {
          */
         Subscription sendLogBack();
 
+
+        boolean isSending();
+
     }
 }

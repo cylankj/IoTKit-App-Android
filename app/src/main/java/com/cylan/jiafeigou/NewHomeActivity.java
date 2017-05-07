@@ -117,13 +117,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             startActivity(intent);
             return;
         }
-        resetPwdSubscribe = RxBus.getCacheInstance().toObservable(RxEvent.LogOutByResetPwdTab.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    if (event.b)
-                        finish();
-                }, e -> AppLogger.d(e.getMessage()));
         RxBus.getCacheInstance().toObservableSticky(RxEvent.NeedUpdateGooglePlayService.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -146,10 +139,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
             subscribe = null;
-        }
-        if (resetPwdSubscribe != null && resetPwdSubscribe.isUnsubscribed()) {
-            resetPwdSubscribe.unsubscribe();
-            resetPwdSubscribe = null;
         }
     }
 

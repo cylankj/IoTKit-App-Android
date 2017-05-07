@@ -97,10 +97,6 @@ public class JError {
 
     public static final int LoginTimeOut = 1;
 
-    public static final int StartLoginPage = 2;
-
-    public static final int NoNet = 3;
-
     // 客户端帐号类.
 // 短信验证码错误。
     public static final int ErrorSMSCodeNotMatch = 180;

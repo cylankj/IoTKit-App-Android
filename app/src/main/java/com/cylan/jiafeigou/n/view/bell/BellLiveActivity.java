@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,6 +45,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -144,6 +146,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         registSreenStatusReceiver();
+        initHeadSetEventReceiver();
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
@@ -169,14 +172,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if ("android.intent.option.HEADSET_PLUG".equals(action)) {
+            if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
+                AppLogger.d("收到耳机事件");
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
+                        AppLogger.d("耳机以移除");
                         BellLiveActivityPermissionsDispatcher.handleHeadsetDisconnectedWithCheck(BellLiveActivity.this);
                     } else if (intent.getIntExtra("state", 0) == 1) {
                         AppLogger.e("耳机已连接");
-                        handleHeadsetConnected();
-//                        BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
+                        BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
                     }
                 }
             }
@@ -198,7 +202,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @NeedsPermission(Manifest.permission.MODIFY_AUDIO_SETTINGS)
     void handleHeadsetDisconnected() {
-
+        AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        manager.setSpeakerphoneOn(true);
     }
 
     private void handlePortClick() {
@@ -266,7 +271,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStart() {
         super.onStart();
-        initHeadSetEventReceiver();
+
         muteAudio(true);
         setNormalBackMargin();
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
@@ -278,6 +283,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onStop() {
         super.onStop();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
             mediaPlayer.stop();
         }
 
@@ -288,7 +294,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             finish();
         }
         muteAudio(false);
-        clearHeadSetEventReceiver();
         presenter.dismiss();
     }
 
@@ -332,6 +337,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
     }
 
+    public boolean isHeadsetOn() {
+        AudioManager am = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            AppLogger.d("isVolumeFixed: " + am.isVolumeFixed());
+        return am.isWiredHeadsetOn();
+    }
+
     @OnClick(R.id.act_bell_live_back)
     public void bellBack() {
         super.onBackPressed();
@@ -371,6 +383,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onRelease(int side) {
         if (side == 0) {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.setVolume(0, 0);
                 mediaPlayer.stop();
             }
             presenter.dismiss();
@@ -646,7 +659,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).
                 placeholder(R.drawable.default_diagram_mask)
+                .error(R.drawable.default_diagram_mask)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(mBellLiveVideoPicture);
     }
 
@@ -673,11 +688,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
         }
         imgvBellLiveSpeaker.setImageResource(on ? R.drawable.icon_port_voice_on_selector : R.drawable.icon_port_voice_off_selector);
+        if (isHeadsetOn()) {
+            BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
+        }
     }
 
     @Override
     public void onMicrophone(boolean on) {
-
+        if (isHeadsetOn()) {
+            BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
+        }
     }
 
     @Override
@@ -831,6 +851,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mScreenStatusReceiver);
+        clearHeadSetEventReceiver();
     }
 
     @Override

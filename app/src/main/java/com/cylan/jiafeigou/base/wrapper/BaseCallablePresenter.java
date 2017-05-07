@@ -84,9 +84,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                             mHolderCaller = null;
                                             startViewer();
                                             File file = new File(JConstant.MEDIA_PATH, "." + mUUID + ".jpg");
-                                            if (file.exists()) {
-                                                mView.onPreviewPicture(file.toString());
-                                            }
+                                            mView.onPreviewPicture(file.toString());
                                             break;
                                     }
                                     return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);

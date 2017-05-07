@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -31,7 +30,6 @@ import rx.subscriptions.CompositeSubscription;
 public class GlobalResetPwdSource {
     private static GlobalResetPwdSource instance;
     private CompositeSubscription mSubscription;
-    private Subscription clearSub;
 
     private Activity appCompatActivity;
 
@@ -51,13 +49,14 @@ public class GlobalResetPwdSource {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
                     AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground());
-                    PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                     PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-                    PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, true);
                     RxBus.getCacheInstance().removeAllStickyEvents();
                     clearPwd();
                     if (!BaseApplication.isBackground()) {
+                        PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, false);
                         pwdResetedDialog(pwdHasResetEvent.code);
+                    } else {
+                        PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, true);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         mSubscription.add(subscribe);
@@ -67,11 +66,6 @@ public class GlobalResetPwdSource {
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
             mSubscription = null;
-        }
-
-        if (clearSub != null && !clearSub.isUnsubscribed()) {
-            clearSub.unsubscribe();
-            clearSub = null;
         }
     }
 
@@ -98,10 +92,7 @@ public class GlobalResetPwdSource {
 
     private void jump2LoginFragment() {
         clearPwd();
-
-        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
-        RxBus.getCacheInstance().post(new RxEvent.LogOutByResetPwdTab(true));
-
+        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
         Intent intent = new Intent(ContextUtils.getContext(), SmartcallActivity.class);
         intent.putExtra("from_log_out", true);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -109,12 +100,6 @@ public class GlobalResetPwdSource {
     }
 
     public void clearPwd() {
-        clearSub = Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
-                    AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "")
-                            .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                            .subscribe();
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        AutoSignIn.getInstance().clearPsw();
     }
 }

@@ -67,8 +67,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     if (isOpenLogin) {
                         PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(retAccount.getPhone()) ? (TextUtils.isEmpty(retAccount.getEmail()) ? "" : retAccount.getEmail()) : retAccount.getPhone());
                     }
-                    PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                 }, AppLogger::e);
     }
 

@@ -66,7 +66,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .filter(load -> load.slow)
                 .delay(4, TimeUnit.SECONDS)
                 .subscribe(ret -> {
-                    if (!sourceManager.isOnline()) {
+                    if (!sourceManager.isOnline() && hasLiveStream) {
                         AppLogger.d("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
@@ -93,22 +93,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void startViewer() {
         Subscription subscribe = Observable.just(sourceManager.isOnline())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(account -> {
+                .map(account -> {
                     feedRtcp.stop();//清空之前的状态
                     mView.onViewer();
-                    if (sourceManager.isOnline()) {
-                        return true;
-                    } else {
-                        mView.onVideoDisconnect(BAD_NET_WORK);
-                    }
-                    return true;
+                    return getViewHandler();
                 })
                 .observeOn(Schedulers.io())
-                .map(hasNet -> {
-                    String handle = getViewHandler();
+                .map(handle -> {
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
-                        hasLiveStream = true;
                         int ret = appCmd.playVideo(handle);
                         AppLogger.d("准备开始直播返回的结果码为:" + ret);
                         if (ret != 0) {
@@ -116,6 +109,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             appCmd.playVideo(handle);
                             AppLogger.d("正在重试播放直播");
                         }
+                        hasLiveStream = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.d("准备开始直播失败!");
@@ -130,7 +124,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .flatMap(rsp -> {
                     try {
                         AppLogger.d("接收到分辨率消息,准备播放直播");
-                        hasLiveStream = true;
+
                         if (mView != null) {
                             mView.onResolution(rsp);
                         }
@@ -144,6 +138,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
+                    hasLiveStream = true;
                     feedRtcp.feed(rtcp);
                     if (mView != null) {
                         mView.onFlowSpeed(rtcp.bitRate);
@@ -231,7 +226,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         .map(dis -> {
                             AppLogger.d("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
                             if (mView != null) {
-                                mView.onVideoDisconnect(dis.code);
+                                switch (dis.code) {
+                                    case STOP_VIERER_BY_SYSTEM:
+                                        break;
+                                    default:
+                                        mView.onVideoDisconnect(dis.code);
+                                }
                             }
                             return new RxEvent.LiveResponse(dis, false);
                         })

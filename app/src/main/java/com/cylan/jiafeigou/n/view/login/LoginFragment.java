@@ -643,7 +643,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
             resetView();
-            PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
             AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "")
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                     .subscribe(ret -> {

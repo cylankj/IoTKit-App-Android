@@ -592,7 +592,6 @@ public class DataSourceManager implements JFGSourceManager {
                     return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
-                    AppLogger.d("GGGGGGGGGGGGGGGGGGGGG");
                     try {
                         ArrayList<JFGDPMsg> parameters;
                         DBOption.DeviceOption option;

@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -108,13 +110,16 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
             ImageView clientImage = holder.getView(R.id.iv_mine_suggestion_client);
             MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage, getContext().getResources());
-            Glide.with(getContext()).load(item.getIcon())
-                    .asBitmap()
-                    .error(R.drawable.icon_mine_head_normal)
-                    .centerCrop()
-                    .placeholder(R.drawable.icon_mine_head_normal)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(myImageViewTarget);
+            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+            if (account != null) {
+                Glide.with(getContext()).load(account.getPhotoUrl())
+                        .asBitmap()
+                        .error(R.drawable.icon_mine_head_normal)
+                        .centerCrop()
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(myImageViewTarget);
+            }
 
         } else {     //服务端
             TextView textView = holder.getView(R.id.tv_mine_suggestion_server_speak);

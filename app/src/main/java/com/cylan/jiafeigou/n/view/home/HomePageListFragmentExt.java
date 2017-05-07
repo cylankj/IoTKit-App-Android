@@ -183,8 +183,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initProgressBarColor();
         initSomeViewMargin();
         need2ShowUseCase();
-        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
-        if (ListUtils.isEmpty(devices)) emptyViewState.setVisibility(View.VISIBLE);
+//        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+//        if (ListUtils.isEmpty(devices)) emptyViewState.setVisibility(View.VISIBLE);
         onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
         view.post(updateAccount);
     }
@@ -460,9 +460,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void autoLoginTip(int code) {
         if (code == JError.LoginTimeOut) {
-            ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
-        } else if (code == JError.NoNet) {
-            ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
+            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+                ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
+            } else {
+                ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
+            }
         }
     }
 
