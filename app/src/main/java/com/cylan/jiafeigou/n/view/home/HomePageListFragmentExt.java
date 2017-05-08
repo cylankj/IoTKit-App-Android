@@ -271,9 +271,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         this.basePresenter = basePresenter;
     }
 
-    @UiThread
-    @Override
-    public void onItemsRsp(List<Device> resultList) {
+    private List<Device> resultList;
+
+    private void upadateImmidiatly() {
         try {
             if (getView() != null) {
                 //mItemAdapter.clear();//别暴力刷新,存在闪烁.不推荐.
@@ -309,6 +309,22 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             }
         } catch (Exception e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
+        }
+    }
+
+    private Runnable runnable = this::upadateImmidiatly;
+
+    @UiThread
+    @Override
+    public void onItemsRsp(List<Device> resultList) {
+        this.resultList = resultList;
+        if (getView() != null) {
+            if (ListUtils.isEmpty(mItemAdapter.getAdapterItems())) {
+                upadateImmidiatly();
+            } else {
+                getView().removeCallbacks(runnable);
+                getView().postDelayed(runnable, 300);
+            }
         }
     }
 

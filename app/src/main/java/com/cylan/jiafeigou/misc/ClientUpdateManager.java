@@ -349,12 +349,13 @@ public class ClientUpdateManager {
         PackageDownloadTask packageDownloadAction = downloadMap.get(rsp.uuid);
         if (packageDownloadAction != null) {
             packageDownloadAction.setDownloadListener(listener);
-            return;
-        } else {
-            packageDownloadAction = new PackageDownloadTask(rsp);
-            packageDownloadAction.setDownloadListener(listener);
-            downloadMap.put(rsp.uuid, packageDownloadAction);
+            RxEvent.CheckDevVersionRsp remainRsp = packageDownloadAction.getCheckDevVersionRsp();
+            if (remainRsp != null && remainRsp.downloadState == JConstant.D.DOWNLOADING)
+                return;
         }
+        packageDownloadAction = new PackageDownloadTask(rsp);
+        packageDownloadAction.setDownloadListener(listener);
+        downloadMap.put(rsp.uuid, packageDownloadAction);
         Observable.just("go")
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(packageDownloadAction, AppLogger::e);
@@ -410,11 +411,11 @@ public class ClientUpdateManager {
                     AppLogger.d("文件大小:" + fileSize);
                     if (fileSize == file.length()) {
                         AppLogger.d("文件存在,完整");
+                        rsp.downloadState = JConstant.D.SUCCESS;
+                        rsp.lastUpdateTime = System.currentTimeMillis();
+                        updateInfo(rsp.uuid, rsp);
                         if (downloadListener != null) {
                             downloadListener.finished(file);
-                            rsp.downloadState = JConstant.D.SUCCESS;
-                            rsp.lastUpdateTime = System.currentTimeMillis();
-                            updateInfo(rsp.uuid, rsp);
                         }
                         return;
                     }
@@ -441,11 +442,11 @@ public class ClientUpdateManager {
                     FileOutputStream fos = null;
                     try {
                         long total = response.body().contentLength();
+                        rsp.downloadState = JConstant.D.DOWNLOADING;
+                        rsp.lastUpdateTime = System.currentTimeMillis();
+                        updateInfo(rsp.uuid, rsp);
                         if (downloadListener != null) {
                             downloadListener.start(total);
-                            rsp.downloadState = JConstant.D.DOWNLOADING;
-                            rsp.lastUpdateTime = System.currentTimeMillis();
-                            updateInfo(rsp.uuid, rsp);
                         }
                         Log.d(TAG, "total------>" + total);
                         long current = 0;
@@ -455,27 +456,26 @@ public class ClientUpdateManager {
                             current += len;
                             fos.write(buf, 0, len);
                             Log.d(TAG, "current------>" + current);
+                            rsp.downloadState = JConstant.D.DOWNLOADING;
+                            rsp.lastUpdateTime = System.currentTimeMillis();
                             if (downloadListener != null) {
                                 downloadListener.process(current, total);
-                                rsp.downloadState = JConstant.D.DOWNLOADING;
-                                rsp.lastUpdateTime = System.currentTimeMillis();
-//                                updateInfo(rsp.uuid, rsp);
                             }
                         }
+                        rsp.downloadState = JConstant.D.SUCCESS;
+                        rsp.lastUpdateTime = System.currentTimeMillis();
+                        updateInfo(rsp.uuid, rsp);
                         fos.flush();
                         if (downloadListener != null) {
                             downloadListener.finished(new File(rsp.fileDir, rsp.fileName));
-                            rsp.downloadState = JConstant.D.SUCCESS;
-                            rsp.lastUpdateTime = System.currentTimeMillis();
-                            updateInfo(rsp.uuid, rsp);
                         }
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
+                        rsp.downloadState = JConstant.D.FAILED;
+                        rsp.lastUpdateTime = System.currentTimeMillis();
+                        updateInfo(rsp.uuid, rsp);
                         if (downloadListener != null) {
                             downloadListener.failed(e);
-                            rsp.downloadState = JConstant.D.FAILED;
-                            rsp.lastUpdateTime = System.currentTimeMillis();
-                            updateInfo(rsp.uuid, rsp);
                         }
                         FileUtils.delete(JConstant.MISC_PATH, rsp.fileName);
                     } finally {

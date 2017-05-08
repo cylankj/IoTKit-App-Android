@@ -146,11 +146,15 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      * @return
      */
     private boolean hasNewFirmware() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        if (JFGRules.isPanoramicCam(device.pid)) return false;//全景不显示
-        String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-        RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
-        return description.hasNew;
+        try {
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            if (JFGRules.isPanoramicCam(device.pid)) return false;//全景不显示
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            return description.hasNew;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

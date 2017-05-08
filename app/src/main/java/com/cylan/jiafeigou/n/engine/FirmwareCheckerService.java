@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -71,7 +72,7 @@ public class FirmwareCheckerService extends Service {
             if (JFGRules.isPanoramicCam(device.pid)) return;//全景设备不显示
             Subscription s = Observable.just("go")
                     .subscribeOn(Schedulers.newThread())
-                    .delay(3, TimeUnit.SECONDS)
+                    .timeout(5, TimeUnit.SECONDS)
                     .flatMap(what -> {
                         long seq;
                         try {
@@ -106,6 +107,8 @@ public class FirmwareCheckerService extends Service {
                             long checkTime = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, -1);
                             if (checkTime == -1 || System.currentTimeMillis() - checkTime > 24 * 3600 * 1000L) {
                                 PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
+                                RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
+                                AppLogger.d("检查到有新固件:" + uuid);
                                 return ret;
                             }
                             return null;
@@ -114,8 +117,16 @@ public class FirmwareCheckerService extends Service {
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid)),
-                            AppLogger::e);
+                    .subscribe(ret -> {
+                    }, throwable -> {
+                        if (throwable instanceof TimeoutException) {
+                            mapSubscription.remove(uuid);
+                            if (!mapSubscription.hasSubscriptions()) {
+                                stopSelf();
+                                AppLogger.e("停止service");
+                            }
+                        }
+                    });
             mapSubscription.add(s, uuid);
         }
     }

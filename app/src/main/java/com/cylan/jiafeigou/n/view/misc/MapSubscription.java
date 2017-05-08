@@ -153,4 +153,13 @@ public class MapSubscription implements Subscription {
         }
         return false;
     }
+
+    public boolean hasSubscription(String tag) {
+        if (!unsubscribed) {
+            synchronized (this) {
+                return !unsubscribed && subscriptions != null && subscriptions.containsKey(tag);
+            }
+        }
+        return false;
+    }
 }
