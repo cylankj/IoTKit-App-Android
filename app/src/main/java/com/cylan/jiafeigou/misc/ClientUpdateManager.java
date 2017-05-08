@@ -545,7 +545,7 @@ public class ClientUpdateManager {
             //1.发送一个fping,等待fpingRsp,从中读取ip,port.
             RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                     .subscribeOn(Schedulers.newThread())
-                    .timeout(2, TimeUnit.SECONDS)//设备无响应
+                    .timeout(3, TimeUnit.SECONDS)//设备无响应
                     .filter(ret -> !TextUtils.isEmpty(ret.ip) && ret.port != 0)
                     .flatMap(localUdpMsg -> {
                         MessagePack msgPack = new MessagePack();
@@ -578,6 +578,7 @@ public class ClientUpdateManager {
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                AppLogger.d("send fping :" + UdpConstant.IP);
             } catch (JfgException e) {
                 e.printStackTrace();
             }

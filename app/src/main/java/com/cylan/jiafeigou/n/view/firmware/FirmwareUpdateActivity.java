@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
@@ -80,6 +81,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 //没下载,下载失败,或者下载成功.
                 String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
                 description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+                if (TextUtils.equals(description.version, currentVersion)) {
+                    description = null;
+                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+                    //已经是最新的了.
+                }
             } else {
                 //下载中
                 packageDownloadAction.setDownloadListener(new FirmwareUpdateActivity.Download(this));
@@ -106,8 +112,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             AppLogger.e("err :" + MiscUtils.getErr(e));
             tvCurrentVersion.setText(currentVersion);
             tvHardwareNewVersion.setText(currentVersion);
+            hardwareUpdatePoint.setVisibility(View.INVISIBLE);
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-            tvDownloadSoftFile.setEnabled(false);
         }
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
         if (updatingTask != null) {
@@ -146,7 +152,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         tvDownloadSoftFile.post(() -> {
             tvDownloadSoftFile.setEnabled(true);
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-            downloadProgress.setProgress(100);
+            llDownloadPgContainer.setVisibility(View.GONE);
         });
     }
 
@@ -219,9 +225,18 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     @OnClick(R.id.tv_download_soft_file)
     public void downloadOrUpdate() {
+        if (TextUtils.equals(tvCurrentVersion.getText(), tvHardwareNewVersion.getText())) {
+            ToastUtil.showToast(getString(R.string.NEW_VERSION));
+            return;
+        }
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return;
+        }
+        Device device = basePresenter.getDevice();
+        if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            ToastUtil.showToast(getString(R.string.NOT_ONLINE));
             return;
         }
         String txt = tvDownloadSoftFile.getText().toString();

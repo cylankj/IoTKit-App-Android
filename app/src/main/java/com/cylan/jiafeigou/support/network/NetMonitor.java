@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -46,7 +47,7 @@ public class NetMonitor {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            AppLogger.d("networkCallbackList:" + networkCallbackList);
+            Log.d("networkCallbackList", "networkCallbackList:" + networkCallbackList);
             String action = intent.getAction();
             if (networkCallbackList != null) {
                 Iterator<String> iterator = networkCallbackList.keySet().iterator();

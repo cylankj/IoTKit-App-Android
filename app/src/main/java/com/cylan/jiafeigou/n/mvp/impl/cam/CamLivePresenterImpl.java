@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
@@ -281,6 +280,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .map(rsp -> {
                             //只需要初始化一天的就可以啦.
                             assembleTheDay(rsp.historyFiles);
+                            AppLogger.d("历史录像恢复");
                             return null;
                         })
                         .filter(result -> mView != null)
@@ -338,6 +338,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         reset();
         //加入管理,如果播放失败,收到disconnect
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
+        liveSubscription.add(errCodeSub(), "errCodeSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 int ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
@@ -367,7 +368,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.i("initSubscription to receive rtcp");
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub(), "rtcpNotifySub");
-            liveSubscription.add(errCodeSub(), "errCodeSub");
             return null;
         }).subscribe(objectObservable -> {
                     AppLogger.d("播放流程走通 done");
@@ -500,7 +500,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             t = 1;
             if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
         }
-        final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
+//        final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
+        final long time = 1496200406;
         getView().onLivePrepare(TYPE_HISTORY);
         updatePrePlayType(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
@@ -512,6 +513,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         reset();
         //加入管理,如果播放失败,收到disconnect
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
+        liveSubscription.add(errCodeSub(), "errCodeSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
@@ -546,7 +548,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.i("initSubscription to receive rtcp");
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub(), "rtcpNotifySub");
-            liveSubscription.add(errCodeSub(), "errCodeSub");
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
