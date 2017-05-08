@@ -318,6 +318,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onItemsRsp(List<Device> resultList) {
         this.resultList = resultList;
+        if (!getUserVisibleHint()) return;
         if (getView() != null) {
             if (ListUtils.isEmpty(mItemAdapter.getAdapterItems())) {
                 upadateImmidiatly();
