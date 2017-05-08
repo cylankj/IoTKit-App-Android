@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 
 import java.util.ArrayList;
 

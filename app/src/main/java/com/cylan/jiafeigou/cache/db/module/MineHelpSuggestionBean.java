@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.mvp.model;
+package com.cylan.jiafeigou.cache.db.module;
 
 
 import org.greenrobot.greendao.annotation.Entity;

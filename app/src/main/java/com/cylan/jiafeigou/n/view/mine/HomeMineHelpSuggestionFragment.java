@@ -21,7 +21,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
-import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
