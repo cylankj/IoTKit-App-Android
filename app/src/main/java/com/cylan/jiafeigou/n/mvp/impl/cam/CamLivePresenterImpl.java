@@ -97,12 +97,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 帧率记录
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
-    private static long checkNewVersionTime = 0;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
         view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
+        if (historyDataProvider != null) historyDataProvider.clean();
     }
 
     @Override
@@ -294,6 +294,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }))
                 .subscribe(ret -> {
                 }, AppLogger::e);
+        removeSubscription("getHistoryList");
         addSubscription(subscription, "getHistoryList");
     }
 
@@ -383,7 +384,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.newThread())
                 .filter(ret -> ret != null && ret.code != 0)
                 .retry()
-                .subscribe(ret -> stopPlayVideo(ret.code), AppLogger::e);
+                .subscribe(ret -> stopPlayVideo(ret.code)
+                        .subscribe(result -> {
+                        }, AppLogger::e), AppLogger::e);
     }
 
     /**
@@ -500,8 +503,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             t = 1;
             if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
         }
-//        final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
-        final long time = 1496200406;
+        final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
         getView().onLivePrepare(TYPE_HISTORY);
         updatePrePlayType(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());

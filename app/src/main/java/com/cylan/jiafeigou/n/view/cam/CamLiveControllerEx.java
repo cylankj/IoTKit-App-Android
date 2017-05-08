@@ -508,6 +508,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 setLoadingState(null, null);
                 break;
             case JError.ErrorSDHistoryAll:
+                livePlayState = PLAY_STATE_LOADING_FAILED;
+                setLoadingState(getContext().getString(R.string.Historical_Read), null);
                 if (getContext() instanceof Activity)
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_Read),
@@ -520,6 +522,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             });
                 break;
             case JError.ErrorSDFileIO:
+                livePlayState = PLAY_STATE_LOADING_FAILED;
+                setLoadingState(getContext().getString(R.string.Historical_Failed), null);
                 if (getContext() instanceof Activity)
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_Failed),
@@ -532,6 +536,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             });
                 break;
             case JError.ErrorSDIO:
+                livePlayState = PLAY_STATE_LOADING_FAILED;
+                setLoadingState(getContext().getString(R.string.Historical_No), null);
                 if (getContext() instanceof Activity)
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_No),
