@@ -11,6 +11,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -30,11 +31,13 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
@@ -65,9 +68,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -109,63 +109,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void start() {
         super.start();
-        checkNewVersion();
+        FirmwareCheckerService.checkVersion(uuid);
     }
 
-    private Subscription checkNewVersion() {
-        if (checkNewVersionTime != 0 && System.currentTimeMillis() - checkNewVersionTime < 2 * 60 * 1000L)
-            return null;
-        if (JFGRules.isShareDevice(uuid)) return null;//分享设备不显示
-        if (JFGRules.isPanoramicCam(getDevice().pid)) return null;//全景设备不显示
-        checkNewVersionTime = System.currentTimeMillis();
-        Subscription s = Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
-                .delay(3, TimeUnit.SECONDS)
-                .flatMap(what -> {
-                    long seq;
-                    try {
-                        String version = getDevice().$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
-                        seq = BaseApplication.getAppComponent().getCmd().checkDevVersion(getDevice().pid, uuid, version);
-                    } catch (Exception e) {
-                        AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
-                        seq = -1L;
-                    }
-                    return Observable.just(seq);
-                })
-                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
-                        .subscribeOn(Schedulers.newThread())
-                        .filter(ret -> {
-                            if (!ret.hasNew) {
-                                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-                            }
-                            return ret.hasNew;
-                        }))
-                .map(ret -> {
-                    try {
-                        Request request = new Request.Builder()
-                                .url(ret.url)
-                                .build();
-                        Response response = new OkHttpClient().newCall(request).execute();
-                        ret.fileSize = response.body().contentLength();
-                        ret.fileDir = JConstant.MISC_PATH;
-                        ret.fileName = "." + uuid;
-                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
-                        long checkTime = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, -1);
-                        if (checkTime == -1 || System.currentTimeMillis() - checkTime > 24 * 3600 * 1000L) {
-                            PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
-                            return ret;
-                        }
-                        return null;
-                    } catch (IOException e) {
-                        return null;
-                    }
-                })
-//                                .filter()seq
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> ret != null && check())
-                .subscribe(ret -> mView.showFirmwareDialog(), AppLogger::e);
-        addSubscription(s, "tryGet");
-        return null;
+    private Subscription checkNewVersionRsp() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class)
+                .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.uuid, uuid))
+                .retry()
+                .subscribe(ret ->
+                        mView.showFirmwareDialog(), AppLogger::e);
     }
 
     /**
@@ -415,6 +367,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.i("initSubscription to receive rtcp");
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub(), "rtcpNotifySub");
+            liveSubscription.add(errCodeSub(), "errCodeSub");
             return null;
         }).subscribe(objectObservable -> {
                     AppLogger.d("播放流程走通 done");
@@ -423,6 +376,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                 },
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
+    }
+
+    private Subscription errCodeSub() {
+        return RxBus.getCacheInstance().toObservable(JFGHistoryVideoErrorInfo.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> ret != null && ret.code != 0)
+                .retry()
+                .subscribe(ret -> stopPlayVideo(ret.code), AppLogger::e);
     }
 
     /**
@@ -585,6 +546,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.i("initSubscription to receive rtcp");
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub(), "rtcpNotifySub");
+            liveSubscription.add(errCodeSub(), "errCodeSub");
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
@@ -854,7 +816,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync()};
+        return new Subscription[]{robotDataSync(), checkNewVersionRsp()};
     }
 
 

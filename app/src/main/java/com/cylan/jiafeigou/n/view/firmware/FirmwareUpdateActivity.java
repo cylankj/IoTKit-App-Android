@@ -104,6 +104,10 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             }
         } catch (Exception e) {
             AppLogger.e("err :" + MiscUtils.getErr(e));
+            tvCurrentVersion.setText(currentVersion);
+            tvHardwareNewVersion.setText(currentVersion);
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+            tvDownloadSoftFile.setEnabled(false);
         }
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
         if (updatingTask != null) {
@@ -151,7 +155,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         tvDownloadSoftFile.post(() -> {
             tvDownloadSoftFile.setEnabled(false);
             tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, MiscUtils.FormatSdCardSize(currentByte) + "/" + MiscUtils.FormatSdCardSize(totalByte)));
-            tvLoadingShow.setText(MiscUtils.FormatSdCardSize(currentByte / 8) + "/" + MiscUtils.FormatSdCardSize(totalByte));
+            tvLoadingShow.setText(MiscUtils.FormatSdCardSize(currentByte) + "/" + MiscUtils.FormatSdCardSize(totalByte));
             if (totalByte == 0) return;
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             downloadProgress.setProgress((int) ((float) currentByte / totalByte * 100));

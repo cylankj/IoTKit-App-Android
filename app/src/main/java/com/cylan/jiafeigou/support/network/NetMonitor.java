@@ -53,7 +53,7 @@ public class NetMonitor {
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     ArrayList<String> filterList = filterMap.get(key);
-                    if (filterList.contains(action))
+                    if (filterList.contains(action) && networkCallbackList.containsKey(key))
                         networkCallbackList.get(key).onNetworkChanged(context, intent);
                 }
             }

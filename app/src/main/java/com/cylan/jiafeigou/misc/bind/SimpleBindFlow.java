@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -151,17 +152,23 @@ public class SimpleBindFlow extends AFullBind {
                             serverAddress,
                             port,
                             80);
-            AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
-            AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
             //增加绑定随机数.
             bindCode = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount() + System.currentTimeMillis();
+            bindCode = MD5Util.lowerCaseMD5(bindCode);//cast to md5
+            devicePortrait.bindCode = bindCode;
             JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
                     udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
             try {
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                        UdpConstant.PORT, code.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                        UdpConstant.PORT, code.toBytes());
             } catch (JfgException e) {
                 AppLogger.e("e: " + e.getLocalizedMessage());
             }
+            AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
+            AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
+            AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                         UdpConstant.PORT,
@@ -310,7 +317,7 @@ public class SimpleBindFlow extends AFullBind {
                                 setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
-                        AppLogger.e("err:"+ MiscUtils.getErr(e));
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                     return Observable.just(true);
                 });

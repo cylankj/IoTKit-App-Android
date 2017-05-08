@@ -1104,11 +1104,11 @@ public class RxEvent {
         }
     }
 //
-//    public static final class FirmwareUpdate {
-//        public String uuid;
-//
-//        public FirmwareUpdate(String uuid) {
-//            this.uuid = uuid;
-//        }
-//    }
+    public static final class FirmwareUpdateRsp {
+        public String uuid;
+
+        public FirmwareUpdateRsp(String uuid) {
+            this.uuid = uuid;
+        }
+    }
 }

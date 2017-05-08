@@ -36,15 +36,18 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -322,6 +325,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void deviceUpdate(Device device) {
+        try {
+            if (JFGRules.isPanoramicCam(device.pid)) return;//全景不显示
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            svSettingDeviceDetail.showRedHint(description.hasNew);
+        } catch (Exception e) {
+        }
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         //////////////////////////分享账号////////////////////////////////////////////
         if (!TextUtils.isEmpty(device.shareAccount)) {

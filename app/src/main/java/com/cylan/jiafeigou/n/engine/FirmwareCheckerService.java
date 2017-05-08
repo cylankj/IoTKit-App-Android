@@ -1,24 +1,35 @@
 package com.cylan.jiafeigou.n.engine;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -27,12 +38,13 @@ import rx.Observable;
  * <p>
  * TODO: Customize class - update intent actions and extra parameters.
  */
-public class FirmwareCheckerService extends IntentService {
+public class FirmwareCheckerService extends Service {
 
     private static final String UUID_TAG = "CID";
 
+    private MapSubscription mapSubscription = new MapSubscription();
+
     public FirmwareCheckerService() {
-        super("FirmwareCheckerService");
     }
 
 
@@ -43,125 +55,80 @@ public class FirmwareCheckerService extends IntentService {
         context.startService(intent);
     }
 
-
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        onHandleIntent(intent);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             String uuid = intent.getStringExtra(UUID_TAG);
-//            //更新时间
-//            FirmwareDescription description = null;
-//            try {
-//                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-//                description = new Gson().fromJson(content, FirmwareDescription.class);
-//            } catch (Exception e) {
-//                description = null;
-//            }
-//            if (validateContent(description)) {
-//                //可以升级了.包是好的
-//                long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + description.uuid, -1L);
-//                if (time != -1 && System.currentTimeMillis() - time < 24 * 3600 * 1000) return;
-//                //一天提示一次.
-//            } else {
-            //需要下载更新的.
-            //如果下载失败,都会去下载.
-            //发送请求
-            Observable.just("go")
-                    .map(s -> {
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            mapSubscription.remove(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            AppLogger.d("开始检查升级:" + uuid);
+            if (JFGRules.isShareDevice(uuid)) return;//分享设备不显示
+            if (JFGRules.isPanoramicCam(device.pid)) return;//全景设备不显示
+            Subscription s = Observable.just("go")
+                    .subscribeOn(Schedulers.newThread())
+                    .delay(3, TimeUnit.SECONDS)
+                    .flatMap(what -> {
+                        long seq;
                         try {
                             String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
-                            return BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
+                            seq = BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
                         } catch (Exception e) {
                             AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
-                            return -1L;
+                            seq = -1L;
+                        }
+                        return Observable.just(seq);
+                    })
+                    .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
+                            .subscribeOn(Schedulers.newThread())
+                            .filter(ret -> {
+                                if (!ret.hasNew) {
+                                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
+                                }
+                                return ret.hasNew;
+                            }))
+                    .map(ret -> {
+                        try {
+                            Request request = new Request.Builder()
+                                    .url(ret.url)
+                                    .build();
+                            Response response = new OkHttpClient().newCall(request).execute();
+                            ret.fileSize = response.body().contentLength();
+                            ret.fileDir = JConstant.MISC_PATH;
+                            ret.hasNew = true;
+                            ret.fileName = "." + uuid;
+                            ret.uuid = uuid;
+                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
+                            long checkTime = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, -1);
+                            if (checkTime == -1 || System.currentTimeMillis() - checkTime > 24 * 3600 * 1000L) {
+                                PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
+                                return ret;
+                            }
+                            return null;
+                        } catch (IOException e) {
+                            return null;
                         }
                     })
-                    .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class))
-//                                .filter(checkDevVersionRsp -> checkDevVersionRsp.seq == aLong))
-                    .subscribe(result -> {
-                        AppLogger.d("开始下载固件?");
-                        if (result.hasNew) {
-                        }
-//                            PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
-//                            FirmwareDescription desc = new FirmwareDescription();
-//                            desc.description = result.tip;
-//                            desc.url = result.url;
-//                            desc.md5 = result.md5;
-//                            desc.version = result.version;
-//                            desc.fileDir = JConstant.MISC_PATH;
-//                            desc.fileName = "." + uuid;
-//                            desc.uuid = uuid;
-//                            try {
-//                                FileUtils.deleteFile(desc.fileDir + File.separator + desc.fileName);
-//                            } catch (Exception e) {
-//                            }
-//                            startDownloadFirmware(desc);
-                    }, AppLogger::e);
-
-        }
-//        }
-    }
-
-    /**
-     * 24小时的规则,只有下载成功的前提下生效
-     *
-     * @param description
-     * @return
-     */
-    private boolean validateContent(FirmwareDescription description) {
-        if (description == null) return false;//没有下载过
-        if (description.downloadState == JConstant.D.FAILED) return false;//下载失败
-        if (TextUtils.isEmpty(description.fileDir)) return false;//文件路径出错
-        File file = new File(description.fileDir, description.fileName);
-        if (!file.exists()) return false;//文件不存在
-        //下载中,App异常了.这个条件优先级比较低,如果很就之前就下载好了呢.
-        if (System.currentTimeMillis() - description.downloadUpdateTime > 2 * 1000 * 60)
-            return false;
-        //
-        //        String localFileMd5 = FileUtils.getFileMd5(description.filePath);
-//        AppLogger.d("localFileMd5:" + localFileMd5);
-//        if (!TextUtils.equals(localFileMd5, description.md5)) {
-//            FileUtils.deleteFile(description.filePath);
-//            return false;
-//        }
-        return true;
-    }
-
-
-    private void startDownloadFirmware(FirmwareDescription desc) {
-        try {
-            Gson gson = new Gson();
-            AppLogger.d("开始升级");
-        } catch (Exception e) {
-            AppLogger.e(MiscUtils.getErr(e));
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid)),
+                            AppLogger::e);
+            mapSubscription.add(s, uuid);
         }
     }
 
-    public static final class FirmwareDescription {
-        //        public long lastCheckTime;//一天检查一次.
-        public long downloadUpdateTime;//下载更新的时间, {如果上次是5s前+文件md5不匹配,那就证明失败了.}
-        public long downloadState;//下载状态
-        public String fileDir;//本地路径
-        public String fileName;
-        public String url;
-        public String version;
-        public String description;
-        public String md5;
-        public String uuid;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapSubscription.unsubscribe();
+    }
 
-        @Override
-        public String toString() {
-            return "FirmwareDescription{" +
-                    ", downloadUpdateTime=" + downloadUpdateTime +
-                    ", downloadState=" + downloadState +
-                    ", fileDir='" + fileDir + '\'' +
-                    ", fileName='" + fileName + '\'' +
-                    ", url='" + url + '\'' +
-                    ", version='" + version + '\'' +
-                    ", description='" + description + '\'' +
-                    ", md5='" + md5 + '\'' +
-                    ", uuid='" + uuid + '\'' +
-                    '}';
-        }
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }

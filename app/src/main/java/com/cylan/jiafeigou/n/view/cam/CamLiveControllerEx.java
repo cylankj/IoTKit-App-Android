@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -67,6 +68,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
 /**
@@ -445,7 +447,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.v_live).setEnabled(true);
         liveViewWithThumbnail.showFlowView(false, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
-        handlePlayErr(errCode);
+        handlePlayErr(presenter, errCode);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         post(portHideRunnable);
@@ -457,7 +459,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      *
      * @param errCode
      */
-    private void handlePlayErr(int errCode) {
+    private void handlePlayErr(CamLiveContract.Presenter presenter, int errCode) {
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -510,21 +512,36 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_Read),
                             getContext().getString(R.string.Historical_Read),
-                            getContext().getString(R.string.OK), null);
+                            getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                CamLiveContract.PrePlayType prePlayType = presenter.getPrePlayType();
+                                prePlayType.type = TYPE_LIVE;
+                                presenter.updatePrePlayType(prePlayType);
+                                presenter.startPlay();
+                            });
                 break;
             case JError.ErrorSDFileIO:
                 if (getContext() instanceof Activity)
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
                             getContext().getString(R.string.Historical_Failed),
                             getContext().getString(R.string.Historical_Failed),
-                            getContext().getString(R.string.OK), null);
+                            getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                CamLiveContract.PrePlayType prePlayType = presenter.getPrePlayType();
+                                prePlayType.type = TYPE_LIVE;
+                                presenter.updatePrePlayType(prePlayType);
+                                presenter.startPlay();
+                            });
                 break;
             case JError.ErrorSDIO:
                 if (getContext() instanceof Activity)
                     AlertDialogManager.getInstance().showDialog((Activity) getContext(),
-                            getContext().getString(R.string.HistoricalCard_Failed),
-                            getContext().getString(R.string.HistoricalCard_Failed),
-                            getContext().getString(R.string.OK), null);
+                            getContext().getString(R.string.Historical_No),
+                            getContext().getString(R.string.Historical_No),
+                            getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                CamLiveContract.PrePlayType prePlayType = presenter.getPrePlayType();
+                                prePlayType.type = TYPE_LIVE;
+                                presenter.updatePrePlayType(prePlayType);
+                                presenter.startPlay();
+                            });
                 break;
             default:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
