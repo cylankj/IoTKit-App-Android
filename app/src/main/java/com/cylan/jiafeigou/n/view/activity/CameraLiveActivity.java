@@ -18,20 +18,23 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
-import com.cylan.jiafeigou.push.BuildProperties;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -131,9 +134,23 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private void updateRedHint() {
         if (imgVCameraTitleTopSetting != null) {
             SettingTip settingTip = MiscUtils.getObjectFromSP(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, SettingTip.class);
+            boolean result = hasNewFirmware();
             //延时摄影，暂时隐藏。
-            imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
+            imgVCameraTitleTopSetting.setShowDot(result || settingTip == null || settingTip.isBeautiful());
         }
+    }
+
+    /**
+     * true 有新版本
+     *
+     * @return
+     */
+    private boolean hasNewFirmware() {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        if (JFGRules.isPanoramicCam(device.pid)) return false;//全景不显示
+        String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+        RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+        return description.hasNew;
     }
 
     @Override
