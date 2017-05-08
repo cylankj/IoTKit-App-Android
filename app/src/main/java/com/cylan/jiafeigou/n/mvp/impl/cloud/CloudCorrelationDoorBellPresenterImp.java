@@ -93,7 +93,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                         getView().initRelativeRecycleView(bellInfoBeen);
                         getView().setOnRelaItemClickListener(new RelativeItemListener());
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                         getView().initUnRelativeRecycleView(unRelativieList);
                         getView().setOnUnRelItemClickListener(new UnRelativeItemListener());
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -160,7 +160,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                             getView().notifyUnRelativeRecycle(holder, viewType, layoutPosition, item, notifyFlag);
                             getView().notifyRelativeRecycle(holder, viewType, layoutPosition, item, notifyFlag);
                         }
-                    },e->AppLogger.d(e.getMessage()));
+                    }, e -> AppLogger.d(e.getMessage()));
 
         }
     }
@@ -187,7 +187,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                                 showFirstUnRelDialog(item);
                             }
                         }
-                    },e-> AppLogger.d(e.getMessage()));
+                    }, e -> AppLogger.d(e.getMessage()));
         }
     }
 

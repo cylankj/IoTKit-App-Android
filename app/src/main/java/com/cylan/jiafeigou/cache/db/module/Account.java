@@ -72,9 +72,9 @@ public class Account extends BasePropertyHolder<Account> {
 
     @Generated(hash = 1864618567)
     public Account(Long _id, String account, String server, String password, int loginType, String phone,
-            String token, String alias, boolean enablePush, boolean enableSound, String email,
-            boolean enableVibrate, String photoUrl, String action, String state, String option,
-            String accountJson) {
+                   String token, String alias, boolean enablePush, boolean enableSound, String email,
+                   boolean enableVibrate, String photoUrl, String action, String state, String option,
+                   String accountJson) {
         this._id = _id;
         this.account = account;
         this.server = server;

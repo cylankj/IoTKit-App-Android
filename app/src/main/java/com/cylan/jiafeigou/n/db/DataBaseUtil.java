@@ -39,7 +39,7 @@ public class DataBaseUtil {
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
 //                .setDbDir(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator,"smartFile"))
-                .setDbDir(new File(ContextUtils.getContext().getFilesDir().getAbsolutePath() + File.separator,"smartFile"))
+                .setDbDir(new File(ContextUtils.getContext().getFilesDir().getAbsolutePath() + File.separator, "smartFile"))
                 .setDbName(dbName)
                 .setDbVersion(1)
                 .setDbOpenListener(new DbManager.DbOpenListener() {
@@ -58,8 +58,8 @@ public class DataBaseUtil {
         }
     }
 
-    public static void release(){
-        if (uniqueInstance != null){
+    public static void release() {
+        if (uniqueInstance != null) {
             uniqueInstance = null;
         }
     }

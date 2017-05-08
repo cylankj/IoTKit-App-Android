@@ -138,7 +138,7 @@ public class AsyncStartDownload extends Thread {
         if (urlConnection != null) {
             task.size = urlConnection.getContentLength();
             task.extension = MimeTypeMap.getFileExtensionFromUrl(task.url);
-            AppLogger.d("AsyTaskooo:"+task.size);
+            AppLogger.d("AsyTaskooo:" + task.size);
         } else {
 //			MyExtension.AS3_CONTEXT.dispatchStatusEventAsync(
 //					DispatchEcode.EXCEPTION, DispatchElevel.CONNECTION_ERROR);

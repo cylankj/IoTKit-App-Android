@@ -203,7 +203,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void openSendSms() {
-        if (JConstant.EMAIL_REG.matcher(friendAccount).find()){
+        if (JConstant.EMAIL_REG.matcher(friendAccount).find()) {
             sendEmail();
             return;
         }
@@ -221,7 +221,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL,
-                new String[] {friendAccount});
+                new String[]{friendAccount});
         intent.putExtra(Intent.EXTRA_CC, friendAccount); // 抄送人
         intent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.Tap1_share_tips), JConstant.EFAMILY_URL_PREFIX)); // 正文
         startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));

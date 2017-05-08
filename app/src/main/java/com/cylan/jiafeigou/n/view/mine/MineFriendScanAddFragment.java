@@ -114,7 +114,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void showQrCode(String account) {
-        ivErweima.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX+"id="+account, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+        ivErweima.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX + "id=" + account, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     /**
@@ -210,13 +210,13 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         if (getView() != null) {
             if (presenter != null) {
                 String[] split = rawResult.getText().split("=");
-                if (split.length == 2){
-                    if (split[1].equals(account)){
+                if (split.length == 2) {
+                    if (split[1].equals(account)) {
                         ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-                    }else {
+                    } else {
                         presenter.checkScanAccount(split[1]);
                     }
-                }else {
+                } else {
                     scanNoResult();
                 }
             }

@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.mvp.model.DaoSession;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.greenrobot.greendao.DaoException;
@@ -19,7 +20,6 @@ import org.greenrobot.greendao.annotation.Id;
 
 import java.util.Arrays;
 import java.util.Objects;
-import com.cylan.jiafeigou.n.mvp.model.DaoSession;
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -302,7 +302,9 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 69931815)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

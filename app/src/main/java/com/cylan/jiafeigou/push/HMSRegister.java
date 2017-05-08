@@ -70,7 +70,7 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
             signOutResult.setResultCallback(new ResultCallback<SignOutResult>() {
                 @Override
                 public void onResult(SignOutResult result) {
-                // TODO: 登出结果,处理result.getStatus()
+                    // TODO: 登出结果,处理result.getStatus()
                 }
             });
         }

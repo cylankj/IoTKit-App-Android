@@ -7,7 +7,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 

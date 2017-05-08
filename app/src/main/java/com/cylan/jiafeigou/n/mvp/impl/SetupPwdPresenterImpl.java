@@ -51,7 +51,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     @Override
                     public void call(Object s) {
                         try {
-                           BaseApplication.getAppComponent().getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
+                            BaseApplication.getAppComponent().getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

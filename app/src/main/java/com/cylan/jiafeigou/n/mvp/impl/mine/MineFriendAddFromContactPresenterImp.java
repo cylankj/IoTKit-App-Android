@@ -114,10 +114,10 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
         String sort = "sort_key";
-        if(android.os.Build.VERSION.SDK_INT>=19){
-            sort ="phonebook_label";
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            sort = "phonebook_label";
         }
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,sort);
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sort);
         if (cursor == null) return list;
         //向下移动光标
         while (cursor.moveToNext()) {
@@ -237,7 +237,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
-                        if (allContactBean.size() >0){
+                        if (allContactBean.size() > 0) {
                             allContactBean.clear();
                         }
                         allContactBean.addAll(list);

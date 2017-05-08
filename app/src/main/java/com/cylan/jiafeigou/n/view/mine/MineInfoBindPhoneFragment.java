@@ -66,7 +66,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         void onChange(String phone);
     }
 
-    public void setOnChangePhoneListener(OnChangePhoneListener changeAccListener){
+    public void setOnChangePhoneListener(OnChangePhoneListener changeAccListener) {
         this.changeAccListener = changeAccListener;
     }
 
@@ -344,7 +344,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 }
                 ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
                 if (getView() != null) {
-                    if (changeAccListener != null){
+                    if (changeAccListener != null) {
                         changeAccListener.onChange(getInputPhone());
                     }
                     getFragmentManager().popBackStack();
@@ -386,9 +386,9 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     @Override
     public void getSmsCodeResult(int code) {
-        if (code == 192){
+        if (code == 192) {
             ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
-        }else {
+        } else {
             ToastUtil.showNegativeToast("error:" + code);
         }
     }

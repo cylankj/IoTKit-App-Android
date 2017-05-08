@@ -161,8 +161,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     private void initAdaListener() {
         chooseShareDeviceAdapter.setOnCheckClickListener(new ChooseShareDeviceAdapter.OnCheckClickListener() {
             @Override
-            public void onCheckClick(DeviceBean item,boolean over) {
-                if (over){
+            public void onCheckClick(DeviceBean item, boolean over) {
+                if (over) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_Tips));
                     return;
                 }

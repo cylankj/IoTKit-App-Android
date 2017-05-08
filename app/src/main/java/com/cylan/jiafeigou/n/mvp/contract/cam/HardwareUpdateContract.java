@@ -50,7 +50,7 @@ public interface HardwareUpdateContract {
 
         void getFileSize(UpdateFileBean bean);
 
-        void startUpdate(String Ip,short port,String cid);
+        void startUpdate(String Ip, short port, String cid);
 
         Subscription updateBack();
 
@@ -64,7 +64,7 @@ public interface HardwareUpdateContract {
          */
         void endCounting();
 
-        void myDownLoad(String url,String fileName);
+        void myDownLoad(String url, String fileName);
 
         void upgradePing();
 

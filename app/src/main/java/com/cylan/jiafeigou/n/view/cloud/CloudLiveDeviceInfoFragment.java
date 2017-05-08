@@ -107,13 +107,13 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_202_MAC,null);
+        DpMsgDefine.DPPrimary<String> mac = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_202_MAC, null);
         String m = MiscUtils.safeGet(mac, "");
         tvDeviceMac.setText(m);
-        DpMsgDefine.DPPrimary<String> version = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION,null);
+        DpMsgDefine.DPPrimary<String> version = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, null);
         String v = MiscUtils.safeGet(version, "");
         tvSoftVersion.setText(v);
-        DpMsgDefine.DPPrimary<String> sVersion =BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION,null);
+        DpMsgDefine.DPPrimary<String> sVersion = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, null);
         String sv = MiscUtils.safeGet(sVersion, "");
         tvSystemVersion.setText(sv);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -121,7 +121,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
         }
-        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE,null);
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         if (status == null || !status.hasSdcard) {
             tvDeviceStorage.setText(getString(R.string.SD_NO));
         } else {

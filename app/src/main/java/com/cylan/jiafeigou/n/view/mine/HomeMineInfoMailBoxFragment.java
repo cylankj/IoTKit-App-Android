@@ -82,16 +82,16 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             hideSendReqHint();
             if (code == JError.ErrorOK) {
                 //区分第三方登录
-                if (presenter.isOpenLogin()){
+                if (presenter.isOpenLogin()) {
                     JFGAccount userAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                    AppLogger.d("bindmail2:"+userAccount.getPhone());
+                    AppLogger.d("bindmail2:" + userAccount.getPhone());
                     if (TextUtils.isEmpty(userAccount.getPhone())) {
                         jump2SetPasswordFragment(getEditText());
-                    }else {
+                    } else {
                         //绑定成功
                         jump2MailConnectFragment();
                     }
-                }else {
+                } else {
                     //绑定成功
                     jump2MailConnectFragment();
                 }

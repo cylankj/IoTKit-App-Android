@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.util.Iterator;
 import java.util.List;
 
 import rx.Observable;

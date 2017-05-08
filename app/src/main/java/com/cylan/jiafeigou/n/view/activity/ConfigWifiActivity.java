@@ -243,7 +243,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void onNetStateChanged(int state) {
-        if (state != ConnectivityManager.TYPE_WIFI){}
+        if (state != ConnectivityManager.TYPE_WIFI) {
+        }
 //            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         else {
             dismissDialog();

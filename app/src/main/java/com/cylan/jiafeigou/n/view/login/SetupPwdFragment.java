@@ -162,7 +162,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
                     return;
                 }
 
-                if(!NetUtils.isNetworkAvailable(ContextUtils.getContext())){
+                if (!NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
                     ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

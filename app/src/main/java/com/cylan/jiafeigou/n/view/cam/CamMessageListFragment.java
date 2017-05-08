@@ -492,7 +492,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 try {
 
 
-
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
                     boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
                     if (jumpNext) {

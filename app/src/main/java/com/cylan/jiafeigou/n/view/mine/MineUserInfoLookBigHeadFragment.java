@@ -121,9 +121,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
         @Override
         public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-          if (managerWeakReference.get() == null) return false;
+            if (managerWeakReference.get() == null) return false;
 
-              LoadingDialog.dismissLoading(managerWeakReference.get());
+            LoadingDialog.dismissLoading(managerWeakReference.get());
             loadResult = false;
             ToastUtil.showNegativeToast(totas);
             return false;

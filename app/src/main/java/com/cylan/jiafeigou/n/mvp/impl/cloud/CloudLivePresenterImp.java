@@ -123,7 +123,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                         if (getView() != null)
                             getView().refreshView(val1, val2);
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -373,7 +373,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     public void call(Boolean aBoolean) {
                         getView().handlerVideoTalkResult(aBoolean);
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -396,7 +396,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     public void call(Boolean aBoolean) {
                         getView().showVoiceTalkDialog(aBoolean);
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -417,7 +417,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                             }
                         }
                     }
-                },e-> AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -469,7 +469,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public boolean isDeviceOnline() {
-        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET,null);
+        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET, null);
         return net != null && JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0;
     }

@@ -100,7 +100,7 @@ public interface MineShareDeviceContract {
         /**
          * 分享成功后列表中添加一条数据
          */
-        void shareSucceedAdd(int key,ArrayList<RelAndFriendBean> list);
+        void shareSucceedAdd(int key, ArrayList<RelAndFriendBean> list);
 
         /**
          * fragment销毁时清除临时数据

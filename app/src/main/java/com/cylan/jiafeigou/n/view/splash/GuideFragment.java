@@ -70,48 +70,48 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 //        vGuideIndicator.setFocusedIndex(index);
         Log.d("vGuideIndicator", "vGuideIndicator: " + index);
 
-        if (PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN,false) && index == 3){
+        if (PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN, false) && index == 3) {
             AppLogger.d("updata_login");
             resultSub = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultUpdateLogin.class)
                     .subscribeOn(Schedulers.newThread())
-                    .timeout(3,TimeUnit.SECONDS, rx.Observable.just(null)
+                    .timeout(3, TimeUnit.SECONDS, rx.Observable.just(null)
                             .observeOn(AndroidSchedulers.mainThread())
                             .map(o -> {
                                 enterLoginPage();
                                 return null;
                             }))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(rsp->{
-                        if (rsp != null && rsp.code == JError.ErrorOK){
+                    .subscribe(rsp -> {
+                        if (rsp != null && rsp.code == JError.ErrorOK) {
                             //首页
                             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
                             getActivity().finish();
-                        }else {
+                        } else {
                             //登录页
                             enterLoginPage();
                         }
-                        PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN,false);
-                        AppLogger.d("updata_login:"+rsp.code);
+                        PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN, false);
+                        AppLogger.d("updata_login:" + rsp.code);
                     }, AppLogger::e);
-        }else {
+        } else {
             //进入登陆页 login page//这里要用replace
             if (index == 3)
-            enterLoginPage();
+                enterLoginPage();
         }
     }
 
     private void enterLoginPage() {
         if (getActivity() != null)
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, BeforeLoginFragment.newInstance(null))
-                .commitAllowingStateLoss();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                    .commitAllowingStateLoss();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (resultSub != null && !resultSub.isUnsubscribed()){
+        if (resultSub != null && !resultSub.isUnsubscribed()) {
             resultSub.unsubscribe();
         }
     }

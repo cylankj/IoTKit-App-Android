@@ -79,30 +79,36 @@ public class MineReSetMailTip extends Fragment {
         jump2MineInfoFragment();
     }
 
-    public void jump2MineInfoFragment(){
+    public void jump2MineInfoFragment() {
         HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getFragmentManager().findFragmentByTag("personalInformationFragment");
         MineReSetMailTip mailTip = (MineReSetMailTip) getFragmentManager().findFragmentByTag("MineReSetMailTip");
         MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
         HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getFragmentManager().findFragmentByTag("mailBoxFragment");
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (personalInfoFragment != null){
+        if (personalInfoFragment != null) {
             AppLogger.d("infoFrag不为空");
-                    if (setNewPwdFragment != null){ft.remove(setNewPwdFragment);}
-                    if (mailBoxFragment != null){ft.remove(mailBoxFragment);}
-                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
+            if (setNewPwdFragment != null) {
+                ft.remove(setNewPwdFragment);
+            }
+            if (mailBoxFragment != null) {
+                ft.remove(mailBoxFragment);
+            }
+            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                    , R.anim.slide_in_left, R.anim.slide_out_right)
                     .show(personalInfoFragment)
                     .commit();
-        }else {
+        } else {
             AppLogger.d("infoFrag为空");
             HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
-                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
+            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                    , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, fragment, "mineReSetMailTip")
                     .addToBackStack("personalInformationFragment")
                     .commit();
         }
-        if (mailTip != null){ft.remove(mailTip);}
+        if (mailTip != null) {
+            ft.remove(mailTip);
+        }
     }
 }

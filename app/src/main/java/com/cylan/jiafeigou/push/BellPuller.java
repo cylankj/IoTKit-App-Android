@@ -49,6 +49,7 @@ public class BellPuller {
 
     /**
      * 现在从收到 push小到拉起门铃页面可能有15s,这么久.
+     *
      * @param response
      * @param bundle
      */

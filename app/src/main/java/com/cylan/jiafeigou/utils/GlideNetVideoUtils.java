@@ -71,7 +71,7 @@ public class GlideNetVideoUtils {
                                 })
                                 .into(imageView);
                     }
-                },e-> AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
 

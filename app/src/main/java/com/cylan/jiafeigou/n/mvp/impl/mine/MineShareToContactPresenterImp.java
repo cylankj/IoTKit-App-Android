@@ -108,7 +108,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     @Override
                     public void call(String account) {
                         try {
-                           BaseApplication.getAppComponent().getCmd().shareDevice(cid, account);
+                            BaseApplication.getAppComponent().getCmd().shareDevice(cid, account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -284,10 +284,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
         String sort = "sort_key";
-        if(android.os.Build.VERSION.SDK_INT>=19){
-            sort ="phonebook_label";
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            sort = "phonebook_label";
         }
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,sort);
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sort);
         if (cursor == null) {
             return list;
         }

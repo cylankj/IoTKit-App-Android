@@ -135,7 +135,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                }, e -> AppLogger.d("getCheckPhoneCallback"+e.getMessage()));
+                }, e -> AppLogger.d("getCheckPhoneCallback" + e.getMessage()));
     }
 
     /**

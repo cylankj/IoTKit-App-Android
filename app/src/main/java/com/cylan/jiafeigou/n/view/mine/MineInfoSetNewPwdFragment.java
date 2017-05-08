@@ -83,7 +83,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     @Override
@@ -127,7 +127,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                     return;
                 }
 
-                if (presenter.checkIsOverTime()){
+                if (presenter.checkIsOverTime()) {
                     ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
                     //跳转到个人信息页
                     jump2MineInfoFragment();
@@ -151,24 +151,25 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
 
     /**
      * 注册结果
+     *
      * @param code
      */
     @Override
     public void registerResult(int code) {
-        AppLogger.d("open_bind:"+code);
+        AppLogger.d("open_bind:" + code);
         if (code == JError.ErrorOK) {
             IMEUtils.hide(getActivity());
-            if (TextUtils.isEmpty(token)){
+            if (TextUtils.isEmpty(token)) {
                 //增加邮箱验证界面
                 jump2MailConnectFragment();
-            }else {
+            } else {
                 //绑定手机
                 ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
                 jump2MineInfoFragment();
             }
-        } else if (code == JError.ErrorSetPassTimeout){
+        } else if (code == JError.ErrorSetPassTimeout) {
             ToastUtil.showToast(getString(R.string.SUBMIT_FAIL));
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
         }
     }
@@ -186,7 +187,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                 .commit();
     }
 
-    public void backDialog(){
+    public void backDialog() {
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("backPress");
         if (f == null) {
             Bundle bundle = new Bundle();
@@ -202,28 +203,36 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right){
+        if (id == R.id.tv_dialog_btn_right) {
             jump2MineInfoFragment();
         }
     }
 
-    public void jump2MineInfoFragment(){
+    public void jump2MineInfoFragment() {
         HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getFragmentManager().findFragmentByTag("personalInformationFragment");
         MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
         MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getFragmentManager().findFragmentByTag("bindPhoneFragment");
         HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getFragmentManager().findFragmentByTag("mailBoxFragment");
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (personalInfoFragment != null){
+        if (personalInfoFragment != null) {
             AppLogger.d("infoFrag不为空");
-            if (setNewPwdFragment != null){ft.remove(setNewPwdFragment);}
-            if (mailBoxFragment != null){ft.remove(mailBoxFragment);mailBoxFragment.getFragmentManager().popBackStack();}
-            if (bindPhoneFragment != null){ft.remove(bindPhoneFragment);bindPhoneFragment.getFragmentManager().popBackStack();}
+            if (setNewPwdFragment != null) {
+                ft.remove(setNewPwdFragment);
+            }
+            if (mailBoxFragment != null) {
+                ft.remove(mailBoxFragment);
+                mailBoxFragment.getFragmentManager().popBackStack();
+            }
+            if (bindPhoneFragment != null) {
+                ft.remove(bindPhoneFragment);
+                bindPhoneFragment.getFragmentManager().popBackStack();
+            }
             ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                     , R.anim.slide_in_left, R.anim.slide_out_right)
                     .show(personalInfoFragment)
                     .commit();
-        }else {
+        } else {
             AppLogger.d("infoFrag为空");
             HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
             ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -232,6 +241,8 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                     .addToBackStack("personalInformationFragment")
                     .commit();
         }
-        if (setNewPwdFragment != null){ft.remove(setNewPwdFragment);}
+        if (setNewPwdFragment != null) {
+            ft.remove(setNewPwdFragment);
+        }
     }
 }

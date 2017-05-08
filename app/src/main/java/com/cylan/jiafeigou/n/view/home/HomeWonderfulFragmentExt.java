@@ -477,7 +477,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 if (NetUtils.isNetworkAvailable(getContext())) {
                     DPWonderItem bean = homeWonderAdapter.getItem(position);
                     onShareWonderfulContent(bean);
-                }else{
+                } else {
                     ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 }
                 break;

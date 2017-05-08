@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;

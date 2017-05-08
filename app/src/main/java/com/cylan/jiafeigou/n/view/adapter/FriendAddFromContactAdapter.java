@@ -46,7 +46,7 @@ public class FriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> 
             addBtn.setEnabled(false);
             addBtn.setTextColor(Color.parseColor("#ADADAD"));
             addBtn.setBackground(null);
-        }else {
+        } else {
             addBtn.setText(ContextUtils.getContext().getString(R.string.Button_Add));
             addBtn.setEnabled(true);
             addBtn.setTextColor(Color.parseColor("#4b9fd5"));

@@ -192,7 +192,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
             public void onClick(View v) {
 //                getActivity().getSupportFragmentManager().popBackStack();
                 // TODO 去登录
-                PreferencesUtils.putBoolean(JConstant.REG_SWITCH_BOX,true);
+                PreferencesUtils.putBoolean(JConstant.REG_SWITCH_BOX, true);
                 RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(account));
                 RxBus.getCacheInstance().post(new RxEvent.SwitchBox());
                 ActivityUtils.justPop(getActivity());

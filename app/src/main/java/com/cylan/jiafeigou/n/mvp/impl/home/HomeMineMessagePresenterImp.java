@@ -171,7 +171,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                         params.add(msg1);
                         params.add(msg4);
                         seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 100, false, 0);
-                        Log.d(TAG,"getMesgDpData:" + seq);
+                        Log.d(TAG, "getMesgDpData:" + seq);
                     } catch (Exception e) {
                         AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
                         e.printStackTrace();
@@ -179,18 +179,18 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     return seq;
                 })
                 .flatMap(seq -> {
-                    Log.d(TAG,System.currentTimeMillis() + "");
+                    Log.d(TAG, System.currentTimeMillis() + "");
                     Observable<RobotoGetDataRsp> filter = RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> {
-                        Log.d(TAG,"seq:"+rsp.seq+",before seq:"+seq);
+                        Log.d(TAG, "seq:" + rsp.seq + ",before seq:" + seq);
                         return rsp.seq == seq;
 
                     });
-                    Log.d(TAG,"" + System.currentTimeMillis());
+                    Log.d(TAG, "" + System.currentTimeMillis());
                     return filter;
                 })
                 .first()
                 .map(robotoGetDataRsp -> {
-                    Log.e(TAG,"getMesgDpData: robotoGetDataRsp");
+                    Log.e(TAG, "getMesgDpData: robotoGetDataRsp");
                     if (results.size() != 0)
                         results.clear();
                     results.addAll(convertData(robotoGetDataRsp));

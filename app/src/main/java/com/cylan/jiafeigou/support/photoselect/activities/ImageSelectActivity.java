@@ -79,7 +79,7 @@ public class ImageSelectActivity extends HelperActivity {
         });
 
         customToolbar = (CustomToolbar) findViewById(R.id.custom_toolbar);
-        customToolbar.setBackAction(v->finish());
+        customToolbar.setBackAction(v -> finish());
     }
 
     @Override

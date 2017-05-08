@@ -71,10 +71,10 @@ public class AsyncWorker extends Thread {
                 chunkFile.write(buffer, 0, len);
                 process(len);
                 total += len;
-                AppLogger.d("AsyDownloading:"+len);
-                AppLogger.d("AsyDownloadlen:"+total);
-                AppLogger.d("AsyDownloadId:"+chunk.id);
-                AppLogger.d("AsyDownloadInter:"+interrupt);
+                AppLogger.d("AsyDownloading:" + len);
+                AppLogger.d("AsyDownloadlen:" + total);
+                AppLogger.d("AsyDownloadId:" + chunk.id);
+                AppLogger.d("AsyDownloadInter:" + interrupt);
             }
 
             chunkFile.flush();
