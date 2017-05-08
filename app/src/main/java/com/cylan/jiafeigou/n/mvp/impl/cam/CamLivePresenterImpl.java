@@ -819,9 +819,32 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync(), checkNewVersionRsp()};
+        return new Subscription[]{robotDataSync(), checkNewVersionRsp(), sdcardFormatSub()};
     }
 
+    /**
+     * sd卡被格式化
+     *
+     * @return
+     */
+    private Subscription sdcardFormatSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
+                .map(ret -> ret.rets)
+                .flatMap(Observable::from)
+                .filter(msg -> msg.id == 218)
+                .map(msg -> {
+                    if (msg.ret == 0) {
+                        if (historyDataProvider != null) historyDataProvider.clean();
+                        History.getHistory().clearHistoryFile(uuid);
+                        AppLogger.d("清空历史录像");
+                    }
+                    return msg;
+                })
+                .subscribe(ret -> {
+                }, AppLogger::e);
+    }
 
     /**
      * robot同步数据

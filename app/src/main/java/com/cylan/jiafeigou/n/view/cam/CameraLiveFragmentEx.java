@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -177,17 +178,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
                 //无卡不需要显示
                 if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard && dpSdStatus.err == 0) {
-                    new android.app.AlertDialog.Builder(getActivity())
-                            .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
-                            .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                    AlertDialogManager.getInstance().showDialog(getActivity(),
+                            getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                            getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                            getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                                 DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                                 wFlag.value = false;
                                 basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                                 camLiveControlLayer.setFlipped(true);
                                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
-                            })
-                            .setNegativeButton(getString(R.string.CANCEL), null)
-                            .show();
+                            }, getString(R.string.CANCEL), null);
                 } else {
                     safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
                     DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(!safeIsOpen);
