@@ -200,6 +200,7 @@
   <string name="EXPECT">Sie erwarten!</string>
   <string name="EXPERIENCE">Erfahrung</string>
   <string name="FEEDBACK">Feedback</string>
+  <string name="FEEDBACK_Copy">Kopieren</string>
   <string name="FEEDBACK_NULL">Feedback eingeben</string>
   <string name="FILE_ERR">Falsche Videodatei</string>
   <string name="FILE_FINISHED">Video abgespielt</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">Ganztäglich</string>
   <string name="HZ_VOTE">110V Netzteil</string>
+  <string name="HistoricalCard_Failed">Die historische Grafikkarte liest nicht</string>
+  <string name="Historical_Failed">Historische Video&#8211;Lesevorgänge fehlgeschlagen</string>
+  <string name="Historical_No">Es gibt kein historisches Video</string>
+  <string name="Historical_Read">Das historische Video wurde gelesen</string>
   <string name="IGNORE">Ignorieren</string>
   <string name="IMAGE_ERR">Bild zu groß, bitte neu auswählen</string>
   <string name="INVALID_ACCOUNT">Dieser Account nicht registriert</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Nicht flackert in rot?</string>
   <string name="Qiaoan_VoiceTips2">Schon flackerten in rot</string>
   <string name="Qiaoan_VoiceTips3">Verwenden Nadel zu lange drücken Sie die Taste RESET für 5 Sekunden, bis das Licht in Rot flackert</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Bitte zuerst die Nutzervereinbarung durchlesen</string>
   <string name="RECEIVE_SMS">Zum Einloggen und Finden des Passworts</string>
   <string name="RECORD">Videos</string>
@@ -534,6 +540,7 @@
   <string name="Search">Suche</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Foto aufnehmen</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Setzen Sie Handy in VR Gläser</string>
   <string name="Tap1_Album_Share_Description">Beschreibung hinzufügen</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" nicht installiert, bitte installieren Sie es und versuchen Sie es erneut</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Die freigegebenen Inhalte werden gespeichert auf\"Tageshighlight\"</string>
   <string name="Tap1_BigPic_FavoriteTips">Die Bilder werden in\"Täglich Groß\"gezeigt</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Wenn Standby eingeschaltet wird, geht das Gerät in Ruhestand, wobei die Funktionen wie Liveschauen, Videohistorie, Sicherheitsschutz und Alarm, automatische Videoaufnahme, Zeitrafferaufnahme nicht funktionieren können.</string>

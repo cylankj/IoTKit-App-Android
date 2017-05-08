@@ -200,6 +200,7 @@
   <string name="EXPECT">Lütfen bekleyin!</string>
   <string name="EXPERIENCE">Tecrübe</string>
   <string name="FEEDBACK">Geri dönüş</string>
+  <string name="FEEDBACK_Copy">Kopya</string>
   <string name="FEEDBACK_NULL">Lütfen içerikleri girin</string>
   <string name="FILE_ERR">Video hatası</string>
   <string name="FILE_FINISHED">Video oynatımı bitti</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">S</string>
   <string name="HOURS">24 saat</string>
   <string name="HZ_VOTE">110V elektrik beslemesi</string>
+  <string name="HistoricalCard_Failed">Tarihi video kartı okunamadı</string>
+  <string name="Historical_Failed">Geçmiş video okunamadı</string>
+  <string name="Historical_No">Hiçbir tarihi video yok</string>
+  <string name="Historical_Read">Geçmiş video okundu</string>
   <string name="IGNORE">Yoksay</string>
   <string name="IMAGE_ERR">Yükleme başarısız, resim çok büyük</string>
   <string name="INVALID_ACCOUNT">Geçersiz hesap</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Değil kırmızı titriyor?</string>
   <string name="Qiaoan_VoiceTips2">Zaten kırmızı çaktı</string>
   <string name="Qiaoan_VoiceTips3">açık kırmızı titreşiyor kadar 5s uzun basına RESET düğmesine iğne kullanın</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Lütfen anlaşmayı okuyun</string>
   <string name="RECEIVE_SMS">Giriş yapmak için kullanıldı ve unutulmuş şifreleri tekrar elde edin</string>
   <string name="RECORD">Geçmiş</string>
@@ -534,6 +540,7 @@
   <string name="Search">Arama</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Fotoğraf çek</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Cep telefonunu VR gözlüğüne koy</string>
   <string name="Tap1_Album_Share_Description">Açıklama ekle</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" yüklü değil, lütfen yükleyin ve tekrar deneyin</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Paylaşılan içerik kaydedilir \"Günlük Mükemmel \"</string>
   <string name="Tap1_BigPic_FavoriteTips">\"Günlük Mükemmel\" içindeki resimleri topla</string>
   <string name="Tap1_CameraFun_Standby">Beklemede</string>
   <string name="Tap1_CameraFun_Standby_Description">Hazırda bekletmek için beklemeyi başlatın, bu durumda canlı izleme, geçmiş videoları kontrol etme, koruma ve alarm verme, otomatik kayıt, hızlandırılmış fotoğrafçılık vs. işlemler yapılamayacaktır.</string>

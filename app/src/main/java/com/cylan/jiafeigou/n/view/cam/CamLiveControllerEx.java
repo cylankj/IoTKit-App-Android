@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -505,7 +506,25 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 setLoadingState(null, null);
                 break;
             case JError.ErrorSDHistoryAll:
-                ToastUtil.showToast(getContext().getString(R.string.ACCOUNT_ID));
+                if (getContext() instanceof Activity)
+                    AlertDialogManager.getInstance().showDialog((Activity) getContext(),
+                            getContext().getString(R.string.Historical_Read),
+                            getContext().getString(R.string.Historical_Read),
+                            getContext().getString(R.string.OK), null);
+                break;
+            case JError.ErrorSDFileIO:
+                if (getContext() instanceof Activity)
+                    AlertDialogManager.getInstance().showDialog((Activity) getContext(),
+                            getContext().getString(R.string.Historical_Failed),
+                            getContext().getString(R.string.Historical_Failed),
+                            getContext().getString(R.string.OK), null);
+                break;
+            case JError.ErrorSDIO:
+                if (getContext() instanceof Activity)
+                    AlertDialogManager.getInstance().showDialog((Activity) getContext(),
+                            getContext().getString(R.string.HistoricalCard_Failed),
+                            getContext().getString(R.string.HistoricalCard_Failed),
+                            getContext().getString(R.string.OK), null);
                 break;
             default:
                 livePlayState = PLAY_STATE_LOADING_FAILED;

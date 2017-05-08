@@ -200,6 +200,7 @@
   <string name="EXPECT">В ближайшее время ожидается выход новой версии, следите за обновлениями</string>
   <string name="EXPERIENCE">Проверка</string>
   <string name="FEEDBACK">Обратная связь</string>
+  <string name="FEEDBACK_Copy">копия</string>
   <string name="FEEDBACK_NULL">Пожалуйста, введите информацию для обратной связи</string>
   <string name="FILE_ERR">Ошибка файла</string>
   <string name="FILE_FINISHED">Запись видео закончена</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">Круглосуточно</string>
   <string name="HZ_VOTE">Источник питания 110 В</string>
+  <string name="HistoricalCard_Failed">Не удалось прочитать историческую видеокарту</string>
+  <string name="Historical_Failed">Не удалось прочитать видео</string>
+  <string name="Historical_No">Исторического видео нет</string>
+  <string name="Historical_Read">Историческое видео было прочитано</string>
   <string name="IGNORE">Игнорировать</string>
   <string name="IMAGE_ERR">Изображение слишком большое</string>
   <string name="INVALID_ACCOUNT">Данный аккаунт еще не зарегистрирован</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Не мерцает красным цветом?</string>
   <string name="Qiaoan_VoiceTips2">Уже мелькали в красном</string>
   <string name="Qiaoan_VoiceTips3">Используйте иглу для долгого нажатия на кнопку сброса в течение 5 секунд, пока индикатор не мигает красным цветом</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Пожалуйста, прочитайте Соглашение</string>
   <string name="RECEIVE_SMS">Используйте для получения логина и пароля</string>
   <string name="RECORD">Записи</string>
@@ -534,6 +540,7 @@
   <string name="Search">Поиск</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Сделать фото</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Поместите мобильный телефон в очки VR</string>
   <string name="Tap1_Album_Share_Description">Добавить описание</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" не установлен, установите его и попробуйте еще раз</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Общий контент будет сохранен в\"Ежедневное чудо \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Коллекция\"Фото дня\"</string>
   <string name="Tap1_CameraFun_Standby">Режим ожидания</string>
   <string name="Tap1_CameraFun_Standby_Description">Если включается режим ожидания, устройство будет переходить к режиму гибернации, и будет невозможно использлвать такие функции, как просмотр прямой трансляции, просмотр бывших видео, безопасная защита, сигнализация, автоматическая видеозапись, покадровая съёмка и т.д.</string>

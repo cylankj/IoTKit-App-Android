@@ -489,6 +489,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onLiveStop(int playType, int errId) {
+        if (!isAdded()) return;
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         if (getView() != null)
             getView().post(() -> {

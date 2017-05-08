@@ -200,6 +200,7 @@
   <string name="EXPECT">即将推出，敬请期待</string>
   <string name="EXPERIENCE">体验</string>
   <string name="FEEDBACK">意见反馈</string>
+  <string name="FEEDBACK_Copy">复制</string>
   <string name="FEEDBACK_NULL">请输入反馈内容</string>
   <string name="FILE_ERR">录像文件错误</string>
   <string name="FILE_FINISHED">录像已播完</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">时</string>
   <string name="HOURS">全天提示</string>
   <string name="HZ_VOTE">支持110V市电</string>
+  <string name="HistoricalCard_Failed">历史录像卡读取失败</string>
+  <string name="Historical_Failed">历史录像读取失败</string>
+  <string name="Historical_No">没有这段历史视频</string>
+  <string name="Historical_Read">历史录像已读完</string>
   <string name="IGNORE">忽略未读</string>
   <string name="IMAGE_ERR">图片太大，请重新选择</string>
   <string name="INVALID_ACCOUNT">此账号还没有注册</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">未听到语音提示？</string>
   <string name="Qiaoan_VoiceTips2">已听到语音提示</string>
   <string name="Qiaoan_VoiceTips3">使用取卡针长按重置键5秒,直到看到红灯闪烁并语音提示“复位成功”</string>
+  <string name="Qzone_QQ">QQ空间</string>
   <string name="READ_AGREEMENT">请先阅读用户使用协议</string>
   <string name="RECEIVE_SMS">可用于登录及密码找回</string>
   <string name="RECORD">历史视频</string>
@@ -534,6 +540,7 @@
   <string name="Search">搜索</string>
   <string name="Sep">9月</string>
   <string name="ShareTo">分享到%s</string>
+  <string name="SharedTo">分享到</string>
   <string name="Slogan">想家，就用加菲狗</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
   <string name="TAKE_PHOTO">拍一张</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">请将手机放入VR眼镜</string>
   <string name="Tap1_Album_Share_Description">请输入照片（视频）描述&#8230;</string>
   <string name="Tap1_Album_Share_NotInstalledTips">未安装“%s”，请安装后重试</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">分享的内容将会保存到“每日精彩”</string>
   <string name="Tap1_BigPic_FavoriteTips">收藏图片将展现在「每日精彩」</string>
   <string name="Tap1_CameraFun_Standby">待机</string>
   <string name="Tap1_CameraFun_Standby_Description">开启待机，设备将进入休眠状态，查看直播、历史视频、安全防护及报警、自动录像、延时摄影等功能将无法使用</string>

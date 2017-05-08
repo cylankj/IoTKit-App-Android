@@ -200,6 +200,7 @@
   <string name="EXPECT">即將推出，敬請期待</string>
   <string name="EXPERIENCE">體驗</string>
   <string name="FEEDBACK">意見回饋</string>
+  <string name="FEEDBACK_Copy">複製</string>
   <string name="FEEDBACK_NULL">請輸入回饋內容</string>
   <string name="FILE_ERR">錄影文檔錯誤</string>
   <string name="FILE_FINISHED">錄影已播完</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">時</string>
   <string name="HOURS">全天提示</string>
   <string name="HZ_VOTE">支援110V電壓</string>
+  <string name="HistoricalCard_Failed">歷史錄像卡讀取失敗</string>
+  <string name="Historical_Failed">歷史錄像讀取失敗</string>
+  <string name="Historical_No">沒有這段歷史視頻</string>
+  <string name="Historical_Read">歷史錄像已讀完</string>
   <string name="IGNORE">忽略未讀</string>
   <string name="IMAGE_ERR">圖片太大，請重新選擇</string>
   <string name="INVALID_ACCOUNT">此帳號尚未註冊</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">未聽到語音提示？</string>
   <string name="Qiaoan_VoiceTips2">已聽到語音提示</string>
   <string name="Qiaoan_VoiceTips3">使用取卡針按重置鍵5秒，直到看到紅燈閃爍並語音提示“復位成功”</string>
+  <string name="Qzone_QQ">QQ空間</string>
   <string name="READ_AGREEMENT">請先閱讀用戶使用協議</string>
   <string name="RECEIVE_SMS">可用於登錄及找回密碼</string>
   <string name="RECORD">歷史錄影資料</string>
@@ -534,6 +540,7 @@
   <string name="Search">搜索</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
   <string name="TAKE_PHOTO">拍照</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">請將手機放入VR眼鏡</string>
   <string name="Tap1_Album_Share_Description">請輸入照片（視頻）描述&#8230;</string>
   <string name="Tap1_Album_Share_NotInstalledTips">未安裝“%s”，請安裝後重試</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">分享的內容將會保存到“每日精彩”</string>
   <string name="Tap1_BigPic_FavoriteTips">收藏圖片將展示在「每日精彩」</string>
   <string name="Tap1_CameraFun_Standby">待機</string>
   <string name="Tap1_CameraFun_Standby_Description">開啟待機模式，設備將進入休眠狀態，查看直播、歷史影像資料、安全防護及警報、延時攝影等功能將無法使用</string>

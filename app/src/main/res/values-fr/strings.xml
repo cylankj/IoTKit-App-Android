@@ -200,6 +200,7 @@
   <string name="EXPECT">Attendre</string>
   <string name="EXPERIENCE">Expérience</string>
   <string name="FEEDBACK">Suggestions</string>
+  <string name="FEEDBACK_Copy">Copie</string>
   <string name="FEEDBACK_NULL">Saisir vos commentaires</string>
   <string name="FILE_ERR">Erreur fichier vidéo</string>
   <string name="FILE_FINISHED">Lecture vidéo terminée</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">24 heures sur 24</string>
   <string name="HZ_VOTE">Alimentation 110V</string>
+  <string name="HistoricalCard_Failed">La carte vidéo historique n\'a pas réussi</string>
+  <string name="Historical_Failed">Les lectures vidéo historiques ont échoué</string>
+  <string name="Historical_No">Il n\'y a pas de vidéo historique</string>
+  <string name="Historical_Read">La vidéo historique a été lue</string>
   <string name="IGNORE">Ignorer</string>
   <string name="IMAGE_ERR">Échec du transfert, l\'image est trop grande</string>
   <string name="INVALID_ACCOUNT">Compte inconnu</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Non scintille en rouge?</string>
   <string name="Qiaoan_VoiceTips2">Déjà clignotaient en rouge</string>
   <string name="Qiaoan_VoiceTips3">Utilisez l\'aiguille pour appuyez longuement sur le bouton RESET pendant 5 secondes jusqu\'à ce que le voyant clignote en rouge</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Lire l\'accord de l\'utilisateur</string>
   <string name="RECEIVE_SMS">Peut être utilisé pour se connecter et récupérer le mot de passe</string>
   <string name="RECORD">Historique</string>
@@ -534,6 +540,7 @@
   <string name="Search">Rechercher</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Prendre une photo</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Mettre le téléphone portable dans des verres VR</string>
   <string name="Tap1_Album_Share_Description">Ajouter description</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" n\'est pas installé, veuillez l\'installer et réessayer</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Le contenu partagé sera enregistré dans \" Merveilleux de la journée\"</string>
   <string name="Tap1_BigPic_FavoriteTips">Les images seront affichées dans\"merveilleux de la journée\"</string>
   <string name="Tap1_CameraFun_Standby">En mode veille</string>
   <string name="Tap1_CameraFun_Standby_Description">Activer le mode en veille, l\'appareil va entrer dans l\'état de sommeil, le fonctionnement comme regarder le vidéo en direct, le vidéo en histoire, la sécurité et l\'alarme, l\'enregistrement automatique, le filmer en retard ne seront pas disponibles</string>

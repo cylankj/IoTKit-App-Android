@@ -19,18 +19,11 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     fi
 done <version.properties
 
+./gradlew assemble_test1
+mkdir -p $outputDir
+mv app/build/outputs/apk/app-_test1-release.apk "$outputDir"/com.cylan.jiafeigou.test1_release_v$vName-$vCode.apk
+mv app/build/outputs/apk/app-_test1-debug.apk "$outputDir"/com.cylan.jiafeigou.test1_debug_v$vName-$vCode.apk
 
-./gradlew -Pmarket=markets.txt clean assemble_yf
-mv app/build/outputs/apk/app-_yf-release.apk "$outputDir"$packageDir/com.cylan.jiafeigou.yf_release_v$vName-$vCode.apk
-mv app/build/outputs/apk/app-_yf-debug.apk "$outputDir"$packageDir/com.cylan.jiafeigou.yf_debug_v$vName-$vCode.apk
-
-#生成云渠道包
-./gradlew -Pmarket=markets.txt clean apk_yunRelease
-cp -r build/archives/* "$outputDir"$packageDir/channel
-#生成doby渠道包
-
-./gradlew -Pmarket=markets.txt clean apk_zhongxingRelease
-cp -r build/archives/* "$outputDir"$packageDir/channel
 
 timeEnd=$(($(date +%s)))
 echo "耗时: "$(($timeEnd - $timeStart))"s"

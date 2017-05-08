@@ -200,6 +200,7 @@
   <string name="EXPECT">間もなく更新されます、お楽しみに！</string>
   <string name="EXPERIENCE">体験</string>
   <string name="FEEDBACK">フィードバック</string>
+  <string name="FEEDBACK_Copy">コピー</string>
   <string name="FEEDBACK_NULL">フィードバック内容を入力してください！</string>
   <string name="FILE_ERR">録画ファイルエラー</string>
   <string name="FILE_FINISHED">録画再生終了</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">时</string>
   <string name="HOURS">24時間プロプティング</string>
   <string name="HZ_VOTE">110V電源使用可能</string>
+  <string name="HistoricalCard_Failed">歴史的なビデオカードの読み取りに失敗しました</string>
+  <string name="Historical_Failed">履歴ビデオの読み込みに失敗しました</string>
+  <string name="Historical_No">歴史的なビデオはありません</string>
+  <string name="Historical_Read">履歴ビデオが読み込まれました</string>
   <string name="IGNORE">未読無視</string>
   <string name="IMAGE_ERR">選択した画像のサイズが大きすぎます。再度選択してください。</string>
   <string name="INVALID_ACCOUNT">このアカウントは登録されていません</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">いない赤色で点滅？</string>
   <string name="Qiaoan_VoiceTips2">既に赤に点滅</string>
   <string name="Qiaoan_VoiceTips3">ライトが赤色で点滅するまで5秒間長押しにRESETボタンを針を使用します</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">ユーザー使用契約書をお読みください</string>
   <string name="RECEIVE_SMS">ログインおよびパスワードを忘れた場合に使用できます</string>
   <string name="RECORD">動画履歴</string>
@@ -534,6 +540,7 @@
   <string name="Search">検索</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">一枚写真を撮る</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">携帯電話をVRメガネに入れる</string>
   <string name="Tap1_Album_Share_Description">説明を追加</string>
   <string name="Tap1_Album_Share_NotInstalledTips">“%s”がインストールされていない、それをインストールして、再度お試しください</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">共有コンテンツは、\"毎日の見どころ\" に保存されます</string>
   <string name="Tap1_BigPic_FavoriteTips">収集した画像は「毎日の見どころ」にあります</string>
   <string name="Tap1_CameraFun_Standby">待機</string>
   <string name="Tap1_CameraFun_Standby_Description">待機機能を作動するとデバイスは一時休止状態に入ります。生放送、ビデオ、安全防犯、アラーム、自動録画及び遅延撮影の機能が使えなくなります。</string>

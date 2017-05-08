@@ -200,6 +200,7 @@
   <string name="EXPECT">Si prega di aspettare</string>
   <string name="EXPERIENCE">Esperienza</string>
   <string name="FEEDBACK">Feedback</string>
+  <string name="FEEDBACK_Copy">Copia</string>
   <string name="FEEDBACK_NULL">Prego inserire dei contenuti</string>
   <string name="FILE_ERR">Errore file video</string>
   <string name="FILE_FINISHED">Il Video è terminato</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">24 ore</string>
   <string name="HZ_VOTE">Energia elettrica 110V</string>
+  <string name="HistoricalCard_Failed">La scheda video storica non è riuscita</string>
+  <string name="Historical_Failed">Le letture video storiche non sono riuscite</string>
+  <string name="Historical_No">Non ci sono video storici</string>
+  <string name="Historical_Read">Il video storico è stato letto</string>
   <string name="IGNORE">Ignora</string>
   <string name="IMAGE_ERR">Caricamento fallito, l\'immagine è troppo grande</string>
   <string name="INVALID_ACCOUNT">Email errata</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Non lampeggia in rosso?</string>
   <string name="Qiaoan_VoiceTips2">Lampeggiava rosso</string>
   <string name="Qiaoan_VoiceTips3">Utilizzare un ago e premere il tasto RESET per 5 secondi fino a quando la luce lampeggia in rosso</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Si prega di leggere il contratto</string>
   <string name="RECEIVE_SMS">Puó essere usato per accedder e/o per una password dimenticata</string>
   <string name="RECORD">Storia</string>
@@ -534,6 +540,7 @@
   <string name="Search">Ricerca</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Sicurezza domestica? usa Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Scatta immagine</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Mettere cellulare in bicchieri VR</string>
   <string name="Tap1_Album_Share_Description">Aggiungere descrizione</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" non è installato, installarlo e riprova</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Il contenuto condiviso verrà salvato a \"Splendida della giornata \"</string>
   <string name="Tap1_BigPic_FavoriteTips">La raccolta delle immagini verrà visualizzata in\"Splendida della giornata\"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Accendere allo standby, il dispositivo sarà entrato nello status di riposo. Le funzioni di visualizzazione in diretta, cronologia di videi, le protezioni e l\'allarme di sicurezza, la registrazione automatica, il timelapse saranno indisponibili</string>

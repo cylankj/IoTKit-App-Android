@@ -200,6 +200,7 @@
   <string name="EXPECT">Aguarde um instante</string>
   <string name="EXPERIENCE">Experiência</string>
   <string name="FEEDBACK">Feedback sobre o app</string>
+  <string name="FEEDBACK_Copy">Cópia de</string>
   <string name="FEEDBACK_NULL">Por favor digite um comentário</string>
   <string name="FILE_ERR">Erro no arquivo de vídeo</string>
   <string name="FILE_FINISHED">Playback concluído</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">24 horas</string>
   <string name="HZ_VOTE">Voltagem de 110V</string>
+  <string name="HistoricalCard_Failed">A placa de vídeo histórica lê falhou</string>
+  <string name="Historical_Failed">Histórico de vídeo lido falhou</string>
+  <string name="Historical_No">Não há vídeo histórico</string>
+  <string name="Historical_Read">O vídeo histórico foi lido</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">Falha ao carregar. A imagem é muito grande</string>
   <string name="INVALID_ACCOUNT">Conta não registrada</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Não pisca em vermelho?</string>
   <string name="Qiaoan_VoiceTips2">Já brilhou em vermelho</string>
   <string name="Qiaoan_VoiceTips3">Use agulha prima o botão RESET por 5s até que a luz pisca em vermelho</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Por favor, leia o contrato</string>
   <string name="RECEIVE_SMS">Poderá ser usado para recuperar login e senha</string>
   <string name="RECORD">Histórico</string>
@@ -534,6 +540,7 @@
   <string name="Search">Pesquisa</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Tirar foto</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Põr o telefone da pilha nos vidros de VR</string>
   <string name="Tap1_Album_Share_Description">Adicionar descrição</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" não instalado, instale&#8211;o e tente novamente</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">O conteúdo compartilhado será salvo para\"Show Diário \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Colecionar fotos para o \"Show diário\"</string>
   <string name="Tap1_CameraFun_Standby">Pausado</string>
   <string name="Tap1_CameraFun_Standby_Description">Caso inicie o modo de suspensão, as funções como transmissão ao vivo, histórico, segurança com alertas, gravação automática, etc. não poderão ser executadas</string>

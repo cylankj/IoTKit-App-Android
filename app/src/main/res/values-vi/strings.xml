@@ -200,6 +200,7 @@
   <string name="EXPECT">Hãy mong đợi!</string>
   <string name="EXPERIENCE">Trải nghiệm</string>
   <string name="FEEDBACK">Phản hồi</string>
+  <string name="FEEDBACK_Copy">Sao chép</string>
   <string name="FEEDBACK_NULL">Nhập vào nội dung</string>
   <string name="FILE_ERR">Lỗi video</string>
   <string name="FILE_FINISHED">Video đã chạy xong</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">24 giờ</string>
   <string name="HZ_VOTE">Nguồn 110V</string>
+  <string name="HistoricalCard_Failed">Thẻ video lịch sử đã đọc thất bại</string>
+  <string name="Historical_Failed">Video lịch sử đã đọc thất bại</string>
+  <string name="Historical_No">Không có video lịch sử nào</string>
+  <string name="Historical_Read">Video lịch sử đã được đọc</string>
   <string name="IGNORE">Bỏ qua</string>
   <string name="IMAGE_ERR">Tải lên lỗi, kích thước ảnh quá lớn</string>
   <string name="INVALID_ACCOUNT">Tài khoản không tồn tại</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Không nhấp nháy màu đỏ?</string>
   <string name="Qiaoan_VoiceTips2">Đã chập chờn trong màu đỏ</string>
   <string name="Qiaoan_VoiceTips3">Sử dụng kim dài bấm nút RESET cho 5s cho đến khi đèn nhấp nháy màu đỏ</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Hãy đọc thoả thuận</string>
   <string name="RECEIVE_SMS">Dùng để đăng nhập và lấy lại mật khẩu đã quên</string>
   <string name="RECORD">Lịch sử</string>
@@ -534,6 +540,7 @@
   <string name="Search">Tìm kiếm</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Chụp ảnh</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Đặt điện thoại di động vào kính VR</string>
   <string name="Tap1_Album_Share_Description">Thêm mô tả</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" chưa được cài đặt, vui lòng cài đặt và thử lại</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Các nội dung được chia sẻ sẽ được lưu vào\"Daily Great \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Sưu tập hình trong mục \"Daily Great\"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Từ Standby chuyển sang Hibernate sẽ không thể thực hiện hoạt động gì nữa</string>

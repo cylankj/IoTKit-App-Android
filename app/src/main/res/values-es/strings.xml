@@ -200,6 +200,7 @@
   <string name="EXPECT">Estrena pronto, espere por favor</string>
   <string name="EXPERIENCE">Experimentar</string>
   <string name="FEEDBACK">Enviar sugerencias</string>
+  <string name="FEEDBACK_Copy">Copia</string>
   <string name="FEEDBACK_NULL">Introduzca la realimentación</string>
   <string name="FILE_ERR">Error del archivo del vídeo</string>
   <string name="FILE_FINISHED">Vídeo terminado</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">H</string>
   <string name="HOURS">Notificación de 24h</string>
   <string name="HZ_VOTE">Voltaje de 110V</string>
+  <string name="HistoricalCard_Failed">La tarjeta de video histórica dice que falló</string>
+  <string name="Historical_Failed">No se pudo leer el video histórico</string>
+  <string name="Historical_No">No hay video histórico</string>
+  <string name="Historical_Read">El video histórico ha sido leído</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">La foto es demasiado grande, no es bueno para la pruba, elija de nuevo por favor</string>
   <string name="INVALID_ACCOUNT">Esta cuenta no ha sido inscribida</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">No parpadea en rojo?</string>
   <string name="Qiaoan_VoiceTips2">Ya parpadeado en rojo</string>
   <string name="Qiaoan_VoiceTips3">Utilice la aguja para pulsación larga en el botón RESET durante 5 segundos hasta que la luz parpadea en rojo</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Lea primero el acuerdo de usuario</string>
   <string name="RECEIVE_SMS">Se utiliza para recuperar el nombre y la contraseña del usuario</string>
   <string name="RECORD">Historia</string>
@@ -534,6 +540,7 @@
   <string name="Search">Buscar</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Tomar una foto</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Ponga el teléfono celular en las gafas VR</string>
   <string name="Tap1_Album_Share_Description">Agregar descripción</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" no está instalado, instálelo y vuelva a intentarlo</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">El contenido compartido se guarda en\"Gran día \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Las imágenes se mostrarán en la sección de\"Día estupendo\"</string>
   <string name="Tap1_CameraFun_Standby">En espera</string>
   <string name="Tap1_CameraFun_Standby_Description">Al activar el modo de espera, no permitirá ejercer las funciones de ver video en directo, videos anteriores, protección de seguridad y alarma, gradación automática, fotografía a intervalos, etc..</string>

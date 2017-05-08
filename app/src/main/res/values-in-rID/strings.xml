@@ -200,6 +200,7 @@
   <string name="EXPECT">Segera hadir</string>
   <string name="EXPERIENCE">Pengalaman</string>
   <string name="FEEDBACK">Saran</string>
+  <string name="FEEDBACK_Copy">Salinan</string>
   <string name="FEEDBACK_NULL">Silahkan isi masukan</string>
   <string name="FILE_ERR">Video error</string>
   <string name="FILE_FINISHED">Video sudah selesai diputar</string>
@@ -227,6 +228,10 @@
   <string name="HOUR">Jam</string>
   <string name="HOURS">24 jam</string>
   <string name="HZ_VOTE">Daya Listrik 110V</string>
+  <string name="HistoricalCard_Failed">Kartu video historis gagal dibaca</string>
+  <string name="Historical_Failed">Video historis terbaca gagal</string>
+  <string name="Historical_No">Tidak ada video historis</string>
+  <string name="Historical_Read">Video historis telah dibaca</string>
   <string name="IGNORE">Mengabaikan</string>
   <string name="IMAGE_ERR">Upload gagal, gambar terlalu besar</string>
   <string name="INVALID_ACCOUNT">Akun salah</string>
@@ -380,6 +385,7 @@
   <string name="Qiaoan_VoiceTips">Tidak berkedip merah?</string>
   <string name="Qiaoan_VoiceTips2">Sudah berkedip&#8211;kedip merah</string>
   <string name="Qiaoan_VoiceTips3">Gunakan jarum untuk tekan lama tombol RESET untuk 5s sampai lampu berkedip merah</string>
+  <string name="Qzone_QQ">Qzone</string>
   <string name="READ_AGREEMENT">Silahkan baca perjanjian</string>
   <string name="RECEIVE_SMS">Digunakan untuk masuk dan mengambil lupa kata sandi</string>
   <string name="RECORD">Riwayat</string>
@@ -534,6 +540,7 @@
   <string name="Search">Mencari</string>
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
+  <string name="SharedTo">Share to</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="TAKE_PHOTO">Ambil Foto</string>
@@ -601,6 +608,7 @@
   <string name="Tap1_Album_PutInVR">Meletakkan ponsel ke dalam gelas VR</string>
   <string name="Tap1_Album_Share_Description">Tambahkan deskripsi</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" tidak terpasang, silahkan install dan coba lagi</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Konten bersama akan disimpan ke \"Daily Great \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Kumpulkan gambar&#8211;gambar di\"Daily Great\"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Standby ke hibernate, tidak akan bisa menonton live, lihat riwayat video, lindungi dan awasi, rekam otomatis, fotografi selang waktu, dan lain&#8211;lain.</string>

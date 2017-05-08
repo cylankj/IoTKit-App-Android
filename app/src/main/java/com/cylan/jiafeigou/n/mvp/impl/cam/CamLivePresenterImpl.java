@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
@@ -772,17 +773,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
                     if (forPopWindow)//添加到相册
                         MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
-                    return bitmap;
+                    return new Pair<>(bitmap, filePath);
                 })
                 .observeOn(Schedulers.io())
-                .filter(bitmap -> bitmap != null)
-                .subscribe(bitmap -> {
+                .filter(pair -> pair != null)
+                .subscribe(pair -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     if (!forPopWindow) {//预览图,和弹窗是互斥的.
                         //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
-                        getView().onPreviewResourceReady(bitmap);
+                        getView().onPreviewResourceReady(pair.first);
                     }
-                    new SaveAndShare(uuid, bitmap, forPopWindow).start();
+                    new SaveAndShare(uuid, pair.second, pair.first, forPopWindow).start();
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
     }
 
@@ -977,20 +978,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         private String uuid;
         private Bitmap bitmap;
         private boolean needShare;
+        private String localPath;
 
-        public SaveAndShare(String uuid, Bitmap bitmap, boolean needShare) {
+        public SaveAndShare(String uuid, String localPath, Bitmap bitmap, boolean needShare) {
             this.uuid = uuid;
             this.bitmap = bitmap;
             this.needShare = needShare;
+            this.localPath = localPath;
         }
 
         @Override
         public void run() {
             shareSnapshot(this.needShare, this.bitmap);
-        }
-
-        private String getThumbnailKey() {
-            return PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
         }
 
         /**
@@ -1000,13 +999,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          * @param bitmap
          */
         private void shareSnapshot(boolean needShare, Bitmap bitmap) {
-            Observable.just(bitmap)
+            Observable.just(localPath)
                     .subscribeOn(Schedulers.io())
-                    .map(result -> {
-                        String filePath = needShare ? getThumbnailKey() : JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".jpg";
-                        BitmapUtils.saveBitmap2file(result, filePath);
-                        return filePath;
-                    })
                     .filter(path -> {
                         AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
                         return path != null && needShare;
