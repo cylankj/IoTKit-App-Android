@@ -75,6 +75,7 @@
                 android:id="@+id/sv_setting_device_mobile_network"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y54"
+                android:visibility="gone"
                 hunt:sv_image_src="@drawable/setting_icon_3g"
                 hunt:sv_title="@string/MOBILE_DATA"
                 hunt:sv_v_divider="false" />

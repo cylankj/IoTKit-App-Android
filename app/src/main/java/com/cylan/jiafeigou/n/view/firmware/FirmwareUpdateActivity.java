@@ -84,6 +84,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 if (TextUtils.equals(description.version, currentVersion)) {
                     description = null;
                     PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + getUuid());
                     //已经是最新的了.
                 }
             } else {
@@ -223,22 +224,33 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         return true;
     }
 
-    @OnClick(R.id.tv_download_soft_file)
-    public void downloadOrUpdate() {
+    private boolean canNext() {
+        Device device = basePresenter.getDevice();
+
         if (TextUtils.equals(tvCurrentVersion.getText(), tvHardwareNewVersion.getText())) {
             ToastUtil.showToast(getString(R.string.NEW_VERSION));
-            return;
+            return false;
         }
+
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             ToastUtil.showToast(getString(R.string.NoNetworkTips));
-            return;
+            return false;
         }
-        Device device = basePresenter.getDevice();
+
+        String deviceMac = device.$(202, "");
+        String routMac = NetUtils.getRouterMacAddress();
+        if (TextUtils.equals(deviceMac, routMac)) return true;
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             ToastUtil.showToast(getString(R.string.NOT_ONLINE));
-            return;
+            return false;
         }
+        return false;
+    }
+
+    @OnClick(R.id.tv_download_soft_file)
+    public void downloadOrUpdate() {
+        if (!canNext()) return;
         String txt = tvDownloadSoftFile.getText().toString();
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级

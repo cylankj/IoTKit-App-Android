@@ -389,6 +389,17 @@ public class NetUtils {
         return "";
     }
 
+    public static String getRouterMacAddress() {
+        Context context = ContextUtils.getContext();
+        WifiManager mWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (mWifi.isWifiEnabled()) {
+            WifiInfo wifiInfo = mWifi.getConnectionInfo();
+            String netMac = wifiInfo.getBSSID(); //获取被连接网络的mac地址
+            return netMac == null ? "" : netMac.toUpperCase();
+        }
+        return "";
+    }
+
     /**
      * 检测网络是否连接
      *

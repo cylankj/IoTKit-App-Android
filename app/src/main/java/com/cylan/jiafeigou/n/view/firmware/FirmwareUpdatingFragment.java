@@ -180,6 +180,7 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
                         ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
                         startAgain();
                     }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        ClientUpdateManager.getInstance().removeTask(getUuid());
                         Intent intent = new Intent(getActivity(), NewHomeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);

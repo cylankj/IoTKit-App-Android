@@ -205,21 +205,7 @@ public class JFGRules {
 
     //freeCam 海思 wifi
     public static boolean showMobileLayout(int pid) {
-        if (isRS(pid)) return false;
-        switch (pid) {
-            case JConstant.OS_CAMERA_UCOS:
-            case JConstant.OS_CAMERA_UCOS_V2:
-            case JConstant.OS_CAMERA_UCOS_V3:
-            case JConstant.OS_CAMERA_CC3200:
-            case JConstant.OS_CAMERA_PANORAMA_HAISI:
-            case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
-            case JConstant.OS_CAMERA_PANORAMA_GUOKE:
-            case 21:
-            case 1089:
-                return false;
-            default:
-                return true;
-        }
+        return is3GCam(pid);
     }
 
     public static boolean isRS(int pid) {

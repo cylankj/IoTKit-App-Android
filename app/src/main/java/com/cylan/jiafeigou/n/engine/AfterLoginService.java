@@ -109,13 +109,6 @@ public class AfterLoginService extends IntentService {
                             }
                         }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
             } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
-                //不需要那么频繁地检查.
-                long lastTime = PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
-                if (lastTime != 0 && System.currentTimeMillis() - lastTime < 24 * 3600 * 1000L) {//一天检查一次
-                    AppLogger.d("频繁检查?");
-//                    return;
-                }
-
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 AppLogger.d("尝试检查版本");
                 Observable.just("check_version")
@@ -130,8 +123,6 @@ public class AfterLoginService extends IntentService {
                             try {
                                 String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
                                 req = BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
-                                //更新 检查版本的时间
-                                PreferencesUtils.putLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, System.currentTimeMillis());
                             } catch (JfgException e) {
                                 AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
                             }
@@ -162,6 +153,14 @@ public class AfterLoginService extends IntentService {
                                                 public void onResponse(Call call, Response response) throws IOException {
                                                     String result = response.body().string();
                                                     AppLogger.d("check_version result: " + result);
+                                                    //不需要那么频繁地检查.
+                                                    long lastTime = PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
+                                                    if (lastTime != 0 && System.currentTimeMillis() - lastTime < 24 * 3600 * 1000L) {//一天检查一次
+                                                        AppLogger.d("频繁检查?");
+                                                        return;
+                                                    }
+                                                    //更新 检查版本的时间
+                                                    PreferencesUtils.putLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, System.currentTimeMillis());
                                                     PreferencesUtils.putString(JConstant.KEY_CLIENT_UPDATE_DESC, result);
                                                     RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpdateEvent().setForceUpdate(clientCheckVersion.forceUpgrade));
                                                 }

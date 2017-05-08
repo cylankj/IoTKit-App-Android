@@ -323,15 +323,20 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
     }
 
-    @Override
-    public void deviceUpdate(Device device) {
+    private void initFirmwareHint(Device device) {
         try {
-            if (JFGRules.isPanoramicCam(device.pid)) return;//全景不显示
+            if (JFGRules.isPanoramicCam(device.pid)) return;
+            if (JFGRules.isShareDevice(device)) return;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
             RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
             svSettingDeviceDetail.showRedHint(description.hasNew);
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public void deviceUpdate(Device device) {
+        initFirmwareHint(device);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         //////////////////////////分享账号////////////////////////////////////////////
         if (!TextUtils.isEmpty(device.shareAccount)) {
@@ -468,7 +473,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         if (JFGRules.isShareDevice(uuid)) {
             sbtnSettingSight.setVisibility(View.GONE);
-            return;
         }
         if (JFGRules.isPanoramicCam(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
