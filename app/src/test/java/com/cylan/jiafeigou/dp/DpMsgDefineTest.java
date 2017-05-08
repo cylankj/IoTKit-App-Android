@@ -50,10 +50,10 @@ public class DpMsgDefineTest {
 //        System.out.println(unpackData(data, Long.class));
 //        data = new byte[]{-65, 59};
 //        System.out.println(unpackData(data, int.class));
-        System.out.println(unpackData(new byte[]{-108, -81, 100, 111, 95, 115, 101, 116, 95, 119, 105, 102, 105, 95, 97, 99, 107, -84, 50, 56, 48, 48, 48, 48, 48, 48, 48, 48, 48, 57, -96, 0},
+        System.out.println(unpackData(new byte[]{-108, -88, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 56, 48, 48, 48, 48, 48, 48, 50, 55, 49, 51, 1, 0},
                 JfgUdpMsg.UdpRecvHeard.class));
 
-        System.out.println(unpackData(new byte[]{-108, -91, 102, 95, 97, 99, 107, -84, 50, 48, 48, 48, 48, 48, 48, 52, 54, 50, 54, 55, -51, 6, 16, -46, -7, -1, -1, -1},
+        System.out.println(unpackData(new byte[]{-108, -91, 102, 95, 97, 99, 107, -84, 50, 48, 48, 48, 48, 48, 48, 48, 48, 57, 49, 53, -51, 6, 16, -46, -7, -1, -1, -1},
                 TTTest.class));
     }
 

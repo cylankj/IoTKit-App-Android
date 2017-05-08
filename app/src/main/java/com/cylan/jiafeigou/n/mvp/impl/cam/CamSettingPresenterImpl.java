@@ -204,7 +204,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
             deviceAutoVideoRecord = 0;
         }
         boolean alarmFlag = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        if (!alarmFlag)//不开启,默认不选择
+        if (!alarmFlag && deviceAutoVideoRecord == 0)//不开启,默认不选择
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }

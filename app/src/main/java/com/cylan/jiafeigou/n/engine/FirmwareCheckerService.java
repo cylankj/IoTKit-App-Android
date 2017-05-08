@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -17,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -68,8 +71,18 @@ public class FirmwareCheckerService extends Service {
             mapSubscription.remove(uuid);
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             AppLogger.d("开始检查升级:" + uuid);
-            if (JFGRules.isShareDevice(uuid)) return;//分享设备不显示
-            if (JFGRules.isPanoramicCam(device.pid)) return;//全景设备不显示
+            //分享设备不显示
+            if (JFGRules.isShareDevice(uuid)) return;
+            //全景设备不显示
+            if (JFGRules.isPanoramicCam(device.pid)) return;
+            DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+            //设备离线就不要检查了
+            if (!JFGRules.isDeviceOnline(dpNet)) return;
+            String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+            String remoteSSid = dpNet.ssid;
+            //原型上说,局域网才弹框.
+            //客户端和设备相同的网络才去检查.因为检查是很快的.
+            if (!TextUtils.equals(localSSid, remoteSSid)) return;
             Subscription s = Observable.just("go")
                     .subscribeOn(Schedulers.newThread())
                     .timeout(5, TimeUnit.SECONDS)
@@ -104,14 +117,9 @@ public class FirmwareCheckerService extends Service {
                             ret.fileName = "." + uuid;
                             ret.uuid = uuid;
                             PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
-                            long checkTime = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, -1);
-                            if (checkTime == -1 || System.currentTimeMillis() - checkTime > 24 * 3600 * 1000L) {
-                                PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
-                                RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
-                                AppLogger.d("检查到有新固件:" + uuid);
-                                return ret;
-                            }
-                            return null;
+                            RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
+                            AppLogger.d("检查到有新固件:" + uuid);
+                            return ret;
                         } catch (IOException e) {
                             return null;
                         }

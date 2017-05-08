@@ -71,8 +71,6 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, "200000046267");
     }
 
     @Override

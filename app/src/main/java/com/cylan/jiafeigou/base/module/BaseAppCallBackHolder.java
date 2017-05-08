@@ -48,7 +48,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
-        AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
+//        AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
         RxBus.getCacheInstance().post(new RxEvent.LocalUdpMsg(System.currentTimeMillis(), s, (short) i, bytes));
     }
 

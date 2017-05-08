@@ -115,8 +115,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class)
                 .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.uuid, uuid))
                 .retry()
-                .subscribe(ret ->
-                        mView.showFirmwareDialog(), AppLogger::e);
+                .subscribe(ret -> {
+                    long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
+                    if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
+                        //弹框的时间,从弹出算起
+                        PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid, System.currentTimeMillis());
+                        mView.showFirmwareDialog();
+                    }
+                }, AppLogger::e);
     }
 
     /**
@@ -520,7 +526,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
                 if (getPrePlayType().playState != PLAY_STATE_IDLE) {
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    if (getPrePlayType().type == TYPE_HISTORY
+                            && getPrePlayType().playState == PLAY_STATE_PREPARE)//前一刻是,历史录像而且是playing
+                    {
+                        AppLogger.d("不需要 停止播放历史视频");
+                    } else {
+                        BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    }
                     AppLogger.i("stop play history");
                 }
                 int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);

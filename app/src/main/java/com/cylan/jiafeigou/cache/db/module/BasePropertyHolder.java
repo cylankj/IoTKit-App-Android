@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -66,7 +67,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     @Override
     public void updateProperty(int msgId, DPEntity entity) {
         if (!propertyParser.accept(pid(), msgId)) return;
-        AppLogger.d("updateProperty:" + msgId);
+        Log.d("updateProperty", "updateProperty:" + msgId);
         properties.put(msgId, entity);
     }
 

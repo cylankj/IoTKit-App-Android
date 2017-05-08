@@ -545,12 +545,12 @@ public class ClientUpdateManager {
             //1.发送一个fping,等待fpingRsp,从中读取ip,port.
             RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                     .subscribeOn(Schedulers.newThread())
-                    .timeout(3, TimeUnit.SECONDS)//设备无响应
-                    .filter(ret -> !TextUtils.isEmpty(ret.ip) && ret.port != 0)
+                    .timeout(10, TimeUnit.SECONDS)//设备无响应
                     .flatMap(localUdpMsg -> {
                         MessagePack msgPack = new MessagePack();
                         try {
                             JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
+                            Log.d(TAG, "cmd:" + header.cmd + ",");
                             if (TextUtils.equals(F_PING_ACK, header.cmd)) {
                                 //得到fping结果
                                 JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
@@ -564,24 +564,25 @@ public class ClientUpdateManager {
                         }
                     })
                     .filter(ret -> ret != null)
-                    .subscribe(ret -> {
-                        AppLogger.d("got your rsp : " + uuid + " ");
-                    }, throwable -> {//err发生了,整个订阅链就结束
-                        if (throwable instanceof HelperBreaker) {
-                            AppLogger.d("got your rsp : " + uuid + " " + ((HelperBreaker) throwable).localUdpMsg);
-                            prepareSending(((HelperBreaker) throwable).localUdpMsg.ip, ((HelperBreaker) throwable).localUdpMsg.port);
-                        } else if (throwable instanceof TimeoutException) {
-                            AppLogger.d("fping timeout : " + uuid);
-                            handleTimeout(JConstant.U.FAILED_FPING_ERR);
-                        }
-                    });
+                    .subscribe(ret -> AppLogger.d("got your rsp : " + uuid + " "),
+                            //err发生,整个订阅链就结束
+                            throwable -> {
+                                if (throwable instanceof HelperBreaker) {
+                                    AppLogger.d("got your rsp : " + uuid + " " + ((HelperBreaker) throwable).localUdpMsg);
+                                    prepareSending(((HelperBreaker) throwable).localUdpMsg.ip, ((HelperBreaker) throwable).localUdpMsg.port);
+                                } else if (throwable instanceof TimeoutException) {
+                                    AppLogger.d("fping timeout : " + uuid);
+                                    handleTimeout(JConstant.U.FAILED_FPING_ERR);
+                                }
+                            });
             try {
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                 AppLogger.d("send fping :" + UdpConstant.IP);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
+            makeSimulatePercent();
         }
 
         private void prepareSending(String remoteIp, int port) {
@@ -594,7 +595,6 @@ public class ClientUpdateManager {
             resetRspRecv(true);
             makeUpdateRspRecv(30);//30s
             makeUpdateRspRecv(66);//60s
-            makeSimulatePercent();
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
@@ -610,6 +610,7 @@ public class ClientUpdateManager {
                 simulatePercent = new SimulatePercent();
                 simulatePercent.setOnAction(this);
             }
+            simulatePercent.stop();
             simulatePercent.start();
         }
 
@@ -669,7 +670,6 @@ public class ClientUpdateManager {
         private void handleTimeout(int code) {
             if (listener != null) listener.err(code);
             AppLogger.d("fping timeout : " + uuid + " " + listener);
-            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid);
         }
 
         private void handleResult(String uuid, int tag, byte[] data) {
@@ -680,12 +680,10 @@ public class ClientUpdateManager {
                     this.updateState = JConstant.U.FAILED_DEVICE_FAILED;
                     if (listener != null) listener.err(this.updateState);
                     if (simulatePercent != null) simulatePercent.stop();
-                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid);
                 } else if (fAck != null) {//相应,成功了.
                     this.updateState = JConstant.U.SUCCESS;
                     if (simulatePercent != null) simulatePercent.boost();
                     AppLogger.d("升级成功,清空配置");
-                    PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_CHECK_TIME + uuid, System.currentTimeMillis());
                     PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
                 }
             } catch (IOException e) {

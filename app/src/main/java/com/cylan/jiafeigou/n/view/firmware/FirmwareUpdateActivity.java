@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.gson.Gson;
 
@@ -84,7 +85,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 if (TextUtils.equals(description.version, currentVersion)) {
                     description = null;
                     PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CHECK_TIME + getUuid());
                     //已经是最新的了.
                 }
             } else {
@@ -117,11 +117,13 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
         }
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
-        if (updatingTask != null) {
+        if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
             ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                     FirmwareUpdatingFragment.newInstance(bundle), android.R.id.content);
+        } else {
+            ClientUpdateManager.getInstance().removeTask(getUuid());
         }
     }
 
@@ -209,11 +211,30 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     private boolean checkNet() {
         Device device = basePresenter.getDevice();
-        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        if (TextUtils.equals(tvCurrentVersion.getText(), tvHardwareNewVersion.getText())) {
+            //相同版本
+            ToastUtil.showToast(getString(R.string.NEW_VERSION));
+            return false;
+        }
+        int net = NetUtils.getJfgNetType();
+        if (net == 0) {
+            //2.客户端无网络
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return false;
+        }
+        String deviceMac = device.$(202, "");
+        String routMac = NetUtils.getRouterMacAddress();
+        if (TextUtils.equals(deviceMac, routMac)) return true;
+        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            //3.局域网
+            return true;
+        }
+        DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-        String remoteSSid = net.ssid;
+        String remoteSSid = dpNet.ssid;
         AppLogger.d("" + localSSid + "," + remoteSSid);
-        if (!TextUtils.equals(localSSid, remoteSSid) || net.net != 1) {
+        //4.以上条件都不满足的话,就是在线了
+        if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
             AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
                     getString(R.string.setwifi_check, remoteSSid), getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
@@ -224,33 +245,10 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         return true;
     }
 
-    private boolean canNext() {
-        Device device = basePresenter.getDevice();
-
-        if (TextUtils.equals(tvCurrentVersion.getText(), tvHardwareNewVersion.getText())) {
-            ToastUtil.showToast(getString(R.string.NEW_VERSION));
-            return false;
-        }
-
-        int net = NetUtils.getJfgNetType();
-        if (net == 0) {
-            ToastUtil.showToast(getString(R.string.NoNetworkTips));
-            return false;
-        }
-
-        String deviceMac = device.$(202, "");
-        String routMac = NetUtils.getRouterMacAddress();
-        if (TextUtils.equals(deviceMac, routMac)) return true;
-        if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-            ToastUtil.showToast(getString(R.string.NOT_ONLINE));
-            return false;
-        }
-        return false;
-    }
 
     @OnClick(R.id.tv_download_soft_file)
-    public void downloadOrUpdate() {
-        if (!canNext()) return;
+    public void downloadOrUpdate(View v) {
+        ViewUtils.deBounceClick(v, 1500);
         String txt = tvDownloadSoftFile.getText().toString();
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级

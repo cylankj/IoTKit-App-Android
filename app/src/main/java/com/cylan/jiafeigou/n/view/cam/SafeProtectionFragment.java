@@ -158,6 +158,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                             updateDetails();
                             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                         })
+                        .setCancelable(false)
                         .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                             ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(true);
                         })

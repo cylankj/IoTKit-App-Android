@@ -163,6 +163,19 @@ public class ViewUtils {
         }, 1000);
     }
 
+    public static void deBounceClick(final View view, long delay) {
+        if (view == null)
+            return;
+        view.setEnabled(false);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (view != null)
+                    view.setEnabled(true);
+            }
+        }, delay);
+    }
+
     public static void updateViewHeight(View view, float ratio) {
         final int width = Resources.getSystem().getDisplayMetrics().widthPixels;
         ViewGroup.LayoutParams lp = view.getLayoutParams();
