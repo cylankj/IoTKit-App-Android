@@ -14,7 +14,7 @@
         android:layout_height="@dimen/y42"
         android:layout_marginTop="@dimen/y60"
         android:background="@drawable/un_bind_device_btn_seletor"
-        android:text="@string/Tap2_Index_OpenTimelapse"
+        android:text="@string/Tap1_AddDevice_ToSetting"
         android:textColor="@color/delay_record_start_now_color"
         android:textSize="@dimen/sp17" />
 

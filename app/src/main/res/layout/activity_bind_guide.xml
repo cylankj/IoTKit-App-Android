@@ -68,7 +68,7 @@
         android:layout_height="@dimen/y50"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:text="@string/Tap2_Index_OpenTimelapse"
+        android:text="@string/Tap1_AddDevice_ToSetting"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp16" />
 </RelativeLayout>

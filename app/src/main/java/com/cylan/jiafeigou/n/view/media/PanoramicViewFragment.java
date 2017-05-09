@@ -185,8 +185,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     }
 
     public void loadBitmap(int index) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        String mode = device.$(509, "0");
+        String mode = dpAlarm == null ? "0" : dpAlarm.tly;
         loadBitmap(index, mode);
     }
 }

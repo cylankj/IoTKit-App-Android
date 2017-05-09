@@ -262,7 +262,8 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void updateAccount() {
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        String photoUrl = account.getPhotoUrl();
+        if (account == null) return;
+        String photoUrl = account == null ? "" : account.getPhotoUrl();
         RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
         isOpenLogin = event != null && event.isThird;
         if (isOpenLogin && isDefaultPhoto(photoUrl)) {

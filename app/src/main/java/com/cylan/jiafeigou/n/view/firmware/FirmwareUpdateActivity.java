@@ -180,6 +180,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     public void upgradeStart() {
         customToolbar.post(() -> {
+            tvDownloadSoftFile.setEnabled(false);
             llDownloadPgContainer.setVisibility(View.VISIBLE);
         });
     }
@@ -187,6 +188,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     public void upgradeProgress(int percent) {
         customToolbar.post(() -> {
+            tvDownloadSoftFile.setEnabled(false);
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             tvLoadingShow.setText(percent + "%");
             downloadProgress.setProgress(0);
@@ -205,6 +207,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     public void upgradeErr(final int errCode) {
         customToolbar.post(() -> {
+            tvDownloadSoftFile.setEnabled(true);
             tvLoadingShow.setText("0%");
             downloadProgress.setProgress(0);
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
@@ -225,6 +228,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     public void upgradeSuccess() {
         customToolbar.post(() -> {
+            tvDownloadSoftFile.setEnabled(true);
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             tvLoadingShow.setText("100%");
             ToastUtil.showToast(getString(R.string.Tap1_FirmwareUpdateSuc));
@@ -321,16 +325,27 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         } else {
             //1.下载失败
             //2.Tap1a_DownloadInstall 下载并安装(%s)
-            try {
-                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                final RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
-                ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
-            } catch (Exception e) {
-                AppLogger.e("err:" + MiscUtils.getErr(e));
+            if (NetUtils.getJfgNetType() == 1) {
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Firmware_DataTips),
+                        getString(R.string.Tap1_Firmware_DataTips),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            toDownload();
+                        }, getString(R.string.CANCEL), null);
+                return;
             }
+            toDownload();
         }
     }
 
+    private void toDownload() {
+        try {
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            final RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
+            ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
+        } catch (Exception e) {
+            AppLogger.e("err:" + MiscUtils.getErr(e));
+        }
+    }
 
     @Override
     protected void onStop() {
