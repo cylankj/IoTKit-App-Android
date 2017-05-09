@@ -535,12 +535,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         AppLogger.d("不需要 停止播放历史视频");
                     } else {
                         BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                        AppLogger.i("stop play history");
                     }
-                    AppLogger.i("stop play history");
                 }
                 int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 if (ret != 0) {
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    AppLogger.i("stop play history");
                     ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 }
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret);

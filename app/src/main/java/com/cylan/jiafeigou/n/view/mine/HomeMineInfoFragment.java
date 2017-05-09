@@ -333,7 +333,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 Glide.with(getContext()).load(photoUrl)
                         .asBitmap()
                         .centerCrop()
-                        .placeholder(R.drawable.icon_mine_head_normal)
+//                        .placeholder(R.drawable.icon_mine_head_normal)//不需要placehole,因为开始时会设置这个id.如果频繁调用,则会闪烁.
                         .error(R.drawable.icon_mine_head_normal)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(new StringSignature(account.getToken()))
