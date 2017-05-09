@@ -154,7 +154,7 @@
 //                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
 //                                                } else {
 //                                                    if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
-//                                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+//                                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_LOGIN_TIME_OUT));
 //                                                    }
 //                                                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
 //                                                }

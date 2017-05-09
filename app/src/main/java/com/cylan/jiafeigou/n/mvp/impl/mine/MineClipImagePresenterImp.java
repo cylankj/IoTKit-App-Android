@@ -137,14 +137,11 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null) {
-                            jfgAccount = getUserInfo.jfgAccount;
-                        }
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null) {
+                        jfgAccount = getUserInfo.jfgAccount;
                     }
                 }, AppLogger::e);
     }

@@ -88,17 +88,14 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
      */
     @Override
     public Subscription saveAliasCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getView() != null) {
-                            jfgAccount = getUserInfo.jfgAccount;
-                            if (isSetAlais) {
-                                getView().handlerResult(getUserInfo);
-                                isSetAlais = false;
-                            }
+                .subscribe(accountArrived -> {
+                    if (getView() != null) {
+                        jfgAccount = accountArrived.jfgAccount;
+                        if (isSetAlais) {
+                            getView().handlerResult(accountArrived);
+                            isSetAlais = false;
                         }
                     }
                 }, AppLogger::e);
@@ -164,6 +161,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -175,6 +173,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }

@@ -95,7 +95,8 @@ public class JError {
     // SDK正在初始化，请等待
     public static final int ErrorIniting = 163;
 
-    public static final int LoginTimeOut = 1;
+    public static final int ERROR_LOGIN_TIME_OUT = 1;
+    public static final int ERROR_OFFLINE_LOGIN = 2;
 
     // 客户端帐号类.
 // 短信验证码错误。

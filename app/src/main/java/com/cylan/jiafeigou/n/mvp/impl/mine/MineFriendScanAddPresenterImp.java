@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.Locale;
 
@@ -124,15 +123,12 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
      */
     @Override
     public Subscription getUserInfo() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
-                            if (getView() != null) {
-                                getView().showQrCode(getUserInfo.jfgAccount.getAccount());
-                            }
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null) {
+                        if (getView() != null) {
+                            getView().showQrCode(getUserInfo.jfgAccount.getAccount());
                         }
                     }
                 }, AppLogger::e);

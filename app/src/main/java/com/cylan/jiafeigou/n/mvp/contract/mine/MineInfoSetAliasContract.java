@@ -36,7 +36,7 @@ public interface MineInfoSetAliasContract {
          *
          * @param getUserInfo
          */
-        void handlerResult(RxEvent.GetUserInfo getUserInfo);
+        void handlerResult(RxEvent.AccountArrived getUserInfo);
 
         /**
          * 网络状态变化

@@ -46,12 +46,15 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                 .flatMap(show -> show ? Observable.just("正在显示 splash 页面,请等待2秒钟...").delay(2, TimeUnit.SECONDS) : Observable.just("不显示 splash 页面"))
                 .flatMap(msg -> RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(resultLogin -> {
-                    if (resultLogin.code != JError.ErrorOK && resultLogin.code != JError.LoginTimeOut) {//登录失败
+                .filter(resultLogin -> {
+                    boolean loginSuccess = false;
+                    if (resultLogin.code == JError.ErrorOK || resultLogin.code == JError.ERROR_OFFLINE_LOGIN) {//登录失败
+                        loginSuccess = true;
+                    } else {
                         getView().loginError(resultLogin.code);
                     }
                     AppLogger.d("login result: " + resultLogin);
-                    return resultLogin;
+                    return loginSuccess;
                 })
                 .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).first())
                 .observeOn(AndroidSchedulers.mainThread())

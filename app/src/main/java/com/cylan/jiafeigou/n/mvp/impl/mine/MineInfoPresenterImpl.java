@@ -169,12 +169,12 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getUserInfo -> {
-                    if (getUserInfo != null) {
+                .subscribe(accountArrived -> {
+                    if (accountArrived != null) {
                         if (getView() != null)
-                            getView().initPersonalInformation(getUserInfo.jfgAccount);
+                            getView().initPersonalInformation(accountArrived.jfgAccount);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }

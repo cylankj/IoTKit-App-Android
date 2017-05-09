@@ -255,16 +255,13 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
 
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
-                            if (getView() != null) {
-                                base_db = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
-                                userIcon = getUserInfo.jfgAccount.getPhotoUrl();
-                            }
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null && getUserInfo instanceof RxEvent.AccountArrived) {
+                        if (getView() != null) {
+                            base_db = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
+                            userIcon = getUserInfo.jfgAccount.getPhotoUrl();
                         }
                     }
                 }, AppLogger::e);

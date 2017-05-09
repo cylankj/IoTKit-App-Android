@@ -308,29 +308,6 @@ public class RxEvent {
         }
     }
 
-    /**
-     * 获取登录用户的信息
-     */
-    public static final class GetUserInfo {
-
-        public JFGAccount jfgAccount;
-
-        public GetUserInfo(JFGAccount jfgAccount) {
-            this.jfgAccount = jfgAccount;
-        }
-    }
-
-//    /**
-//     * 获取到http请求的结果
-//     */
-//    public static final class GetHttpDoneResult {
-//        public JFGMsgHttpResult jfgMsgHttpResult;
-//
-//        public GetHttpDoneResult(JFGMsgHttpResult jfgMsgHttpResult) {
-//            this.jfgMsgHttpResult = jfgMsgHttpResult;
-//        }
-//    }
-
     public static final class LocalUdpMsg {
         //消息的时间,可以用来判断有效性.
         public long time;

@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
@@ -236,22 +235,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isAdded()) {
-            basePresenter.updateAccount();
             if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
                 //访客状态
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
                 basePresenter.portraitBlur(bm);
                 setAliasName(getString(R.string.Tap3_LogIn));
-                Account account = getAppComponent().getSourceManager().getAccount();
-                if (account != null) {
-                    setUserImageHeadByUrl(account.getPhotoUrl());
-                }
             }
             lazyLoad();
-        }
-        JFGAccount account = getAppComponent().getSourceManager().getJFGAccount();
-        if (account != null && TextUtils.isEmpty(account.getPhotoUrl())) {
-            getAppComponent().getCmd().getAccount();
         }
     }
 

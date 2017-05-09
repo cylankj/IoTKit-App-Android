@@ -145,16 +145,11 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
         }
     }
 
-    /**
-     * 处理互调的结果
-     *
-     * @param getUserInfo
-     */
     @Override
-    public void handlerResult(RxEvent.GetUserInfo getUserInfo) {
+    public void handlerResult(RxEvent.AccountArrived accountArrived) {
         if (!TextUtils.isEmpty(getEditName())) {
             hideSendHint();
-            if (getEditName().equals(getUserInfo.jfgAccount.getAlias())) {
+            if (getEditName().equals(accountArrived.jfgAccount.getAlias())) {
                 ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
                 RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
                 getFragmentManager().popBackStack();

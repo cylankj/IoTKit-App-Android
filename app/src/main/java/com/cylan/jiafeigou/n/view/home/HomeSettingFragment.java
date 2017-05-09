@@ -189,10 +189,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
     @Override
-    public void initSwitchState(final RxEvent.GetUserInfo userInfo) {
-        btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled(), false);
-        btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound(), false);
-        btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate(), false);
+    public void initSwitchState(final RxEvent.AccountArrived accountArrived) {
+        btnItemSwitchAccessMes.setChecked(accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled(), false);
+        btnItemSwitchVoide.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
+        btnItemSwitchShake.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
         if (!btnItemSwitchAccessMes.isChecked()) {
             rlSoundContainer.setVisibility(View.GONE);
             rlVibrateContainer.setVisibility(View.GONE);

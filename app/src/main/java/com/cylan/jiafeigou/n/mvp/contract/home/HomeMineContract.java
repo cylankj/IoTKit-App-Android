@@ -7,7 +7,6 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
 
 import rx.Subscription;
 
@@ -103,8 +102,6 @@ public interface HomeMineContract {
         Subscription getAccountBack();
 
         void loginType();
-
-        void updateAccount();
 
     }
 }

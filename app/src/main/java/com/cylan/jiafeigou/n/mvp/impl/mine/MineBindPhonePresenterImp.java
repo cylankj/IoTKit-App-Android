@@ -26,8 +26,6 @@ import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -199,14 +197,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public Subscription getAccountCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null) {
-                            jfgAccount = getUserInfo.jfgAccount;
-                        }
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null) {
+                        jfgAccount = getUserInfo.jfgAccount;
                     }
                 }, e -> AppLogger.d(e.getMessage()));
     }

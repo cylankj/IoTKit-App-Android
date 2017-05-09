@@ -102,11 +102,11 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                .subscribe(new Action1<RxEvent.AccountArrived>() {
                     @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                    public void call(RxEvent.AccountArrived getUserInfo) {
                         if (getUserInfo != null) {
                             getDb(getUserInfo.jfgAccount.getAccount());
                             initMagData();

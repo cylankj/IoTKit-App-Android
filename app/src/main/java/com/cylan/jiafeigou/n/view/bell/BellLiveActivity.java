@@ -294,7 +294,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             finish();
         }
         muteAudio(false);
-        presenter.dismiss();
+        presenter.cancelViewer();
     }
 
     private void clearHeadSetEventReceiver() {
@@ -581,6 +581,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         dLayoutBellHotSeat.setVisibility(View.VISIBLE);
         fLayoutBellAfterLive.setVisibility(View.GONE);
         imgvBellLiveSwitchToLand.setEnabled(false);
+        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
         playSoundEffect();
         Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
         mBellhandle.startAnimation(shake);

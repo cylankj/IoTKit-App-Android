@@ -476,7 +476,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void autoLoginTip(int code) {
-        if (code == JError.LoginTimeOut) {
+        if (code == JError.ERROR_LOGIN_TIME_OUT) {
             if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
                 ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
             } else {

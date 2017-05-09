@@ -95,26 +95,29 @@ public class AutoSignIn {
                             } catch (Exception e) {
                                 AppLogger.e("no sign type" + e.getLocalizedMessage());
                                 PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-                                if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
-                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
-                                }
+                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                             }
 
                             if (!BaseApplication.getAppComponent().getSourceManager().isOnline() &&
-                                    !RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {//当前无法联网,则直指返回
+                                    !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
                                 BaseApplication.getAppComponent().getSourceManager().initFromDB();
-                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));
                             }
                             return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
                         }
                 )
                 .observeOn(Schedulers.io())
-                .timeout(30, TimeUnit.SECONDS, Observable.just(new RxEvent.ResultLogin(JError.LoginTimeOut)))
-                .subscribe(resultLogin -> {
-                    if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
-                        RxBus.getCacheInstance().post(resultLogin);
-                    }
-                }, AppLogger::e);
+                .timeout(30, TimeUnit.SECONDS, Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true))
+                        .map(hasPswError -> {
+                            if (hasPswError) {
+                                return new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass);
+                            } else {
+                                BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                return new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN);
+                            }
+                        })
+                )
+                .subscribe(resultLogin -> RxBus.getCacheInstance().post(resultLogin), AppLogger::e);
     }
 
     public Observable<Integer> autoSave(String account, int type, String pwd) {

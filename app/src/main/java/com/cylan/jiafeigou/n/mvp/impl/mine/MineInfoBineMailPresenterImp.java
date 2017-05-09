@@ -121,16 +121,13 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      */
     @Override
     public Subscription getAccountCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null) {
-                            AppLogger.d("changacc:" + getUserInfo.jfgAccount.getEmail());
-                            getView().getUserAccountData(getUserInfo.jfgAccount);
-                            jfgAccount = getUserInfo.jfgAccount;
-                        }
+                .subscribe(accountArrived -> {
+                    if (accountArrived != null) {
+                        AppLogger.d("changacc:" + accountArrived.jfgAccount.getEmail());
+                        getView().getUserAccountData(accountArrived.jfgAccount);
+                        jfgAccount = accountArrived.jfgAccount;
                     }
                 }, e -> AppLogger.d(e.getMessage()));
     }
@@ -255,6 +252,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -269,6 +267,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }

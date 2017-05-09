@@ -5,6 +5,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -26,6 +29,7 @@ import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -33,7 +37,6 @@ import java.util.Random;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -147,7 +150,6 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
      */
     @Override
     public void getUnReadMesg() {
-
         Observable.just("Now Get UnReadMsg")
                 .observeOn(Schedulers.io())
                 .subscribe((Object o) -> {
@@ -219,8 +221,50 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     public Subscription getAccountBack() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(accountBack -> {
-                    updateAccount();
+                .subscribe(accountArrived -> {
+                    RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
+                    isOpenLogin = event != null && event.isThird;
+                    if (isOpenLogin) {
+                        String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
+                        if (!TextUtils.isEmpty(photoUrl)) {//设置第三方登录图像
+                            Glide
+                                    .with(getView().getContext()).load(photoUrl)
+                                    .downloadOnly(new SimpleTarget<File>() {
+                                        @Override
+                                        public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                                            try {
+                                                AppLogger.e("正在设置第三方登录图像" + resource.getAbsolutePath());
+                                                BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
+                                            } catch (JfgException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+
+                    String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
+                    if (TextUtils.isEmpty(alias)) {
+                        boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
+                        if (isEmail) {
+                            String[] split = accountArrived.jfgAccount.getAccount().split("@");
+                            alias = split[0];
+                        }
+                    }
+                    if (TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
+                        accountArrived.jfgAccount.setAlias(alias);
+                        try {
+                            AppLogger.e("正在设置第三方登录昵称" + alias);
+                            BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getPhotoUrl()))
+                        getView().setUserImageHeadByUrl(accountArrived.account.getPhotoUrl());
+                    if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getAlias()))
+                        getView().setAliasName(accountArrived.account.getAlias());
                 }, AppLogger::e);
     }
 
@@ -229,22 +273,19 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     public void loginType() {
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<Object, Observable<Integer>>() {
-                    @Override
-                    public Observable<Integer> call(Object o) {
-                        try {
-                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                            if (TextUtils.isEmpty(aesAccount)) {
-                                AppLogger.d("reShowAccount:aes account is null");
-                                return Observable.just(null);
-                            }
-                            String decryption = AESUtil.decrypt(aesAccount);
-                            AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
-                            return Observable.just(signType.type);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return Observable.just(1);
+                .flatMap(o -> {
+                    try {
+                        String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                        if (TextUtils.isEmpty(aesAccount)) {
+                            AppLogger.d("reShowAccount:aes account is null");
+                            return Observable.just(null);
                         }
+                        String decryption = AESUtil.decrypt(aesAccount);
+                        AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
+                        return Observable.just(signType.type);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return Observable.just(1);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -258,41 +299,6 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     }
                 }, AppLogger::e);
     }
-
-    @Override
-    public void updateAccount() {
-        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (account == null) return;
-        String photoUrl = account == null ? "" : account.getPhotoUrl();
-        RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
-        isOpenLogin = event != null && event.isThird;
-        if (isOpenLogin && isDefaultPhoto(photoUrl)) {
-
-            photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
-        }
-        if (isOpenLogin && TextUtils.isEmpty(account.getAlias())) {
-            try {
-                BaseApplication.getAppComponent().getCmd().setAccount(account);
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-            account.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
-        }
-        if (account.getAlias() == null || TextUtils.isEmpty(account.getAlias())) {
-            boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
-            if (isEmail) {
-                String[] split = account.getAccount().split("@");
-                account.setAlias(split[0]);
-            } else {
-                account.setAlias(account.getAccount());
-            }
-        }
-        if (getView() != null && !TextUtils.isEmpty(photoUrl))
-            getView().setUserImageHeadByUrl(photoUrl);
-        if (getView() != null && !TextUtils.isEmpty(account.getAlias()))
-            getView().setAliasName(account.getAlias());
-    }
-
 
     public Subscription loginInMe() {
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)

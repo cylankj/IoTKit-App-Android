@@ -84,7 +84,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
      */
     @Override
     public Subscription getAccountAlids() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null) {

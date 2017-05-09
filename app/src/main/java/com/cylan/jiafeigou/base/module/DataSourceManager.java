@@ -429,9 +429,6 @@ public class DataSourceManager implements JFGSourceManager {
         this.jfgAccount = jfgAccount;
         if (this.account != null) this.account.setAccount(jfgAccount);
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
-        if (jfgAccount != null) {
-            getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
-        }
     }
 
     @Override
