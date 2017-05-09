@@ -37,6 +37,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
     @Override
     public void setupAlias(String alias) {
         Subscription subscribe = Observable.interval(0, 2, TimeUnit.SECONDS)
+                .timeout(5, TimeUnit.SECONDS)//5s超时
                 .takeUntil(aLong -> {
                     Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
                     return account != null && account.isOnline();
