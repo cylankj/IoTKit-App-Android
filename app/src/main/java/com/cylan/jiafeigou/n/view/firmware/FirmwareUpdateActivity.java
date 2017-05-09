@@ -189,6 +189,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         customToolbar.post(() -> {
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             tvLoadingShow.setText(percent + "%");
+            downloadProgress.setProgress(0);
         });
     }
 
@@ -204,6 +205,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @Override
     public void upgradeErr(final int errCode) {
         customToolbar.post(() -> {
+            tvLoadingShow.setText("0%");
+            downloadProgress.setProgress(0);
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             switch (errCode) {

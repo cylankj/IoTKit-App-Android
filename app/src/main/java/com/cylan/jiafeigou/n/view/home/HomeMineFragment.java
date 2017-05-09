@@ -276,10 +276,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .signature(new StringSignature(account.getToken()))
+                .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "account" : account.getToken()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mySimpleTarget);
-
     }
 
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {

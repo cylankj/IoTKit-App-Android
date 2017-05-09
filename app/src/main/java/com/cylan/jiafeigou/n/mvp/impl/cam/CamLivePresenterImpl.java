@@ -286,22 +286,23 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .map(rsp -> {
-                            //只需要初始化一天的就可以啦.
-                            assembleTheDay(rsp.historyFiles);
-                            AppLogger.d("历史录像恢复");
-                            return null;
+                            //只需要初始化一天的就可以啦.//丢throwable就是为了让订阅链断开
+                            throw new RxEvent.HelperBreaker(rsp);
                         })
-                        .filter(result -> mView != null)
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .map(longs -> {
-                            //更新日历
-                            ArrayList<Long> dateList = BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
-                            mView.onHistoryDateListUpdate(dateList);
-                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-                            return null;
-                        }))
+                        .filter(result -> mView != null))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                }, AppLogger::e);
+                }, throwable -> {
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+                        Object o = ((RxEvent.HelperBreaker) throwable).object;
+                        if (o != null && o instanceof RxEvent.JFGHistoryVideoParseRsp)
+                            assembleTheDay(((RxEvent.JFGHistoryVideoParseRsp) o).historyFiles);
+                        //更新日历
+                        ArrayList<Long> dateList = BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
+                        mView.onHistoryDateListUpdate(dateList);
+                        AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
+                    }
+                });
         removeSubscription("getHistoryList");
         addSubscription(subscription, "getHistoryList");
     }

@@ -76,6 +76,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         mAdapter = new SuperAdapter<WheelItem>(getContext(), null, R.layout.wonder_indicaror_item) {
             @Override
             public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, WheelItem item) {
+                holder.setVisibility(R.id.v_item_layout, item.fade ? INVISIBLE : VISIBLE);
                 holder.setEnabled(R.id.wonder_indicator_item, item.wonderful);
                 holder.setSelected(R.id.wonder_indicator_item, item.selected);
                 holder.setText(R.id.wonder_indicator_item, TimeUtils.getDayInMonth(item.time));
@@ -125,6 +126,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         public long time;//这一天的时间
         public boolean init = false;//是否已经查询过了
         public boolean selected = false;//是否被选中
+        public boolean fade;
 
         @Override
         public String toString() {
@@ -152,6 +154,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
             WheelItem item = new WheelItem();
             item.time = startTime - j * 24 * 3600 * 1000L;
+            item.fade = true;
             items.add(0, item);
         }
         //尾部也加
@@ -159,6 +162,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
             WheelItem item = new WheelItem();
             item.time = startTime + j * 24 * 3600 * 1000L;
+            item.fade = true;
             items.add(item);
         }
         int finalCount = ListUtils.getSize(items);
