@@ -6,6 +6,8 @@ import com.cylan.jiafeigou.base.module.BaseAppCallBackHolder;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.IHttpApi;
+import com.cylan.jiafeigou.base.module.ImageFileConverterFactory;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -24,6 +26,10 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by yanzhendong on 2017/4/12.
@@ -112,6 +118,37 @@ public class CommonModule {
     @Named("CrashPath")
     public static String provideCrashPath() {
         return PathGetter.createPath(JConstant.CRASH_PATH);
+    }
+
+    @Provides
+    @Singleton
+    public static IHttpApi provideHttpApi(@Named("IHttpApi") Retrofit retrofit) {
+        return retrofit.create(IHttpApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public static OkHttpClient provideOkHttpClient() {
+        return new OkHttpClient.Builder().build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("IHttpApi")
+    public static Retrofit provideRetrofit(OkHttpClient okHttpClient, @Named("IHttpApiBaseUrl") String baseUrl) {
+        return new Retrofit.Builder().client(okHttpClient)
+                .baseUrl(baseUrl)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ImageFileConverterFactory.create())
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("IHttpApiBaseUrl")
+    public static String provideHttpApiBaseUrl() {
+        return "http://192.168.103.222/";
     }
 
 }

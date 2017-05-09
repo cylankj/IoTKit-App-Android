@@ -159,6 +159,7 @@
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
+            android:theme="@style/AppSplash"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

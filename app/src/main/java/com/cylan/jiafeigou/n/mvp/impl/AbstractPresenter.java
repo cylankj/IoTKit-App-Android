@@ -122,6 +122,12 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     protected void addSubscription(Subscription subscription) {
+        if (compositeSubscription == null) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        if (refCacheMap == null) {
+            refCacheMap = new MapSubscription();
+        }
         if (subscription != null)
             compositeSubscription.add(subscription);
     }

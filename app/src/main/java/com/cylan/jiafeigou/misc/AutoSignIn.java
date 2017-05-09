@@ -70,6 +70,8 @@ public class AutoSignIn {
                                 AppLogger.d("autoLogin");
                                 String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE, "");
                                 String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID, "");
+                                PreferencesUtils.putString(JConstant.KEY_PHONE, "");
+                                PreferencesUtils.putString(JConstant.SESSIONID, "");
                                 String decryption = AESUtil.decrypt(account);
                                 SignType signType = new Gson().fromJson(decryption, SignType.class);
                                 if (signType != null) {
@@ -85,8 +87,7 @@ public class AutoSignIn {
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
                                     }
-                                    PreferencesUtils.putString(JConstant.KEY_PHONE, "");
-                                    PreferencesUtils.putString(JConstant.SESSIONID, "");
+
                                     PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                                     autoSave(finalAccount, signType.type, finalPwd);
                                 }
@@ -98,16 +99,19 @@ public class AutoSignIn {
                                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                                 }
                             }
+
+                            if (!BaseApplication.getAppComponent().getSourceManager().isOnline() &&
+                                    !RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {//当前无法联网,则直指返回
+                                BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                            }
                             return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
                         }
                 )
                 .observeOn(Schedulers.io())
-                .timeout(5, TimeUnit.SECONDS, Observable.just(new RxEvent.ResultLogin(JError.LoginTimeOut)))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(new RxEvent.ResultLogin(JError.LoginTimeOut)))
                 .subscribe(resultLogin -> {
                     if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
-                        if (resultLogin.code == JError.LoginTimeOut) {
-                            BaseApplication.getAppComponent().getSourceManager().initFromDB();
-                        }
                         RxBus.getCacheInstance().post(resultLogin);
                     }
                 }, AppLogger::e);

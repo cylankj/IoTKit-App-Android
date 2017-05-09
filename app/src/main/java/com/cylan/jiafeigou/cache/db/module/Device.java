@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.cache.db.module;
 
-import android.support.annotation.IntDef;
-
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
@@ -12,11 +10,6 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * Created by yanzhendong on 2017/3/4.
@@ -279,14 +272,8 @@ public class Device extends BasePropertyHolder<Device> {
         return this.pid;
     }
 
-    @IntDef({})
-    @Target(ElementType.PARAMETER)
-    @Retention(RetentionPolicy.SOURCE)
-    @interface MsgId {
-    }
-
     @Override
-    public <V> V $(@MsgId int msgId, V defaultValue) {
+    public <V> V $(int msgId, V defaultValue) {
         return super.$(msgId, defaultValue);
     }
 

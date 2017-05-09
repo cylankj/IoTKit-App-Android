@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.widget;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.databinding.repacked.google.common.util.concurrent.ExecutionError;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;

@@ -15,6 +15,7 @@ import org.msgpack.annotation.Message;
 public class UdpConstant {
     public static final String IP = "255.255.255.255";
     public static final short PORT = 10008;
+    public static final String PIP = "192.168.10.255";
     public static final String F_ACK = "f_ack";
     public static final String PING_ACK = "ping_ack";
     public static final String F_PING_ACK = "f_ping_ack";

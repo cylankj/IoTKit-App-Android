@@ -654,7 +654,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
-    public void onPreviewPicture(String URL) {
+    public void onShowVideoPreviewPicture(String URL) {
 //        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).

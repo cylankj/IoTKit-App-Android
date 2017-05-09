@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 
@@ -236,6 +236,7 @@ android {
             ]
         }
     }
+    buildToolsVersion '25.0.0'
 }
 
 
@@ -258,9 +259,7 @@ dependencies {
         resolutionStrategy.force 'com.android.support:support-annotations:+'
     }
     //////////////test///////////////////////
-
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
-
     //前者在test/，后者在androidTest
     testCompile rootProject.ext.testRobolectric
     testCompile rootProject.ext.testAssertj
@@ -270,7 +269,6 @@ dependencies {
     androidTestCompile rootProject.ext.testRules
     androidTestCompile rootProject.ext.testRunner
     //强制使用高版本，引用rootProject.ext.annotation，无效
-
     //    androidTestCompile 'com.android.support:support-annotations:23.3.0'
     androidTestCompile(rootProject.ext.testEspresso, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -301,7 +299,6 @@ dependencies {
     compile(name: 'LibMarsdaemon-release', ext: 'aar')
     compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
     //渠道包
-
     // twitter
     compile(name: 'fabric-1.3.14', ext: 'aar')
     compile(name: 'tweet-composer-2.3.1', ext: 'aar')
@@ -348,6 +345,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     compile 'com.android.support:support-v4:25.3.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
 }
 
 //谷歌推送

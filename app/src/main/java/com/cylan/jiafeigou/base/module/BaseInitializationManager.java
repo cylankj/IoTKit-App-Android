@@ -14,9 +14,10 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
@@ -106,6 +107,10 @@ public final class BaseInitializationManager {
         initGlobalSubscription();
         initDialogManager();
         initPushResult();
+        hasInitFinished = true;
+        if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.GlobalInitFinishEvent.class)) {
+            RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
+        }
     }
 
     private void initPushResult() {
@@ -123,8 +128,6 @@ public final class BaseInitializationManager {
         } catch (Exception e) {
             Log.d("BaseInitialization", "initPushResultFailed:" + MiscUtils.getErr(e));
         }
-        hasInitFinished = true;
-        AutoSignIn.getInstance().autoLogin();//只有等所有资源初始化完成之后才能走 login 流程
     }
 
     private void initDialogManager() {
@@ -212,5 +215,11 @@ public final class BaseInitializationManager {
 
     private void enableDebugOptions() {
         OptionsImpl.enableCrashHandler(appContext, crashPath);
+    }
+
+    public void observeInitFinish() {
+        if (hasInitFinished && !RxBus.getCacheInstance().hasStickyEvent(RxEvent.GlobalInitFinishEvent.class)) {
+            RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
+        }
     }
 }

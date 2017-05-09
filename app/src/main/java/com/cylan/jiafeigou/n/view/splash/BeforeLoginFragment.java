@@ -1,13 +1,11 @@
 package com.cylan.jiafeigou.n.view.splash;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +35,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_splash_before_login, container, false);
+
         ButterKnife.bind(this, view);
         return view;
     }
@@ -49,12 +48,9 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.d("", "");
-                return false;
-            }
+        view.setOnKeyListener((v, keyCode, event) -> {
+            Log.d("", "");
+            return false;
         });
     }
 
@@ -92,20 +88,6 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, false);
         ((NeedLoginActivity) getActivity()).signInFirst(bundle);
-    }
-
-    /**
-     * 清空所有多余的View，会有一个白色的窗口期。
-     */
-    private void clearChildren() {
-        Activity activity = getActivity();
-        if (activity != null) {
-            ViewGroup v = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-            ViewGroup group = (ViewGroup) v.findViewById(android.R.id.content);
-            if (group != null) {
-                group.removeAllViews();
-            }
-        }
     }
 
 }

@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -83,8 +82,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                             mCaller = mHolderCaller;
                                             mHolderCaller = null;
                                             startViewer();
-                                            File file = new File(JConstant.MEDIA_PATH, "." + mUUID + ".jpg");
-                                            mView.onPreviewPicture(file.toString());
                                             break;
                                     }
                                     return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
@@ -141,7 +138,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             if (notify.success) {
                                 AppLogger.d("正在显示门铃截图");
                                 if (mView != null)
-                                    mView.onPreviewPicture(url);
+                                    mView.onShowVideoPreviewPicture(url);
                             }
                             return notify;
                         })

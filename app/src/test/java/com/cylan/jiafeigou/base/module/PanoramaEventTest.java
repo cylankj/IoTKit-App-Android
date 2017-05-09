@@ -18,10 +18,6 @@ public class PanoramaEventTest {
 
         MessagePack mp = new MessagePack();
 
-        PanoramaEvent.MSG_TYPE_TAKE_PICTURE_RSP read = mp.createBufferUnpacker(data).read(PanoramaEvent.MSG_TYPE_TAKE_PICTURE_RSP.class);
-
-        System.out.println(read);
-
     }
 
 }
