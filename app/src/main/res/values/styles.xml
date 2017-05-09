@@ -18,6 +18,9 @@
         <item name="android:windowFrame">@null</item>
     </style>
 
+    <style name="AppSplash" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 
     <style name="comment_bottom_dialog_style">
         <item name="android:layout_width">fill_parent</item>

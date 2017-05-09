@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.injector.module;
 
 import com.cylan.jiafeigou.base.injector.lifecycle.PerActivity;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
+import com.cylan.jiafeigou.base.module.IHttpApi;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -9,7 +10,6 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
@@ -34,14 +34,15 @@ public class ActivityModule {
 
     @Provides
     @PerActivity
-    public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
-        return injector.inject(new PanoramaPresenter());
+    public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector, IHttpApi httpApi) {
+        PanoramaPresenter presenter = injector.inject(new PanoramaPresenter());
+        return presenter;
     }
 
     @Provides
     @PerActivity
     public static PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter(BasePresenterInjector injector) {
-        return injector.inject(new PanoramaAlbumPresenter());
+        return null;
     }
 
     @Provides

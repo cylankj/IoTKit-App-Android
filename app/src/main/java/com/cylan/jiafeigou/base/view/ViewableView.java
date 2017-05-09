@@ -9,6 +9,26 @@ import com.cylan.ex.JfgException;
 
 public interface ViewableView extends JFGView {
 
+    class LiveStreamAction {
+        public boolean hasStarted = false;
+        public boolean hasResolution = false;
+        public boolean hasLiveError = false;
+        public boolean speakerOn = false;
+        public boolean microphoneOn = false;
+        public int liveType = 0;
+        public int errorNumber = -1;
+
+        public void reset() {
+            hasStarted = false;
+            hasResolution = false;
+            hasLiveError = false;
+            speakerOn = false;
+            microphoneOn = false;
+            liveType = 0;
+            errorNumber = -1;
+        }
+    }
+
     void onViewer();//主动查看,不需要点接听
 
     void onDismiss();//挂断
@@ -30,6 +50,8 @@ public interface ViewableView extends JFGView {
     void onDeviceUnBind();//当前设备已解绑
 
     void onLoading(boolean loading);
+
+    void onShowVideoPreviewPicture(String picture);
 
     int CUSTOM_ERROR_CODE_START = -1000000;
     int BAD_NET_WORK = CUSTOM_ERROR_CODE_START - 1;

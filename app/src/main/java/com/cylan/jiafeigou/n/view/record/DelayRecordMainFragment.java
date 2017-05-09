@@ -328,6 +328,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
+    public void onShowVideoPreviewPicture(String picture) {
+
+    }
+
+    @Override
     public void hasNoAudioPermission() {
 
     }

@@ -24,7 +24,6 @@ import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -312,13 +311,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnForwardData(byte[] bytes) {
-        try {
-            PanoramaEvent.RawRspMsg rawRspMsg = DpUtils.unpackData(bytes, PanoramaEvent.RawRspMsg.class);
-            RxBus.getCacheInstance().post(rawRspMsg);
-            AppLogger.d("OnForwardData:" + gson.toJson(rawRspMsg));
-        } catch (Exception e) {
-            AppLogger.e("OnForwardData:解析局域网消息失败!!!");
-        }
+//        try {
+//            PanoramaEvent.RawRspMsg rawRspMsg = DpUtils.unpackData(bytes, PanoramaEvent.RawRspMsg.class);
+//            RxBus.getCacheInstance().post(rawRspMsg);
+//            AppLogger.d("OnForwardData:" + gson.toJson(rawRspMsg));
+//        } catch (Exception e) {
+//            AppLogger.e("OnForwardData:解析局域网消息失败!!!");
+//        }
     }
 
     @Override

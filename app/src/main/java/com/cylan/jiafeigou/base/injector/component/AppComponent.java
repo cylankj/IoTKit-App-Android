@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.base.injector.module.CommonModule;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
+import com.cylan.jiafeigou.base.module.IHttpApi;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -46,6 +47,8 @@ public interface AppComponent {
     AppCmd getCmd();
 
     HttpProxyCacheServer getHttpProxyCacheServer();
+
+    IHttpApi getHttpApi();
 
 
 }

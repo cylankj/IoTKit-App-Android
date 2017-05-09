@@ -12,7 +12,7 @@ public interface CallableView extends ViewableView {
 
     void onNewCallWhenInLive(String person);//正在接听中又来了新的呼叫
 
-    void onPreviewPicture(String picture);
+
 
     void onListen();
 

@@ -1152,6 +1152,11 @@ public class RxEvent {
         }
     }
 
+    public static class GlobalInitFinishEvent {
+        public static GlobalInitFinishEvent INSTANCE = new GlobalInitFinishEvent();
+    }
+//
+
     //
     public static final class FirmwareUpdateRsp {
         public String uuid;

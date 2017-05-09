@@ -8,25 +8,16 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface SplashContract {
 
-
     interface View extends BaseView<Presenter> {
-        /**
-         * 闪屏结束
-         */
-        void splashOver();
+        void loginSuccess();
 
-        void finishDelayed();
-
-        void loginResult(int code);
-
-        boolean hasSplashView();
+        void loginError(int code);
     }
 
-
     interface Presenter extends BasePresenter {
+        void autoLogin();
 
-        void finishAppDelay();
-
+        void selectNext(boolean showSplash);
     }
 
 }

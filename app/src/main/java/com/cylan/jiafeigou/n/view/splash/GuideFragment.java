@@ -1,12 +1,9 @@
 package com.cylan.jiafeigou.n.view.splash;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +18,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.GreatDragView;
 
-import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -34,12 +30,9 @@ import rx.schedulers.Schedulers;
  * Created by hunt on 16-5-14.
  */
 public class GuideFragment extends Fragment implements GreatDragView.ViewDisappearListener {
-
     @BindView(R.id.v_great_drag)
     GreatDragView vGreatDrag;
     private Subscription resultSub;
-    //    @BindView(R.msgId.v_guide_indicator)
-//    GuideIndicatorLayout vGuideIndicator;
 
     public static GuideFragment newInstance() {
         return new GuideFragment();
@@ -53,9 +46,9 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_welcome_guide_view, container, false);
         ButterKnife.bind(this, view);
+        PreferencesUtils.putBoolean(JConstant.KEY_FRESH, false);
         return view;
     }
 
@@ -67,9 +60,6 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 
     @Override
     public void onViewDisappear(View view, int index) {
-//        vGuideIndicator.setFocusedIndex(index);
-        Log.d("vGuideIndicator", "vGuideIndicator: " + index);
-
         if (PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN, false) && index == 3) {
             AppLogger.d("updata_login");
             resultSub = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultUpdateLogin.class)
@@ -101,10 +91,11 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
     }
 
     private void enterLoginPage() {
+        int containerId = getArguments().getInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.welcome_frame_container);
         if (getActivity() != null)
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                    .replace(containerId, BeforeLoginFragment.newInstance(null))
                     .commitAllowingStateLoss();
     }
 

@@ -15,7 +15,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
  */
 public class NeedLoginActivity<T extends BasePresenter> extends BaseFullScreenFragmentActivity<T> {
 
-    private LoginFragment loginFragment;
+    protected LoginFragment loginFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

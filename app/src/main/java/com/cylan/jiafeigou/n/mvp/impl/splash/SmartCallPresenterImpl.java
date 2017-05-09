@@ -1,13 +1,18 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
+import com.cylan.jiafeigou.misc.AutoSignIn;
+import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -18,8 +23,6 @@ import rx.schedulers.Schedulers;
 public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.View>
         implements SplashContract.Presenter {
 
-    private Subscription subscription;
-
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
     }
@@ -27,35 +30,33 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     @Override
     public void start() {
         super.start();
-        selectNext();
     }
 
-    private void selectNext() {
-        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-                .subscribeOn(Schedulers.io())
+    public void autoLogin() {
+        BaseApplication.getAppComponent().getInitializationManager().observeInitFinish();
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
+                .first()
+                .observeOn(Schedulers.io())
+                .subscribe(event -> AutoSignIn.getInstance().autoLogin(), AppLogger::e);
+        addSubscription(subscribe);
+    }
+
+    public void selectNext(boolean showSplash) {
+        Subscription subscribe = Observable.just(showSplash)
+                .flatMap(show -> show ? Observable.just("正在显示 splash 页面,请等待2秒钟...").delay(2, TimeUnit.SECONDS) : Observable.just("不显示 splash 页面"))
+                .flatMap(msg -> RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(resultLogin -> {
-                    if (resultLogin != null && getView() != null)
-                        getView().loginResult(resultLogin.code);
+                    if (resultLogin.code != JError.ErrorOK && resultLogin.code != JError.LoginTimeOut) {//登录失败
+                        getView().loginError(resultLogin.code);
+                    }
                     AppLogger.d("login result: " + resultLogin);
-                    return null;
+                    return resultLogin;
                 })
-                .subscribe(ret -> {
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-    }
-
-
-    @Override
-    public void stop() {
-        super.stop();
-        unSubscribe(subscription);
-    }
-
-    @Override
-    public void finishAppDelay() {
-        AppLogger.w("deny sdcard permission");
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
+                .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).first())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accountArrived -> getView().loginSuccess(), AppLogger::e);
+        addSubscription(subscribe);
     }
 }
 

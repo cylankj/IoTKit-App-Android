@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:layout_height="match_parent">
 
-
-    <FrameLayout
-        android:id="@+id/fLayout_splash"
+    <ViewSwitcher
+        android:id="@+id/welcome_switcher"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_36BDFF">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/y200"
-            android:src="@drawable/logo_splash_screen" />
-
-        <TextView
-            android:id="@+id/tv_copy_right"
+        <FrameLayout
+            android:id="@+id/fLayout_splash"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/y20"
-            android:gravity="center"
-            android:textSize="@dimen/sp9"
-            android:visibility="gone" />
-    </FrameLayout>
-</merge>
+            android:layout_height="match_parent"
+            android:background="@color/color_36BDFF">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y200"
+                android:src="@drawable/logo_splash_screen" />
+
+            <TextView
+                android:id="@+id/tv_copy_right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/y20"
+                android:gravity="center"
+                android:textSize="@dimen/sp9"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/welcome_frame_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ViewSwitcher>
+
+
+</FrameLayout>
