@@ -27,8 +27,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
-import java.lang.ref.WeakReference;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,7 +38,7 @@ import butterknife.Unbinder;
  * create an instance of this fragment.
  */
 public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Presenter>
-        implements FUpdatingContract.View, ClientUpdateManager.FUpdatingListener {
+        implements FUpdatingContract.View, ClientUpdateManager.FUpgradingListener {
 
 
     @BindView(R.id.custom_toolbar)
@@ -92,16 +90,7 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
     @Override
     public void onStart() {
         super.onStart();
-        ClientUpdateManager.FirmWareUpdatingTask task = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
-        if (task != null) {
-            if (task.getUpdateState() == JConstant.U.SUCCESS) {
-                prepareNextPage(0);
-            } else if (task.getUpdateState() < 0) {
-                prepareNextPage(task.getUpdateState());
-            }
-            tvLoadingPercent.setText(task.getSimulatePercent() + "");
-        }
-        ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
+
     }
 
     @Override
@@ -111,21 +100,21 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
     }
 
     @Override
-    public void start() {
+    public void upgradeStart() {
         if (!isAdded()) return;
         AppLogger.d("开始升级");
         progressLoading.post(() -> progressLoading.run());
     }
 
     @Override
-    public void progress(int percent) {
+    public void upgradeProgress(int percent) {
         if (!isAdded()) return;
         Log.d("FirmwareUpdating", "模拟:" + percent);
         tvLoadingPercent.post(() -> tvLoadingPercent.setText(percent + ""));
     }
 
     @Override
-    public void err(int errCode) {
+    public void upgradeErr(int errCode) {
         if (!isAdded()) return;
         progressLoading.post(() -> {
             progressLoading.dismiss();
@@ -142,7 +131,7 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
     }
 
     @Override
-    public void success() {
+    public void upgradeSuccess() {
         if (!isAdded()) return;
         progressLoading.post(() -> {
             progressLoading.dismiss();
@@ -175,7 +164,7 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
                     getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         //重试
                         ClientUpdateManager.getInstance().removeTask(getUuid());
-                        ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
+//                        ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
                         startAgain();
                     }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         ClientUpdateManager.getInstance().removeTask(getUuid());
@@ -200,7 +189,7 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
             AppLogger.d("升级成功,需要清理一些缓存");
         } else {
             ClientUpdateManager.getInstance().removeTask(getUuid());
-            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
+//            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
             startAgain();
         }
     }
@@ -224,37 +213,4 @@ public class FirmwareUpdatingFragment extends IBaseFragment<FUpdatingContract.Pr
         progressLoading.post(() -> progressLoading.run());
     }
 
-    private static class Updating implements ClientUpdateManager.FUpdatingListener {
-
-        private WeakReference<ClientUpdateManager.FUpdatingListener> listenerRef;
-
-        public Updating(ClientUpdateManager.FUpdatingListener listener) {
-            this.listenerRef = new WeakReference<>(listener);
-        }
-
-        @Override
-        public void start() {
-            if (listenerRef == null || listenerRef.get() == null) return;
-            listenerRef.get().start();
-        }
-
-        @Override
-        public void progress(int percent) {
-            if (listenerRef == null || listenerRef.get() == null) return;
-            listenerRef.get().progress(percent);
-        }
-
-        @Override
-        public void err(int errCode) {
-            if (listenerRef == null || listenerRef.get() == null) return;
-            listenerRef.get().err(errCode);
-        }
-
-        @Override
-        public void success() {
-            if (listenerRef == null || listenerRef.get() == null) return;
-            listenerRef.get().success();
-        }
-
-    }
 }

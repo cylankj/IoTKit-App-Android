@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -40,7 +39,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
-        implements FirmwareUpdateContract.View, ClientUpdateManager.DownloadListener {
+        implements FirmwareUpdateContract.View, ClientUpdateManager.DownloadListener,
+        ClientUpdateManager.FUpgradingListener {
     @BindView(R.id.tv_hardware_now_version)
     TextView tvCurrentVersion;
     @BindView(R.id.hardware_update_point)
@@ -122,12 +122,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
             basePresenter.cleanFile();
         }
+        packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+        if (packageDownloadAction != null && packageDownloadAction.getCheckDevVersionRsp().downloadState == JConstant.U.UPDATING)
+            return;
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
         if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {
-            Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
-            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                    FirmwareUpdatingFragment.newInstance(bundle), android.R.id.content);
+            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
         } else {
             ClientUpdateManager.getInstance().removeTask(getUuid());
         }
@@ -174,6 +174,57 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             if (totalByte == 0) return;
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             downloadProgress.setProgress((int) ((float) currentByte / totalByte * 100));
+        });
+    }
+
+    @Override
+    public void upgradeStart() {
+        customToolbar.post(() -> {
+            llDownloadPgContainer.setVisibility(View.VISIBLE);
+        });
+    }
+
+    @Override
+    public void upgradeProgress(int percent) {
+        customToolbar.post(() -> {
+            llDownloadPgContainer.setVisibility(View.VISIBLE);
+            tvLoadingShow.setText(percent + "%");
+        });
+    }
+
+    //    public static final class U {
+//        public static int FAILED_DEVICE_FAILED = -4;//设备返回非0
+//        public static int FAILED_FPING_ERR = -3;
+//        public static int FAILED_30S = -2;
+//        public static int FAILED_60S = -1;
+//        public static int IDLE = 0;
+//        public static int UPDATING = 1;
+//        public static int SUCCESS = 2;
+//    }
+    @Override
+    public void upgradeErr(final int errCode) {
+        customToolbar.post(() -> {
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+            llDownloadPgContainer.setVisibility(View.VISIBLE);
+            switch (errCode) {
+                case -2:
+                case -3:
+                    ToastUtil.showToast(getString(R.string.UPDATE_DISCONNECT));
+                    break;
+                case -1:
+                case -4:
+                    ToastUtil.showToast(getString(R.string.Tap1_FirmwareUpdateFai));
+                    break;
+            }
+        });
+    }
+
+    @Override
+    public void upgradeSuccess() {
+        customToolbar.post(() -> {
+            llDownloadPgContainer.setVisibility(View.VISIBLE);
+            tvLoadingShow.setText("100%");
+            ToastUtil.showToast(getString(R.string.Tap1_FirmwareUpdateSuc));
         });
     }
 
@@ -260,10 +311,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             //升级
             //1.网络环境{是否同一局域网}
             if (!checkNet()) return;
-            Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getUuid());
-            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                    FirmwareUpdatingFragment.newInstance(bundle), android.R.id.content);
+            //开始升级
+            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
         } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
             //Tap1_FirmwareDownloading:正在下载(%s),
         } else {
@@ -291,4 +340,38 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         finishExt();
     }
 
+
+    private static class Updating implements ClientUpdateManager.FUpgradingListener {
+
+        private WeakReference<ClientUpdateManager.FUpgradingListener> listenerRef;
+
+        public Updating(ClientUpdateManager.FUpgradingListener listener) {
+            this.listenerRef = new WeakReference<>(listener);
+        }
+
+        @Override
+        public void upgradeStart() {
+            if (listenerRef == null || listenerRef.get() == null) return;
+            listenerRef.get().upgradeStart();
+        }
+
+        @Override
+        public void upgradeProgress(int percent) {
+            if (listenerRef == null || listenerRef.get() == null) return;
+            listenerRef.get().upgradeProgress(percent);
+        }
+
+        @Override
+        public void upgradeErr(int errCode) {
+            if (listenerRef == null || listenerRef.get() == null) return;
+            listenerRef.get().upgradeErr(errCode);
+        }
+
+        @Override
+        public void upgradeSuccess() {
+            if (listenerRef == null || listenerRef.get() == null) return;
+            listenerRef.get().upgradeSuccess();
+        }
+
+    }
 }

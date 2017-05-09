@@ -390,7 +390,7 @@ public class ClientUpdateManager {
      * 因为升级只需要发送一个udp消息{带上}
      */
     public final class FirmWareUpdatingTask implements Action1<String>, SimulatePercent.OnAction {
-        private FUpdatingListener listener;
+        private FUpgradingListener listener;
         private String uuid;
         private SimulatePercent simulatePercent;
 
@@ -418,7 +418,7 @@ public class ClientUpdateManager {
             return simulatePercent.getProgress();
         }
 
-        public void setListener(FUpdatingListener listener) {
+        public void setListener(FUpgradingListener listener) {
             this.listener = listener;
         }
 
@@ -475,7 +475,7 @@ public class ClientUpdateManager {
             //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
             String localUrl = "http://" + localIp + ":8765/" + description.fileName;
             AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
-            if (listener != null) listener.start();
+            if (listener != null) listener.upgradeStart();
             resetRspRecv(true);
             makeUpdateRspRecv(30);//30s
             makeUpdateRspRecv(60);//60s
@@ -553,7 +553,7 @@ public class ClientUpdateManager {
         }
 
         private void handleTimeout(int code) {
-            if (listener != null) listener.err(code);
+            if (listener != null) listener.upgradeErr(code);
             if (simulatePercent != null) simulatePercent.stop();
             AppLogger.d("fping timeout : " + uuid + ",code:" + code + " " + listener);
         }
@@ -563,7 +563,7 @@ public class ClientUpdateManager {
                 UdpConstant.FAck fAck = DpUtils.unpackData(data, UdpConstant.FAck.class);
                 if (fAck != null && fAck.ret != 0) {
                     this.updateState = JConstant.U.FAILED_DEVICE_FAILED;
-                    if (listener != null) listener.err(this.updateState);
+                    if (listener != null) listener.upgradeErr(this.updateState);
                     if (simulatePercent != null) simulatePercent.stop();
                 } else if (fAck != null) {//相应,成功了.
                     this.updateState = JConstant.U.SUCCESS;
@@ -580,34 +580,34 @@ public class ClientUpdateManager {
         @Override
         public void actionDone() {
             updateState = JConstant.U.SUCCESS;
-            if (listener != null) listener.success();
+            if (listener != null) listener.upgradeSuccess();
 
         }
 
         @Override
         public void actionPercent(int percent) {
             updateState = JConstant.U.UPDATING;
-            if (listener != null) listener.progress(percent);
+            if (listener != null) listener.upgradeProgress(percent);
         }
     }
 
 
-    public interface FUpdatingListener {
+    public interface FUpgradingListener {
 
-        void start();
+        void upgradeStart();
 
-        void progress(int percent);
+        void upgradeProgress(int percent);
 
-        void err(int errCode);
+        void upgradeErr(int errCode);
 
-        void success();
+        void upgradeSuccess();
     }
 
     public void removeTask(String uuid) {
         updatingTaskHashMap.remove(uuid);
     }
 
-    public void enqueue(String uuid, FUpdatingListener listener) {
+    public void enqueue(String uuid, FUpgradingListener listener) {
 
         FirmWareUpdatingTask task = getUpdatingTask(uuid);
         if (task == null) {
