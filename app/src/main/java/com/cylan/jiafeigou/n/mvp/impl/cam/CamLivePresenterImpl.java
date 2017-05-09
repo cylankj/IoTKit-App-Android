@@ -103,6 +103,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
         if (historyDataProvider != null) historyDataProvider.clean();
+
     }
 
     @Override

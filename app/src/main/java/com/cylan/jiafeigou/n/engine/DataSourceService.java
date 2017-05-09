@@ -110,7 +110,7 @@
 //            String vKey = Security.getVKey();
 ////            JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
 //            BaseApplication.getAppComponent().getCmd().initNativeParam(vid, vKey, OptionsImpl.getServer());
-//            BaseApplication.getAppComponent().getCmd().enableLog(true, JConstant.LOG_PATH);
+//            BaseApplication.getAppComponent().getCmd().enableLog(true, JConstant.WORKER_PATH);
 ////                AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
 //            Log.d("DataSourceService", "vid:" + vid);
 //            Log.d("DataSourceService", "vKey:" + vKey);

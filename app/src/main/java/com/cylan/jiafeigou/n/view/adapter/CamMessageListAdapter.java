@@ -49,7 +49,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     //图片Container的总体宽度,可能有3条,可能有2条.
     private final int pic_container_width;//宽度是固定的，需要调整高度。
     private Map<Integer, Integer> selectedMap = new HashMap<>();
-    private boolean hasSdcard;
 
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -59,7 +58,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        this.hasSdcard = status.hasSdcard && status.err == 0;
     }
 
     /**
@@ -67,10 +65,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      *
      * @return
      */
-    private boolean justHasSdcard() {
+    private boolean hasSdcard() {
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        this.hasSdcard = status.hasSdcard;// && status.err == 0;读写失败也是需要显示的.不过需要跳转到设备详情页,尼玛.
-        return hasSdcard;
+        return status.hasSdcard && status.err == 0;
     }
 
     private boolean online() {
@@ -178,12 +175,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private boolean showLiveBtn(long time) {
-        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && justHasSdcard();
+        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard();
     }
 
-    private boolean showSdBtn() {
-        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        return status.hasSdcard && status.err != 0;// 有卡但是失败了.
+    private boolean textShowSdBtn() {
+        return hasSdcard();
     }
 
     /**
@@ -191,7 +187,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     public void notifySdcardStatus(boolean status, int position) {
         DpMsgDefine.DPSdStatus nowStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        this.hasSdcard = nowStatus.hasSdcard && nowStatus.err != 0;
         updateItemFrom(position);
     }
 
@@ -209,8 +204,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        holder.setVisibility(R.id.tv_jump_next, showSdBtn() ? View.VISIBLE : View.INVISIBLE);
-        if (hasSdcard && onClickListener != null)
+        holder.setVisibility(R.id.tv_jump_next, textShowSdBtn() ? View.VISIBLE : View.INVISIBLE);
+        if (onClickListener != null)
             holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }
 

@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class OptionsImpl {
     private static final String TAG = "iDebugOptions";
-    private static final String filePath = JConstant.LOG_PATH + File.separator + "config.txt";
+    private static final String filePath = JConstant.WORKER_PATH + File.separator + "config.txt";
     private static JsonObject configContent;
 
     static {

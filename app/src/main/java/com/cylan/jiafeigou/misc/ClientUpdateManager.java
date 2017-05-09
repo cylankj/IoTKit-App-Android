@@ -270,9 +270,10 @@ public class ClientUpdateManager {
         } catch (Exception e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
+        String fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
         String fileName = versionName + ".apk";
-        final File file = new File(JConstant.MISC_PATH, fileName);
-        new File(JConstant.MISC_PATH).mkdir();
+        final File file = new File(fileDir, fileName);
+        new File(fileDir).mkdir();
         if (file.exists()) {
             try {
                 Request request = new Request.Builder()
@@ -288,7 +289,7 @@ public class ClientUpdateManager {
                     }
                     return;
                 }
-                FileUtils.delete(JConstant.MISC_PATH, fileName);
+                FileUtils.delete(fileDir, fileName);
             } catch (IOException e) {
                 AppLogger.e("err:" + MiscUtils.getErr(e));
             }
@@ -299,7 +300,7 @@ public class ClientUpdateManager {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, e.toString());
-                FileUtils.delete(JConstant.MISC_PATH, fileName);
+                FileUtils.delete(fileDir, fileName);
             }
 
             @Override
@@ -323,12 +324,12 @@ public class ClientUpdateManager {
                     }
                     fos.flush();
                     if (downloadListener != null)
-                        downloadListener.finished(new File(JConstant.MISC_PATH, fileName));
+                        downloadListener.finished(new File(fileDir, fileName));
                 } catch (Exception e) {
                     Log.d(TAG, e.toString());
                     if (downloadListener != null)
                         downloadListener.failed(e);
-                    FileUtils.delete(JConstant.MISC_PATH, fileName);
+                    FileUtils.delete(fileDir, fileName);
                 } finally {
                     CloseUtils.close(is);
                     CloseUtils.close(fos);
@@ -399,8 +400,9 @@ public class ClientUpdateManager {
         @Override
         public void call(Object o) {
             prepareNetMonitor();
-            final File file = new File(rsp.fileDir, rsp.fileName);
-            new File(rsp.fileDir).mkdir();
+            String fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
+            final File file = new File(fileDir, rsp.fileName);
+            new File(fileDir).mkdir();
             if (file.exists()) {
                 try {
                     Request request = new Request.Builder()
@@ -424,14 +426,14 @@ public class ClientUpdateManager {
                 }
             }
             //文件失败了
-            FileUtils.delete(JConstant.MISC_PATH, rsp.fileDir + File.separator + rsp.fileName);
+            FileUtils.delete(fileDir, rsp.fileName);
             final Request request = new Request.Builder().url(rsp.url).build();
             final Call call = new OkHttpClient().newCall(request);
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.d(TAG, e.toString());
-                    FileUtils.delete(JConstant.MISC_PATH, rsp.fileName);
+                    FileUtils.delete(fileDir, rsp.fileName);
                 }
 
                 @Override
@@ -467,7 +469,7 @@ public class ClientUpdateManager {
                         updateInfo(rsp.uuid, rsp);
                         fos.flush();
                         if (downloadListener != null) {
-                            downloadListener.finished(new File(rsp.fileDir, rsp.fileName));
+                            downloadListener.finished(new File(fileDir, rsp.fileName));
                         }
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
@@ -477,7 +479,7 @@ public class ClientUpdateManager {
                         if (downloadListener != null) {
                             downloadListener.failed(e);
                         }
-                        FileUtils.delete(JConstant.MISC_PATH, rsp.fileName);
+                        FileUtils.delete(fileDir, rsp.fileName);
                     } finally {
                         try {
                             if (is != null) {
@@ -571,7 +573,7 @@ public class ClientUpdateManager {
                                     AppLogger.d("got your rsp : " + uuid + " " + ((HelperBreaker) throwable).localUdpMsg);
                                     prepareSending(((HelperBreaker) throwable).localUdpMsg.ip, ((HelperBreaker) throwable).localUdpMsg.port);
                                 } else if (throwable instanceof TimeoutException) {
-                                    AppLogger.d("fping timeout : " + uuid);
+                                    updateState = JConstant.U.FAILED_FPING_ERR;
                                     handleTimeout(JConstant.U.FAILED_FPING_ERR);
                                 }
                             });
@@ -589,12 +591,13 @@ public class ClientUpdateManager {
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
             final RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
             String localIp = NetUtils.getReadableIp();
-            String localUrl = "http://" + localIp + ":8765/" + JConstant.MISC_PATH + File.separator + description.fileName;
+            //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
+            String localUrl = "http://" + localIp + ":8765/" + description.fileName;
             AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
             if (listener != null) listener.start();
             resetRspRecv(true);
             makeUpdateRspRecv(30);//30s
-            makeUpdateRspRecv(66);//60s
+            makeUpdateRspRecv(60);//60s
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
@@ -660,6 +663,7 @@ public class ClientUpdateManager {
                             Log.d(TAG, "Client: " + ((HelperBreaker) throwable).localUdpMsg);
                         } else if (throwable instanceof TimeoutException) {
                             int err = timeout == 30 ? JConstant.U.FAILED_30S : JConstant.U.FAILED_60S;
+                            updateState = err;
                             handleTimeout(err);
                         }
                         resetRspRecv(false);
@@ -669,11 +673,11 @@ public class ClientUpdateManager {
 
         private void handleTimeout(int code) {
             if (listener != null) listener.err(code);
-            AppLogger.d("fping timeout : " + uuid + " " + listener);
+            if (simulatePercent != null) simulatePercent.stop();
+            AppLogger.d("fping timeout : " + uuid + ",code:" + code + " " + listener);
         }
 
         private void handleResult(String uuid, int tag, byte[] data) {
-            if (simulatePercent != null) simulatePercent.stop();
             try {
                 UdpConstant.FAck fAck = DpUtils.unpackData(data, UdpConstant.FAck.class);
                 if (fAck != null && fAck.ret != 0) {

@@ -104,7 +104,7 @@ public class CommonModule {
     @Singleton
     @Named("LogPath")
     public static String provideLogPath() {
-        return JConstant.LOG_PATH;
+        return JConstant.WORKER_PATH;
     }
 
     @Provides

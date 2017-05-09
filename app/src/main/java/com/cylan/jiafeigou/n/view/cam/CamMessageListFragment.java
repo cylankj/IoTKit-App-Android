@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.wheel.SDataStack;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
@@ -490,8 +491,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.tv_jump_next: {
                 try {
-
-
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
                     boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
                     if (jumpNext) {

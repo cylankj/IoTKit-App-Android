@@ -27,7 +27,7 @@ public class AppLogger {
     protected static final String TAG = "CYLAN_TAG";
     public static boolean DEBUG = BuildConfig.DEBUG;
 
-    private static final String DEFAULT_LOG = JConstant.LOG_PATH + File.separator + "log.txt";
+    private static final String DEFAULT_LOG = JConstant.WORKER_PATH + File.separator + "log.txt";
 
     private static NLogger getLogger(String filePath) {
         try {

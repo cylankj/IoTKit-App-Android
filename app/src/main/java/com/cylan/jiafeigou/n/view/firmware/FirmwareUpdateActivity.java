@@ -75,22 +75,27 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         Device device = basePresenter.getDevice();
         String currentVersion = device.$(207, "");
         tvCurrentVersion.setText(currentVersion);
+        RxEvent.CheckDevVersionRsp description = null;
+        ClientUpdateManager.PackageDownloadTask packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+        if (packageDownloadAction == null) {
+        } else {
+            //下载中
+            packageDownloadAction.setDownloadListener(new FirmwareUpdateActivity.Download(this));
+            description = packageDownloadAction.getCheckDevVersionRsp();
+        }
         try {
-            ClientUpdateManager.PackageDownloadTask packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
-            RxEvent.CheckDevVersionRsp description = null;
-            if (packageDownloadAction == null) {
-                //没下载,下载失败,或者下载成功.
+            //没下载,下载失败,或者下载成功.
+            if (description == null) {
                 String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
-                if (TextUtils.equals(description.version, currentVersion)) {
-                    description = null;
-                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                    //已经是最新的了.
+                if (!TextUtils.isEmpty(content)) {
+                    description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+                    if (TextUtils.equals(description.version, currentVersion)) {
+                        description = null;
+                        PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+                        //已经是最新的了.
+                        basePresenter.cleanFile();
+                    }
                 }
-            } else {
-                //下载中
-                packageDownloadAction.setDownloadListener(new FirmwareUpdateActivity.Download(this));
-                description = packageDownloadAction.getCheckDevVersionRsp();
             }
             tvHardwareNewVersion.setText(description.version);
             hardwareUpdatePoint.setVisibility(description.hasNew ? View.VISIBLE : View.INVISIBLE);
@@ -115,6 +120,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvHardwareNewVersion.setText(currentVersion);
             hardwareUpdatePoint.setVisibility(View.INVISIBLE);
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+            basePresenter.cleanFile();
         }
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
         if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {

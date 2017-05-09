@@ -171,7 +171,8 @@ public class JConstant {
     public static final String BLOCK_LOG_PATH = ROOT_DIR + File.separator + "block";
     public static final String CRASH_PATH = ROOT_DIR + File.separator + "crash";
     public static final String DAEMON_DIR = ROOT_DIR + File.separator + "daemon";
-    public static final String LOG_PATH = ROOT_DIR + File.separator + "log";
+    //升级包的目录也需要放在这里
+    public static final String WORKER_PATH = ROOT_DIR + File.separator + "log";
     public static final String MEDIA_PATH = ROOT_DIR + File.separator + "media";
     public static final String SYSTEM_PHOTO_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "DCIM" + File.separator + "Camera";
     public static final String MISC_PATH = ROOT_DIR + File.separator + "misc";

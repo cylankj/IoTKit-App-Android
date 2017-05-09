@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -152,7 +153,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             if (JFGRules.isShareDevice(device)) return false;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
             RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
-            return description.hasNew;
+            String currentV = device.$(207, "");
+            return description.hasNew && BindUtils.versionCompare(description.version, currentV) > 0;
         } catch (Exception e) {
             return false;
         }

@@ -303,9 +303,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)) {
             return;
         }
-        File logFile = new File(JConstant.LOG_PATH + "/log.txt");
-        File smartcall_t = new File(JConstant.LOG_PATH + "/smartCall_t.txt");
-        File smartcall_w = new File(JConstant.LOG_PATH + "/smartCall_w.txt");
+        File logFile = new File(JConstant.WORKER_PATH + "/log.txt");
+        File smartcall_t = new File(JConstant.WORKER_PATH + "/smartCall_t.txt");
+        File smartcall_w = new File(JConstant.WORKER_PATH + "/smartCall_w.txt");
         File crashFile = new File(JConstant.CRASH_PATH);
         outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + JConstant.getRoot() + ".zip");
         try {

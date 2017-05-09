@@ -14,5 +14,6 @@ public interface FirmwareUpdateContract {
     }
 
     interface Presenter extends BasePresenter {
+        void cleanFile();
     }
 }

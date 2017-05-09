@@ -10,7 +10,6 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -24,6 +23,8 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -45,17 +46,43 @@ import rx.schedulers.Schedulers;
 public class FirmwareCheckerService extends Service {
 
     private static final String UUID_TAG = "CID";
+    private static final String FORCE_TAG = "FORCE";
 
+    private static Map<String, Long> antiHighFrequentCheck = new HashMap<>();
     private MapSubscription mapSubscription = new MapSubscription();
 
     public FirmwareCheckerService() {
     }
 
+    /**
+     * 一分钟内制作一次检查,不管force标志
+     *
+     * @param uuid
+     * @return
+     */
+    private static boolean check(String uuid) {
+        Long time = antiHighFrequentCheck.get(uuid);
+        if (time == null || time == 0) return true;
+        if (System.currentTimeMillis() - time < 10 * 1000) return false;
+        AppLogger.e("记得改成一分钟");
+        antiHighFrequentCheck.put(uuid, System.currentTimeMillis());
+        return true;
+    }
 
     public static void checkVersion(String uuid) {
+        if (!check(uuid)) return;
         Context context = ContextUtils.getContext();
         Intent intent = new Intent(context, FirmwareCheckerService.class);
         intent.putExtra(UUID_TAG, uuid);
+        context.startService(intent);
+    }
+
+    public static void checkVersion(String uuid, boolean force) {
+        if (!check(uuid)) return;
+        Context context = ContextUtils.getContext();
+        Intent intent = new Intent(context, FirmwareCheckerService.class);
+        intent.putExtra(UUID_TAG, uuid);
+        intent.putExtra(FORCE_TAG, force);
         context.startService(intent);
     }
 
@@ -67,76 +94,108 @@ public class FirmwareCheckerService extends Service {
 
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
+            int net = NetUtils.getJfgNetType();
+            //客户端无网络
+            if (net == 0) {
+                tryStopSelf();
+                return;
+            }
             String uuid = intent.getStringExtra(UUID_TAG);
-            mapSubscription.remove(uuid);
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            if (intent.hasExtra(FORCE_TAG) && intent.getBooleanExtra(FORCE_TAG, false)) {
+                //不管任何条件,都检查升级
+                handleCheckFlow(uuid, device.$(207, ""), device.pid);
+                return;
+            }
             AppLogger.d("开始检查升级:" + uuid);
             //分享设备不显示
-            if (JFGRules.isShareDevice(uuid)) return;
+            if (JFGRules.isShareDevice(uuid)) {
+                tryStopSelf();
+                return;
+            }
             //全景设备不显示
-            if (JFGRules.isPanoramicCam(device.pid)) return;
+            if (JFGRules.isPanoramicCam(device.pid)) {
+                tryStopSelf();
+                return;
+            }
             DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
             //设备离线就不要检查了
-            if (!JFGRules.isDeviceOnline(dpNet)) return;
+            if (!JFGRules.isDeviceOnline(dpNet)) {
+                tryStopSelf();
+                return;
+            }
             String localSSid = NetUtils.getNetName(ContextUtils.getContext());
             String remoteSSid = dpNet.ssid;
             //原型上说,局域网才弹框.
             //客户端和设备相同的网络才去检查.因为检查是很快的.
-            if (!TextUtils.equals(localSSid, remoteSSid)) return;
-            Subscription s = Observable.just("go")
-                    .subscribeOn(Schedulers.newThread())
-                    .timeout(5, TimeUnit.SECONDS)
-                    .flatMap(what -> {
-                        long seq;
-                        try {
-                            String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
-                            seq = BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
-                        } catch (Exception e) {
-                            AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
-                            seq = -1L;
-                        }
-                        return Observable.just(seq);
-                    })
-                    .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
-                            .subscribeOn(Schedulers.newThread())
-                            .filter(ret -> {
-                                if (!ret.hasNew) {
-                                    PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-                                }
-                                return ret.hasNew;
-                            }))
-                    .map(ret -> {
-                        try {
-                            Request request = new Request.Builder()
-                                    .url(ret.url)
-                                    .build();
-                            Response response = new OkHttpClient().newCall(request).execute();
-                            ret.fileSize = response.body().contentLength();
-                            ret.fileDir = JConstant.MISC_PATH;
-                            ret.hasNew = true;
-                            ret.fileName = "." + uuid;
-                            ret.uuid = uuid;
-                            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
-                            RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
-                            AppLogger.d("检查到有新固件:" + uuid);
-                            return ret;
-                        } catch (IOException e) {
-                            return null;
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                    }, throwable -> {
-                        if (throwable instanceof TimeoutException) {
-                            mapSubscription.remove(uuid);
-                            if (!mapSubscription.hasSubscriptions()) {
-                                stopSelf();
-                                AppLogger.e("停止service");
-                            }
-                        }
-                    });
-            mapSubscription.add(s, uuid);
+            if (!TextUtils.equals(localSSid, remoteSSid)) {
+                tryStopSelf();
+                return;
+            }
+            handleCheckFlow(uuid, device.$(207, ""), device.pid);
         }
+    }
+
+    private void tryStopSelf() {
+        if (mapSubscription != null && !mapSubscription.hasSubscriptions()) {
+            stopSelf();
+        }
+    }
+
+    private void handleCheckFlow(String uuid, String currentVersion, int pid) {
+        mapSubscription.remove(uuid);
+        Subscription s = Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .timeout(5, TimeUnit.SECONDS)
+                .flatMap(what -> {
+                    long seq;
+                    try {
+                        seq = BaseApplication.getAppComponent().getCmd().checkDevVersion(pid, uuid, currentVersion);
+                    } catch (Exception e) {
+                        AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
+                        seq = -1L;
+                    }
+                    return Observable.just(seq);
+                })
+                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .filter(ret -> {
+                            if (!ret.hasNew) {
+                                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
+                            }
+                            return ret.hasNew;
+                        }))
+                .map(ret -> {
+                    try {
+                        Request request = new Request.Builder()
+                                .url(ret.url)
+                                .build();
+                        Response response = new OkHttpClient().newCall(request).execute();
+                        ret.fileSize = response.body().contentLength();
+                        ret.fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
+                        ret.hasNew = true;
+                        ret.fileName = "." + uuid;
+                        ret.uuid = uuid;
+                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
+                        RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
+                        AppLogger.d("检查到有新固件:" + uuid);
+                        return ret;
+                    } catch (IOException e) {
+                        return null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        mapSubscription.remove(uuid);
+                        if (!mapSubscription.hasSubscriptions()) {
+                            stopSelf();
+                            AppLogger.e("停止service");
+                        }
+                    }
+                });
+        mapSubscription.add(s, uuid);
     }
 
     @Override
