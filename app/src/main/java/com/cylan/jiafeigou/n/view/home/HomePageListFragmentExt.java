@@ -405,7 +405,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
-        if (isResumed() && getView() != null) {
+        if (isResumed() && getView() != null && getUserVisibleHint()) {
             getView().removeCallbacks(updateAccount);
             getView().post(updateAccount);
         }
