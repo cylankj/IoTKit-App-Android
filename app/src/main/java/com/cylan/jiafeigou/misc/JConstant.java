@@ -317,6 +317,7 @@ public class JConstant {
     public static final String BINDING_DEVICE = "key_need_bind";//
     public static final String KEY_FIRMWARE_CONTENT = "firmware_content";
     public static final String KEY_FIRMWARE_POP_DIALOG_TIME = "firmware_check";
+    public static final String KEY_CLIENT_NEW_VERSION_DIALOG = "new_version_pop";
     public static final String PREF_NAME = "config_pref";      //2.x Sp 的key
     public static final String KEY_PHONE = "PhoneNum";//2.x account key
     public static final String SESSIONID = "sessid";// 2.x sessid key

@@ -101,8 +101,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     private void lazyLoad() {
         if (isPrepared) {
             basePresenter.getUnReadMesg();
-
-
         }
     }
 
@@ -224,33 +222,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .commit();
     }
 
-    public void blurPic(View view) {
-        if (needStartLoginFragment()) return;
-        AppLogger.i("It's Login,can do something!");
-    }
-
-    @Override
-    public void setPresenter(HomeMineContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
-    }
 
     @Override
     public void onPortraitUpdate(String url) {
-//        if (getActivity() != null) {
-//            ivHomeMinePortrait.setImageResource(R.drawable.clouds);
-//            if (basePresenter != null) basePresenter.portraitBlur(R.drawable.clouds);
-//            tvHomeMineMsgCount.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    tvHomeMineMsgCount.setText("99+");
-//                }
-//            });
-//        }
     }
 
     @Override
     public void onBlur(Drawable drawable) {
-        long time = System.currentTimeMillis();
         rLayoutHomeMineTop.setBackground(drawable);
     }
 
@@ -258,6 +236,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isAdded()) {
+            basePresenter.updateAccount();
             if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
                 //访客状态
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);

@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;

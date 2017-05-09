@@ -157,7 +157,7 @@ public class FirmwareCheckerService extends Service {
                     }
                     return Observable.just(seq);
                 })
-                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
+                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
                         .subscribeOn(Schedulers.newThread())
                         .filter(ret -> {
                             if (!ret.hasNew) {
@@ -176,6 +176,7 @@ public class FirmwareCheckerService extends Service {
                         ret.hasNew = true;
                         ret.fileName = "." + uuid;
                         ret.uuid = uuid;
+                        ret.preKey = JConstant.KEY_FIRMWARE_CONTENT + uuid;
                         PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
                         RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
                         AppLogger.d("检查到有新固件:" + uuid);

@@ -221,7 +221,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (historyDataProvider == null) {
             historyDataProvider = DataExt.getInstance();
         }
-        if (historyDataProvider.getDataCount() == 0) {
+        //全景设备,会有多次回调.
+        if (historyDataProvider.getDataCount() == 0 || !containsSubscription("hisFlat")) {
             Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

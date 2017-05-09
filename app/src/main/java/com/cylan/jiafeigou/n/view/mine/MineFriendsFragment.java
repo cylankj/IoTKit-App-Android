@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -280,12 +281,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     private void jump2AddReAndFriendFragment() {
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, friendsFragment, friendsFragment.getClass().getName())
-                .addToBackStack("mineHelpFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(
+                getActivity().getSupportFragmentManager(),
+                friendsFragment, android.R.id.content);
     }
 
     @Override

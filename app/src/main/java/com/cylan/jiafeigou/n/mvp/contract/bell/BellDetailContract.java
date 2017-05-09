@@ -14,7 +14,7 @@ public interface BellDetailContract {
 
 
     interface View extends PropertyView {
-        void checkResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp);
+        void checkResult(RxEvent.CheckVersionRsp checkDevVersionRsp);
     }
 
     interface Presenter extends JFGPresenter<View> {

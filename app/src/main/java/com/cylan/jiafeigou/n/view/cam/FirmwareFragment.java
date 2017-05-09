@@ -67,7 +67,7 @@ public class FirmwareFragment extends IBaseFragment<HardwareUpdateContract.Prese
     TextView tvLoadingShow;
 
     private String uuid;
-    private RxEvent.CheckDevVersionRsp checkDevVersion;
+    private RxEvent.CheckVersionRsp checkDevVersion;
     private String fileSize;
 
     private OnUpdateListener listener;
@@ -90,7 +90,7 @@ public class FirmwareFragment extends IBaseFragment<HardwareUpdateContract.Prese
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-        this.checkDevVersion = (RxEvent.CheckDevVersionRsp) getArguments().getSerializable("version_content");
+        this.checkDevVersion = (RxEvent.CheckVersionRsp) getArguments().getSerializable("version_content");
         basePresenter = new HardwareUpdatePresenterImpl(this, uuid, checkDevVersion);
     }
 

@@ -31,6 +31,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     }
 
     public String getUuid() {
+        if (getArguments() == null) return "";
         return getArguments().getString(KEY_DEVICE_ITEM_UUID);
     }
 
@@ -64,7 +65,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
         super.onDetach();
     }
 
-    public void setPresenter(FUpdatingContract.Presenter presenter) {
+    public void setPresenter(P presenter) {
 
     }
 

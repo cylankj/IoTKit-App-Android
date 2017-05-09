@@ -104,5 +104,7 @@ public interface HomeMineContract {
 
         void loginType();
 
+        void updateAccount();
+
     }
 }

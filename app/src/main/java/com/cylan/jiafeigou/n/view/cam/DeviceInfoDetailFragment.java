@@ -372,7 +372,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         try {
             if (JFGRules.isPanoramicCam(getDevice().pid)) return;//全景不显示
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
             rlHardwareUpdate.setTvSubTitle(description.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
             rlHardwareUpdate.showRedHint(description.hasNew);
         } catch (Exception e) {

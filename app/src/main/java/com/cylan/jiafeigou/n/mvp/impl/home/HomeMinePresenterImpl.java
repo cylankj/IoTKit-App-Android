@@ -220,42 +220,10 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountBack -> {
-                    if (accountBack != null && accountBack.jfgAccount != null) {
-                        JFGAccount account = accountBack.jfgAccount;
-                        String photoUrl = account.getPhotoUrl();
-                        String alias = null;
-                        RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
-                        isOpenLogin = event != null && event.isThird;
-                        if (isOpenLogin && isDefaultPhoto(photoUrl)) {
-
-                            photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
-                        }
-                        if (isOpenLogin && TextUtils.isEmpty(account.getAlias())) {
-                            try {
-                                BaseApplication.getAppComponent().getCmd().setAccount(account);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                            account.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
-                        }
-                        if (account.getAlias() == null || TextUtils.isEmpty(account.getAlias())) {
-                            boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
-                            if (isEmail) {
-                                String[] split = account.getAccount().split("@");
-                                account.setAlias(split[0]);
-                            } else {
-                                account.setAlias(account.getAccount());
-                            }
-                        }
-                        alias = account.getAlias();
-                        if (getView() != null && !TextUtils.isEmpty(photoUrl))
-                            getView().setUserImageHeadByUrl(photoUrl);
-                        if (getView() != null && !TextUtils.isEmpty(alias))
-                            getView().setAliasName(alias);
-
-                    }
+                    updateAccount();
                 }, AppLogger::e);
     }
+
 
     @Override
     public void loginType() {
@@ -289,6 +257,39 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                         }
                     }
                 }, AppLogger::e);
+    }
+
+    @Override
+    public void updateAccount() {
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        String photoUrl = account.getPhotoUrl();
+        RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
+        isOpenLogin = event != null && event.isThird;
+        if (isOpenLogin && isDefaultPhoto(photoUrl)) {
+
+            photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+        }
+        if (isOpenLogin && TextUtils.isEmpty(account.getAlias())) {
+            try {
+                BaseApplication.getAppComponent().getCmd().setAccount(account);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+            account.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
+        }
+        if (account.getAlias() == null || TextUtils.isEmpty(account.getAlias())) {
+            boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
+            if (isEmail) {
+                String[] split = account.getAccount().split("@");
+                account.setAlias(split[0]);
+            } else {
+                account.setAlias(account.getAccount());
+            }
+        }
+        if (getView() != null && !TextUtils.isEmpty(photoUrl))
+            getView().setUserImageHeadByUrl(photoUrl);
+        if (getView() != null && !TextUtils.isEmpty(account.getAlias()))
+            getView().setAliasName(account.getAlias());
     }
 
 

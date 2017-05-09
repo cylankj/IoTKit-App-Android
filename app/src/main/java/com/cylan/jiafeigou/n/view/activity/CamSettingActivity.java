@@ -328,7 +328,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (JFGRules.isPanoramicCam(device.pid)) return;
             if (JFGRules.isShareDevice(device)) return;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
             String currentV = device.$(207, "");
             svSettingDeviceDetail.showRedHint(description.hasNew && BindUtils.versionCompare(description.version, currentV) > 0);
         } catch (Exception e) {

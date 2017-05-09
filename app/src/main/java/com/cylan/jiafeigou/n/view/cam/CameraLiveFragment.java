@@ -918,7 +918,7 @@
 //    }
 //
 //    @Override
-//    public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
+//    public void hardwareResult(RxEvent.CheckVersionRsp rsp) {
 //        if (rsp.hasNew) {
 //            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
 //            if (f == null) {
@@ -945,7 +945,7 @@
 //        if (id == R.id.tv_dialog_btn_right) {
 //            Bundle bundle = new Bundle();
 //            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-//            bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
+//            bundle.putSerializable("version_content", (RxEvent.CheckVersionRsp) value);
 //            FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
 //            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
 //                    hardwareUpdateFragment, android.R.id.content);

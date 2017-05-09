@@ -152,7 +152,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             if (JFGRules.isPanoramicCam(device.pid)) return false;//全景不显示
             if (JFGRules.isShareDevice(device)) return false;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
             String currentV = device.$(207, "");
             return description.hasNew && BindUtils.versionCompare(description.version, currentV) > 0;
         } catch (Exception e) {

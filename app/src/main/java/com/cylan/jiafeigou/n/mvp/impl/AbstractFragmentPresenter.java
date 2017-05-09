@@ -129,6 +129,10 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
             refCacheMap.add(subscription, tag);
     }
 
+    public boolean containsSubscription(String tag) {
+        return refCacheMap.hasSubscription(tag);
+    }
+
     protected void removeSubscription(String tag) {
         if (tag != null)
             refCacheMap.remove(tag);

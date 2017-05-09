@@ -285,7 +285,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        s1 = "3.0.0";
 //        s2 = "你好";
 //        s3 = "xx";
-        RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b, s, s1, s2, s3).setSeq(0));
+        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setSeq(0));
     }
 
     @Override

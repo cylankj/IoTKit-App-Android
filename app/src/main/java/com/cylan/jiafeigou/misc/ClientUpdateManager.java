@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.misc;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
@@ -18,7 +17,6 @@ import android.widget.RemoteViews;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.IRemoteService;
 import com.cylan.jiafeigou.IRemoteServiceCallback;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -31,7 +29,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
@@ -39,7 +36,6 @@ import com.google.gson.Gson;
 import org.msgpack.MessagePack;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -162,54 +158,6 @@ public class ClientUpdateManager {
         }
     };
 
-    /**
-     * 获取文件大小
-     *
-     * @param file return
-     * @throws Exception
-     */
-
-    private long getFileSize(File file) {
-        long size = 0;
-        try {
-            if (file.exists()) {
-                FileInputStream fis = null;
-                fis = new FileInputStream(file);
-                size = fis.available();
-                AppLogger.d("getF:" + size);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return size;
-    }
-
-    /**
-     * 通知栏进度
-     */
-    public void createNotification() {
-        // 获取系统服务来初始化对象
-        nm = (NotificationManager) ContextUtils.getContext()
-                .getSystemService(Activity.NOTIFICATION_SERVICE);
-        cBuilder = new NotificationCompat.Builder(ContextUtils.getContext());
-//        cBuilder.setContentIntent(pendingIntent);// 该通知要启动的Intent
-        cBuilder.setSmallIcon(R.mipmap.ic_launcher);// 设置顶部状态栏的小图标
-        cBuilder.setTicker("正在更新加菲狗");// 在顶部状态栏中的提示信息
-        cBuilder.setContentTitle("加菲狗升级程序");// 设置通知中心的标题
-        cBuilder.setContentText("正在下载中");// 设置通知中心中的内容
-        cBuilder.setWhen(System.currentTimeMillis());
-        cBuilder.setAutoCancel(true);
-        cBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
-    }
-
-    /**
-     * 发送通知
-     */
-    private void sent() {
-        notification = cBuilder.build();
-        // 发送该通知
-        nm.notify(7, notification);
-    }
 
     /**
      * 根据id清除通知
@@ -254,89 +202,25 @@ public class ClientUpdateManager {
     }
 
 
-    /**
-     * @param url
-     * @param versionName
-     * @param versionCode:
-     */
-    public void enqueue(String url, String versionName, String versionCode, DownloadListener downloadListener) {
-        try {
-            int currentVersionCode = PackageUtils.getAppVersionCode(ContextUtils.getContext());
-            int remoteVersionCode = Integer.parseInt(versionCode);
-            if (currentVersionCode >= remoteVersionCode) {
-                AppLogger.d("不需要升级");
-                return;
-            }
-        } catch (Exception e) {
-            AppLogger.e("err:" + MiscUtils.getErr(e));
-        }
-        String fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
-        String fileName = versionName + ".apk";
-        final File file = new File(fileDir, fileName);
-        new File(fileDir).mkdir();
-        if (file.exists()) {
-            try {
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-                Response response = new OkHttpClient().newCall(request).execute();
-                long fileSize = response.body().contentLength();
-                AppLogger.d("文件大小:" + fileSize);
-                if (fileSize == file.length()) {
-                    AppLogger.d("文件存在,完整");
-                    if (downloadListener != null) {
-                        downloadListener.finished(file);
-                    }
-                    return;
-                }
-                FileUtils.delete(fileDir, fileName);
-            } catch (IOException e) {
-                AppLogger.e("err:" + MiscUtils.getErr(e));
-            }
-        }
-        final Request request = new Request.Builder().url(url).build();
-        final Call call = new OkHttpClient().newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, e.toString());
-                FileUtils.delete(fileDir, fileName);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len = 0;
-                FileOutputStream fos = null;
-                try {
-                    long total = response.body().contentLength();
-                    if (downloadListener != null) downloadListener.start(total);
-                    Log.d(TAG, "total------>" + total);
-                    long current = 0;
-                    is = response.body().byteStream();
-                    fos = new FileOutputStream(file);
-                    while ((len = is.read(buf)) != -1) {
-                        current += len;
-                        fos.write(buf, 0, len);
-                        Log.d(TAG, "current------>" + current);
-                        if (downloadListener != null) downloadListener.process(current, total);
-                    }
-                    fos.flush();
-                    if (downloadListener != null)
-                        downloadListener.finished(new File(fileDir, fileName));
-                } catch (Exception e) {
-                    Log.d(TAG, e.toString());
-                    if (downloadListener != null)
-                        downloadListener.failed(e);
-                    FileUtils.delete(fileDir, fileName);
-                } finally {
-                    CloseUtils.close(is);
-                    CloseUtils.close(fos);
-                }
-            }
-        });
-    }
+//    public void enqueue(RxEvent.CheckVersionRsp versionApkDesc) {
+//        //3.下载中?下载失败?空闲
+//        PackageDownloadTask downloadTask = downloadMap.get(versionApkDesc.url);
+//        if (downloadTask == null) {
+//            downloadTask = new PackageDownloadTask(versionApkDesc);
+//        } else {
+//            if (downloadTask.getCheckDevVersionRsp() != null
+//                    && downloadTask.getCheckDevVersionRsp().downloadState == JConstant.D.FAILED) {
+//                //失败了
+//                downloadMap.remove(versionApkDesc.url);
+//                downloadTask = new PackageDownloadTask(versionApkDesc);
+//            }
+//        }
+//        downloadMap.put(versionApkDesc.url, downloadTask);
+//        Observable.just("go")
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe(downloadTask, AppLogger::e);
+//        //4.文件存在.
+//    }
 
     private Map<String, PackageDownloadTask> downloadMap = new HashMap<>();
     private HashMap<String, FirmWareUpdatingTask> updatingTaskHashMap = new HashMap<>();
@@ -344,22 +228,26 @@ public class ClientUpdateManager {
     /**
      * 下载文件
      */
-    public void downLoadFile(RxEvent.CheckDevVersionRsp rsp, DownloadListener listener) {
+    public void downLoadFile(RxEvent.CheckVersionRsp rsp, DownloadListener listener) {
         Log.d(TAG, "开始下载: " + rsp);
         if (rsp == null) return;
-        PackageDownloadTask packageDownloadAction = downloadMap.get(rsp.uuid);
-        if (packageDownloadAction != null) {
-            packageDownloadAction.setDownloadListener(listener);
-            RxEvent.CheckDevVersionRsp remainRsp = packageDownloadAction.getCheckDevVersionRsp();
-            if (remainRsp != null && remainRsp.downloadState == JConstant.D.DOWNLOADING)
+        String key = TextUtils.isEmpty(rsp.uuid) ? rsp.url : rsp.uuid;
+        PackageDownloadTask downloadTask = downloadMap.get(key);
+        if (downloadTask != null) {
+            if (downloadTask.getCheckDevVersionRsp() != null
+                    && downloadTask.getCheckDevVersionRsp().downloadState == JConstant.D.DOWNLOADING) {
+                downloadTask.setDownloadListener(listener);
                 return;
+            } else {
+                downloadMap.remove(key);
+            }
         }
-        packageDownloadAction = new PackageDownloadTask(rsp);
-        packageDownloadAction.setDownloadListener(listener);
-        downloadMap.put(rsp.uuid, packageDownloadAction);
+        downloadTask = new PackageDownloadTask(rsp);
+        downloadTask.setDownloadListener(listener);
+        downloadMap.put(key, downloadTask);
         Observable.just("go")
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(packageDownloadAction, AppLogger::e);
+                .subscribe(downloadTask, AppLogger::e);
     }
 
     public PackageDownloadTask getUpdateAction(String uuid) {
@@ -382,14 +270,14 @@ public class ClientUpdateManager {
      */
     public final class PackageDownloadTask implements Action1<Object> {
 
-        private RxEvent.CheckDevVersionRsp rsp;
+        private RxEvent.CheckVersionRsp rsp;
         private DownloadListener downloadListener;
 
-        public RxEvent.CheckDevVersionRsp getCheckDevVersionRsp() {
+        public RxEvent.CheckVersionRsp getCheckDevVersionRsp() {
             return rsp;
         }
 
-        public PackageDownloadTask(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        public PackageDownloadTask(RxEvent.CheckVersionRsp checkDevVersionRsp) {
             this.rsp = checkDevVersionRsp;
         }
 
@@ -400,7 +288,7 @@ public class ClientUpdateManager {
         @Override
         public void call(Object o) {
             prepareNetMonitor();
-            String fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
+            String fileDir = rsp.fileDir;
             final File file = new File(fileDir, rsp.fileName);
             new File(fileDir).mkdir();
             if (file.exists()) {
@@ -481,16 +369,8 @@ public class ClientUpdateManager {
                         }
                         FileUtils.delete(fileDir, rsp.fileName);
                     } finally {
-                        try {
-                            if (is != null) {
-                                is.close();
-                            }
-                            if (fos != null) {
-                                fos.close();
-                            }
-                        } catch (IOException e) {
-                            Log.d(TAG, e.toString());
-                        }
+                        CloseUtils.close(is);
+                        CloseUtils.close(fos);
                     }
                 }
             });
@@ -498,8 +378,9 @@ public class ClientUpdateManager {
 
         private Gson gson = new Gson();
 
-        void updateInfo(String uuid, RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
-            PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, gson.toJson(checkDevVersionRsp));
+        void updateInfo(String uuid, RxEvent.CheckVersionRsp checkDevVersionRsp) {
+            PreferencesUtils.putString(checkDevVersionRsp.preKey, gson.toJson(checkDevVersionRsp));
+            AppLogger.d("下载变化?" + checkDevVersionRsp);
         }
     }
 
@@ -557,7 +438,7 @@ public class ClientUpdateManager {
                                 //得到fping结果
                                 JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
                                 if (TextUtils.equals(recvHeard.cid, uuid)) {
-                                    throw new HelperBreaker().setValue(localUdpMsg);
+                                    throw new RxEvent.HelperBreaker().setValue(localUdpMsg);
                                 } else Log.d(TAG, "不是同一个设备:" + uuid + ",cid:" + recvHeard.cid);
                             }
                             return Observable.just(null);
@@ -569,9 +450,9 @@ public class ClientUpdateManager {
                     .subscribe(ret -> AppLogger.d("got your rsp : " + uuid + " "),
                             //err发生,整个订阅链就结束
                             throwable -> {
-                                if (throwable instanceof HelperBreaker) {
-                                    AppLogger.d("got your rsp : " + uuid + " " + ((HelperBreaker) throwable).localUdpMsg);
-                                    prepareSending(((HelperBreaker) throwable).localUdpMsg.ip, ((HelperBreaker) throwable).localUdpMsg.port);
+                                if (throwable instanceof RxEvent.HelperBreaker) {
+                                    AppLogger.d("got your rsp : " + uuid + " " + ((RxEvent.HelperBreaker) throwable).localUdpMsg);
+                                    prepareSending(((RxEvent.HelperBreaker) throwable).localUdpMsg.ip, ((RxEvent.HelperBreaker) throwable).localUdpMsg.port);
                                 } else if (throwable instanceof TimeoutException) {
                                     updateState = JConstant.U.FAILED_FPING_ERR;
                                     handleTimeout(JConstant.U.FAILED_FPING_ERR);
@@ -589,7 +470,7 @@ public class ClientUpdateManager {
 
         private void prepareSending(String remoteIp, int port) {
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-            final RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+            final RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
             String localIp = NetUtils.getReadableIp();
             //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
             String localUrl = "http://" + localIp + ":8765/" + description.fileName;
@@ -646,7 +527,7 @@ public class ClientUpdateManager {
                                 //得到fping结果
                                 JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
                                 if (TextUtils.equals(recvHeard.cid, uuid)) {
-                                    throw new HelperBreaker().setValue(localUdpMsg);
+                                    throw new RxEvent.HelperBreaker().setValue(localUdpMsg);
                                 } else Log.d(TAG, "不是同一个设备:" + uuid + ",cid:" + recvHeard.cid);
                             }
                             return Observable.just(null);
@@ -657,10 +538,10 @@ public class ClientUpdateManager {
                     .filter(ret -> ret != null)
                     .subscribe(ret -> {
                     }, throwable -> {
-                        if (throwable instanceof HelperBreaker) {
+                        if (throwable instanceof RxEvent.HelperBreaker) {
                             //此处发生之后,表明整个订阅链结束了,不会再发生60s超时的回调
-                            handleResult(uuid, timeout, ((HelperBreaker) throwable).localUdpMsg.data);
-                            Log.d(TAG, "Client: " + ((HelperBreaker) throwable).localUdpMsg);
+                            handleResult(uuid, timeout, ((RxEvent.HelperBreaker) throwable).localUdpMsg.data);
+                            Log.d(TAG, "Client: " + ((RxEvent.HelperBreaker) throwable).localUdpMsg);
                         } else if (throwable instanceof TimeoutException) {
                             int err = timeout == 30 ? JConstant.U.FAILED_30S : JConstant.U.FAILED_60S;
                             updateState = err;
@@ -710,30 +591,6 @@ public class ClientUpdateManager {
         }
     }
 
-    private static class HelperBreaker extends RuntimeException {
-        private RxEvent.LocalUdpMsg localUdpMsg;
-
-        public HelperBreaker setValue(RxEvent.LocalUdpMsg localUdpMsg) {
-            this.localUdpMsg = localUdpMsg;
-            return this;
-        }
-
-        public HelperBreaker() {
-        }
-
-        public HelperBreaker(String detailMessage) {
-            super(detailMessage);
-        }
-
-        public HelperBreaker(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
-            this.initCause(throwable);
-        }
-
-        public HelperBreaker(Throwable throwable) {
-            super(throwable);
-        }
-    }
 
     public interface FUpdatingListener {
 

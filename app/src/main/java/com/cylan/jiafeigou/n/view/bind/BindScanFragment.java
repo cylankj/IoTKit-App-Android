@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.bind;
 
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -33,7 +33,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.google.zxing.Result;
 
 import java.util.regex.Matcher;
@@ -66,8 +65,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     ZXingScannerView zxVScan;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private SimpleDialogFragment rebindDialog;
-    private String uuid;
 
     public BindScanFragment() {
         // Required empty public constructor
@@ -111,18 +108,17 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     public void onNeverAskAgainCameraPermission() {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, getString(R.string.CAMERA)))
-                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                getString(R.string.permission_auth, getString(R.string.CAMERA)),
+                getString(R.string.permission_auth, getString(R.string.CAMERA)),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                },
+                getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
                         ((BindDeviceActivity) getActivity()).finishExt();
                     }
-                })
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                })
-                .create()
-                .show();
+                });
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -274,10 +270,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         zxVScan.startCamera();
     }
 
-    @Override
-    public String getUuid() {
-        return uuid;
-    }
 
     @Override
     public void setPresenter(ScanContract.Presenter presenter) {

@@ -79,9 +79,9 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
 
     @Override
     public Subscription checkNewVersionBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
+                .subscribe((RxEvent.CheckVersionRsp checkDevVersionRsp) -> {
                     if (checkDevVersionRsp != null) {
                         mView.checkResult(checkDevVersionRsp);
                     }

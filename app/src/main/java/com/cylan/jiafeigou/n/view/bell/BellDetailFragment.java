@@ -76,7 +76,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-    private RxEvent.CheckDevVersionRsp checkDevVersion;
+    private RxEvent.CheckVersionRsp checkDevVersion;
 
     public static BellDetailFragment newInstance(Bundle bundle) {
         BellDetailFragment fragment = new BellDetailFragment();
@@ -210,7 +210,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     }
 
     @Override
-    public void checkResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+    public void checkResult(RxEvent.CheckVersionRsp checkDevVersionRsp) {
         this.checkDevVersion = checkDevVersionRsp;
         if (checkDevVersionRsp.hasNew) {
             hardwareUpdatePoint.setVisibility(View.VISIBLE);

@@ -61,7 +61,7 @@ import rx.schedulers.Schedulers;
  */
 public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdateContract.View> implements HardwareUpdateContract.Presenter, SimulatePercent.OnAction {
 
-    private RxEvent.CheckDevVersionRsp checkDevVersion;
+    private RxEvent.CheckVersionRsp checkDevVersion;
     private DownloadManagerPro.TaskBuilder taskBuilder;
     private UpdateFileBean downLoadBean;
 
@@ -73,7 +73,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     private Network network;
     private int firmwareUpdateState = 0;//-1失败,0初始,1.升级中,2.升级成功
 
-    public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, String uuid, RxEvent.CheckDevVersionRsp checkDevVersion) {
+    public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, String uuid, RxEvent.CheckVersionRsp checkDevVersion) {
         super(view);
         view.setPresenter(this);
         this.uuid = uuid;

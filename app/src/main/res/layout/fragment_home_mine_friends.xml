@@ -47,7 +47,7 @@
                 android:id="@+id/recyclerview_request_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+                android:overScrollMode="never"/>
 
             <!--亲友列表-->
             <TextView
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
-                android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+                android:scrollbars="vertical"/>
         </LinearLayout>
 
         <LinearLayout

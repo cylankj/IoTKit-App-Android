@@ -75,7 +75,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         Device device = basePresenter.getDevice();
         String currentVersion = device.$(207, "");
         tvCurrentVersion.setText(currentVersion);
-        RxEvent.CheckDevVersionRsp description = null;
+        RxEvent.CheckVersionRsp description = null;
         ClientUpdateManager.PackageDownloadTask packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
         if (packageDownloadAction == null) {
         } else {
@@ -88,7 +88,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             if (description == null) {
                 String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
                 if (!TextUtils.isEmpty(content)) {
-                    description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+                    description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
                     if (TextUtils.equals(description.version, currentVersion)) {
                         description = null;
                         PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
@@ -133,7 +133,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
     }
 
-    private boolean validateFile(RxEvent.CheckDevVersionRsp description) {
+    private boolean validateFile(RxEvent.CheckVersionRsp description) {
         File file = new File(description.fileDir, description.fileName);
         return description.downloadState == JConstant.D.SUCCESS
                 && file.exists() && file.length() == description.fileSize;
@@ -271,7 +271,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             //2.Tap1a_DownloadInstall 下载并安装(%s)
             try {
                 String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                final RxEvent.CheckDevVersionRsp description = new Gson().fromJson(content, RxEvent.CheckDevVersionRsp.class);
+                final RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
                 ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
             } catch (Exception e) {
                 AppLogger.e("err:" + MiscUtils.getErr(e));

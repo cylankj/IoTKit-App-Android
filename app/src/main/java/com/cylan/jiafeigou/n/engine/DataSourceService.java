@@ -513,7 +513,7 @@
 //    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
 //        AppLogger.d("OnCheckDevVersionRsp :");
 //        if (RxBus.getCacheInstance().hasObservers()) {
-//            RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b, s, s1, s2, s3));
+//            RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3));
 //        }
 //    }
 //

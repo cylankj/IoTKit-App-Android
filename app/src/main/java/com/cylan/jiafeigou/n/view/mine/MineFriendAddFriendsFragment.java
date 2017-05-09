@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsAddFriendPresenterImp;
@@ -26,13 +28,22 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import permissions.dispatcher.PermissionUtils;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/6
  * 描述：
  */
+@RuntimePermissions
 public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFriendContract.Presenter> implements MineFriendsAddFriendContract.View {
 
     @BindView(R.id.et_friend_phonenumber)
@@ -48,11 +59,6 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
     public static MineFriendAddFriendsFragment newInstance() {
         return new MineFriendAddFriendsFragment();
-    }
-
-    @Override
-    public void setPresenter(MineFriendsAddFriendContract.Presenter presenter) {
-
     }
 
     @Nullable
@@ -84,48 +90,13 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
                 AppLogger.d("tv_scan_add");
-                if (presenter.checkCameraPermission()) {
-                    jump2ScanAddFragment();
-                } else {
-                    if (MineFriendAddFriendsFragment.this.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                        AppLogger.d("request_Y");
-//                        MineFriendAddFriendsFragment.this.requestPermissions(
-//                                new String[]{Manifest.permission.READ_CONTACTS},
-//                                1);
-                        setPermissionDialog(getString(R.string.camera_auth));
-                    } else {
-                        AppLogger.d("request_N");
-                        MineFriendAddFriendsFragment.this.requestPermissions(
-                                new String[]{Manifest.permission.CAMERA},
-                                2);
-                    }
-                }
+                MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
                 break;
-
             case R.id.tv_add_from_contract:                             //从通讯录添加
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
-                AppLogger.d("tv_add_from_contract");
-                if (presenter.checkContractPermission()) {
-                    AppLogger.d("from_contract_Y");
-                    jump2AddFromContactFragment();
-                } else {
-                    AppLogger.d("from_contract_N");
-                    if (MineFriendAddFriendsFragment.this.shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                        AppLogger.d("request_Y");
-//                        MineFriendAddFriendsFragment.this.requestPermissions(
-//                                new String[]{Manifest.permission.READ_CONTACTS},
-//                                1);
-                        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
-                    } else {
-                        AppLogger.d("request_N");
-                        MineFriendAddFriendsFragment.this.requestPermissions(
-                                new String[]{Manifest.permission.READ_CONTACTS},
-                                1);
-                    }
-                }
+                MineFriendAddFriendsFragmentPermissionsDispatcher.onContactsPermissionWithCheck(this);
                 break;
-
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
                 ViewUtils.deBounceClick(view);//防重复点击
                 jump2AddByNumberFragment();
@@ -146,8 +117,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     private void jump2AddFromContactFragment() {
         MineFriendAddFromContactFragment addFromContactFragment = MineFriendAddFromContactFragment.newInstance();
         getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
                 .addToBackStack("AddFlowStack")
                 .commitAllowingStateLoss();
@@ -166,33 +136,86 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (PermissionUtils.hasSelfPermissions(getContext(), permissions[0])) {
-                jump2AddFromContactFragment();
-            } else {
-                setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
-            }
-        } else if (requestCode == 2) {
-            if (PermissionUtils.hasSelfPermissions(getContext(), permissions[0])) {
-                jump2ScanAddFragment();
-            } else {
-                setPermissionDialog(getString(R.string.camera_auth));
+        MineFriendAddFriendsFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (permissions.length == 1) {
+            if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
+                MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
+            } else if (TextUtils.equals(permissions[0], READ_CONTACTS) && grantResults[0] > -1) {
+                MineFriendAddFriendsFragmentPermissionsDispatcher.onContactsPermissionWithCheck(this);
             }
         }
     }
 
-    public void setPermissionDialog(String permission) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "", permission))
-                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    dialog.dismiss();
-                })
-                .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
-                    openSetting();
-                })
-                .create()
-                .show();
+
+    //
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    public void onCameraPermissionDenied() {
+        onNeverAskAgainCameraPermission();
     }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    public void onNeverAskAgainCameraPermission() {
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                getString(R.string.permission_auth, getString(R.string.CAMERA)),
+                getString(R.string.permission_auth, getString(R.string.CAMERA)),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    openSetting();
+//                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                },
+                getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                });
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    public void onCameraPermission() {
+        jump2ScanAddFragment();
+    }
+
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    public void showRationaleForCamera(PermissionRequest request) {
+        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
+        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        onNeverAskAgainCameraPermission();
+    }
+
+
+    //
+    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+    public void onContactsPermissionDenied() {
+        onNeverAskAgainContactsPermission();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+    public void onNeverAskAgainContactsPermission() {
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                getString(R.string.permission_auth, getString(R.string.contacts_auth)),
+                getString(R.string.permission_auth, getString(R.string.contacts_auth)),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    openSetting();
+//                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                },
+                getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                });
+    }
+
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    public void onContactsPermission() {
+        jump2AddFromContactFragment();
+    }
+
+
+    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+    public void showRationaleForContacts(PermissionRequest request) {
+        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
+        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        onNeverAskAgainContactsPermission();
+    }
+
 
     private void openSetting() {
         Intent localIntent = new Intent();

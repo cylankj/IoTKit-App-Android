@@ -776,7 +776,7 @@ public class RxEvent {
 //    }
 
 
-    public static class CheckDevVersionRsp implements Parcelable {
+    public static class CheckVersionRsp implements Parcelable {
         public long seq;
         public boolean hasNew;
         public long fileSize;
@@ -784,23 +784,35 @@ public class RxEvent {
         public long lastUpdateTime;
         public String url;
         public String version;
+        public String versionCode;
         public String tip;
         public String md5;
         public String fileDir;
         public String fileName;
         public String uuid;
+        //存储该类在Pre中的key
+        public String preKey;
 
-        public CheckDevVersionRsp setSeq(long seq) {
+        public CheckVersionRsp setSeq(long seq) {
             this.seq = seq;
             return this;
         }
 
-        public CheckDevVersionRsp(boolean hasNew, String url, String version, String tip, String md5) {
+        public CheckVersionRsp(boolean hasNew,
+                               String url,
+                               String version,
+                               String tip,
+                               String md5) {
             this.hasNew = hasNew;
             this.url = url;
             this.version = version;
             this.tip = tip;
             this.md5 = md5;
+        }
+
+        public CheckVersionRsp setPreKey(String preKey) {
+            this.preKey = preKey;
+            return this;
         }
 
         @Override
@@ -812,30 +824,66 @@ public class RxEvent {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeLong(this.seq);
             dest.writeByte(this.hasNew ? (byte) 1 : (byte) 0);
+            dest.writeLong(this.fileSize);
+            dest.writeInt(this.downloadState);
+            dest.writeLong(this.lastUpdateTime);
             dest.writeString(this.url);
             dest.writeString(this.version);
+            dest.writeString(this.versionCode);
             dest.writeString(this.tip);
             dest.writeString(this.md5);
+            dest.writeString(this.fileDir);
+            dest.writeString(this.fileName);
+            dest.writeString(this.uuid);
+            dest.writeString(this.preKey);
         }
 
-        protected CheckDevVersionRsp(Parcel in) {
+        protected CheckVersionRsp(Parcel in) {
             this.seq = in.readLong();
             this.hasNew = in.readByte() != 0;
+            this.fileSize = in.readLong();
+            this.downloadState = in.readInt();
+            this.lastUpdateTime = in.readLong();
             this.url = in.readString();
             this.version = in.readString();
+            this.versionCode = in.readString();
             this.tip = in.readString();
             this.md5 = in.readString();
+            this.fileDir = in.readString();
+            this.fileName = in.readString();
+            this.uuid = in.readString();
+            this.preKey = in.readString();
         }
 
-        public static final Creator<CheckDevVersionRsp> CREATOR = new Creator<CheckDevVersionRsp>() {
+        @Override
+        public String toString() {
+            return "CheckVersionRsp{" +
+                    "seq=" + seq +
+                    ", hasNew=" + hasNew +
+                    ", fileSize=" + fileSize +
+                    ", downloadState=" + downloadState +
+                    ", lastUpdateTime=" + lastUpdateTime +
+                    ", url='" + url + '\'' +
+                    ", version='" + version + '\'' +
+                    ", versionCode='" + versionCode + '\'' +
+                    ", tip='" + tip + '\'' +
+                    ", md5='" + md5 + '\'' +
+                    ", fileDir='" + fileDir + '\'' +
+                    ", fileName='" + fileName + '\'' +
+                    ", uuid='" + uuid + '\'' +
+                    ", preKey='" + preKey + '\'' +
+                    '}';
+        }
+
+        public static final Creator<CheckVersionRsp> CREATOR = new Creator<CheckVersionRsp>() {
             @Override
-            public CheckDevVersionRsp createFromParcel(Parcel source) {
-                return new CheckDevVersionRsp(source);
+            public CheckVersionRsp createFromParcel(Parcel source) {
+                return new CheckVersionRsp(source);
             }
 
             @Override
-            public CheckDevVersionRsp[] newArray(int size) {
-                return new CheckDevVersionRsp[size];
+            public CheckVersionRsp[] newArray(int size) {
+                return new CheckVersionRsp[size];
             }
         };
     }
@@ -1110,6 +1158,106 @@ public class RxEvent {
 
         public FirmwareUpdateRsp(String uuid) {
             this.uuid = uuid;
+        }
+    }
+
+//    public static class NewVersionApkDesc {
+//        public String url;
+//        public String fileName;
+//        public String fileDir;
+//        public String desc;
+//        public String versionName;
+//        public String versionCode;
+//        public int downloadState;
+//
+//        public NewVersionApkDesc() {
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return "NewVersionApkDesc{" +
+//                    "url='" + url + '\'' +
+//                    ", fileName='" + fileName + '\'' +
+//                    ", fileDir='" + fileDir + '\'' +
+//                    ", desc='" + desc + '\'' +
+//                    ", versionName='" + versionName + '\'' +
+//                    ", versionCode='" + versionCode + '\'' +
+//                    ", downloadState=" + downloadState +
+//                    '}';
+//        }
+//
+//        public NewVersionApkDesc setVersionName(String versionName) {
+//            this.versionName = versionName;
+//            return this;
+//        }
+//
+//        public NewVersionApkDesc setVersionCode(String versionCode) {
+//            this.versionCode = versionCode;
+//            return this;
+//        }
+//
+//        public NewVersionApkDesc setUrl(String url) {
+//            this.url = url;
+//            return this;
+//        }
+//
+//        public NewVersionApkDesc setDesc(String desc) {
+//            this.desc = desc;
+//            return this;
+//        }
+//
+//        public NewVersionApkDesc setFileName(String fileName) {
+//            this.fileName = fileName;
+//            return this;
+//        }
+//
+//        public NewVersionApkDesc setFileDir(String fileDir) {
+//            this.fileDir = fileDir;
+//            return this;
+//        }
+//
+//        public NewVersionApkDesc setDownloadState(int downloadState) {
+//            this.downloadState = downloadState;
+//            return this;
+//        }
+//    }
+
+    public static class HelperBreaker extends RuntimeException {
+        public RxEvent.LocalUdpMsg localUdpMsg;
+
+        public Object object;
+
+        public HelperBreaker setValue(RxEvent.LocalUdpMsg localUdpMsg) {
+            this.localUdpMsg = localUdpMsg;
+            return this;
+        }
+
+        public HelperBreaker() {
+        }
+
+        public HelperBreaker(Object o) {
+            this.object = o;
+        }
+
+        public HelperBreaker(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public HelperBreaker(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+            this.initCause(throwable);
+        }
+
+        public HelperBreaker(Throwable throwable) {
+            super(throwable);
+        }
+    }
+
+    public static class ApkDownload {
+        public String filePath;
+
+        public ApkDownload(String filePath) {
+            this.filePath = filePath;
         }
     }
 }
