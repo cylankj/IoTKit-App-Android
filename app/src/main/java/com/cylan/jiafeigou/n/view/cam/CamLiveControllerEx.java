@@ -919,6 +919,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (iconPreState == null) return;
         setMicSpeakerState(iconPreState.mic, iconPreState.speaker);
         if (iconPreState.capture == 0) return;
+        if (livePlayType == TYPE_HISTORY) {
+            findViewById(R.id.imgV_land_cam_trigger_mic).setEnabled(false);
+            findViewById(R.id.imgV_cam_trigger_mic).setEnabled(false);
+        }
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
     }
