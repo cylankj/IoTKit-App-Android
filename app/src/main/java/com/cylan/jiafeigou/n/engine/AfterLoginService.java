@@ -88,7 +88,7 @@ public class AfterLoginService extends IntentService {
      * 恢复离线时候,加入请求队列的消息
      */
     public static void resumeTryCheckVersion() {
-        if (clientVersionCheck == 0 || System.currentTimeMillis() - clientVersionCheck > 5 * 1000L) {
+        if (clientVersionCheck == 0 || System.currentTimeMillis() - clientVersionCheck > 5 * 60 * 1000L) {
             clientVersionCheck = System.currentTimeMillis();
         } else return;
         Intent intent = new Intent(ContextUtils.getContext(), AfterLoginService.class);

@@ -16,23 +16,18 @@ import android.widget.FrameLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
-import com.cylan.panorama.Panoramic360View;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,8 +47,6 @@ public class PanoramicViewFragment extends IBaseFragment {
     private String uuid;
     private PanoramicView360_Ext panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
-    private Panoramic360View.MountMode mountMode;
-    private Device device;
 
     public PanoramicViewFragment() {
         // Required empty public constructor
@@ -94,7 +87,6 @@ public class PanoramicViewFragment extends IBaseFragment {
         lp.height = screenWidth;
         mPanoramicContainer.setLayoutParams(lp);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        this.device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (getUserVisibleHint()) {//当前页面才显示
             loadBitmap(getArguments().getInt("key_index", 0));
@@ -186,6 +178,7 @@ public class PanoramicViewFragment extends IBaseFragment {
 
     public void loadBitmap(int index) {
         String mode = dpAlarm == null ? "0" : dpAlarm.tly;
+        Log.d("loadBitmap", "loadBitmap: " + mode);
         loadBitmap(index, mode);
     }
 }

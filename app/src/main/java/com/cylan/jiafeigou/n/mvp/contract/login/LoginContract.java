@@ -1,15 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
-import android.app.Activity;
-import android.content.Intent;
-
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.facebook.CallbackManager;
-import com.sina.weibo.sdk.auth.sso.SsoHandler;
-import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import rx.Subscription;
 
@@ -74,7 +68,7 @@ public interface LoginContract {
          *
          * @param callback
          */
-        void checkAccountResult(RxEvent.CheckRegsiterBack callback);
+        void checkAccountResult(RxEvent.CheckRegisterBack callback);
 
         void authorizeResult();
 
@@ -106,12 +100,6 @@ public interface LoginContract {
          */
         void checkAccountIsReg(String account);
 
-        /**
-         * 是否已注册的回调
-         *
-         * @return
-         */
-        Subscription checkAccountBack();
 
         /**
          * 登录计时

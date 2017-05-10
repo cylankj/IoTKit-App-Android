@@ -330,8 +330,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     basePresenter.stopPlayVideo(TYPE_HISTORY).subscribe(ret -> {
                     }, AppLogger::e);
                 }
+                AppLogger.e("sdcard数据被清空，唐宽，还没实现");
             }
-            AppLogger.e("sdcard数据被清空，唐宽，还没实现");
         }
         if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
             camLiveControlLayer.onDeviceStandByChanged(basePresenter.getDevice(), v -> jump2Setting());

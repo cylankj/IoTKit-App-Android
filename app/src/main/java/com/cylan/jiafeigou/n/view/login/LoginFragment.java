@@ -802,7 +802,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * @param callback
      */
     @Override
-    public void checkAccountResult(RxEvent.CheckRegsiterBack callback) {
+    public void checkAccountResult(RxEvent.CheckRegisterBack callback) {
         if (callback.jfgResult.code != 0) {
             boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;

@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -40,9 +39,7 @@ import rx.schedulers.Schedulers;
 public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         implements LoginContract.Presenter {
 
-    private boolean isLoginSucc;
     private boolean isRegSms;
-    private boolean isReg;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -130,7 +127,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 smsCodeResultSub(),
                 switchBoxSub(),
                 loginPopBackSub(),
-                checkAccountBack(),
                 thirdAuthorizeBack(),
                 reShowAccount()
         };
@@ -164,6 +160,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         if (smsCodeResult.error == 0) {
                             //store the token .
                             PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
+                            PreferencesUtils.putLong(JConstant.KEY_REGISTER_SMS_TOKEN_TIME, System.currentTimeMillis());
                         }
                     }
                 }, (Throwable throwable) -> {
@@ -229,37 +226,21 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void checkAccountIsReg(String account) {
         Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            isReg = true;
-                            BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
-                            AppLogger.d("checkAccountIsReg: " + s);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .timeout(30, TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS)
+                .map(ret -> {
+                    try {
+                        return BaseApplication.getAppComponent().getCmd().checkAccountRegState(ret);
+                    } catch (JfgException e) {
+                        return -1;
                     }
-                }, throwable -> {
-                    AppLogger.e("checkAccountIsReg" + throwable.getLocalizedMessage());
-                });
+                }).flatMap(result -> RxBus.getCacheInstance()
+                .toObservable(RxEvent.CheckRegisterBack.class))
+                .filter(ret -> mView != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> getView().checkAccountResult(ret), AppLogger::e);
     }
 
-    @Override
-    public Subscription checkAccountBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegsiterBack.class)
-                .delay(5, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
-                    @Override
-                    public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
-                        if (isReg) {
-                            getView().checkAccountResult(checkRegsiterBack);
-                            isReg = false;
-                        }
-                    }
-                }, AppLogger::e);
-    }
 
     /**
      * 登录计时
@@ -270,10 +251,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(30000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> {
-                    if (getView() != null && !isLoginSucc)
-                        getView().loginResult(JError.ErrorConnect);
-                }, AppLogger::e));
+                .filter(ret -> mView != null)
+                .subscribe(o -> getView().loginResult(JError.ErrorConnect), AppLogger::e));
     }
 
     @Override

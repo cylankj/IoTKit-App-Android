@@ -654,6 +654,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     return;
                 }
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+
+                if (status.hasSdcard && status.err != 0) {
+                    ToastUtil.showNegativeToast(getContext().getString(R.string.VIDEO_SD_DESC));
+                    return;
+                }
                 if (!status.hasSdcard || status.err != 0) {
                     ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
                     return;
@@ -957,12 +962,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         int id = v.getId();
         switch (id) {
             case R.id.imgV_cam_live_land_nav_back:
-                ViewUtils.setRequestedOrientation((Activity) getContext(),
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
                 break;
             case R.id.imgV_cam_zoom_to_full_screen://点击全屏
-                ViewUtils.setRequestedOrientation((Activity) getContext(),
-                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放
                 if (playClickListener != null) playClickListener.onClick(v);

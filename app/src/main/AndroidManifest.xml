@@ -77,11 +77,12 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+
     <permission
-        android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE"
+        android:name="${ApplicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE" />
+    <uses-permission android:name="${ApplicationId}.permission.C2D_MESSAGE" />
 
     <uses-feature
         android:name="android.hardware.location.gps"
@@ -505,7 +506,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
+                <category android:name="com.google.android.c2dm.${ApplicationId}" />
             </intent-filter>
         </receiver>
         <!-- [END gcm_receiver] -->

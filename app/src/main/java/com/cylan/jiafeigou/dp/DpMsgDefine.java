@@ -483,52 +483,19 @@ public class DpMsgDefine {
         @Ignore
         public static DPAlarm empty = new DPAlarm();
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(this.time);
-            dest.writeInt(this.isRecording);
-            dest.writeInt(this.fileIndex);
-            dest.writeInt(this.type);
-        }
-
         public DPAlarm() {
         }
 
         @Override
         public String toString() {
             return "DPAlarm{" +
-                    "startTime=" + time +
+                    "time=" + time +
                     ", isRecording=" + isRecording +
                     ", fileIndex=" + fileIndex +
                     ", type=" + type +
+                    ", tly='" + tly + '\'' +
                     '}';
         }
-
-        protected DPAlarm(Parcel in) {
-            super(in);
-            this.time = in.readInt();
-            this.isRecording = in.readInt();
-            this.fileIndex = in.readInt();
-            this.type = in.readInt();
-        }
-
-        public static final Creator<DPAlarm> CREATOR = new Creator<DPAlarm>() {
-            @Override
-            public DPAlarm createFromParcel(Parcel source) {
-                return new DPAlarm(source);
-            }
-
-            @Override
-            public DPAlarm[] newArray(int size) {
-                return new DPAlarm[size];
-            }
-        };
 
         @Override
         public boolean equals(Object o) {
@@ -556,6 +523,42 @@ public class DpMsgDefine {
             result = 31 * result + (tly != null ? tly.hashCode() : 0);
             return result;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(this.time);
+            dest.writeInt(this.isRecording);
+            dest.writeInt(this.fileIndex);
+            dest.writeInt(this.type);
+            dest.writeString(this.tly);
+        }
+
+        protected DPAlarm(Parcel in) {
+            super(in);
+            this.time = in.readInt();
+            this.isRecording = in.readInt();
+            this.fileIndex = in.readInt();
+            this.type = in.readInt();
+            this.tly = in.readString();
+        }
+
+        public static final Creator<DPAlarm> CREATOR = new Creator<DPAlarm>() {
+            @Override
+            public DPAlarm createFromParcel(Parcel source) {
+                return new DPAlarm(source);
+            }
+
+            @Override
+            public DPAlarm[] newArray(int size) {
+                return new DPAlarm[size];
+            }
+        };
     }
 
     @Message//504

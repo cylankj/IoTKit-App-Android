@@ -57,7 +57,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
-        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
     }
 
     /**
@@ -178,8 +177,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard();
     }
 
-    private boolean textShowSdBtn() {
-        return hasSdcard();
+    private boolean textShowSdBtn(CamMessageBean item) {
+        //考虑这个bean的条件.
+        if (item.sdcardSummary != null) {
+            if (!item.sdcardSummary.hasSdcard) return false;
+        }
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        return status.hasSdcard && status.err != 0;
     }
 
     /**
@@ -204,7 +208,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        holder.setVisibility(R.id.tv_jump_next, textShowSdBtn() ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.tv_jump_next, textShowSdBtn(item) ? View.VISIBLE : View.INVISIBLE);
         if (onClickListener != null)
             holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }

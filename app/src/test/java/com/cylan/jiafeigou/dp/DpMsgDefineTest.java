@@ -55,6 +55,9 @@ public class DpMsgDefineTest {
 
         System.out.println(unpackData(new byte[]{-108, -91, 102, 95, 97, 99, 107, -84, 50, 48, 48, 48, 48, 48, 48, 48, 48, 57, 49, 53, -51, 6, 16, -46, -7, -1, -1, -1},
                 TTTest.class));
+
+        System.out.println(unpackData(new byte[]{-107, -50, 89, 18, -77, -10, 1, 7, 1, -95, 48},
+                DpMsgDefine.DPAlarm.class));
     }
 
     @Message
