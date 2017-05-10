@@ -514,6 +514,7 @@ public class RxBusTest {
                     @Override
                     public void call(String s) {
                         System.out.println("s: " + s);
+                        throw new IllegalArgumentException("cuole");
                     }
                 }, new Action1<Throwable>() {
                     @Override

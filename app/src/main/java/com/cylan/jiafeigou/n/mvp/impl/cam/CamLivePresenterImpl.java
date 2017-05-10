@@ -355,6 +355,26 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, AppLogger::e);
     }
 
+
+    /**
+     * 一旦有rtcp消息回来,就表明直播通了,需要通知更新UI.
+     * 这个逻辑只需要第一个消息,然后就断开
+     *
+     * @return
+     */
+    private Subscription getFirstRTCPNotification() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                    throw new RxEvent.HelperBreaker("GoodBye");
+                }, throwable -> {
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+                        AppLogger.d("收到RTCP通知了");
+                    }
+                });
+    }
+
     /**
      * Rtcp和resolution的回调,
      * 只有resolution回调之后,才能设置{@link JfgAppCmd#enableRenderLocalView(boolean, View)} (View)}
@@ -464,6 +484,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     addSubscription(resolutionSub(), "resolutionSub");
                     addSubscription(timeoutSub(), "timeoutSub");
+                    addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");
                     return "";
                 })
                 .subscribeOn(Schedulers.io())
