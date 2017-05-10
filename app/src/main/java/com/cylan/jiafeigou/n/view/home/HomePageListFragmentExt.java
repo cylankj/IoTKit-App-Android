@@ -285,6 +285,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                         int index = mItemAdapter.getAdapterItems().indexOf(item);
                         if (index == -1) continue;
                         mItemAdapter.remove(index);
+                        Log.d("xxxxx", "removexxxx:" + index);
                     }
                 }
                 int size = ListUtils.getSize(resultList);

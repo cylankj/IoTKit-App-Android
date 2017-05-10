@@ -57,6 +57,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -79,7 +80,7 @@ public class DataSourceManager implements JFGSourceManager {
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
-    private Map<String, Device> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
+    private Map<String, Device> mCachedDeviceMap = new ConcurrentHashMap<>();//和uuid相关的数据缓存
     private Account account;//账号相关的数据全部保存到这里面
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
