@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,21 +14,19 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
-import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,15 +55,15 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @BindView(R.id.act_panorama_album_lists)
     RecyclerView recyclerView;
     private RoundRectPopup albumModeSelectPop;
-    private ALBUM_VIEW_MODE albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
+    @ALBUM_VIEW_MODE
+    private int albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
     //    private RadioGroup menuContainer;
     private String[] titles = {"相机+手机相册", "全景相册", "手机相册"};
     private PanoramaAdapter panoramaAdapter;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter.onSetViewUUID(getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID));
+    protected void initViewAndListener() {
+        super.initViewAndListener();
         panoramaAdapter = new PanoramaAdapter(uuid, this, null, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
@@ -97,10 +94,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         activityComponent.inject(this);
     }
 
-    @Override
-    protected void initViewAndListener() {
-        super.initViewAndListener();
-    }
 
     @OnClick(R.id.act_panorama_album_toolbar_header_title)
     public void showAlbumViewModePop() {
@@ -122,20 +115,20 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         return false;
     }
 
-    private int modeToResId(ALBUM_VIEW_MODE mode, boolean isPop) {
+    private int modeToResId(@ALBUM_VIEW_MODE int mode, boolean isPop) {
         switch (mode) {
-            case MODE_BOTH:
+            case ALBUM_VIEW_MODE.MODE_BOTH:
                 return isPop ? R.id.menu_item_album_pop_both : 0;
-            case MODE_PANORAMA:
+            case ALBUM_VIEW_MODE.MODE_PANORAMA:
                 return isPop ? R.id.menu_item_album_pop_panorama : 1;
-            case MODE_PHOTO:
+            case ALBUM_VIEW_MODE.MODE_PHOTO:
                 return isPop ? R.id.menu_item_album_pop_photo : 2;
             default:
                 return isPop ? R.id.menu_item_album_pop_both : 0;
         }
     }
 
-    private ALBUM_VIEW_MODE resIdToMode(int resId) {
+    private int resIdToMode(@ALBUM_VIEW_MODE int resId) {
         switch (resId) {
             case R.id.menu_item_album_pop_both:
                 return ALBUM_VIEW_MODE.MODE_BOTH;
@@ -198,7 +191,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         } else {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-            bundle.putParcelable("item_url", panoramaAdapter.getItem(position));
+            bundle.putString("item_url", PanoramaAlbumContact.PanoramaItem.getThumbUrl(uuid, panoramaAdapter.getItem(position)));
             Pan720FullFragment fullFragment = Pan720FullFragment.newInstance(bundle);
             ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fullFragment, android.R.id.content);
         }
@@ -209,10 +202,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         new AlertDialog.Builder(this)
                 .setMessage("delete item?")
                 .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    panoramaAdapter.remove(position);
+                    presenter.deletePanoramaItem(Collections.singletonList(panoramaAdapter.getList().get(position)));
                 })
                 .setNegativeButton(getString(R.string.CANCEL), null)
-                .create()
                 .show();
     }
 
@@ -222,7 +214,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onAppend(ArrayList<PAlbumBean> resultList) {
+    public void onAppend(List<PanoramaAlbumContact.PanoramaItem> resultList, boolean isRefresh) {
+        if (isRefresh) {
+            panoramaAdapter.clear();
+        }
         if (resultList != null && resultList.size() > 0)
             panoramaAdapter.addAll(resultList);
         //setEmptyView
@@ -235,7 +230,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onDelete(ArrayList<PAlbumBean> positionList) {
+    public void onDelete(List<PanoramaAlbumContact.PanoramaItem> positionList) {
         swipeRefreshLayout.setRefreshing(false);
         if (positionList.size() > 0) {
             panoramaAdapter.removeAll(positionList);
@@ -245,30 +240,13 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onUpdate(PAlbumBean needUpdate, int position) {
+    public void onUpdate(PanoramaAlbumContact.PanoramaItem needUpdate, int position) {
         swipeRefreshLayout.setRefreshing(false);
         panoramaAdapter.notifyItemChanged(position);
     }
 
     @Override
-    public ArrayList<PAlbumBean> getList() {
-        return (ArrayList<PAlbumBean>) panoramaAdapter.getList();
-    }
-
-    @Override
-    public void onDisconnected() {
-        if (BuildConfig.DEBUG)
-            ToastUtil.showNegativeToast("sock断开连接");
-    }
-
-    @Override
-    public void onConnected() {
-        if (BuildConfig.DEBUG)
-            ToastUtil.showNegativeToast("sock连接成功");
-    }
-
-    @Override
-    public void onFileState(int state) {
-
+    public List<PanoramaAlbumContact.PanoramaItem> getList() {
+        return panoramaAdapter.getList();
     }
 }

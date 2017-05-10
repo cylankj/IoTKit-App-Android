@@ -1,25 +1,19 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,25 +21,24 @@ import java.util.List;
  * Created by cylan-hunt on 17-3-15.
  */
 
-public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
+public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaItem> {
 
 
     private boolean isInEditMode;
     private static final Object object = new Object();
-    private List<PAlbumBean> mRemovedList = new ArrayList<>();
+    private List<PanoramaAlbumContact.PanoramaItem> mRemovedList = new ArrayList<>();
     private String uuid;
 
-    public PanoramaAdapter(String uuid, Context context, List<PAlbumBean> items, IMulItemViewType<PAlbumBean> mulItemViewType) {
+    public PanoramaAdapter(String uuid, Context context, List<PanoramaAlbumContact.PanoramaItem> items, IMulItemViewType<PanoramaAlbumContact.PanoramaItem> mulItemViewType) {
         super(context, items, mulItemViewType);
         this.uuid = uuid;
     }
 
-
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PAlbumBean item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PanoramaAlbumContact.PanoramaItem item) {
         switch (viewType) {
             case 0:
-                holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.getDownloadFile().getTime() * 1000L));
+                holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.time * 1000L));
                 holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
                 break;
             default:
@@ -72,7 +65,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     public void reverseEdition(final boolean selected, final int lastVisiblePosition) {
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
-                PAlbumBean bean = getItem(i);
+                PanoramaAlbumContact.PanoramaItem bean = getItem(i);
                 if (bean.selected == selected) {
                     bean.selected = !selected;
                     if (i <= lastVisiblePosition)
@@ -88,7 +81,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     public void selectAll(final int lastVisiblePosition) {
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
-                PAlbumBean bean = getItem(i);
+                PanoramaAlbumContact.PanoramaItem bean = getItem(i);
                 if (bean.selected)
                     continue;
                 bean.selected = true;
@@ -104,7 +97,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     public void selectNone(final int lastVisiblePosition) {
         synchronized (object) {
             for (int i = 0; i < getCount(); i++) {
-                PAlbumBean bean = getItem(i);
+                PanoramaAlbumContact.PanoramaItem bean = getItem(i);
                 if (!bean.selected)
                     continue;
                 bean.selected = false;
@@ -118,7 +111,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
         synchronized (object) {
             mRemovedList.clear();
             for (int i = getCount() - 1; i >= 0; i--) {
-                PAlbumBean bean = getItem(i);
+                PanoramaAlbumContact.PanoramaItem bean = getItem(i);
                 if (!bean.selected)
                     continue;
                 mRemovedList.add(bean);
@@ -130,7 +123,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
 
     public void reverseItemSelectedState(final int position) {
         synchronized (object) {
-            PAlbumBean bean = getItem(position);
+            PanoramaAlbumContact.PanoramaItem bean = getItem(position);
             if (bean == null) {
                 AppLogger.d("bean is null");
                 return;
@@ -140,40 +133,30 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
         }
     }
 
-    private void handleImage(SuperViewHolder holder, PAlbumBean item, int position) {
-        File file = new File(JConstant.PAN_PATH + File.separator + uuid + File.separator + item.getDownloadFile().fileName);
-        if (!file.exists()) return;
-        Uri imageUri = Uri.fromFile(file);
+    private void handleImage(SuperViewHolder holder, PanoramaAlbumContact.PanoramaItem item, int position) {
         Glide.with(getContext())
-                .load(imageUri)
-                .error(R.drawable.wonderful_pic_place_holder)
+                .load(PanoramaAlbumContact.PanoramaItem.getThumbUrl(uuid, item))
+                .error(R.drawable.pic_broken)
                 .placeholder(R.drawable.wonderful_pic_place_holder)
-                .into(new SimpleTarget<GlideDrawable>() {
+                .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        ((ImageView) holder.getView(R.id.img_album_content)).setImageResource(-1);
-                        holder.getView(R.id.img_album_content).setBackground(resource);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        holder.getView(R.id.img_album_content).setBackground(errorDrawable);
-                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    protected void setResource(GlideDrawable resource) {
+                        view.setBackground(resource);
                     }
                 });
     }
 
     @Override
-    protected IMulItemViewType<PAlbumBean> offerMultiItemViewType() {
-        return new IMulItemViewType<PAlbumBean>() {
+    protected IMulItemViewType<PanoramaAlbumContact.PanoramaItem> offerMultiItemViewType() {
+        return new IMulItemViewType<PanoramaAlbumContact.PanoramaItem>() {
             @Override
             public int getViewTypeCount() {
                 return 2;
             }
 
             @Override
-            public int getItemViewType(int position, PAlbumBean pAlbumBean) {
-                return pAlbumBean.isDate ? 0 : 1;
+            public int getItemViewType(int position, PanoramaAlbumContact.PanoramaItem pAlbumBean) {
+                return pAlbumBean.type == 2 ? 0 : 1;
             }
 
             @Override

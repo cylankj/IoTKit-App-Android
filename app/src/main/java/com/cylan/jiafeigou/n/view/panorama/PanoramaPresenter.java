@@ -1,23 +1,13 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import android.net.wifi.WifiInfo;
-import android.text.TextUtils;
-
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.BaseHttpApiHelper;
 import com.cylan.jiafeigou.base.module.IHttpApi;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -31,7 +21,7 @@ import rx.schedulers.Schedulers;
  * Created by yanzhendong on 2017/3/8.
  */
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter {
-    private IHttpApi httpApi;
+    private boolean httpApiInitFinish;
     private String baseUrl;
 
 
@@ -48,67 +38,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getNetWorkChangedSub());
-        registerSubscription(makeTCPBridge());
-    }
-
-    private Observable<Boolean> checkConnection() {
-        return Observable.just("checkConnection")
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
-                .map(s -> {
-                    final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-                    if (info == null || !JFGRules.isCylanDevice(info.getSSID())) {
-                        AppLogger.i("checkConnection: " + info);
-                        return false;
-                    }
-                    return true;
-                });
-    }
-
-    private Subscription makeTCPBridge() {
-        return checkConnection()
-                .filter(aBoolean -> aBoolean)
-                .map(s -> {
-                    try {
-                        AppLogger.d("正在发送 FPing 消息");
-                        appCmd.sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                        appCmd.sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                        AppLogger.d("连接 socket 出现错误");
-                    }
-                    return null;
-                })
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class))
-                .observeOn(Schedulers.io())
-                .map(msg -> {
-                    String deviceIp = null;
-                    try {
-                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
-                        AppLogger.d("header: " + new Gson().toJson(header));
-                        if (header != null && TextUtils.equals(header.cmd, "f_ping_ack")) {
-                            JfgUdpMsg.FPingAck pingAck = DpUtils.unpackData(msg.data, JfgUdpMsg.FPingAck.class);
-                            AppLogger.d("pingAck: " + new Gson().toJson(pingAck));
-                            if (pingAck != null && TextUtils.equals(pingAck.cid, mUUID)) {
-                                deviceIp = msg.ip;
-                                AppLogger.d("获取到设备地址:" + deviceIp);
-                            }
-                        }
-                    } catch (Exception e) {
-                        AppLogger.e("err: " + e.getLocalizedMessage());
-                    }
-                    return deviceIp;
-                })
-                .filter(deviceIp -> deviceIp != null)
-                .first()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(deviceIp -> {
-                    httpApi = BaseHttpApiHelper.getInstance().getHttpApi(baseUrl = "http://" + deviceIp);
-                    if (liveStreamAction.hasResolution) {
-                        mView.onEnableControllerView();
-                    }
-                    RxBus.getCacheInstance().postSticky(new RxEvent.PanoramaConnection());
-                }, AppLogger::e);
     }
 
     private Subscription getNetWorkChangedSub() {
@@ -197,7 +126,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public boolean isHttpApiInitFinished() {
-        return httpApi != null;
+        return httpApiInitFinish;
     }
 
     @Override
@@ -291,17 +220,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private Observable<IHttpApi> getHttpApi() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaConnection.class)
+        return BaseHttpApiHelper.getInstance().getHttpApi(mUUID)
                 .timeout(5, TimeUnit.SECONDS, Observable.just(null))
-                .map(event -> httpApi)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(api -> {
-                    if (api == null) {
+                    if (!httpApiInitFinish && api != null) {
+                        httpApiInitFinish = true;
+                        baseUrl = BaseHttpApiHelper.getInstance().getBaseUrl(mUUID, null);
+                        mView.onEnableControllerView();
+                    }
+                    if (!httpApiInitFinish) {
                         mView.onHttpConnectionToDeviceError();
                     }
-                    return api != null;
+                    return httpApiInitFinish;
                 })
-                .first()
                 .observeOn(Schedulers.io());
     }
 }
