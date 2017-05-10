@@ -644,10 +644,10 @@ public class RxEvent {
     /**
      * 检测是否已注册回调
      */
-    public static final class CheckRegsiterBack {
+    public static final class CheckRegisterBack {
         public JFGResult jfgResult;
 
-        public CheckRegsiterBack(JFGResult jfgResult) {
+        public CheckRegisterBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
     }

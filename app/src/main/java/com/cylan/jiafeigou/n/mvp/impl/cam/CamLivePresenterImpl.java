@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
-import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -88,7 +87,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
     private IData historyDataProvider;
-    private MapSubscription liveSubscription = new MapSubscription();
+//    private MapSubscription liveSubscription = new MapSubscription();
     /**
      * 保存当前播放的方式,eg:从播放历史视频切换到设置页面,回来之后,需要继续播放历史视频.
      */
@@ -135,29 +134,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private Subscription videoDisconnectSub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                 .subscribeOn(Schedulers.newThread())
-                .filter((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
-                    boolean notNull = getView() != null;
-                    if (!notNull) {
-                        AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
-                    } else {
-                        AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
-                        try {
-                            BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                            AppLogger.d("停止播放");
-                        } catch (JfgException e) {
-
-                        }
-                    }
-                    return notNull;
+                .filter(ret -> mView != null)
+                .map(ret -> {
+                    AppLogger.i("stop for reason: " + ret.code);
+                    stopPlayVideo(ret.code);
+                    return ret;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .takeFirst(disconnect -> {
+                .subscribe(ret -> {
                     updatePrePlayType(-1, -1, PLAY_STATE_IDLE);
-                    getView().onLiveStop(getPrePlayType().type, disconnect.code);
-                    reset();
+                    getView().onLiveStop(getPrePlayType().type, ret.code);
+                    feedRtcp.stop();
                     AppLogger.d("reset subscription");
-                    return true;
-                }).subscribe(ret -> {
                 }, AppLogger::e);
     }
 
@@ -312,16 +300,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return JFGRules.isShareDevice(uuid);
     }
 
-//    @Override
-//    public void setStopReason(int stopReason) {
-//        this.stopReason = stopReason;
-//    }
-
-    private void reset() {
-        feedRtcp.stop();
-        unSubscribe(liveSubscription);
-        liveSubscription = new MapSubscription();
-    }
 
     @Override
     public void startPlay() {
@@ -345,57 +323,36 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         updatePrePlayType(TYPE_LIVE, -1, PLAY_STATE_PREPARE);
         getView().onLivePrepare(TYPE_LIVE);
-        reset();
-        //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
-        liveSubscription.add(errCodeSub(), "errCodeSub");
-        liveSubscription.add(prePlay(s -> {
+        addSubscription(prePlay(s -> {
             try {
                 int ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 if (ret != 0) {
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+                    AppLogger.e("play video ret !0");
                 }
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
             return null;
-        }).zipWith(getInterestingOne().timeout(30, TimeUnit.SECONDS, Observable.just("timeout")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .map(s -> {
-                    AppLogger.e("play video :" + s);
-                    //暂停播放
-                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(ret -> {
-                    }, AppLogger::e);
-                    return s;
-                }))
-                //filter getInterestingOne()
-                .filter(result -> {
-                    AppLogger.d("option: " + result);
-                    return TextUtils.equals(result, "JFGMsgVideoResolution");
-                }), (String s, Object o) -> {
-            AppLogger.i("initSubscription to receive rtcp");
-            //开始接收rtcp
-            liveSubscription.add(rtcpNotifySub(), "rtcpNotifySub");
-            return null;
         }).subscribe(objectObservable -> {
-                    AppLogger.d("播放流程走通 done");
-                    if (historyDataProvider == null || historyDataProvider.getDataCount() == 0) {
-                        fetchHistoryDataList();//播放成功后,才拉取历史录像
-                    }
-                },
-                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
+            AppLogger.d("播放流程走通 done");
+            if (historyDataProvider == null || historyDataProvider.getDataCount() == 0) {
+                fetchHistoryDataList();//播放成功后,才拉取历史录像
+            }
+        }, AppLogger::e), "prePlay");
     }
 
+    /**
+     * 错误码
+     */
     private Subscription errCodeSub() {
         return RxBus.getCacheInstance().toObservable(JFGHistoryVideoErrorInfo.class)
                 .subscribeOn(Schedulers.newThread())
                 .filter(ret -> ret != null && ret.code != 0)
-                .retry()
-                .subscribe(ret -> stopPlayVideo(ret.code)
-                        .subscribe(result -> {
-                        }, AppLogger::e), AppLogger::e);
+                .subscribe(result -> {
+                    stopPlayVideo(result.code);
+                    removeTimeoutSub();
+                }, AppLogger::e);
     }
 
     /**
@@ -406,13 +363,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      *
      * @return
      */
-    private Subscription rtcpNotifySub() {
+    private Subscription RTCPNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
-                .onBackpressureBuffer()//防止MissingBackpressureException
-                .timeout(30, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .map(rtcp -> {
+                    removeTimeoutSub();
                     feedRtcp.feed(rtcp);
                     updatePrePlayType(getPrePlayType().type, rtcp.timestamp, PLAY_STATE_PLAYING);
                     return rtcp;
@@ -431,34 +387,44 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
-                });
+                }, AppLogger::e);
+    }
+
+    private Subscription timeoutSub() {
+        return Observable.just("timeout")
+                .subscribeOn(Schedulers.newThread())
+                .timeout(30, TimeUnit.SECONDS)
+                .doOnError(ret -> AppLogger.e("30s 超时了"))
+                .subscribe(ret -> {
+                }, AppLogger::e);
     }
 
     /**
-     * disconnect 或者 分辨率
+     * 只有新建立的播放,才有这个回调.
      *
      * @return
      */
-    private Observable<String> getInterestingOne() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .filter(disconnect -> (TextUtils.equals(disconnect.remote, uuid)))
-                .map((JFGMsgVideoDisconn disconn) -> {
-                    AppLogger.e("disconnected: " + new Gson().toJson(disconn));
-                    return "JFGMsgVideoDisconn";
+    private Subscription resolutionSub() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                .timeout(30, TimeUnit.SECONDS)
+                .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
+                .observeOn(Schedulers.newThread())
+                .map(resolution -> {
+                    removeTimeoutSub();
+                    setupAudio(false, false, false, false);
+                    PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
+                    //注册监听耳机
+                    registerHeadSetObservable();
+                    //正向,抛异常
+                    throw new RxEvent.HelperBreaker(resolution);
                 })
-                .subscribeOn(Schedulers.newThread())
-                .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-                        .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
-                        .observeOn(Schedulers.newThread())
-                        .map(resolution -> {
-                            setupAudio(false, false, false, false);
-                            PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
-                            //注册监听耳机
-                            registerHeadSetObservable();
-                            return resolution;
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(resolution -> {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                }, throwable -> {
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+                        Object o = ((RxEvent.HelperBreaker) throwable).object;
+                        if (o instanceof JFGMsgVideoResolution) {
+                            JFGMsgVideoResolution resolution = (JFGMsgVideoResolution) o;
                             AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution) + "," + Thread.currentThread().getName());
                             try {
                                 getView().onResolution(resolution);
@@ -467,9 +433,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             }
                             updatePrePlayType(-1, -1, PLAY_STATE_PLAYING);
                             getView().onLiveStarted(getPrePlayType().type);
-                            return "JFGMsgVideoResolution";
-                        }))
-                .first();
+                        }
+                    }
+                });
     }
 
     /**
@@ -491,8 +457,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     }
                     return true;
                 })
+                .map(ret -> {
+                    //加入管理,如果播放失败,收到disconnect
+                    addSubscription(videoDisconnectSub(), "videoDisconnectSub");
+                    addSubscription(errCodeSub(), "errCodeSub");
+                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
+                    addSubscription(resolutionSub(), "resolutionSub");
+                    addSubscription(timeoutSub(), "timeoutSub");
+                    return "";
+                })
                 .subscribeOn(Schedulers.io())
                 .map(func1);
+    }
+
+    private void removeTimeoutSub() {
+        removeSubscription("timeoutSub");
     }
 
     private void updatePrePlayType(int type, long time, int state) {
@@ -521,54 +500,29 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
             return;
         }
-        reset();
-        //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
-        liveSubscription.add(errCodeSub(), "errCodeSub");
-        liveSubscription.add(prePlay(s -> {
+        addSubscription(prePlay(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
                 if (getPrePlayType().playState != PLAY_STATE_IDLE) {
+                    //此处表明拖动历史录像时间轴.
                     if (getPrePlayType().type == TYPE_HISTORY
-                            && getPrePlayType().playState == PLAY_STATE_PREPARE)//前一刻是,历史录像而且是playing
-                    {
+                            && getPrePlayType().playState == PLAY_STATE_PREPARE) {//前一刻是,历史录像而且是playing
                         AppLogger.d("不需要 停止播放历史视频");
                     } else {
-                        BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                         AppLogger.i("stop play history");
                     }
                 }
                 int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 if (ret != 0) {
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                    AppLogger.i("stop play history");
-                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
+                    AppLogger.i("stop play history ret !0");
                 }
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
             return null;
-        }).zipWith(getInterestingOne().timeout(30, TimeUnit.SECONDS, Observable.just("timeout")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .map(s -> {
-                    AppLogger.e("play history video :" + s);
-                    //暂停播放
-                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(ret -> {
-                    }, AppLogger::e);
-                    return s;
-                }))
-                //filter getInterestingOne()
-                .filter(result -> {
-                    AppLogger.d("option: " + result);
-                    return TextUtils.equals(result, "JFGMsgVideoResolution");
-                }), (String s, Object o) -> {
-            AppLogger.i("initSubscription to receive rtcp");
-            //开始接收rtcp
-            liveSubscription.add(rtcpNotifySub(), "rtcpNotifySub");
-            return null;
-        }).subscribe(objectObservable -> AppLogger.e("flow done"),
-                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
+        }).subscribe(ret -> {
+        }, AppLogger::e), "playHistory");
     }
 
     @Override
@@ -578,7 +532,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             //暂停播放了，还需要截图
             takeSnapShot(false);
         }
-        reset();
         return Observable.just(uuid)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap((String s) -> {
@@ -713,80 +666,25 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return mic + speaker;
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-        unSubscribe(liveSubscription);
-    }
+//    @Override
+//    public void stop() {
+//        super.stop();
+//    }
 
     //forPopWindow true:手动截图:弹窗,保存每日精彩
     //forPopWindow false:直播断开,退出界面.
     @Override
     public void takeSnapShot(boolean forPopWindow) {
         AppLogger.d("take shot initSubscription");
-        int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
-        int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .map(o -> {
-                    Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                    PerformanceUtils.startTrace("takeCapture");
-                    byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
-                    if (data == null) {
-                        if (forPopWindow) getView().onTakeSnapShot(null);//弹窗
-                        AppLogger.e("截图失败,data为空");
-                        return null;
-                    }
-                    Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
-                    if (forPopWindow) getView().onTakeSnapShot(bitmap);//弹窗
-                    data = null;
-                    PerformanceUtils.stopTrace("takeCapture");
-                    String filePath;
-                    if (forPopWindow) {
-                        filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                    } else {
-                        filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
-                        removeLastPreview();
-                        SimpleCache.getInstance().addCache(filePath, bitmap);
-                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
-                        //需要删除之前的一条记录.
-                    }
-                    BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    if (forPopWindow)//添加到相册
-                        MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
-                    return new Pair<>(bitmap, filePath);
-                })
+                .map(new TakeSnapShootLogicHelper(uuid, forPopWindow, mView))
                 .observeOn(Schedulers.io())
                 .filter(pair -> pair != null)
-                .subscribe(pair -> {
-                    Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                    if (!forPopWindow) {//预览图,和弹窗是互斥的.
-                        //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
-                        getView().onPreviewResourceReady(pair.first);
-                    }
-                    new SaveAndShare(uuid, pair.second, pair.first, forPopWindow).start();
-                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
+                .subscribe(pair -> new SaveAndShare(mView, forPopWindow, uuid, pair.second, pair.first, forPopWindow),
+                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
     }
 
-    private void removeLastPreview() {
-        final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-        if (TextUtils.isEmpty(pre)) return;
-        try {
-            if (SimpleCache.getInstance().getPreviewKeyList() != null) {
-                List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
-                for (String key : list) {
-                    if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
-                        SimpleCache.getInstance().removeCache(key);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "" + e);
-        }
-        Observable.just("go")
-                .subscribeOn(Schedulers.io())
-                .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
-    }
 
     @Override
     public void saveAlarmFlag(boolean flag) {
@@ -978,22 +876,22 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
 
-    private static class SaveAndShare extends Thread {
+    private static class SaveAndShare implements Action1<Object> {
         private String uuid;
         private Bitmap bitmap;
         private boolean needShare;
         private String localPath;
+        private boolean forPopWindow;
+        private WeakReference<CamLiveContract.View> weakReference;
 
-        public SaveAndShare(String uuid, String localPath, Bitmap bitmap, boolean needShare) {
+        public SaveAndShare(CamLiveContract.View v,
+                            boolean forPopWindow,
+                            String uuid, String localPath, Bitmap bitmap, boolean needShare) {
+            weakReference = new WeakReference<>(v);
             this.uuid = uuid;
             this.bitmap = bitmap;
             this.needShare = needShare;
             this.localPath = localPath;
-        }
-
-        @Override
-        public void run() {
-            shareSnapshot(this.needShare, this.bitmap);
         }
 
         /**
@@ -1034,6 +932,83 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 }, AppLogger::e);
                         AppLogger.d("take shot step collect ");
                     }, throwable -> AppLogger.e("shareSnapshot:" + throwable.getLocalizedMessage()));
+        }
+
+        @Override
+        public void call(Object o) {
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            if (weakReference.get() != null && !forPopWindow)
+                weakReference.get().onPreviewResourceReady(this.bitmap);
+            shareSnapshot(this.needShare, this.bitmap);
+        }
+    }
+
+
+    /**
+     * 静态内部类
+     */
+    private static class TakeSnapShootLogicHelper implements Func1<Object, Pair<Bitmap, String>> {
+
+        private WeakReference<CamLiveContract.View> weakReference;
+        boolean forPopWindow;
+        private String uuid;
+
+        TakeSnapShootLogicHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
+            weakReference = new WeakReference<>(v);
+            this.forPopWindow = forPopWindow;
+            this.uuid = uuid;
+        }
+
+        @Override
+        public Pair<Bitmap, String> call(Object o) {
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            PerformanceUtils.startTrace("takeCapture");
+            byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
+            if (data == null) {
+                if (forPopWindow && weakReference.get() != null)
+                    weakReference.get().onTakeSnapShot(null);//弹窗
+                AppLogger.e("截图失败,data为空");
+                return null;
+            }
+            int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
+            int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+            Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
+            if (forPopWindow && weakReference.get() != null)
+                weakReference.get().onTakeSnapShot(bitmap);//弹窗
+            PerformanceUtils.stopTrace("takeCapture");
+            String filePath;
+            if (forPopWindow) {
+                filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+            } else {
+                filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+                removeLastPreview();
+                SimpleCache.getInstance().addCache(filePath, bitmap);
+                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+                //需要删除之前的一条记录.
+            }
+            BitmapUtils.saveBitmap2file(bitmap, filePath);
+            if (forPopWindow)//添加到相册
+                MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
+            return new Pair<>(bitmap, filePath);
+        }
+
+        private void removeLastPreview() {
+            final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
+            if (TextUtils.isEmpty(pre)) return;
+            try {
+                if (SimpleCache.getInstance().getPreviewKeyList() != null) {
+                    List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
+                    for (String key : list) {
+                        if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
+                            SimpleCache.getInstance().removeCache(key);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+            }
+            Observable.just("go")
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
         }
     }
 }

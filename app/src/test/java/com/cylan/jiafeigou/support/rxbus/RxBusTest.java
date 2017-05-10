@@ -509,12 +509,11 @@ public class RxBusTest {
     @Test
     public void testTimeout1() throws InterruptedException {
         RxBus.getCacheInstance().toObservable(String.class)
-                .timeout(10, TimeUnit.MILLISECONDS)
-                .filter(ret -> ret.length() == 0)
+                .timeout(5, TimeUnit.SECONDS)
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-
+                        System.out.println("s: " + s);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -522,12 +521,12 @@ public class RxBusTest {
                         System.out.println("" + throwable);
                     }
                 });
-        RxBus.getCacheInstance().post("");
-        RxBus.getCacheInstance().post("");
+        RxBus.getCacheInstance().post("....");
+        RxBus.getCacheInstance().post("111");
         RxBus.getCacheInstance().post("00");
         Thread.sleep(15);
         RxBus.getCacheInstance().post("000");
-        System.out.println("fadfa");
+        Thread.sleep(8000);
     }
 
 }

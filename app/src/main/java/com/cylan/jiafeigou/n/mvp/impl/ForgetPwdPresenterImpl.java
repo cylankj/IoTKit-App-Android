@@ -246,7 +246,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public Subscription checkIsRegBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegsiterBack.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
                 .subscribeOn(Schedulers.newThread())
                 .delay(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())

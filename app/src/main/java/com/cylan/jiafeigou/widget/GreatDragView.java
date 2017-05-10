@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.widget;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
@@ -12,6 +10,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 /**
  * Created by cylan-hunt on 16-9-28.
@@ -114,43 +116,25 @@ public class GreatDragView extends FrameLayout {
      */
     private void smoothSlideOut(boolean right) {
         final int x = right ? 2 * getMeasuredWidth() : -getMeasuredWidth();
-        ObjectAnimator animator = ObjectAnimator.ofFloat(draggedView, "translationX", 0, x);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                removeView(draggedView);
-                post(new Runnable() {
-                    @Override
-                    public void run() {
+        try {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(draggedView, "translationX", 0, x);
+            animator.addListener(new AnimatorUtils.SimpleAnimationListener() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    removeView(draggedView);
+                    post(() -> {
                         draggedView = (CardView) getChildAt(getChildCount() - 1);
 //                        Log.d("GreatDragView", "GreatDragView； view： " + draggedView + " count: " + getChildCount());
                         if (viewDisappearListener != null) {
                             viewDisappearListener.onViewDisappear(draggedView, finalCount - getChildCount());
                         }
-                    }
-                });
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        try {
+                    });
+                }
+            });
             animator.start();
         } catch (Exception e) {
         }
+
     }
 
     /**

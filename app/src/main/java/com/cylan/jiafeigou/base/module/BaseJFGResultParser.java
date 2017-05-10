@@ -98,7 +98,7 @@ public class BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.DeleteAddReqBack(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_CHECK_REGISTER:
-                RxBus.getCacheInstance().post(new RxEvent.CheckRegsiterBack(jfgResult));
+                RxBus.getCacheInstance().post(new RxEvent.CheckRegisterBack(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_SET_DEVICE_ALIAS:
                 RxBus.getCacheInstance().post(new RxEvent.SetAlias(jfgResult));

@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.misc.live;
 
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +69,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
                     showFailedTime = System.currentTimeMillis();
                     if (monitorListener != null && isBad && _10_s_rules) {
                         monitorListener.onFrameFailed();
+                        AppLogger.d("失败了?" + new Gson().toJson(frameRateList));
                     }
                 }
             }
