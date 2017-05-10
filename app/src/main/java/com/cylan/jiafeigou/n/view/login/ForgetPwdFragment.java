@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,8 +43,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,8 +125,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         acceptType = bundle.getInt(JConstant.KEY_LOCALE);
-        List<Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
-        Log.d("", "" + fragmentList);
     }
 
     @Override

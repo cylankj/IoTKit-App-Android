@@ -164,6 +164,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         if (smsCodeResult.error == 0) {
                             //store the token .
                             PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
+                            PreferencesUtils.putLong(JConstant.KEY_REGISTER_SMS_TOKEN_TIME, System.currentTimeMillis());
                         }
                     }
                 }, (Throwable throwable) -> {

@@ -234,21 +234,13 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     public void checkIsReg(String account) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e(throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
 
     }
 
@@ -258,12 +250,9 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribeOn(Schedulers.newThread())
                 .delay(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
-                    @Override
-                    public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
-                        if (checkRegsiterBack != null && getView() != null)
-                            getView().checkIsRegReuslt(checkRegsiterBack.jfgResult.code);
-                    }
+                .subscribe(checkRegsiterBack -> {
+                    if (checkRegsiterBack != null && getView() != null)
+                        getView().checkIsRegReuslt(checkRegsiterBack.jfgResult.code);
                 }, AppLogger::e);
     }
 

@@ -82,7 +82,6 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     @Override
     public void bindView(ViewHolder holder, List<Object> payloads) {
         super.bindView(holder, payloads);
-        mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         this.mContext = holder.imgDeviceIcon.getContext();
         handleState(holder);
     }

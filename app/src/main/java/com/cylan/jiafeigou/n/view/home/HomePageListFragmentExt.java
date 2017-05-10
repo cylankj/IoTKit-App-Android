@@ -273,7 +273,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     private List<Device> resultList;
 
-    private void upadateImmidiatly() {
+    private void updateImmediately() {
         try {
             if (getView() != null) {
                 //mItemAdapter.clear();//别暴力刷新,存在闪烁.不推荐.
@@ -312,7 +312,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    private Runnable runnable = this::upadateImmidiatly;
+    private Runnable runnable = this::updateImmediately;
 
     @UiThread
     @Override
@@ -320,8 +320,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         this.resultList = resultList;
         if (!getUserVisibleHint()) return;
         if (getView() != null) {
-            if (ListUtils.isEmpty(mItemAdapter.getAdapterItems())) {
-                upadateImmidiatly();
+            if (ListUtils.getSize(mItemAdapter.getAdapterItems()) != ListUtils.getSize(resultList)) {
+                updateImmediately();
             } else {
                 getView().removeCallbacks(runnable);
                 getView().postDelayed(runnable, 300);

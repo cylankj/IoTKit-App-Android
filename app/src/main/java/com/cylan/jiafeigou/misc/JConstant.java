@@ -7,6 +7,7 @@ import android.util.Patterns;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 import java.util.Locale;
@@ -256,6 +257,7 @@ public class JConstant {
         if (JFGRules.isVRCam(pid))
             return R.drawable.home_icon_720camera_online;
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_online;
+        AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
 
@@ -267,6 +269,7 @@ public class JConstant {
         if (JFGRules.isVRCam(pid))
             return R.drawable.home_icon_720camera_offline;
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_offline;
+        AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
 

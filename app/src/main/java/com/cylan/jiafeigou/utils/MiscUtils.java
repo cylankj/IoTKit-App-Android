@@ -520,6 +520,7 @@ public class MiscUtils {
         if (list == null || list.size() == 0) return new ArrayList<>();
         List<HomeItem> list1 = new ArrayList<>(list.size());
         for (Device item : list) {
+            Log.d("FromDevice", "item:" + item.pid);
             list1.add(new HomeItem().withUUID(item.uuid, item));
         }
         return list1;

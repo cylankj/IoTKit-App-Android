@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -30,6 +29,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public void start() {
+        super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         } else {
@@ -40,6 +40,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public void stop() {
+        super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -71,22 +72,14 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
     public void sendChangePassReq(final String account, final String oldPass, final String newPass) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            int i = BaseApplication.getAppComponent().getCmd().changePassword(account, oldPass, newPass);
-                            AppLogger.d("sendChangePassReq:" + i);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        int i = BaseApplication.getAppComponent().getCmd().changePassword(account, oldPass, newPass);
+                        AppLogger.d("sendChangePassReq:" + i);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendChangePassReq" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -98,13 +91,10 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
     public Subscription changePwdBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ChangePwdBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ChangePwdBack>() {
-                    @Override
-                    public void call(RxEvent.ChangePwdBack changePwdBack) {
-                        if (changePwdBack != null) {
-                            if (getView() != null) {
-                                getView().changePwdResult(changePwdBack.jfgResult);
-                            }
+                .subscribe(changePwdBack -> {
+                    if (changePwdBack != null) {
+                        if (getView() != null) {
+                            getView().changePwdResult(changePwdBack.jfgResult);
                         }
                     }
                 }, AppLogger::e);

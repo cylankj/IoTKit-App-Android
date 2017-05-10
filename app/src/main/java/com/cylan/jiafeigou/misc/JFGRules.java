@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.misc;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -356,5 +357,45 @@ public class JFGRules {
         if (isWifiCam(pid)) return 0.75f;
         if (isPanoramicCam(pid)) return 1.0f;
         return 0.75f;
+    }
+
+    public static SparseIntArray VALID_PID = new SparseIntArray();
+
+    static {
+        VALID_PID.put(1090, 1090);
+        VALID_PID.put(1071, 1071);
+        VALID_PID.put(1092, 1092);
+        VALID_PID.put(1091, 1091);
+        VALID_PID.put(1089, 1089);
+        VALID_PID.put(1088, 1088);
+        VALID_PID.put(1093, 1093);
+        VALID_PID.put(1094, 1094);
+        VALID_PID.put(1152, 1152);
+        VALID_PID.put(1158, 1158);
+        VALID_PID.put(1159, 1159);
+        VALID_PID.put(1160, 1160);
+
+        VALID_PID.put(4, 4);
+        VALID_PID.put(5, 5);
+        VALID_PID.put(6, 6);
+        VALID_PID.put(7, 7);
+        VALID_PID.put(8, 8);
+        VALID_PID.put(10, 10);
+        VALID_PID.put(11, 11);
+        VALID_PID.put(15, 15);
+        VALID_PID.put(17, 17);
+        VALID_PID.put(18, 18);
+        VALID_PID.put(19, 19);
+        VALID_PID.put(20, 20);
+        VALID_PID.put(21, 21);
+        VALID_PID.put(22, 22);
+        VALID_PID.put(23, 23);
+        VALID_PID.put(24, 24);
+        VALID_PID.put(25, 25);
+        VALID_PID.put(26, 26);
+        VALID_PID.put(27, 27);
+        VALID_PID.put(36, 36);
+        VALID_PID.put(37, 37);
+        VALID_PID.put(38, 38);
     }
 }
