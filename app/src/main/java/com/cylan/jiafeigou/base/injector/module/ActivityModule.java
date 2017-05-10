@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
@@ -42,7 +43,7 @@ public class ActivityModule {
     @Provides
     @PerActivity
     public static PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter(BasePresenterInjector injector) {
-        return null;
+        return new PanoramaAlbumPresenter();
     }
 
     @Provides

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 
 import java.io.File;
+import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -21,8 +22,12 @@ public interface IHttpApi {
     @GET("thumb/{thumb}.thumb")
     Observable<File> getThumbPicture(@Path("thumb") String thumb);
 
+    /**
+     * @param deleteType -1:全部删除;0:反向删除,即选中的不删除;1:正向删除,即选中的删除;
+     */
+
     @GET(CGI + "?Msg=fileDelete")
-    Observable<PanoramaEvent.MsgFileRsp> delete(@Query("deltype") int deleteType, @Query("filename") String fileName);
+    Observable<PanoramaEvent.MsgFileRsp> delete(@Query("deltype") int deleteType, @Query("filename") List<String> files);
 
     @GET(CGI + "?Msg=getFileList")
     Observable<PanoramaEvent.MsgFileListRsp> getFileList(@Query("begintime") int beginTime, @Query("endtime") int endTime, @Query("count") int count);

@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -82,6 +81,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             presenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
         }
     }
+
+
 
     @Override
     protected void onNewIntent(Intent intent) {
