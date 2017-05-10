@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.DialogInterface;
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
@@ -30,8 +29,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Presenter>
         implements PanoramaAlbumContact.View,
@@ -64,7 +61,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        panoramaAdapter = new PanoramaAdapter(uuid, this, null, null);
+        panoramaAdapter = new PanoramaAdapter(uuid, this, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -189,11 +186,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (panoramaAdapter.isInEditMode()) {
             panoramaAdapter.reverseItemSelectedState(position);
         } else {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-            bundle.putString("item_url", PanoramaAlbumContact.PanoramaItem.getThumbUrl(uuid, panoramaAdapter.getItem(position)));
-            Pan720FullFragment fullFragment = Pan720FullFragment.newInstance(bundle);
-            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fullFragment, android.R.id.content);
+            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, panoramaAdapter.getItem(position));
+            startActivity(intent);
         }
     }
 

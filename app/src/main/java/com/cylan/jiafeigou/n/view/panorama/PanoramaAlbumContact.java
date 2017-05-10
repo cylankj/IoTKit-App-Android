@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 
@@ -10,6 +12,9 @@ import com.cylan.jiafeigou.base.view.JFGView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
+
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_PICTURE;
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_VIDEO;
 
 /**
  * Created by yanzhendong on 2017/3/13.
@@ -35,7 +40,13 @@ public interface PanoramaAlbumContact {
         List<PanoramaItem> getList();
     }
 
-    class PanoramaItem {
+    class PanoramaItem implements Parcelable {
+        @IntDef({TYPE_PICTURE, TYPE_VIDEO})
+        @interface PANORAMA_ITEM_TYPE {
+            int TYPE_PICTURE = 0;
+            int TYPE_VIDEO = 1;
+        }
+
         public String fileName;
         public int type;//0:jpg,1:mp4,2:分隔符
         public int time;
@@ -68,6 +79,40 @@ public interface PanoramaAlbumContact {
             }
             return thumbUrl;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.fileName);
+            dest.writeInt(this.type);
+            dest.writeInt(this.time);
+            dest.writeInt(this.duration);
+            dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
+        }
+
+        protected PanoramaItem(Parcel in) {
+            this.fileName = in.readString();
+            this.type = in.readInt();
+            this.time = in.readInt();
+            this.duration = in.readInt();
+            this.selected = in.readByte() != 0;
+        }
+
+        public static final Creator<PanoramaItem> CREATOR = new Creator<PanoramaItem>() {
+            @Override
+            public PanoramaItem createFromParcel(Parcel source) {
+                return new PanoramaItem(source);
+            }
+
+            @Override
+            public PanoramaItem[] newArray(int size) {
+                return new PanoramaItem[size];
+            }
+        };
     }
 
     interface Presenter extends JFGPresenter<View> {

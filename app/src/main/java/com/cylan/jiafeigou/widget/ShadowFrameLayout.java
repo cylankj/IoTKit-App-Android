@@ -30,7 +30,7 @@ public class ShadowFrameLayout extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mFixSize) {
+        if (mFixSize ) {
             int width = MeasureSpec.getSize(widthMeasureSpec);
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(width / 16 * 9, MeasureSpec.EXACTLY);
         }

@@ -22,4 +22,11 @@
     <dimen name="video_option_full_screen_margin_right">@dimen/y21</dimen>
     <dimen name="video_option_play_margin_left">@dimen/y21</dimen>
     <dimen name="video_option_play_margin_right">@dimen/y30</dimen>
+
+    <!--全景相机详情页屏幕切换时的标注-->
+    <dimen name="panorama_detail_option_divider_width">@dimen/y39</dimen>
+    <dimen name="panorama_detail_option_margin_end">@dimen/y16</dimen>
+    <dimen name="panorama_detail_option_margin_bottom">@dimen/y8</dimen>
+    <dimen name="panorama_detail_panel_height">@dimen/y48</dimen>
+
 </resources>

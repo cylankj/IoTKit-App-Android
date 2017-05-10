@@ -1,9 +1,13 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiInfo;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -18,6 +22,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +35,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -37,8 +43,12 @@ import rx.schedulers.Schedulers;
  */
 
 public class BaseHttpApiHelper {
-    private Map<String, Pair<Retrofit, IHttpApi>> cachedHttpApiMap = new HashMap<>();
+    @Deprecated
+    private Map<String, Pair<Retrofit, IHttpApi>> cachedHttpApiMap = new HashMap<>();//因为同时连接的设备只能有一台,所以废弃了
     private static final BaseHttpApiHelper instance = new BaseHttpApiHelper();
+    private Retrofit retrofitInstance;
+    private IHttpApi httpApiInstance;
+    private String baseUrlInstance;
 
     public static BaseHttpApiHelper getInstance() {
         return instance;
@@ -69,6 +79,8 @@ public class BaseHttpApiHelper {
                 .client(client)
                 .build();
         IHttpApi httpApi = retrofit.create(IHttpApi.class);
+        retrofitInstance = retrofit;
+        httpApiInstance = httpApi;
         cachedHttpApiMap.put(uuid, new Pair<>(retrofit, httpApi));
         return httpApi;
     }
@@ -84,6 +96,10 @@ public class BaseHttpApiHelper {
     public String getBaseUrl(String uuid, String defaultValue) {
         Pair<Retrofit, IHttpApi> apiPair = cachedHttpApiMap.get(uuid);
         return apiPair == null ? defaultValue : apiPair.first.baseUrl().toString();
+    }
+
+    public String getBaseUrl() {
+        return baseUrlInstance;
     }
 
     public Observable<String> getBaseUrl(String uuid) {
@@ -119,8 +135,30 @@ public class BaseHttpApiHelper {
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
-                    return "http://" + deviceIp;
+                    return baseUrlInstance = "http://" + deviceIp;
                 })
                 .first();
     }
+
+    public Observable<String> loadPicture(String origin) {
+        return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            Glide.with(BaseApplication.getAppComponent().getAppContext())
+                    .load(baseUrlInstance + "/images/" + origin)
+                    .downloadOnly(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                            subscriber.onNext(resource.getAbsolutePath());
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            subscriber.onError(e);
+                        }
+                    });
+        })
+                .subscribeOn(AndroidSchedulers.mainThread());
+    }
+
 }

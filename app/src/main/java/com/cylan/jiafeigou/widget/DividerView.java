@@ -16,7 +16,7 @@ import com.cylan.jiafeigou.R;
 
 public class DividerView extends View {
 
-    static public int ORIENTATION_HORIZONTAL = 0;
+    public static int ORIENTATION_HORIZONTAL = 0;
     static public int ORIENTATION_VERTICAL = 1;
     private Paint mPaint;
     private int orientation;
@@ -35,17 +35,12 @@ public class DividerView extends View {
         int color;
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DividerView, 0, 0);
-
-        try {
-            dashGap = a.getDimensionPixelSize(R.styleable.DividerView_dv_dashGap, 5);
-            dashLength = a.getDimensionPixelSize(R.styleable.DividerView_dv_dashLength, 5);
-            dashThickness = a.getDimensionPixelSize(R.styleable.DividerView_dv_dashThickness, 3);
-            color = a.getColor(R.styleable.DividerView_dv_color, 0xff000000);
-            orientation = a.getInt(R.styleable.DividerView_dv_orientation, ORIENTATION_HORIZONTAL);
-        } finally {
-            a.recycle();
-        }
-
+        dashGap = a.getDimensionPixelSize(R.styleable.DividerView_dv_dashGap, 5);
+        dashLength = a.getDimensionPixelSize(R.styleable.DividerView_dv_dashLength, 5);
+        dashThickness = a.getDimensionPixelSize(R.styleable.DividerView_dv_dashThickness, 3);
+        color = a.getColor(R.styleable.DividerView_dv_color, 0xff000000);
+        orientation = a.getInt(R.styleable.DividerView_dv_orientation, ORIENTATION_HORIZONTAL);
+        a.recycle();
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(color);

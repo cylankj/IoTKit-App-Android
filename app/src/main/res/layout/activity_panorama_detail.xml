@@ -59,6 +59,7 @@
             android:layout_height="match_parent">
 
             <SeekBar
+                android:id="@+id/act_panorama_detail_bottom_video_menu_seek_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

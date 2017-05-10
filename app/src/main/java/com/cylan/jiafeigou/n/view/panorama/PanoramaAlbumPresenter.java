@@ -50,7 +50,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
-                    mView.onAppend(items);
+                    mView.onAppend(items, true);
                 }, e -> {
                     AppLogger.e(e);
                 });

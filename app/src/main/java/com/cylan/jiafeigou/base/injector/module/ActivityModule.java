@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailContact;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingPresenter;
@@ -49,7 +50,7 @@ public class ActivityModule {
     @Provides
     @PerActivity
     public static PanoramaDetailContact.Presenter providePanoramaDetailPresenter(BasePresenterInjector injector) {
-        return null;
+        return injector.inject(new PanoramaDetailPresenter());
     }
 
     @Provides

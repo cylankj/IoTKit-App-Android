@@ -1,40 +1,106 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lLayout_cam_msg_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingEnd="@dimen/y15"
     android:paddingStart="@dimen/y15">
 
     <com.cylan.jiafeigou.widget.DividerView
         android:id="@+id/dv_time_line"
-        android:layout_width="10dp"
-        android:layout_height="wrap_content"
-        android:layerType="software"
-        hunt:dv_color="@color/color_e8e8e8"
-        hunt:dv_dashGap="2dp"
-        hunt:dv_dashLength="3dp"
-        hunt:dv_dashThickness="2dp"
-        hunt:dv_orientation="vertical" />
+        android:layout_width="@dimen/y16"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/img_album_content"
+        app:dv_color="@color/color_e8e8e8"
+        app:dv_dashGap="@dimen/y2"
+        app:dv_dashLength="@dimen/y3"
+        app:dv_dashThickness="@dimen/y2"
+        app:dv_orientation="vertical" />
 
-    <RadioButton
-        android:id="@+id/rbtn_item_check"
-        android:layout_width="@dimen/y20"
-        android:layout_height="@dimen/y20"
-        android:layout_centerVertical="true"
-        android:background="@drawable/custom_rtbn_style1"
-        android:button="@null"
-        android:clickable="false"
-        android:visibility="invisible" />
+    <FrameLayout
+        android:id="@+id/fl_check_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/img_album_content"
+        android:layout_alignTop="@id/img_album_content">
+
+        <RadioButton
+            android:id="@+id/rb_item_check"
+            android:layout_width="@dimen/y16"
+            android:layout_height="@dimen/y16"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/custom_rtbn_style1"
+            android:button="@null"
+            android:clickable="false"
+            android:visibility="visible" />
+    </FrameLayout>
+
+
+    <View
+        android:id="@+id/v_circle"
+        android:layout_width="@dimen/y16"
+        android:layout_height="@dimen/y16"
+        android:layout_marginTop="@dimen/y20"
+        android:background="@drawable/border_solid_circle" />
+
+
+    <TextView
+        android:id="@+id/tv_cam_message_item_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/img_album_content"
+        android:layout_marginBottom="@dimen/y14"
+        android:layout_marginTop="@dimen/y22"
+        android:gravity="center"
+        android:text="12:30"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp12"
+        android:textStyle="bold" />
 
     <com.cylan.jiafeigou.widget.AspectRatioImageView
         android:id="@+id/img_album_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="2dp"
+        android:layout_below="@id/tv_cam_message_item_date"
+        android:layout_marginStart="@dimen/y4"
         android:layout_toEndOf="@id/dv_time_line"
-        android:background="@drawable/wonderful_pic_place_holder"
-        hunt:as_ratio="3" />
+        android:paddingBottom="@dimen/y4"
+        android:scaleType="fitXY"
+        android:src="@drawable/wonderful_pic_place_holder"
+        app:as_ratio="3" />
+
+    <TextView
+        android:id="@+id/tv_album_download_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/img_album_content"
+        android:layout_alignTop="@+id/img_album_content"
+        android:layout_marginEnd="@dimen/y5"
+        android:layout_marginTop="@dimen/y5"
+        android:text="1%"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/sp11"
+        android:textStyle="bold" />
+
+
+    <ImageView
+        android:id="@+id/iv_album_icon_720_iphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/img_album_content"
+        android:layout_marginBottom="@dimen/y9"
+        android:layout_marginEnd="@dimen/y11"
+        android:layout_toStartOf="@+id/iv_album_icon_720_camera"
+        android:src="@drawable/album_icon_iphone" />
+
+    <ImageView
+        android:id="@+id/iv_album_icon_720_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/img_album_content"
+        android:layout_alignEnd="@+id/img_album_content"
+        android:layout_marginBottom="@dimen/y9"
+        android:layout_marginEnd="@dimen/y6"
+        android:src="@drawable/album_icon_720camera" />
+
 </RelativeLayout>

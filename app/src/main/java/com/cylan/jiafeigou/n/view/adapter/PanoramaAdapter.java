@@ -2,14 +2,13 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -29,25 +28,36 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
     private List<PanoramaAlbumContact.PanoramaItem> mRemovedList = new ArrayList<>();
     private String uuid;
 
-    public PanoramaAdapter(String uuid, Context context, List<PanoramaAlbumContact.PanoramaItem> items, IMulItemViewType<PanoramaAlbumContact.PanoramaItem> mulItemViewType) {
-        super(context, items, mulItemViewType);
+    public PanoramaAdapter(String uuid, Context context, List<PanoramaAlbumContact.PanoramaItem> items) {
+        super(context, items, R.layout.layout_panorama_album_item_image);
         this.uuid = uuid;
     }
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PanoramaAlbumContact.PanoramaItem item) {
-        switch (viewType) {
-            case 0:
-                holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.time * 1000L));
-                holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
-                break;
-            default:
-                handleImage(holder, item, layoutPosition);
-                holder.setVisibility(R.id.rbtn_item_check, !isInEditMode ? View.INVISIBLE : View.VISIBLE);
-                holder.setChecked(R.id.rbtn_item_check, item.selected);
-                break;
+        boolean isSameDay = false;
+        if (layoutPosition > 0) {
+            PanoramaAlbumContact.PanoramaItem panoramaItem = getItem(layoutPosition - 1);
+            isSameDay = TimeUtils.isSameDay(panoramaItem.time * 1000L, item.time * 1000L);
         }
+        if (isSameDay) {
+            holder.setVisibility(R.id.tv_cam_message_item_date, View.GONE);
+            holder.setVisibility(R.id.v_circle, View.GONE);
 
+        } else {
+            holder.setVisibility(R.id.tv_cam_message_item_date, View.VISIBLE);
+            holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
+            holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.time * 1000L));
+        }
+        holder.setVisibility(R.id.fl_check_option, isInEditMode ? View.VISIBLE : View.GONE);
+        holder.setVisibility(R.id.dv_time_line, isInEditMode ? View.INVISIBLE : View.VISIBLE);
+        holder.setChecked(R.id.rb_item_check, item.selected);
+        Glide.with(getContext())
+                .load(PanoramaAlbumContact.PanoramaItem.getThumbUrl(uuid, item))
+                .error(R.drawable.pic_broken)
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into((ImageView) holder.getView(R.id.img_album_content));
     }
 
     public void setInEditMode(boolean inEditMode) {
@@ -132,40 +142,5 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             notifyItemChanged(position);
         }
     }
-
-    private void handleImage(SuperViewHolder holder, PanoramaAlbumContact.PanoramaItem item, int position) {
-        Glide.with(getContext())
-                .load(PanoramaAlbumContact.PanoramaItem.getThumbUrl(uuid, item))
-                .error(R.drawable.pic_broken)
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-                .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
-                    @Override
-                    protected void setResource(GlideDrawable resource) {
-                        view.setBackground(resource);
-                    }
-                });
-    }
-
-    @Override
-    protected IMulItemViewType<PanoramaAlbumContact.PanoramaItem> offerMultiItemViewType() {
-        return new IMulItemViewType<PanoramaAlbumContact.PanoramaItem>() {
-            @Override
-            public int getViewTypeCount() {
-                return 2;
-            }
-
-            @Override
-            public int getItemViewType(int position, PanoramaAlbumContact.PanoramaItem pAlbumBean) {
-                return pAlbumBean.type == 2 ? 0 : 1;
-            }
-
-            @Override
-            public int getLayoutId(int viewType) {
-                return viewType == 1 ? R.layout.layout_panorama_album_item_image :
-                        R.layout.layout_panorama_album_item_date;
-            }
-        };
-    }
-
 }
 
