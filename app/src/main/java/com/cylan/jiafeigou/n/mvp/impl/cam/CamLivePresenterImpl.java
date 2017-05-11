@@ -632,8 +632,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .map(new TakeSnapShootLogicHelper(uuid, forPopWindow, mView))
                 .observeOn(Schedulers.io())
                 .filter(pair -> pair != null)
-                .subscribe(pair -> new SaveAndShare(mView, forPopWindow, uuid, pair.second, pair.first, forPopWindow),
-                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
+                .subscribe(pair -> {
+                        }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()),
+                        () -> AppLogger.d("take screen finish"));
     }
 
 
@@ -759,6 +760,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void onFrameRate(boolean slow) {
         AppLogger.e("is bad net work show loading?" + slow);
+        if (slow) {
+            getHotSeatStateMaintainer()
+                    .saveRestore();
+        } else getHotSeatStateMaintainer()
+                .restore();
         Observable.just(slow)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(slowFrameRate -> {
@@ -827,74 +833,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
 
-    private static class SaveAndShare implements Action1<Object> {
-        private String uuid;
-        private Bitmap bitmap;
-        private boolean needShare;
-        private String localPath;
-        private boolean forPopWindow;
-        private WeakReference<CamLiveContract.View> weakReference;
-
-        public SaveAndShare(CamLiveContract.View v,
-                            boolean forPopWindow,
-                            String uuid, String localPath, Bitmap bitmap, boolean needShare) {
-            weakReference = new WeakReference<>(v);
-            this.uuid = uuid;
-            this.bitmap = bitmap;
-            this.needShare = needShare;
-            this.localPath = localPath;
-        }
-
-        /**
-         * 保存和分享,这是一个后台任务,用一个静态类,避免持有引用
-         *
-         * @param needShare
-         * @param bitmap
-         */
-        private void shareSnapshot(boolean needShare, Bitmap bitmap) {
-            Observable.just(localPath)
-                    .subscribeOn(Schedulers.io())
-                    .filter(path -> {
-                        AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
-                        return path != null && needShare;
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(filePath -> {
-                        long time = System.currentTimeMillis();
-                        AppLogger.d("save bitmap to disk performance:" + (System.currentTimeMillis() - time));
-                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                        item.cid = uuid;
-                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                        item.fileName = time / 1000 + ".jpg";
-                        item.time = (int) (time / 1000);
-                        IDPEntity entity = new DPEntity()
-                                .setUuid(uuid)
-                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                                .setVersion(System.currentTimeMillis())
-                                .setAccount(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount())
-                                .setAction(DBAction.SHARED)
-                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
-                                .setBytes(item.toBytes());
-                        BaseApplication.getAppComponent().getTaskDispatcher().perform(entity)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(ret -> {
-                                }, AppLogger::e);
-                        AppLogger.d("take shot step collect ");
-                    }, throwable -> AppLogger.e("shareSnapshot:" + throwable.getLocalizedMessage()));
-        }
-
-        @Override
-        public void call(Object o) {
-            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-            if (weakReference.get() != null && !forPopWindow)
-                weakReference.get().onPreviewResourceReady(this.bitmap);
-            shareSnapshot(this.needShare, this.bitmap);
-        }
-    }
-
-
     /**
      * 静态内部类
      */
@@ -940,6 +878,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             BitmapUtils.saveBitmap2file(bitmap, filePath);
             if (forPopWindow)//添加到相册
                 MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
+            if (weakReference.get() != null && !forPopWindow)
+                weakReference.get().onPreviewResourceReady(bitmap);
+            shareSnapshot(forPopWindow, filePath);//最后一步处理分享
             return new Pair<>(bitmap, filePath);
         }
 
@@ -961,6 +902,46 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
         }
+
+        /**
+         * 保存和分享,这是一个后台任务,用一个静态类,避免持有引用
+         *
+         * @param needShare
+         */
+        private void shareSnapshot(boolean needShare, String localPath) {
+            Observable.just(localPath)
+                    .subscribeOn(Schedulers.io())
+                    .filter(path -> {
+                        AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
+                        return path != null && needShare;
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(filePath -> {
+                        long time = System.currentTimeMillis();
+                        AppLogger.d("save bitmap to disk performance:" + (System.currentTimeMillis() - time));
+                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+                        item.cid = uuid;
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                        item.fileName = time / 1000 + ".jpg";
+                        item.time = (int) (time / 1000);
+                        IDPEntity entity = new DPEntity()
+                                .setUuid(uuid)
+                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                                .setVersion(System.currentTimeMillis())
+                                .setAccount(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount())
+                                .setAction(DBAction.SHARED)
+                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
+                                .setBytes(item.toBytes());
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(entity)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(ret -> {
+                                }, AppLogger::e);
+                        AppLogger.d("take shot step collect ");
+                    }, throwable -> AppLogger.e("shareSnapshot:" + throwable.getLocalizedMessage()));
+        }
+
     }
 
     private HotSeatStateMaintainer hotSeatStateMaintainer;
@@ -1001,17 +982,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          * 停止播放了.
          */
         public void reset() {
+            playType = -1;
+            hotSeatUIState = 0;
+            remoteSpeakerMic = 0;
+            localSpeakerMic = 0;
+            if (viewWeakReference.get() != null)
+                viewWeakReference.get().switchHotSeat(hotSeatUIState);
+            disableAudio();
+        }
+
+        private void disableAudio() {
             Observable.just("reset")
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(ret -> {
-                        playType = -1;
-                        hotSeatUIState = 0;
-                        remoteSpeakerMic = 0;
-                        localSpeakerMic = 0;
                         if (presenterWeakReference.get() != null) {
                             setupAudio(false, false, false, false);
-                            if (viewWeakReference.get() != null)
-                                viewWeakReference.get().switchHotSeat(hotSeatUIState);
                             Log.d(TAG, "reset:" + Integer.toBinaryString(hotSeatUIState));
                         }
                     }, AppLogger::e);
@@ -1022,8 +1007,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          */
         public void restore() {
             if (viewWeakReference.get() != null) {
-                Log.d(TAG, "restore:" + Integer.toBinaryString(hotSeatUIState));
-                viewWeakReference.get().switchHotSeat(0);
+                Log.d(TAG, "restore:" + Integer.toBinaryString(hotSeatUIState) + "," + localSpeakerMic + "," + remoteSpeakerMic);
+                viewWeakReference.get().switchHotSeat(hotSeatUIState);
+                Observable.just("restoreAudio")
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(ret -> setupAudio(MiscUtils.getBit(localSpeakerMic, 0) == 1,
+                                MiscUtils.getBit(localSpeakerMic, 1) == 1,
+                                MiscUtils.getBit(remoteSpeakerMic, 0) == 1,
+                                MiscUtils.getBit(remoteSpeakerMic, 1) == 1),
+                                AppLogger::e);
             }
         }
 
@@ -1033,8 +1025,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         public void saveRestore() {
             if (viewWeakReference.get() != null) {
                 //不需要改变 hotSeatUIState 只需要更新ui
-                Log.d(TAG, "saveRestore:" + Integer.toBinaryString(hotSeatUIState));
+                Log.d(TAG, "restore:" + Integer.toBinaryString(hotSeatUIState) + "," + localSpeakerMic + "," + remoteSpeakerMic);
                 viewWeakReference.get().switchHotSeat(0);
+                disableAudio();
             }
         }
 

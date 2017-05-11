@@ -38,7 +38,6 @@ import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -56,6 +55,8 @@ import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.io.File;
 
@@ -343,30 +344,41 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable landHideRunnable = new Runnable() {
         @Override
         public void run() {
-            AnimatorUtils.slideOut(layoutA, true);
-            AnimatorUtils.slideOut(layoutD, false);
-            AnimatorUtils.slideOut(layoutE, false);
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
             }
+            YoYo.with(Techniques.SlideOutUp)
+                    .duration(200)
+                    .playOn(layoutA);
+            YoYo.with(Techniques.SlideOutDown)
+                    .duration(200)
+                    .playOn(layoutD);
+            YoYo.with(Techniques.SlideOutDown)
+                    .duration(200)
+                    .playOn(layoutE);
         }
     };
 
     private Runnable landShowRunnable = new Runnable() {
         @Override
         public void run() {
-            layoutA.clearAnimation();
-            layoutD.clearAnimation();
-            layoutE.clearAnimation();
-            AnimatorUtils.slideIn(layoutA, true);
-            AnimatorUtils.slideIn(layoutD, false);
-            AnimatorUtils.slideIn(layoutE, false);
-            postDelayed(landHideRunnable, 3000);
             setLoadingState(null, null);
             if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
+            post(() -> {
+                YoYo.with(Techniques.SlideInDown)
+                        .duration(250)
+                        .playOn(layoutA);
+                YoYo.with(Techniques.SlideInUp)
+                        .duration(250)
+                        .playOn(layoutD);
+                YoYo.with(Techniques.SlideInUp)
+                        .duration(250)
+                        .playOn(layoutE);
+                postDelayed(landHideRunnable, 3000);
+            });
         }
     };
 
@@ -844,10 +856,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void setHotSeatState(int liveType, final int state) {
         ImageView pMic = (ImageView) findViewById(R.id.imgV_cam_trigger_mic);
-        pMic.setEnabled(MiscUtils.getBit(state, 2) == 1);
+        pMic.setEnabled(MiscUtils.getBit(state, 2) == 1 && liveType == TYPE_LIVE);
         pMic.setImageResource(portMicRes[MiscUtils.getBit(state, 3)]);
         ImageView lMic = (ImageView) findViewById(R.id.imgV_land_cam_trigger_mic);
-        lMic.setEnabled(MiscUtils.getBit(state, 2) == 1);
+        lMic.setEnabled(MiscUtils.getBit(state, 2) == 1 && liveType == TYPE_LIVE);
         lMic.setImageResource(landMicRes[MiscUtils.getBit(state, 3)]);
         //speaker
         ImageView pSpeaker = (ImageView) findViewById(R.id.imgV_cam_switch_speaker);

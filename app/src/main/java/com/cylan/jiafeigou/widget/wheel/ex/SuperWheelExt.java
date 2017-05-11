@@ -342,10 +342,10 @@ public class SuperWheelExt extends View {
             if (moveDirection != -1 && idle) {
                 //开始吸附过程
                 if (wheelRollListener != null)
-                    wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_ADSORB);
-                setPositionByTime(timeTarget);
+                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
+                setPositionByTime(timeCurrent);
                 if (wheelRollListener != null)
-                    wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);
+                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
             } else {
                 if (notifyAlways && !idle && (wheelRollListener != null)) {
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
@@ -355,7 +355,7 @@ public class SuperWheelExt extends View {
                     if (iDataProvider.isHotRect(timeCurrent)) {
                         //拖拽停止.
                         if (wheelRollListener != null)
-                            wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);
+                            wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
                         if (DEBUG)
                             Log.d(TAG, "hit");
                     } else {

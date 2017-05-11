@@ -518,17 +518,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null) getView().post(() -> {
             if (start) {
                 //停止声音
-                AppLogger.e("开始loading,需要关闭声音");
                 camLiveControlLayer.startBadFrame();
-                basePresenter.switchSpeaker();
             } else {
                 //恢复按钮状态
-                AppLogger.e("结束loading,恢复按钮状态");
                 camLiveControlLayer.resumeGoodFrame();
-                basePresenter.switchSpeaker();
             }
         });
-        Log.d("shouldWaitFor", "shouldWaitFor: " + start);
     }
 
     @Override

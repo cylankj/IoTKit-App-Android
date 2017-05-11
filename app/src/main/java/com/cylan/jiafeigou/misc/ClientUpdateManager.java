@@ -202,26 +202,6 @@ public class ClientUpdateManager {
     }
 
 
-//    public void enqueue(RxEvent.CheckVersionRsp versionApkDesc) {
-//        //3.下载中?下载失败?空闲
-//        PackageDownloadTask downloadTask = downloadMap.get(versionApkDesc.url);
-//        if (downloadTask == null) {
-//            downloadTask = new PackageDownloadTask(versionApkDesc);
-//        } else {
-//            if (downloadTask.getCheckDevVersionRsp() != null
-//                    && downloadTask.getCheckDevVersionRsp().downloadState == JConstant.D.FAILED) {
-//                //失败了
-//                downloadMap.remove(versionApkDesc.url);
-//                downloadTask = new PackageDownloadTask(versionApkDesc);
-//            }
-//        }
-//        downloadMap.put(versionApkDesc.url, downloadTask);
-//        Observable.just("go")
-//                .subscribeOn(Schedulers.newThread())
-//                .subscribe(downloadTask, AppLogger::e);
-//        //4.文件存在.
-//    }
-
     private Map<String, PackageDownloadTask> downloadMap = new HashMap<>();
     private HashMap<String, FirmWareUpdatingTask> updatingTaskHashMap = new HashMap<>();
 
@@ -229,19 +209,12 @@ public class ClientUpdateManager {
      * 下载文件
      */
     public void downLoadFile(RxEvent.CheckVersionRsp rsp, DownloadListener listener) {
-        Log.d(TAG, "开始下载: " + rsp);
         if (rsp == null) return;
         String key = TextUtils.isEmpty(rsp.uuid) ? rsp.url : rsp.uuid;
         PackageDownloadTask downloadTask = downloadMap.get(key);
-        if (downloadTask != null) {
-            if (downloadTask.getCheckDevVersionRsp() != null
-                    && downloadTask.getCheckDevVersionRsp().downloadState == JConstant.D.DOWNLOADING) {
-                downloadTask.setDownloadListener(listener);
-                return;
-            } else {
-                downloadMap.remove(key);
-            }
-        }
+        if (downloadTask != null && downloadTask.getDownloadState() == JConstant.D.DOWNLOADING) {
+            downloadTask.setDownloadListener(listener);
+        } else downloadMap.remove(key);
         downloadTask = new PackageDownloadTask(rsp);
         downloadTask.setDownloadListener(listener);
         downloadMap.put(key, downloadTask);
@@ -273,6 +246,12 @@ public class ClientUpdateManager {
         private RxEvent.CheckVersionRsp rsp;
         private DownloadListener downloadListener;
 
+        private int downloadState = JConstant.D.IDLE;
+
+        public int getDownloadState() {
+            return downloadState;
+        }
+
         public RxEvent.CheckVersionRsp getCheckDevVersionRsp() {
             return rsp;
         }
@@ -287,6 +266,7 @@ public class ClientUpdateManager {
 
         @Override
         public void call(Object o) {
+            downloadState = JConstant.D.DOWNLOADING;
             prepareNetMonitor();
             String fileDir = rsp.fileDir;
             final File file = new File(fileDir, rsp.fileName);
@@ -298,10 +278,13 @@ public class ClientUpdateManager {
                             .build();
                     Response response = new OkHttpClient().newCall(request).execute();
                     long fileSize = response.body().contentLength();
+                    if (downloadListener != null) {
+                        downloadListener.start(fileSize);
+                    }
                     AppLogger.d("文件大小:" + fileSize);
                     if (fileSize == file.length()) {
                         AppLogger.d("文件存在,完整");
-                        rsp.downloadState = JConstant.D.SUCCESS;
+                        downloadState = rsp.downloadState = JConstant.D.SUCCESS;
                         rsp.lastUpdateTime = System.currentTimeMillis();
                         updateInfo(rsp.uuid, rsp);
                         if (downloadListener != null) {
@@ -313,6 +296,7 @@ public class ClientUpdateManager {
                     AppLogger.e("err:" + MiscUtils.getErr(e));
                 }
             }
+            Log.d(TAG, "开始下载: " + rsp);
             //文件失败了
             FileUtils.delete(fileDir, rsp.fileName);
             final Request request = new Request.Builder().url(rsp.url).build();
@@ -342,6 +326,7 @@ public class ClientUpdateManager {
                         long current = 0;
                         is = response.body().byteStream();
                         fos = new FileOutputStream(file);
+                        downloadState = JConstant.D.DOWNLOADING;
                         while ((len = is.read(buf)) != -1) {
                             current += len;
                             fos.write(buf, 0, len);
@@ -359,11 +344,13 @@ public class ClientUpdateManager {
                         if (downloadListener != null) {
                             downloadListener.finished(new File(fileDir, rsp.fileName));
                         }
+                        downloadState = JConstant.D.SUCCESS;
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         rsp.downloadState = JConstant.D.FAILED;
                         rsp.lastUpdateTime = System.currentTimeMillis();
                         updateInfo(rsp.uuid, rsp);
+                        downloadState = JConstant.D.FAILED;
                         if (downloadListener != null) {
                             downloadListener.failed(e);
                         }

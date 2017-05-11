@@ -76,12 +76,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         String currentVersion = device.$(207, "");
         tvCurrentVersion.setText(currentVersion);
         RxEvent.CheckVersionRsp description = null;
-        ClientUpdateManager.PackageDownloadTask packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
-        if (packageDownloadAction == null) {
+        ClientUpdateManager.PackageDownloadTask packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+        if (packageDownloadTask == null) {
         } else {
             //下载中
-            packageDownloadAction.setDownloadListener(new FirmwareUpdateActivity.Download(this));
-            description = packageDownloadAction.getCheckDevVersionRsp();
+            packageDownloadTask.setDownloadListener(new FirmwareUpdateActivity.Download(this));
+            description = packageDownloadTask.getCheckDevVersionRsp();
         }
         try {
             //没下载,下载失败,或者下载成功.
@@ -122,8 +122,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
             basePresenter.cleanFile();
         }
-        packageDownloadAction = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
-        if (packageDownloadAction != null && packageDownloadAction.getCheckDevVersionRsp().downloadState == JConstant.U.UPDATING)
+        packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+        if (packageDownloadTask != null && packageDownloadTask.getCheckDevVersionRsp().downloadState == JConstant.U.UPDATING)
             return;
         ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
         if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {
@@ -191,7 +191,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             tvDownloadSoftFile.setEnabled(false);
             llDownloadPgContainer.setVisibility(View.VISIBLE);
             tvLoadingShow.setText(percent + "%");
-            downloadProgress.setProgress(0);
+            downloadProgress.setProgress(percent);
         });
     }
 
@@ -280,12 +280,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             ToastUtil.showToast(getString(R.string.NEW_VERSION));
             return false;
         }
-        int net = NetUtils.getJfgNetType();
-        if (net == 0) {
-            //2.客户端无网络
-            ToastUtil.showToast(getString(R.string.NoNetworkTips));
-            return false;
-        }
         String deviceMac = device.$(202, "");
         String routMac = NetUtils.getRouterMacAddress();
         if (TextUtils.equals(deviceMac, routMac)) return true;
@@ -295,8 +289,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+        if (!JFGRules.isDeviceOnline(dpNet)) {
+            ToastUtil.showToast(getString(R.string.NOT_ONLINE));
+            return false;
+        }
         String remoteSSid = dpNet.ssid;
-        AppLogger.d("" + localSSid + "," + remoteSSid);
+        AppLogger.d("check ???" + localSSid + "," + remoteSSid);
         //4.以上条件都不满足的话,就是在线了
         if (!TextUtils.equals(localSSid, remoteSSid) || dpNet.net != 1) {
             AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
@@ -313,6 +311,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @OnClick(R.id.tv_download_soft_file)
     public void downloadOrUpdate(View v) {
         ViewUtils.deBounceClick(v, 1500);
+        int net = NetUtils.getJfgNetType();
+        if (net == 0) {
+            //2.客户端无网络
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return;
+        }
         String txt = tvDownloadSoftFile.getText().toString();
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级

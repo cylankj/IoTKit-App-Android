@@ -3,9 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -16,7 +13,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +50,6 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     public void start() {
         super.start();
-        getSdCapacity(uuid);
     }
 
     /**
@@ -82,8 +77,9 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     public void updateInfoReq() {
         clearTimeFlag = System.currentTimeMillis();
         addSubscription(clearCountTime(), "clearCountTime");
-        Observable.just(null)
-                .subscribeOn(Schedulers.io())
+        addSubscription(Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribe((Object o) -> {
                     try {
                         ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
@@ -97,7 +93,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     }
                 }, (Throwable throwable) -> {
                     AppLogger.e("updateInfoReq_sd" + throwable.getLocalizedMessage());
-                });
+                }), "updateInfoReq");
     }
 
     public boolean needRegisterTimeout() {
@@ -152,19 +148,6 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .filter(ret -> ret.id == 204 || ret.id == 222)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(jfgDpMsg -> {
-                    if (jfgDpMsg.id == 204) {
-                        getView().clearSdResult(0);
-                        getView().initSdUseDetailRsp(null);
-                    } else if (jfgDpMsg.id == 222) {
-//                        DpMsgDefine.DPSdcardSummary sdcardSummary = null;
-//                        try {
-//                            sdcardSummary = DpUtils.unpackData(jfgDpMsg.packValue, DpMsgDefine.DPSdcardSummary.class);
-//                            if (sdcardSummary == null || !sdcardSummary.hasSdcard)
-//                                getView().showSdPopDialog();
-//                        } catch (Exception e) {
-//                            AppLogger.e("err: " + MiscUtils.getErr(e));
-//                        }
-                    }
                     return null;
                 })
                 .subscribe(o -> {
@@ -178,16 +161,6 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
      */
     @Override
     public void getSdCapacity(String uuid) {
-        addSubscription(Observable.just(new DPEntity()
-                .setMsgId(204)
-                .setUuid(uuid)
-                .setAction(DBAction.QUERY)
-                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
-                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> getView().initSdUseDetailRsp(null), throwable -> {
-                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
-                    getView().initSdUseDetailRsp(null);
-                }), "getSdCapacity");
+
     }
 }

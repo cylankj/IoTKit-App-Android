@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -21,14 +24,20 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
@@ -52,6 +61,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 //    private AlertDialog formatSdcardDialog;
 //    private AlertDialog noSdcardDialog;
     private String uuid;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +72,18 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         basePresenter = new SdCardInfoPresenterImpl(this, uuid);
         customToolbar.setBackAction(o -> onBackPressed());
         initDetailData();
+        subscription = Observable.just(new DPEntity()
+                .setMsgId(204)
+                .setUuid(uuid)
+                .setAction(DBAction.QUERY)
+                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
+                .timeout(3, TimeUnit.SECONDS)
+                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> initSdUseDetailRsp(null), throwable -> {
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                    initSdUseDetailRsp(null);
+                });
     }
 
     @Override
@@ -72,6 +94,12 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (subscription != null) subscription.unsubscribe();
     }
 
     @OnClick({R.id.tv_clear_sdcard})
@@ -146,7 +174,10 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
             case 0:
                 ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                initSdUseDetailRsp(device.$(204, new DpMsgDefine.DPSdStatus()));
+                DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+                status.err = 0;
+                status.used = 0;
+                initSdUseDetailRsp(status);
                 break;
             case 1:
                 ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
@@ -180,7 +211,8 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 
     private void initDetailData() {
         if (!basePresenter.getSdcardState()) {
-            showHasNoSdDialog();
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> finishExt());
             return;
         }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
@@ -195,14 +227,6 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
             tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));
             tvClecrSdcard.setEnabled(false);
         }
-    }
-
-
-    private void showHasNoSdDialog() {
-        AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
-                getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    finishExt();
-                });
     }
 
     @Override
