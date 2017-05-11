@@ -62,8 +62,8 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
                 }
             }
             if (frameRateList.size() == MAX_SIZE) {
-                //1.10s内的规则.
-                boolean _10_s_rules = isBad(frameRateList, FINAL_LEVEL, MAX_SIZE, TARGET_SIZE);
+                //1.30s内的规则.
+                boolean _10_s_rules = isBad(frameRateList, FINAL_LEVEL, 10, TARGET_SIZE);
                 if (System.currentTimeMillis() - showFailedTime > SHOW_FREQUENCY) {
                     //3s内提醒一次
                     showFailedTime = System.currentTimeMillis();
@@ -91,6 +91,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     }
 
     /**
+     * 这个list中,最后total个值<level的个数count.
      * @param list
      * @param level :参考值
      * @param count :list中

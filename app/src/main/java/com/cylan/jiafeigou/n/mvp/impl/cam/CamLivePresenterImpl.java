@@ -87,7 +87,10 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
     private IData historyDataProvider;
-//    private MapSubscription liveSubscription = new MapSubscription();
+    /**
+     * 只有从Idle->playing,err->playing才会设置.
+     */
+    private int resolutionH, resolutionW;
     /**
      * 保存当前播放的方式,eg:从播放历史视频切换到设置页面,回来之后,需要继续播放历史视频.
      */
@@ -144,7 +147,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(ret -> {
                     updatePrePlayType(-1, -1, PLAY_STATE_IDLE);
                     getView().onLiveStop(getPrePlayType().type, ret.code);
-                    feedRtcp.stop();
+//                    feedRtcp.stop();
                     AppLogger.d("reset subscription");
                 }, AppLogger::e);
     }
@@ -364,13 +367,22 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription getFirstRTCPNotification() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
-                .subscribeOn(Schedulers.newThread())
+                .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null) && rtcp.frameRate > 0)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    throw new RxEvent.HelperBreaker("GoodBye");
+                    throw new RxEvent.HelperBreaker("Sweat");
                 }, throwable -> {
                     if (throwable instanceof RxEvent.HelperBreaker) {
-                        AppLogger.d("收到RTCP通知了");
+                        AppLogger.d("收到RTCP通知:" + resolutionH);
+                        //需要收到发送一个Resolution
+                        if (resolutionH != 0 && resolutionW != 0) {
+                            //因为直播转历史录像,不会再有JFGMsgVideoResolution回调.
+                            JFGMsgVideoResolution resolution = new JFGMsgVideoResolution();
+                            resolution.peer = uuid;
+                            resolution.height = resolutionH;
+                            resolution.width = resolutionW;
+                            RxBus.getCacheInstance().post(resolution);
+                        }
                     }
                 });
     }
@@ -436,6 +448,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     //注册监听耳机
                     registerHeadSetObservable();
                     //正向,抛异常
+                    resolutionH = resolution.height;
+                    resolutionW = resolution.width;
                     throw new RxEvent.HelperBreaker(resolution);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -479,6 +493,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .map(ret -> {
                     //加入管理,如果播放失败,收到disconnect
+                    feedRtcp.stop();
                     addSubscription(videoDisconnectSub(), "videoDisconnectSub");
                     addSubscription(errCodeSub(), "errCodeSub");
                     addSubscription(RTCPNotifySub(), "RTCPNotifySub");
@@ -499,7 +514,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (prePlayType == null) prePlayType = new CamLiveContract.PrePlayType();
         if (type != -1)
             prePlayType.type = type;
-        if (time != -1)
+        if (time != -1 && time != 0)
             prePlayType.time = time;
         prePlayType.playState = state;
         Log.d("updatePrePlayType", "updatePrePlayType:" + prePlayType);
@@ -553,6 +568,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             //暂停播放了，还需要截图
             takeSnapShot(false);
         }
+        resolutionW = resolutionH = 0;
         return Observable.just(uuid)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap((String s) -> {

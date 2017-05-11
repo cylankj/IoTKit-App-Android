@@ -142,7 +142,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         adapter.setOnItemClickListener((itemView, viewType, position) -> {
             if (simpleDialog != null && simpleDialog.isShowing()) return;
             TimeZoneBean zoneBean = adapter.getItem(position);
-            if (TextUtils.equals(adapter.getChooseId(), zoneBean.getId())) {
+            if (zoneBean == null || TextUtils.equals(adapter.getChooseId(), zoneBean.getId())) {
                 return;
             }
             if (simpleDialog == null)
