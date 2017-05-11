@@ -156,7 +156,7 @@ public class DataSourceManager implements JFGSourceManager {
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         //改变背景或者 处理网络的全局变量
-        AppLogger.d("当前网络可用");
+        AppLogger.d("当前网络可用?" + online);
         RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(true);
         connectionEvent.mobile = mobNetInfo;
         connectionEvent.wifi = wifiNetInfo;

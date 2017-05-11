@@ -107,7 +107,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private HistoryWheelHandler historyWheelHandler;
 
-    private IconPreState iconPreState;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -178,7 +177,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void initView(CamLiveContract.Presenter presenter, String uuid) {
         this.uuid = uuid;
         //disable 6个view
-        setMicSpeakerState(0, 0);
+        setHotSeatState(-1, 0);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
@@ -290,7 +289,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onLivePrepared() {
+    public void onLivePrepared(int type) {
+        livePlayType = type;
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(null, null, true);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
@@ -331,8 +331,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
+            //应该直接getPlayType.
             if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
+            } else if (livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING) {
+                layoutC.setVisibility(INVISIBLE);
             }
         }
     };
@@ -400,7 +403,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .setImageResource(R.drawable.icon_landscape_playing);
         //|直播| 按钮
         layoutE.findViewById(R.id.tv_live).setEnabled(isPlayHistory);
-        setMicSpeakerState(isPlayHistory ? 0 : 2, 2);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
         //直播
@@ -443,7 +445,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutB.setVisibility(GONE);
         ((ImageView) layoutE.findViewById(R.id.imgV_cam_live_land_play))
                 .setImageResource(R.drawable.icon_landscape_stop);
-        setMicSpeakerState(0, 0);
         findViewById(R.id.v_live).setEnabled(true);
         liveViewWithThumbnail.showFlowView(false, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
@@ -463,7 +464,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                setLoadingState(getContext().getString(R.string.OFFLINE_ERR_1), getContext().getString(R.string.USER_HELP));
+                setLoadingState(getContext().getString(R.string.OFFLINE_ERR_1), getContext().getString(R.string.USER_HELP), true);
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -790,9 +791,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onNetworkChanged(boolean connected) {
+    public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
         if (!connected) {
-            post(() -> showHistoryWheel(false));
+            post(() -> {
+                showHistoryWheel(false);
+                handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
+            });
         }
     }
 
@@ -812,25 +816,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void setCaptureListener(OnClickListener captureListener) {
-        findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(captureListener);
-        findViewById(R.id.imgV_land_cam_trigger_capture).setOnClickListener(captureListener);
-    }
-
-    @Override
     public void updateLiveViewMode(String mode) {
         liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
         liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
 
-    private boolean[] enableArray = {false, false, true, true};
     private int[] portMicRes = {R.drawable.icon_port_mic_off_selector,
-            R.drawable.icon_port_mic_on_selector,
-            R.drawable.icon_port_mic_off_selector, R.drawable.icon_port_mic_on_selector};
+            R.drawable.icon_port_mic_on_selector};
     private int[] landMicRes = {R.drawable.icon_land_mic_off_selector,
-            R.drawable.icon_land_mic_on_selector,
-            R.drawable.icon_land_mic_off_selector, R.drawable.icon_land_mic_on_selector};
+            R.drawable.icon_land_mic_on_selector};
     private int[] portSpeakerRes = {R.drawable.icon_port_speaker_off_selector,
             R.drawable.icon_port_speaker_on_selector,
             R.drawable.icon_port_speaker_off_selector, R.drawable.icon_port_speaker_on_selector};
@@ -838,37 +833,48 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             R.drawable.icon_land_speaker_on_selector,
             R.drawable.icon_land_speaker_off_selector, R.drawable.icon_land_speaker_on_selector};
 
-    //0:off-disable,1.on-disable,2.off-enable,3.on-enable
+
+    /***
+     * 三个按钮的状态,不能根据UI的状态来辨别.
+     * 反而UI需要根据这个状态来辨别.
+     * speaker|mic|capture
+     * 用3个byte表示:
+     * |0(高位表示1:开,0:关)0(低位表示1:enable,0:disable)|00|00|
+     */
     @Override
-    public void setMicSpeakerState(int micState, int speakerState) {
-        Log.d("setMicSpeakerState", "setMicSpeakerState:" + micState + "," + speakerState);
-        if (micState < 0 || micState > 3) micState = 0;
-        if (speakerState < 0 || speakerState > 3) speakerState = 0;
+    public void setHotSeatState(int liveType, final int state) {
         ImageView pMic = (ImageView) findViewById(R.id.imgV_cam_trigger_mic);
-        pMic.setEnabled(enableArray[micState]);
-        pMic.setImageResource(portMicRes[micState]);
-        pMic.setTag(portMicRes[micState]);
+        pMic.setEnabled(MiscUtils.getBit(state, 2) == 1);
+        pMic.setImageResource(portMicRes[MiscUtils.getBit(state, 3)]);
         ImageView lMic = (ImageView) findViewById(R.id.imgV_land_cam_trigger_mic);
-        lMic.setEnabled(enableArray[micState]);
-        lMic.setImageResource(landMicRes[micState]);
-        lMic.setTag(landMicRes[micState]);
+        lMic.setEnabled(MiscUtils.getBit(state, 2) == 1);
+        lMic.setImageResource(landMicRes[MiscUtils.getBit(state, 3)]);
         //speaker
         ImageView pSpeaker = (ImageView) findViewById(R.id.imgV_cam_switch_speaker);
-        pSpeaker.setEnabled(enableArray[speakerState]);
-        pSpeaker.setImageResource(portSpeakerRes[speakerState]);
-        pSpeaker.setTag(portSpeakerRes[speakerState]);
+        pSpeaker.setEnabled(MiscUtils.getBit(state, 4) == 1);
+        pSpeaker.setImageResource(portSpeakerRes[MiscUtils.getBit(state, 5)]);
         ImageView lSpeaker = (ImageView) findViewById(R.id.imgV_land_cam_switch_speaker);
-        lSpeaker.setEnabled(enableArray[speakerState]);
-        lSpeaker.setImageResource(landSpeakerRes[speakerState]);
-        lSpeaker.setTag(landSpeakerRes[speakerState]);
+        lSpeaker.setEnabled(MiscUtils.getBit(state, 4) == 1);
+        lSpeaker.setImageResource(landSpeakerRes[MiscUtils.getBit(state, 5)]);
+        //capture
+        //只有 enable和disable
+        ImageView pCapture = (ImageView) findViewById(R.id.imgV_cam_trigger_capture);
+        pCapture.setEnabled(MiscUtils.getBit(state, 0) == 1 && liveType == TYPE_LIVE);
+        ImageView lCapture = (ImageView) findViewById(R.id.imgV_land_cam_trigger_capture);
+        lCapture.setEnabled(MiscUtils.getBit(state, 0) == 1 && liveType == TYPE_LIVE);
+        Log.d("setHotSeatState", "setHotSeatState: " + Integer.toBinaryString(state));
     }
 
     @Override
-    public void setMicSpeakerListener(OnClickListener micListener, OnClickListener speakerListener) {
+    public void setHotSeatListener(OnClickListener micListener,
+                                   OnClickListener speakerListener,
+                                   OnClickListener captureListener) {
         findViewById(R.id.imgV_cam_switch_speaker).setOnClickListener(speakerListener);
         findViewById(R.id.imgV_land_cam_switch_speaker).setOnClickListener(speakerListener);
         findViewById(R.id.imgV_cam_trigger_mic).setOnClickListener(micListener);
         findViewById(R.id.imgV_land_cam_trigger_mic).setOnClickListener(micListener);
+        findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(captureListener);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setOnClickListener(captureListener);
     }
 
     @Override
@@ -910,22 +916,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public int getCaptureState() {
-        //只有on-disable on-enable
-        View v = findViewById(R.id.imgV_land_cam_trigger_capture);
-        if (v.isEnabled() || findViewById(R.id.imgV_cam_trigger_capture).isEnabled()) return 1;
-        return 0;
-    }
-
-    @Override
     public void resumeGoodFrame() {
         livePlayState = PLAY_STATE_PLAYING;
         setLoadingState(null, null, false);
-        AppLogger.e("结束loading,恢复按钮状态");
+        findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         //0:off-disable,1.on-disable,2.off-enable,3.on-enable
-        if (iconPreState == null) return;
-        setMicSpeakerState(iconPreState.mic, iconPreState.speaker);
-        if (iconPreState.capture == 0) return;
         if (livePlayType == TYPE_HISTORY) {
             findViewById(R.id.imgV_land_cam_trigger_mic).setEnabled(false);
             findViewById(R.id.imgV_cam_trigger_mic).setEnabled(false);
@@ -939,24 +934,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(null, null, true);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
-        AppLogger.e("开始loading,需要关闭声音");
-        if (iconPreState == null) iconPreState = new IconPreState();
-        iconPreState.mic = getMicState();
-        iconPreState.speaker = getSpeakerState();
-        iconPreState.capture = getCaptureState();
-        //0:off-disable,1.on-disable,2.off-enable,3.on-enable
-        int tempMic = 0, tempSpeaker;
-        if (iconPreState.mic == 0) tempMic = 0;
-        else if (iconPreState.mic == 1) tempMic = 1;
-        else if (iconPreState.mic == 2) tempMic = 0;
-        else tempMic = 1;
-        if (iconPreState.speaker == 0) tempSpeaker = 0;
-        else if (iconPreState.speaker == 1) tempSpeaker = 1;
-        else if (iconPreState.speaker == 2) tempSpeaker = 0;
-        else tempSpeaker = 1;
-        setMicSpeakerState(tempMic, tempSpeaker);
-        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
-        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
     }
 
     @Override
@@ -1002,9 +979,4 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         this.liveTextClick = liveTextClick;
     }
 
-    private static class IconPreState {
-        public int mic;
-        public int speaker;
-        public int capture;
-    }
 }

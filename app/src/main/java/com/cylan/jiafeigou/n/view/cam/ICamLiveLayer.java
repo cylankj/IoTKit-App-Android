@@ -51,7 +51,7 @@ public interface ICamLiveLayer {
      */
     void initHotRect();
 
-    void onLivePrepared();
+    void onLivePrepared(int type);
 
     void onLiveStart(CamLiveContract.Presenter presenter, Device device);
 
@@ -75,27 +75,31 @@ public interface ICamLiveLayer {
 
     void setLoadingRectAction(ILiveControl.Action action);
 
-    void onNetworkChanged(boolean connected);
+    void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
 
     void onActivityStart(CamLiveContract.Presenter presenter, Device device);
 
-    void setCaptureListener(View.OnClickListener captureListener);
+//    void setCaptureListener(View.OnClickListener captureListener);
 
     void updateLiveViewMode(String mode);
 
-    /**
-     * @param micState     0:off-disable,1.on-disable,2.off-enable,3.on-enable
-     * @param speakerState
+    /***
+     * 三个按钮的状态,不能根据UI的状态来辨别.
+     * 反而UI需要根据这个状态来辨别.
+     * speaker|mic|capture
+     * 用3个byte表示:
+     * |0(高位表示1:开,0:关)0(低位表示1:enable,0:disable)|00|00|
      */
-    void setMicSpeakerState(int micState, int speakerState);
+    void setHotSeatState(int liveType, int state);
 
-    void setMicSpeakerListener(View.OnClickListener micListener, View.OnClickListener speakerListener);
+    void setHotSeatListener(View.OnClickListener micListener,
+                            View.OnClickListener speakerListener,
+                            View.OnClickListener captureListener);
 
     int getMicState();
 
     int getSpeakerState();
 
-    int getCaptureState();
 
     void resumeGoodFrame();
 

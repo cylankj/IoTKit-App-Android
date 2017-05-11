@@ -63,7 +63,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
@@ -196,7 +195,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }
             }
         });
-        initCaptureListener();
         initTvTextClick();
     }
 
@@ -210,20 +208,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 type.type = TYPE_LIVE;
                 basePresenter.updatePrePlayType(type);
                 basePresenter.startPlay();
-            }
-        });
-    }
-
-    /**
-     * 截图按钮
-     */
-    private void initCaptureListener() {
-        camLiveControlLayer.setCaptureListener(v -> {
-            int vId = v.getId();
-            switch (vId) {
-                case R.id.imgV_cam_trigger_capture:
-                    basePresenter.takeSnapShot(true);
-                    break;
             }
         });
     }
@@ -358,7 +342,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onLivePrepare(int type) {
-        if (getView() != null) getView().post(() -> camLiveControlLayer.onLivePrepared());
+        if (getView() != null) getView().post(() -> camLiveControlLayer.onLivePrepared(type));
     }
 
     @Override
@@ -366,13 +350,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null) getView().setKeepScreenOn(true);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         camLiveControlLayer.onLiveStart(basePresenter, device);
-        camLiveControlLayer.setMicSpeakerListener(mic -> {
-            int tag = camLiveControlLayer.getMicState();
-            handleSwitchMic(tag);
-        }, speaker -> {
-            int tag = camLiveControlLayer.getSpeakerState();
-            handleSwitchSpeaker(tag);
-        });
+        camLiveControlLayer.setHotSeatListener(mic -> basePresenter.switchMic(),
+                speaker -> basePresenter.switchSpeaker(),
+                capture -> {
+                    int vId = capture.getId();
+                    switch (vId) {
+                        case R.id.imgV_cam_trigger_capture:
+                            basePresenter.takeSnapShot(true);
+                            break;
+                    }
+                });
         camLiveControlLayer.setPlayBtnListener(v -> {
             CamLiveContract.PrePlayType prePlayType = basePresenter.getPrePlayType();
             if (prePlayType.type == TYPE_LIVE) return;
@@ -390,53 +377,54 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         });
     }
 
-    /**
-     * 没有0,1两种状态
-     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
-     *
-     * @param tag 2: 3:
-     */
-    private void handleSwitchMic(int tag) {
-        basePresenter.switchMic()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    Log.d("handleSwitchMic", "handleSwitchMic:" + tag);
-                    //表示设置结果,设置成功才需要改变view 图标
-                    if (ret) {
-                        //设置成功,更新下一状态
-                        //mic: off->on {speaker,enable->disable}
-                        //mic: on->off {speaker,disable->enable}
-                        int speaker = camLiveControlLayer.getSpeakerState();
-                        int speakerNextOffState = speaker == 2 ? 0 : (speaker == 3 ? 1 : 0);
-                        int speakerNextOnState = speaker == 0 ? 2 : (speaker == 1 ? 3 : 0);
-                        camLiveControlLayer.setMicSpeakerState(tag == 2 ? 3 : 2,
-                                tag == 2 ? speakerNextOffState : speakerNextOnState);
-                    } else {
-                    }
-                }, AppLogger::e);
-    }
+//    /**
+//     * 没有0,1两种状态
+//     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
+//     *
+//     * @param tag 2: 3:
+//     */
+//    private void handleSwitchMic(int tag) {
+//        basePresenter.switchMic()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(ret -> {
+//                    Log.d("handleSwitchMic", "handleSwitchMic:" + tag);
+//                    //表示设置结果,设置成功才需要改变view 图标
+//                    if (ret) {
+//                        //设置成功,更新下一状态
+//                        //mic: off->on {speaker,enable->disable}
+//                        //mic: on->off {speaker,disable->enable}
+//
+//                        int speaker = camLiveControlLayer.getSpeakerState();
+//                        int speakerNextOffState = speaker == 2 ? 1 : (speaker == 3 ? 1 : 0);
+//                        int speakerNextOnState = speaker == 0 ? 2 : (speaker == 1 ? 3 : 0);
+//                        camLiveControlLayer.setHotSeatState(tag == 2 ? 3 : 2,
+//                                tag == 2 ? speakerNextOffState : speakerNextOnState);
+//                    } else {
+//                    }
+//                }, AppLogger::e);
+//    }
 
-    /**
-     * 没有0,1两种状态
-     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
-     *
-     * @param tag 2: 3:
-     */
-    private void handleSwitchSpeaker(int tag) {
-        basePresenter.switchSpeaker()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    Log.d("handleSwitchSpeaker", "handleSwitchSpeaker:" + tag);
-                    //表示设置结果,设置成功才需要改变view 图标
-                    if (ret) {
-                        //设置成功,更新下一状态
-                        int mic = basePresenter.getPlayType() == TYPE_HISTORY ? 0 : camLiveControlLayer.getMicState();
-                        camLiveControlLayer.setMicSpeakerState(mic,
-                                tag == 2 ? 3 : 2);
-                    } else {
-                    }
-                }, AppLogger::e);
-    }
+//    /**
+//     * 没有0,1两种状态
+//     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
+//     *
+//     * @param tag 2: 3:
+//     */
+//    private void handleSwitchSpeaker(int tag) {
+//        basePresenter.switchSpeaker()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(ret -> {
+//                    Log.d("handleSwitchSpeaker", "handleSwitchSpeaker:" + tag);
+//                    //表示设置结果,设置成功才需要改变view 图标
+//                    if (ret) {
+//                        //设置成功,更新下一状态
+//                        int mic = basePresenter.getPlayType() == TYPE_HISTORY ? 0 : camLiveControlLayer.getMicState();
+//                        camLiveControlLayer.setHotSeatState(mic,
+//                                tag == 2 ? 3 : 2);
+//                    } else {
+//                    }
+//                }, AppLogger::e);
+//    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -492,11 +480,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (!isAdded()) return;
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         if (getView() != null)
-            getView().post(() -> {
+            getView().postDelayed(() -> {
                 if (getView() != null)
                     getView().setKeepScreenOn(false);
                 camLiveControlLayer.onLiveStop(basePresenter, device, errId);
-            });
+            }, 500);
     }
 
     @Override
@@ -529,9 +517,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void shouldWaitFor(boolean start) {
         if (getView() != null) getView().post(() -> {
             if (start) {
+                //停止声音
+                AppLogger.e("开始loading,需要关闭声音");
                 camLiveControlLayer.startBadFrame();
+                basePresenter.switchSpeaker();
             } else {
+                //恢复按钮状态
+                AppLogger.e("结束loading,恢复按钮状态");
                 camLiveControlLayer.resumeGoodFrame();
+                basePresenter.switchSpeaker();
             }
         });
         Log.d("shouldWaitFor", "shouldWaitFor: " + start);
@@ -606,12 +600,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onNetworkChanged(boolean connected) {
-        camLiveControlLayer.onNetworkChanged(connected);
+        camLiveControlLayer.onNetworkChanged(basePresenter, connected);
     }
 
     @Override
     public boolean isUserVisible() {
         return getUserVisibleHint();
+    }
+
+    @Override
+    public void switchHotSeat(int state) {
+        camLiveControlLayer.post(() -> camLiveControlLayer.setHotSeatState(
+                basePresenter.getPlayType(), state));
     }
 
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})

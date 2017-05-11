@@ -325,7 +325,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         } else {
             //1.下载失败
             //2.Tap1a_DownloadInstall 下载并安装(%s)
-            if (NetUtils.getJfgNetType() == 1) {
+            if (NetUtils.getJfgNetType() == 2) {
                 AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Firmware_DataTips),
                         getString(R.string.Tap1_Firmware_DataTips),
                         getString(R.string.OK), (DialogInterface dialog, int which) -> {

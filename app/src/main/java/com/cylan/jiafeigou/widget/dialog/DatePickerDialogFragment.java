@@ -147,7 +147,7 @@ public class DatePickerDialogFragment extends BaseDialog {
                 break;
             case R.id.tv_dialog_btn_left:
                 dismiss();
-                if (action != null && finalIndex > 0 && finalIndex < ListUtils.getSize(dateStartList)) {
+                if (action != null && finalIndex >= 0 && finalIndex < ListUtils.getSize(dateStartList)) {
                     action.onDialogAction(1, dateStartList.get(finalIndex));
                 }
                 break;

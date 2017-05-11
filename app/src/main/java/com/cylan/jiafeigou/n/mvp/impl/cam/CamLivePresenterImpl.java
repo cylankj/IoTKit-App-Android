@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -86,6 +85,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
  */
 public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
+
     private IData historyDataProvider;
     /**
      * 只有从Idle->playing,err->playing才会设置.
@@ -330,7 +330,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             try {
                 int ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 if (ret != 0) {
-                    AppLogger.e("play video ret !0");
+                    AppLogger.e("play video ret !0:" + ret);
                 }
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
@@ -397,20 +397,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription RTCPNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
                 .subscribeOn(Schedulers.newThread())
+                //断网就不要feed.
+                .filter(rtcp -> getView() != null && NetUtils.getJfgNetType() != 0)
                 .map(rtcp -> {
                     removeTimeoutSub();
                     feedRtcp.feed(rtcp);
                     updatePrePlayType(getPrePlayType().type, rtcp.timestamp, PLAY_STATE_PLAYING);
                     return rtcp;
-                })
-                .doOnError(throwable -> {
-                    if (throwable instanceof TimeoutException) {
-                        //暂停播放
-                        stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(ret -> {
-                        }, AppLogger::e);
-                    }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
@@ -443,7 +437,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(Schedulers.newThread())
                 .map(resolution -> {
                     removeTimeoutSub();
-                    setupAudio(false, false, false, false);
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
                     //注册监听耳机
                     registerHeadSetObservable();
@@ -467,6 +460,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             }
                             updatePrePlayType(-1, -1, PLAY_STATE_PLAYING);
                             getView().onLiveStarted(getPrePlayType().type);
+                            getHotSeatStateMaintainer().switchPlayType(getPrePlayType().type);
                         }
                     }
                 });
@@ -550,7 +544,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
                 int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 if (ret != 0) {
-                    AppLogger.i("stop play history ret !0");
+                    AppLogger.i("stop play history ret !0:" + ret);
                 }
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret);
             } catch (JfgException e) {
@@ -573,9 +567,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.newThread())
                 .flatMap((String s) -> {
                     try {
-//                        if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
-                        setupAudio(false, false, false, false);
-//                        }
+                        getHotSeatStateMaintainer().reset();
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
                         updatePrePlayType(-1, -1, reasonOrState);
                         AppLogger.i("stopPlayVideo:" + s);
@@ -607,61 +599,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * @return
      */
     @Override
-    public Observable<Boolean> switchSpeaker() {
-        return Observable.just(true)
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(ret -> {
-                    //这些都表示当前状态
-                    boolean localMic = getView().isLocalMicOn();
-                    boolean localSpeaker = getView().isLocalSpeakerOn();
-                    boolean remoteMic = getView().isLocalSpeakerOn();
-                    boolean remoteSpeaker = getView().isLocalMicOn();//imageview 图标状态已经更新了。
-                    if (localSpeaker) {
-                        //下一步,
-                        localSpeaker = false;
-                        remoteMic = false;
-                    } else {
-                        remoteMic = true;
-                        remoteSpeaker = localMic;
-                        localSpeaker = true;
-                    }
-                    boolean result = setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                    return Observable.just(result);
-                });
+    public void switchSpeaker() {
+        getHotSeatStateMaintainer().switchSpeaker();
+
     }
 
-    private boolean setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
-        AppLogger.d(String.format(Locale.getDefault(), "localMic:%s,localSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic,
-                localSpeaker, remoteMic, remoteSpeaker));
-        //local:false远程  true本地
-        BaseApplication.getAppComponent().getCmd().setAudio(false, remoteMic, remoteSpeaker);
-//        if (localSpeaker) {
-        MediaRecorder mRecorder = null;
-        try {
-            mRecorder = new MediaRecorder();
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.release();
-            BaseApplication.getAppComponent().getCmd().setAudio(true, remoteMic, localSpeaker);
-            if (isEarpiecePlug()) {
-                Observable.just("webRtcJava层的设置影响了耳机")
-                        .subscribeOn(Schedulers.newThread())
-                        .subscribe(ret -> switchEarpiece(true), AppLogger::e);
-            }
-            return true;
-        } catch (Exception e) {
-            AppLogger.d(e.getMessage());
-            if (mRecorder != null) {
-                mRecorder.release();
-            }
-            if (!localMic && !localSpeaker && !remoteMic && !remoteSpeaker) {
-            } else {
-                AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                    if (mView != null && mView.isUserVisible()) mView.audioRecordPermissionDenied();
-                });
-            }
-            return false;
-//            }
-        }
+    public HotSeatStateMaintainer getHotSeatStateMaintainer() {
+        if (hotSeatStateMaintainer == null)
+            hotSeatStateMaintainer = new HotSeatStateMaintainer(mView, this);
+        return hotSeatStateMaintainer;
     }
 
     /**
@@ -672,41 +618,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * @return
      */
     @Override
-    public Observable<Boolean> switchMic() {
-        return Observable.just(true)
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(ret -> {
-                    //当前状态
-                    boolean localMic = getView().isLocalMicOn();
-                    boolean localSpeaker = getView().isLocalSpeakerOn();
-                    boolean remoteSpeaker = false;//imageview 图标状态已经更新了。
-                    boolean remoteMic = false;
-                    if (!localMic) {//打开mic,全部打开
-                        localMic = true;
-                        localSpeaker = true;
-                        remoteMic = true;
-                        remoteSpeaker = true;
-                    } else {//关闭mic,只需关闭远程speaker,和本地mic
-                        remoteMic = localSpeaker;
-                        localMic = false;
-                    }
-                    boolean result = setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                    return Observable.just(result);
-                });
+    public void switchMic() {
+        getHotSeatStateMaintainer().switchMic();
     }
-
-    @Override
-    public int getLocalMicSpeakerBit() {
-        if (getView() == null) return 0;
-        int mic = getView().isLocalMicOn() ? 2 : 0;
-        int speaker = getView().isLocalSpeakerOn() ? 1 : 0;
-        return mic + speaker;
-    }
-
-//    @Override
-//    public void stop() {
-//        super.stop();
-//    }
 
     //forPopWindow true:手动截图:弹窗,保存每日精彩
     //forPopWindow false:直播断开,退出界面.
@@ -1046,6 +960,229 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             Observable.just("go")
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
+        }
+    }
+
+    private HotSeatStateMaintainer hotSeatStateMaintainer;
+
+    public static final class HotSeatStateMaintainer {
+        private static final String TAG = "HotSeatStateMaintainer";
+        private WeakReference<CamLiveContract.View> viewWeakReference;
+        private WeakReference<CamLiveContract.Presenter> presenterWeakReference;
+
+        public HotSeatStateMaintainer(CamLiveContract.View view,
+                                      CamLiveContract.Presenter presenter) {
+            viewWeakReference = new WeakReference<>(view);
+            presenterWeakReference = new WeakReference<>(presenter);
+        }
+
+        private int playType = -1;
+        /***
+         * 三个按钮的状态,不能根据UI的状态来辨别.
+         * 反而UI需要根据这个状态来辨别.
+         * speaker|mic|capture
+         * 用6个bit表示:
+         * |0(高位表示1:开,0:关)0(低位表示1:enable,0:disable)|00|00|
+         */
+        private int hotSeatUIState;
+
+        /**
+         * 两个bit
+         * |localSpeaker{0:off,1:on}|localMic{0:off,1:on}|
+         */
+        private int localSpeakerMic;
+        /**
+         * 两个bit
+         * |remoteSpeaker{0:off,1:on}|remoteMic{0:off,1:on}|
+         */
+        private int remoteSpeakerMic;
+
+        /**
+         * 停止播放了.
+         */
+        public void reset() {
+            Observable.just("reset")
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(ret -> {
+                        playType = -1;
+                        hotSeatUIState = 0;
+                        remoteSpeakerMic = 0;
+                        localSpeakerMic = 0;
+                        if (presenterWeakReference.get() != null) {
+                            setupAudio(false, false, false, false);
+                            if (viewWeakReference.get() != null)
+                                viewWeakReference.get().switchHotSeat(hotSeatUIState);
+                            Log.d(TAG, "reset:" + Integer.toBinaryString(hotSeatUIState));
+                        }
+                    }, AppLogger::e);
+        }
+
+        /**
+         * 恢复三个按钮的状态.
+         */
+        public void restore() {
+            if (viewWeakReference.get() != null) {
+                Log.d(TAG, "restore:" + Integer.toBinaryString(hotSeatUIState));
+                viewWeakReference.get().switchHotSeat(0);
+            }
+        }
+
+        /**
+         * 由于开始loading了.需要保存当前状态.
+         */
+        public void saveRestore() {
+            if (viewWeakReference.get() != null) {
+                //不需要改变 hotSeatUIState 只需要更新ui
+                Log.d(TAG, "saveRestore:" + Integer.toBinaryString(hotSeatUIState));
+                viewWeakReference.get().switchHotSeat(0);
+            }
+        }
+
+        public void switchPlayType(int type) {
+            if (playType == -1 || playType != type) {
+                playType = type;
+            }
+            if (presenterWeakReference.get() != null && viewWeakReference.get() != null) {
+                if (type == TYPE_HISTORY) {
+                    hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 2, 0);
+                    hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 0, 0);
+                } else {
+                    hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 2, 1);
+                    hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 0, 1);
+                }
+                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 3, 0);
+                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 5, 0);
+                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 4, 1);
+                viewWeakReference.get().switchHotSeat(hotSeatUIState);
+                Log.d(TAG, "switchPlayType:" + type + "," + Integer.toBinaryString(hotSeatUIState));
+            }
+        }
+
+
+        public void switchMic() {
+            if (presenterWeakReference.get() != null && viewWeakReference.get() != null) {
+                Log.d(TAG, "saveRestore:" + Integer.toBinaryString(hotSeatUIState));
+                Observable.just(true)
+                        .subscribeOn(Schedulers.newThread())
+                        .flatMap(ret -> {
+                            //当前状态
+                            int tmpLocal = localSpeakerMic, tmpRemote = remoteSpeakerMic;
+                            if (MiscUtils.getBit(tmpLocal, 0) == 0) {//打开mic,全部打开
+                                tmpLocal = MiscUtils.setBit(tmpLocal, 0, 1);
+                                tmpLocal = MiscUtils.setBit(tmpLocal, 1, 1);
+                                tmpRemote = MiscUtils.setBit(tmpRemote, 0, 1);
+                                tmpRemote = MiscUtils.setBit(tmpRemote, 1, 1);
+                            } else {//关闭mic:关闭远程speaker和本地mic,远程mic保持状态,本地speaker保持状态
+                                tmpLocal = MiscUtils.setBit(tmpLocal, 1, MiscUtils.getBit(localSpeakerMic, 1));
+                                tmpLocal = MiscUtils.setBit(tmpLocal, 0, 0);
+                                //远程的mic需要根据本地speaker的状态
+                                tmpRemote = MiscUtils.setBit(tmpRemote, 0, MiscUtils.getBit(localSpeakerMic, 1));
+                                tmpRemote = MiscUtils.setBit(tmpRemote, 1, 0);
+                            }
+                            boolean result = setupAudio(MiscUtils.getBit(tmpLocal, 0) == 1,
+                                    MiscUtils.getBit(tmpLocal, 1) == 1,
+                                    MiscUtils.getBit(tmpRemote, 0) == 1,
+                                    MiscUtils.getBit(tmpRemote, 1) == 1);
+                            if (result) {
+                                //设置成功
+                                localSpeakerMic = tmpLocal;
+                                remoteSpeakerMic = tmpRemote;
+                                //改变speaker.
+                                boolean localMicOn = MiscUtils.getBit(localSpeakerMic, 0) == 1;
+                                //localMicOn?{speaker is disable an on}:{speaker is enable and keep }
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 5, localMicOn ? 1 : MiscUtils.getBit(localSpeakerMic, 1));
+                                //设置speaker的enable
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 4, localMicOn ? 0 : 1);
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 3, localMicOn ? 1 : 0);
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 2, 1);
+                            }
+                            return Observable.just(result);
+                        })
+                        .filter(ret -> ret)
+                        .filter(ret -> viewWeakReference.get() != null)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(ret -> viewWeakReference.get().switchHotSeat(hotSeatUIState),
+                                AppLogger::e);
+            }
+        }
+
+        public void switchSpeaker() {
+            if (presenterWeakReference.get() != null && viewWeakReference.get() != null) {
+                Observable.just(true)
+                        .subscribeOn(Schedulers.newThread())
+                        .flatMap(ret -> {
+                            //操作speaker的时候,本地的mic是关闭的.
+                            int tmpLocalState = localSpeakerMic;//两个bit
+                            int tmpRemoteState = remoteSpeakerMic;//两个bit
+                            if (MiscUtils.getBit(tmpLocalState, 1) == 1) {//本地speaker开
+                                //下一步,关闭本地speaker,全关.
+                                tmpLocalState = MiscUtils.setBit(tmpLocalState, 0, 0);
+                                tmpLocalState = MiscUtils.setBit(tmpLocalState, 1, 0);
+                                tmpRemoteState = MiscUtils.setBit(tmpRemoteState, 0, 0);
+                                tmpRemoteState = MiscUtils.setBit(tmpRemoteState, 1, 0);
+                            } else {//需要开启本地speaker,也就是本地speaker开启,远程mic开启
+                                //本地speaker开启
+                                tmpLocalState = MiscUtils.setBit(tmpLocalState, 1, 1);
+                                //远程mic开启
+                                tmpRemoteState = MiscUtils.setBit(tmpRemoteState, 0, 1);
+                            }
+                            boolean result = setupAudio(MiscUtils.getBit(tmpLocalState, 0) == 1,
+                                    MiscUtils.getBit(tmpLocalState, 1) == 1,
+                                    MiscUtils.getBit(tmpRemoteState, 0) == 1,
+                                    MiscUtils.getBit(tmpRemoteState, 1) == 1);
+                            if (result) {
+                                //说明已经有权限,并且设置成功
+                                localSpeakerMic = tmpLocalState;
+                                remoteSpeakerMic = tmpRemoteState;
+                                //改变speaker.
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 5, MiscUtils.getBit(localSpeakerMic, 1));
+                                //设置speaker的enable
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 4, 1);
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 3, MiscUtils.getBit(localSpeakerMic, 0));
+                                hotSeatUIState = MiscUtils.setBit(hotSeatUIState, 2, 1);
+                            }
+                            return Observable.just(result);
+                        })
+                        .filter(ret -> ret && viewWeakReference.get() != null)
+                        .subscribe(ret -> viewWeakReference.get().switchHotSeat(hotSeatUIState),
+                                AppLogger::e);
+            }
+        }
+
+        private boolean setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
+            AppLogger.d(String.format(Locale.getDefault(), "localMic:%s,localSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic,
+                    localSpeaker, remoteMic, remoteSpeaker));
+            //local:false远程  true本地
+            BaseApplication.getAppComponent().getCmd().setAudio(false, remoteMic, remoteSpeaker);
+//        if (localSpeaker) {
+            MediaRecorder mRecorder = null;
+            try {
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.release();
+                BaseApplication.getAppComponent().getCmd().setAudio(true, remoteMic, localSpeaker);
+                if (presenterWeakReference.get().isEarpiecePlug()) {
+                    Observable.just("webRtcJava层的设置影响了耳机")
+                            .subscribeOn(Schedulers.newThread())
+                            .subscribe(ret -> presenterWeakReference.get().switchEarpiece(true), AppLogger::e);
+                }
+                return true;
+            } catch (Exception e) {
+                AppLogger.d(e.getMessage());
+                if (mRecorder != null) {
+                    mRecorder.release();
+                }
+                if (!localMic && !localSpeaker && !remoteMic && !remoteSpeaker) {
+                } else {
+                    AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                        if (viewWeakReference == null || viewWeakReference.get() == null) return;
+                        if (viewWeakReference.get().isUserVisible())
+                            viewWeakReference.get().audioRecordPermissionDenied();
+                    });
+                }
+                return false;
+//            }
+            }
         }
     }
 }

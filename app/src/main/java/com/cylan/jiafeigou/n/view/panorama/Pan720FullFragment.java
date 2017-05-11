@@ -155,13 +155,13 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
                 panoramic720View.takeSnapshot(false);
                 break;
             case R.id.img_vr:
-                panoramic720View.set720DisplayMode(DM_Equirectangular);
+                panoramic720View.setDisplayMode(DM_Equirectangular);
                 break;
             case R.id.img_planet:
-                panoramic720View.set720DisplayMode(DM_Fisheye);
+                panoramic720View.setDisplayMode(DM_Fisheye);
                 break;
             case R.id.img_sensor:
-                panoramic720View.set720DisplayMode(DM_LittlePlanet);
+                panoramic720View.setDisplayMode(DM_LittlePlanet);
                 break;
         }
     }
