@@ -205,12 +205,12 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
         AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
     }
 
-    protected boolean isEarpiecePlug() {
+    public boolean isEarpiecePlug() {
         if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
         return headsetObserver.isHeadsetOn();
     }
 
-    protected void switchEarpiece(boolean enable) {
+    public void switchEarpiece(boolean enable) {
         getAudioManager().setMode(enable ? AudioManager.MODE_CURRENT : AudioManager.MODE_IN_CALL);
         getAudioManager().setSpeakerphoneOn(!enable);
     }

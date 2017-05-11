@@ -63,7 +63,7 @@ public class FirmwareCheckerService extends Service {
     private static boolean check(String uuid) {
         Long time = antiHighFrequentCheck.get(uuid);
         if (time == null || time == 0) return true;
-        if (System.currentTimeMillis() - time < 10 * 1000) return false;
+        if (System.currentTimeMillis() - time < 5 * 60 * 1000) return false;
         AppLogger.e("记得改成一分钟");
         antiHighFrequentCheck.put(uuid, System.currentTimeMillis());
         return true;

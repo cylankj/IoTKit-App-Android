@@ -70,7 +70,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
 
     private int moveDirection = -1;//-1 nothing ,0:left ,1:right
 
-    private boolean isActionUp = true;
+    private boolean isActionUp = false;
     private int dragOrFling = -1;//-1 nothing ,0:drag ,1:fling
 
     boolean onTouchEvent(MotionEvent event) {
@@ -136,6 +136,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
             superWheel.invalidate();
         } else {
             if (isActionUp && scroller.isFinished()) {
+                isActionUp = false;
                 updateScrollStateIfRequired(SCROLL_STATE_IDLE);
                 if (SuperWheelExt.DEBUG)
                     Log.d(TAG, "computeScroll finish");

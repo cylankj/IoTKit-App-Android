@@ -22,8 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="#4C000000"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="0dp">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/imgV_cam_live_land_nav_back"

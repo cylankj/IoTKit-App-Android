@@ -242,20 +242,18 @@ public class MiscUtils {
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
-    public static boolean checkAudioPermission() {
-        String record = android.Manifest.permission.RECORD_AUDIO;
-        String recordSetting = android.Manifest.permission.MODIFY_AUDIO_SETTINGS;
-        return getContext().checkCallingOrSelfPermission(record) == PackageManager.PERMISSION_GRANTED
-                && getContext().checkCallingOrSelfPermission(recordSetting) == PackageManager.PERMISSION_GRANTED;
-    }
 
     public static int setBit(int x, int n, int flag) {
         if (flag == 1) {
-            x |= (1 << (n - 1));
+            x |= (1 << (n));
         } else if (flag == 0) {
-            x &= ~(1 << (n - 1));
+            x &= ~(1 << (n));
         }
         return x;
+    }
+
+    public static int getBit(int n, int k) {
+        return (n >> k) & 1;
     }
 
     public static <T> T safeGet(DpMsgDefine.DPPrimary<? extends T> value, T defaultValue) {

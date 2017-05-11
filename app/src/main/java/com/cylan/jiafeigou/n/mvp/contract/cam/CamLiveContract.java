@@ -95,6 +95,13 @@ public interface CamLiveContract {
         void onNetworkChanged(boolean connected);
 
         boolean isUserVisible();
+
+        /**
+         * speaker,mic,capture
+         *
+         * @param state
+         */
+        void switchHotSeat(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -159,18 +166,9 @@ public interface CamLiveContract {
 
         /**
          */
-        Observable<Boolean> switchSpeaker();
+        void switchSpeaker();
 
-        Observable<Boolean> switchMic();
-
-        /**
-         * 获取本地，远端mic Speaker标志 xxxx
-         * 本地mic，本地Speaker，远端mic，远端speaker
-         * 从view的icon来判断，更不容易出bug。
-         *
-         * @return
-         */
-        int getLocalMicSpeakerBit();
+        void switchMic();
 
         /**
          * 预览专用？
@@ -222,6 +220,10 @@ public interface CamLiveContract {
         void updatePrePlayType(PrePlayType prePlayType);
 
         float getVideoPortHeightRatio();
+
+        boolean isEarpiecePlug();
+
+        void switchEarpiece(boolean s);
     }
 
     class PrePlayType {
