@@ -663,8 +663,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
                     return;
                 }
-                if (historyWheelHandler != null)
+                if (historyWheelHandler != null) {
+                    ViewUtils.deBounceClick(v);
                     historyWheelHandler.showDatePicker(MiscUtils.isLand());
+                }
             };
             (layoutD.findViewById(R.id.live_time_layout)).setOnClickListener(liveTimeRectListener);
         }
