@@ -77,7 +77,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         panoramicView720Ext.setLayoutParams(params);
         panoramaContentContainer.addView(panoramicView720Ext);
-        panoramicView720Ext.set720DisplayMode(Panoramic720View.DM_Panorama);
+        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_LittlePlanet);
     }
 
     private void initViewerLayout(@PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE int type) {
@@ -117,7 +117,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("clickedPanorama");
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableVRMode(false);
-            panoramicView720Ext.set720DisplayMode(Panoramic720View.DM_LittlePlanet);
+            panoramicView720Ext.setDisplayMode(Panoramic720View.DM_LittlePlanet);
         }
     }
 
