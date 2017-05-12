@@ -742,7 +742,7 @@
   <string name="Tap1_iHome_NotAssociated">未關聯</string>
   <string name="Tap1_iHome_disassociate">取消關聯</string>
   <string name="Tap1_shareDevice_canceledshare">此設備已取消分享</string>
-  <string name="Tap1_share_tips">邀請你成為我的好友，點擊 %1$s 下載安裝【%1$s客戶端】</string>
+  <string name="Tap1_share_tips">邀請你成為我的好友，點擊 %1$s 下載安裝【%2$s客戶端】</string>
   <string name="Tap1a_DownloadInstall">下載並安裝(%s)</string>
   <string name="Tap2_Index_DemoVideo">演示視頻</string>
   <string name="Tap2_Index_Greetings">每一天的生活，都值得被記錄</string>

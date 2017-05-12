@@ -336,7 +336,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 //                        .placeholder(R.drawable.icon_mine_head_normal)//不需要placehole,因为开始时会设置这个id.如果频繁调用,则会闪烁.
                         .error(R.drawable.icon_mine_head_normal)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .signature(new StringSignature(account.getToken()))
+                        .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "" : account.getToken()))
                         .into(myViewTarget);
             }
 
@@ -713,7 +713,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     public void setPermissionDialog(String permission) {
         new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "", permission))
+                .setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })

@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -252,7 +253,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void startSendMesgActivity(String account) {
         Uri smsToUri = Uri.parse("smsto:" + account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", String.format(getString(R.string.Tap1_share_tips), JConstant.EFAMILY_URL_PREFIX));
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips, JConstant.EFAMILY_URL_PREFIX, ContextUtils.getContext().getPackageName()));
         startActivity(mIntent);
     }
 
@@ -305,7 +306,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         intent.putExtra(Intent.EXTRA_EMAIL,
                 new String[]{contractPhone});
         intent.putExtra(Intent.EXTRA_CC, contractPhone); // 抄送人
-        intent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.Tap1_share_tips), JConstant.EFAMILY_URL_PREFIX)); // 正文
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Tap1_share_tips, JConstant.EFAMILY_URL_PREFIX, ContextUtils.getContext().getPackageName())); // 正文
         startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));
     }
 
@@ -335,7 +336,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     public void setPermissionDialog(String permission) {
         new android.app.AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "", permission))
+                .setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })

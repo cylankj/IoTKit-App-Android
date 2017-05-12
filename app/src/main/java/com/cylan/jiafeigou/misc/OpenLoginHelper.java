@@ -3,9 +3,11 @@ package com.cylan.jiafeigou.misc;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.download.database.constants.TABLES;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
@@ -46,8 +48,12 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -413,7 +419,16 @@ public class OpenLoginHelper {
         login.pwd = token;
         login.openLoginType = type;
         login.loginType = true;
-        RxBus.getCacheInstance().postSticky(login);
+        Log.d("postAuthorizeResult", "postAuthorizeResult:has?" + RxBus.getCacheInstance().hasStickyEvent(LoginAccountBean.class));
+        if (RxBus.getCacheInstance().hasStickyEvent(LoginAccountBean.class)) {
+            RxBus.getCacheInstance().postSticky(login);
+        } else {
+            //twitter,响应得非常快.
+            Observable.just(login)
+                    .subscribeOn(Schedulers.newThread())
+                    .delay(1, TimeUnit.SECONDS)
+                    .subscribe(ret -> RxBus.getCacheInstance().postSticky(login), AppLogger::e);
+        }
     }
 
     public static void release() {

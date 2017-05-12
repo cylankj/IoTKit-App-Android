@@ -142,7 +142,7 @@ public class AboutFragment extends Fragment {
 
     public void setPermissionDialog(String permission) {
         new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "", permission))
+                .setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
