@@ -5,9 +5,10 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.module.BaseHttpApiHelper;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -72,11 +73,12 @@ public interface PanoramaAlbumContact {
         }
 
         public static String getThumbUrl(String uuid, PanoramaItem item) {
-            String baseUrl = BaseHttpApiHelper.getInstance().getBaseUrl(uuid, null);
+            String baseUrl = BasePanoramaApiHelper.getInstance().getDeviceIp();
             String thumbUrl = null;
             if (!TextUtils.isEmpty(baseUrl)) {
-                thumbUrl = item.type == 0 ? baseUrl + "/images/" + item.fileName : baseUrl + "/thumb/" + item.fileName.replaceAll("mp4", "thumb");
+                thumbUrl = baseUrl + "/thumb/" + item.fileName.split("\\.")[0] + ".thumb";
             }
+            AppLogger.d("正在加载缩略图:" + thumbUrl);
             return thumbUrl;
         }
 

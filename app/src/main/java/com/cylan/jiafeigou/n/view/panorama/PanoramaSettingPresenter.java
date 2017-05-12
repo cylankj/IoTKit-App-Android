@@ -20,7 +20,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
     @Override
     public void unBindDevice() {
         Subscription subscribe = Observable.just(new DPEntity()
-                .setUuid(mUUID)
+                .setUuid(uuid)
                 .setAction(DBAction.UNBIND))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

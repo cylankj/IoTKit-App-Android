@@ -80,7 +80,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(event -> TextUtils.equals(event.uuid, mUUID))
+                .filter(event -> TextUtils.equals(event.uuid, uuid))
                 .subscribe(event -> {
                     if (mView != null) {
                         mView.onDeviceUnBind();
@@ -98,7 +98,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     liveStreamAction.reset();
                     mView.onViewer();
                     if (shouldShowPreview()) {
-                        File file = new File(JConstant.MEDIA_PATH, "." + mUUID + ".jpg");
+                        File file = new File(JConstant.MEDIA_PATH, "." + uuid + ".jpg");
                         mView.onShowVideoPreviewPicture(file.toString());
                     }
                     return getViewHandler();
@@ -199,7 +199,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             appCmd.screenshot(false, new CallBack<Bitmap>() {
                                 @Override
                                 public void onSucceed(Bitmap bitmap) {
-                                    BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + File.separator + "." + mUUID + ".jpg");
+                                    BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + File.separator + "." + uuid + ".jpg");
                                 }
 
                                 @Override
@@ -284,7 +284,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         disconn.code = ErrorVideoPeerDisconnect;//连接互联网不可用,
                         disconn.remote = getViewHandler();
                         RxBus.getCacheInstance().post(disconn);
-                        appCmd.stopPlay(mUUID);
+                        appCmd.stopPlay(uuid);
                         liveStreamAction.hasStarted = false;
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -294,7 +294,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     protected String onResolveViewIdentify() {
-        return mUUID;
+        return uuid;
     }
 
     @Override
@@ -446,7 +446,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onFrameFailed() {
         Schedulers.io().createWorker().schedule(() -> {
             try {
-                appCmd.stopPlay(mUUID);
+                appCmd.stopPlay(uuid);
                 liveStreamAction.hasLiveError = true;
                 feedRtcp.stop();
                 AppLogger.d("加载失败了..........");

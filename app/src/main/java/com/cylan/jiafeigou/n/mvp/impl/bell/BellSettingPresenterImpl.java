@@ -32,7 +32,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getDevice(mUUID);
+        Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);
         }
@@ -43,7 +43,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void unbindDevice() {
         Subscription subscribe = Observable.just(new DPEntity()
-                .setUuid(mUUID)
+                .setUuid(uuid)
                 .setAction(DBAction.UNBIND))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

@@ -16,6 +16,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.IHttpApi;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
@@ -1245,6 +1246,25 @@ public class RxEvent {
 
         public ApkDownload(String filePath) {
             this.filePath = filePath;
+        }
+    }
+
+    public static class FetchDeviceInformation {
+        public boolean success;
+
+        public FetchDeviceInformation(boolean success) {
+            this.success = success;
+        }
+
+        public static final FetchDeviceInformation STARTED = new FetchDeviceInformation(false);
+        public static final FetchDeviceInformation SUCCESS = new FetchDeviceInformation(true);
+    }
+
+    public static class HttpApiArrived {
+        public IHttpApi httpApi;
+
+        public HttpApiArrived(IHttpApi httpApi) {
+            this.httpApi = httpApi;
         }
     }
 }

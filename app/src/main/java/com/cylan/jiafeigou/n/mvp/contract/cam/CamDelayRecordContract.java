@@ -64,7 +64,7 @@ public interface CamDelayRecordContract {
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             params.add(msg);
             try {
-                BaseApplication.getAppComponent().getCmd().robotSetData(mUUID, params);
+                BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
             } catch (JfgException e) {
                 e.printStackTrace();
             }

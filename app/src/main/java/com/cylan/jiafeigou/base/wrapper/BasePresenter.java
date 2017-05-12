@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,7 +36,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V> {
     protected String TAG = getClass().getName();
-    protected String mUUID;
+    protected String uuid;
     protected JFGSourceManager sourceManager;
     protected IDPTaskDispatcher taskDispatcher;
     protected AppCmd appCmd;
@@ -194,7 +193,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
     @Override
     public void onSetViewUUID(String uuid) {
-        mUUID = uuid;
+        this.uuid = uuid;
     }
 
     @Override
@@ -213,7 +212,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
      * 用户判断当前uuid是否是自己需要的
      */
     protected boolean accept(String uuid) {
-        return TextUtils.equals(mUUID, uuid);
+        return TextUtils.equals(this.uuid, uuid);
     }
 
     /**

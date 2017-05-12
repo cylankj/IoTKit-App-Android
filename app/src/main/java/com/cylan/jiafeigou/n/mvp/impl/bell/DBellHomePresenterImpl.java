@@ -44,7 +44,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private void notifyBellLowBattery() {
         if (isFirst) {
             isFirst = false;
-            Device device = sourceManager.getDevice(mUUID);
+            Device device = sourceManager.getDevice(uuid);
             if (device != null && device.available()) {
                 Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
                 DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
@@ -65,7 +65,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getDevice(mUUID);
+        Device device = sourceManager.getDevice(uuid);
         if (device == null) {
             mView.onDeviceUnBind();
         } else {
@@ -80,7 +80,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(event -> TextUtils.equals(event.uuid, mUUID))
+                .filter(event -> TextUtils.equals(event.uuid, uuid))
                 .subscribe(event -> {
                     if (mView != null) {
                         mView.onDeviceUnBind();
@@ -108,7 +108,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 .setVersion(time)
                 .setAction(DBAction.QUERY)
                 .setOption(new DBOption.SingleQueryOption(asc, 20))
-                .setUuid(mUUID))
+                .setUuid(uuid))
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -146,7 +146,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             entity = new DPEntity()
                     .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                     .setVersion(item.version)
-                    .setUuid(mUUID)
+                    .setUuid(uuid)
                     .setAction(DBAction.DELETED);
             result.add(entity);
         }

@@ -201,4 +201,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public static AppComponent getAppComponent() {
         return appComponent;
     }
+
+    public static boolean isOnline() {
+        return appComponent.getSourceManager().isOnline();
+    }
 }

@@ -48,14 +48,14 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                     MediaScannerConnection.scanFile(mView.getActivityContext(), new String[]{filePath}, null, null);
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                    item.cid = mUUID;
-                    Device device = sourceManager.getDevice(mUUID);
+                    item.cid = uuid;
+                    Device device = sourceManager.getDevice(uuid);
                     item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                     long time = System.currentTimeMillis();
                     item.fileName = time / 1000 + ".jpg";
                     item.time = (int) (time / 1000);
                     IDPEntity entity = new DPEntity()
-                            .setUuid(mUUID)
+                            .setUuid(uuid)
                             .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                             .setVersion(System.currentTimeMillis())
                             .setAccount(sourceManager.getAccount().getAccount())
