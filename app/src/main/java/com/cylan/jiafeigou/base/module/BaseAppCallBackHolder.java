@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -272,7 +273,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
-        AppLogger.d("OnGetFeedbackRsp :" + i);
+        AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
         RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp(i, arrayList));
     }
 

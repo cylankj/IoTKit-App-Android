@@ -968,6 +968,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         private int hotSeatUIState;
 
         /**
+         * localMic=remoteSpeaker
+         * localSpeaker=remoteMic
          * 两个bit
          * |localSpeaker{0:off,1:on}|localMic{0:off,1:on}|
          */

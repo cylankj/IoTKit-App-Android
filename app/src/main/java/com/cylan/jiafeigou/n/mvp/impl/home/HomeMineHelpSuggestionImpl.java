@@ -76,7 +76,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription.add(getSystemAutoReplyCallBack());
             compositeSubscription.add(getBadNetBack());
         }
-//        getSystemAutoReply();
+        getSystemAutoReply();
     }
 
     private Subscription getBadNetBack() {

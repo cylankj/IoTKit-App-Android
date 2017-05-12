@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
@@ -362,7 +363,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchMicrophone() {
-        Subscription subscribe = setMicrophone(!liveStreamAction.microphoneOn)
+        Subscription subscribe = setMicrophone(liveStreamAction.microphoneOn)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
                     if (mView != null) {
@@ -380,8 +381,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     AppLogger.d("正在切换 setMicrophone :" + on);
-                    switchSpeakAndMicroPhone(liveStreamAction.microphoneOn, on);
-                    liveStreamAction.microphoneOn = on;
+                    switchSpeakAndMicroPhone(true, true, on);
+                    switchSpeakAndMicroPhone(false, on, true);
+                    liveStreamAction.microphoneOn = !on;
                     return s;
                 }).subscribeOn(Schedulers.io());
     }
@@ -391,13 +393,14 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     AppLogger.d("正在切换 Speaker :" + on);
-                    boolean success = switchSpeakAndMicroPhone(on, liveStreamAction.speakerOn);
+                    boolean success = switchSpeakAndMicroPhone(true, true, on);
+                    switchSpeakAndMicroPhone(false, on, true);
                     liveStreamAction.speakerOn = success && on;
                     return liveStreamAction.speakerOn;
                 }).subscribeOn(Schedulers.io());
     }
 
-    protected boolean switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
+    protected boolean switchSpeakAndMicroPhone(boolean local, boolean speaker, boolean microphone) {
         MediaRecorder mRecorder = null;
         if (speaker && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {//这是为了兼容魅族4.4的权限
             try {
@@ -413,8 +416,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 return false;
             }
         }
-        appCmd.setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
-        appCmd.setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
+        Log.d("switchSpeakAndMicro", "local:" + local + ",speaker:" + speaker + ",mic:" + microphone);
+        appCmd.setAudio(local, microphone, speaker);//开启设备的扬声器和麦克风
+//        appCmd.setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
         return true;
     }
 

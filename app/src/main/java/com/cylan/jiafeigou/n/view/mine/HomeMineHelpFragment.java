@@ -90,6 +90,7 @@ public class HomeMineHelpFragment extends Fragment {
         if (agreementUrl.contains("–")) {
             agreementUrl = agreementUrl.replace("–", "-");
         }
+        final String url = agreementUrl;
 /*        WebSettings settings = mWvHelp.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
@@ -121,7 +122,7 @@ public class HomeMineHelpFragment extends Fragment {
         });
         AppLogger.d("url:" + agreementUrl);
         mWvHelp.loadUrl(agreementUrl);*/
-        initWebView(agreementUrl);
+        if (getView() != null) getView().post(() -> initWebView(url));
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
