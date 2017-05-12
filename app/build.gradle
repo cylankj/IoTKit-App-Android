@@ -203,7 +203,7 @@ android {
                                     "mtaAppKey"          : "ATQ1JV694AKT",
                                     "weChatAppKey"       : "",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "SERVER"             : "test1.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,

@@ -208,6 +208,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
         liveViewWithThumbnail.setLiveView(videoView);
+        //分享用户不显示
+        boolean showFlip = !presenter.isShareDevice();
+        findViewById(R.id.layout_port_flip).setVisibility(showFlip ? VISIBLE : INVISIBLE);
+        findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
+        findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
     }
 
     /**
@@ -576,9 +581,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutA.setVisibility(isLand ? VISIBLE : GONE);
         layoutF.setVisibility(isLand ? GONE : VISIBLE);
         //历史录像显示
-
-        findViewById(R.id.layout_land_flip).setVisibility(isLand ? VISIBLE : GONE);
-        findViewById(R.id.v_divider).setVisibility(isLand ? VISIBLE : GONE);
+        boolean showFlip = !presenter.isShareDevice();
+        findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : GONE);
+        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : GONE);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
         //直播
         findViewById(R.id.tv_live).setEnabled(playType == TYPE_HISTORY);
@@ -605,7 +610,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             updateLiveViewRectHeight(ratio);
             //有条件的.
             if (presenter.getPlayState() == PLAY_STATE_PLAYING)
-                findViewById(R.id.layout_port_flip).setVisibility(VISIBLE);
+                findViewById(R.id.layout_port_flip).setVisibility(showFlip ? VISIBLE : INVISIBLE);
             layoutD.setBackgroundResource(R.drawable.camera_sahdow);
             layoutE.setBackgroundResource(android.R.color.transparent);
             layoutG.setVisibility(GONE);

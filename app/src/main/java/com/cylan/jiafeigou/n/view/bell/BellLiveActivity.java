@@ -409,6 +409,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         switch (view.getId()) {
             case R.id.imgv_bell_live_capture:
             case R.id.imgv_bell_live_land_capture:
+                ViewUtils.deBounceClick(view);
                 BellLiveActivityPermissionsDispatcher.captureWithStoragePermissionWithCheck(this);
                 break;
             case R.id.imgv_bell_live_speaker:
