@@ -210,7 +210,7 @@ public class ClientUpdateManager {
      */
     public void downLoadFile(RxEvent.CheckVersionRsp rsp, DownloadListener listener) {
         if (rsp == null) return;
-        String key = TextUtils.isEmpty(rsp.uuid) ? rsp.url : rsp.uuid;
+        String key = getKey(rsp);
         PackageDownloadTask downloadTask = downloadMap.get(key);
         if (downloadTask != null && downloadTask.getDownloadState() == JConstant.D.DOWNLOADING) {
             downloadTask.setDownloadListener(listener);
@@ -221,6 +221,10 @@ public class ClientUpdateManager {
         Observable.just("go")
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(downloadTask, AppLogger::e);
+    }
+
+    private String getKey(RxEvent.CheckVersionRsp rsp) {
+        return TextUtils.isEmpty(rsp.uuid) ? rsp.url : rsp.uuid;
     }
 
     public PackageDownloadTask getUpdateAction(String uuid) {
@@ -345,6 +349,7 @@ public class ClientUpdateManager {
                             downloadListener.finished(new File(fileDir, rsp.fileName));
                         }
                         downloadState = JConstant.D.SUCCESS;
+                        downloadMap.remove(getKey(rsp));
                     } catch (Exception e) {
                         Log.d(TAG, e.toString());
                         rsp.downloadState = JConstant.D.FAILED;
@@ -366,6 +371,7 @@ public class ClientUpdateManager {
         private Gson gson = new Gson();
 
         void updateInfo(String uuid, RxEvent.CheckVersionRsp checkDevVersionRsp) {
+            downloadMap.remove(uuid);
             PreferencesUtils.putString(checkDevVersionRsp.preKey, gson.toJson(checkDevVersionRsp));
             AppLogger.d("下载变化?" + checkDevVersionRsp);
         }
@@ -464,8 +470,8 @@ public class ClientUpdateManager {
             AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
             if (listener != null) listener.upgradeStart();
             resetRspRecv(true);
-            makeUpdateRspRecv(30);//30s
-            makeUpdateRspRecv(60);//60s
+            makeUpdateRspRecv(60);//30s
+            makeUpdateRspRecv(90);//60s
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
@@ -542,6 +548,7 @@ public class ClientUpdateManager {
         private void handleTimeout(int code) {
             if (listener != null) listener.upgradeErr(code);
             if (simulatePercent != null) simulatePercent.stop();
+            updatingTaskHashMap.remove(uuid);
             AppLogger.d("fping timeout : " + uuid + ",code:" + code + " " + listener);
         }
 
@@ -555,9 +562,10 @@ public class ClientUpdateManager {
                 } else if (fAck != null) {//相应,成功了.
                     this.updateState = JConstant.U.SUCCESS;
                     if (simulatePercent != null) simulatePercent.boost();
-                    AppLogger.d("升级成功,清空配置");
+                    AppLogger.d("升级成功,清空配置:" + uuid);
                     PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
                 }
+                updatingTaskHashMap.remove(uuid);
             } catch (IOException e) {
                 AppLogger.e("err:" + MiscUtils.getErr(e));
             }

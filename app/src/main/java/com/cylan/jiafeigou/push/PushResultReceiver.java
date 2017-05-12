@@ -44,7 +44,8 @@ public class PushResultReceiver extends BroadcastReceiver {
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
                         try {
-                            BaseApplication.getAppComponent().getCmd().setPushToken(ret, context.getPackageName());
+                            BaseApplication.getAppComponent().getCmd().setPushToken(ret, context.getPackageName(), 10);
+                            AppLogger.e("需要填type");
                         } catch (JfgException e) {
                             AppLogger.e("err:" + MiscUtils.getErr(e));
                         }

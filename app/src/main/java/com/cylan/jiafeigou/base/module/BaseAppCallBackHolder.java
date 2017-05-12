@@ -278,14 +278,14 @@ public class BaseAppCallBackHolder implements AppCallBack {
     }
 
     @Override
-    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
+    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3, String s4) {
         AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + s + ":" + s1 + ":" + s2 + ":" + s3);
 //        b = true;
 //        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
 //        s1 = "3.0.0";
 //        s2 = "你好";
 //        s3 = "xx";
-        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setSeq(0));
+        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setUuid(s4).setSeq(0));
     }
 
     @Override

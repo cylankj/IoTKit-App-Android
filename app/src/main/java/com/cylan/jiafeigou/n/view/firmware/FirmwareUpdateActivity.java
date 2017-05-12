@@ -60,6 +60,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     @BindView(R.id.tv_hardware_new_version)
     TextView tvHardwareNewVersion;
 
+    //升级过程中,可能有网络切换,
+    private String currentVersion;
+
+    private String newVersion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +78,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     protected void onStart() {
         super.onStart();
         Device device = basePresenter.getDevice();
-        String currentVersion = device.$(207, "");
+        currentVersion = device.$(207, "");
         tvCurrentVersion.setText(currentVersion);
         RxEvent.CheckVersionRsp description = null;
         ClientUpdateManager.PackageDownloadTask packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
@@ -97,7 +102,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                     }
                 }
             }
-            tvHardwareNewVersion.setText(description.version);
+            newVersion = description.version;
+            tvHardwareNewVersion.setText(newVersion);
             hardwareUpdatePoint.setVisibility(description.hasNew ? View.VISIBLE : View.INVISIBLE);
             tvVersionDescribe.setText(description.tip);
             if (validateFile(description)) {
@@ -229,9 +235,12 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     public void upgradeSuccess() {
         customToolbar.post(() -> {
             tvDownloadSoftFile.setEnabled(true);
-            llDownloadPgContainer.setVisibility(View.VISIBLE);
+            llDownloadPgContainer.setVisibility(View.INVISIBLE);
             tvLoadingShow.setText("100%");
             ToastUtil.showToast(getString(R.string.Tap1_FirmwareUpdateSuc));
+            hardwareUpdatePoint.setVisibility(View.INVISIBLE);
+            tvCurrentVersion.setText(newVersion);
+            tvHardwareNewVersion.setText(newVersion);
         });
     }
 
@@ -288,7 +297,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         //2.不在线
-        if (!JFGRules.isDeviceOnline(dpNet)) {
+        if (!JFGRules.isDeviceOnline(dpNet) || TextUtils.isEmpty(dpNet.ssid)) {
             ToastUtil.showToast(getString(R.string.NOT_ONLINE));
             return false;
         }

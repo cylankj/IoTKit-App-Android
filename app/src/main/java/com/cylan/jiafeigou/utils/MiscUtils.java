@@ -544,4 +544,10 @@ public class MiscUtils {
             return false;
         }
     }
+
+    public static String getFileNameWithoutExn(String url) {
+//        String url = "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-test/package/camera/JFG1W-2.4.6.28-V1-SENSOR_8330.bin?Expires=1521872297&Signature=dbu%2F0nQ3aNGz0wGIAieB7opsNiI%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI";
+        String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
+        return fileName.substring(0, fileName.lastIndexOf('.'));
+    }
 }

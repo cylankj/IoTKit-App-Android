@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -34,6 +36,7 @@ import okhttp3.Response;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -62,11 +65,12 @@ public class FirmwareCheckerService extends Service {
      */
     private static boolean check(String uuid) {
         Long time = antiHighFrequentCheck.get(uuid);
-        if (time == null || time == 0) return true;
-        if (System.currentTimeMillis() - time < 5 * 60 * 1000) return false;
-        AppLogger.e("记得改成一分钟");
-        antiHighFrequentCheck.put(uuid, System.currentTimeMillis());
-        return true;
+        if (time == null || System.currentTimeMillis() - time > 5 * 60 * 1000) {
+            antiHighFrequentCheck.put(uuid, System.currentTimeMillis());
+            AppLogger.e("记得改成一分钟");
+            return true;
+        }
+        return false;
     }
 
     public static void checkVersion(String uuid) {
@@ -142,7 +146,7 @@ public class FirmwareCheckerService extends Service {
         }
     }
 
-    private void handleCheckFlow(String uuid, String currentVersion, int pid) {
+    private void handleCheckFlow(final String uuid, String currentVersion, int pid) {
         mapSubscription.remove(uuid);
         Subscription s = Observable.just("go")
                 .subscribeOn(Schedulers.newThread())
@@ -159,6 +163,7 @@ public class FirmwareCheckerService extends Service {
                 })
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
                         .subscribeOn(Schedulers.newThread())
+                        .filter(ret -> ret != null && TextUtils.equals(uuid, ret.uuid))
                         .filter(ret -> {
                             if (!ret.hasNew) {
                                 PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
@@ -174,10 +179,11 @@ public class FirmwareCheckerService extends Service {
                         ret.fileSize = response.body().contentLength();
                         ret.fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
                         ret.hasNew = true;
-                        ret.fileName = "." + uuid;
+                        ret.fileName = "." + uuid + MiscUtils.getFileNameWithoutExn(ret.url);
                         ret.uuid = uuid;
                         ret.preKey = JConstant.KEY_FIRMWARE_CONTENT + uuid;
                         PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
+
                         RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
                         AppLogger.d("检查到有新固件:" + uuid);
                         return ret;

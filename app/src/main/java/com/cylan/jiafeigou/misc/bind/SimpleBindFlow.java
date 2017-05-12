@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -145,6 +146,9 @@ public class SimpleBindFlow extends AFullBind {
                     udpDevicePortrait.uuid,
                     udpDevicePortrait.mac,
                     JFGRules.getLanguageType(ContextUtils.getContext()));
+
+            JfgUdpMsg.SetTimeZone setTimeZone = new JfgUdpMsg.SetTimeZone(udpDevicePortrait.uuid,
+                    udpDevicePortrait.mac, TimeZone.getDefault().getRawOffset());
             //设置服务器
             JfgUdpMsg.SetServer setServer =
                     new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
@@ -169,6 +173,7 @@ public class SimpleBindFlow extends AFullBind {
             AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
             AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
             AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
+            AppLogger.i(BIND_TAG + "setTimeZone: " + new Gson().toJson(setTimeZone));
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                         UdpConstant.PORT,
@@ -177,6 +182,9 @@ public class SimpleBindFlow extends AFullBind {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                         UdpConstant.PORT,
                         setLanguage.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                        UdpConstant.PORT,
+                        setTimeZone.toBytes());
             } catch (JfgException e) {
                 e.printStackTrace();
             }

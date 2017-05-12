@@ -787,6 +787,11 @@ public class RxEvent {
             this.md5 = md5;
         }
 
+        public CheckVersionRsp setUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
         public CheckVersionRsp setPreKey(String preKey) {
             this.preKey = preKey;
             return this;
