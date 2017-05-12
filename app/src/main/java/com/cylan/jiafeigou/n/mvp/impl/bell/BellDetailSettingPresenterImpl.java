@@ -36,7 +36,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getDevice(mUUID);
+        Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);
         }

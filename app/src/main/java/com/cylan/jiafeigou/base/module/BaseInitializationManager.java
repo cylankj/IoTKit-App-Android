@@ -55,7 +55,9 @@ public final class BaseInitializationManager {
     private BaseGlobalUdpParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
     private PushResultReceiver pushReceiver;
-
+    private BaseDeviceInformationFetcher deviceInformationFetcher;
+    private BasePanoramaApiHelper apiHelper;
+    private BaseForwardHelper forwardHelper;
     private boolean hasInitFinished = false;
 
     @Inject
@@ -74,7 +76,10 @@ public final class BaseInitializationManager {
                                      @ContextLife Context context,
                                      @Named("CrashPath") String crashPath,
                                      BaseGlobalUdpParser udpParser,
-                                     BaseBellCallEventListener listener
+                                     BaseBellCallEventListener listener,
+                                     BasePanoramaApiHelper apiHelper,
+                                     BaseDeviceInformationFetcher fetcher,
+                                     BaseForwardHelper forwardHelper
     ) {
         compositeSubscription = new CompositeSubscription();
         this.manager = manager;
@@ -93,6 +98,9 @@ public final class BaseInitializationManager {
         this.crashPath = crashPath;
         this.udpParser = udpParser;
         this.bellCallEventListener = listener;
+        this.deviceInformationFetcher = fetcher;
+        this.apiHelper = apiHelper;
+        this.forwardHelper = forwardHelper;
     }
 
     public void initialization() {
@@ -107,10 +115,15 @@ public final class BaseInitializationManager {
         initGlobalSubscription();
         initDialogManager();
         initPushResult();
+        initDeviceInformationFetcher();
         hasInitFinished = true;
         if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.GlobalInitFinishEvent.class)) {
             RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         }
+    }
+
+    private void initDeviceInformationFetcher() {
+        forwardHelper.setAppCmd(appCmd);
     }
 
     private void initPushResult() {

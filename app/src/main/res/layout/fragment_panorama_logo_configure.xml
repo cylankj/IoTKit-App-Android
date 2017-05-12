@@ -6,18 +6,12 @@
     android:background="@color/color_white"
     android:clickable="true">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </FrameLayout>
-
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/fragment_panorama_logo_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_tab_back_selector"
         app:ct_left_title="LOGO设置"

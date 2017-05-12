@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import com.cylan.jiafeigou.base.module.BaseHttpApiHelper;
-import com.cylan.jiafeigou.base.module.IHttpApi;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -22,13 +21,12 @@ import rx.schedulers.Schedulers;
  */
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter {
     private boolean httpApiInitFinish;
-    private String baseUrl;
-
 
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getDevice(mUUID);
+        BasePanoramaApiHelper.getInstance().init(uuid);
+        Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);
         }
@@ -38,6 +36,21 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getNetWorkChangedSub());
+        registerSubscription(getFetchDeviceInformationSub());
+    }
+
+    private Subscription getFetchDeviceInformationSub() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.FetchDeviceInformation.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    this.httpApiInitFinish = ret.success;
+                    if (ret.success && liveStreamAction.hasResolution) {
+                        mView.onEnableControllerView();
+                    }
+                    if (!ret.success) {
+                        mView.onDisableControllerView();
+                    }
+                }, AppLogger::e);
     }
 
     private Subscription getNetWorkChangedSub() {
@@ -58,13 +71,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void makePhotograph() {
         Subscription subscribe = checkSDCard()
-                .flatMap(info -> getHttpApi().flatMap(IHttpApi::snapShot))
+                .flatMap(info -> BasePanoramaApiHelper.getInstance().snapShot())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
                         mView.onMakePhotoGraphSuccess();
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
-                            mView.onShowPreviewPicture(baseUrl + "/images/" + msgFileRsp.files.get(0));
+                            mView.onShowPreviewPicture(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/images/" + msgFileRsp.files.get(0));
                         }
                     } else {
                         mView.onMakePhotoGraphError(msgFileRsp.ret);
@@ -84,18 +97,17 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void checkAndInitRecord() {
-        Subscription subscribe = getHttpApi()
-                .flatMap(IHttpApi::getRecStatus)
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus()
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(rsp -> {
+                .map(rsp -> {
                     if (rsp.ret == 0) {
                         mView.onStartVideoRecordSuccess(rsp.videoType);
                         refreshVideoRecordUI(rsp.seconds, rsp.videoType);
                     }
                     AppLogger.d("初始化录像状态结果为:" + new Gson().toJson(rsp));
-                    return getHttpApi();
+                    return rsp;
                 })
-                .flatMap(IHttpApi::getResolution)
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getResolution())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.ret == 0) {
@@ -108,8 +120,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
-        Subscription subscribe = getHttpApi()
-                .flatMap(api -> api.setResolution(mode))
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().getHttpApi().flatMap(api -> api.setResolution(mode))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     AppLogger.d("切换模式返回结果为" + new Gson().toJson(ret));
@@ -131,7 +142,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startVideoRecord(int type) {
-        Subscription subscribe = getHttpApi().flatMap(api -> api.startRec(type))
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().startRec(type)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     AppLogger.d("开启视频录制返回结果为" + new Gson().toJson(rsp));
@@ -152,12 +163,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void stopVideoRecord(int type) {
         RxBus.getCacheInstance().post(new RecordFinish());
-        Subscription subscribe = getHttpApi()
-                .flatMap(api -> api.stopRec(type))
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(type)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
-                        mView.onShowPreviewPicture(baseUrl + "/thumb/" + ret.files.get(0).replaceAll("mp4", "thumb"));
+                        mView.onShowPreviewPicture(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/thumb/" + ret.files.get(0).replaceAll("mp4", "thumb"));
                         mView.onStopVideoRecordSuccess(type);
                     } else {//失败了
                         mView.onStopVideoRecordError(type, ret.ret);
@@ -187,7 +197,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private Observable<PanoramaEvent.MsgSdInfoRsp> checkSDCard() {
-        return getHttpApi().flatMap(IHttpApi::getSdInfo)
+        return BasePanoramaApiHelper.getInstance().getSdInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(info -> {
@@ -206,7 +216,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private Observable<PanoramaEvent.MsgBatteryRsp> checkBattery() {
-        return getHttpApi().flatMap(IHttpApi::getBattery)
+        return BasePanoramaApiHelper.getInstance().getBattery()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(battery -> {
@@ -217,23 +227,5 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return true;
                 });
-    }
-
-    private Observable<IHttpApi> getHttpApi() {
-        return BaseHttpApiHelper.getInstance().getHttpApi(mUUID)
-                .timeout(5, TimeUnit.SECONDS, Observable.just(null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(api -> {
-                    if (!httpApiInitFinish && api != null) {
-                        httpApiInitFinish = true;
-                        baseUrl = BaseHttpApiHelper.getInstance().getBaseUrl(mUUID, null);
-                        mView.onEnableControllerView();
-                    }
-                    if (!httpApiInitFinish) {
-                        mView.onHttpConnectionToDeviceError();
-                    }
-                    return httpApiInitFinish;
-                })
-                .observeOn(Schedulers.io());
     }
 }

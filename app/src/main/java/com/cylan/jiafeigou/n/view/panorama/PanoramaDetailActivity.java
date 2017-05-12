@@ -10,7 +10,7 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.module.BaseHttpApiHelper;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -65,7 +65,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         PanoramaAlbumContact.PanoramaItem panoramaItem = getIntent().getParcelableExtra("panorama_item");
         initPanoramaView();
         initViewerLayout(panoramaItem.type);
-        BaseHttpApiHelper.getInstance().loadPicture(panoramaItem.fileName)
+        BasePanoramaApiHelper.getInstance().loadPicture(panoramaItem.fileName)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(filePath -> panoramicView720Ext.loadImage(filePath), AppLogger::e);
     }
@@ -77,7 +77,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         panoramicView720Ext.setLayoutParams(params);
         panoramaContentContainer.addView(panoramicView720Ext);
-        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_LittlePlanet);
+        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
     }
 
     private void initViewerLayout(@PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE int type) {
@@ -126,7 +126,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("clickedGyroscope");
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableGyro(true);
-            ConnectivityManager manager=null;
+            ConnectivityManager manager = null;
 
         }
     }
