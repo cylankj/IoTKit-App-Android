@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
@@ -60,6 +61,10 @@ public class BellPuller {
             //表明没有登录,这种情况比较多{1.登出,2.App正常离线,3.反正就是处于后台,系统管控着}
             Observable.just(response)
                     .subscribeOn(Schedulers.newThread())
+                    .map(ret -> {
+                        AutoSignIn.getInstance().autoLogin();
+                        return ret;
+                    })
                     .timeout(3, TimeUnit.SECONDS)
                     .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class))
                     .subscribe(ret -> {
