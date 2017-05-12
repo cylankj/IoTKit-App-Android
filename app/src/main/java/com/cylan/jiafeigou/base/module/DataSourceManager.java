@@ -400,7 +400,7 @@ public class DataSourceManager implements JFGSourceManager {
         int size = shareList == null ? 0 : shareList.size();
         for (int i = 0; i < size; i++) {
             JFGShareListInfo info = shareList.get(i);
-            if (TextUtils.equals(uuid, info.cid)) {
+            if (info != null && TextUtils.equals(uuid, info.cid)) {
                 return info.friends != null && info.friends.size() > 0;
             }
         }

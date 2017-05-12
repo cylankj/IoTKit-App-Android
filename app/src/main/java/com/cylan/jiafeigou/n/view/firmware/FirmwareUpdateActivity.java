@@ -275,6 +275,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     private boolean checkNet() {
         Device device = basePresenter.getDevice();
+        //相同版本
         if (TextUtils.equals(tvCurrentVersion.getText(), tvHardwareNewVersion.getText())) {
             //相同版本
             ToastUtil.showToast(getString(R.string.NEW_VERSION));
@@ -282,13 +283,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
         String deviceMac = device.$(202, "");
         String routMac = NetUtils.getRouterMacAddress();
+        //1.直连AP
         if (TextUtils.equals(deviceMac, routMac)) return true;
-        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-            //3.局域网
-            return true;
-        }
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+        //2.不在线
         if (!JFGRules.isDeviceOnline(dpNet)) {
             ToastUtil.showToast(getString(R.string.NOT_ONLINE));
             return false;

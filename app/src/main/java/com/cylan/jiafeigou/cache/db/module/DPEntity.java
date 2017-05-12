@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -68,7 +69,7 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     }
 
     public final boolean setValue(DataPoint dataPointValue, byte[] bytesValue, long version) {
-        AppLogger.d("正在设置数据,msgId:" + msgId);
+        Log.d("", "正在设置数据,msgId:" + msgId);
         this.dataPointValue = dataPointValue;
         this.bytes = bytesValue;
         this.version = version;
@@ -301,7 +302,9 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 69931815)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
