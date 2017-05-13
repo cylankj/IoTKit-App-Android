@@ -111,8 +111,10 @@ public class AfterLoginService extends IntentService {
                             try {
                                 String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                                 UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                                if (portrait != null)
+                                if (portrait != null) {
                                     BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                                    //设备上线后,需要设置时区.
+                                }
                             } catch (Exception e) {
                                 AppLogger.d("err: " + e.getLocalizedMessage());
                             }

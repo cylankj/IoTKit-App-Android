@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.download.database.constants.TABLES;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -219,6 +220,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("onBackPressed", this.getClass().getSimpleName());
         if (checkExtraChildFragment()) {
             return;
         } else if (checkExtraFragment())

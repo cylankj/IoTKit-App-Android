@@ -235,6 +235,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPause() {
         super.onPause();
+        basePresenter.saveHotSeatState();
     }
 
     @Override
@@ -282,8 +283,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onResume() {
         super.onResume();
         if (basePresenter != null) {
+            basePresenter.restoreHotSeatState();
         }
-
     }
 
     @Override
@@ -604,9 +605,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void switchHotSeat(int state) {
+    public void switchHotSeat(boolean speaker, boolean speakerEnable,
+                              boolean mic, boolean micEnable,
+                              boolean capture, boolean captureEnable) {
         camLiveControlLayer.post(() -> camLiveControlLayer.setHotSeatState(
-                basePresenter.getPlayType(), state));
+                basePresenter.getPlayType(), speaker, speakerEnable, mic, micEnable, capture, captureEnable));
     }
 
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})

@@ -894,19 +894,16 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
             IMEUtils.hide(getActivity());
-            //检测账号是否注册
-            if (basePresenter != null)
-                basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {
                 Toast.makeText(getActivity(), getString(R.string.EMAIL_2), Toast.LENGTH_SHORT).show();
                 return;
             }
-            //检测账号是否注册
-            if (basePresenter != null)
-                basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
         }
+        //检测账号是否注册
+        if (basePresenter != null)
+            basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
     }
 
     private void handleRegisterByMail() {

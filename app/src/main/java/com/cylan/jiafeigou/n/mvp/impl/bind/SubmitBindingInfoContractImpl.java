@@ -20,12 +20,14 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
@@ -158,8 +160,9 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .timeout(Math.min(60 * 1000L - (System.currentTimeMillis() - startTick), 60 * 1000L), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(net -> {
-                    AppLogger.d("当前网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
+                    AppLogger.d("绑定成功,网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
                     endCounting();
+                    sendTimeZone(uuid);
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mView.bindState(this.bindResult = BIND_TIME_OUT);
@@ -205,6 +208,23 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                     getView().onCounting(integer);
                 }, AppLogger::e);
         addSubscription(subscription, "actionPercent");
+    }
+
+    private void sendTimeZone(String uuid) {
+        //等设备上线之后,要设置时区.
+        Observable.just("setTimeZone")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                    DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
+                    timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
+                    timeZone.timezone = TimeZone.getDefault().getID();
+                    try {
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, 214);
+                        AppLogger.d("设置设备时区:" + uuid);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }, AppLogger::e);
     }
 
 }

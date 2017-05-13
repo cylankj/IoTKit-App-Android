@@ -7,7 +7,6 @@ import android.util.Log;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.contract.cam.FUpdatingContract;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
@@ -19,6 +18,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
 
     protected P basePresenter;
     private final String TAG = getClass().getSimpleName();
+
 
     protected AlertDialogManager getAlertDialogManager() {
         return AlertDialogManager.getInstance();

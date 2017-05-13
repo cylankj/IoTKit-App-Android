@@ -109,8 +109,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     LinearLayout emptyViewState;
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
     private ItemAdapter<HomeItem> mItemAdapter;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {

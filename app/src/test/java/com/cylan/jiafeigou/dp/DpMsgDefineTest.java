@@ -58,6 +58,9 @@ public class DpMsgDefineTest {
 
         System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -37, 0, 0, 0, -50, 91, 112, 0, 0, 0, -61},
                 DpMsgDefine.DPSdStatus.class));
+
+        System.out.println(unpackData(new byte[]{-110, -83, 65, 115, 105, 97, 47, 83, 104, 97, 110, 103, 104, 97, 105, -51, 112, -128},
+                DpMsgDefine.DPTimeZone.class));
     }
 
     @Message

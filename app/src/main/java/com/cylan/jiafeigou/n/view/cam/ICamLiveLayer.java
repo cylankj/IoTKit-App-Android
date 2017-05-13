@@ -84,13 +84,13 @@ public interface ICamLiveLayer {
     void updateLiveViewMode(String mode);
 
     /***
-     * 三个按钮的状态,不能根据UI的状态来辨别.
-     * 反而UI需要根据这个状态来辨别.
-     * speaker|mic|capture
-     * 用3个byte表示:
-     * |0(高位表示1:开,0:关)0(低位表示1:enable,0:disable)|00|00|
+
      */
-    void setHotSeatState(int liveType, int state);
+    void setHotSeatState(int liveType, boolean speaker,
+                         boolean speakerEnable,
+                         boolean mic,
+                         boolean micEnable,
+                         boolean capture,boolean captureEnable);
 
     void setHotSeatListener(View.OnClickListener micListener,
                             View.OnClickListener speakerListener,

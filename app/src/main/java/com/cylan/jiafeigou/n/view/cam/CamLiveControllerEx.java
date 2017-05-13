@@ -178,7 +178,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void initView(CamLiveContract.Presenter presenter, String uuid) {
         this.uuid = uuid;
         //disable 6个view
-        setHotSeatState(-1, 0);
+        setHotSeatState(-1, false, false, false, false, false, false);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
@@ -859,27 +859,31 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * |0(高位表示1:开,0:关)0(低位表示1:enable,0:disable)|00|00|
      */
     @Override
-    public void setHotSeatState(int liveType, final int state) {
+    public void setHotSeatState(int liveType, boolean speaker,
+                                boolean speakerEnable,
+                                boolean mic,
+                                boolean micEnable,
+                                boolean capture, boolean captureEnable) {
         ImageView pMic = (ImageView) findViewById(R.id.imgV_cam_trigger_mic);
-        pMic.setEnabled(MiscUtils.getBit(state, 2) == 1 && liveType == TYPE_LIVE);
-        pMic.setImageResource(portMicRes[MiscUtils.getBit(state, 3)]);
+        pMic.setEnabled(micEnable);
+        pMic.setImageResource(portMicRes[mic ? 1 : 0]);
         ImageView lMic = (ImageView) findViewById(R.id.imgV_land_cam_trigger_mic);
-        lMic.setEnabled(MiscUtils.getBit(state, 2) == 1 && liveType == TYPE_LIVE);
-        lMic.setImageResource(landMicRes[MiscUtils.getBit(state, 3)]);
+        lMic.setEnabled(micEnable);
+        lMic.setImageResource(landMicRes[mic ? 1 : 0]);
         //speaker
         ImageView pSpeaker = (ImageView) findViewById(R.id.imgV_cam_switch_speaker);
-        pSpeaker.setEnabled(MiscUtils.getBit(state, 4) == 1);
-        pSpeaker.setImageResource(portSpeakerRes[MiscUtils.getBit(state, 5)]);
+        pSpeaker.setEnabled(speakerEnable);
+        pSpeaker.setImageResource(portSpeakerRes[speaker ? 1 : 0]);
         ImageView lSpeaker = (ImageView) findViewById(R.id.imgV_land_cam_switch_speaker);
-        lSpeaker.setEnabled(MiscUtils.getBit(state, 4) == 1);
-        lSpeaker.setImageResource(landSpeakerRes[MiscUtils.getBit(state, 5)]);
+        lSpeaker.setEnabled(speakerEnable);
+        lSpeaker.setImageResource(landSpeakerRes[speaker ? 1 : 0]);
         //capture
         //只有 enable和disable
         ImageView pCapture = (ImageView) findViewById(R.id.imgV_cam_trigger_capture);
-        pCapture.setEnabled(MiscUtils.getBit(state, 0) == 1 && liveType == TYPE_LIVE);
+        pCapture.setEnabled(captureEnable);
         ImageView lCapture = (ImageView) findViewById(R.id.imgV_land_cam_trigger_capture);
-        lCapture.setEnabled(MiscUtils.getBit(state, 0) == 1 && liveType == TYPE_LIVE);
-        Log.d("setHotSeatState", "setHotSeatState: " + Integer.toBinaryString(state));
+        lCapture.setEnabled(captureEnable);
+        Log.d(TAG, "capture:" + captureEnable);
     }
 
     @Override

@@ -2,14 +2,17 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,7 +41,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private static final String TAG = "LiveViewWithThumbnail";
     private VideoViewFactory.IVideoView videoView;//视屏view
     private FrameLayout standByLayout;//待机
-    //    private ImageView imgThumbnail;//缩略图
+    private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
     private Subscription subscription;
     private boolean isNormalView;
@@ -55,9 +58,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     public LiveViewWithThumbnail(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.layout_live_view_with_thumbnail, this, true);
-//        imgThumbnail = (ImageView) viewGroup.findViewById(R.id.imgv_live_thumbnail);
-//        imgThumbnail.setOnClickListener(v -> {//do nothing
-//        });
+        imgThumbnail = (ImageView) viewGroup.findViewById(R.id.imgv_live_thumbnail);
+        imgThumbnail.setOnClickListener(v -> {//do nothing
+        });
         standByLayout = (FrameLayout) viewGroup.findViewById(R.id.fLayout_standby_mode);
         tvLiveFlow = (TextView) viewGroup.findViewById(R.id.tv_live_flow);
     }
@@ -103,17 +106,24 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void setThumbnail(Context context, String token, Uri glideUrl) {
+        imgThumbnail.setVisibility(VISIBLE);
+        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
+        if (glideUrl == null || TextUtils.isEmpty(glideUrl.toString())) {
+            return;
+        }
         Glide.with(context)
                 .load(glideUrl)
                 .asBitmap()
                 .signature(new StringSignature(token))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleLoader(videoView));
+                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
     }
 
 
     @Override
     public void setThumbnail(Context context, String token, Bitmap bitmap) {
+        imgThumbnail.setVisibility(VISIBLE);
+        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
         if (bitmap == null) {
             AppLogger.e("preview bitmap is null");
             return;
@@ -133,7 +143,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                                 .asBitmap()
                                 .signature(new StringSignature(token))
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(new SimpleLoader(videoView)),
+                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
                         throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
     }
 
@@ -163,16 +173,25 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void onCreate(boolean isNormalView) {
         this.isNormalView = isNormalView;
+        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
     }
 
     @Override
     public void onLiveStart() {
+        if (imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
         Log.d(TAG, "onLiveStart");
+        if (subscription != null) subscription.unsubscribe();
     }
 
     @Override
     public void onLiveStop() {
-        tvLiveFlow.bringToFront();
+        if (isNormalView())
+            imgThumbnail.setVisibility(VISIBLE);
+        else {//全景view,也要显示黑色背景
+            imgThumbnail.setVisibility(VISIBLE);
+        }
+        imgThumbnail.bringToFront();
+        imgThumbnail.setImageResource(android.R.color.black);
         Log.d(TAG, "onLiveStop");
     }
 
@@ -207,10 +226,14 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     private static class SimpleLoader extends SimpleTarget<Bitmap> {
 
+        private WeakReference<ImageView> imageViewRef;
         private WeakReference<VideoViewFactory.IVideoView> videoViewWeakReference;
+        private boolean isNormalView;
 
-        public SimpleLoader(VideoViewFactory.IVideoView videoView) {
+        public SimpleLoader(ImageView imageView, VideoViewFactory.IVideoView videoView, boolean isNormalView) {
+            imageViewRef = new WeakReference<>(imageView);
             videoViewWeakReference = new WeakReference<>(videoView);
+            this.isNormalView = isNormalView;
 
         }
 
@@ -220,8 +243,17 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                 if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
                     return;
                 }
-                AppLogger.d("开始加载预览图");
-                videoViewWeakReference.get().loadBitmap(resource);
+                if (imageViewRef == null || imageViewRef.get() == null) {
+                    return;
+                }
+                if (isNormalView) {
+                    imageViewRef.get().setVisibility(VISIBLE);
+                    imageViewRef.get().setImageBitmap(resource);
+                } else {
+                    imageViewRef.get().setVisibility(GONE);
+                    videoViewWeakReference.get().loadBitmap(resource);
+                    AppLogger.d("开始加载全景预览图");
+                }
             } else {
                 AppLogger.d("开始加载预览图 is null? " + (resource == null));
             }
@@ -230,6 +262,16 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
             AppLogger.d("加载预览图失败 is onLoadFailed: " + MiscUtils.getErr(e));
+            if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
+                return;
+            }
+            if (imageViewRef == null || imageViewRef.get() == null) {
+                return;
+            }
+            imageViewRef.get().setVisibility(VISIBLE);
+            imageViewRef.get().setImageBitmap(BitmapFactory.decodeResource(videoViewWeakReference.get().getContext().getResources(),
+                    R.drawable.default_diagram_mask));
+            AppLogger.d("开始加载全景预览图");
         }
 
         @Override

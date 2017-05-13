@@ -15,6 +15,9 @@ import org.webrtc.videoengine.ViEAndroidGLES20;
 public class VideoViewFactory {
 
     public interface IVideoView {
+
+        Context getContext();
+
         /**
          * 全景配置360°
          */

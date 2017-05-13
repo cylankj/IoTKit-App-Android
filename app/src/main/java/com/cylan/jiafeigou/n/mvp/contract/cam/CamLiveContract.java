@@ -97,11 +97,14 @@ public interface CamLiveContract {
         boolean isUserVisible();
 
         /**
-         * speaker,mic,capture
-         *
-         * @param state
+         * speakerOn,micOn,captureOn
          */
-        void switchHotSeat(int state);
+        void switchHotSeat(boolean speakerOn,
+                           boolean speakerEnable,
+                           boolean micOn,
+                           boolean micEnable,
+                           boolean captureOn,
+                           boolean captureEnable);
     }
 
     interface Presenter extends BasePresenter {
@@ -224,6 +227,10 @@ public interface CamLiveContract {
         boolean isEarpiecePlug();
 
         void switchEarpiece(boolean s);
+
+        void saveHotSeatState();
+
+        void restoreHotSeatState();
     }
 
     class PrePlayType {

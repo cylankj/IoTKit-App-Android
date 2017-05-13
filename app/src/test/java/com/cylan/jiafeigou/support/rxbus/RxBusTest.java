@@ -508,6 +508,14 @@ public class RxBusTest {
 
     @Test
     public void testTimeout1() throws InterruptedException {
+
+        Observable.interval(1, TimeUnit.SECONDS)
+                .timeout(5, TimeUnit.SECONDS)
+                .subscribe(ret -> {
+                    System.out.println("...");
+                });
+
+
         RxBus.getCacheInstance().toObservable(String.class)
                 .timeout(5, TimeUnit.SECONDS)
                 .subscribe(new Action1<String>() {
