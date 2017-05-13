@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -95,6 +96,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             startService(new Intent(this, WakeupService.class));
             try2init();
             PreferencesUtils.init(getApplicationContext());
+            BugMonitor.init(getApplicationContext());
             PerformanceUtils.startTrace("appStart");
             PerformanceUtils.startTrace("FirstActivity");
             //Dagger2 依赖注入

@@ -31,7 +31,7 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
      * Used to name the worker thread, important only for debugging.
      */
     public HMSRegister() {
-        super("XiaoMiHMSRegister");
+        super("HMSRegister");
     }
 
     @Override
