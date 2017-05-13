@@ -127,7 +127,6 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(checkIsRegBack());
             compositeSubscription.add(getForgetPwdByMailSub());
-            compositeSubscription.add(getSmsCodeResultSub());
             compositeSubscription.add(checkSmsCodeBack());
             compositeSubscription.add(resetPwdBack());
         }
@@ -143,23 +142,6 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         bean.ret = JConstant.AUTHORIZE_MAIL;
                         bean.content = forgetPwdByMail.account;
                         getView().submitResult(bean);
-                    }
-                }, AppLogger::e);
-    }
-
-    private Subscription getSmsCodeResultSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.SmsCodeResult>() {
-                    @Override
-                    public void call(RxEvent.SmsCodeResult smsCodeResult) {
-                        if (smsCodeResult.error == 0) {
-                            //store the token .
-                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN,
-                                    smsCodeResult.token);
-                            PreferencesUtils.putLong(JConstant.KEY_REGISTER_SMS_TOKEN_TIME, System.currentTimeMillis());
-                            AppLogger.d("code:" + smsCodeResult.token);
-                        }
                     }
                 }, AppLogger::e);
     }

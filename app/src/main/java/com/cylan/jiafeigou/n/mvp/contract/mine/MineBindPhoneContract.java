@@ -104,12 +104,6 @@ public interface MineBindPhoneContract {
          */
         void sendChangePhoneReq(String newPhone, String token);
 
-        /**
-         * 获取验证码的回调
-         *
-         * @return
-         */
-        Subscription getCheckCodeCallback();
 
         /**
          * 获取到用户的信息

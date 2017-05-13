@@ -12,8 +12,6 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
@@ -24,7 +22,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -166,31 +163,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     }
 
     /**
-     * 获取到验证码的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription getCheckCodeCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.SmsCodeResult>() {
-                    @Override
-                    public void call(RxEvent.SmsCodeResult smsCodeResult) {
-                        if (smsCodeResult != null) {
-                            if (smsCodeResult.error == JError.ErrorOK) {
-                                AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
-                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
-                                getView().startCountTime();
-                            } else {
-                                getView().getSmsCodeResult(smsCodeResult.error);
-                            }
-                        }
-                    }
-                }, e -> AppLogger.d(e.getMessage()));
-    }
-
-    /**
      * 获取到用户信息
      *
      * @return
@@ -255,6 +227,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -262,7 +235,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription.add(openLoginBack());
             compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(getCheckPhoneCallback());
-            compositeSubscription.add(getCheckCodeCallback());
             compositeSubscription.add(checkVerifyCodeCallBack());
             compositeSubscription.add(changeAccountBack());
         }
@@ -271,6 +243,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }

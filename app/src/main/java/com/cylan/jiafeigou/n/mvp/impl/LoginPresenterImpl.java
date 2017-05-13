@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -124,7 +123,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     protected Subscription[] register() {
         return new Subscription[]{
                 resultVerifyCodeSub(),
-                smsCodeResultSub(),
                 switchBoxSub(),
                 loginPopBackSub(),
                 thirdAuthorizeBack(),
@@ -150,23 +148,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 });
     }
 
-    private Subscription smsCodeResultSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .delay(500, TimeUnit.MILLISECONDS)//set a delay
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.SmsCodeResult smsCodeResult) -> {
-                    if (getView().isLoginViewVisible() && JCache.isSmsAction) {
-//                            getView().registerResult(smsCodeResult.error);
-                        if (smsCodeResult.error == 0) {
-                            //store the token .
-                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
-                            PreferencesUtils.putLong(JConstant.KEY_REGISTER_SMS_TOKEN_TIME, System.currentTimeMillis());
-                        }
-                    }
-                }, (Throwable throwable) -> {
-                    AppLogger.e("" + throwable.getLocalizedMessage());
-                });
-    }
 
     private Subscription switchBoxSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)

@@ -207,7 +207,10 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnSendSMSResult(int i, String s) {
         AppLogger.d("OnSendSMSResult :" + i + "," + s);
-        RxBus.getCacheInstance().post(new RxEvent.SmsCodeResult(i, s));
+        //store the token .
+        if (i == 0)//0才有token
+            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, s);
+//        RxBus.getCacheInstance().post(new RxEvent.SmsCodeResult(i, s));
     }
 
     @Override

@@ -160,7 +160,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
-                                    "HW_APP_ID"          : "10515998",
+                                    "HW_APP_ID"          : "\\ 10515998",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1103156296",
