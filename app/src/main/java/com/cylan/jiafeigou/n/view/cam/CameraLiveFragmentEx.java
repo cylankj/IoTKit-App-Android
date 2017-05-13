@@ -133,7 +133,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
                         //下一步playing
-//                        CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+//                        CamLiveContract.LiveStream type = basePresenter.getLiveStream();
 //                        if (type.type == TYPE_LIVE) {
                         //不会发生这一幕的.
                         basePresenter.startPlay();
@@ -203,10 +203,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
      */
     private void initTvTextClick() {
         camLiveControlLayer.setLiveTextClick(v -> {
-            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+            CamLiveContract.LiveStream type = basePresenter.getLiveStream();
             if (type.type == TYPE_HISTORY) {
                 type.type = TYPE_LIVE;
-                basePresenter.updatePrePlayType(type);
+                basePresenter.updateLiveStream(type);
                 basePresenter.startPlay();
             }
         });
@@ -219,7 +219,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         if (!standby.standby) {
             //开始直播
-//            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+//            CamLiveContract.LiveStream type = basePresenter.getLiveStream();
 //            if (type.type == TYPE_LIVE)
             basePresenter.startPlay();
 //            else if (type.type == TYPE_HISTORY) {
@@ -264,7 +264,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 basePresenter.startPlayHistory(time);
                 return;
             }
-//            CamLiveContract.PrePlayType prePlayType = basePresenter.getPrePlayType();
+//            CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
 //            if (prePlayType.type == TYPE_LIVE) {
             basePresenter.startPlay();
 //            } else if (prePlayType.type == TYPE_HISTORY) {
@@ -362,7 +362,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     }
                 });
         camLiveControlLayer.setPlayBtnListener(v -> {
-            CamLiveContract.PrePlayType prePlayType = basePresenter.getPrePlayType();
+            CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
             if (prePlayType.type == TYPE_LIVE) return;
             if (basePresenter.getPlayState() == PLAY_STATE_PREPARE)
                 return;
@@ -540,8 +540,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
-        camLiveControlLayer.onRtcpCallback(basePresenter.getPlayType(), rtcp);
         Log.d("onRtcp", "onRtcp: " + new Gson().toJson(rtcp));
+        camLiveControlLayer.onRtcpCallback(basePresenter.getPlayType(), rtcp);
     }
 
     @Override

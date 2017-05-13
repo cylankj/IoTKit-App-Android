@@ -75,7 +75,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 long seq = appCmd.robotSetData(uuid, list);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
-                AppLogger.d("更新server dp,seq:" + seq);
+                AppLogger.d("更新server dp,seq:" + seq + "," + list);
             } catch (Exception e) {
                 AppLogger.e(e.getMessage());
                 subscriber.onError(e);

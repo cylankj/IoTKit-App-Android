@@ -351,7 +351,7 @@
 //        if (isStandBY != null && isStandBY.standby) return;
 //        if (!getUserVisibleHint()) return;//看不见，就不需要播放了。
 //        if (basePresenter.getPlayState() != PLAY_STATE_PLAYING) {
-//            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+//            CamLiveContract.LiveStream type = basePresenter.getLiveStream();
 //            if (type.type == TYPE_LIVE) {
 //                basePresenter.startPlay(TYPE_LIVE);
 //            } else {

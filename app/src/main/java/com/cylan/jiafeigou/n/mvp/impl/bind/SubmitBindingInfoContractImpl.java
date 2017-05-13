@@ -135,10 +135,11 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                     }
                     return device;
                 })
-                .filter(device -> device != null)
+                .filter(device -> device != null && !TextUtils.isEmpty(device.uuid))
                 .first()
                 .flatMap(s -> Observable.interval(0, 3, TimeUnit.SECONDS))
                 .map(s -> {
+                    sendTimeZone(uuid);
                     ArrayList<JFGDPMsg> params = new ArrayList<>(1);
                     JFGDPMsg msg = new JFGDPMsg(201, 0);
                     params.add(msg);
@@ -220,7 +221,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                     timeZone.timezone = TimeZone.getDefault().getID();
                     try {
                         BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, 214);
-                        AppLogger.d("设置设备时区:" + uuid);
+                        AppLogger.d("设置设备时区:" + uuid + " ,offset:" + timeZone);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }

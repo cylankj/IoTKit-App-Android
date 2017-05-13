@@ -218,9 +218,9 @@ public interface CamLiveContract {
          */
         Observable<IData> assembleTheDay(long timeStartInSecond);
 
-        PrePlayType getPrePlayType();
+        LiveStream getLiveStream();
 
-        void updatePrePlayType(PrePlayType prePlayType);
+        void updateLiveStream(LiveStream liveStream);
 
         float getVideoPortHeightRatio();
 
@@ -233,14 +233,14 @@ public interface CamLiveContract {
         void restoreHotSeatState();
     }
 
-    class PrePlayType {
+    class LiveStream {
         public int type = TYPE_LIVE;
         public long time;
         public int playState;
 
         @Override
         public String toString() {
-            return "PrePlayType{" +
+            return "LiveStream{" +
                     "type=" + type +
                     ", time=" + time +
                     ", playState=" + playState +

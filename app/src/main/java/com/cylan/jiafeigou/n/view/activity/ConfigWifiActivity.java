@@ -195,6 +195,10 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                             //is cam
                             Intent intent = new Intent(this, BindCamActivity.class);
                             startActivity(intent);
+                        } else if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
+                                getString(R.string.RuiShi_Name))) {
+                            Intent intent = new Intent(this, BindRsCamActivity.class);
+                            startActivity(intent);
                         } else {
                             //default bell
                             Intent intent = new Intent(this, BindBellActivity.class);

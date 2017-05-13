@@ -41,7 +41,6 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
@@ -59,6 +58,10 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
@@ -533,9 +536,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             getContext().getString(R.string.Historical_Read),
                             getContext().getString(R.string.Historical_Read),
                             getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                CamLiveContract.PrePlayType prePlayType = presenter.getPrePlayType();
+                                CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
                                 prePlayType.type = TYPE_LIVE;
-                                presenter.updatePrePlayType(prePlayType);
+                                presenter.updateLiveStream(prePlayType);
                                 presenter.startPlay();
                             });
                 break;
@@ -547,9 +550,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             getContext().getString(R.string.Historical_Failed),
                             getContext().getString(R.string.Historical_Failed),
                             getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                CamLiveContract.PrePlayType prePlayType = presenter.getPrePlayType();
+                                CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
                                 prePlayType.type = TYPE_LIVE;
-                                presenter.updatePrePlayType(prePlayType);
+                                presenter.updateLiveStream(prePlayType);
                                 presenter.startPlay();
                             });
                 break;
@@ -561,9 +564,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             getContext().getString(R.string.Historical_No),
                             getContext().getString(R.string.Historical_No),
                             getContext().getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                CamLiveContract.PrePlayType prePlayType = presenter.getPrePlayType();
+                                CamLiveContract.LiveStream prePlayType = presenter.getLiveStream();
                                 prePlayType.type = TYPE_LIVE;
-                                presenter.updatePrePlayType(prePlayType);
+                                presenter.updateLiveStream(prePlayType);
                                 presenter.startPlay();
                             });
                 break;
@@ -647,17 +650,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.showFlowView(true, flow);
         //分享账号不显示啊.
         if (JFGRules.isShareDevice(uuid)) return;
-        boolean useLocalTimeZone = false;
-        if (rtcp.timestamp == 0) {
-            useLocalTimeZone = true;
-            rtcp.timestamp = (int) (System.currentTimeMillis() / 1000);
-        }
-        String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                        + "|%s",
-                type == 1 ? (useLocalTimeZone ? TimeUtils.getLiveTime(rtcp.timestamp * 1000L) : TimeUtils.getHistoryTime1(rtcp.timestamp * 1000L))
-                        : TimeUtils.getLiveTime(rtcp.timestamp * 1000L));
-        ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
-                .setContent(content);
+        setLiveRectTime(livePlayType, rtcp.timestamp);
         //点击事件
         if (liveTimeRectListener == null) {
             liveTimeRectListener = v -> {
@@ -688,6 +681,29 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             };
             (layoutD.findViewById(R.id.live_time_layout)).setOnClickListener(liveTimeRectListener);
         }
+    }
+
+    private TimeZone mDeviceTimezone;
+
+    private void setLiveRectTime(int type, long timestamp) {
+        //需要考虑设备的时区.他娘的.
+        if (mDeviceTimezone == null) {
+            mDeviceTimezone = TimeZone.getDefault();
+        }
+        //全景的时间戳是0,需要根据设备的时区转化.
+        boolean useDefaultTimezone = timestamp == 0;
+        if (useDefaultTimezone) timestamp = System.currentTimeMillis() / 1000;
+        String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
+                        + "|%s",
+                getTime(mDeviceTimezone, timestamp * 1000L, useDefaultTimezone));
+        ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
+                .setContent(content);
+    }
+
+    private String getTime(TimeZone timeZone, long time, boolean useDefaultLocal) {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd HH:mm", useDefaultLocal ? Locale.getDefault() : Locale.UK);
+        format.setTimeZone(timeZone);
+        return format.format(new Date(time));
     }
 
     public void setFlipListener(FlipImageView.OnFlipListener flipListener) {
@@ -736,12 +752,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
             post(() -> {
-                String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback)
-                                + "|%s",
-                        livePlayType == 1 ? TimeUtils.getHistoryTime1(time) :
-                                TimeUtils.getLiveTime(time));
-                ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
-                        .setContent(content);
+                setLiveRectTime(livePlayType, time);
                 prepareLayoutDAnimation(state == STATE_FINISH);
             });
         });
@@ -830,6 +841,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
         } else
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
+        DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
+        mDeviceTimezone = TimeZone.getTimeZone(zone.timezone);
+        AppLogger.d("得到设备时区");
     }
 
     @Override
