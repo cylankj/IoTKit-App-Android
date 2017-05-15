@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.view;
 
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jfgapp.interfases.AppCmd;
@@ -127,4 +128,5 @@ public interface JFGSourceManager {
 
     <T> void addInterceptor(Long integer, DataSourceManager.Interceptors interceptors);
 
+    void handleSystemNotification(ArrayList<JFGFeedbackInfo> list);
 }

@@ -18,13 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
-import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
@@ -72,7 +70,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private HomeMineHelpSuggestionContract.Presenter presenter;
     private boolean resendFlag;
-    private boolean hasSendLog = false;
 
     private static final String DIALOG_KEY = "dialogFragment";
 
@@ -253,8 +250,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.notifyDataSetHasChanged();
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
         presenter.saveIntoDb(autoReplyBean);
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
-
+//        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     public MineHelpSuggestionBean addSystemAutoReply() {
@@ -313,7 +309,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void sendLogResult(int code) {
 //        hideLoadingDialog();
-        hasSendLog = true;
     }
 
     /**

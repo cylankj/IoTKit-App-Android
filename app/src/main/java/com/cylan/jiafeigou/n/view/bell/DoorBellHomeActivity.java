@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -34,14 +36,17 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
+import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
@@ -104,6 +109,12 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private Subscription pageSub;
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FirmwareCheckerService.checkVersion(uuid);
+    }
+
+    @Override
     protected void initViewAndListener() {
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
@@ -154,6 +165,17 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected void setActivityComponent(ActivityComponent activityComponent) {
         activityComponent.inject(this);
+    }
+
+    @Override
+    public void showFirmwareDialog() {
+        AlertDialogManager.getInstance().showDialog(this,
+                getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    Intent intent = new Intent(this, FirmwareUpdateActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    startActivity(intent);
+                }, getString(R.string.CANCEL), null);
     }
 
     @Override

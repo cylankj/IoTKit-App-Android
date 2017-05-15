@@ -77,7 +77,6 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-
     <permission
         android:name="${ApplicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -133,6 +132,12 @@
         <meta-data
             android:name="GCM_APP_ID"
             android:value="${GCM_APP_ID}" />
+        <meta-data
+            android:name="XiaoMiAppId"
+            android:value="${XiaoMiAppId}" />
+        <meta-data
+            android:name="XiaoMiAppKey"
+            android:value="${XiaoMiAppKey}" />
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
@@ -614,18 +619,19 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-
             android:name=".n.view.firmware.FirmwareUpdateActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".n.view.activity.BindRsCamActivity"
@@ -634,7 +640,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".n.view.panorama.PanoramaDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -644,6 +649,12 @@
         <service
             android:name=".n.engine.FirmwareCheckerService"
             android:exported="true" />
+
+        <activity
+            android:name=".n.view.mine.FeedbackActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/CamActivityTheme" />
     </application>
 
 </manifest>

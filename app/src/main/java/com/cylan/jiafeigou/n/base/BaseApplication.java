@@ -44,7 +44,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private DaemonClient mDaemonClient;
     private static AppComponent appComponent;
     private static int viewCount = 0;
-    public static int onTrimMemoryLevel;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -137,7 +136,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        onTrimMemoryLevel = level;
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
