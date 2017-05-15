@@ -83,7 +83,7 @@ public class KeyboardUtil {
      * @see #getValidPanelHeight(Context)
      * @see #attach(Activity, IPanelHeightTarget)
      * <p/>
-     * Handle and refresh the keyboard height by {@link #attach(Activity, IPanelHeightTarget)}.
+     * Handle and fetch the keyboard height by {@link #attach(Activity, IPanelHeightTarget)}.
      */
     public static int getKeyboardHeight(final Context context) {
         if (LAST_SAVE_KEYBOARD_HEIGHT == 0) {
@@ -147,7 +147,7 @@ public class KeyboardUtil {
     /**
      * Recommend invoked by {@link Activity#onCreate(Bundle)}
      * For align the height of the keyboard to {@code target} as much as possible.
-     * For save the refresh the keyboard height to shared-preferences.
+     * For save the fetch the keyboard height to shared-preferences.
      *
      * @param activity contain the view
      * @param target   whose height will be align to the keyboard height.
@@ -337,7 +337,7 @@ public class KeyboardUtil {
             if (changed) {
                 final int validPanelHeight = KeyboardUtil.getValidPanelHeight(getContext());
                 if (this.panelHeightTarget.getHeight() != validPanelHeight) {
-                    // Step3. refresh the panel's height with valid-panel-height which refer to
+                    // Step3. fetch the panel's height with valid-panel-height which refer to
                     // the last keyboard height
                     this.panelHeightTarget.refreshHeight(validPanelHeight);
                 }

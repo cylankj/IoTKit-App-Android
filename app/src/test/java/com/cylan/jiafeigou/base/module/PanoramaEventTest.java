@@ -20,4 +20,11 @@ public class PanoramaEventTest {
 
     }
 
+
+    @Test
+    public void sss() {
+        long s1 = 88888;
+        long s2 = 100000;
+        System.out.println((float) s1 / s2);
+    }
 }

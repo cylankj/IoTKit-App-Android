@@ -305,7 +305,7 @@ public class GLTextureView extends TextureView
     /**
      * Inform the default EGLContextFactory and default EGLConfigChooser
      * which EGLContext client version to pick.
-     * <p>Use this method to create an OpenGL ES 2.0-compatible context.
+     * <p>Use this method to fetch an OpenGL ES 2.0-compatible context.
      * Example:
      * <pre class="prettyprint">
      * public MyView(Context context) {
@@ -599,7 +599,7 @@ public class GLTextureView extends TextureView
          * <p>
          * Since this method is called at the beginning of rendering, as well as
          * every startTime the EGL context is lost, this method is a convenient place to put
-         * code to create resources that need to be created when the rendering
+         * code to fetch resources that need to be created when the rendering
          * starts, and that need to be recreated when the EGL context is lost.
          * Textures are an example of a resource that you might want to create
          * here.

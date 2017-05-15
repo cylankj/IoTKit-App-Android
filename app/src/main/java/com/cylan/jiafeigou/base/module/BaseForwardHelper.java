@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -57,18 +56,6 @@ public class BaseForwardHelper {
                 .map(accountArrived -> this);
     }
 
-    protected byte[] assemble(int msgId, Object msg) {
-        PanoramaEvent.MsgForward forward = new PanoramaEvent.MsgForward();
-        forward.dst = Collections.singletonList(uuid);
-        forward.mCaller = "";
-        forward.mCallee = "";
-        forward.mId = 20006;
-        forward.isAck = 1;
-        forward.type = msgId;
-        forward.msg = pack(msg);
-        return pack(forward);
-    }
-
     public <T> Observable<T> sendForward(int msgId, Object msg) {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .filter(accountArrived -> accountArrived.account.isOnline())
@@ -88,16 +75,11 @@ public class BaseForwardHelper {
                         forward.msg = pack(msg);
                     }
                     AppLogger.d("正在向设备发送透传消息:" + new Gson().toJson(forward) + ":" + new Gson().toJson(msg));
-                    try {
-                        AppLogger.d("正在反解析发送的透传消息:"+new Gson().toJson(unpackData(pack(forward), PanoramaEvent.MsgForward.class)));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    appCmd.SendForwardData(assemble(msgId, pack(forward)));
+                    int ret = appCmd.SendForwardData(pack(forward));
+                    AppLogger.e("透传消息返回值:" + ret);
                     return seq;
                 })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(PanoramaEvent.MsgForward.class).filter(rsp -> rsp.mSeq == seq))
-                .first()
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(PanoramaEvent.MsgForward.class).filter(rsp -> rsp.mSeq == seq).first())
                 .map(this::parse);
     }
 
@@ -171,7 +153,7 @@ public class BaseForwardHelper {
                     return (T) fileRsp;
                 case 9:       //TYPE_VIDEO_BEGIN_REQ            = 9   开始录像请求
                 case 10:      //TYPE_VIDEO_BEGIN_RSP            = 10  开始录像响应
-                    return (T) unpackData(forward.msg, PanoramaEvent.MsgRsp.class);
+                    return (T) new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
                 case 11:      //TYPE_VIDEO_END_REQ              = 11  停止录像请求
                 case 12:      //TYPE_VIDEO_END_RSP              = 12  停止录像响应 PanoramaEvent.TP tp = unpackData(forward.msg, PanoramaEvent.TP.class);
                     PanoramaEvent.TP vp = unpackData(forward.msg, PanoramaEvent.TP.class);
@@ -184,10 +166,10 @@ public class BaseForwardHelper {
                     return (T) unpackData(forward.msg, PanoramaEvent.MsgVideoStatusRsp.class);
                 case 15:      //TYPE_FILE_LOGO_REQ              = 15  设置水印请求
                 case 16:      //TYPE_FILE_LOGO_RSP              = 16  设置水印响应
-                    return (T) unpackData(forward.msg, PanoramaEvent.MsgRsp.class);
+                    return (T) new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
                 case 17:      //TYPE_FILE_RESOLUTION_REQ        = 17  设置视频分辨率请求
                 case 18:      //TYPE_FILE_RESOLUTION_RSP        = 18  视频分辨率响应
-                    return (T) unpackData(forward.msg, PanoramaEvent.MsgResolutionRsp.class);
+                    return (T) new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
                 case 20:      //TYPE_FILE_GET_LOGO_RSP          = 20  查询水印响应
                     return (T) unpackData(forward.msg, PanoramaEvent.MsgLogoRsp.class);
                 case 21:      //TYPE_FILE_GET_RESOLUTION_REQ    = 21  查询视频分辨率请求

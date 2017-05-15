@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -174,7 +173,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         handleMsgCountTime(holder, uuid, mDevice);
         //右下角状态
         setItemState(holder, uuid, net);
-        AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,mDevice.pid:%s", uuid, mDevice.pid));
+//        AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,mDevice.pid:%s", uuid, mDevice.pid));
     }
 
     private String getAlias(String uuid, String alias) {

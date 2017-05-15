@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -24,6 +25,7 @@ import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.lzy.okgo.OkGo;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import javax.inject.Inject;
@@ -116,6 +118,7 @@ public final class BaseInitializationManager {
         initDialogManager();
         initPushResult();
         initDeviceInformationFetcher();
+        OkGo.init((Application) appContext);
         hasInitFinished = true;
         if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.GlobalInitFinishEvent.class)) {
             RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);

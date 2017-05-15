@@ -229,7 +229,7 @@ public class GLRoundedGeometry {
      * @param radius    the desired radius in the x and y axis, in viewport dimensions.
      * @param rads0     the initial angle.
      * @param rads1     the final angle.
-     * @param triangles the amount of triangles to create.
+     * @param triangles the amount of triangles to fetch.
      * @param viewPort  the bounds of the current GL viewport, this is used to calculate the texture
      *                  mapping.
      * @param z         the z coordinate.

@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.lzy.okserver.download.DownloadInfo;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,9 +28,9 @@ public interface PanoramaAlbumContact {
         @IntDef
         @Retention(RetentionPolicy.SOURCE)
         @interface ALBUM_VIEW_MODE {
-            int MODE_BOTH = 0;
+            int MODE_PHOTO = 0;
             int MODE_PANORAMA = 1;
-            int MODE_PHOTO = 2;
+            int MODE_BOTH = 2;
         }
 
         void onAppend(List<PanoramaItem> list, boolean isRefresh);
@@ -53,6 +54,8 @@ public interface PanoramaAlbumContact {
         public int time;
         public int duration;//如果 type 为1,duration为视频时长
         public boolean selected;
+        public DownloadInfo downloadInfo;
+        public int location = -1; //0:本地;1:设备;2:本地+设备
 
         public PanoramaItem(String name) {
             String[] split = name.split("\\.");
@@ -121,14 +124,9 @@ public interface PanoramaAlbumContact {
         /**
          * 刷新列表d
          *
-         * @param asc
+         * @param time
          */
-        void refresh(boolean asc);
-
-        /**
-         * 手动下载
-         */
-        void downloadFile(String fileName);
+        void fetch(int time, int fetchLocation);
 
         void deletePanoramaItem(List<PanoramaItem> items);
     }

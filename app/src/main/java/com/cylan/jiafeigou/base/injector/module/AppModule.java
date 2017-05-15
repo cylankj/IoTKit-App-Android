@@ -7,12 +7,14 @@ import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.HttpUrl;
 
 /**
  * Created by yanzhendong on 2017/4/12.
@@ -28,7 +30,16 @@ public class AppModule {
     @Provides
     @Singleton
     public static HttpProxyCacheServer provideHttpProxyCacheServer(@ContextLife Context context) {
-        return new HttpProxyCacheServer.Builder(context).maxCacheSize(Long.MAX_VALUE).maxCacheFilesCount(Integer.MAX_VALUE).build();
+        return new HttpProxyCacheServer
+                .Builder(context)
+                .maxCacheSize(Long.MAX_VALUE)
+                .maxCacheFilesCount(Integer.MAX_VALUE)
+                .fileNameGenerator(url -> {
+                    String encodedPath = HttpUrl.parse(url).encodedPath();
+                    AppLogger.d("HttpProxyCacheServer" + encodedPath);
+                    return encodedPath;
+                })
+                .build();
     }
 
     @Provides

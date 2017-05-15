@@ -46,7 +46,7 @@ import static com.cylan.panorama.Panoramic720View.DM_LittlePlanet;
 
 /**
  * Use the {@link Pan720FullFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * fetch an instance of this fragment.
  */
 public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presenter> {
 

@@ -9,8 +9,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.toolsfinal.io.Charsets;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
@@ -19,11 +17,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.internal.http.RealResponseBody;
-import okio.Buffer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -38,6 +31,7 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class BasePanoramaApiHelper {
     private IHttpApi httpApi;
+    private BaseForwardHelper forwardHelper;
     private DeviceInformation deviceInformation;
     private static BasePanoramaApiHelper apiHelper;
 
@@ -48,38 +42,30 @@ public class BasePanoramaApiHelper {
     @Inject
     public BasePanoramaApiHelper() {
         apiHelper = this;
-        RxBus.getCacheInstance().toObservable(DeviceInformation.class)
-                .observeOn(Schedulers.io())
-                .retry()
-                .subscribe(info -> {
-                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                            .addInterceptor(chain -> {
-                                Request request = chain.request();
-                                Response proceed = chain.proceed(request);
-                                String string = proceed.body().string();
-                                Response build = proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
-                                AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-                                return build;
-                            })
-                            .build();
-                    Retrofit retrofit = new Retrofit.Builder().client(okHttpClient)
-                            .baseUrl("http://" + info.ip)
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addConverterFactory(ImageFileConverterFactory.create())
-                            .build();
-                    deviceInformation = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
-                    httpApi = retrofit.create(IHttpApi.class);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.HttpApiArrived(httpApi));
-                }, AppLogger::e);
-
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
-                .filter(ret -> !ret.success)
                 .observeOn(Schedulers.io())
-                .subscribe(ret -> {
-                    httpApi = null;
-                    deviceInformation = null;
-                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.HttpApiArrived.class);
+                .subscribe(fetchEvent -> {
+                    if (fetchEvent.success) {
+                        deviceInformation = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
+                        if (deviceInformation != null && deviceInformation.ip != null) {
+                            Retrofit retrofit = new Retrofit.Builder().client(BaseApplication.getAppComponent().getOkHttpClient())
+                                    .baseUrl("http://" + deviceInformation.ip)
+                                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+                            httpApi = retrofit.create(IHttpApi.class);
+//                            DownloadPercentManager.getInstance().init(httpApi);
+
+                            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
+                        } else {
+                            forwardHelper = BaseForwardHelper.getInstance();
+                            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+                        }
+                    } else {
+                        httpApi = null;
+                        deviceInformation = null;
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);
+                    }
                 }, AppLogger::e);
     }
 
@@ -114,27 +100,19 @@ public class BasePanoramaApiHelper {
                 .subscribeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<IHttpApi> getHttpApi() {
-        return BaseDeviceInformationFetcher.getInstance().fetchDeviceInformation()
-                .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.HttpApiArrived.class).first())
+    private Observable<RxEvent.PanoramaApiAvailable> getAvailableApi() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
                 .timeout(5, TimeUnit.SECONDS)
-                .map(ret -> httpApi)
+                .first()
+                .map(panoramaApiAvailable -> {
+                    AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
+                    return panoramaApiAvailable;
+                })
                 .observeOn(Schedulers.io());
     }
 
-    public Observable<BaseForwardHelper> getForwardHelper() {
-        return BaseForwardHelper.getInstance().getApi();
-    }
-
-
-    public Observable<File> download(String fileName) {
-        return null;
-    }
-
-
-    public Observable<File> getThumbPicture(String thumb) {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(BaseForwardHelper::empty) : getHttpApi().flatMap(api -> api.getThumbPicture(thumb));
+    public void download(String fileName, DownloadPercent.DownloadListener listener) {
+        DownloadPercentManager.getInstance().download(deviceInformation.uuid, fileName, listener);
     }
 
     /**
@@ -142,86 +120,58 @@ public class BasePanoramaApiHelper {
      */
 
     public Observable<PanoramaEvent.MsgFileRsp> delete(int deleteType, List<String> files) {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(3, new PanoramaEvent.MsgFileReq(files, deleteType))) :
-                getHttpApi().flatMap(api -> api.delete(deleteType, files));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.delete(deleteType, files) : forwardHelper.sendForward(3, new PanoramaEvent.MsgFileReq(files, deleteType)));
     }
 
     public Observable<PanoramaEvent.MsgFileListRsp> getFileList(int beginTime, int endTime, int count) {
-        return httpApi == null ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count))) :
-                getHttpApi().flatMap(api -> api.getFileList(beginTime, endTime, count));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : forwardHelper.sendForward(5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> snapShot() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(7, null)) :
-                getHttpApi().flatMap(IHttpApi::snapShot);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.snapShot() : forwardHelper.sendForward(7, null));
     }
 
     public Observable<PanoramaEvent.MsgRsp> startRec(int videoType) {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(9, new PanoramaEvent.MsgReq(videoType))) :
-                getHttpApi().flatMap(api -> api.startRec(videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType) : forwardHelper.sendForward(9, videoType));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> stopRec(int videoType) {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(11, new PanoramaEvent.MsgReq(videoType))) :
-                getHttpApi().flatMap(api -> api.stopRec(videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType) : forwardHelper.sendForward(11, videoType));
     }
 
     public Observable<PanoramaEvent.MsgVideoStatusRsp> getRecStatus() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(13, null)) :
-                getHttpApi().flatMap(IHttpApi::getRecStatus);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus() : forwardHelper.sendForward(13, null));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(BaseForwardHelper::empty) :
-                getHttpApi().flatMap(api -> sdFormat());
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.sdFormat() : forwardHelper.empty());
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> getSdInfo() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendDataPoint(204)) :
-                getHttpApi().flatMap(IHttpApi::getSdInfo);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getSdInfo() : forwardHelper.sendDataPoint(204));
     }
 
     public Observable<PanoramaEvent.MsgPowerLineRsp> getPowerLine() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(BaseForwardHelper::empty) :
-                getHttpApi().flatMap(IHttpApi::getPowerLine);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getPowerLine() : forwardHelper.empty());
     }
 
     public Observable<PanoramaEvent.MsgBatteryRsp> getBattery() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendDataPoint(206)) :
-                getHttpApi().flatMap(IHttpApi::getBattery);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getBattery() : forwardHelper.sendDataPoint(206));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setLogo(int logType) {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(15, new PanoramaEvent.MsgReq(logType))) :
-                getHttpApi().flatMap(api -> api.setLogo(logType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setLogo(logType) : forwardHelper.sendForward(15, logType));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setResolution(int videoStandard) {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(17, null)) :
-                getHttpApi().flatMap(api -> api.setResolution(videoStandard));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setResolution(videoStandard) : forwardHelper.sendForward(17, null));
     }
 
     public Observable<PanoramaEvent.MsgLogoRsp> getLogo() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(16, null)) :
-                getHttpApi().flatMap(IHttpApi::getLogo);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getLogo() : forwardHelper.sendForward(16, null));
     }
 
     public Observable<PanoramaEvent.MsgResolutionRsp> getResolution() {
-        return httpApi == null && BaseApplication.isOnline() ?
-                getForwardHelper().flatMap(forward -> forward.sendForward(21, null)) :
-                getHttpApi().flatMap(IHttpApi::getResolution);
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getResolution() : forwardHelper.sendForward(21, null));
     }
 }

@@ -13,7 +13,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //    @Override
 //    public void onStart() {
 //        super.onStart();
-//        refresh(false);//下拉刷新
+//        fetch(false);//下拉刷新
 //        Observable.just("make")
 //                .subscribeOn(Schedulers.newThread())
 //                .observeOn(Schedulers.newThread())
@@ -313,7 +313,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //
 //    private void judgeLoadMore() {
 //        if (mView != null && ListUtils.getSize(mView.getList()) > 0)
-//            refresh(true);//刷列表,loadMore形式
+//            fetch(true);//刷列表,loadMore形式
 //    }
 //
 //    private ArrayList<PAlbumBean> convert(List<DownloadFile> list, boolean assembleDate) {
@@ -438,7 +438,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //     * @param lt     less than
 //     * @param goNext
 //     */
-//    private void refresh(boolean lt, boolean goNext) {
+//    private void fetch(boolean lt, boolean goNext) {
 //        ArrayList<PAlbumBean> list = mView.getList();
 //        int startTime = 0;
 //        if (list == null || list.size() == 0) {
@@ -489,8 +489,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //    }
 //
 //    @Override
-//    public void refresh(boolean loadMore) {
-//        refresh(loadMore, false);
+//    public void fetch(boolean loadMore) {
+//        fetch(loadMore, false);
 //    }
 //
 //    @Override

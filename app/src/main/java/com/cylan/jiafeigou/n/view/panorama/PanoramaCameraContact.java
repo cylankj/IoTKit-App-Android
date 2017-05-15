@@ -66,26 +66,13 @@ public interface PanoramaCameraContact {
 
         void onNetWorkChangedToWiFi();
 
-        void onMakePhotoGraphFailed();
-
-        void onSDCardError(int sdcard_errno);
-
-        void onHttpConnectionToDeviceError();
-
         void onDisableControllerView();
 
         void onEnableControllerView();
 
         void onShowPreviewPicture(String picture);
 
-
         void onSwitchSpeedMode(@SPEED_MODE int mode);
-
-        void onSDCardUnMounted();
-
-        void onSDCardMemoryFull();
-
-        void onDeviceBatteryLow();
 
         void onRefreshVideoRecordUI(int second, int type);
 
@@ -99,7 +86,8 @@ public interface PanoramaCameraContact {
 
         void onStopVideoRecordError(int type, int ret);
 
-        void onMakePhotoGraphError(int ret);
+        void onReportError(int err);
+
     }
 
     interface Presenter extends ViewablePresenter<View> {
@@ -112,8 +100,6 @@ public interface PanoramaCameraContact {
         void checkAndInitRecord();
 
         void switchVideoResolution(@View.SPEED_MODE int mode);
-
-        boolean isHttpApiInitFinished();
 
         void startVideoRecord(int type);
 

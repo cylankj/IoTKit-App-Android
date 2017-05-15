@@ -37,7 +37,7 @@ public class ViewUtil {
         if (view.isInEditMode()) {
             return false;
         }
-        Log.d(TAG, String.format("refresh Height %d %d", view.getHeight(), aimHeight));
+        Log.d(TAG, String.format("fetch Height %d %d", view.getHeight(), aimHeight));
 
         if (view.getHeight() == aimHeight) {
             return false;

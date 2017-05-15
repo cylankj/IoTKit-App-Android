@@ -447,7 +447,7 @@ public class BaseForHelper {
 //        }
 //
 //        public Observable<Integer> makeVideoProgressUpdate(int offset, int type) {
-//            return Observable.create(subscriber -> {
+//            return Observable.fetch(subscriber -> {
 //                if (offset == 0 && type == 1) {//开始录制8秒短视频
 //                    mView.onShortVideoStarted();
 //                } else if (offset == 0 && type == 2) {//开始录制长视频

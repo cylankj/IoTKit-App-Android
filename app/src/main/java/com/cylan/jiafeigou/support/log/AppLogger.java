@@ -185,7 +185,7 @@ public class AppLogger {
      * @param throwable The message you would like logged.
      */
     public static void e(Throwable throwable) {
-        final String content = buildMessage(throwable == null ? null : throwable.getLocalizedMessage());
+        final String content = buildMessage(throwable == null ? null : throwable.getMessage());
         if (DEBUG)
             android.util.Log.e(TAG, content);
         if (permissionGranted)

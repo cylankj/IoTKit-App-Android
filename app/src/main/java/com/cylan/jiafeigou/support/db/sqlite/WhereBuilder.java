@@ -39,7 +39,7 @@ public class WhereBuilder {
     }
 
     /**
-     * create new instance
+     * fetch new instance
      *
      * @return
      */

@@ -142,7 +142,7 @@ public class IOUtils {
      * - we don't care if the buffer is created multiple times (the data is ignored)
      * - we always use the same size buffer, so if it it is recreated it will still be OK
      * (if the buffer size were variable, we would need to synch. to ensure some other thread
-     * did not create a smaller one)
+     * did not fetch a smaller one)
      */
     private static char[] SKIP_CHAR_BUFFER;
     private static byte[] SKIP_BYTE_BUFFER;
@@ -2161,7 +2161,7 @@ public class IOUtils {
         /*
          * N.B. no need to synchronize this because: - we don't care if the buffer is created multiple times (the data
          * is ignored) - we always use the same size buffer, so if it it is recreated it will still be OK (if the buffer
-         * size were variable, we would need to synch. to ensure some other thread did not create a smaller one)
+         * size were variable, we would need to synch. to ensure some other thread did not fetch a smaller one)
          */
         if (SKIP_BYTE_BUFFER == null) {
             SKIP_BYTE_BUFFER = new byte[SKIP_BUFFER_SIZE];
@@ -2198,7 +2198,7 @@ public class IOUtils {
         /*
          * N.B. no need to synchronize this because: - we don't care if the buffer is created multiple times (the data
          * is ignored) - we always use the same size buffer, so if it it is recreated it will still be OK (if the buffer
-         * size were variable, we would need to synch. to ensure some other thread did not create a smaller one)
+         * size were variable, we would need to synch. to ensure some other thread did not fetch a smaller one)
          */
         if (SKIP_CHAR_BUFFER == null) {
             SKIP_CHAR_BUFFER = new char[SKIP_BUFFER_SIZE];

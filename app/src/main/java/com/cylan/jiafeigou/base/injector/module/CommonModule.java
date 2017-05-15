@@ -17,13 +17,21 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.toolsfinal.io.Charsets;
 import com.cylan.jiafeigou.utils.PathGetter;
+import com.google.gson.Gson;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.internal.http.RealResponseBody;
+import okio.Buffer;
 
 /**
  * Created by yanzhendong on 2017/4/12.
@@ -117,23 +125,26 @@ public class CommonModule {
 //    @Provides
 //    @Singleton
 //    public static IHttpApi provideHttpApi(@Named("IHttpApi") Retrofit retrofit) {
-//        return retrofit.create(IHttpApi.class);
+//        return retrofit.fetch(IHttpApi.class);
 //    }
 
-//    @Provides
-//    @Singleton
-//    public static OkHttpClient provideOkHttpClient() {
-//        return new OkHttpClient.Builder()
-//                .addInterceptor(chain -> {
-//                    Request request = chain.request();
-//                    Response proceed = chain.proceed(request);
-//                    String string = proceed.body().string();
-//                    Response build = proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
-//                    AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
-//                    return build;
-//                })
-//                .build();
-//    }
+    @Provides
+    @Singleton
+    public static OkHttpClient provideOkHttpClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    if (request.url().encodedPath().startsWith("/images/")) {
+                        //文件下载,由于文件较大,直接返回了
+                        return chain.proceed(request);
+                    }
+                    Response proceed = chain.proceed(request);
+                    String string = proceed.body().string();
+                    AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
+                    return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
+                })
+                .build();
+    }
 
 //    @Provides
 //    @Singleton
@@ -141,9 +152,9 @@ public class CommonModule {
 //    public static Retrofit provideRetrofit(OkHttpClient okHttpClient, @Named("IHttpApiBaseUrl") String baseUrl) {
 //        return new Retrofit.Builder().client(okHttpClient)
 //                .baseUrl(baseUrl)
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .addConverterFactory(ImageFileConverterFactory.create())
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.fetch())
+//                .addConverterFactory(GsonConverterFactory.fetch())
+//                .addConverterFactory(DownloadPercentConverterFactory.create())
 //                .build();
 //    }
 
@@ -152,5 +163,16 @@ public class CommonModule {
 //    @Named("IHttpApiBaseUrl")
 //    public static String provideHttpApiDefaultUrl() {
 //        return "http://192.168.10.2/";
+//    }
+
+//    @Provides
+//    @Singleton
+//    public static RxDownload provideRxDownload(@ContextLife Context appContext) {
+//        return RxDownload.getInstance()
+//                .context(appContext)
+//                .defaultSavePath(JConstant.MEDIA_PATH)
+//                .maxThread(3)                     //设置最大线程
+//                .maxRetryCount(3)                 //设置下载失败重试次数
+//                .maxDownloadNumber(5);
 //    }
 }
