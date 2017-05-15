@@ -141,7 +141,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(ret -> mView != null)
                 .map(ret -> {
                     AppLogger.i("stop for reason: " + ret.code);
-                    stopPlayVideo(ret.code);
+                    stopPlayVideo(ret.code).subscribe(result -> {
+                    }, AppLogger::e);
                     return ret;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -362,7 +363,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.newThread())
                 .filter(ret -> ret != null && ret.code != 0)
                 .subscribe(result -> {
-                    stopPlayVideo(result.code);
+                    stopPlayVideo(result.code).subscribe(what -> {
+                    }, AppLogger::e);
                     removeTimeoutSub();
                 }, AppLogger::e);
     }
@@ -823,19 +825,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             preState = net;
                             if (net == 0) {
                                 AppLogger.i("网络中断");
-//                                presenterWeakReference.get().stopPlayVideo(ERR_NETWORK).subscribe(r -> {
-//                                }, AppLogger::e);
                                 presenterWeakReference.get().mView.onNetworkChanged(false);
                             } else {
                                 presenterWeakReference.get().mView.onNetworkChanged(true);
                                 AppLogger.d("网络恢复");
-                                //此处的reason 不需要填 ERR_NETWORK,因为下一步需要恢复播放loading
-//                                presenterWeakReference.get().startPlay();
-//                                presenterWeakReference.get().stopPlayVideo(PLAY_STATE_NET_CHANGED)
-//                                        .subscribeOn(Schedulers.newThread())
-//                                        .subscribe(result -> {
-//                                            presenterWeakReference.get().startPlay();
-//                                        }, AppLogger::e);
                             }
                         }, AppLogger::e);
             }
@@ -1012,10 +1005,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 Observable.just("restoreAudio")
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(ret -> {
-                                    boolean remoteMic = speakerOn;
-                                    boolean remoteSpeaker = micOn;
                                     dump("restore");
-                                    boolean result = setupLocalAudio(micOn, speakerOn, remoteMic, remoteSpeaker);
+                                    boolean result = setupLocalAudio(micOn, speakerOn, speakerOn, micOn);
                                     if (result) {
                                         viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
                                                 micOn,
@@ -1038,7 +1029,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(ret -> {
                             if (presenterWeakReference.get() != null) {
-                                setupLocalAudio(false, false, false, false);
+                                setupLocalAudio(true, false, false, false);
                             }
                         }, AppLogger::e);
             }

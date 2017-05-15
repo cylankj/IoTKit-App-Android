@@ -132,6 +132,12 @@
         <meta-data
             android:name="GCM_APP_ID"
             android:value="${GCM_APP_ID}" />
+        <meta-data
+            android:name="XiaoMiAppId"
+            android:value="${XiaoMiAppId}" />
+        <meta-data
+            android:name="XiaoMiAppKey"
+            android:value="${XiaoMiAppKey}" />
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
