@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -397,5 +398,14 @@ public class JFGRules {
         VALID_PID.put(36, 36);
         VALID_PID.put(37, 37);
         VALID_PID.put(38, 38);
+    }
+
+    public static TimeZone getDeviceTimezone(Device device) {
+        if (device == null) return TimeZone.getDefault();
+        if (isPanoramicCam(device.pid)) {
+            DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
+            return TimeZone.getTimeZone(zone.timezone);
+        }
+        return TimeZone.getTimeZone("UTC");
     }
 }

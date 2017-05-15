@@ -189,7 +189,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
-                    historyDataProvider.flattenData(new ArrayList<>(historyFiles));
+                    historyDataProvider.flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
                     return Observable.just(historyDataProvider);
                 });
     }
@@ -1004,7 +1004,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         private boolean speakerOn;
         private boolean captureOn = true;
 
-        private int preType = TYPE_LIVE;
+        private boolean filterRestore = true;
 
         /**
          * 停止播放了.
@@ -1040,14 +1040,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          * 恢复三个按钮的状态.
          */
         public void restore() {
+            if (filterRestore) return;
+            filterRestore = true;
             if (viewWeakReference.get() != null && presenterWeakReference.get() != null) {
                 int playType = presenterWeakReference.get().getPlayType();
                 Observable.just("restoreAudio")
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(ret -> {
-//                                    dump("restore");
                                     if (playType == TYPE_HISTORY)
                                         micOn = false;
+                                    if (speakerOn) {
+                                        setupRemoteAudio(micOn, true, true, micOn);
+                                    }
                                     boolean result = setupLocalAudio(micOn, speakerOn, speakerOn, micOn);
                                     if (result) {
                                         dump("restore");
@@ -1066,8 +1070,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          * 由于开始loading了.需要保存当前状态.
          */
         public void saveRestore() {
+            filterRestore = false;
             if (viewWeakReference.get() != null && presenterWeakReference.get() != null) {
-                preType = presenterWeakReference.get().getPlayType();
                 viewWeakReference.get().switchHotSeat(false, false, false, false, false, false);
                 dump("saveRestore");
                 Observable.just("reset")

@@ -8,12 +8,14 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 16-12-19.
@@ -21,6 +23,7 @@ import java.util.Map;
 
 public class DataExt implements IData {
     private static DataExt instance;
+    private SimpleDateFormat dateFormat;
 
     public static DataExt getInstance() {
         if (instance == null)
@@ -46,13 +49,18 @@ public class DataExt implements IData {
 
     private Map<Long, String> dateFormatMap = new HashMap<>();
 
+    private void initDateFormat(TimeZone zone) {
+        dateFormat = new SimpleDateFormat("HH:mm", Locale.UK);
+        dateFormat.setTimeZone(zone);
+    }
 
     @Override
-    public void flattenData(ArrayList<HistoryFile> list) {
+    public void flattenData(ArrayList<HistoryFile> list, TimeZone zone) {
         this.rawList = list;
         flattenDataList.clear();
         int size = list.size();
         if (size > 0) {
+            initDateFormat(zone);
             //需要判断顺序.....
             AppLogger.e("需要判断顺序");
             int maxIndex = list.get(0).time >= list.get(list.size() - 1).time ? 0 : list.size() - 1;

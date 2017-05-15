@@ -111,6 +111,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private HistoryWheelHandler historyWheelHandler;
 
+    /**
+     * 设备的时区
+     */
+    private TimeZone mDeviceTimezone;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -683,24 +687,23 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-    private TimeZone mDeviceTimezone;
 
     private void setLiveRectTime(int type, long timestamp) {
         //需要考虑设备的时区.他娘的.
         if (mDeviceTimezone == null) {
             mDeviceTimezone = TimeZone.getDefault();
         }
-        //全景的时间戳是0,需要根据设备的时区转化.
-        boolean useDefaultTimezone = timestamp == 0;
-        if (useDefaultTimezone) timestamp = System.currentTimeMillis() / 1000;
+        //全景的时间戳是0,使用设备的时区
+        //wifi狗是格林尼治时间戳,需要-8个时区.
+        if (timestamp == 0) timestamp = System.currentTimeMillis() / 1000;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", getTime(mDeviceTimezone, timestamp * 1000L, useDefaultTimezone));
+                + "|%s", getTime(mDeviceTimezone, timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
     }
 
-    private String getTime(TimeZone timeZone, long time, boolean useDefaultLocal) {
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd HH:mm", useDefaultLocal ? Locale.getDefault() : Locale.UK);
+    private String getTime(TimeZone timeZone, long time) {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
         format.setTimeZone(timeZone);
         return format.format(new Date(time));
     }
@@ -840,9 +843,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
         } else
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
-        DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
-        mDeviceTimezone = TimeZone.getTimeZone(zone.timezone);
-        AppLogger.d("得到设备时区");
+        mDeviceTimezone = JFGRules.getDeviceTimezone(device);
+        AppLogger.d("得到设备时区:" + mDeviceTimezone.getID());
     }
 
     @Override

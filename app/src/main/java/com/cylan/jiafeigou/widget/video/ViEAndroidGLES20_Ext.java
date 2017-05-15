@@ -98,7 +98,7 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
         MotionEvent motionEvent = MotionEvent.obtain(
                 downTime,
                 eventTime,
-                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_DOWN,
                 x,
                 y,
                 metaState

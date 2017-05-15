@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.widget.wheel.ex;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import java.util.ArrayList;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 16-12-19.
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public interface IData {
 
-    void flattenData(ArrayList<HistoryFile> list);
+    void flattenData(ArrayList<HistoryFile> list, TimeZone zone);
 
     long[] getTimeArray(int leftIndex, int maxCount);
 
