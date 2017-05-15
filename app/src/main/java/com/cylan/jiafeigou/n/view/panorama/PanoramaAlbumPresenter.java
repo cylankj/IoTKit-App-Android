@@ -82,6 +82,24 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             item = new PanoramaAlbumContact.PanoramaItem(file);
                             item.location = 1;
                             result.add(item);
+                            //自动下载逻辑
+                            item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(uuid + "/images/" + item.fileName);
+                            if (item.downloadInfo != null) {
+                                String path = item.downloadInfo.getTargetPath();
+                                if (!FileUtils.isFileExist(path) && item.downloadInfo.getState() == 4) {
+                                    DownloadManager.getInstance().removeTask(item.downloadInfo.getTaskKey());
+                                    item.downloadInfo = null;
+                                }
+                            }
+                            String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
+                            if (deviceIp != null) {
+                                String url = deviceIp + "/images/" + item.fileName;
+                                GetRequest request = OkGo.get(url);
+                                DownloadManager.getInstance().addTask(uuid + "/images/" + item.fileName, request, new PanoramaAdapter.MyDownloadListener());
+                                if (item.downloadInfo == null) {
+                                    item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(uuid + "/images/" + item.fileName);
+                                }
+                            }
                         }
                     }
                     return result;
@@ -108,25 +126,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     result.addAll(items);
                     Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
                     List<PanoramaAlbumContact.PanoramaItem> panoramaItems = result.subList(0, 20);
-                    for (PanoramaAlbumContact.PanoramaItem item : panoramaItems) {
-                        item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(uuid + "/images/" + item.fileName);
-                        if (item.downloadInfo != null) {
-                            String path = item.downloadInfo.getTargetPath();
-                            if (!FileUtils.isFileExist(path) && item.downloadInfo.getState() == 4) {
-                                DownloadManager.getInstance().removeTask(item.downloadInfo.getTaskKey());
-                                item.downloadInfo = null;
-                            }
-                        }
-                        String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
-                        if (deviceIp != null) {
-                            String url = deviceIp + "/images/" + item.fileName;
-                            GetRequest request = OkGo.get(url);
-                            DownloadManager.getInstance().addTask(uuid + "/images/" + item.fileName, request, new PanoramaAdapter.MyDownloadListener());
-                            if (item.downloadInfo == null) {
-                                item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(uuid + "/images/" + item.fileName);
-                            }
-                        }
-                    }
                     return panoramaItems;
                 });
     }
