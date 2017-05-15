@@ -316,7 +316,7 @@ dependencies {
     compile files('libs/open_sdk_r5781.jar')
     testCompile files('libs/javassist.jar')
     //    compile 'com.cylan.iot.sdk:sdkLib:213'
-//    compile(name: 'sdkLib-debug', ext: 'aar')
+    compile(name: 'sdkLib-debug', ext: 'aar')
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
