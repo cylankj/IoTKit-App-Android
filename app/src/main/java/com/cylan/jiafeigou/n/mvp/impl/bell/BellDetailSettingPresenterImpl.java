@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
+import android.text.TextUtils;
+
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -81,6 +83,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     public Subscription checkNewVersionBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null && TextUtils.equals(uuid, ret.uuid))
                 .subscribe((RxEvent.CheckVersionRsp checkDevVersionRsp) -> {
                     if (checkDevVersionRsp != null) {
                         mView.checkResult(checkDevVersionRsp);

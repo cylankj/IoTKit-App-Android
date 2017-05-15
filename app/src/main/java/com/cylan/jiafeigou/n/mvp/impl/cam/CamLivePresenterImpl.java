@@ -120,6 +120,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.uuid, uuid))
                 .retry()
                 .subscribe(ret -> {
+                    DpMsgDefine.DPNet dpNet = getDevice().$(201, new DpMsgDefine.DPNet());
+                    //设备离线就不需要弹出来
+                    if (!JFGRules.isDeviceOnline(dpNet)) {
+                        return;
+                    }
                     long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
                     if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         //弹框的时间,从弹出算起
@@ -147,7 +152,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    updateLiveStream(-1, -1, PLAY_STATE_IDLE);
+                    updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
                     getView().onLiveStop(getLiveStream().type, ret.code);
 //                    feedRtcp.stop();
                     AppLogger.d("reset subscription");
@@ -324,10 +329,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             mView.onLivePrepare(getLiveStream().type);
             return;
         }
+        mView.onLivePrepare(getLiveStream().type);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(net)) {
-            updateLiveStream(TYPE_LIVE, -1, PLAY_STATE_IDLE);
-            mView.onLiveStop(TYPE_LIVE, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
+            updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
+            mView.onLiveStop(getLiveStream().type, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
             return;
         }
         addSubscription(beforePlayObservable(s -> {
@@ -344,7 +350,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             } catch (JfgException e) {
                 e.printStackTrace();
             }
-            updateLiveStream(TYPE_LIVE, -1, PLAY_STATE_PREPARE);
+            updateLiveStream(getLiveStream().type, -1, PLAY_STATE_PREPARE);
             getView().onLivePrepare(TYPE_LIVE);
             return null;
         }).subscribe(objectObservable -> {
@@ -386,6 +392,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (throwable instanceof RxEvent.HelperBreaker) {
                         AppLogger.d("收到RTCP通知:" + resolutionH);
                         //需要收到发送一个Resolution
+                        getHotSeatStateMaintainer().restore();
                         if (resolutionH != 0 && resolutionW != 0) {
                             //因为直播转历史录像,不会再有JFGMsgVideoResolution回调.
                             JFGMsgVideoResolution resolution = new JFGMsgVideoResolution();
@@ -524,6 +531,41 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         liveStream.playState = state;
         Log.d("updateLiveStream", "updateLiveStream:" + liveStream);
     }
+/**
+ * 设备是否在线
+ */
+//    private Observable<Boolean> checkDevice() {
+//        return Observable.just(uuid)
+//                .subscribeOn(Schedulers.newThread())
+//                .flatMap(new Func1<String, Observable<Boolean>>() {
+//                    @Override
+//                    public Observable<Boolean> call(String s) {
+//                        return null;
+//                    }
+//                })
+//                .filter();
+//    }
+
+    /**
+     * 网络
+     *
+     * @return
+     */
+    private Observable<Boolean> checkNetwork() {
+        return Observable.just(uuid)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<String, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(String s) {
+                        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
+                        if (!JFGRules.isDeviceOnline(net)) {
+                            updateLiveStream(TYPE_HISTORY, -1, PLAY_STATE_IDLE);
+                            mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
+                        }
+                        return null;
+                    }
+                });
+    }
 
     @Override
     public void startPlayHistory(long t) {
@@ -548,11 +590,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (getLiveStream().type == TYPE_HISTORY
                             && getLiveStream().playState == PLAY_STATE_PREPARE) {//前一刻是,历史录像而且是playing
                         AppLogger.d("不需要 停止播放历史视频");
-                        getHotSeatStateMaintainer().saveRestore();
                     } else {
                         AppLogger.i("stop play history");
                     }
                 }
+                getHotSeatStateMaintainer().saveRestore();
                 int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 if (ret != 0) {
                     AppLogger.i("stop play history ret !0:" + ret);
@@ -581,7 +623,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     try {
                         getHotSeatStateMaintainer().reset();
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
-                        updateLiveStream(-1, -1, reasonOrState);
+                        updateLiveStream(getLiveStream().type, -1, reasonOrState);
                         AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());
@@ -773,10 +815,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void onFrameRate(boolean slow) {
         AppLogger.e("is bad net work show loading?" + slow);
         if (slow) {
-            getHotSeatStateMaintainer()
-                    .saveRestore();
-        } else getHotSeatStateMaintainer()
-                .restore();
+            saveHotSeatState();
+        } else restoreHotSeatState();
         Observable.just(slow)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(slowFrameRate -> {
@@ -960,17 +1000,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             presenterWeakReference = new WeakReference<>(presenter);
         }
 
-        private int playType = -1;
-
         private boolean micOn;
         private boolean speakerOn;
         private boolean captureOn = true;
+
+        private int preType = TYPE_LIVE;
 
         /**
          * 停止播放了.
          */
         public void reset() {
-            playType = -1;
             micOn = speakerOn = captureOn = false;
             if (viewWeakReference.get() != null)
                 viewWeakReference.get().switchHotSeat(false, false,
@@ -983,6 +1022,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          *
          */
         private void disableAudio() {
+            dump("disableAudio");
             Observable.just("reset")
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(ret -> {
@@ -1005,14 +1045,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 Observable.just("restoreAudio")
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(ret -> {
-                                    dump("restore");
+//                                    dump("restore");
+                                    if (playType == TYPE_HISTORY)
+                                        micOn = false;
                                     boolean result = setupLocalAudio(micOn, speakerOn, speakerOn, micOn);
                                     if (result) {
-                                        viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
+                                        dump("restore");
+                                        viewWeakReference.get().switchHotSeat(speakerOn,
+                                                !micOn,
                                                 micOn,
                                                 playType == TYPE_LIVE,
-                                                captureOn, playType == TYPE_LIVE);
-
+                                                captureOn, true);
                                     }
                                 },
                                 AppLogger::e);
@@ -1024,7 +1067,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          */
         public void saveRestore() {
             if (viewWeakReference.get() != null && presenterWeakReference.get() != null) {
+                preType = presenterWeakReference.get().getPlayType();
                 viewWeakReference.get().switchHotSeat(false, false, false, false, false, false);
+                dump("saveRestore");
                 Observable.just("reset")
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(ret -> {
@@ -1059,10 +1104,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> ret)
                         .filter(ret -> viewWeakReference.get() != null)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(ret -> viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
-                                micOn,
-                                presenterWeakReference.get().getPlayType() == TYPE_LIVE,
-                                captureOn, presenterWeakReference.get().getPlayType() == TYPE_LIVE),
+                        .subscribe(ret -> {
+                                    viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
+                                            micOn,
+                                            presenterWeakReference.get().getPlayType() == TYPE_LIVE,
+                                            captureOn, true);
+                                    dump("switchMic");
+                                },
                                 AppLogger::e);
             }
         }
@@ -1082,10 +1130,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                         tmpSpeaker, micOn);
                                 //说明已经有权限,并且设置成功
                                 speakerOn = tmpSpeaker;
+                                dump("switchSpeaker");
                                 viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
                                         micOn,
                                         presenterWeakReference.get().getPlayType() == TYPE_LIVE,
-                                        captureOn, presenterWeakReference.get().getPlayType() == TYPE_LIVE);
+                                        captureOn, true);
                             }
                             return Observable.just(result);
                         })

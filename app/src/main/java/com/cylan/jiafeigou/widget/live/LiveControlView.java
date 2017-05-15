@@ -66,6 +66,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
 
     @Override
     public void setState(int state, CharSequence content, String help) {
+        if (this.state == state) return;
         this.state = state;
         switch (state) {
             case PLAY_STATE_PREPARE:

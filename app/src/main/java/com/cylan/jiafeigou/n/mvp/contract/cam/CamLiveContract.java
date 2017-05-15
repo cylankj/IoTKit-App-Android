@@ -235,7 +235,7 @@ public interface CamLiveContract {
 
     class LiveStream {
         public int type = TYPE_LIVE;
-        public long time;
+        public long time = -1;
         public int playState;
 
         @Override

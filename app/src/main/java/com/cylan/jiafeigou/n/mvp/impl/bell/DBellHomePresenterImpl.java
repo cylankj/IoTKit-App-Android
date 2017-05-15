@@ -10,11 +10,14 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -71,9 +74,30 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         } else {
             mView.onShowProperty(device);
             registerSubscription(getClearDataSub());
+            registerSubscription(getNewFirmware());
             registerSubscription(getDeviceUnBindSub());
 
         }
+    }
+
+    private Subscription getNewFirmware() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class)
+                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
+                .retry()
+                .subscribe(ret -> {
+                    Device device = sourceManager.getDevice(uuid);
+                    DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+                    //设备离线就不需要弹出来
+                    if (!JFGRules.isDeviceOnline(dpNet)) {
+                        return;
+                    }
+                    long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
+                    if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
+                        //弹框的时间,从弹出算起
+                        PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid, System.currentTimeMillis());
+                        mView.showFirmwareDialog();
+                    }
+                }, AppLogger::e);
     }
 
     private Subscription getDeviceUnBindSub() {

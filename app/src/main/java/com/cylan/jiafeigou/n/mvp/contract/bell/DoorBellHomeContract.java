@@ -32,6 +32,8 @@ public interface DoorBellHomeContract {
         void onDeviceUnBind();
 
         void onFinish();
+
+        void showFirmwareDialog();
     }
 
     interface Presenter extends JFGPresenter<View> {

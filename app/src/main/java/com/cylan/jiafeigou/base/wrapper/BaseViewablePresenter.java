@@ -393,6 +393,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     AppLogger.d("正在切换 Speaker :" + on);
+                    //sdk存在bug.不能连续两次打开mic.
                     boolean success = switchSpeakAndMicroPhone(true, true, on);
                     switchSpeakAndMicroPhone(false, on, true);
                     liveStreamAction.speakerOn = success && on;

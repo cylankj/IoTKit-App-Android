@@ -694,8 +694,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean useDefaultTimezone = timestamp == 0;
         if (useDefaultTimezone) timestamp = System.currentTimeMillis() / 1000;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                        + "|%s",
-                getTime(mDeviceTimezone, timestamp * 1000L, useDefaultTimezone));
+                + "|%s", getTime(mDeviceTimezone, timestamp * 1000L, useDefaultTimezone));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
     }
@@ -897,7 +896,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         pCapture.setEnabled(captureEnable);
         ImageView lCapture = (ImageView) findViewById(R.id.imgV_land_cam_trigger_capture);
         lCapture.setEnabled(captureEnable);
-        Log.d(TAG, "capture:" + captureEnable);
+        Log.d(TAG, String.format(Locale.getDefault(), "hotSeat:speaker:%s,speakerEnable:%s,mic:%s,micEnable:%s", speaker, speakerEnable, mic, micEnable));
     }
 
     @Override

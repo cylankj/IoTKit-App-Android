@@ -74,7 +74,7 @@ public class FirmwareCheckerService extends Service {
     }
 
     public static void checkVersion(String uuid) {
-        if (!check(uuid)) return;
+//        if (!check(uuid)) return;
         Context context = ContextUtils.getContext();
         Intent intent = new Intent(context, FirmwareCheckerService.class);
         intent.putExtra(UUID_TAG, uuid);
@@ -122,20 +122,20 @@ public class FirmwareCheckerService extends Service {
                 tryStopSelf();
                 return;
             }
-            DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
-            //设备离线就不要检查了
-            if (!JFGRules.isDeviceOnline(dpNet)) {
-                tryStopSelf();
-                return;
-            }
-            String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-            String remoteSSid = dpNet.ssid;
-            //原型上说,局域网才弹框.
-            //客户端和设备相同的网络才去检查.因为检查是很快的.
-            if (!TextUtils.equals(localSSid, remoteSSid)) {
-                tryStopSelf();
-                return;
-            }
+//            DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+//            //设备离线就不要检查了
+//            if (!JFGRules.isDeviceOnline(dpNet)) {
+//                tryStopSelf();
+//                return;
+//            }
+//            String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+//            String remoteSSid = dpNet.ssid;
+//            //原型上说,局域网才弹框.
+//            //客户端和设备相同的网络才去检查.因为检查是很快的.
+//            if (!TextUtils.equals(localSSid, remoteSSid)) {
+//                tryStopSelf();
+//                return;
+//            }
             handleCheckFlow(uuid, device.$(207, ""), device.pid);
         }
     }
