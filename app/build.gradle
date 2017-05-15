@@ -350,7 +350,6 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.2@aar'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 }
 
