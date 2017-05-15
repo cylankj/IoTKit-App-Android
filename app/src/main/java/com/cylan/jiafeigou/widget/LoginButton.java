@@ -12,12 +12,12 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 
@@ -26,7 +26,7 @@ import com.cylan.jiafeigou.R;
  * @date 2016/6/17 13:50
  * @Description: ${TODO}(用一句话描述该文件做什么)
  */
-public class LoginButton extends TextView {
+public class LoginButton extends AppCompatTextView {
 
     private Paint paint;
     private Path path;
@@ -165,30 +165,34 @@ public class LoginButton extends TextView {
     }
 
     private void drawPathCompat(Canvas canvas) {
+        float newRectLeft = outerCircleRadius;
+        float newRectRight = viewW - outerCircleRadius;
+        float newRectTop = outerCircleRadius;
+        float newRectBottom = viewH - outerCircleRadius;
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawLine(viewH / 2 + strokeWidth / 2,
-                outerCircleRadius,
-                viewW - viewH / 2 + outerCircleRadius / 2,
-                outerCircleRadius,
+        canvas.drawLine(newRectLeft + (newRectBottom - newRectTop) / 2,
+                newRectTop,
+                newRectRight - (newRectBottom - newRectTop) / 2,
+                newRectTop,
                 paint);
-        rectFL.left = viewW - viewH;
-        rectFL.top = outerCircleRadius;
-        rectFL.right = viewW - outerCircleRadius / 2 - strokeWidth / 2;
-        rectFL.bottom = viewH - outerCircleRadius;
+        rectFL.right = newRectRight;
+        rectFL.left = newRectRight - (newRectBottom - newRectTop);
+        rectFL.top = newRectTop;
+        rectFL.bottom = newRectBottom;
         canvas.drawArc(rectFL,
                 -90,
                 180,
                 false,
                 paint);
-        canvas.drawLine(viewW - viewH / 2 + outerCircleRadius / 2,
-                viewH - outerCircleRadius,
-                viewH / 2,
-                viewH - outerCircleRadius,
+        canvas.drawLine(newRectRight - (newRectBottom - newRectTop) / 2,
+                newRectBottom,
+                newRectLeft + (newRectBottom - newRectTop) / 2,
+                newRectBottom,
                 paint);
-        rectFL.left = outerCircleRadius;
-        rectFL.top = outerCircleRadius;
-        rectFL.right = viewH;
-        rectFL.bottom = viewH - outerCircleRadius;
+        rectFL.left = newRectLeft;
+        rectFL.top = newRectTop;
+        rectFL.right = newRectLeft + (newRectBottom - newRectTop);
+        rectFL.bottom = newRectBottom;
         canvas.drawArc(rectFL,
                 90,
                 180,
