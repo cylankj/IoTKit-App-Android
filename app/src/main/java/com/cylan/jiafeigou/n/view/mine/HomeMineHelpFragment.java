@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +46,6 @@ public class HomeMineHelpFragment extends Fragment {
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-    private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
 
     public static HomeMineHelpFragment newInstance(Bundle bundle) {
         HomeMineHelpFragment fragment = new HomeMineHelpFragment();
@@ -56,7 +56,6 @@ public class HomeMineHelpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -136,13 +135,7 @@ public class HomeMineHelpFragment extends Fragment {
             case R.id.tv_toolbar_right:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_toolbar_right));
-                AppLogger.e("tv_mine_help_suggestion");
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, homeMineHelpSuggestionFragment, "homeMineHelpSuggestionFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                startActivity(new Intent(getActivity(), FeedbackActivity.class));
                 break;
         }
     }

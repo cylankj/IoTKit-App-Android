@@ -1,25 +1,23 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
@@ -32,9 +30,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.util.ArrayList;
 
@@ -42,88 +39,52 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHelpSuggestionContract.Presenter>
+        implements HomeMineHelpSuggestionContract.View {
 
-/**
- * 创建者     谢坤
- * 创建时间   2016/8/8 14:37
- * 描述	      ${TODO}
- * <p>
- * 更新者     $Author$
- * 更新时间   $Date$
- * 更新描述   ${TODO}
- */
-public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View, BaseDialog.BaseDialogAction {
-
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     @BindView(R.id.rv_home_mine_suggestion)
     RecyclerView mRvMineSuggestion;
-    @BindView(R.id.et_home_mine_suggestion)
-    EditText mEtSuggestion;
-    @BindView(R.id.tv_home_mine_suggestion)
-    TextView tvHomeMineSuggestion;
-    @BindView(R.id.panel_root)
-    KPSwitchFSPanelLinearLayout panelRoot;
     @BindView(R.id.iv_loading_rotate)
     ImageView ivLoadingRotate;
     @BindView(R.id.fl_loading_container)
     FrameLayout flLoadingContainer;
+    @BindView(R.id.et_home_mine_suggestion)
+    EditText mEtSuggestion;
+    @BindView(R.id.tv_home_mine_suggestion)
+    TextView tvHomeMineSuggestion;
+    @BindView(R.id.rl_home_mine_suggestion_bottom)
+    RelativeLayout rlHomeMineSuggestionBottom;
+    @BindView(R.id.panel_root)
+    KPSwitchFSPanelLinearLayout panelRoot;
 
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private HomeMineHelpSuggestionContract.Presenter presenter;
     private boolean resendFlag;
 
-    private static final String DIALOG_KEY = "dialogFragment";
-
-    public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
-        HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_help_suggestion, container, false);
-        ButterKnife.bind(this, view);
-//        initKeyBoard();
-        initPresenter();
-        return view;
-    }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_mine_help_suggestion);
+        ButterKnife.bind(this);
+        basePresenter = new HomeMineHelpSuggestionImpl(this);
         initKeyBoard();
     }
 
-    private void initPresenter() {
-        presenter = new HomeMineHelpSuggestionImpl(this);
-    }
-
     @Override
-    public void onStart() {
-        super.onStart();
-        if (presenter != null) presenter.start();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null) presenter.stop();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onBackPressed() {
+        finishExt();
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_toolbar_icon:
-                IMEUtils.hide(getActivity());
-                getFragmentManager().popBackStack();
+                IMEUtils.hide(this);
+                onBackPressed();
                 break;
-
             case R.id.tv_toolbar_right:
                 //弹出对话框
                 if (suggestionAdapter.getItemCount() == 0) {
@@ -159,18 +120,12 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      * 弹出对话框
      */
     private void showDialog() {
-        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
-        if (f == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_Feedback_ClearTips));
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.Tap3_Feedback_Clear));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-            dialogFragment.setValue("clearLocal");
-            dialogFragment.setAction(this);
-            dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
-        }
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap3_Feedback_ClearTips), getString(R.string.Tap3_Feedback_ClearTips),
+                getString(R.string.Tap3_Feedback_Clear), (DialogInterface dialog, int which) -> {
+                    presenter.onClearAllTalk();
+                    suggestionAdapter.clear();
+                    suggestionAdapter.notifyDataSetHasChanged();
+                }, getString(R.string.CANCEL), null);
     }
 
     /**
@@ -226,12 +181,12 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager());
+        LoadingDialog.showLoading(getSupportFragmentManager());
     }
 
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     /**
@@ -370,7 +325,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     }
 
     private void initKeyBoard() {
-        KeyboardUtil.attach(getActivity(), panelRoot, isShowing -> {
+        KeyboardUtil.attach(this, panelRoot, isShowing -> {
             if (suggestionAdapter == null) return;
             mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
         });
@@ -392,18 +347,4 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         });
     }
 
-    @Override
-    public void onDialogAction(int id, Object value) {
-        Fragment f = getActivity()
-                .getSupportFragmentManager()
-                .findFragmentByTag(DIALOG_KEY);
-        if (f != null && f.isVisible()) {
-            ((SimpleDialogFragment) f).dismiss();
-        }
-        if (id == R.id.tv_dialog_btn_left) {
-            presenter.onClearAllTalk();
-            suggestionAdapter.clear();
-            suggestionAdapter.notifyDataSetHasChanged();
-        }
-    }
 }

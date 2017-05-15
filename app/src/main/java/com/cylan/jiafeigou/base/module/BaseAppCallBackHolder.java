@@ -291,6 +291,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         }
         if (ListUtils.getSize(arrayList) > 0) array.addAll(arrayList);
         RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp(i, array));
+        BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
     }
 
     @Override

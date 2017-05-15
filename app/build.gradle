@@ -323,13 +323,13 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
+    compile('com.mikepenz:fastadapter:2.5.2@aar') {
+        transitive = true
+    }
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
-    compile('com.mikepenz:fastadapter:2.5.2@aar') {
-        transitive = true
-    }
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
@@ -347,10 +347,11 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     compile 'com.android.support:support-v4:25.3.1'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.2@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 }
 
 //谷歌推送

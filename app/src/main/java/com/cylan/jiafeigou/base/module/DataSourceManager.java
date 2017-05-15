@@ -13,6 +13,7 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
@@ -39,6 +40,7 @@ import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
+import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -716,6 +718,25 @@ public class DataSourceManager implements JFGSourceManager {
                         request(1);
                     }
                 });
+    }
+
+    @Override
+    public void handleSystemNotification(ArrayList<JFGFeedbackInfo> list) {
+        if (!BaseApplication.isBackground()) return;
+        if (ListUtils.isEmpty(list)) return;
+        if (getAccount() == null || !getJFGAccount().isEnablePush())
+            return;
+        INotify.NotifyBean bean = new INotify.NotifyBean();
+        bean.sound = getAccount() != null && getAccount().getEnableSound();
+        bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
+        bean.time = System.currentTimeMillis();
+        bean.resId = R.mipmap.ic_launcher;
+        bean.notificationId = "account".hashCode();
+        bean.content = ContextUtils.getContext().getString(R.string.app_name);
+        bean.subContent = list.get(list.size() - 1).msg;
+        final Intent intent = new Intent(ContextUtils.getContext(), FeedbackActivity.class);
+        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        NotifyManager.getNotifyManager().sendNotify(bean);
     }
 
     /**
