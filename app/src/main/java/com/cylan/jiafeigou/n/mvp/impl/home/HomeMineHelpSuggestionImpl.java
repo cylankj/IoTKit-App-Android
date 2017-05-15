@@ -7,15 +7,16 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ZipUtils;
@@ -94,7 +95,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public void stop() {
         super.stop();
         unSubscribe(compositeSubscription);
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
+        //不能stop,因为重新获取该信息,服务器就不下发了.所以需要缓存在RxEvent.GetFeedBackRsp中.
+        //每次下发都addAll.看BaseAppCallBackHolder#OnGetFeedbackRsp
+//        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     /**
@@ -102,6 +105,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void initData() {
+        //需要合并.
         rx.Observable.just(null)
                 .flatMap(new Func1<Object, Observable<ArrayList<MineHelpSuggestionBean>>>() {
                     @Override
@@ -132,6 +136,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     @Override
     public void onClearAllTalk() {
         helper.getDaoSession().getMineHelpSuggestionBeanDao().deleteAll();
+        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     /**
@@ -254,15 +259,17 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetFeedBackRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getFeedBackRsp -> {
-                    if (getFeedBackRsp != null) {
-                        if (getView() != null && getFeedBackRsp.arrayList.size() != 0) {
-                            JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
-                            AppLogger.d("getSystemAuto:" + jfgFeedbackInfo.time);
+                    if (getFeedBackRsp != null && getView() != null && ListUtils.getSize(getFeedBackRsp.arrayList) > 0) {
+                        int size = ListUtils.getSize(getFeedBackRsp.arrayList);
+                        for (int i = 0; i < size; i++) {
+                            JFGFeedbackInfo info = getFeedBackRsp.arrayList.get(i);
+                            AppLogger.d("getSystemAuto:" + info.time);
                             AppLogger.d("getSystemAuto2:" + System.currentTimeMillis());
-                            getView().addSystemAutoReply(jfgFeedbackInfo.time, jfgFeedbackInfo.msg);
+                            getView().addSystemAutoReply(info.time, info.msg);
                         }
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
                     }
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                }, AppLogger::e);
     }
 
     /**

@@ -109,7 +109,11 @@ public class RxBus implements IEventBus {
      */
     public <T> T getStickyEvent(Class<T> eventType) {
         synchronized (mStickyEventMap) {
-            return eventType.cast(mStickyEventMap.get(eventType));
+            try {
+                return eventType.cast(mStickyEventMap.get(eventType));
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 

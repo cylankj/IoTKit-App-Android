@@ -253,8 +253,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.notifyDataSetHasChanged();
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
         presenter.saveIntoDb(autoReplyBean);
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
-
+//        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     public MineHelpSuggestionBean addSystemAutoReply() {
