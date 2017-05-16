@@ -5,9 +5,6 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.utils.ActivityUtils;
-
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -165,6 +162,20 @@ public class AlertDialogManager {
             if (ref == null || ref.get() == null) continue;
             if (ref.get().isShowing())
                 ref.get().dismiss();
+        }
+    }
+
+    public void dismissOtherDialog(String activityTag) {
+        if (weakReferenceMap == null || weakReferenceMap.size() == 0) return;
+        Iterator<String> tagSet = weakReferenceMap.keySet().iterator();
+        while (tagSet.hasNext()) {
+            String t = tagSet.next();
+            WeakReference<AlertDialog> ref = weakReferenceMap.get(t);
+            if (ref == null || ref.get() == null) continue;
+            if (ref.get().isShowing()) {
+                if (ref.get().getOwnerActivity() != null && TextUtils.equals(activityTag, ref.get().getOwnerActivity().getClass().getSimpleName()))
+                    ref.get().dismiss();
+            }
         }
     }
 }

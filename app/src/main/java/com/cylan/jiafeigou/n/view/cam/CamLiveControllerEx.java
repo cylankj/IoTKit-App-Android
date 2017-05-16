@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,6 +36,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -64,6 +67,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
@@ -215,11 +219,53 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
         liveViewWithThumbnail.setLiveView(videoView);
+        initSightSetting(presenter);
         //分享用户不显示
         boolean showFlip = !presenter.isShareDevice();
         findViewById(R.id.layout_port_flip).setVisibility(showFlip ? VISIBLE : INVISIBLE);
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
+    }
+
+    public boolean isSightSettingShow() {
+        View v = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
+        return v != null && v.isShown();
+    }
+
+    /**
+     * 全景视角设置
+     */
+    private void initSightSetting(CamLiveContract.Presenter basePresenter) {
+        if (isNormalView || basePresenter.isShareDevice()) return;
+        String uuid = basePresenter.getUuid();
+        boolean isFirstShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
+        if (!isFirstShow) return;//不是第一次
+        View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
+        if (oldLayout == null) {
+            layoutC.setVisibility(INVISIBLE);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
+            liveViewWithThumbnail.addView(view);//最顶
+            View layout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
+            ((TextView) (view.findViewById(R.id.tv_sight_setting_content)))
+                    .setText(getContext().getString(R.string.Tap1_Camera_Overlook) + ": "
+                            + getContext().getString(R.string.Tap1_Camera_OverlookTips));
+            view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
+                if (layout != null) liveViewWithThumbnail.removeView(layout);
+                basePresenter.startPlay();
+            });
+            layout.setOnClickListener(v -> AppLogger.d("don't click me"));
+            view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
+                liveViewWithThumbnail.removeView(layout);
+                Intent intent = new Intent(getContext(), SightSettingActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                getContext().startActivity(intent);
+            });
+            PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+        } else {
+            //已经添加了
+            oldLayout.setVisibility(View.VISIBLE);
+            layoutC.setVisibility(INVISIBLE);
+        }
     }
 
     /**

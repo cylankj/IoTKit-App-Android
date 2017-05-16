@@ -119,7 +119,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             //访客状态
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
             basePresenter.portraitBlur(bm);
-            setAliasName(getString(R.string.Tap3_LogIn));
+//            setAliasName(getString(R.string.Tap3_LogIn));
         }
         super.onStart();
     }
@@ -241,12 +241,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 //访客状态
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
                 basePresenter.portraitBlur(bm);
-                setAliasName(getString(R.string.Tap3_LogIn));
+//                setAliasName(getString(R.string.Tap3_LogIn));
             }
             lazyLoad();
             JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-            if (jfgAccount != null)
+            if (jfgAccount != null) {
                 setUserImageHeadByUrl(jfgAccount.getPhotoUrl());
+                setAliasName(jfgAccount.getAlias());
+            }
         }
     }
 

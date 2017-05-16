@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;

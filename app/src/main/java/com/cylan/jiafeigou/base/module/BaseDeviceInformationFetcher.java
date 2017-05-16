@@ -47,22 +47,22 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
 
     @Inject
     public BaseDeviceInformationFetcher(@ContextLife Context context) {
-        INFORMATION_FETCHER = this;
-        //这是全局的,所以不需要反注册,本来要写在 manifest 里的但 Android 7.0 写在 manifest 里失效了
-        context.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                .observeOn(Schedulers.io())
-                .retry()
-                .subscribe(this::resolveDeviceInformation, AppLogger::e);
-        RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
-                .filter(ret -> !ret.success)
-                .observeOn(Schedulers.io())
-                .retry()
-                .subscribe(ret -> {
-                    if (TextUtils.isEmpty(deviceInformation.ip)) {
-                        sendRequest();
-                    }
-                }, AppLogger::e);
+//        INFORMATION_FETCHER = this;
+//        //这是全局的,所以不需要反注册,本来要写在 manifest 里的但 Android 7.0 写在 manifest 里失效了
+//        context.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+//                .observeOn(Schedulers.io())
+//                .retry()
+//                .subscribe(this::resolveDeviceInformation, AppLogger::e);
+//        RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
+//                .filter(ret -> !ret.success)
+//                .observeOn(Schedulers.io())
+//                .retry()
+//                .subscribe(ret -> {
+//                    if (TextUtils.isEmpty(deviceInformation.ip)) {
+//                        sendRequest();
+//                    }
+//                }, AppLogger::e);
     }
 
     private void resolveDeviceInformation(RxEvent.LocalUdpMsg udpMsg) {
