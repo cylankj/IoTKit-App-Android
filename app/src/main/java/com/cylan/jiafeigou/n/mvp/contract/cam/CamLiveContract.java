@@ -105,6 +105,8 @@ public interface CamLiveContract {
                            boolean micEnable,
                            boolean captureOn,
                            boolean captureEnable);
+
+        void onAudioPermissionCheck();
     }
 
     interface Presenter extends BasePresenter {

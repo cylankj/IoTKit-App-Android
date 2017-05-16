@@ -351,8 +351,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null) getView().setKeepScreenOn(true);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         camLiveControlLayer.onLiveStart(basePresenter, device);
-        camLiveControlLayer.setHotSeatListener(mic -> basePresenter.switchMic(),
-                speaker -> basePresenter.switchSpeaker(),
+        camLiveControlLayer.setHotSeatListener(mic -> CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrant_MicWithCheck(this),
+                speaker -> CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrant_SpeakerWithCheck(this),
                 capture -> {
                     int vId = capture.getId();
                     switch (vId) {
@@ -377,55 +377,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         });
     }
-
-//    /**
-//     * 没有0,1两种状态
-//     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
-//     *
-//     * @param tag 2: 3:
-//     */
-//    private void handleSwitchMic(int tag) {
-//        basePresenter.switchMic()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(ret -> {
-//                    Log.d("handleSwitchMic", "handleSwitchMic:" + tag);
-//                    //表示设置结果,设置成功才需要改变view 图标
-//                    if (ret) {
-//                        //设置成功,更新下一状态
-//                        //mic: off->on {speaker,enable->disable}
-//                        //mic: on->off {speaker,disable->enable}
-//
-//                        int speaker = camLiveControlLayer.getSpeakerState();
-//                        int speakerNextOffState = speaker == 2 ? 1 : (speaker == 3 ? 1 : 0);
-//                        int speakerNextOnState = speaker == 0 ? 2 : (speaker == 1 ? 3 : 0);
-//                        camLiveControlLayer.setHotSeatState(tag == 2 ? 3 : 2,
-//                                tag == 2 ? speakerNextOffState : speakerNextOnState);
-//                    } else {
-//                    }
-//                }, AppLogger::e);
-//    }
-
-//    /**
-//     * 没有0,1两种状态
-//     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
-//     *
-//     * @param tag 2: 3:
-//     */
-//    private void handleSwitchSpeaker(int tag) {
-//        basePresenter.switchSpeaker()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(ret -> {
-//                    Log.d("handleSwitchSpeaker", "handleSwitchSpeaker:" + tag);
-//                    //表示设置结果,设置成功才需要改变view 图标
-//                    if (ret) {
-//                        //设置成功,更新下一状态
-//                        int mic = basePresenter.getPlayType() == TYPE_HISTORY ? 0 : camLiveControlLayer.getMicState();
-//                        camLiveControlLayer.setHotSeatState(mic,
-//                                tag == 2 ? 3 : 2);
-//                    } else {
-//                    }
-//                }, AppLogger::e);
-//    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -555,36 +506,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO})
-    public void showAudioRecordPermission_() {
-//        int sFlag = R.drawable.icon_port_speaker_on_selector;
-//        imgVCamSwitchSpeaker.setImageResource(sFlag);
-//        imgVCamSwitchSpeaker.setTag(sFlag);
-//        //横屏
-//        camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
-//        camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
-//        if (basePresenter != null) {
-//            basePresenter.switchSpeaker();
-//        }
+    public void audioRecordPermissionGrant_Speaker() {
+        basePresenter.switchSpeaker();
     }
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO})
-    public void showAudioRecordPermission() {
-//        imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_on_selector);
-//        imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_on_selector);
-//        camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_on_selector);
-//        camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_on_selector);
-//        camLiveController.getImvLandSpeaker().setEnabled(false);
-//        imgVCamSwitchSpeaker.setEnabled(false);
-//        //同时设置speaker
-//        imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
-//        imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
-//        camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
-//        camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
-//        if (basePresenter != null) {
-//            basePresenter.switchMic();
-//        }
+    public void audioRecordPermissionGrant_Mic() {
+        basePresenter.switchMic();
     }
 
+    @NeedsPermission({Manifest.permission.RECORD_AUDIO})
+    public void audioRecordPermissionGrantProgramCheck() {
+
+    }
 
     @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionDenied() {
@@ -592,6 +526,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         getAlertDialogManager().showDialog(getActivity(),
                 "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.sound_auth)),
                 getString(R.string.OK), null);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})
+    public void audioRecordPermissionNeverAsk() {
+        audioRecordPermissionDenied();
+    }
+
+    @OnShowRationale({Manifest.permission.RECORD_AUDIO})
+    public void audioRecordPermissionRational(PermissionRequest request) {
+        audioRecordPermissionDenied();
     }
 
     @Override
@@ -608,24 +552,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void switchHotSeat(boolean speaker, boolean speakerEnable,
                               boolean mic, boolean micEnable,
                               boolean capture, boolean captureEnable) {
-        camLiveControlLayer.post(() -> camLiveControlLayer.setHotSeatState(
-                basePresenter.getPlayType(), speaker, speakerEnable, mic, micEnable, capture, captureEnable));
+        camLiveControlLayer.postDelayed(() -> camLiveControlLayer.setHotSeatState(
+                basePresenter.getPlayType(), speaker, speakerEnable, mic, micEnable, capture, captureEnable), 100);
     }
 
-    @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})
-    public void audioRecordPermissionNeverAsk() {
-        if (!isResumed()) return;
-        getAlertDialogManager().showDialog(getActivity(),
-                "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.permission_auth, getString(R.string.sound_auth))),
-                getString(R.string.OK), null);
-    }
-
-    @OnShowRationale({Manifest.permission.RECORD_AUDIO})
-    public void audioRecordPermissionRational(PermissionRequest request) {
-        if (!isResumed()) return;
-        getAlertDialogManager().showDialog(getActivity(),
-                "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.permission_auth, getString(R.string.sound_auth))),
-                getString(R.string.OK), null);
+    @Override
+    public void onAudioPermissionCheck() {
+        if (!isAdded()) return;
+        CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrantProgramCheckWithCheck(this);
     }
 
 

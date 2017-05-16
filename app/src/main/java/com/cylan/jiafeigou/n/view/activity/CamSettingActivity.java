@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -188,14 +188,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     return;
                 }
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)))
-                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
+                        getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
+                        getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                             basePresenter.unbindDevice();
                             LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create().show();
+                        }, getString(R.string.CANCEL), null);
             }
             break;
             case R.id.sv_setting_device_auto_record: {
@@ -272,13 +270,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 String localSSid = NetUtils.getNetName(ContextUtils.getContext());
                 String remoteSSid = net.ssid;
                 if (!TextUtils.equals(localSSid, remoteSSid) && net.net == 1) {
-                    new AlertDialog.Builder(this)
-                            .setMessage(getString(R.string.setwifi_check, remoteSSid))
-                            .setNegativeButton(getString(R.string.CANCEL), null)
-                            .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.setwifi_check, remoteSSid),
+                            getString(R.string.setwifi_check, remoteSSid),
+                            getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            })
-                            .show();
+                            }, getString(R.string.CANCEL), null);
                 } else {
                     //相同ssid,判断为同一个网络环境.太水了.
                     Intent intent = new Intent(this, ConfigWifiActivity_2.class);
