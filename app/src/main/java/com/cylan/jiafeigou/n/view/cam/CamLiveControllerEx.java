@@ -228,9 +228,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     public boolean isSightSettingShow() {
-        View v = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
-        return v != null && v.isShown();
+        return isSightSettingShow;
     }
+
+    private boolean isSightSettingShow = false;
 
     /**
      * 全景视角设置
@@ -242,6 +243,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!isFirstShow) return;//不是第一次
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
+            isSightSettingShow = true;
             layoutC.setVisibility(INVISIBLE);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
             liveViewWithThumbnail.addView(view);//最顶
@@ -252,6 +254,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
                 if (layout != null) liveViewWithThumbnail.removeView(layout);
                 basePresenter.startPlay();
+                isSightSettingShow = false;
             });
             layout.setOnClickListener(v -> AppLogger.d("don't click me"));
             view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
@@ -259,6 +262,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Intent intent = new Intent(getContext(), SightSettingActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 getContext().startActivity(intent);
+                isSightSettingShow = false;
             });
             PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
         } else {

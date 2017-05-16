@@ -183,16 +183,16 @@ android {
                                     "HW_APP_ID"          : "\\ 100005405",
                                     "VID"                : "\\ 0002",
                                     "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
-                                    "qqAppKey"           : "",
+                                    "qqAppKey"           : "\\ 1104534926",
                                     "mtaAppKey"          : "ATQ1JV694AKT",
-                                    "weChatAppKey"       : "",
+                                    "weChatAppKey"       : "wx382033a16e5cc4a5",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "test1.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "\\ 5361757031486",
-                                    "XiaoMiAppKey"       : "4+2ItISwz/qBNBIJwaXFQQ=="
+                                    "XiaoMiAppId"        : "\\ 5721736791425",
+                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ=="
             ]
         }
         _cell_c {
