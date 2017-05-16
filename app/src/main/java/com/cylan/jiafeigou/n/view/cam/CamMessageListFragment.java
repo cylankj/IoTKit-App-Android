@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,6 +26,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -45,7 +45,6 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.wheel.SDataStack;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
@@ -433,9 +432,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.tv_msg_delete://删除
                 final ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
                 if (ListUtils.isEmpty(list)) return;
-                new AlertDialog.Builder(getActivity())
-                        .setMessage(getString(R.string.Tips_SureDelete))
-                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Tips_SureDelete), getString(R.string.Tips_SureDelete),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
 //                            ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
                             camMessageListAdapter.removeAll(list);
                             if (basePresenter != null)
@@ -444,9 +442,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
                             tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
                             LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create().show();
+                        }, getString(R.string.CANCEL), null, false);
                 break;
         }
     }

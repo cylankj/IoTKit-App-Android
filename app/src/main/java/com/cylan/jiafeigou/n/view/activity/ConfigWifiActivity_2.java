@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +18,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
@@ -185,20 +185,13 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
         swRefreshWifi.setRefreshing(true);
     }
 
-    private AlertDialog backDialog;
 
     @Override
     public void onBackPressed() {
-        if (backDialog != null && backDialog.isShowing()) return;
-        if (backDialog == null) backDialog = new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.Tap1_AddDevice_tips))
-                .setNegativeButton(getString(R.string.CANCEL), null)
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     finishExt();
-                })
-                .setCancelable(false)
-                .create();
-        backDialog.show();
+                }, getString(R.string.CANCEL), null, false);
     }
 
     private class AAdapter extends SuperAdapter<ScanResult> {

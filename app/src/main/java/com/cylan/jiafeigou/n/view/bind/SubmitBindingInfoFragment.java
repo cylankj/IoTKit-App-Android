@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +17,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
-import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
-import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
-import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -51,9 +46,6 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-
-    //    private AlertDialog needRebindDialog;
-    private AlertDialog nullCidDialog;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
         SubmitBindingInfoFragment fragment = new SubmitBindingInfoFragment();
@@ -129,20 +121,16 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
             if (basePresenter != null)
                 basePresenter.stop();
         } else if (state == BindUtils.BIND_NULL) {
-            if (nullCidDialog != null && nullCidDialog.isShowing()) return;
-            nullCidDialog = new AlertDialog.Builder(getActivity())
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+            getAlertDialogManager().showDialog(getActivity(), "null", "",
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
                             ((BindDeviceActivity) getActivity()).finishExt();
                         }
-                    })
-                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
                             ((BindDeviceActivity) getActivity()).finishExt();
                         }
-                    })
-                    .create();
-            nullCidDialog.show();
+                    }, false);
             if (basePresenter != null)
                 basePresenter.stop();
         } else {

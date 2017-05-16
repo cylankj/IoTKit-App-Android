@@ -152,7 +152,10 @@ android {
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
-                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
+                                    "BUGLY_APPID"        : "\\ 3101553102",
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan"
             ]
         }
         _test1 {
@@ -172,7 +175,10 @@ android {
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
-                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
+                                    "BUGLY_APPID"        : "\\ 3101553102",
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan"
             ]
         }
         _doby {
@@ -186,13 +192,16 @@ android {
                                     "qqAppKey"           : "\\ 1104534926",
                                     "mtaAppKey"          : "ATQ1JV694AKT",
                                     "weChatAppKey"       : "wx382033a16e5cc4a5",
-                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "sinaAppKey"         : "\\ 1821035549",
                                     "SERVER"             : "test1.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5721736791425",
-                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ=="
+                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
+                                    "BUGLY_APPID"        : "\\ 3101835188",
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "doby"
             ]
         }
         _cell_c {
