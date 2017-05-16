@@ -261,15 +261,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     private void playAfterCheck() {
         //满足条件才需要播放
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
-            return;
+        if (!accept()) return;
         basePresenter.startPlay();
+    }
+
+    private boolean accept() {
+        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
+            return false;
+        else return true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (basePresenter != null) {
+            if (!accept()) return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
     }
@@ -546,7 +552,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onAudioPermissionCheck() {
         if (!isAdded()) return;
-        CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrantProgramCheckWithCheck(this);
+//        CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrantProgramCheckWithCheck(this);
     }
 
 
