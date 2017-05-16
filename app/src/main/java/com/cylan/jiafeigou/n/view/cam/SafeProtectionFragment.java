@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -148,21 +148,17 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     return;
                 }
-                new AlertDialog.Builder(getActivity())
-                        .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
-                        .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Tap1_Camera_MotionDetection_OffTips), getString(R.string.Tap1_Camera_MotionDetection_OffTips),
+                        getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                             DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                             wFlag.value = false;
                             basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                             showDetail(false);
                             updateDetails();
                             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
-                        })
-                        .setCancelable(false)
-                        .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                             ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(true);
-                        })
-                        .show();
+                        }, false);
             } else {
                 DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                 wFlag.value = true;

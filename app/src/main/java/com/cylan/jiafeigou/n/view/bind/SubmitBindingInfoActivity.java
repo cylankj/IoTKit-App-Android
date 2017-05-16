@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
@@ -47,9 +47,6 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     CustomToolbar customToolbar;
 
 
-    //    private AlertDialog needRebindDialog;
-    private AlertDialog nullCidDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,20 +74,13 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     }
 
-    private android.app.AlertDialog backDialog;
 
     @Override
     public void onBackPressed() {
-        if (backDialog != null && backDialog.isShowing()) return;
-        if (backDialog == null) backDialog = new android.app.AlertDialog.Builder(this)
-                .setMessage(getString(R.string.Tap1_AddDevice_tips))
-                .setNegativeButton(getString(R.string.CANCEL), null)
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     onClick();
-                })
-                .setCancelable(false)
-                .create();
-        backDialog.show();
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override
@@ -119,14 +109,10 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             if (basePresenter != null)
                 basePresenter.stop();
         } else if (state == BindUtils.BIND_NULL) {
-            if (nullCidDialog != null && nullCidDialog.isShowing()) return;
-            nullCidDialog = new AlertDialog.Builder(this)
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    })
-                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    })
-                    .create();
-            nullCidDialog.show();
+            getAlertDialogManager().showDialog(this, "null", "",
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    }, false);
             if (basePresenter != null)
                 basePresenter.stop();
         } else {

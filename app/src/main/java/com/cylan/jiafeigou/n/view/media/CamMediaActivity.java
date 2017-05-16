@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -302,7 +302,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         } else ToastUtil.showNegativeToast(getString(R.string.set_failed));
     }
 
-    private AlertDialog over50ItemsDlg;
 
     @Override
     public void onCollectingRsp(int err) {
@@ -312,20 +311,13 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         });
         switch (err) {
             case 1050:
-                if (over50ItemsDlg != null && over50ItemsDlg.isShowing()) return;
-                if (over50ItemsDlg == null) {
-                    over50ItemsDlg = new AlertDialog.Builder(this)
-                            .setMessage(getString(R.string.DailyGreatTips_Full))
-                            .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                Intent intent = new Intent(CamMediaActivity.this, NewHomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                intent.putExtra(JConstant.KEY_JUMP_TO_WONDER, JConstant.KEY_JUMP_TO_WONDER);
-                                startActivity(intent);
-                            })
-                            .setNegativeButton(getString(R.string.CANCEL), null)
-                            .create();
-                }
-                over50ItemsDlg.show();
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.DailyGreatTips_Full), getString(R.string.DailyGreatTips_Full),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            Intent intent = new Intent(CamMediaActivity.this, NewHomeActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra(JConstant.KEY_JUMP_TO_WONDER, JConstant.KEY_JUMP_TO_WONDER);
+                            startActivity(intent);
+                        }, getString(R.string.CANCEL), null, false);
                 break;
             case 0:
                 imgVBigPicCollect.setTag(true);

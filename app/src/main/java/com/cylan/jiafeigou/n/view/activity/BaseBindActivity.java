@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -29,8 +29,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 @RuntimePermissions
 public class BaseBindActivity<T extends BasePresenter> extends BaseFullScreenFragmentActivity<T> {
 
-    private AlertDialog gpsDialog;
-    private AlertDialog locationDialog;
 
     @Override
     public void onStart() {
@@ -54,44 +52,30 @@ public class BaseBindActivity<T extends BasePresenter> extends BaseFullScreenFra
     public void onGrantedLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
-                if (locationDialog != null && locationDialog.isShowing()) return;
-                if (locationDialog == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(getString(R.string.GetWifiList_FaiTips))
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                            })
-                            .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                                dialog.cancel();
-                                finishExt();
-                            });
-                    locationDialog = builder.create();
-                }
-                locationDialog.show();
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.GetWifiList_FaiTips), getString(R.string.GetWifiList_FaiTips),
+                        getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }, getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            dialog.cancel();
+                            finishExt();
+                        }, false);
             }
     }
 
     @OnPermissionDenied(ACCESS_FINE_LOCATION)
     public void onDeniedLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (gpsDialog != null && gpsDialog.isShowing()) return;
-            if (gpsDialog == null) {
-                gpsDialog = new AlertDialog.Builder(this)
-                        .setMessage(String.format(getString(R.string.turn_on_gps), ""))
-                        .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                            finishExt();
-                        })
-                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.turn_on_gps),
+                    getString(R.string.turn_on_gps),
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
 //                            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-                            intent.setData(uri);
-                            startActivityForResult(intent, 33);
-                        })
-                        .create();
-            }
-            gpsDialog.show();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, 33);
+                    }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        finishExt();
+                    }, false);
         }
     }
 
