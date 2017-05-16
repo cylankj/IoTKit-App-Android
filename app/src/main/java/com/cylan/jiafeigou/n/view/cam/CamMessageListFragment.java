@@ -454,9 +454,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 R.id.lLayout_cam_msg_container);
         switch (v.getId()) {
             case R.id.tv_cam_message_item_delete: {//删除选中
-                new AlertDialog.Builder(getActivity())
-                        .setMessage(getString(R.string.Tips_SureDelete))
-                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                getAlertDialogManager().showDialog(getActivity(), getString(R.string.Tips_SureDelete), getString(R.string.Tips_SureDelete),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
                             ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
                             if (camMessageListAdapter.getCount() > position) {
                                 list.add(camMessageListAdapter.getItem(position));
@@ -465,9 +464,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             if (basePresenter != null)
                                 basePresenter.removeItems(list);
                             LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create().show();
+                        }, getString(R.string.CANCEL), null, false);
             }
             break;
             case R.id.lLayout_cam_msg_container: {//点击item,选中
