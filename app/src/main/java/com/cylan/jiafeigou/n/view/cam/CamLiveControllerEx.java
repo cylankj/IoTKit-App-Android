@@ -852,6 +852,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 roundCardPopup.dismiss();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
                 ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment,
                         android.R.id.content);
