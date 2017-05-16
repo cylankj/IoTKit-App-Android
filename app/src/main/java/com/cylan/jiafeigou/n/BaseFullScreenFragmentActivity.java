@@ -91,6 +91,7 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         if (BuildConfig.DEBUG) {
             ViewServer.get(this).removeWindow(this);
         }
+        AlertDialogManager.getInstance().dismissOtherDialog(this.getClass().getSimpleName());
     }
 
     @Override
@@ -249,20 +250,6 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         } else return false;
     }
 
-    protected boolean isBeforLog() {
-        FragmentManager fm = getSupportFragmentManager();
-        List<Fragment> list = fm.getFragments();
-
-        if (list == null) {
-            return false;
-        }
-
-        if (list.size() == 1 && list.get(0) instanceof BeforeLoginFragment) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * 弹出所有 {@link Fragment}

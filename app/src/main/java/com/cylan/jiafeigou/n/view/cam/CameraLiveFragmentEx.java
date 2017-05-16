@@ -132,14 +132,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 switch (state) {
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
-                        //下一步playing
-//                        CamLiveContract.LiveStream type = basePresenter.getLiveStream();
-//                        if (type.type == TYPE_LIVE) {
-                        //不会发生这一幕的.
                         basePresenter.startPlay();
-//                        } else if (type.type == TYPE_HISTORY) {
-//                            basePresenter.startPlayHistory(type.time * 1000L);
-//                        }
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop
@@ -216,20 +209,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStart() {
         super.onStart();
         Device device = basePresenter.getDevice();
-        DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
-        if (!standby.standby) {
-            //开始直播
-//            CamLiveContract.LiveStream type = basePresenter.getLiveStream();
-//            if (type.type == TYPE_LIVE)
-            basePresenter.startPlay();
-//            else if (type.type == TYPE_HISTORY) {
-//                basePresenter.startPlayHistory(type.time * 1000L);
-//            }
-        } else {
-            //show
-        }
         camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
         camLiveControlLayer.onActivityStart(basePresenter, device);
+        playAfterCheck();
     }
 
     @Override
@@ -261,15 +243,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //                startLiveHistory(time);
                 AppLogger.e("历史录像");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                //满足条件才需要播放
+                if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
+                    return;
                 basePresenter.startPlayHistory(time);
                 return;
             }
-//            CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
-//            if (prePlayType.type == TYPE_LIVE) {
-            basePresenter.startPlay();
-//            } else if (prePlayType.type == TYPE_HISTORY) {
-//                basePresenter.startPlayHistory(prePlayType.time * 1000L);
-//            }
+            playAfterCheck();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
             basePresenter.stopPlayVideo(PLAY_STATE_IDLE).subscribe(ret -> {
             }, AppLogger::e);
@@ -277,6 +257,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         } else {
             AppLogger.d("not ready ");
         }
+    }
+
+    private void playAfterCheck() {
+        //满足条件才需要播放
+        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
+            return;
+        basePresenter.startPlay();
     }
 
     @Override
@@ -522,10 +509,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionDenied() {
-        if (!isResumed()) return;
-        getAlertDialogManager().showDialog(getActivity(),
+        if (!isAdded() || getActivity() == null || getActivity().isFinishing()) return;
+        getView().post(() -> getAlertDialogManager().showDialog(getActivity(),
                 "RECORD_AUDIO", getString(R.string.permission_auth, getString(R.string.sound_auth)),
-                getString(R.string.OK), null);
+                getString(R.string.OK), null));
     }
 
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})

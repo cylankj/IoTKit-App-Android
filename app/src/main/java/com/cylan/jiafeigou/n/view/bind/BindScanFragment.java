@@ -228,13 +228,10 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
             } else {
                 int iPid = Integer.parseInt(pid);
                 if (JFGRules.isCamera(iPid)) {
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                            .commitAllowingStateLoss();
+                    getActivity().getSupportFragmentManager().popBackStack();
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindCamActivity.class));
                 } else if (JFGRules.isBell(iPid)) {
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                            .commitAllowingStateLoss();
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindBellActivity.class));
                 } else {

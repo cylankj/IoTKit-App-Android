@@ -322,6 +322,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return JFGRules.isShareDevice(uuid);
     }
 
+    @Override
+    public boolean isDeviceStandby() {
+        DpMsgDefine.DPStandby standby = getDevice().$(508, new DpMsgDefine.DPStandby());
+        return standby.standby;
+    }
 
     @Override
     public void startPlay() {
@@ -496,6 +501,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return Observable.just("")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(o -> {
+                    DpMsgDefine.DPStandby dpStandby = getDevice().$(508, new DpMsgDefine.DPStandby());
+                    if (dpStandby.standby) return false;//待机模式
                     if (NetUtils.getJfgNetType() == 0) {
                         //客户端断网了
                         stopPlayVideo(ERR_NETWORK).subscribe(ret -> {

@@ -45,7 +45,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //平视
-        String dpPrimary = device.$(509, "1");
+        String dpPrimary = device.$(509, "0");
         initValue = dpPrimary;
         try {
             //0:俯视
