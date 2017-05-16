@@ -757,6 +757,7 @@ public class RxEvent {
     public static class CheckVersionRsp implements Parcelable {
         public long seq;
         public boolean hasNew;
+        public int forceUpdate;
         public long fileSize;
         public int downloadState;
         public long lastUpdateTime;
@@ -1243,9 +1244,15 @@ public class RxEvent {
 
     public static class ApkDownload {
         public String filePath;
+        public RxEvent.CheckVersionRsp rsp;
 
         public ApkDownload(String filePath) {
             this.filePath = filePath;
+        }
+
+        public ApkDownload setRsp(RxEvent.CheckVersionRsp rsp) {
+            this.rsp = rsp;
+            return this;
         }
     }
 

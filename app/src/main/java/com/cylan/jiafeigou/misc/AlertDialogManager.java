@@ -5,6 +5,9 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.utils.ActivityUtils;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,6 +48,24 @@ public class AlertDialogManager {
         dialog.show();
     }
 
+    public void showDialog(Activity activity, String tag, String message, boolean canceltouchOutSide) {
+        if (TextUtils.isEmpty(tag)) return;
+        AlertDialog dialog = getAlertDialog(tag);
+        if (activity == null || activity.isFinishing()) return;
+        if (dialog != null && dialog.isShowing()) return;
+        dismissOtherDialog();
+        if (dialog == null) {
+            dialog = new AlertDialog.Builder(activity)
+                    .setMessage(message)
+                    .create();
+            if (weakReferenceMap == null)
+                weakReferenceMap = new HashMap<>();
+            weakReferenceMap.put(tag, new WeakReference<>(dialog));
+        }
+        dialog.setCanceledOnTouchOutside(canceltouchOutSide);
+        dialog.show();
+    }
+
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener) {
         if (TextUtils.isEmpty(tag)) return;
         AlertDialog dialog = getAlertDialog(tag);
@@ -60,6 +81,25 @@ public class AlertDialogManager {
                 weakReferenceMap = new HashMap<>();
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
+        dialog.show();
+    }
+
+    public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, boolean mCancelable) {
+        if (TextUtils.isEmpty(tag)) return;
+        AlertDialog dialog = getAlertDialog(tag);
+        if (activity == null || activity.isFinishing()) return;
+        if (dialog != null && dialog.isShowing()) return;
+        dismissOtherDialog();
+        if (dialog == null) {
+            dialog = new AlertDialog.Builder(activity)
+                    .setMessage(message)
+                    .setPositiveButton(ok, okClickListener)
+                    .create();
+            if (weakReferenceMap == null)
+                weakReferenceMap = new HashMap<>();
+            weakReferenceMap.put(tag, new WeakReference<>(dialog));
+        }
+        dialog.setCanceledOnTouchOutside(mCancelable);
         dialog.show();
     }
 
@@ -79,6 +119,26 @@ public class AlertDialogManager {
                 weakReferenceMap = new HashMap<>();
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
+        dialog.show();
+    }
+
+    public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, String cancel, DialogInterface.OnClickListener cancelClickListener, boolean mCancelable) {
+        if (TextUtils.isEmpty(tag)) return;
+        AlertDialog dialog = getAlertDialog(tag);
+        if (activity == null || activity.isFinishing()) return;
+        if (dialog != null && dialog.isShowing()) return;
+        dismissOtherDialog();
+        if (dialog == null) {
+            dialog = new AlertDialog.Builder(activity)
+                    .setMessage(message)
+                    .setPositiveButton(ok, okClickListener)
+                    .setNegativeButton(cancel, cancelClickListener)
+                    .create();
+            if (weakReferenceMap == null)
+                weakReferenceMap = new HashMap<>();
+            weakReferenceMap.put(tag, new WeakReference<>(dialog));
+        }
+        dialog.setCanceledOnTouchOutside(mCancelable);
         dialog.show();
     }
 

@@ -235,7 +235,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
                     startActivity(i);
-                }, getString(R.string.CANCEL), null);
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override
