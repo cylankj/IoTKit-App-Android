@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -43,9 +42,6 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     }
 
     public DeviceInformation getDeviceInformation() {
-        if (TextUtils.isEmpty(deviceInformation.ip)) {
-            fetchDeviceInformationSuggestion();
-        }
         return deviceInformation;
     }
 
@@ -54,15 +50,16 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         INFORMATION_FETCHER = this;
         //这是全局的,所以不需要反注册,本来要写在 manifest 里的但 Android 7.0 写在 manifest 里失效了
         context.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        monitorDeviceInformationSuggestion();
     }
 
-    private void resolveDeviceInformation(RxEvent.LocalUdpMsg udpMsg) {
+    private boolean resolveDeviceInformation(RxEvent.LocalUdpMsg udpMsg) {
         try {
             AppLogger.d("正在解析 UDP 消息:" + new Gson().toJson(udpMsg));
             JfgUdpMsg.UdpSecondaryHeard udpHeader = unpackData(udpMsg.data, JfgUdpMsg.UdpSecondaryHeard.class);
             assert udpHeader != null;
             if (!TextUtils.equals(udpHeader.cid, deviceInformation.uuid)) {//说明不是我们需要的消息
-                return;
+                return false;
             }
             deviceInformation.mac = udpHeader.mac;
             if (TextUtils.equals(udpHeader.cmd, UdpConstant.F_PING_ACK)) {
@@ -72,90 +69,76 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                     deviceInformation.ip = udpMsg.ip;
                     deviceInformation.port = udpMsg.port;
                     AppLogger.d("当前设备的局域网 IP 地址为:http://" + udpMsg.ip);
+                    return true;
                 }
             }
 
         } catch (Exception e) {
             AppLogger.e("err: " + e.getMessage());
         }
-    }
-
-    private boolean resolveFinished() {
-        boolean hasInformation = true;
-        if (deviceInformation == null) {
-            hasInformation = false;
-        }
-        if (deviceInformation.uuid == null) {
-            hasInformation = false;
-        }
-        if (deviceInformation.ip == null) {
-            hasInformation = false;
-        }
-        if (deviceInformation.port == -10000) {
-            hasInformation = false;
-        }
-        return hasInformation;
+        return false;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())
-                && !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)) {
+        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction()) &&
+                !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)) {
             //网络状态发生了变化,这里我们判断当前连接的是否是设备AP,如果是设备AP 则主动请求设备信息,这样就做到了全局处理逻辑.
-            fetchDeviceInformationSuggestion();
+            AppLogger.d("网络状态发生了变化");
+            RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
         }
     }
 
     public void init(String uuid) {
         deviceInformation = new DeviceInformation(uuid);
-        fetchDeviceInformationSuggestion();
+        RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
     }
 
-    private void fetchDeviceInformationSuggestion() {
-        Observable.create(subscriber -> {
-            ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI && TextUtils.isEmpty(deviceInformation.ip)) {
-                try {
-                    AppLogger.d("fetchDeviceInformation");
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                    RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);//当前连接的是 WiFi 网络则尝试读取所有能读取的设备信息
-                    subscriber.onNext("fetch");
-                    subscriber.onCompleted();
-                } catch (JfgException e) {
-                    subscriber.onError(e);
-                }
-            } else {
-                subscriber.onCompleted();
-            }
-        })
-                .subscribeOn(Schedulers.io())
+    public void sleep() {
+        deviceInformation = null;
+    }
+
+
+    private void monitorDeviceInformationSuggestion() {
+        RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
+                .throttleLast(2, TimeUnit.SECONDS)
+                .retry()
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class))
-                .filter(this::accept)
-                .timeout(10, TimeUnit.SECONDS)
-                .takeUntil(udpMsg -> resolveFinished())
-                .subscribe(this::resolveDeviceInformation, e -> {
+                .filter(event -> !event.success && deviceInformation != null)
+                .map(event -> {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                        try {
+                            AppLogger.d("fetchDeviceInformation");
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                        } catch (JfgException e) {
+                            AppLogger.e(e.getMessage());
+                        }
+                        return true;
+                    } else {
+                        deviceInformation.ip = null;
+                        deviceInformation.port = 0;
+                        RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
+                        return false;
+                    }
+                })
+                .filter(send -> send)
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                        .filter(this::resolveDeviceInformation)
+                        .first()
+                        .timeout(3, TimeUnit.SECONDS, Observable.just(null)))
+                .subscribe(ret -> {
+                    RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
+                }, e -> {
                     AppLogger.e(e.toString() + ":" + e.getMessage());
                     if (BaseApplication.isOnline()) {
                         RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                     }
-                }, () -> {
-                    RxBus.getCacheInstance().postSticky(deviceInformation);
-                    RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                 });
-    }
 
-    private boolean accept(RxEvent.LocalUdpMsg udpMsg) {
-        JfgUdpMsg.UdpSecondaryHeard udpHeader = null;
-        try {
-            udpHeader = unpackData(udpMsg.data, JfgUdpMsg.UdpSecondaryHeard.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return udpHeader != null && TextUtils.equals(udpHeader.cid, deviceInformation.uuid);
     }
 }

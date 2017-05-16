@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -74,6 +75,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void makePhotograph() {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().snapShot()
+                .timeout(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
@@ -88,6 +90,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(e);
                     mView.onReportError(-1);//timeout
+                    ToastUtil.showNegativeToast("拍照操作超时");
                 });
         registerSubscription(subscribe);
     }
@@ -100,6 +103,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void checkAndInitRecord() {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus()
+                .timeout(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp.ret == 0) {
@@ -117,6 +121,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                 }, e -> {
                     AppLogger.e(e.getMessage());
+                    ToastUtil.showNegativeToast("初始化设备状态超时");
                 });
 
         registerSubscription(subscribe);
@@ -125,6 +130,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().setResolution(mode)
+                .timeout(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     AppLogger.d("切换模式返回结果为" + new Gson().toJson(ret));
@@ -135,6 +141,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                 }, e -> {
                     AppLogger.e(e);
+                    ToastUtil.showNegativeToast("切换分辨率超时");
                 });
         registerSubscription(subscribe);
     }

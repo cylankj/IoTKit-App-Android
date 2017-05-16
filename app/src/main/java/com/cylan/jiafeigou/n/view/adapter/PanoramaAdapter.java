@@ -72,10 +72,22 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         }
 
         TextView view = holder.getView(R.id.tv_album_download_progress);
-        DownloadListener listener = item.downloadInfo.getListener() == null ? new MyDownloadListener() : item.downloadInfo.getListener();
-        listener.setUserTag(holder);
-        view.setTag(item.downloadInfo);
-        view.setText((int) (item.downloadInfo.getProgress() * 100) + "%");
+        DownloadListener listener = (DownloadListener) view.getTag(3 << 24 + 1);
+        PanoramaAlbumContact.PanoramaItem panoramaItem = (PanoramaAlbumContact.PanoramaItem) view.getTag(3 << 24 + 2);
+        if (listener == null) {
+            listener = new MyDownloadListener();
+            listener.setUserTag(holder);
+        }
+        if (panoramaItem != null && panoramaItem.downloadInfo != null) {
+            panoramaItem.downloadInfo.setListener(null);
+        }
+        panoramaItem = item;
+        panoramaItem.downloadInfo.setListener(listener);
+        view.setTag(3 << 24 + 1, listener);
+        view.setTag(3 << 24 + 2, panoramaItem);
+        int percent = (int) (panoramaItem.downloadInfo.getProgress() * 100);
+        view.setText(percent + "%");
+        view.setVisibility(percent >= 100 ? View.INVISIBLE : View.VISIBLE);
     }
 
     public static class MyDownloadListener extends DownloadListener {
@@ -85,12 +97,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             if (getUserTag() == null) return;
             SuperViewHolder holder = (SuperViewHolder) getUserTag();
             TextView textView = holder.getView(R.id.tv_album_download_progress);
-            DownloadInfo info = (DownloadInfo) textView.getTag();
-            int percent = (int) (info.getProgress() * 100);
-            textView.setText(percent + "%");  //这里不能使用传递进来的 DownloadInfo，否者会出现条目错乱的问题
-            if (percent == 100) {
-                holder.setVisibility(R.id.iv_album_icon_720_iphone, View.VISIBLE);
-            }
+            textView.setText((int) (downloadInfo.getProgress() * 100) + "%");
         }
 
         @Override
@@ -98,6 +105,10 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             if (getUserTag() == null) return;
             SuperViewHolder holder = (SuperViewHolder) getUserTag();
             holder.setVisibility(R.id.iv_album_icon_720_iphone, View.VISIBLE);
+            TextView textView = holder.getView(R.id.tv_album_download_progress);
+            PanoramaAlbumContact.PanoramaItem panoramaItem = (PanoramaAlbumContact.PanoramaItem) textView.getTag(3 << 24 + 2);
+            panoramaItem.location = 2;
+            textView.setVisibility(View.INVISIBLE);
         }
 
         @Override

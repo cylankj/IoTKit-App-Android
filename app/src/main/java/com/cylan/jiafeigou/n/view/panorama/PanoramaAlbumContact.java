@@ -25,6 +25,7 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact.PanoramaI
 public interface PanoramaAlbumContact {
 
     interface View extends JFGView {
+
         @IntDef
         @Retention(RetentionPolicy.SOURCE)
         @interface ALBUM_VIEW_MODE {
@@ -33,13 +34,15 @@ public interface PanoramaAlbumContact {
             int MODE_BOTH = 2;
         }
 
-        void onAppend(List<PanoramaItem> list, boolean isRefresh);
+        void onAppend(List<PanoramaItem> list, boolean isRefresh, boolean loadFinish);
 
         void onDelete(List<PanoramaItem> positionList);
 
         void onUpdate(PanoramaItem needUpdate, int position);
 
         List<PanoramaItem> getList();
+
+        void onViewModeChanged(int apiType);
     }
 
     class PanoramaItem implements Parcelable {
@@ -73,6 +76,10 @@ public interface PanoramaAlbumContact {
         public PanoramaItem(int time) {
             this.type = 2;
             this.time = time;
+        }
+
+        public static String getTaskKey(String uuid, String fileName) {
+            return uuid + "/images/" + fileName;
         }
 
         public static String getThumbUrl(String uuid, PanoramaItem item) {

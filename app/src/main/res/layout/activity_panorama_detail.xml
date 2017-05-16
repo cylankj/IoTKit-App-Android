@@ -9,21 +9,24 @@
         android:layout_height="match_parent" />
 
     <RelativeLayout
+        android:id="@+id/act_panorama_detail_header_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:background="#4C000000">
+        android:layout_height="wrap_content"
+        android:background="#4C000000"
+        android:minHeight="@dimen/y48">
 
         <Button
             android:id="@+id/tv_top_bar_left"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/y48"
             android:background="@android:color/transparent"
-            android:drawablePadding="@dimen/y15"
+            android:drawablePadding="@dimen/y17"
             android:drawableStart="@drawable/nav_tab_back_selector"
-            android:padding="@dimen/y15"
+            android:paddingEnd="@dimen/y15"
+            android:paddingStart="@dimen/y15"
             android:text="720全景相机"
             android:textColor="@color/color_white"
-            android:textSize="@dimen/sp16" />
+            android:textSize="@dimen/sp18" />
 
         <ImageButton
             android:id="@+id/act_panorama_detail_toolbar_share"
@@ -117,7 +120,7 @@
                     android:layout_height="@dimen/y25"
                     android:layout_marginEnd="@dimen/y32"
                     android:background="@null"
-                    android:src="@drawable/video_icon_asteroid" />
+                    android:src="@drawable/video_icon_panorama" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_gyroscope"
@@ -165,7 +168,7 @@
                     android:layout_height="@dimen/y38"
                     android:layout_marginStart="@dimen/y47"
                     android:background="@null"
-                    android:src="@drawable/photos_icon_asteroid" />
+                    android:src="@drawable/photos_icon_panorama" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"

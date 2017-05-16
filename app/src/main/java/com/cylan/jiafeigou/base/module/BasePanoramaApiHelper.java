@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,11 +53,10 @@ public class BasePanoramaApiHelper {
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
                             httpApi = retrofit.create(IHttpApi.class);
-//                            DownloadPercentManager.getInstance().init(httpApi);
-
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
                         } else {
                             forwardHelper = BaseForwardHelper.getInstance();
+                            deviceInformation = null;
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
                         }
                     } else {
@@ -71,6 +69,10 @@ public class BasePanoramaApiHelper {
 
     public String getDeviceIp() {
         return deviceInformation == null ? null : "http://" + deviceInformation.ip;
+    }
+
+    public Observable<RxEvent.PanoramaApiAvailable> monitorPanoramaApi() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class);
     }
 
     /**
@@ -102,7 +104,6 @@ public class BasePanoramaApiHelper {
 
     private Observable<RxEvent.PanoramaApiAvailable> getAvailableApi() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
-                .timeout(5, TimeUnit.SECONDS)
                 .first()
                 .map(panoramaApiAvailable -> {
                     AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
@@ -112,7 +113,7 @@ public class BasePanoramaApiHelper {
     }
 
     public void download(String fileName, DownloadPercent.DownloadListener listener) {
-        DownloadPercentManager.getInstance().download(deviceInformation.uuid, fileName, listener);
+//        DownloadPercentManager.getInstance().download(deviceInformation.uuid, fileName, listener);
     }
 
     /**

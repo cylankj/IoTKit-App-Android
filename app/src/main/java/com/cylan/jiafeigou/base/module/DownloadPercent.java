@@ -10,6 +10,8 @@ public class DownloadPercent {
     public long progress = 0;
     public long total = 0;
     public int percent = 0;
+    public boolean downloading;
+    public volatile DownloadListener listener;
 
     public DownloadPercent(String fileName, String uuid) {
         this.fileName = fileName;

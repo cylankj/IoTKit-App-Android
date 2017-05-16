@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
@@ -29,6 +30,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 
 public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Presenter>
         implements PanoramaAlbumContact.View,
@@ -63,6 +66,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
+
         panoramaAdapter = new PanoramaAdapter(uuid, this, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
@@ -118,6 +122,19 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
+        String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
+        if (mac != null) {
+            String routerMac = NetUtils.getRouterMacAddress(getApplication());
+            if (TextUtils.equals(mac, routerMac)) {
+                albumViewMode = 2;
+                toolbarAlbumViewMode.setEnabled(true);
+            } else {
+                albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
+                toolbarAlbumViewMode.setEnabled(false);
+            }
+        }
+        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+        presenter.fetch(0, albumViewMode);
     }
 
     @Override
@@ -249,8 +266,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onAppend(List<PanoramaAlbumContact.PanoramaItem> resultList, boolean isRefresh) {
-        loading = false;
+    public void onAppend(List<PanoramaAlbumContact.PanoramaItem> resultList, boolean isRefresh, boolean loadFinish) {
+        loading = !loadFinish;
         if (isRefresh) {
             panoramaAdapter.clear();
         }
@@ -284,5 +301,17 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     public List<PanoramaAlbumContact.PanoramaItem> getList() {
         return panoramaAdapter.getList();
+    }
+
+    @Override
+    public void onViewModeChanged(int apiType) {
+        if (apiType == 1) {//forward
+            albumViewMode = 0;
+            presenter.fetch(0, albumViewMode);
+            toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+            toolbarAlbumViewMode.setEnabled(false);
+        } else if (apiType == 0) {
+            toolbarAlbumViewMode.setEnabled(true);
+        }
     }
 }
