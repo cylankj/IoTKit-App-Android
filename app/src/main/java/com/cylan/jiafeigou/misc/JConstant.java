@@ -175,6 +175,7 @@ public class JConstant {
     //升级包的目录也需要放在这里
     public static final String WORKER_PATH = ROOT_DIR + File.separator + "log";
     public static final String MEDIA_PATH = ROOT_DIR + File.separator + "media";
+    public static final String PANORAMA_MEDIA_PATH = ROOT_DIR + File.separator + "Panorama";
     public static final String SYSTEM_PHOTO_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "DCIM" + File.separator + "Camera";
     public static final String MISC_PATH = ROOT_DIR + File.separator + "misc";
     public static final String USER_IMAGE_HEAD_URL = "";                  //用户头像

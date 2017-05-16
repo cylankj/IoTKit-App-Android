@@ -51,6 +51,22 @@ public class TimeUtils {
         }
     };
 
+    private static final ThreadLocal<SimpleDateFormat> getSimpleMMSS = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("mm:ss", Locale.getDefault());
+        }
+    };
+
+    public static String getMM_SS(long time) {
+        long second = time / 1000;
+        long sec = second % 60;
+        long min = second / 60;
+        String secText = sec >= 10 ? "" + sec : "0" + sec;
+        String minText = min >= 10 ? "" + min : "0" + min;
+        return minText + ":" + secText;
+    }
+
     private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatHHMM = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {

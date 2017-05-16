@@ -57,6 +57,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     //    private RadioGroup menuContainer;
     private String[] titles = {"相机+手机相册", "全景相册", "手机相册"};
     private PanoramaAdapter panoramaAdapter;
+    private LinearLayoutManager layoutManager;
+    public boolean loading;
 
     @Override
     protected void initViewAndListener() {
@@ -64,9 +66,47 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         panoramaAdapter = new PanoramaAdapter(uuid, this, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            public int currentPage;
+            public int previousTotal;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = recyclerView.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                if (loading) {
+
+                    if (totalItemCount > previousTotal) {
+                        //说明数据已经加载结束
+                        previousTotal = totalItemCount;
+                    }
+                }
+                //这里需要好好理解
+                if (!loading && totalItemCount - visibleItemCount <= firstVisibleItem) {
+                    currentPage++;
+                    onLoadMore();
+                    loading = true;
+                }
+            }
+        });
         recyclerView.setAdapter(panoramaAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    private void onLoadMore() {
+        loading = true;
+        PanoramaAlbumContact.PanoramaItem item = panoramaAdapter.getItem(panoramaAdapter.getCount() - 1);
+        presenter.fetch(item.time, albumViewMode);
     }
 
     @Override
@@ -177,16 +217,17 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         albumViewMode = resIdToMode(checkedId);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
         hideAlbumViewModePop();
+        presenter.fetch(0, albumViewMode);
         Log.d("onCheckedChanged", "onCheckedChanged");
-        albumDelete();
     }
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
+        PanoramaAlbumContact.PanoramaItem item = panoramaAdapter.getItem(position);
         if (panoramaAdapter.isInEditMode()) {
             panoramaAdapter.reverseItemSelectedState(position);
         } else {
-            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, panoramaAdapter.getItem(position));
+            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item);
             startActivity(intent);
         }
     }
@@ -204,11 +245,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onRefresh() {
-        presenter.refresh(false);
+        presenter.fetch(0, albumViewMode);
     }
 
     @Override
     public void onAppend(List<PanoramaAlbumContact.PanoramaItem> resultList, boolean isRefresh) {
+        loading = false;
         if (isRefresh) {
             panoramaAdapter.clear();
         }

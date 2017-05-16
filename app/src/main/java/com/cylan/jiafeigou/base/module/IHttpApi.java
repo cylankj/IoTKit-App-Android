@@ -1,12 +1,14 @@
 package com.cylan.jiafeigou.base.module;
 
 
-import java.io.File;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
 import rx.Observable;
 
 /**
@@ -17,10 +19,11 @@ public interface IHttpApi {
     String CGI = "cgi/ctrl.cgi";
 
     @GET("images/{fileName}")
-    Observable<File> download(@Path("fileName") String fileName);
+    @Streaming
+    Observable<ResponseBody> download(@Path("fileName") String fileName, @Header("Range") String range);
 
-    @GET("thumb/{thumb}.thumb")
-    Observable<File> getThumbPicture(@Path("thumb") String thumb);
+//    @GET("thumb/{thumb}.thumb")
+//    Observable<File> getThumbPicture(@Path("thumb") String thumb);
 
     /**
      * @param deleteType -1:全部删除;0:反向删除,即选中的不删除;1:正向删除,即选中的删除;

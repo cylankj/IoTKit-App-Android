@@ -13,10 +13,12 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.Panoramic720View;
+import com.cylan.player.JFGPlayer;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 import javax.inject.Inject;
@@ -29,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by yanzhendong on 2017/3/16.
  */
 
-public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.Presenter> {
+public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.Presenter> implements JFGPlayer.JFGPlayerCallback {
 
     @BindView(R.id.act_panorama_detail_content_container)
     FrameLayout panoramaContentContainer;
@@ -40,6 +42,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Inject
     HttpProxyCacheServer httpProxy;
     private PanoramicView720_Ext panoramicView720Ext;
+    private long player;
+    private PanoramaAlbumContact.PanoramaItem panoramaItem;
 
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item) {
@@ -62,12 +66,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        PanoramaAlbumContact.PanoramaItem panoramaItem = getIntent().getParcelableExtra("panorama_item");
+        panoramaItem = getIntent().getParcelableExtra("panorama_item");
         initPanoramaView();
-        initViewerLayout(panoramaItem.type);
-        BasePanoramaApiHelper.getInstance().loadPicture(panoramaItem.fileName)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(filePath -> panoramicView720Ext.loadImage(filePath), AppLogger::e);
+        initPanoramaContent(panoramaItem);
+
     }
 
     private void initPanoramaView() {
@@ -80,18 +82,24 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
     }
 
-    private void initViewerLayout(@PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE int type) {
-        switch (type) {
+    private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
+        switch (panoramaItem.type) {
             case PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_PICTURE:
                 if (panoramaPanelSwitcher.getDisplayedChild() == 0) {
                     panoramaPanelSwitcher.showNext();
                 }
-
+                BasePanoramaApiHelper.getInstance().loadPicture(panoramaItem.fileName)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(filePath -> panoramicView720Ext.loadImage(filePath), AppLogger::e);
                 break;
             case PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_VIDEO:
                 if (panoramaPanelSwitcher.getDisplayedChild() == 1) {
                     panoramaPanelSwitcher.showPrevious();
                 }
+                player = JFGPlayer.InitPlayer(this);
+                String proxyUrl = BaseApplication.getProxy().getProxyUrl(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/images/" + panoramaItem.fileName);
+                AppLogger.d("播放地址为:" + proxyUrl);
+                JFGPlayer.Play(player, proxyUrl);
                 break;
         }
     }
@@ -129,5 +137,28 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             ConnectivityManager manager = null;
 
         }
+    }
+
+    @Override
+    public void OnPlayerReady(long l, int i, int i1) {
+        AppLogger.d("播放器初始化成功了");
+
+        JFGPlayer.StartRender(l, panoramicView720Ext);
+
+    }
+
+    @Override
+    public void OnPlayerFailed(long l) {
+        AppLogger.d("播放器初始化失败了");
+    }
+
+    @Override
+    public void OnPlayerFinish(long l) {
+        AppLogger.d("播放完成了");
+    }
+
+    @Override
+    public void OnUpdateProgress(long l, int i) {
+
     }
 }

@@ -36,7 +36,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link VideoAutoRecordFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * fetch an instance of this fragment.
  */
 public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContract.Presenter>
         implements VideoAutoRecordContract.View {

@@ -455,12 +455,12 @@ public class FileUtils {
 
     /**
      * Creates the directory named by the trailing filename of this file, including the complete directory path required
-     * to create this directory. <br/>
+     * to fetch this directory. <br/>
      * <br/>
      * <ul>
      * <strong>Attentions:</strong>
-     * <li>makeDirs("C:\\Users\\Trinea") can only create users folder</li>
-     * <li>makeFolder("C:\\Users\\Trinea\\") can create Trinea folder</li>
+     * <li>makeDirs("C:\\Users\\Trinea") can only fetch users folder</li>
+     * <li>makeFolder("C:\\Users\\Trinea\\") can fetch Trinea folder</li>
      * </ul>
      *
      * @param filePath

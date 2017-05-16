@@ -15,9 +15,9 @@ public interface PanoramaEvent {
         @Index(0)
         public int mId = 20006;//默认20006
         @Index(1)
-        public String mCaller = "";
+        public String mCaller = "mCaller";
         @Index(2)
-        public String mCallee = "";
+        public String mCallee = "mCallee";
         @Index(3)
         public long mSeq;
         // 1.如果是客户端发起，则为设备CID数组；
@@ -31,7 +31,7 @@ public interface PanoramaEvent {
         @Index(6)
         int type;// 功能定义。见下表定义
         @Index(7)
-        byte[] msg;// 最大长度64K
+        byte[] msg = new byte[0];// 最大长度64K
     }
 
     @Message
@@ -131,6 +131,13 @@ public interface PanoramaEvent {
     class MsgRsp {
         @Index(0)
         public int ret;
+
+        public MsgRsp() {
+        }
+
+        public MsgRsp(int ret) {
+            this.ret = ret;
+        }
     }
 
     @Message
@@ -153,4 +160,7 @@ public interface PanoramaEvent {
         public String pitcure;
     }
 
+    @Message
+    class Msg {
+    }
 }

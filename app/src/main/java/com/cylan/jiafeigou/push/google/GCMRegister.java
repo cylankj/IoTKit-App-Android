@@ -66,7 +66,7 @@ public class GCMRegister extends IntentService implements IPushRegister {
             sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply();
             // [END register_for_gcm]
         } catch (Exception e) {
-            AppLogger.d(PUSH_TAG + "Failed to complete token refresh: " + MiscUtils.getErr(e));
+            AppLogger.d(PUSH_TAG + "Failed to complete token fetch: " + MiscUtils.getErr(e));
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();

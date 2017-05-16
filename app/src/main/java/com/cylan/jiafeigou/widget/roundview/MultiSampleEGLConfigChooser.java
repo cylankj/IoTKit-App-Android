@@ -60,7 +60,7 @@ public class MultiSampleEGLConfigChooser implements GLTextureView.EGLConfigChoos
         }
         int numConfigs = value[0];
 
-        // No normal multisampling config was found. Try to create a
+        // No normal multisampling config was found. Try to fetch a
         // converage multisampling configuration, for the nVidia Tegra2.
         // See the EGL_NV_coverage_sample documentation.
         if (numConfigs <= 0 && multisample > 1) {

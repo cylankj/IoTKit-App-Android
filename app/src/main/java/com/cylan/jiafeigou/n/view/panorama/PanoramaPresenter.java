@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
-import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -20,12 +19,17 @@ import rx.schedulers.Schedulers;
  * Created by yanzhendong on 2017/3/8.
  */
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter {
-    private boolean httpApiInitFinish;
+
+    @Override
+    public void onViewAttached(PanoramaCameraContact.View view) {
+        super.onViewAttached(view);
+        BasePanoramaApiHelper.getInstance().init(uuid);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        BasePanoramaApiHelper.getInstance().init(uuid);
+
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);
@@ -43,8 +47,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.FetchDeviceInformation.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    this.httpApiInitFinish = ret.success;
-                    if (ret.success && liveStreamAction.hasResolution) {
+                    if (ret.success) {
                         mView.onEnableControllerView();
                     }
                     if (!ret.success) {
@@ -70,8 +73,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void makePhotograph() {
-        Subscription subscribe = checkSDCard()
-                .flatMap(info -> BasePanoramaApiHelper.getInstance().snapShot())
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().snapShot()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
@@ -80,12 +82,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             mView.onShowPreviewPicture(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/images/" + msgFileRsp.files.get(0));
                         }
                     } else {
-                        mView.onMakePhotoGraphError(msgFileRsp.ret);
+                        mView.onReportError(msgFileRsp.ret);
                     }
                     AppLogger.d("拍照返回结果为:" + new Gson().toJson(msgFileRsp));
                 }, e -> {
                     AppLogger.e(e);
-                    mView.onMakePhotoGraphFailed();
+                    mView.onReportError(-1);//timeout
                 });
         registerSubscription(subscribe);
     }
@@ -113,14 +115,16 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (rsp.ret == 0) {
                         mView.onSwitchSpeedMode(rsp.resolution);
                     }
-                }, AppLogger::e);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
 
         registerSubscription(subscribe);
     }
 
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().getHttpApi().flatMap(api -> api.setResolution(mode))
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().setResolution(mode)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     AppLogger.d("切换模式返回结果为" + new Gson().toJson(ret));
@@ -133,11 +137,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(e);
                 });
         registerSubscription(subscribe);
-    }
-
-    @Override
-    public boolean isHttpApiInitFinished() {
-        return httpApiInitFinish;
     }
 
     @Override
@@ -194,38 +193,5 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .takeUntil(RxBus.getCacheInstance().toObservable(RecordFinish.class))
                 .subscribe(second -> mView.onRefreshVideoRecordUI(second, type), AppLogger::e);
         registerSubscription(subscribe);
-    }
-
-    private Observable<PanoramaEvent.MsgSdInfoRsp> checkSDCard() {
-        return BasePanoramaApiHelper.getInstance().getSdInfo()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(info -> {
-                    AppLogger.d("检查 SD卡结果为" + new Gson().toJson(info));
-                    if (info.sdIsExist == 0) {
-                        mView.onSDCardUnMounted();
-                        return false;
-                    }
-                    if (info.sdcard_recogntion != 0) {
-                        mView.onSDCardError(info.sdcard_recogntion);
-                        return false;
-                    }
-                    return true;
-                })
-                .observeOn(Schedulers.io());
-    }
-
-    private Observable<PanoramaEvent.MsgBatteryRsp> checkBattery() {
-        return BasePanoramaApiHelper.getInstance().getBattery()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(battery -> {
-                    AppLogger.d("检查设备电量返回结果为:" + battery);
-                    if (battery.battery < 5) {
-                        mView.onDeviceBatteryLow();
-                        return false;
-                    }
-                    return true;
-                });
     }
 }

@@ -43,7 +43,7 @@ public class ActivityModule {
     @Provides
     @PerActivity
     public static PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter(BasePresenterInjector injector) {
-        return new PanoramaAlbumPresenter();
+        return injector.inject(new PanoramaAlbumPresenter());
     }
 
     @Provides

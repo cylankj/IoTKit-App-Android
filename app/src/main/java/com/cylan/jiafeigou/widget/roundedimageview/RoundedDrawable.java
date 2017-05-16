@@ -138,7 +138,7 @@ public class RoundedDrawable extends Drawable {
             drawable.draw(canvas);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.w(TAG, "Failed to create bitmap from drawable!");
+            Log.w(TAG, "Failed to fetch bitmap from drawable!");
             bitmap = null;
         }
 

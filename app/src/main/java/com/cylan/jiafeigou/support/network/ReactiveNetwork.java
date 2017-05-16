@@ -167,7 +167,7 @@ public class ReactiveNetwork {
 
     /**
      * Observes WiFi Access Points.
-     * Returns refresh list of Access Points
+     * Returns fetch list of Access Points
      * whenever WiFi signal strength changes.
      *
      * @param context   Context of the activity or an application
@@ -191,7 +191,7 @@ public class ReactiveNetwork {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         if (wifiManager.getScanResults() == null && nullAgain)
-                            // we need to initSubscription scan again to get refresh results ASAP
+                            // we need to initSubscription scan again to get fetch results ASAP
                             wifiManager.startScan();
                         subscriber.onNext(wifiManager.getScanResults());
                     }

@@ -36,7 +36,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARE_ELEMENT_BYTE;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link NormalMediaFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * fetch an instance of this fragment.
  */
 public class NormalMediaFragment extends IBaseFragment {
 
@@ -53,7 +53,7 @@ public class NormalMediaFragment extends IBaseFragment {
     }
 
     /**
-     * Use this factory method to create activity_cloud_live_mesg_call_out_item new instance of
+     * Use this factory method to fetch activity_cloud_live_mesg_call_out_item new instance of
      * this fragment using the provided parameters.
      *
      * @param bundle Parameter 1.

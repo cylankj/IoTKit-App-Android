@@ -7,8 +7,8 @@ import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.base.injector.module.CommonModule;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
-import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
@@ -20,6 +20,7 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by yanzhendong on 2017/4/12.
@@ -52,5 +53,7 @@ public interface AppComponent {
     BasePanoramaApiHelper getHttpApiHelper();
 
     BaseDeviceInformationFetcher getDeviceInformationFetcher();
+
+    OkHttpClient getOkHttpClient();
 
 }

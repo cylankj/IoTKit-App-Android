@@ -97,7 +97,7 @@ public class NLogger implements IWriter {
                         createNewFile();
                     } catch (IOException e) {
                         if (BuildConfig.DEBUG) {
-                            Log.e(TAG, "NLogger create File failed: " + e.getLocalizedMessage());
+                            Log.e(TAG, "NLogger fetch File failed: " + e.getLocalizedMessage());
                         }
                     }
                 }

@@ -504,7 +504,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onRefresh() {
         //不使用post,因为会泄露
         srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
-        Log.d("refresh", "refresh:initSubscription ");
+        Log.d("fetch", "fetch:initSubscription ");
         if (basePresenter != null)
             basePresenter.fetchDeviceList(true);
     }

@@ -175,10 +175,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onViewer() {
-        bottomPanelMoreItem.setEnabled(false);
-        bottomPanelPhotoGraphItem.setEnabled(false);
-        bottomPanelPictureMode.setEnabled(false);
-        bottomPanelVideoMode.setEnabled(false);
         liveFlowSpeedText.setText("0K/s");
         loadingBar.setVisibility(View.VISIBLE);
     }
@@ -242,10 +238,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
 
-        //enable views
-        if (presenter.isHttpApiInitFinished()) {
-            onEnableControllerView();
-        }
         loadingBar.setVisibility(View.GONE);
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
             bottomPanelMoreItem.setEnabled(true);
@@ -714,18 +706,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
     }
 
-
-    @Override
-    public void onSDCardError(int sdcard_errno) {
-
-    }
-
-    @Override
-    public void onHttpConnectionToDeviceError() {
-        AppLogger.d("http 服务连接失败");
-        onDisableControllerView();
-    }
-
     public void onHideBadNetWorkBanner() {
         AppLogger.d("onHideBadNetWorkBanner");
         int childIndex = bannerSwitcher.getDisplayedChild();
@@ -754,13 +734,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
     }
 
-    @Override
-    public void onMakePhotoGraphFailed() {
-        AppLogger.d("onMakePhotoGraphFailed");
-        bottomPanelPhotoGraphItem.setEnabled(true);
-        ToastUtil.showNegativeToast("拍照失败");
-    }
-
     public void onSwitchSpeedMode(@SPEED_MODE int mode) {
         switch (this.speedMode = mode) {
             case SPEED_MODE.AUTO:
@@ -776,25 +749,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 quickMenuItem3TextContent.setText("速率:高清");
                 break;
         }
-    }
-
-    @Override
-    public void onSDCardUnMounted() {
-        AppLogger.d("未检测到 SD 卡");
-        bottomPanelPhotoGraphItem.setEnabled(true);
-        ToastUtil.showNegativeToast("未检测到SD卡");
-    }
-
-    @Override
-    public void onSDCardMemoryFull() {
-        AppLogger.d("SD 卡内存已满");
-        bottomPanelPhotoGraphItem.setEnabled(true);
-        ToastUtil.showNegativeToast("SD卡存储空间已满");
-    }
-
-    @Override
-    public void onDeviceBatteryLow() {
-        AppLogger.d("设备电量低");
     }
 
     @Override
@@ -837,19 +791,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onStartVideoRecordError(@PANORAMA_RECORD_MODE int type, int ret) {
-        if (ret == 150) {//低电量
-            AppLogger.d("设备低电量");
-        } else if (ret == 2003) {//sd 卡没有容量
-            AppLogger.d("SD卡没有容量");
-        } else if (ret == 2004) {//没有 sd 卡
-            AppLogger.d("没有 SD卡");
-        } else if (ret == 2007) {//正在录像
-            AppLogger.d("正在录像");
-        } else if (ret == 2008) {//sd 卡正在格式化
-            AppLogger.d("SD卡正在格式化");
-        } else if (ret == 2022) {//sd卡识别失败，需要格式化
-            AppLogger.d("sd卡识别失败，需要格式化");
-        }
+        onReportError(ret);
         switch (this.panoramaRecordMode = type) {
             case PANORAMA_RECORD_MODE.MODE_LONG:
                 ToastUtil.showNegativeToast("开始录制长视频失败");
@@ -889,9 +831,30 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_VIDEO);
     }
 
-    @Override
-    public void onMakePhotoGraphError(int ret) {
-        AppLogger.d("拍照失败了");
+    public void onReportError(int err) {
+        switch (err) {
+            case 150://低电量
+                AppLogger.d("设备电量过低");
+                bottomPanelPhotoGraphItem.setEnabled(true);
+                ToastUtil.showNegativeToast("设备电量过低");
+                break;
+            case 2003://sd 卡没有容量
+                AppLogger.d("SD 卡内存已满");
+                bottomPanelPhotoGraphItem.setEnabled(true);
+                ToastUtil.showNegativeToast("SD卡存储空间已满");
+                break;
+            case 2004://没有 sd 卡
+                AppLogger.d("未检测到 SD 卡");
+                bottomPanelPhotoGraphItem.setEnabled(true);
+                ToastUtil.showNegativeToast("未检测到SD卡");
+                break;
+            case 2007://正在录像
+                break;
+            case 2008://sd 卡正在格式化
+                break;
+            case 2022://sd卡识别失败，需要格式化
+        }
+        bottomPanelPhotoGraphItem.setEnabled(true);
     }
 
 }

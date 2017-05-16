@@ -196,7 +196,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
 
     /**
      * Get a View that displays the data at the specified position in the data set. You can either
-     * create a View manually or inflate it from an XML layout file. When the View is inflated, the
+     * fetch a View manually or inflate it from an XML layout file. When the View is inflated, the
      * parent View (GridView, ListView...) will apply default layout parameters unless you use
      * {@link LayoutInflater#inflate(int, ViewGroup, boolean)}
      * to specify a root view and to prevent attachment to the root.
@@ -205,7 +205,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
      *                    we want.
      * @param convertView The old view to reuse, if possible. Note: You should check that this view
      *                    is non-null and of an appropriate type before using. If it is not possible to convert
-     *                    this view to display the correct data, this method can create a new view.
+     *                    this view to display the correct data, this method can fetch a new view.
      *                    Heterogeneous lists can specify their number of view types, so that this View is
      *                    always of the right type (see {@link #getViewTypeCount()} and
      *                    {@link #getItemViewType(int)}).

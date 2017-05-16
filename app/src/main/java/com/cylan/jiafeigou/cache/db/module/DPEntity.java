@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -11,7 +10,6 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -69,7 +67,6 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     }
 
     public final boolean setValue(DataPoint dataPointValue, byte[] bytesValue, long version) {
-        Log.d("", "正在设置数据,msgId:" + msgId);
         this.dataPointValue = dataPointValue;
         this.bytes = bytesValue;
         this.version = version;
