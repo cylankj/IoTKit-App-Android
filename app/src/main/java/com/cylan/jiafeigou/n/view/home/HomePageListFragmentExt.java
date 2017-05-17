@@ -72,6 +72,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
@@ -153,7 +156,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
-        onNetworkChanged(NetUtils.getJfgNetType() != 0);
         PerformanceUtils.stopTrace("appStart0");
     }
 
@@ -397,7 +399,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
             tvHeaderNickName.requestLayout();
-            onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
             AppLogger.d("JFGAccount: " + new Gson().toJson(greetBean));
         }
     };

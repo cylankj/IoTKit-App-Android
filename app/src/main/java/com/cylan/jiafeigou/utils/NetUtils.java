@@ -420,7 +420,7 @@ public class NetUtils {
     public static final boolean ping() {
         try {
             String ip = OptionsImpl.getServer();
-            Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
+            Process p = Runtime.getRuntime().exec("ping -c 2 -w 100 " + ip);// ping网址3次
             // ping的状态
             return p.waitFor() == 0;
         } catch (Exception e) {

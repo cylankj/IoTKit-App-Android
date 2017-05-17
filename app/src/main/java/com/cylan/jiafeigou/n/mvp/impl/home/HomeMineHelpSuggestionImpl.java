@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.os.Build;
 import android.os.Environment;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -16,9 +17,12 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.cylan.jiafeigou.utils.ZipUtils;
 
 import java.io.File;
@@ -310,6 +314,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)) {
             return;
         }
+        AppLogger.d(PackageUtils.getAppVersionName(ContextUtils.getContext()));
+        AppLogger.d("" + PackageUtils.getAppVersionCode(ContextUtils.getContext()));
+        AppLogger.d(ProcessUtils.myProcessName(ContextUtils.getContext()));
+        AppLogger.d(Build.DISPLAY);
+        AppLogger.d(Build.MODEL);
+        AppLogger.d(Build.VERSION.SDK_INT + " " + Build.VERSION.RELEASE);
         File logFile = new File(JConstant.WORKER_PATH + "/log.txt");
         File smartcall_t = new File(JConstant.WORKER_PATH + "/smartCall_t.txt");
         File smartcall_w = new File(JConstant.WORKER_PATH + "/smartCall_w.txt");

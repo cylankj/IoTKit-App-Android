@@ -254,7 +254,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                     builder.setMessage(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG, getString(R.string.SYSTEM)))
                             .setPositiveButton(R.string.WELL_OK, (dialog, which) -> openSetting())
                             .setTitle(R.string.PUSH_MSG);
-                    AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), builder);
+                    AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), getActivity(), builder);
                 } else {
                     presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
                     if (!isChecked) {
