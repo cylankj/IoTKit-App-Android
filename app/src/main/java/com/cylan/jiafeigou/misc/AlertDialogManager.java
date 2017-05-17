@@ -34,12 +34,16 @@ public class AlertDialogManager {
 
     /**
      * 全局使用同一个Theme
+     * 其实没有必要这么做,只需要在AndroidManifest.xml#Application的appTheme#android:theme="@style/AppTheme"
+     * <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+     * <item name="android:alertDialogStyle">@style/CustomDialogTheme</item>
+     * </style>
      *
      * @param activity
      * @return
      */
     public AlertDialog.Builder getCustomDialog(Activity activity) {
-        return new CustomDialogBuilder(activity, R.style.AlertDialogCustom);
+        return new AlertDialog.Builder(activity);
     }
 
 
@@ -55,6 +59,8 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     public void showDialog(Activity activity, String tag, String message) {
@@ -72,6 +78,8 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     public void showDialog(Activity activity, String tag, String message, boolean canceltouchOutSide) {
@@ -90,6 +98,8 @@ public class AlertDialogManager {
         }
         dialog.setCanceledOnTouchOutside(canceltouchOutSide);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener) {
@@ -108,6 +118,8 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, boolean mCancelable) {
@@ -127,6 +139,8 @@ public class AlertDialogManager {
         }
         dialog.setCanceledOnTouchOutside(mCancelable);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, String cancel, DialogInterface.OnClickListener cancelClickListener) {
@@ -146,6 +160,8 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, String cancel, DialogInterface.OnClickListener cancelClickListener, boolean mCancelable) {
@@ -166,6 +182,8 @@ public class AlertDialogManager {
         }
         dialog.setCanceledOnTouchOutside(mCancelable);
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
     }
 
     private AlertDialog getAlertDialog(String tag) {
