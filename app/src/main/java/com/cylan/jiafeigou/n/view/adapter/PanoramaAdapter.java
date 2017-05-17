@@ -174,6 +174,20 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         }
     }
 
+    public List<PanoramaAlbumContact.PanoramaItem> getRemovedList() {
+        synchronized (object) {
+            mRemovedList.clear();
+            for (int i = getCount() - 1; i >= 0; i--) {
+                PanoramaAlbumContact.PanoramaItem bean = getItem(i);
+                if (!bean.selected)
+                    continue;
+                mRemovedList.add(bean);
+
+            }
+        }
+        return mRemovedList;
+    }
+
     public void remove() {
         synchronized (object) {
             mRemovedList.clear();

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,15 +45,14 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     RelativeLayout toolbarContainer;
     @BindView(R.id.act_panorama_album_toolbar_header_title)
     TextView toolbarAlbumViewMode;
-
     @BindView(R.id.tv_album_delete)
     TextView tvAlbumDelete;
-
     @BindView(R.id.act_panorama_album_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.pan_empty_list)
     View emptyView;
-
+    @BindView(R.id.act_panorama_album_back)
+    ImageView imgLeftMenu;
     @BindView(R.id.act_panorama_album_lists)
     RecyclerView recyclerView;
     private RoundRectPopup albumModeSelectPop;
@@ -61,7 +62,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     private String[] titles = {"相机+手机相册", "全景相册", "手机相册"};
     private PanoramaAdapter panoramaAdapter;
     private LinearLayoutManager layoutManager;
-    public boolean loading;
+    private boolean loading;
+    private boolean isEditMode = false;
+
 
     @Override
     protected void initViewAndListener() {
@@ -195,11 +198,16 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         }
     }
 
-    @Override
     @OnClick(R.id.act_panorama_album_back)
-    public void onBackPressed() {
-        if (!hideAlbumViewModePop()) {
+    public void clickedTopLeftMenu() {
+        if (!hideAlbumViewModePop() && !isEditMode) {
             super.onBackPressed();
+        } else if (isEditMode) {//删除操作
+            isEditMode = false;
+            tvAlbumDelete.setText("");
+            tvAlbumDelete.setBackgroundResource(R.drawable.album_delete_selector);
+            imgLeftMenu.setImageResource(R.drawable.nav_tab_back_selector);
+            deleteWithAlert(panoramaAdapter.getRemovedList());
         }
     }
 
@@ -209,12 +217,14 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (TextUtils.isEmpty(content) && tvAlbumDelete.isEnabled()) {
             //active state
             tvAlbumDelete.setText(getString(R.string.CANCEL));
-            ViewUtils.setDrawablePadding(tvAlbumDelete, -1, 0);
+            tvAlbumDelete.setBackground(new ColorDrawable(0));
+            imgLeftMenu.setImageResource(R.drawable.nav_icon_close_selector);
             toggleEditMode(true);
         } else {
             //cancel
             tvAlbumDelete.setText("");
-            ViewUtils.setDrawablePadding(tvAlbumDelete, R.drawable.album_delete_selector, 0);
+            tvAlbumDelete.setBackgroundResource(R.drawable.album_delete_selector);
+            imgLeftMenu.setImageResource(R.drawable.nav_tab_back_selector);
             toggleEditMode(false);
         }
     }
@@ -223,6 +233,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
      * @param toggle
      */
     private void toggleEditMode(boolean toggle) {
+        this.isEditMode = toggle;
         panoramaAdapter.setInEditMode(toggle);
         final int lPos = ((LinearLayoutManager) recyclerView.getLayoutManager())
                 .findLastVisibleItemPosition();

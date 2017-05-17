@@ -30,8 +30,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -42,6 +40,8 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
+import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.panorama.CommonPanoramicView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -75,7 +76,7 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PAN
  * Created by yanzhendong on 2017/3/7.
  */
 @RuntimePermissions
-public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View {
+public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View, CommonPanoramicView.PanoramaEventListener {
 
     @BindView(R.id.act_panorama_camera_banner)
     ViewSwitcher bannerSwitcher;
@@ -202,6 +203,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
+        if (FileUtils.isFileExist(JConstant.PANORAMA_MEDIA_THUMB_PATH + "/" + uuid + ".jpg")) {
+            Glide.with(this).load(JConstant.PANORAMA_MEDIA_THUMB_PATH + "/" + uuid + ".jpg").into(bottomPanelAlbumItem);
+        }
         bottomPanelPhotoGraphItem.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_UP:
@@ -234,7 +238,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             surfaceView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             surfaceView.setLayoutParams(params);
+            surfaceView.setEventListener(this);
             videoLiveContainer.addView(surfaceView);
+
         }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
 
@@ -265,20 +271,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowPreviewPicture(String picture) {
-        Glide.with(this).load(picture)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        bottomPanelAlbumItem.setImageBitmap(resource);
-                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleX", 1.0f, 1.2f, 1.0f);
-                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleY", 1.0f, 1.2f, 1.0f);
-                        AnimatorSet set = new AnimatorSet();
-                        set.playTogether(scaleX, scaleY);
-                        set.setDuration(200);
-                        set.start();
-                    }
-                });
+
     }
 
     @Override
@@ -773,6 +766,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onMakePhotoGraphSuccess() {
         bottomPanelPhotoGraphItem.setEnabled(true);
         ToastUtil.showPositiveToast("拍照成功!");
+        //这里不去加载设备上的缩略图,因为可能是在公网环境下,无法加载缩略图
+        if (surfaceView != null) {
+            surfaceView.takeSnapshot(true);
+        }
     }
 
     @Override
@@ -857,4 +854,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelPhotoGraphItem.setEnabled(true);
     }
 
+    @Override
+    public void onSingleTap(float v, float v1) {
+
+    }
+
+    @Override
+    public void onSnapshot(Bitmap bitmap, boolean b) {
+        bottomPanelAlbumItem.setImageBitmap(bitmap);
+        BitmapUtils.saveBitmap2file(bitmap, JConstant.PANORAMA_MEDIA_THUMB_PATH + "/" + uuid + ".jpg");
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleX", 1.0f, 1.2f, 1.0f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleY", 1.0f, 1.2f, 1.0f);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(scaleX, scaleY);
+        set.setDuration(200);
+        set.start();
+    }
 }
