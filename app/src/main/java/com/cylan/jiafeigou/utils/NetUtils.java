@@ -20,6 +20,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 网络工具类
@@ -421,6 +426,18 @@ public class NetUtils {
         try {
             String ip = OptionsImpl.getServer();
             Process p = Runtime.getRuntime().exec("ping -c 2 -w 100 " + ip);// ping网址3次
+            // ping的状态
+            return p.waitFor() == 0;
+        } catch (Exception e) {
+            AppLogger.d("获取真实网络连接状态出错:" + e.getMessage());
+        }
+        return false;
+    }
+
+    public static final boolean pingQQ() {
+        try {
+            final String ip = "www.qq.com";
+            Process p = Runtime.getRuntime().exec("ping -c 3 " + ip);// ping网址3次
             // ping的状态
             return p.waitFor() == 0;
         } catch (Exception e) {

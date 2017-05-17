@@ -337,11 +337,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return;
         }
         mView.onLivePrepare(getLiveStream().type);
-        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(net)) {
-            updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
-            mView.onLiveStop(getLiveStream().type, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
-            return;
+        boolean sdkOnlineStatus = BaseApplication.getAppComponent().getSourceManager().isOnline();
+        if (!sdkOnlineStatus) {
+            String routeMac = NetUtils.getRouterMacAddress();
+            String deviceMac = getDevice().$(202, "");
+            boolean AP = !TextUtils.isEmpty(routeMac) && TextUtils.equals(deviceMac, routeMac);
+            AppLogger.d("直连Ap?" + AP);
         }
         addSubscription(beforePlayObservable(s -> {
             try {

@@ -127,8 +127,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
         appbar.addOnOffsetChangedListener(this);
-        //设置最小高度.
-        appbar.setMinimumHeight((int) (ViewUtils.getStatusBarHeight(getContext()) + getResources().getDimension(R.dimen.y48)));
         srLayoutMainContentHolder.setNestedScrollingEnabled(false);
         initView();
 

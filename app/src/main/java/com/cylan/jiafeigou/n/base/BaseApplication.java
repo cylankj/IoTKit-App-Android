@@ -11,6 +11,7 @@ import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
@@ -25,13 +26,19 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import permissions.dispatcher.PermissionUtils;
+import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -162,6 +169,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
         viewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
+        cancelReportTask();
     }
 
     @Override
@@ -178,6 +186,36 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onActivityStopped(Activity activity) {
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
         viewCount--;
+        if (viewCount == 0)
+            prepareReportTask();
+    }
+
+    private Subscription reportTask;
+
+    /**
+     * 退出后台3分钟,将向sdkReport网络状态
+     */
+    private void prepareReportTask() {
+        if (getAppComponent().getCmd() != null) {
+            if (reportTask != null) reportTask.unsubscribe();
+            reportTask = Observable.just("report")
+                    .subscribeOn(Schedulers.newThread())
+                    .timeout(3, TimeUnit.MINUTES)
+                    .subscribe(ret -> {
+                    }, throwable -> {
+                        if (throwable instanceof TimeoutException) {
+                            getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+//                            boolean state = NetUtils.pingQQ();
+//                            if (!state)
+//                                getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+                        }
+                    });
+        }
+    }
+
+    private void cancelReportTask() {
+        if (reportTask != null) reportTask.unsubscribe();
+        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 
     public static boolean isBackground() {
