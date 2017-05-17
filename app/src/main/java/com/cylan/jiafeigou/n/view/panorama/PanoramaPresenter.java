@@ -74,7 +74,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void makePhotograph() {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().snapShot()
-                .timeout(5, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
@@ -102,7 +102,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void checkAndInitRecord() {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus()
-                .timeout(5, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp.ret == 0) {
@@ -129,7 +129,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().setResolution(mode)
-                .timeout(5, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     AppLogger.d("切换模式返回结果为" + new Gson().toJson(ret));
@@ -148,6 +148,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void startVideoRecord(int type) {
         Subscription subscribe = BasePanoramaApiHelper.getInstance().startRec(type)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     AppLogger.d("开启视频录制返回结果为" + new Gson().toJson(rsp));
@@ -169,6 +170,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void stopVideoRecord(int type) {
         RxBus.getCacheInstance().post(new RecordFinish());
         Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(type)
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
