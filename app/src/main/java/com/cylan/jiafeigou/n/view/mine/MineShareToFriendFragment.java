@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToFriendPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -253,7 +254,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
      * @param title
      */
     private void showShareResultDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setTitle(title);
         builder.setPositiveButton(getString(R.string.TRY_AGAIN), new DialogInterface.OnClickListener() {
             @Override
@@ -268,7 +269,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
-        }).show();
+        });
+        AlertDialogManager.getInstance().showDialog("showShareResultDialog", builder);
     }
 
     /**

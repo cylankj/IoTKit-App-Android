@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
@@ -239,15 +240,14 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     @Override
     public void showLongClickDialog(final int position, final MineAddReqBean bean) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setTitle(R.string.Tips_SureDelete)
                 .setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
                     tempReqBean = bean;
                     presenter.deleteAddReq(bean.account);
-                    dialog.dismiss();
                 })
-                .setNegativeButton(getString(R.string.CANCEL), null)
-                .show();
+                .setNegativeButton(getString(R.string.CANCEL), null);
+        AlertDialogManager.getInstance().showDialog("showLongClickDialog", builder);
 
     }
 

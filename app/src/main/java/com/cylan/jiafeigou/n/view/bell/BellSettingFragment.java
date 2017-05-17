@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
@@ -133,14 +134,14 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 }
                 Device device = sourceManager.getDevice(mUUID);
                 String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                new AlertDialog.Builder(getActivity())
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                             presenter.unbindDevice();
                             LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                         })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create().show();
+                        .setNegativeButton(getString(R.string.CANCEL), null);
+                AlertDialogManager.getInstance().showDialog(getString(R.string.SURE_DELETE_1, name), builder);
                 break;
         }
     }

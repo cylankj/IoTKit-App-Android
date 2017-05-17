@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineDevicesShareManagerPresenterImp;
@@ -166,7 +167,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancleShareDialog(final RelAndFriendBean bean) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
         builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
@@ -180,7 +181,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
-        }).show();
+        });
+        AlertDialogManager.getInstance().showDialog("showCancleShareDialog", builder);
     }
 
     @Override

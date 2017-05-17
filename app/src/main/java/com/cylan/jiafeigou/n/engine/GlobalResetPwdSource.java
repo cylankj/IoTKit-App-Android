@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -77,15 +78,15 @@ public class GlobalResetPwdSource {
         if (code == 16008 || code == 1007 || code == 16006) {
             AppLogger.d("pwdResetedDialog:" + code);
             if (appCompatActivity != null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(appCompatActivity);
+                AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(appCompatActivity);
                 builder.setTitle(R.string.RET_ELOGIN_ERROR)
                         .setMessage(R.string.PWD_CHANGED)
                         .setCancelable(false)
                         .setPositiveButton(R.string.OK, (dialog1, which) -> {
                             dialog1.dismiss();
                             jump2LoginFragment();
-                        })
-                        .show();
+                        });
+                AlertDialogManager.getInstance().showDialog("pwdResetedDialog", builder);
             }
         }
     }

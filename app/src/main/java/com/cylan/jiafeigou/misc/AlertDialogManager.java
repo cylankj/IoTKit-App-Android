@@ -1,9 +1,14 @@
 package com.cylan.jiafeigou.misc;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+
+import com.cylan.jiafeigou.R;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -17,6 +22,7 @@ import java.util.Map;
 public class AlertDialogManager {
 
     private static AlertDialogManager instance;
+    private Map<String, WeakReference<AlertDialog>> weakReferenceMap;
 
     public static AlertDialogManager getInstance() {
         if (instance == null)
@@ -26,7 +32,30 @@ public class AlertDialogManager {
         return instance;
     }
 
-    private Map<String, WeakReference<AlertDialog>> weakReferenceMap;
+    /**
+     * 全局使用同一个Theme
+     *
+     * @param activity
+     * @return
+     */
+    public AlertDialog.Builder getCustomDialog(Activity activity) {
+        return new CustomDialogBuilder(activity, R.style.AlertDialogCustom);
+    }
+
+
+    public void showDialog(String tag, AlertDialog.Builder builder) {
+        if (TextUtils.isEmpty(tag)) return;
+        AlertDialog dialog = getAlertDialog(tag);
+        if (dialog != null && dialog.isShowing()) return;
+        dismissOtherDialog();
+        if (dialog == null) {
+            dialog = builder.create();
+            if (weakReferenceMap == null)
+                weakReferenceMap = new HashMap<>();
+            weakReferenceMap.put(tag, new WeakReference<>(dialog));
+        }
+        dialog.show();
+    }
 
     public void showDialog(Activity activity, String tag, String message) {
         if (TextUtils.isEmpty(tag)) return;
@@ -35,7 +64,7 @@ public class AlertDialogManager {
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
         if (dialog == null) {
-            dialog = new AlertDialog.Builder(activity)
+            dialog = getCustomDialog(activity)
                     .setMessage(message)
                     .create();
             if (weakReferenceMap == null)
@@ -52,7 +81,7 @@ public class AlertDialogManager {
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
         if (dialog == null) {
-            dialog = new AlertDialog.Builder(activity)
+            dialog = getCustomDialog(activity)
                     .setMessage(message)
                     .create();
             if (weakReferenceMap == null)
@@ -70,7 +99,7 @@ public class AlertDialogManager {
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
         if (dialog == null) {
-            dialog = new AlertDialog.Builder(activity)
+            dialog = getCustomDialog(activity)
                     .setMessage(message)
                     .setPositiveButton(ok, okClickListener)
                     .create();
@@ -88,7 +117,7 @@ public class AlertDialogManager {
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
         if (dialog == null) {
-            dialog = new AlertDialog.Builder(activity)
+            dialog = getCustomDialog(activity)
                     .setMessage(message)
                     .setPositiveButton(ok, okClickListener)
                     .create();
@@ -107,7 +136,7 @@ public class AlertDialogManager {
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
         if (dialog == null) {
-            dialog = new AlertDialog.Builder(activity)
+            dialog = getCustomDialog(activity)
                     .setMessage(message)
                     .setPositiveButton(ok, okClickListener)
                     .setNegativeButton(cancel, cancelClickListener)
@@ -126,7 +155,7 @@ public class AlertDialogManager {
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
         if (dialog == null) {
-            dialog = new AlertDialog.Builder(activity)
+            dialog = getCustomDialog(activity)
                     .setMessage(message)
                     .setPositiveButton(ok, okClickListener)
                     .setNegativeButton(cancel, cancelClickListener)
@@ -176,6 +205,16 @@ public class AlertDialogManager {
                 if (ref.get().getOwnerActivity() != null && TextUtils.equals(activityTag, ref.get().getOwnerActivity().getClass().getSimpleName()))
                     ref.get().dismiss();
             }
+        }
+    }
+
+    /**
+     * 简单配置DialogTheme
+     */
+    private static class CustomDialogBuilder extends AlertDialog.Builder {
+
+        protected CustomDialogBuilder(@NonNull Context context, @StyleRes int themeResId) {
+            super(context, themeResId);
         }
     }
 }

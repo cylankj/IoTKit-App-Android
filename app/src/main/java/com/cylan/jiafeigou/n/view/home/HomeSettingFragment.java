@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
@@ -249,11 +250,11 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 boolean notificationsEnabled = NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
                 if (!notificationsEnabled && isChecked) {
                     btnItemSwitchAccessMes.setChecked(false);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
                     builder.setMessage(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG, getString(R.string.SYSTEM)))
                             .setPositiveButton(R.string.WELL_OK, (dialog, which) -> openSetting())
                             .setTitle(R.string.PUSH_MSG);
-                    builder.show();
+                    AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), builder);
                 } else {
                     presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
                     if (!isChecked) {
