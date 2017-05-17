@@ -30,7 +30,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStart() {
         super.onStart();
-
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mView.onShowProperty(device);

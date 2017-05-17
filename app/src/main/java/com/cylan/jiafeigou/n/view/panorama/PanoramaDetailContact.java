@@ -11,9 +11,10 @@ public interface PanoramaDetailContact {
 
     interface View extends JFGView {
 
+        void onDeleteResult(int code);
     }
 
     interface Presenter extends JFGPresenter<View> {
-
+        void delete(PanoramaAlbumContact.PanoramaItem item, int mode);
     }
 }

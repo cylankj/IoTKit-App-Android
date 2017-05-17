@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou;
 
-import com.cylan.jiafeigou.base.module.DProperty;
-import com.cylan.jiafeigou.cache.db.module.Device;
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -96,16 +96,17 @@ public class DP {
 
     @Test
     public void sss() {
-        Device device = new Device();
 
-        Field[] fields = device.getClass().getFields();
-        for (Field field : fields) {
-            DProperty annotation = field.getAnnotation(DProperty.class);
-            if (annotation != null)
-                System.out.println(annotation.type());
-        }
+      new File("/storage","/mnt/sdcard/333.mp4");
+      
     }
-
+    private String getClientKey(String url) {
+        //http://222.222.222.222./
+        if (TextUtils.isEmpty(url) && url.contains("/")) {
+            return url.substring(url.indexOf("/"), url.length());
+        }
+        return url;
+    }
     @Test
     public void sub(){
         String ss="eohgoewhgoewhgoewhgoehgoh";

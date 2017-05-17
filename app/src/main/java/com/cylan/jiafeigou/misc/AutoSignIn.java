@@ -98,8 +98,7 @@ public class AutoSignIn {
                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                             }
 
-                            if (!BaseApplication.getAppComponent().getSourceManager().isOnline() &&
-                                    !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
+                            if (!BaseApplication.isOnline() && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
                                 BaseApplication.getAppComponent().getSourceManager().initFromDB();
                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));
                             }

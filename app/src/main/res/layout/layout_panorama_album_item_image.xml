@@ -77,7 +77,6 @@
         android:layout_alignTop="@+id/img_album_content"
         android:layout_marginEnd="@dimen/y5"
         android:layout_marginTop="@dimen/y5"
-        android:text="1%"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/sp11"
         android:textStyle="bold" />

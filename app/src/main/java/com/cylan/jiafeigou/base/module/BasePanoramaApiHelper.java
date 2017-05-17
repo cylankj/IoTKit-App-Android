@@ -33,6 +33,7 @@ public class BasePanoramaApiHelper {
     private BaseForwardHelper forwardHelper;
     private DeviceInformation deviceInformation;
     private static BasePanoramaApiHelper apiHelper;
+    private String uuid;
 
     public static BasePanoramaApiHelper getInstance() {
         return apiHelper;
@@ -71,6 +72,10 @@ public class BasePanoramaApiHelper {
         return deviceInformation == null ? null : "http://" + deviceInformation.ip;
     }
 
+    public String getFilePath(String fileName) {
+        return File.separator + BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount() + File.separator + uuid + File.separator + fileName;
+    }
+
     public Observable<RxEvent.PanoramaApiAvailable> monitorPanoramaApi() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class);
     }
@@ -79,6 +84,8 @@ public class BasePanoramaApiHelper {
      * 使用这个类之前必须调用这个方法进行初始化,否则会出异常
      */
     public void init(String uuid) {
+        this.uuid = uuid;
+        RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);
         BaseDeviceInformationFetcher.getInstance().init(uuid);
         BaseForwardHelper.getInstance().init(uuid);
     }
@@ -104,11 +111,14 @@ public class BasePanoramaApiHelper {
 
     private Observable<RxEvent.PanoramaApiAvailable> getAvailableApi() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
-                .first()
-                .map(panoramaApiAvailable -> {
+                .filter(panoramaApiAvailable -> {
                     AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
-                    return panoramaApiAvailable;
+                    if (panoramaApiAvailable.ApiType == 1 && !BaseApplication.isOnline()) {
+                        return false;
+                    }
+                    return true;
                 })
+                .first()
                 .observeOn(Schedulers.io());
     }
 

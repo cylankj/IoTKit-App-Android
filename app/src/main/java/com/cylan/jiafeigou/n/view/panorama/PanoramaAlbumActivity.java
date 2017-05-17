@@ -244,20 +244,48 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (panoramaAdapter.isInEditMode()) {
             panoramaAdapter.reverseItemSelectedState(position);
         } else {
-            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item);
+            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item, albumViewMode);
             startActivity(intent);
         }
     }
 
     @Override
     public void onItemLongClick(View itemView, int viewType, int position) {
-        new AlertDialog.Builder(this)
-                .setMessage("delete item?")
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    presenter.deletePanoramaItem(Collections.singletonList(panoramaAdapter.getList().get(position)));
-                })
-                .setNegativeButton(getString(R.string.CANCEL), null)
-                .show();
+        deleteWithAlert(Collections.singletonList(panoramaAdapter.getList().get(position)));
+    }
+
+    private void deleteWithAlert(List<PanoramaAlbumContact.PanoramaItem> items) {
+        boolean hasDownloading = false;
+        for (PanoramaAlbumContact.PanoramaItem item : items) {
+            if (item.downloadInfo != null && item.downloadInfo.getState() > 0 && item.downloadInfo.getState() < 4) {
+                hasDownloading = true;
+                break;
+            }
+        }
+        if (hasDownloading) {
+            new AlertDialog.Builder(this)
+                    .setMessage("视频正在下载中，是否删除?")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.DELETE, (dialog, which) -> {
+                        new AlertDialog.Builder(this)
+                                .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
+                                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog1, int which1) -> {
+                                    presenter.deletePanoramaItem(items, albumViewMode);
+                                })
+                                .setNegativeButton(getString(R.string.CANCEL), null)
+                                .show();
+                    })
+                    .setNegativeButton(R.string.CANCEL, null)
+                    .show();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        presenter.deletePanoramaItem(items, albumViewMode);
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .show();
+        }
     }
 
     @Override
@@ -304,14 +332,21 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onViewModeChanged(int apiType) {
-        if (apiType == 1) {//forward
-            albumViewMode = 0;
+    public void onViewModeChanged(int mode) {
+        if (albumViewMode != mode) {
             presenter.fetch(0, albumViewMode);
-            toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-            toolbarAlbumViewMode.setEnabled(false);
-        } else if (apiType == 0) {
-            toolbarAlbumViewMode.setEnabled(true);
         }
+        albumViewMode = mode;
+        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+        toolbarAlbumViewMode.setEnabled(mode != 0);
+    }
+
+    @Override
+    public void onSDCardUnMount() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.MSG_SD_OFF)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, (dialog, which) -> onViewModeChanged(0))
+                .show();
     }
 }

@@ -35,6 +35,7 @@ import rx.schedulers.Schedulers;
 
 public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.View> implements PanoramaAlbumContact.Presenter {
     private Subscription fetchSubscription;
+    private Subscription deleteSubscription;
 
     @Override
     public void onViewAttached(PanoramaAlbumContact.View view) {
@@ -57,14 +58,30 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(monitorPanoramaAPI());
+        registerSubscription(checkSDCardAndInit());
     }
 
     private Subscription monitorPanoramaAPI() {
         return BasePanoramaApiHelper.getInstance().monitorPanoramaApi()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(api -> {
-                    mView.onViewModeChanged(api.ApiType);
+                    mView.onViewModeChanged(api.ApiType == 0 ? 2 : 0);
                 }, e -> {
+                });
+    }
+
+
+    private Subscription checkSDCardAndInit() {
+        return BasePanoramaApiHelper.getInstance().getSdInfo()
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    if (ret != null && ret.sdIsExist == 0) {//sd 卡不存在
+                        mView.onSDCardUnMount();
+                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
                 });
     }
 
@@ -94,10 +111,10 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         } else if (fetchLocation == 2) {
             fetchSubscription = loadFromLocal(time)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(items -> {
-                        mView.onAppend(items, time == 0, false);
-                        return items;
-                    })
+//                    .map(items -> {
+//                        mView.onAppend(items, time == 0, false);
+//                        return items;
+//                    })
                     .observeOn(Schedulers.io())
                     .flatMap(items -> loadFromServer(time).map(items1 -> {
                         items1.addAll(items);
@@ -130,6 +147,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .map(files -> {
                     List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>();
                     if (files != null && files.files != null) {
+                        String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                         PanoramaAlbumContact.PanoramaItem item;
                         for (String file : files.files) {
                             item = new PanoramaAlbumContact.PanoramaItem(file);
@@ -145,8 +163,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                     item.downloadInfo = null;
                                 }
                             }
-                            String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
-                            if (deviceIp != null) {
+                            if (deviceIp != null && item.type == 0) {
                                 String url = deviceIp + "/images/" + item.fileName;
                                 GetRequest request = OkGo.get(url);
                                 DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
@@ -162,28 +179,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     }
                     return result;
                 });
-    }
-
-    private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadLocalAndServer(int time) {
-        return loadFromLocal(time).zipWith(loadFromServer(time), (items, items2) -> {
-            List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(items2);
-            List<PanoramaAlbumContact.PanoramaItem> remove = new ArrayList<>();
-            for (PanoramaAlbumContact.PanoramaItem item : items2) {//fromServer
-                int location = item.location;
-                for (PanoramaAlbumContact.PanoramaItem panoramaItem : items) {//fromLocal
-                    if (TextUtils.equals(item.fileName, panoramaItem.fileName)) {
-                        location = 2;
-                        remove.add(panoramaItem);
-                        break;
-                    }
-                }
-                item.location = location;
-            }
-            items.removeAll(remove);
-            result.addAll(items);
-            Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
-            return result.subList(0, 20);
-        });
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromLocal(int time) {
@@ -221,26 +216,69 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     @Override
-    public void deletePanoramaItem(List<PanoramaAlbumContact.PanoramaItem> items) {
-        BasePanoramaApiHelper.getInstance().delete(1, convert(items))
-                .map(ret -> {
-                    List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
-                    for (PanoramaAlbumContact.PanoramaItem item : items) {
-                        for (String file : ret.files) {
-                            if (TextUtils.equals(file, item.fileName)) {
-                                failed.add(item);
+    public void deletePanoramaItem(List<PanoramaAlbumContact.PanoramaItem> items, int mode) {
+        if (deleteSubscription != null && deleteSubscription.isUnsubscribed()) {
+            deleteSubscription.unsubscribe();
+        }
+        if (mode == 0) {//本地
+            deleteSubscription = Observable.create((Observable.OnSubscribe<List<PanoramaAlbumContact.PanoramaItem>>) subscriber -> {
+                for (PanoramaAlbumContact.PanoramaItem item : items) {
+                    DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName), true);
+                }
+                subscriber.onNext(items);
+                subscriber.onCompleted();
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> mView.onDelete(result), e -> {
+                        AppLogger.e(e.getMessage());
+                    });
+        } else if (mode == 1) {//设备
+            deleteSubscription = BasePanoramaApiHelper.getInstance().delete(1, convert(items))
+                    .map(ret -> {
+                        List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
+                        for (PanoramaAlbumContact.PanoramaItem item : items) {
+                            for (String file : ret.files) {
+                                if (TextUtils.equals(file, item.fileName)) {
+                                    failed.add(item);
+                                }
                             }
                         }
-                    }
-                    items.removeAll(failed);
-                    return items;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    mView.onDelete(result);
-                }, e -> {
-                    AppLogger.e(e);
-                });
+                        items.removeAll(failed);
+                        return items;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> mView.onDelete(result), e -> {
+                        AppLogger.e(e);
+                    });
+        } else if (mode == 2) {//本地+设备
+            deleteSubscription = Observable.create((Observable.OnSubscribe<List<PanoramaAlbumContact.PanoramaItem>>) subscriber -> {
+                for (PanoramaAlbumContact.PanoramaItem item : items) {
+                    DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName), true);
+                }
+                subscriber.onNext(items);
+                subscriber.onCompleted();
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .flatMap(ret -> BasePanoramaApiHelper.getInstance().delete(1, convert(items)))
+                    .map(ret -> {
+                        List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
+                        for (PanoramaAlbumContact.PanoramaItem item : items) {
+                            for (String file : ret.files) {
+                                if (TextUtils.equals(file, item.fileName)) {
+                                    failed.add(item);
+                                }
+                            }
+                        }
+                        items.removeAll(failed);
+                        return items;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> mView.onDelete(result), e -> {
+                        AppLogger.e(e);
+                    });
+        }
     }
 
     private List<String> convert(List<PanoramaAlbumContact.PanoramaItem> items) {

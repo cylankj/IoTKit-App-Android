@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    app:cardCornerRadius="@dimen/y3">
+
+    <LinearLayout
+        android:layout_width="@dimen/y192"
+        android:layout_height="@dimen/y97"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/panorama_detail_more_download"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:clickable="true"
+            android:drawablePadding="@dimen/y13"
+            android:drawableStart="@drawable/icon_down"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/y23"
+            android:paddingStart="@dimen/y23"
+            android:text="@string/Tap1_Album_Download"
+            android:textColor="#333333"
+            android:textSize="@dimen/sp16" />
+
+        <TextView
+            android:id="@+id/panorama_detail_more_delete"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:clickable="true"
+            android:drawablePadding="@dimen/y13"
+            android:drawableStart="@drawable/icon_delete"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/y23"
+            android:paddingStart="@dimen/y23"
+            android:text="@string/DELETE"
+            android:textColor="#333333"
+            android:textSize="@dimen/sp16" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

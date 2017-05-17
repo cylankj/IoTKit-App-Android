@@ -35,7 +35,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 @Singleton
 public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     public static BaseDeviceInformationFetcher INFORMATION_FETCHER;
-    private DeviceInformation deviceInformation = new DeviceInformation(null);
+    private volatile DeviceInformation deviceInformation;
 
     public static BaseDeviceInformationFetcher getInstance() {
         return INFORMATION_FETCHER;
@@ -57,15 +57,15 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         try {
             AppLogger.d("正在解析 UDP 消息:" + new Gson().toJson(udpMsg));
             JfgUdpMsg.UdpSecondaryHeard udpHeader = unpackData(udpMsg.data, JfgUdpMsg.UdpSecondaryHeard.class);
-            assert udpHeader != null;
+            if (udpHeader == null) return false;
             if (!TextUtils.equals(udpHeader.cid, deviceInformation.uuid)) {//说明不是我们需要的消息
                 return false;
             }
             deviceInformation.mac = udpHeader.mac;
             if (TextUtils.equals(udpHeader.cmd, UdpConstant.F_PING_ACK)) {
                 JfgUdpMsg.FPingAck pingAck = unpackData(udpMsg.data, JfgUdpMsg.FPingAck.class);
-                assert pingAck != null;
-                if (TextUtils.equals(pingAck.cid, deviceInformation.uuid)) {
+
+                if (pingAck != null && TextUtils.equals(pingAck.cid, deviceInformation.uuid)) {
                     deviceInformation.ip = udpMsg.ip;
                     deviceInformation.port = udpMsg.port;
                     AppLogger.d("当前设备的局域网 IP 地址为:http://" + udpMsg.ip);
@@ -101,11 +101,12 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
 
     private void monitorDeviceInformationSuggestion() {
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
-                .throttleLast(2, TimeUnit.SECONDS)
                 .retry()
                 .observeOn(Schedulers.io())
-                .filter(event -> !event.success && deviceInformation != null)
+                .filter(event -> !event.success && deviceInformation != null && !TextUtils.isEmpty(deviceInformation.uuid))
                 .map(event -> {
+                    deviceInformation.ip = null;
+                    deviceInformation.port = 0;
                     ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                     if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
@@ -118,19 +119,16 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                         } catch (JfgException e) {
                             AppLogger.e(e.getMessage());
                         }
-                        return true;
-                    } else {
-                        deviceInformation.ip = null;
-                        deviceInformation.port = 0;
+                    } else if (BaseApplication.isOnline()) {
                         RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                         return false;
                     }
+                    return true;
                 })
                 .filter(send -> send)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                         .filter(this::resolveDeviceInformation)
-                        .first()
-                        .timeout(3, TimeUnit.SECONDS, Observable.just(null)))
+                        .first().timeout(5, TimeUnit.SECONDS, Observable.just(null)))
                 .subscribe(ret -> {
                     RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                 }, e -> {

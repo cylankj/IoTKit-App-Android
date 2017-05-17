@@ -67,11 +67,12 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into((ImageView) holder.getView(R.id.img_album_content));
+        TextView view = holder.getView(R.id.tv_album_download_progress);
         if (item.downloadInfo == null) {
+            view.setVisibility(View.INVISIBLE);
             return;
         }
 
-        TextView view = holder.getView(R.id.tv_album_download_progress);
         DownloadListener listener = (DownloadListener) view.getTag(3 << 24 + 1);
         PanoramaAlbumContact.PanoramaItem panoramaItem = (PanoramaAlbumContact.PanoramaItem) view.getTag(3 << 24 + 2);
         if (listener == null) {

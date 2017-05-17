@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -158,7 +157,6 @@ public class DataSourceManager implements JFGSourceManager {
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         //改变背景或者 处理网络的全局变量
-        AppLogger.d("当前网络可用?" + online);
         RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(true);
         connectionEvent.mobile = mobNetInfo;
         connectionEvent.wifi = wifiNetInfo;
@@ -343,7 +341,6 @@ public class DataSourceManager implements JFGSourceManager {
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = device.getQueryParams();
-            AppLogger.d("syncDeviceProperty: " + uuid + " " + new Gson().toJson(parameters));
             try {
                 appCmd.robotGetData(uuid, parameters, 1, false, 0);
             } catch (JfgException e) {
@@ -393,7 +390,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (shareList == null) shareList = new ArrayList<>();
         shareList.clear();
         shareList.addAll(arrayList);
-        Log.d("shareList", "shareList: " + new Gson().toJson(shareList));
         getCacheInstance().post(new RxEvent.GetShareListRsp());
     }
 
@@ -578,8 +574,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> {
-                    AppLogger.d("正在解析是否有已删除的设备");
+                .concatMap(event -> {
                     Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
                     JFGDevice device;
                     for (int i = 0; i < event.devices.length; i++) {
@@ -588,7 +583,6 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     mCachedDeviceMap.clear();
                     rawDeviceOrder.clear();
-                    AppLogger.d("已删除的设备数:" + result.size());
                     return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
@@ -601,15 +595,12 @@ public class DataSourceManager implements JFGSourceManager {
                             mCachedDeviceMap.put(device.getUuid(), device);
                             rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
                             parameters = device.getQueryParams();
-                            AppLogger.d("QueryParams:" + new Gson().toJson(parameters));
                             appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
-                            AppLogger.d("正在同步设备数据");
                             if (!JFGRules.isShareDevice(device)) {
                                 uuidList.add(device.getUuid());
                             }
                         }
                         appCmd.getShareList(uuidList);
-                        AppLogger.d("正在请求共享账号数据");
                         getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
                     } catch (JfgException e) {
                         AppLogger.d(e.getMessage());
@@ -646,7 +637,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> {
+                .concatMap(event -> {
                     long seq = event.getDataRsp == null ? -1 : event.getDataRsp.seq;
                     if (dpSeqRspInterceptor.containsKey(seq)) {
                         Interceptors interceptors = dpSeqRspInterceptor.get(seq);
@@ -685,14 +676,13 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
+                .concatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
                         .map(dpEntities -> {
                             ArrayList<Long> updateIdList = new ArrayList<>();
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
-                            AppLogger.d("正在同步数据");
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
@@ -755,14 +745,11 @@ public class DataSourceManager implements JFGSourceManager {
                 long msgId = list.get(i).id;
                 JFGDPMsg msg = list.get(i);
                 if (msgId == 505 || msgId == 512 || msgId == 222) {
-                    AppLogger.d("may fire a notification: " + msgId);
                     if (!BaseApplication.isBackground()) {
-                        AppLogger.d("当前在前台不需要推送消息");//只有摄像头需要后台的时候弹,门铃什么时候都弹
                         continue;
                     }
                     //cam 1001 1002  1003
                     try {
-                        AppLogger.d("通知栏..." + list.get(i));
                         List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
@@ -796,7 +783,6 @@ public class DataSourceManager implements JFGSourceManager {
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();
                     try {
-                        AppLogger.d("通知栏..." + list.get(i));
                         List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
@@ -805,7 +791,6 @@ public class DataSourceManager implements JFGSourceManager {
                                 .subscribe(baseDPTaskResult -> {
                                     Device dd = getDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                    AppLogger.d("通知栏..." + entity);
                                     Intent intent = new Intent(ContextUtils.getContext(), DoorBellHomeActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                                     int count = entity.getValue(0);

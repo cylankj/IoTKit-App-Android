@@ -104,7 +104,6 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs) {
-        AppLogger.d("saveDPByteInTx:uuid:msgs");
         return getActiveAccount().map(account -> {
             Set<DPEntity> result = new HashSet<>();
             DPEntity dpEntity = null;
@@ -295,7 +294,6 @@ public class BaseDBHelper implements IDBHelper {
         String execSQL = "DELETE FROM DEVICE WHERE ACCOUNT = ? AND SERVER = ? ";
         Database database = daoSession.getDatabase();
         database.beginTransaction();
-        AppLogger.d("正在清除数据:" + execSQL);
         database.execSQL(execSQL, new Object[]{dpAccount.getAccount(), getServer()});
         database.endTransaction();
     }
@@ -350,21 +348,18 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)
                 .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option)
                 .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override
     public Observable<List<DPEntity>> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.SUCCESS, option));
     }
 
@@ -375,7 +370,6 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, DBAction action) {
-        AppLogger.d("正在根据 option 查询未经确认的 DP 消息,uuid:" + uuid + ",msgId:" + msgId + ",option :" + action);
         return getActiveAccount().flatMap(account -> queryDPMsg(account.getAccount(), getServer(), uuid, null, msgId, null, null, action, DBState.NOT_CONFIRM, null));
     }
 
@@ -445,7 +439,6 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     private Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
-        AppLogger.d("正在标记本地数据, dpAccount:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
                 .map(items -> {
@@ -517,7 +510,6 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<Iterable<Device>> updateDevice(JFGDevice[] device) {
         return getActiveAccount()
                 .map(account -> {
-                    AppLogger.d("正在写入 device");
                     List<Device> result = new ArrayList<>(device.length);
                     QueryBuilder<Device> queryBuilder = null;
                     Device dpDevice = null;
@@ -549,7 +541,6 @@ public class BaseDBHelper implements IDBHelper {
                     remove.removeAll(result);
                     deviceDao.deleteInTx(remove);
                     deviceDao.insertOrReplaceInTx(result);
-                    AppLogger.d("当前设备数量:" + result.size());
                     return result;
                 });
     }

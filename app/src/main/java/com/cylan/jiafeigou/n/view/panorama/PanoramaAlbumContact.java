@@ -29,6 +29,7 @@ public interface PanoramaAlbumContact {
         @IntDef
         @Retention(RetentionPolicy.SOURCE)
         @interface ALBUM_VIEW_MODE {
+
             int MODE_PHOTO = 0;
             int MODE_PANORAMA = 1;
             int MODE_BOTH = 2;
@@ -42,7 +43,9 @@ public interface PanoramaAlbumContact {
 
         List<PanoramaItem> getList();
 
-        void onViewModeChanged(int apiType);
+        void onViewModeChanged(int mode);
+
+        void onSDCardUnMount();
     }
 
     class PanoramaItem implements Parcelable {
@@ -135,6 +138,6 @@ public interface PanoramaAlbumContact {
          */
         void fetch(int time, int fetchLocation);
 
-        void deletePanoramaItem(List<PanoramaItem> items);
+        void deletePanoramaItem(List<PanoramaItem> items, int mode);
     }
 }
