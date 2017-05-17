@@ -251,7 +251,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                             alias = split[0];
                         }
                     }
-                    if (TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
+                    if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
                         accountArrived.jfgAccount.setAlias(alias);
                         try {
                             AppLogger.e("正在设置第三方登录昵称" + alias);

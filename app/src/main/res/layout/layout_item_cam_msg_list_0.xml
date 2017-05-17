@@ -23,11 +23,11 @@
             hunt:dashLineColor="@color/color_e8e8e8"
             hunt:dashLineWidth="@dimen/x2"
             hunt:innerCircleColor="@color/color_white"
-            hunt:innerCircleRadius="@dimen/x6"
+            hunt:innerCircleRadius="@dimen/x3"
             hunt:outerCircleColor="@color/color_e8e8e8"
-            hunt:outerCircleRadius="@dimen/x10"
+            hunt:outerCircleRadius="@dimen/x5"
             hunt:outerCircleStrokeWidth="@dimen/x4"
-            hunt:outerCircleY="@dimen/y10" />
+            hunt:outerCircleY="@dimen/y13" />
 
         <RadioButton
             android:id="@+id/rbtn_item_check"

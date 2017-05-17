@@ -137,7 +137,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
         String timeZoneId = zone == null ? "" : zone.timezone;
         adapter.setChooseId(timeZoneId);
-        Log.d("onViewCreated", "offset: " + timeZoneId);
+        Log.d("onViewCreated", "offset: " + zone);
         lvTimezoneDetail.setAdapter(adapter);
         adapter.setOnItemClickListener((itemView, viewType, position) -> {
             TimeZoneBean zoneBean = adapter.getItem(position);

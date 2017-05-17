@@ -402,10 +402,11 @@ public class JFGRules {
 
     public static TimeZone getDeviceTimezone(Device device) {
         if (device == null) return TimeZone.getDefault();
-        if (isPanoramicCam(device.pid)) {
-            DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
-            return TimeZone.getTimeZone(zone.timezone);
+        DpMsgDefine.DPTimeZone timeZone = device.$(214, new DpMsgDefine.DPTimeZone());
+        String[] ids = TimeZone.getAvailableIDs(timeZone.offset * 1000);
+        if (ids != null && ids.length > 0) {
+            return TimeZone.getTimeZone(ids[0]);
         }
-        return TimeZone.getTimeZone("UTC");
+        return TimeZone.getDefault();
     }
 }

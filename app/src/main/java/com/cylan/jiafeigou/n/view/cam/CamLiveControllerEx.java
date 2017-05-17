@@ -38,7 +38,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
-import com.cylan.jiafeigou.n.view.media.PanoramicViewFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -119,7 +118,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     /**
      * 设备的时区
      */
-    private TimeZone mDeviceTimezone;
+//    private TimeZone mDeviceTimezone;
+    private SimpleDateFormat liveTimeDateFormat;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -741,23 +741,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
 
     private void setLiveRectTime(int type, long timestamp) {
-        //需要考虑设备的时区.他娘的.
-        if (mDeviceTimezone == null) {
-            mDeviceTimezone = TimeZone.getDefault();
-        }
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         if (timestamp == 0) timestamp = System.currentTimeMillis() / 1000;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", getTime(mDeviceTimezone, timestamp * 1000L));
+                + "|%s", getTime(timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
     }
 
-    private String getTime(TimeZone timeZone, long time) {
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
-        format.setTimeZone(timeZone);
-        return format.format(new Date(time));
+    private String getTime(long time) {
+        return liveTimeDateFormat.format(new Date(time));
     }
 
     public void setFlipListener(FlipImageView.OnFlipListener flipListener) {
@@ -903,8 +897,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
         } else
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
-        mDeviceTimezone = JFGRules.getDeviceTimezone(device);
-        AppLogger.d("得到设备时区:" + mDeviceTimezone.getID());
+        TimeZone timeZone = JFGRules.getDeviceTimezone(device);
+        liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+        liveTimeDateFormat.setTimeZone(timeZone);
+        AppLogger.d("得到设备时区:" + timeZone.getID());
     }
 
     @Override

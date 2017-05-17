@@ -153,7 +153,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
         bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
         bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
         bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
-        bundle.putInt(KEY_INPUT_LENGTH, 64);
+        bundle.putInt(KEY_INPUT_LENGTH, 63);
         bundle.putBoolean(KEY_EXCLUDE_CHINESE, true);
         final int security = NetUtils.getSecurity(item);
         bundle.putBoolean(KEY_SHOW_EDIT, security != 0);

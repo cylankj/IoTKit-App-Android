@@ -19,6 +19,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.observables.GroupedObservable;
 import rx.schedulers.Schedulers;
 
 import static org.junit.Assert.assertNotNull;
@@ -508,33 +509,27 @@ public class RxBusTest {
 
     @Test
     public void testTimeout1() throws InterruptedException {
-
-        Observable.interval(1, TimeUnit.SECONDS)
-                .timeout(5, TimeUnit.SECONDS)
-                .subscribe(ret -> {
-                    System.out.println("...");
-                });
-
-
         RxBus.getCacheInstance().toObservable(String.class)
-                .timeout(5, TimeUnit.SECONDS)
-                .subscribe(new Action1<String>() {
+                .groupBy(new Func1<String, String>() {
                     @Override
-                    public void call(String s) {
-                        System.out.println("s: " + s);
-                        throw new IllegalArgumentException("cuole");
+                    public String call(String s) {
+                        return s.substring(0, 3);
                     }
-                }, new Action1<Throwable>() {
+                })
+                .flatMap(new Func1<GroupedObservable<String, String>, Observable<?>>() {
                     @Override
-                    public void call(Throwable throwable) {
-                        System.out.println("" + throwable);
+                    public Observable<?> call(GroupedObservable<String, String> stringStringGroupedObservable) {
+                        return stringStringGroupedObservable
+                                .throttleFirst(150, TimeUnit.MILLISECONDS);
                     }
-                });
-        RxBus.getCacheInstance().post("....");
+                })
+                .subscribe(ret -> System.out.println(ret));
+        RxBus.getCacheInstance().post("1110000");
+        Thread.sleep(120);
         RxBus.getCacheInstance().post("111");
-        RxBus.getCacheInstance().post("00");
-        Thread.sleep(15);
-        RxBus.getCacheInstance().post("000");
+        RxBus.getCacheInstance().post("000dffa");
+        Thread.sleep(160);
+        RxBus.getCacheInstance().post("000erter");
         Thread.sleep(8000);
     }
 

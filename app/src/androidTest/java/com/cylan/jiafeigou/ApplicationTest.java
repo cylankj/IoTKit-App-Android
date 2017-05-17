@@ -6,7 +6,9 @@ import android.test.ApplicationTestCase;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -71,11 +73,5 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        Log.e("AAAAA", "解析100000条数据共耗时" + (end - initSubscription) + "毫秒");
     }
 
-    @Test
-    public void testTimezone() {
-        long time = System.currentTimeMillis();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-DD HHmmss", Locale.UK);
-        
-        System.out.println();
-    }
+
 }

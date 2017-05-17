@@ -294,7 +294,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
             if (!sdStatus.hasSdcard) {
                 AppLogger.d("sdcard 被拔出");
-                if (!getUserVisibleHint()) {
+                if (!getUserVisibleHint() || basePresenter.isShareDevice()) {
                     AppLogger.d("隐藏了，sd卡更新");
                     return;
                 }

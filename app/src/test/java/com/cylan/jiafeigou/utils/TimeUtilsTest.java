@@ -1,10 +1,14 @@
 package com.cylan.jiafeigou.utils;
 
+import org.apache.tools.ant.taskdefs.Local;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 17-2-18.
@@ -116,9 +120,9 @@ public class TimeUtilsTest {
 
     @Test
     public void startOfDay() throws Exception {
-        System.out.println(TimeUtils.getSpecificDayEndTime(1491007607000L));
-        System.out.println(TimeUtils.getSpecificDayEndTime(1490947860000L));
-        System.out.println(TimeUtils.getSpecificDayStartTime(1490975999000L));
+//        System.out.println(TimeUtils.getSpecificDayEndTime(1491007607000L));
+//        System.out.println(TimeUtils.getSpecificDayEndTime(1490947860000L));
+//        System.out.println(TimeUtils.getSpecificDayStartTime(1490975999000L));
     }
 
     @Test
@@ -144,6 +148,18 @@ public class TimeUtilsTest {
     @Test
     public void getBellRecordTime() throws Exception {
 
+    }
+
+    @Test
+    public void testTimezone() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
+        String a[] = TimeZone.getAvailableIDs(28800000);
+        for (int i = 0; i < a.length; i++) {
+            System.out.println(a[i]);
+            dateFormat.setTimeZone(TimeZone.getTimeZone(a[i]));
+            System.out.println(dateFormat.format(new Date(System.currentTimeMillis())));
+        }
+        System.out.println(TimeZone.getDefault().getRawOffset());
     }
 
 }
