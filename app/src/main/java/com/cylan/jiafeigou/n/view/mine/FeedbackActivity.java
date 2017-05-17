@@ -313,7 +313,8 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
             presenter.update(item);
             presenter.sendFeedBack(item);
             dialog.dismiss();
-        }).show();
+        });
+        AlertDialogManager.getInstance().showDialog("showResendFeedBackDialog", b);
     }
 
     @Override

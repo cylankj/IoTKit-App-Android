@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -214,21 +215,15 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
      */
     @Override
     public void showReqOutTimeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
-        builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                presenter.sendAddReq(addRequestItems);
-            }
+        builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), (DialogInterface dialog, int which) -> {
+            presenter.sendAddReq(addRequestItems);
         });
-        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+        builder.setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+            dialog.dismiss();
+        });
+        AlertDialogManager.getInstance().showDialog("showReqOutTimeDialog", builder);
     }
 
     @Override
