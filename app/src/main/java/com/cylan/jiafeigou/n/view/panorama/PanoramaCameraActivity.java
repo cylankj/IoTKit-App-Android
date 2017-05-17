@@ -309,7 +309,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             startActivity(intent);
         })
                 .setMessage(getString(R.string.Tap1_device_deleted));
-        AlertDialogManager.getInstance().showDialog("onDeviceUnBind", builder);
+        AlertDialogManager.getInstance().showDialog("onDeviceUnBind", this, builder);
     }
 
     @Override

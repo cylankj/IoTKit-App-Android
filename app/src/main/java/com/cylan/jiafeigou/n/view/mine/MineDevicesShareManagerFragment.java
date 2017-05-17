@@ -182,7 +182,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
                 dialog.dismiss();
             }
         });
-        AlertDialogManager.getInstance().showDialog("showCancleShareDialog", builder);
+        AlertDialogManager.getInstance().showDialog("showCancleShareDialog", getActivity(), builder);
     }
 
     @Override

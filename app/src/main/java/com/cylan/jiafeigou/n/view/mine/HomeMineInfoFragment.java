@@ -721,7 +721,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 });
-        AlertDialogManager.getInstance().showDialog("setPermissionDialog", builder);
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

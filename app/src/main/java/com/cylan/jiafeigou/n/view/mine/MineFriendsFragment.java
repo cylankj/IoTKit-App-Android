@@ -247,7 +247,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                     presenter.deleteAddReq(bean.account);
                 })
                 .setNegativeButton(getString(R.string.CANCEL), null);
-        AlertDialogManager.getInstance().showDialog("showLongClickDialog", builder);
+        AlertDialogManager.getInstance().showDialog("showLongClickDialog", getActivity(), builder);
 
     }
 

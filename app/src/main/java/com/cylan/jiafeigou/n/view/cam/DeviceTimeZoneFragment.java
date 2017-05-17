@@ -165,7 +165,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                         getActivity().onBackPressed();
                         //没必要设置
                     });
-            AlertDialogManager.getInstance().showDialog(getString(R.string.TIMEZONE_CHOOSE), builder);
+            AlertDialogManager.getInstance().showDialog(getString(R.string.TIMEZONE_CHOOSE), getActivity(), builder);
         });
         lvTimezoneDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

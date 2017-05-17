@@ -228,7 +228,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 dialog.dismiss();
             }
         });
-        AlertDialogManager.getInstance().showDialog("showShareDeviceDialog", builder);
+        AlertDialogManager.getInstance().showDialog("showShareDeviceDialog", getActivity(), builder);
     }
 
     @Override

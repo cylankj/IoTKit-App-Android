@@ -270,7 +270,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 dialog.dismiss();
             }
         });
-        AlertDialogManager.getInstance().showDialog("showShareResultDialog", builder);
+        AlertDialogManager.getInstance().showDialog("showShareResultDialog", getActivity(), builder);
     }
 
     /**

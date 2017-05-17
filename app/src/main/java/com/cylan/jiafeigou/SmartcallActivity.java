@@ -173,7 +173,7 @@ public class SmartcallActivity extends NeedLoginActivity
                     getSupportFragmentManager().beginTransaction().show(loginFragment)
                             .commitAllowingStateLoss();
                 });
-        AlertDialogManager.getInstance().showDialog(getString(R.string.PWD_CHANGED), builder);
+        AlertDialogManager.getInstance().showDialog(getString(R.string.PWD_CHANGED), this, builder);
     }
 
     private boolean isFirstUseApp() {

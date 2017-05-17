@@ -132,7 +132,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             }
         });
         builder.setView(view);
-        AlertDialogManager.getInstance().showDialog("showShareDialog", builder);
+        AlertDialogManager.getInstance().showDialog("showShareDialog", getActivity(), builder);
     }
 
     /**
@@ -321,7 +321,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 });
-        AlertDialogManager.getInstance().showDialog("setPermissionDialog", builder);
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

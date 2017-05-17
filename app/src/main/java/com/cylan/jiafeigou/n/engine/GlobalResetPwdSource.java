@@ -86,7 +86,7 @@ public class GlobalResetPwdSource {
                             dialog1.dismiss();
                             jump2LoginFragment();
                         });
-                AlertDialogManager.getInstance().showDialog("pwdResetedDialog", builder);
+                AlertDialogManager.getInstance().showDialog("pwdResetedDialog", appCompatActivity, builder);
             }
         }
     }

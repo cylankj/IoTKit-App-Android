@@ -47,7 +47,7 @@ public class AlertDialogManager {
     }
 
 
-    public void showDialog(String tag, AlertDialog.Builder builder) {
+    public void showDialog(String tag, Activity activity, AlertDialog.Builder builder) {
         if (TextUtils.isEmpty(tag)) return;
         AlertDialog dialog = getAlertDialog(tag);
         if (dialog != null && dialog.isShowing()) return;
@@ -58,9 +58,7 @@ public class AlertDialogManager {
                 weakReferenceMap = new HashMap<>();
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
     }
 
     public void showDialog(Activity activity, String tag, String message) {
@@ -77,9 +75,7 @@ public class AlertDialogManager {
                 weakReferenceMap = new HashMap<>();
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
     }
 
     public void showDialog(Activity activity, String tag, String message, boolean canceltouchOutSide) {
@@ -97,9 +93,7 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.setCanceledOnTouchOutside(canceltouchOutSide);
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener) {
@@ -117,9 +111,7 @@ public class AlertDialogManager {
                 weakReferenceMap = new HashMap<>();
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, boolean mCancelable) {
@@ -138,9 +130,7 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.setCanceledOnTouchOutside(mCancelable);
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, String cancel, DialogInterface.OnClickListener cancelClickListener) {
@@ -159,9 +149,7 @@ public class AlertDialogManager {
                 weakReferenceMap = new HashMap<>();
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
     }
 
     public void showDialog(Activity activity, String tag, String message, String ok, DialogInterface.OnClickListener okClickListener, String cancel, DialogInterface.OnClickListener cancelClickListener, boolean mCancelable) {
@@ -181,9 +169,8 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.setCanceledOnTouchOutside(mCancelable);
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+        finalShow(activity, dialog);
+
     }
 
     private AlertDialog getAlertDialog(String tag) {
@@ -223,6 +210,18 @@ public class AlertDialogManager {
                 if (ref.get().getOwnerActivity() != null && TextUtils.equals(activityTag, ref.get().getOwnerActivity().getClass().getSimpleName()))
                     ref.get().dismiss();
             }
+        }
+    }
+
+    private void finalShow(Activity activity, AlertDialog dialog) {
+        try {
+            if (activity != null && !activity.isFinishing()) {
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialog.getContext().getResources().getColor(R.color.color_4b9fd5));
+            }
+        } catch (Exception e) {
+
         }
     }
 

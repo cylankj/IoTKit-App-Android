@@ -141,7 +141,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                             LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null);
-                AlertDialogManager.getInstance().showDialog(getString(R.string.SURE_DELETE_1, name), builder);
+                AlertDialogManager.getInstance().showDialog(getString(R.string.SURE_DELETE_1, name), getActivity(), builder);
                 break;
         }
     }

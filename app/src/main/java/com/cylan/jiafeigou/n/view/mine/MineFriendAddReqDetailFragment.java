@@ -223,7 +223,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         builder.setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
             dialog.dismiss();
         });
-        AlertDialogManager.getInstance().showDialog("showReqOutTimeDialog", builder);
+        AlertDialogManager.getInstance().showDialog("showReqOutTimeDialog", getActivity(), builder);
     }
 
     @Override
