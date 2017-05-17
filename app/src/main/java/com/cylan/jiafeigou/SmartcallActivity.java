@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -185,7 +186,7 @@ public class SmartcallActivity extends NeedLoginActivity
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (grantResults[0] == -1) {
-                    finish();
+                    ToastUtil.showToast(getString(R.string.permission_auth, R.string.VALID_STORAGE));
                     return;
                 }
                 SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);

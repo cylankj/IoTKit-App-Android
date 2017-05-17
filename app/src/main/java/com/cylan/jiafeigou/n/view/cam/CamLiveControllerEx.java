@@ -38,6 +38,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
+import com.cylan.jiafeigou.n.view.media.PanoramicViewFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -535,6 +536,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * @param errCode
      */
     private void handlePlayErr(CamLiveContract.Presenter presenter, int errCode) {
+        if (presenter.isDeviceStandby()) return;
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -853,10 +855,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
                 bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//                if (isNormalView) {
                 NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
                 ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment,
                         android.R.id.content);
                 fragment.setCallBack(t -> activity.getSupportFragmentManager().popBackStack());
+//                } else {
+//                    PanoramicViewFragment fragment = PanoramicViewFragment.newInstance(bundle);
+//                    ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment,
+//                            android.R.id.content);
+//                    fragment.setCallBack(t -> activity.getSupportFragmentManager().popBackStack());
+//                }
             });
             roundCardPopup.setAutoDismissTime(5 * 1000L);
             roundCardPopup.showOnAnchor(findViewById(R.id.imgV_cam_trigger_capture), RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
