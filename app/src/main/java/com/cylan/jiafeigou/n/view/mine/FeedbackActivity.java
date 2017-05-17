@@ -299,7 +299,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
     }
 
     private void showResendFeedBackDialog(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {
-        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(getString(R.string.ANEW_SEND));
         b.setNegativeButton(getString(R.string.Button_No), (DialogInterface dialog, int which) -> {
             dialog.dismiss();

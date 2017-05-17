@@ -12,6 +12,7 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
@@ -47,6 +48,27 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
         view.setPresenter(this);
+    }
+
+    /**
+     * 获取到验证码的回调
+     *
+     * @return
+     */
+
+    public Subscription getCheckCodeCallback() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(smsCodeResult -> {
+                    if (smsCodeResult != null) {
+                        if (smsCodeResult.error == JError.ErrorOK) {
+                            AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
+                            getView().startCountTime();
+                        } else {
+                            getView().getSmsCodeResult(smsCodeResult.error);
+                        }
+                    }
+                }, AppLogger::e);
     }
 
     @Override
@@ -237,6 +259,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription.add(getCheckPhoneCallback());
             compositeSubscription.add(checkVerifyCodeCallBack());
             compositeSubscription.add(changeAccountBack());
+            compositeSubscription.add(getCheckCodeCallback());
         }
         registerNetworkMonitor();
     }

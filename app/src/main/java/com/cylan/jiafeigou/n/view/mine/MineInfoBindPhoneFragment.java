@@ -18,6 +18,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -191,6 +192,10 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
+                if(!BaseApplication.getAppComponent().getSourceManager().isOnline()){
+                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                    return;
+                }
                 //获取验证码点击
                 if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                     presenter.checkPhoneIsBind(getInputPhone());
