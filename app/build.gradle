@@ -221,7 +221,11 @@ android {
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "xxx",
-                                    "XiaoMiAppKey"       : "xxx"
+                                    "XiaoMiAppKey"       : "xxx",
+                                    "BUGLY_APPID"        : "\\ 3101835188",//
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan"
+
             ]
         }
         _yf {
@@ -241,7 +245,10 @@ android {
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
-                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
+                                    "BUGLY_APPID"        : "\\ 3101835188",//
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan"
             ]
         }
     }
