@@ -14,7 +14,6 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -169,8 +168,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Device getDevice(String uuid) {
-        if (TextUtils.isEmpty(uuid) && BuildConfig.DEBUG)
-            throw new IllegalArgumentException("null uuid");
         Device device = mCachedDeviceMap.get(uuid);
         return device == null ? new Device() : device;//给一个默认的 device, 防止出现空指针
     }
@@ -574,7 +571,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .concatMap(event -> {
+                .flatMap(event -> {
                     Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
                     JFGDevice device;
                     for (int i = 0; i < event.devices.length; i++) {
@@ -637,7 +634,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .concatMap(event -> {
+                .flatMap(event -> {
                     long seq = event.getDataRsp == null ? -1 : event.getDataRsp.seq;
                     if (dpSeqRspInterceptor.containsKey(seq)) {
                         Interceptors interceptors = dpSeqRspInterceptor.get(seq);
@@ -676,7 +673,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .concatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
+                .flatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
                         .map(dpEntities -> {
                             ArrayList<Long> updateIdList = new ArrayList<>();
                             for (DPEntity entity : dpEntities) {

@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -272,26 +271,29 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void unShareSucceedDel(int position, ArrayList<String> arrayList) {
-        Iterator iterator = hasShareFriendList.get(position).friends.iterator();
-        while (iterator.hasNext()) {
-            JFGFriendAccount friend = (JFGFriendAccount) iterator.next();
+        ArrayList<JFGFriendAccount> friends = hasShareFriendList.get(position).friends;
+        List<JFGFriendAccount> remove = new ArrayList<>();
+        for (JFGFriendAccount friend : friends) {
             for (String str : arrayList) {
                 if (friend.account.equals(str)) {
-                    iterator.remove();
+                    remove.add(friend);
                 }
             }
+
         }
+        friends.removeAll(remove);
         ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
+        List<RelAndFriendBean> del = new ArrayList<>();
         if (shareSuccList != null && shareSuccList.size() > 0) {
-            Iterator iterator2 = shareSuccList.iterator();
-            while (iterator2.hasNext()) {
-                RelAndFriendBean friend = (RelAndFriendBean) iterator2.next();
+            for (RelAndFriendBean friend : shareSuccList) {
                 for (String str : arrayList) {
                     if (friend.account.equals(str)) {
-                        iterator2.remove();
+                        del.add(friend);
                     }
                 }
+
             }
+            shareSuccList.removeAll(del);
         }
     }
 

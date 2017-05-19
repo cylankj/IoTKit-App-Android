@@ -106,7 +106,7 @@ public class AutoSignIn {
                         }
                 )
                 .observeOn(Schedulers.io())
-                .timeout(30, TimeUnit.SECONDS, Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true))
+                .timeout(5, TimeUnit.SECONDS, Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true))
                         .map(hasPswError -> {
                             if (hasPswError) {
                                 return new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass);

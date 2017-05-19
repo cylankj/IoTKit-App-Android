@@ -503,6 +503,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsLayoutSwitcher.showNext();
+            isRegetCode = false;
         } else if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
             rLayoutLoginToolbar.setToolbarTitle(R.string.LOGIN);
             rLayoutLoginToolbar.setToolbarRightTitle(R.string.Tap0_register);
@@ -510,6 +511,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
             vsLayoutSwitcher.showPrevious();
+            isRegetCode = false;
 //            if (!lLayoutAgreement.isShown())
 //                lLayoutAgreement.setVisibility(View.VISIBLE);
 

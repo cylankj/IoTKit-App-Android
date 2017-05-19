@@ -296,15 +296,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         final int count = viewGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
-            if (view.getId() == R.id.sv_setting_device_standby_mode) {
+            if (view.getId() == R.id.sv_setting_device_wifi) {
                 continue;
             }
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
             }
-            if (view.getId() == R.id.sv_setting_device_detail) {
-                continue;//解绑按钮
-            }
+//            if (view.getId() == R.id.sv_setting_device_detail) {
+//                continue;//解绑按钮
+//            }
             view.setAlpha(enable ? 1.f : 0.6f);
             view.setEnabled(enable);
         }
@@ -373,6 +373,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 enableStandby(true);
             }
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                Device device1 = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                DpMsgDefine.DPNet dpNet = device1.$(201, new DpMsgDefine.DPNet());
+                if (dpNet.net == -1 && isChecked) {
+                    buttonView.setChecked(false);
+                    return;
+                }
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
                 DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
                 standby.standby = isChecked;
@@ -390,7 +396,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 basePresenter.updateInfoReq(list);
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
-            switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
+            switchBtn(lLayoutSettingItemContainer, !dpStandby.standby || net.net > 0);
         }
         /////////////////////////////led/////////////////////////////////////
         if (JFGRules.showLedIndicator(device.pid)) {

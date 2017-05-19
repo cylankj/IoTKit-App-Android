@@ -176,21 +176,23 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void getCodeByPhone(final String phone) {
-        Observable.just(null)
+        Subscription subscribe = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     try {
+                        countUp(phone);
                         BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                     AppLogger.d("phone:" + phone);
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+        addSubscription(subscribe);
     }
 
     @Override
     public void verifyCode(final String phone, final String code, final String token) {
-        Observable.just(null)
+        Subscription subscribe = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     try {
@@ -200,12 +202,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         e.printStackTrace();
                     }
                 }, throwable -> AppLogger.i("throw:" + throwable.getLocalizedMessage()));
+        addSubscription(subscribe);
     }
 
 
     @Override
     public void checkAccountIsReg(String account) {
-        Observable.just(account)
+        Subscription subscribe = Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .timeout(30, TimeUnit.SECONDS)
                 .delay(1, TimeUnit.SECONDS)
@@ -216,10 +219,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         return -1;
                     }
                 }).flatMap(result -> RxBus.getCacheInstance()
-                .toObservable(RxEvent.CheckRegisterBack.class))
+                        .toObservable(RxEvent.CheckRegisterBack.class).first())
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> getView().checkAccountResult(ret), AppLogger::e);
+        addSubscription(subscribe);
     }
 
 
@@ -256,30 +260,20 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public boolean checkOverCount(String account) {
         int count = PreferencesUtils.getInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
         long first_time = PreferencesUtils.getLong(account + JConstant.KEY_REG_FRIST_GET_SMS, 0);
+        boolean over10 = System.currentTimeMillis() - first_time > 10 * 60 * 1000;
+        boolean result = count <= 3 || over10;
+        return !result;
+    }
 
+    private void countUp(String account) {
+        int count = PreferencesUtils.getInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
         if (count == 0) {
             PreferencesUtils.putLong(account + JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
-            PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
-            return false;
         }
-
-        if (count < 3) {
-            if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
-                PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
-            } else {
-                PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
-                PreferencesUtils.putLong(account + JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
-            }
-            return false;
-        } else {
-            if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
-                return true;
-            } else {
-                PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
-                PreferencesUtils.putLong(account + JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
-                return false;
-            }
-        }
+        long first_time = PreferencesUtils.getLong(account + JConstant.KEY_REG_FRIST_GET_SMS, 0);
+        boolean over10 = System.currentTimeMillis() - first_time > 10 * 60 * 1000;
+        count = over10 ? 0 : ++count;
+        PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, count);
     }
 
     @Override

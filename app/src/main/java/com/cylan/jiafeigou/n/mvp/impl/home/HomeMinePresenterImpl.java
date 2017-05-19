@@ -263,8 +263,11 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
 
                     if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getPhotoUrl()))
                         getView().setUserImageHeadByUrl(accountArrived.account.getPhotoUrl());
-                    if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getAlias()))
-                        getView().setAliasName(accountArrived.account.getAlias());
+                    if (getView() != null) {
+                        String al = accountArrived.account.getAlias();
+                        String a2 = accountArrived.account.getAccount();
+                        getView().setAliasName(TextUtils.isEmpty(al) ? a2 : al);
+                    }
                 }, AppLogger::e);
     }
 

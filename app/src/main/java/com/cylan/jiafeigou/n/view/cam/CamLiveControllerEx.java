@@ -820,8 +820,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onDeviceStandByChanged(Device device, OnClickListener clickListener) {
         //设置 standby view相关点击事件
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
-        liveViewWithThumbnail.enableStandbyMode(standby.standby, clickListener, !TextUtils.isEmpty(device.shareAccount));
-        if (standby.standby && !isLand()) {
+        DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());//http://yf.cylan.com.cn:82/redmine/issues/109805
+        liveViewWithThumbnail.enableStandbyMode(standby.standby && dpNet.net > 0, clickListener, !TextUtils.isEmpty(device.shareAccount));
+        if (standby.standby && dpNet.net > 0 && !isLand()) {
             post(portHideRunnable);
             setLoadingState(null, null, false);
         }

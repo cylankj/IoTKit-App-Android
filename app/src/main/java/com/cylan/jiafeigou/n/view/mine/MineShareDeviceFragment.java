@@ -111,14 +111,17 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     public void showShareDialog(final int layoutPosition, final DeviceBean item) {
         whichClick = item;
         position = layoutPosition;
-        final AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
+        builder.setView(view);
+        AlertDialog alertDialog = builder.create();
         view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_wechat_friends));
                 AppLogger.e("tv_share_to_friends");
+                alertDialog.dismiss();
                 jump2ShareToFriendFragment(layoutPosition, item);
             }
         });
@@ -128,11 +131,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
                 AppLogger.d("tv_share_to_contract");
+                alertDialog.dismiss();
                 MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(MineShareDeviceFragment.this);
             }
         });
-        builder.setView(view);
-        AlertDialogManager.getInstance().showDialog("showShareDialog", getActivity(), builder);
+        alertDialog.show();
     }
 
     /**

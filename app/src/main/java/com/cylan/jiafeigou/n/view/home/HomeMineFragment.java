@@ -247,7 +247,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
             if (jfgAccount != null) {
                 setUserImageHeadByUrl(jfgAccount.getPhotoUrl());
-                setAliasName(jfgAccount.getAlias());
+                setAliasName(TextUtils.isEmpty(jfgAccount.getAlias()) ? jfgAccount.getAccount() : jfgAccount.getAlias());
             }
         }
     }

@@ -20,10 +20,8 @@ import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -184,6 +182,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
         }
 
         ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(account);
+        TextView view = (TextView) mailView.findViewById(R.id.tv_send_email_info);
+        view.setText(R.string.Tap0_Click_ActivateAccount);
         TextView btn = (TextView) mailView.findViewById(R.id.tv_email_confirm);
         btn.setText(getString(R.string.Tap0_register_GoToLogin));
         btn.setEnabled(true);

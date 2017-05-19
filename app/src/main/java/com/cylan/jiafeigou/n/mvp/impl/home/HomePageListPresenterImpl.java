@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -188,8 +187,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private Subscription internalUpdateUuidList() {
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
-                .observeOn(Schedulers.newThread())
-                .sample(100, TimeUnit.MILLISECONDS)
+                .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(o -> {
                     subUuidList();

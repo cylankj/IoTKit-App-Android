@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -47,10 +46,8 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -72,9 +69,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
@@ -113,6 +107,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;
     private ItemAdapter<HomeItem> mItemAdapter;
+    private boolean refreshFinish = true;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
@@ -301,11 +296,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             Log.d("xxxxx", "xxxx:" + count);
                         }
                     }
-                    AppLogger.e("测试专用");
                 }
-                emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                 onRefreshFinish();
                 enableNestedScroll();
+                emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                 Log.d("onItemsRsp", "onItemsRsp:" + resultList);
             }
         } catch (Exception e) {
@@ -318,13 +312,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsRsp(List<Device> resultList) {
+        refreshFinish = true;
         this.resultList = resultList;
         if (!getUserVisibleHint()) return;
         if (getView() != null) {
+            getView().removeCallbacks(runnable);
             if (ListUtils.getSize(mItemAdapter.getAdapterItems()) != ListUtils.getSize(resultList)) {
                 updateImmediately();
             } else {
-                getView().removeCallbacks(runnable);
                 getView().postDelayed(runnable, 300);
             }
         }
@@ -464,6 +459,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 srLayoutMainContentHolder.clearAnimation();
                 AppLogger.d("stop refreshing ui");
             }
+
         }, 1500);
     }
 
@@ -504,10 +500,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         //不使用post,因为会泄露
-        srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
-        Log.d("fetch", "fetch:initSubscription ");
-        if (basePresenter != null)
-            basePresenter.fetchDeviceList(true);
+        if (refreshFinish) {
+            srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
+
+            Log.d("fetch", "fetch:initSubscription ");
+            if (basePresenter != null) {
+                basePresenter.fetchDeviceList(true);
+            }
+        }
+        refreshFinish = false;
     }
 
 

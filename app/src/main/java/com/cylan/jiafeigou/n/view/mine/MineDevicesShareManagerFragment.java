@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -187,7 +188,9 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancleShareProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        if (getFragmentManager() != null) {
+            LoadingDialog.showLoading(getFragmentManager(), ContextUtils.getContext().getString(R.string.LOADING));
+        }
     }
 
     @Override
