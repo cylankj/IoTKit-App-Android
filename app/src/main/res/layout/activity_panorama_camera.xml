@@ -21,7 +21,7 @@
             android:drawablePadding="@dimen/y15"
             android:drawableStart="@drawable/nav_tab_back_selector"
             android:padding="@dimen/y15"
-            android:text="720全景相机"
+            android:text="@string/_720PanoramicCamera"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp16" />
 
@@ -40,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/act_panorama_camera_toolbar"
         android:background="#000000">
@@ -67,7 +66,6 @@
                     android:layout_width="@dimen/y17"
                     android:layout_height="@dimen/y17"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/y16"
                     android:layout_marginStart="@dimen/y16"
                     android:scaleType="fitXY"
                     android:src="@drawable/camera720_icon_wifi" />
@@ -124,11 +122,14 @@
 
                 <TextView
                     android:id="@+id/act_panorama_camera_banner_bad_net_work_configure"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/y15"
                     android:layout_toEndOf="@+id/act_panorama_camera_banner_bad_net_work_caution"
+                    android:layout_toStartOf="@+id/act_panorama_camera_banner_bad_net_work_close"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:text="设备离线,请重新配置连接>>"
                     android:textColor="@color/color_888888"
                     android:textSize="@dimen/sp15" />

@@ -35,6 +35,12 @@ public class ShareDialogFragment extends BaseDialog {
     TextView tvShareToFriends;
     @BindView(R.id.tv_share_to_wechat_friends)
     TextView tvShareToWechat;
+    @BindView(R.id.tv_share_to_tencent_qq)
+    TextView tvShareToQQ;
+    @BindView(R.id.tv_share_to_tencent_qzone)
+    TextView tvShareToQZnoe;
+    @BindView(R.id.tv_share_to_sina_weibo)
+    TextView tvShareToWeibo;
 
     private GlideUrl glideUrl;
     private String mVideoURL;
@@ -119,6 +125,33 @@ public class ShareDialogFragment extends BaseDialog {
                     ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "facebook"));
                     return;
                 }
+                if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToFacebook(getActivity(), mVideoURL, glideUrl);
+                } else if (glideUrl != null) {
+                    ShareUtils.shareToFacebook(getActivity(), glideUrl);
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
+                }
+                break;
+            case R.id.tv_share_to_tencent_qq:
+                if (TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToQQ(getActivity(), mVideoURL);
+                } else if (glideUrl != null) {
+                    ShareUtils.sharePictureToQQ(getActivity(), glideUrl);
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
+                }
+                break;
+            case R.id.tv_share_to_tencent_qzone:
+                if (!TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToQZone(getActivity());
+                } else if (glideUrl != null) {
+                    ShareUtils.shareToFacebook(getActivity(), glideUrl);
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
+                }
+                break;
+            case R.id.tv_share_to_sina_weibo:
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToFacebook(getActivity(), mVideoURL, glideUrl);
                 } else if (glideUrl != null) {

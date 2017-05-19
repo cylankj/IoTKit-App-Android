@@ -101,7 +101,6 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     @Override
     public void bindState(int state) {
         if (state == BindUtils.BIND_FAILED) {//失败
-            //绑定失败
             vsLayoutSwitch.showNext();
 //            customToolbar.setVisibility(View.INVISIBLE);
         } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
@@ -110,14 +109,26 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             progressLoading.setVisibility(View.INVISIBLE);
             if (basePresenter != null)
                 basePresenter.stop();
-            Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
-            SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(bundle);
-            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                    fragment, android.R.id.content);
-            if (basePresenter != null)
-                basePresenter.stop();
+            String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+            AppLogger.e("AAAAAAAAAA" + panoramaConfigure);
+            if (TextUtils.isEmpty(panoramaConfigure)) {
+                Bundle bundle = new Bundle();
+                bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+                SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(bundle);
+                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                        fragment, android.R.id.content);
+            } else {
+                Bundle bundle = new Bundle();
+                customToolbar.setVisibility(View.INVISIBLE);
+                bundle.putString("PanoramaConfigure", panoramaConfigure);
+                bundle.putBoolean("Success", true);
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+                ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
+                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                        newInstance, android.R.id.content);
+            }
+
         } else if (state == BindUtils.BIND_NULL) {
             if (nullCidDialog != null && nullCidDialog.isShowing()) return;
             nullCidDialog = new AlertDialog.Builder(this)
@@ -131,10 +142,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 basePresenter.stop();
         } else {
             AppLogger.d("绑定失败了!!!!!!!!!!!!!");
-            if (vsLayoutSwitch.getDisplayedChild() == 0) {
-                vsLayoutSwitch.showNext();
-//                customToolbar.setVisibility(View.INVISIBLE);
-            }
+            progressLoading.setVisibility(View.INVISIBLE);
+            vsLayoutSwitch.showNext();
         }
     }
 
@@ -157,7 +166,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         } else {
             nextActivity = BindPanoramaCamActivity.class;
         }
-        Intent intent = new Intent(this, nextActivity);
+        Intent intent = getIntent();
+        intent.setClass(this, nextActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

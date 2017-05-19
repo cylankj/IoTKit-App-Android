@@ -193,15 +193,18 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                         if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
                                 getString(R.string.DOG_CAMERA_NAME))) {
                             //is cam
-                            Intent intent = new Intent(this, BindCamActivity.class);
+                            Intent intent = getIntent();// new Intent(this, BindCamActivity.class);
+                            intent.setClass(this, BindCamActivity.class);
                             startActivity(intent);
                         } else if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
                                 getString(R.string.RuiShi_Name))) {
-                            Intent intent = new Intent(this, BindRsCamActivity.class);
+                            Intent intent = getIntent();//new Intent(this, BindRsCamActivity.class);
+                            intent.setClass(this, BindRsCamActivity.class);
                             startActivity(intent);
                         } else {
                             //default bell
-                            Intent intent = new Intent(this, BindBellActivity.class);
+                            Intent intent = getIntent();// new Intent(this, BindBellActivity.class);
+                            intent.setClass(this, BindBellActivity.class);
                             startActivity(intent);
                         }
                     })
@@ -224,9 +227,13 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     if (getIntent() != null && getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
                         finishExt();
                     } else {
-                        Intent intent = new Intent(ConfigWifiActivity.this, BindDeviceActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        if (getIntent().getStringExtra("PanoramaConfigure") != null) {
+                            finishExt();
+                        } else {
+                            Intent intent = new Intent(ConfigWifiActivity.this, BindDeviceActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
                     }
                 })
                 .setCancelable(false)
@@ -295,7 +302,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             if (basePresenter != null) {
                 basePresenter.finish();
             }
-            Intent intent = new Intent(this, SubmitBindingInfoActivity.class);
+            Intent intent = getIntent();// new Intent(this, SubmitBindingInfoActivity.class);
+            intent.setClass(this, SubmitBindingInfoActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
             intent.putExtra(KEY_BIND_DEVICE, getIntent().getStringExtra(KEY_BIND_DEVICE));
             startActivity(intent);

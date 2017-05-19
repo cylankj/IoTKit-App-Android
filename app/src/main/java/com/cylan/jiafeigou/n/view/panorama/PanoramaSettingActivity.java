@@ -2,18 +2,22 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.SettingItemView0;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -28,6 +32,8 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact.Presenter> implements PanoramaSettingContact.View {
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout toolbarContainer;
+    @BindView(R.id.sv_setting_device_detail)
+    SettingItemView0 deviceDetail;
 
 
     @Override
@@ -45,6 +51,13 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     @Override
     protected void setActivityComponent(ActivityComponent activityComponent) {
         activityComponent.inject(this);
+    }
+
+    @Override
+    protected void initViewAndListener() {
+        super.initViewAndListener();
+        Device device = sourceManager.getDevice(uuid);
+        deviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
     }
 
     @Override
@@ -71,6 +84,30 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         AppLogger.d("打开logo 选择页面");
         PanoramaLogoConfigureFragment fragment = PanoramaLogoConfigureFragment.newInstance();
         loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
+    }
+
+    @OnClick(R.id.sv_setting_device_wifi)
+    public void showDeviceFamliySetting() {
+        Device device = sourceManager.getDevice(uuid);
+        if (device == null) {
+            finish();
+            return;
+        }
+        Intent intent = new Intent(this, BindPanoramaCamActivity.class);
+        intent.putExtra("PanoramaConfigure", "Family");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.sv_setting_device_mode)
+    public void showDeviceOutDoorSetting() {
+        Device device = sourceManager.getDevice(uuid);
+        if (device == null) {
+            finish();
+            return;
+        }
+        Intent intent = new Intent(this, BindPanoramaCamActivity.class);
+        intent.putExtra("PanoramaConfigure", "OutDoor");
+        startActivity(intent);
     }
 
     @OnClick(R.id.tv_setting_unbind)

@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.Panoramic720View;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by yanzhendong on 2017/3/15.
@@ -35,6 +37,8 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     RecyclerView logoList;
     @BindView(R.id.fragment_panorama_logo_content_container)
     FrameLayout logoContentContainer;
+    @BindView(R.id.fragment_panorama_logo_toolbar)
+    FrameLayout logoToobarContainer;
     private List<LogoItem> builtInLogo = Arrays.asList(new LogoItem(LOGO_TYPE.LOGO_TYPE_NONE), new LogoItem(LOGO_TYPE.LOGO_TYPE_WHITE), new LogoItem(LOGO_TYPE.LOGO_TYPE_BLACK), new LogoItem(LOGO_TYPE.LOGO_TYPE_CLOVE_DOG));
     private LogoListAdapter logoListAdapter;
     @LOGO_TYPE
@@ -59,6 +63,18 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
         logoListAdapter.setOnItemClickListener(this);
         logoList.setAdapter(logoListAdapter);
         initPanoramaView();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ViewUtils.setViewPaddingStatusBar(logoToobarContainer);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ViewUtils.clearViewPaddingStatusBar(logoToobarContainer);
     }
 
     private void initPanoramaView() {
@@ -97,7 +113,6 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     public void onChangeLogoTypeSuccess(int logtype) {
         currentLogoType = logtype;
         logoListAdapter.notifyItemChanged(currentLogoType);
-        ToastUtil.showPositiveToast("切换成功");
     }
 
     @Override
@@ -150,5 +165,10 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
                 }
             };
         }
+    }
+
+    @OnClick(R.id.tv_top_bar_left)
+    public void clickedTopBackMenu() {
+        getActivity().onBackPressed();
     }
 }

@@ -139,7 +139,6 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .first()
                 .flatMap(s -> Observable.interval(0, 3, TimeUnit.SECONDS))
                 .map(s -> {
-                    sendTimeZone(uuid);
                     ArrayList<JFGDPMsg> params = new ArrayList<>(1);
                     JFGDPMsg msg = new JFGDPMsg(201, 0);
                     params.add(msg);

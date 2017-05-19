@@ -30,6 +30,8 @@ public interface PanoramaCameraContact {
 
     interface View extends PropertyView, ViewableView {
 
+        void onBellBatteryDrainOut();
+
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
         @interface SPEED_MODE {
@@ -105,5 +107,6 @@ public interface PanoramaCameraContact {
 
         void stopVideoRecord(int type);
 
+        boolean isApiAvailable();
     }
 }

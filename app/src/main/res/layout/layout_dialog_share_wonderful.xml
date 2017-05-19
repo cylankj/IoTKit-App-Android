@@ -36,6 +36,42 @@
             android:text="@string/Tap2_Share_Wechat" />
 
         <TextView
+            android:id="@+id/tv_share_to_tencent_qq"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:clickable="true"
+            android:drawablePadding="@dimen/y20"
+            android:drawableStart="@drawable/share_icon_qq"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/y20"
+            android:paddingStart="@dimen/y20"
+            android:text="QQ" />
+
+        <TextView
+            android:id="@+id/tv_share_to_tencent_qzone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:clickable="true"
+            android:drawablePadding="@dimen/y20"
+            android:drawableStart="@drawable/share_icon_qqspace"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/y20"
+            android:paddingStart="@dimen/y20"
+            android:text="@string/Qzone_QQ" />
+
+        <TextView
+            android:id="@+id/tv_share_to_sina_weibo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:clickable="true"
+            android:drawablePadding="@dimen/y20"
+            android:drawableStart="@drawable/share_icon_weibo"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/y20"
+            android:paddingStart="@dimen/y20"
+            android:text="@string/Weibo" />
+
+        <TextView
             android:id="@+id/tv_share_to_twitter_friends"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y48"

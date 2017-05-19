@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -55,6 +56,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     ImageView imgLeftMenu;
     @BindView(R.id.act_panorama_album_lists)
     RecyclerView recyclerView;
+    @BindView(R.id.act_panorama_album_bottom_menu_container)
+    FrameLayout bottomMenuContainer;
+    @BindView(R.id.tv_msg_full_select)
+    TextView selectAll;
+    @BindView(R.id.tv_msg_delete)
+    TextView deleteSelected;
     private RoundRectPopup albumModeSelectPop;
     @ALBUM_VIEW_MODE
     private int albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
@@ -137,7 +144,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-        presenter.fetch(0, albumViewMode);
     }
 
     @Override
@@ -198,16 +204,18 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         }
     }
 
+    @Override
     @OnClick(R.id.act_panorama_album_back)
-    public void clickedTopLeftMenu() {
+    public void onBackPressed() {
         if (!hideAlbumViewModePop() && !isEditMode) {
             super.onBackPressed();
-        } else if (isEditMode) {//删除操作
-            isEditMode = false;
+        } else {
+            bottomMenuContainer.setVisibility(View.INVISIBLE);
+            selectAll.setText(R.string.SELECT_ALL);
+            deleteSelected.setEnabled(false);
             tvAlbumDelete.setText("");
             tvAlbumDelete.setBackgroundResource(R.drawable.album_delete_selector);
-            imgLeftMenu.setImageResource(R.drawable.nav_tab_back_selector);
-            deleteWithAlert(panoramaAdapter.getRemovedList());
+            toggleEditMode(false);
         }
     }
 
@@ -218,15 +226,36 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             //active state
             tvAlbumDelete.setText(getString(R.string.CANCEL));
             tvAlbumDelete.setBackground(new ColorDrawable(0));
-            imgLeftMenu.setImageResource(R.drawable.nav_icon_close_selector);
             toggleEditMode(true);
+            bottomMenuContainer.setVisibility(View.VISIBLE);
         } else {
             //cancel
             tvAlbumDelete.setText("");
             tvAlbumDelete.setBackgroundResource(R.drawable.album_delete_selector);
-            imgLeftMenu.setImageResource(R.drawable.nav_tab_back_selector);
             toggleEditMode(false);
+            bottomMenuContainer.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @OnClick(R.id.tv_msg_full_select)
+    public void selectAll() {
+        if (TextUtils.equals(selectAll.getText(), getString(R.string.SELECT_ALL))) {
+            panoramaAdapter.selectAll(layoutManager.findLastVisibleItemPosition());
+            deleteSelected.setEnabled(true);
+            selectAll.setText(R.string.CANCEL);
+        } else {
+            panoramaAdapter.selectNone(layoutManager.findLastVisibleItemPosition());
+            deleteSelected.setEnabled(false);
+            selectAll.setText(R.string.SELECT_ALL);
+        }
+    }
+
+    @OnClick(R.id.tv_msg_delete)
+    public void deleteSelected() {
+        isEditMode = false;
+        tvAlbumDelete.setText("");
+        tvAlbumDelete.setBackgroundResource(R.drawable.album_delete_selector);
+        deleteWithAlert(panoramaAdapter.getRemovedList());
     }
 
     /**
@@ -254,6 +283,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         PanoramaAlbumContact.PanoramaItem item = panoramaAdapter.getItem(position);
         if (panoramaAdapter.isInEditMode()) {
             panoramaAdapter.reverseItemSelectedState(position);
+            deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size() > 0);
         } else {
             Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item, albumViewMode);
             startActivity(intent);
@@ -281,6 +311,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
                         new AlertDialog.Builder(this)
                                 .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
                                 .setPositiveButton(getString(R.string.OK), (DialogInterface dialog1, int which1) -> {
+                                    bottomMenuContainer.setVisibility(View.INVISIBLE);
                                     presenter.deletePanoramaItem(items, albumViewMode);
                                 })
                                 .setNegativeButton(getString(R.string.CANCEL), null)
@@ -344,20 +375,21 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode) {
-        if (albumViewMode != mode) {
-            presenter.fetch(0, albumViewMode);
-        }
-        albumViewMode = mode;
+        presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
         toolbarAlbumViewMode.setEnabled(mode != 0);
     }
 
     @Override
-    public void onSDCardUnMount() {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.MSG_SD_OFF)
-                .setCancelable(false)
-                .setPositiveButton(R.string.OK, (dialog, which) -> onViewModeChanged(0))
-                .show();
+    public void onSDCardCheckResult(int has_sdcard) {
+        if (has_sdcard == 1) {
+//            presenter.fetch(0, albumViewMode);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.MSG_SD_OFF)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.OK, (dialog, which) -> onViewModeChanged(0))
+                    .show();
+        }
     }
 }

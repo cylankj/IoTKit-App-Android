@@ -87,6 +87,16 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
             AppLogger.d("网络状态发生了变化");
             RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
         }
+        ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getAppComponent().getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        //改变背景或者 处理网络的全局变量
+        boolean avaible = (mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected());
+        RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(avaible);
+        connectionEvent.mobile = mobNetInfo;
+        connectionEvent.wifi = wifiNetInfo;
+        connectionEvent.isOnLine = BaseApplication.isOnline();
+        RxBus.getCacheInstance().post(connectionEvent);
     }
 
     public void init(String uuid) {

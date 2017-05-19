@@ -2,10 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -90,6 +87,15 @@ public class DataSourceManager implements JFGSourceManager {
     private JFGAccount jfgAccount;
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
+    private static DataSourceManager instance;
+
+    public static DataSourceManager getInstance() {
+        return instance;
+    }
+
+    public DataSourceManager() {
+        instance = this;
+    }
 
     public void initFromDB() {//根据需要初始化
         dbHelper.getActiveAccount()
@@ -153,15 +159,6 @@ public class DataSourceManager implements JFGSourceManager {
             account.setOnline(false);
         }
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getAppComponent().getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        //改变背景或者 处理网络的全局变量
-        RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(true);
-        connectionEvent.mobile = mobNetInfo;
-        connectionEvent.wifi = wifiNetInfo;
-        connectionEvent.isOnLine = isOnline;
-        RxBus.getCacheInstance().post(connectionEvent);
     }
 
     @Override

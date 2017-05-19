@@ -1265,7 +1265,9 @@ public class RxEvent {
         public PanoramaApiAvailable(int apiType) {
             this.ApiType = apiType;
         }
+
         public static final PanoramaApiAvailable API_HTTP = new PanoramaApiAvailable(0);
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
+        public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
     }
 }

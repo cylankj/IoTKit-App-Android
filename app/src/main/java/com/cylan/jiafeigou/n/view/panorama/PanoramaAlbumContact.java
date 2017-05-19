@@ -45,7 +45,7 @@ public interface PanoramaAlbumContact {
 
         void onViewModeChanged(int mode);
 
-        void onSDCardUnMount();
+        void onSDCardCheckResult(int has_sdcard);
     }
 
     class PanoramaItem implements Parcelable {
@@ -83,6 +83,10 @@ public interface PanoramaAlbumContact {
 
         public static String getTaskKey(String uuid, String fileName) {
             return uuid + "/images/" + fileName;
+        }
+
+        public static boolean accept(String account, String uuid, String filePath) {
+            return filePath.matches("/" + account + "/" + uuid);
         }
 
         public static String getThumbUrl(String uuid, PanoramaItem item) {

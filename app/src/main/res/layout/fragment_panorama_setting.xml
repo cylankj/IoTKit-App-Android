@@ -56,7 +56,6 @@
             android:layout_marginStart="@dimen/y20"
             android:clickable="true"
             hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_sub_title="Micro SD卡读写失败"
             hunt:sv_title="@string/EQUIPMENT_INFO"
             hunt:sv_v_divider="true" />
 
@@ -96,7 +95,7 @@
                 android:layout_marginStart="@dimen/y20"
                 android:clickable="true"
                 hunt:sv_image_src="@drawable/setting_icon_wifi"
-                hunt:sv_title="@string/WIFI"
+                hunt:sv_title="@string/Tap1_HomeMode"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
@@ -107,7 +106,7 @@
                 android:layout_marginStart="@dimen/y20"
                 android:clickable="true"
                 hunt:sv_image_src="@drawable/setting_icon_ap"
-                hunt:sv_title="户外模式"
+                hunt:sv_title="@string/Tap1_OutdoorMode"
                 hunt:sv_v_divider="false" />
         </LinearLayout>
 

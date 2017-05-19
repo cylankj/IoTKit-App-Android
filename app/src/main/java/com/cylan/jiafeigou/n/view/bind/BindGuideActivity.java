@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,11 +15,11 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -28,7 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
 
 public class BindGuideActivity extends BaseFullScreenFragmentActivity {
@@ -90,14 +90,25 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
 
     private void tryLoadConfigApFragment() {
         final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-        if (info == null || !ApFilter.accept(info.getSSID())) {
+        if (info == null || !ApFilter.accept(info.getSSID()) || NetUtils.getNetType(ContextUtils.getContext()) != ConnectivityManager.TYPE_WIFI) {
             AppLogger.i("bind: " + info);
             return;
         }
-        Intent intent = getIntent();
-        intent.setClass(this, ConfigWifiActivity.class);
-        intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
-        startActivity(intent);
-        finish();
+        if (NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI && ApFilter.isAPMode(info.getSSID(), getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID))) {
+            String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+            Bundle bundle = new Bundle();
+            bundle.putString("PanoramaConfigure", panoramaConfigure);
+            bundle.putBoolean("Success", true);
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+            ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                    newInstance, android.R.id.content);
+        } else {
+            Intent intent = getIntent();
+            intent.setClass(this, ConfigWifiActivity.class);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+            startActivity(intent);
+            finish();
+        }
     }
 }

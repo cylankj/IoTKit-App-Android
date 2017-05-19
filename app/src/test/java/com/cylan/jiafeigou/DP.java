@@ -44,6 +44,16 @@ public class DP {
         public int videoType;// 特征值定义：videoTypeShort =1 8s短视频；videoTypeLong =2长视频；
     }
 
+    public static boolean accept(String account, String uuid, String filePath) {
+        return filePath.matches("/" + account + "/" + uuid);
+    }
+
+    @Test
+    public void ssg() {
+        boolean accept = accept("184", "333", "ehgoh/184/333/jegoh.jph");
+        System.out.println(accept);
+    }
+
     @Test
     public void test() throws IOException {
 //        -110,0,12
@@ -56,14 +66,14 @@ public class DP {
     public void sample() {
         Observable.interval(1, TimeUnit.SECONDS).subscribe(s -> {
             RxBus.getCacheInstance().post("SSSSS" + s);
-        },e->AppLogger.d(e.getMessage()));
+        }, e -> AppLogger.d(e.getMessage()));
 
         RxBus.getCacheInstance().toObservable(String.class)
                 .cache(2)
                 .buffer(2)
                 .subscribe(s -> {
                     System.out.println(s);
-                },e-> AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
         try {
             Thread.sleep(Integer.MAX_VALUE);
         } catch (InterruptedException e) {
@@ -97,9 +107,10 @@ public class DP {
     @Test
     public void sss() {
 
-      new File("/storage","/mnt/sdcard/333.mp4");
-      
+        new File("/storage", "/mnt/sdcard/333.mp4");
+
     }
+
     private String getClientKey(String url) {
         //http://222.222.222.222./
         if (TextUtils.isEmpty(url) && url.contains("/")) {
@@ -107,9 +118,10 @@ public class DP {
         }
         return url;
     }
+
     @Test
-    public void sub(){
-        String ss="eohgoewhgoewhgoewhgoehgoh";
+    public void sub() {
+        String ss = "eohgoewhgoewhgoewhgoehgoh";
         String s = ss.substring(3, ss.length() - 3);
         System.out.println(s);
     }

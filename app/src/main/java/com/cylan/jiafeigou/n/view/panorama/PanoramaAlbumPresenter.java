@@ -52,13 +52,13 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     public void onStart() {
         super.onStart();
+        checkSDCardAndInit();
     }
 
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(monitorPanoramaAPI());
-        registerSubscription(checkSDCardAndInit());
     }
 
     private Subscription monitorPanoramaAPI() {
@@ -71,18 +71,21 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
 
-    private Subscription checkSDCardAndInit() {
-        return BasePanoramaApiHelper.getInstance().getSdInfo()
+    public void checkSDCardAndInit() {
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().getSdInfo()
                 .timeout(10, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret != null && ret.sdIsExist == 0) {//sd 卡不存在
-                        mView.onSDCardUnMount();
+                        mView.onSDCardCheckResult(0);
+                    } else {
+                        mView.onSDCardCheckResult(1);
                     }
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
+        registerSubscription(subscribe);
     }
 
     @Override
@@ -198,7 +201,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         for (DownloadInfo item : items) {
                             int itemTime = parseTime(item.getFileName());
                             if (itemTime >= finalTime) continue;
-                            if (item.getState() == 4 && FileUtils.isFileExist(item.getTargetPath()) && result.size() < 20) {
+                            boolean endsWith = item.getTargetPath().endsWith(sourceManager.getAccount().getAccount() + File.separator + uuid + File.separator + item.getFileName());
+                            if (item.getState() == 4 && FileUtils.isFileExist(item.getTargetPath()) && result.size() < 20 && endsWith) {
                                 panoramaItem = new PanoramaAlbumContact.PanoramaItem(item.getFileName());
                                 panoramaItem.location = 0;
                                 panoramaItem.downloadInfo = item;

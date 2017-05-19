@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +29,10 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.tencent.connect.share.QQShare;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetcomposer.TweetUploadService;
 
@@ -42,6 +47,16 @@ import java.net.URL;
 
 public class ShareUtils {
     private static WeakReference<WechatShare> shareWeakReference = null;
+    private static WeakReference<Tencent> mTencent;
+
+
+    public static boolean isQQInstalled() {
+        return true;
+    }
+
+    public static boolean isWeiBoInstalled() {
+        return true;
+    }
 
     public static void sharePictureToWechat(Activity activity, GlideUrl glideUrl, final int type) {
         if (shareWeakReference == null || shareWeakReference.get() == null)
@@ -266,6 +281,80 @@ public class ShareUtils {
         } else {
             ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
         }
+    }
+
+    public static void sharePictureToQQ(Activity activity, GlideUrl glideUrl) {
+        if (mTencent == null || mTencent.get() == null) {
+            String APP_KEY = PackageUtils.getMetaString(activity, "qqAppKey");
+            mTencent = new WeakReference<>(Tencent.createInstance(APP_KEY, activity));
+        }
+        Glide.with(activity)
+                .load(glideUrl)
+                .downloadOnly(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, resource.getAbsolutePath());
+                        mTencent.get().shareToQQ(activity, bundle, new IUiListener() {
+                            @Override
+                            public void onComplete(Object o) {
+                                ToastUtil.showPositiveToast("分享成功");
+                            }
+
+                            @Override
+                            public void onError(UiError uiError) {
+                                ToastUtil.showNegativeToast("分享失败");
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                ToastUtil.showNegativeToast("分享取消");
+                            }
+                        });
+                    }
+                });
+
+    }
+
+    public static void shareVideoToQQ(Activity activity, String h5) {
+        if (mTencent == null || mTencent.get() == null) {
+            String APP_KEY = PackageUtils.getMetaString(activity, "qqAppKey");
+            mTencent = new WeakReference<>(Tencent.createInstance(APP_KEY, activity));
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(QQShare.SHARE_TO_QQ_TARGET_URL, h5);
+        mTencent.get().shareToQQ(activity, bundle, new IUiListener() {
+            @Override
+            public void onComplete(Object o) {
+                ToastUtil.showPositiveToast("分享成功");
+            }
+
+            @Override
+            public void onError(UiError uiError) {
+                ToastUtil.showNegativeToast("分享失败");
+            }
+
+            @Override
+            public void onCancel() {
+                ToastUtil.showNegativeToast("分享取消");
+            }
+        });
+    }
+
+    public static void sharePictureToQZone(Activity activity) {
+
+    }
+
+    public static void shareVideoToQZone(Activity activity) {
+
+    }
+
+    public static void sharePictureToWeiBo(Activity activity) {
+
+    }
+
+    public static void shareVideoToWeibo(Activity activity) {
+
     }
 
 

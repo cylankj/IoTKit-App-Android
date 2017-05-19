@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true">
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
+    <FrameLayout
         android:id="@+id/fragment_panorama_logo_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:ct_background_color="@color/color_0ba8cf"
-        app:ct_enable_theme="true"
-        app:ct_fit_system_window="true"
-        app:ct_icon="@drawable/nav_tab_back_selector"
-        app:ct_left_title="LOGO设置"
-        app:ct_left_title_color="@color/color_white" />
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
+
+        <Button
+            android:id="@+id/tv_top_bar_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawablePadding="@dimen/y15"
+            android:drawableStart="@drawable/nav_tab_back_selector"
+            android:padding="@dimen/y15"
+            android:text="LOGO设置"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp16" />
+    </FrameLayout>
 
 
     <FrameLayout

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
@@ -22,12 +23,17 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic720View;
 import com.cylan.player.JFGPlayer;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -46,7 +52,7 @@ import butterknife.OnClick;
  * Created by yanzhendong on 2017/3/16.
  */
 
-public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.Presenter> implements JFGPlayer.JFGPlayerCallback, PanoramaDetailContact.View {
+public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.Presenter> implements JFGPlayer.JFGPlayerCallback, PanoramaDetailContact.View, CommonPanoramicView.PanoramaEventListener {
 
     @BindView(R.id.act_panorama_detail_content_container)
     FrameLayout panoramaContentContainer;
@@ -84,6 +90,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private TextView download;
     private int mode;
     private View deleted;
+    private ShareDialogFragment shareDialogFragment;
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -136,6 +143,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         panoramicView720Ext.setLayoutParams(params);
         panoramaContentContainer.addView(panoramicView720Ext);
+        panoramicView720Ext.setEventListener(this);
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
     }
 
@@ -245,11 +253,29 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         }
     }
 
+    @OnClick({R.id.act_panorama_detail_bottom_video_menu_photograph, R.id.act_panorama_detail_bottom_picture_menu_photograph})
+    public void screenShot() {
+        if (panoramicView720Ext != null) {
+            panoramicView720Ext.takeSnapshot(true);
+        }
+    }
+
     @OnClick(R.id.act_panorama_detail_toolbar_share)
     public void clickedShare() {
         AppLogger.d("点击的分享菜单");
-        PopupWindow sharePopMenu = new PopupWindow(this);
+        if (!NetUtils.isNetworkAvailable(this)) {
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+        } else if (panoramaItem.duration > 8) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap1_Share_NoLonger8STips));
+        } else {
+            if (shareDialogFragment == null) {
+                shareDialogFragment = ShareDialogFragment.newInstance();
+            }
+            if (panoramaItem.type == 0) {
+             shareDialogFragment.setPictureURL(new PanoramaThumbURL(uuid,panoramaItem.fileName));
+            }
 
+        }
     }
 
     @OnClick(R.id.act_panorama_detail_toolbar_more)
@@ -279,6 +305,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 download.setText(R.string.FINISHED);
             } else {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");
+                downloadInfo.setListener(listener);
             }
             morePopMenu.showAtLocation(topMenuMore, Gravity.RIGHT | Gravity.TOP, getResources().getDimensionPixelOffset(R.dimen.y15), getResources().getDimensionPixelOffset(R.dimen.y30));
         }
@@ -373,5 +400,16 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             ToastUtil.showNegativeToast("本地已删除,设备端删除失败");
         }
         finish();
+    }
+
+    @Override
+    public void onSingleTap(float v, float v1) {
+
+    }
+
+    @Override
+    public void onSnapshot(Bitmap bitmap, boolean b) {
+        BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + "/" + System.currentTimeMillis() / 1000 + ".jpg");
+        ToastUtil.showPositiveToast("截图成功");
     }
 }

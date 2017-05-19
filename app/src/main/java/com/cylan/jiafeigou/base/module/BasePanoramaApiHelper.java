@@ -5,6 +5,9 @@ import android.graphics.drawable.Drawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -56,14 +59,21 @@ public class BasePanoramaApiHelper {
                             httpApi = retrofit.create(IHttpApi.class);
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
                         } else {
-                            forwardHelper = BaseForwardHelper.getInstance();
-                            deviceInformation = null;
-                            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+                            JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+                            Device device = sourceManager.getDevice(uuid);
+                            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+                            if (net.net > 0) {
+                                forwardHelper = BaseForwardHelper.getInstance();
+                                deviceInformation = null;
+                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+                            } else {
+                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
+                            }
                         }
                     } else {
                         httpApi = null;
                         deviceInformation = null;
-                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);//扫描开始了
                     }
                 }, AppLogger::e);
     }
@@ -113,10 +123,7 @@ public class BasePanoramaApiHelper {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
                 .filter(panoramaApiAvailable -> {
                     AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
-                    if (panoramaApiAvailable.ApiType == 1 && !BaseApplication.isOnline()) {
-                        return false;
-                    }
-                    return true;
+                    return panoramaApiAvailable.ApiType >= 0;
                 })
                 .first()
                 .observeOn(Schedulers.io());
