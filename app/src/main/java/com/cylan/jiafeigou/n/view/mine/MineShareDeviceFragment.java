@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
@@ -60,7 +61,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private MineShareDeviceContract.Presenter presenter;
     private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
     private MineShareToFriendFragment shareToRelativeAndFriendFragment;
-    private AlertDialog alertDialog;
     private MineShareDeviceAdapter adapter;
     private DeviceBean whichClick;
     private int position;
@@ -111,7 +111,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     public void showShareDialog(final int layoutPosition, final DeviceBean item) {
         whichClick = item;
         position = layoutPosition;
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +120,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_wechat_friends));
                 AppLogger.e("tv_share_to_friends");
                 jump2ShareToFriendFragment(layoutPosition, item);
-                alertDialog.dismiss();
             }
         });
         view.findViewById(R.id.tv_share_to_contract).setOnClickListener(new View.OnClickListener() {
@@ -130,12 +129,10 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
                 AppLogger.d("tv_share_to_contract");
                 MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(MineShareDeviceFragment.this);
-                alertDialog.dismiss();
             }
         });
         builder.setView(view);
-        alertDialog = builder.create();
-        alertDialog.show();
+        AlertDialogManager.getInstance().showDialog("showShareDialog", getActivity(), builder);
     }
 
     /**
@@ -316,16 +313,15 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     public void setPermissionDialog(String permission) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "", permission))
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        builder.setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
-                })
-                .create()
-                .show();
+                });
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

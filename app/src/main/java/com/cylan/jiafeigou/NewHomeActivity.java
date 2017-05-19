@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
@@ -235,7 +236,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
                     startActivity(i);
-                }, getString(R.string.CANCEL), null);
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override

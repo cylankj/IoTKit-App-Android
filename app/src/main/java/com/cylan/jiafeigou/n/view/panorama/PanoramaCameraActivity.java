@@ -38,6 +38,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.view.bell.LBatteryWarnDialog;
@@ -307,14 +308,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑" + uuid);
         presenter.cancelViewer();
-        new AlertDialog.Builder(this).setCancelable(false)
-                .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
-                    finish();
-                    Intent intent = new Intent(this, NewHomeActivity.class);
-                    startActivity(intent);
-                })
-                .setMessage(getString(R.string.Tap1_device_deleted))
-                .show();
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivityContext());
+        builder.setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+            finish();
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            startActivity(intent);
+        })
+                .setMessage(getString(R.string.Tap1_device_deleted));
+        AlertDialogManager.getInstance().showDialog("onDeviceUnBind", this, builder);
     }
 
     @Override

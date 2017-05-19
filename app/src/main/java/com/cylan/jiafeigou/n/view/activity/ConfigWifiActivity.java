@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +19,7 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
@@ -67,7 +67,6 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     ViewSwitcher vsShowContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private AlertDialog reBingDialog;
 
     private List<ScanResult> cacheList;
 
@@ -185,45 +184,32 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     private void createDialog() {
-        if (reBingDialog == null) {
-            reBingDialog = new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.Tap1_AddDevice_disconnected))
-                    .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
-                        basePresenter.finish();
-                        if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
-                                getString(R.string.DOG_CAMERA_NAME))) {
-                            //is cam
-                            Intent intent = getIntent();// new Intent(this, BindCamActivity.class);
-                            intent.setClass(this, BindCamActivity.class);
-                            startActivity(intent);
-                        } else if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
-                                getString(R.string.RuiShi_Name))) {
-                            Intent intent = getIntent();//new Intent(this, BindRsCamActivity.class);
-                            intent.setClass(this, BindRsCamActivity.class);
-                            startActivity(intent);
-                        } else {
-                            //default bell
-                            Intent intent = getIntent();// new Intent(this, BindBellActivity.class);
-                            intent.setClass(this, BindBellActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .create();
-        }
-        if (reBingDialog.isShowing()) return;
-        reBingDialog.show();
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_disconnected), getString(R.string.Tap1_AddDevice_disconnected),
+                getString(R.string.OK), (dialog, which) -> {
+                    basePresenter.finish();
+                    if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
+                            getString(R.string.DOG_CAMERA_NAME))) {
+                        //is cam
+                        Intent intent = new Intent(this, BindCamActivity.class);
+                        startActivity(intent);
+                    } else if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
+                            getString(R.string.RuiShi_Name))) {
+                        Intent intent = new Intent(this, BindRsCamActivity.class);
+                        startActivity(intent);
+                    } else {
+                        //default bell
+                        Intent intent = new Intent(this, BindBellActivity.class);
+                        startActivity(intent);
+                    }
+                }, false);
     }
 
-    private AlertDialog backDialog;
 
     @Override
     public void onBackPressed() {
         IMEUtils.hide(this);
-        if (backDialog != null && backDialog.isShowing()) return;
-        if (backDialog == null) backDialog = new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.Tap1_AddDevice_tips))
-                .setNegativeButton(getString(R.string.CANCEL), null)
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     if (getIntent() != null && getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
                         finishExt();
                     } else {
@@ -235,10 +221,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                             startActivity(intent);
                         }
                     }
-                })
-                .setCancelable(false)
-                .create();
-        backDialog.show();
+                }, getString(R.string.CANCEL), null, false);
     }
 
 
@@ -258,12 +241,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         }
 //            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         else {
-            dismissDialog();
+            AlertDialogManager.getInstance().dismissOtherDialog(getString(R.string.Tap1_AddDevice_disconnected));
         }
-    }
-
-    private void dismissDialog() {
-        if (reBingDialog != null && reBingDialog.isShowing()) reBingDialog.dismiss();
     }
 
     @Override

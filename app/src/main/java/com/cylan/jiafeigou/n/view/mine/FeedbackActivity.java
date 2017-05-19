@@ -71,6 +71,10 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
         ButterKnife.bind(this);
         basePresenter = new HomeMineHelpSuggestionImpl(this);
         initKeyBoard();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRvMineSuggestion.setLayoutManager(layoutManager);
+        suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), null, null);
+        mRvMineSuggestion.setAdapter(suggestionAdapter);
     }
 
     @Override
@@ -155,7 +159,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
         String time = System.currentTimeMillis() + "";
         suggestionBean.setDate(time);
 
-        if (suggestionAdapter.getItemCount() == 0 || suggestionAdapter.getItemCount() == 1) {
+        if (suggestionAdapter == null || suggestionAdapter.getItemCount() == 0 || suggestionAdapter.getItemCount() == 1) {
             suggestionBean.isShowTime = true;
         } else {
             if (presenter.checkOver20Min(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
@@ -280,10 +284,8 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
         for (MineHelpSuggestionBean bean : list) {
             if (bean.pro_falag == 0) bean.pro_falag = 2;
         }
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRvMineSuggestion.setLayoutManager(layoutManager);
-        suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);
-        mRvMineSuggestion.setAdapter(suggestionAdapter);
+        suggestionAdapter.clear();
+        suggestionAdapter.addAll(list);
         //从最后一行显示
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
 
@@ -297,7 +299,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
     }
 
     private void showResendFeedBackDialog(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {
-        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(getString(R.string.ANEW_SEND));
         b.setNegativeButton(getString(R.string.Button_No), (DialogInterface dialog, int which) -> {
             dialog.dismiss();
@@ -311,7 +313,8 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
             presenter.update(item);
             presenter.sendFeedBack(item);
             dialog.dismiss();
-        }).show();
+        });
+        AlertDialogManager.getInstance().showDialog("showResendFeedBackDialog", this, b);
     }
 
     @Override

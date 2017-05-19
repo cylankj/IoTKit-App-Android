@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,19 +11,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
 import com.cylan.jiafeigou.n.view.mine.WebsiteFragement;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -141,16 +140,15 @@ public class AboutFragment extends Fragment {
     }
 
     public void setPermissionDialog(String permission) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, permission))
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        builder.setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
-                })
-                .create()
-                .show();
+                });
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

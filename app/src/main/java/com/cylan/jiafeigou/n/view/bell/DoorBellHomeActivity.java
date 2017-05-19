@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -41,7 +40,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
@@ -359,14 +357,12 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑");
-        new AlertDialog.Builder(this).setCancelable(false)
-                .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
+                getString(R.string.OK), (dialog, which) -> {
                     finish();
                     Intent intent = new Intent(this, NewHomeActivity.class);
                     startActivity(intent);
-                })
-                .setMessage(getString(R.string.Tap1_device_deleted))
-                .show();
+                }, false);
     }
 
     @Override
@@ -401,9 +397,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 break;
             case R.id.tv_bell_home_list_delete:
                 ViewUtils.deBounceClick(view);
-                new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.DOOR_COMFIRETOCLEAR))
-                        .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.DOOR_COMFIRETOCLEAR), getString(R.string.DOOR_COMFIRETOCLEAR),
+                        getString(R.string.OK), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
@@ -412,9 +407,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                                 showEditBar(false);
                                 LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
                             }
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), null)
-                        .create().show();
+                        }, getString(R.string.CANCEL), null, false);
                 break;
         }
     }

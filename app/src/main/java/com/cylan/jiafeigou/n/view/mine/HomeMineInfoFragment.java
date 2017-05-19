@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
@@ -712,16 +713,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     public void setPermissionDialog(String permission) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, permission))
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        builder.setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
-                })
-                .create()
-                .show();
+                });
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

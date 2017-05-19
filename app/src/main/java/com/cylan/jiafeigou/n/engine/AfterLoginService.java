@@ -156,7 +156,7 @@ public class AfterLoginService extends IntentService {
         }
     }
 
-    private void checkRsp(RxEvent.ClientCheckVersion clientCheckVersion) {
+    private void checkRsp(final RxEvent.ClientCheckVersion clientCheckVersion) {
         AppLogger.d("check_version result: " + clientCheckVersion);
 //                                    clientCheckVersion.result = "VRJz6f";
 //                                    2iYjQr
@@ -177,12 +177,12 @@ public class AfterLoginService extends IntentService {
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        dealClient(response);
+                        dealClient(response, clientCheckVersion);
                     }
                 });
     }
 
-    private void dealClient(Response response) {
+    private void dealClient(Response response, RxEvent.ClientCheckVersion clientCheckVersion) {
         //不需要那么频繁地检查.
         try {
             String result = response.body().string();
@@ -205,6 +205,7 @@ public class AfterLoginService extends IntentService {
             }
             RxEvent.CheckVersionRsp rsp = new RxEvent.CheckVersionRsp(true,
                     url, versionName, desc, "");
+            rsp.forceUpdate = clientCheckVersion.forceUpgrade;
             rsp.fileDir = JConstant.MISC_PATH;
             rsp.fileSize = getFileSizeFromUrl(url);
             rsp.fileName = versionName + ".apk";
@@ -216,7 +217,7 @@ public class AfterLoginService extends IntentService {
                 AppLogger.d("文件已经下载好");
                 rsp.downloadState = JConstant.D.SUCCESS;
                 PreferencesUtils.putString(JConstant.KEY_CLIENT_UPDATE_DESC, new Gson().toJson(rsp));
-                RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(rsp.fileDir + File.separator + rsp.fileName));
+                RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(rsp.fileDir + File.separator + rsp.fileName).setRsp(rsp));
                 return;
             }
             ClientUpdateManager.getInstance().downLoadFile(rsp, new ClientUpdateManager.DownloadListener() {

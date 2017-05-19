@@ -105,6 +105,8 @@ public interface CamLiveContract {
                            boolean micEnable,
                            boolean captureOn,
                            boolean captureEnable);
+
+        void onAudioPermissionCheck();
     }
 
     interface Presenter extends BasePresenter {
@@ -231,6 +233,8 @@ public interface CamLiveContract {
         void saveHotSeatState();
 
         void restoreHotSeatState();
+
+        boolean isDeviceStandby();
     }
 
     class LiveStream {

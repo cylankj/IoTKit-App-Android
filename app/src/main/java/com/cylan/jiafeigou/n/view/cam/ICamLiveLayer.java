@@ -90,7 +90,7 @@ public interface ICamLiveLayer {
                          boolean speakerEnable,
                          boolean mic,
                          boolean micEnable,
-                         boolean capture,boolean captureEnable);
+                         boolean capture, boolean captureEnable);
 
     void setHotSeatListener(View.OnClickListener micListener,
                             View.OnClickListener speakerListener,

@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
@@ -203,12 +204,11 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showShareDeviceDialog(final String account) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setTitle(getString(R.string.Tap3_ShareDevice));
         builder.setPositiveButton(getString(R.string.Button_Sure), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
                 showShareingProHint();
                 changeShareingProHint("loading");
                 if (getView() != null && presenter != null) {
@@ -227,7 +227,8 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
-        }).show();
+        });
+        AlertDialogManager.getInstance().showDialog("showShareDeviceDialog", getActivity(), builder);
     }
 
     @Override

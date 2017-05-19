@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
@@ -49,7 +50,17 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
+                checkNetSub(),
         };
+    }
+
+    private Subscription checkNetSub() {
+        return Observable.interval(2, TimeUnit.SECONDS)
+                .observeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .subscribe(ret ->
+                        mView.onNetworkChanged(BaseApplication.getAppComponent().getSourceManager().isOnline()), AppLogger::e);
     }
 
     private Subscription getShareDevicesListRsp() {
@@ -233,15 +244,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     protected String[] registerNetworkAction() {
-        return new String[]{WifiManager.NETWORK_STATE_CHANGED_ACTION};
+        return new String[]{WifiManager.NETWORK_STATE_CHANGED_ACTION, ConnectivityManager.CONNECTIVITY_ACTION};
     }
 
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         String action = intent.getAction();
         if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
-            NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            updateConnectInfo(info);
+//            NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+            updateConnectInfo(null);
         }
     }
 
@@ -252,9 +263,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private void updateConnectInfo(NetworkInfo networkInfo) {
         Observable.just(networkInfo)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(ret -> Observable.just(BaseApplication.getAppComponent().getSourceManager().isOnline()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
-                .subscribe((NetworkInfo info) -> getView().onNetworkChanged(NetUtils.getJfgNetType() != 0), AppLogger::e);
+                .subscribe(ret -> getView().onNetworkChanged(ret), AppLogger::e);
     }
 
     private static final class InternalHelp {

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,6 +36,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -64,6 +67,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
@@ -114,7 +118,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     /**
      * 设备的时区
      */
-    private TimeZone mDeviceTimezone;
+//    private TimeZone mDeviceTimezone;
+    private SimpleDateFormat liveTimeDateFormat;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -215,11 +220,57 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
         liveViewWithThumbnail.setLiveView(videoView);
+        initSightSetting(presenter);
         //分享用户不显示
         boolean showFlip = !presenter.isShareDevice();
         findViewById(R.id.layout_port_flip).setVisibility(showFlip ? VISIBLE : INVISIBLE);
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
+    }
+
+    public boolean isSightSettingShow() {
+        return isSightSettingShow;
+    }
+
+    private boolean isSightSettingShow = false;
+
+    /**
+     * 全景视角设置
+     */
+    private void initSightSetting(CamLiveContract.Presenter basePresenter) {
+        if (isNormalView || basePresenter.isShareDevice()) return;
+        String uuid = basePresenter.getUuid();
+        boolean isFirstShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
+        if (!isFirstShow) return;//不是第一次
+        View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
+        if (oldLayout == null) {
+            isSightSettingShow = true;
+            layoutC.setVisibility(INVISIBLE);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
+            liveViewWithThumbnail.addView(view);//最顶
+            View layout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
+            ((TextView) (view.findViewById(R.id.tv_sight_setting_content)))
+                    .setText(getContext().getString(R.string.Tap1_Camera_Overlook) + ": "
+                            + getContext().getString(R.string.Tap1_Camera_OverlookTips));
+            view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
+                if (layout != null) liveViewWithThumbnail.removeView(layout);
+                basePresenter.startPlay();
+                isSightSettingShow = false;
+            });
+            layout.setOnClickListener(v -> AppLogger.d("don't click me"));
+            view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
+                liveViewWithThumbnail.removeView(layout);
+                Intent intent = new Intent(getContext(), SightSettingActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                getContext().startActivity(intent);
+                isSightSettingShow = false;
+            });
+            PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+        } else {
+            //已经添加了
+            oldLayout.setVisibility(View.VISIBLE);
+            layoutC.setVisibility(INVISIBLE);
+        }
     }
 
     /**
@@ -485,6 +536,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * @param errCode
      */
     private void handlePlayErr(CamLiveContract.Presenter presenter, int errCode) {
+        if (presenter.isDeviceStandby()) return;
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -689,23 +741,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
 
     private void setLiveRectTime(int type, long timestamp) {
-        //需要考虑设备的时区.他娘的.
-        if (mDeviceTimezone == null) {
-            mDeviceTimezone = TimeZone.getDefault();
-        }
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         if (timestamp == 0) timestamp = System.currentTimeMillis() / 1000;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", getTime(mDeviceTimezone, timestamp * 1000L));
+                + "|%s", getTime(timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
     }
 
-    private String getTime(TimeZone timeZone, long time) {
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
-        format.setTimeZone(timeZone);
-        return format.format(new Date(time));
+    private String getTime(long time) {
+        return liveTimeDateFormat.format(new Date(time));
     }
 
     public void setFlipListener(FlipImageView.OnFlipListener flipListener) {
@@ -802,10 +848,18 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 roundCardPopup.dismiss();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//                if (isNormalView) {
                 NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
                 ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment,
                         android.R.id.content);
                 fragment.setCallBack(t -> activity.getSupportFragmentManager().popBackStack());
+//                } else {
+//                    PanoramicViewFragment fragment = PanoramicViewFragment.newInstance(bundle);
+//                    ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment,
+//                            android.R.id.content);
+//                    fragment.setCallBack(t -> activity.getSupportFragmentManager().popBackStack());
+//                }
             });
             roundCardPopup.setAutoDismissTime(5 * 1000L);
             roundCardPopup.showOnAnchor(findViewById(R.id.imgV_cam_trigger_capture), RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
@@ -843,8 +897,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
         } else
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
-        mDeviceTimezone = JFGRules.getDeviceTimezone(device);
-        AppLogger.d("得到设备时区:" + mDeviceTimezone.getID());
+        TimeZone timeZone = JFGRules.getDeviceTimezone(device);
+        liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+        liveTimeDateFormat.setTimeZone(timeZone);
+        AppLogger.d("得到设备时区:" + timeZone.getID());
     }
 
     @Override

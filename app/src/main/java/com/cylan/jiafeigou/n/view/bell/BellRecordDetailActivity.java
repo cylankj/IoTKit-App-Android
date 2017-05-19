@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -34,6 +33,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
@@ -313,20 +313,17 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     }
 
     private void alertOver50() {
-        new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setMessage(getString(R.string.DailyGreatTips_Full))
-                .setPositiveButton(R.string.OK, (dialog, which) -> {
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.DailyGreatTips_Full), getString(R.string.DailyGreatTips_Full),
+                getString(R.string.OK), (dialog, which) -> {
                     dialog.dismiss();
                     finishExt();
                     RxBus.getCacheInstance().post(new RxEvent.ShowWonderPageEvent());
                     Intent intent = new Intent(BellRecordDetailActivity.this, NewHomeActivity.class);
                     startActivity(intent);
-                })
-                .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
+                }, getString(R.string.CANCEL), (dialog, which) -> {
                     dialog.dismiss();
                     finishExt();
-                }).show();
+                });
     }
 
     @Override

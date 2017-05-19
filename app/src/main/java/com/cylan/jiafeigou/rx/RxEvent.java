@@ -98,39 +98,39 @@ public class RxEvent {
         public static final int JFG_RESULT_SET_FRIEND_MARKNAME = 8;
     }
 
-//    /**
-//     * The type Sms code result.
-//     */
-//    public static class SmsCodeResult {
-//
-//        /**
-//         * The Error.
-//         */
-//        public int error;
-//        /**
-//         * The Token.
-//         */
-//        public String token;
-//
-//        /**
-//         * Instantiates a new Sms code result.
-//         *
-//         * @param error the error
-//         * @param token the token
-//         */
-//        public SmsCodeResult(int error, String token) {
-//            this.error = error;
-//            this.token = token;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return "SmsCodeResult{" +
-//                    "error=" + error +
-//                    ", token='" + token + '\'' +
-//                    '}';
-//        }
-//    }
+    /**
+     * The type Sms code result.
+     */
+    public static class SmsCodeResult {
+
+        /**
+         * The Error.
+         */
+        public int error;
+        /**
+         * The Token.
+         */
+        public String token;
+
+        /**
+         * Instantiates a new Sms code result.
+         *
+         * @param error the error
+         * @param token the token
+         */
+        public SmsCodeResult(int error, String token) {
+            this.error = error;
+            this.token = token;
+        }
+
+        @Override
+        public String toString() {
+            return "SmsCodeResult{" +
+                    "error=" + error +
+                    ", token='" + token + '\'' +
+                    '}';
+        }
+    }
 
     /**
      * {@link com.cylan.jfgapp.jni.JfgAppCallBack#OnSendSMSResult(int, String)}
@@ -756,6 +756,7 @@ public class RxEvent {
     public static class CheckVersionRsp implements Parcelable {
         public long seq;
         public boolean hasNew;
+        public int forceUpdate;
         public long fileSize;
         public int downloadState;
         public long lastUpdateTime;
@@ -1242,9 +1243,15 @@ public class RxEvent {
 
     public static class ApkDownload {
         public String filePath;
+        public RxEvent.CheckVersionRsp rsp;
 
         public ApkDownload(String filePath) {
             this.filePath = filePath;
+        }
+
+        public ApkDownload setRsp(RxEvent.CheckVersionRsp rsp) {
+            this.rsp = rsp;
+            return this;
         }
     }
 

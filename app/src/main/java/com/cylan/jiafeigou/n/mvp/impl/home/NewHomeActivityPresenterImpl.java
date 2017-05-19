@@ -36,10 +36,13 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     long time = PreferencesUtils.getLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG);
-                    if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
-                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);
+                    boolean force = ret.rsp != null && ret.rsp.forceUpdate == 1;//强制升级
+                    if (force || time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         PreferencesUtils.putLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG, System.currentTimeMillis());
                         mView.needUpdate("", ret.filePath);
+                    }
+                    if (!force) {
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);
                     }
                 }, throwable -> {
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));

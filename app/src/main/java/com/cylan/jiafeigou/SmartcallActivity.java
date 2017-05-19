@@ -9,10 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -28,6 +31,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,6 +92,23 @@ public class SmartcallActivity extends NeedLoginActivity
         presenter = new SmartCallPresenterImpl(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        View view = findViewById(R.id.welcome_frame_container);
+        if (view != null) {
+            View beforeLoginLayout = ((ViewGroup) view).getChildAt(0);
+            //此处逻辑和GuideFragment有关
+            if (beforeLoginLayout != null
+                    && beforeLoginLayout.getId() == R.id.rLayout_before_login
+                    && ((ViewGroup) view).getChildCount() == 1) {
+                //只有 beforeLoginFragment页面
+                finish();
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+    }
+
     /**
      * 引导页
      */
@@ -138,8 +159,8 @@ public class SmartcallActivity extends NeedLoginActivity
 
     private void pswChanged() {
         PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, false);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setMessage(R.string.PWD_CHANGED)
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(this);
+        builder.setMessage(R.string.PWD_CHANGED)
                 .setTitle(R.string.LOGIN_ERR)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     Bundle bundle = new Bundle();
@@ -152,7 +173,7 @@ public class SmartcallActivity extends NeedLoginActivity
                     getSupportFragmentManager().beginTransaction().show(loginFragment)
                             .commitAllowingStateLoss();
                 });
-        builder.show();
+        AlertDialogManager.getInstance().showDialog(getString(R.string.PWD_CHANGED), this, builder);
     }
 
     private boolean isFirstUseApp() {
@@ -166,7 +187,7 @@ public class SmartcallActivity extends NeedLoginActivity
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (grantResults[0] == -1) {
-                    finish();
+                    ToastUtil.showToast(getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)));
                     return;
                 }
                 SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);

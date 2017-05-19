@@ -33,12 +33,12 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     }
 
     public void autoLogin() {
-        BaseApplication.getAppComponent().getInitializationManager().observeInitFinish();
         Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
                 .first()
                 .observeOn(Schedulers.io())
                 .subscribe(event -> AutoSignIn.getInstance().autoLogin(), AppLogger::e);
         addSubscription(subscribe);
+        BaseApplication.getAppComponent().getInitializationManager().observeInitFinish();
     }
 
     public void selectNext(boolean showSplash) {

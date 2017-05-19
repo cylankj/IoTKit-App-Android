@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -39,6 +38,7 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
@@ -513,14 +513,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑");
         presenter.cancelViewer();
-        new AlertDialog.Builder(this).setCancelable(false)
-                .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
+                getString(R.string.OK), (dialog, which) -> {
                     finish();
                     Intent intent = new Intent(this, NewHomeActivity.class);
                     startActivity(intent);
-                })
-                .setMessage(getString(R.string.Tap1_device_deleted))
-                .show();
+                }, false);
     }
 
     @Override

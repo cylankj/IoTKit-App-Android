@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -66,6 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -320,6 +322,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return JFGRules.isShareDevice(uuid);
     }
 
+    @Override
+    public boolean isDeviceStandby() {
+        DpMsgDefine.DPStandby standby = getDevice().$(508, new DpMsgDefine.DPStandby());
+        return standby.standby;
+    }
 
     @Override
     public void startPlay() {
@@ -330,11 +337,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return;
         }
         mView.onLivePrepare(getLiveStream().type);
-        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(net)) {
-            updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
-            mView.onLiveStop(getLiveStream().type, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
-            return;
+        boolean sdkOnlineStatus = BaseApplication.getAppComponent().getSourceManager().isOnline();
+        if (!sdkOnlineStatus) {
+            String routeMac = NetUtils.getRouterMacAddress();
+            String deviceMac = getDevice().$(202, "");
+            boolean AP = !TextUtils.isEmpty(routeMac) && TextUtils.equals(deviceMac, routeMac);
+            AppLogger.d("直连Ap?" + AP);
         }
         addSubscription(beforePlayObservable(s -> {
             try {
@@ -494,6 +502,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return Observable.just("")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(o -> {
+                    DpMsgDefine.DPStandby dpStandby = getDevice().$(508, new DpMsgDefine.DPStandby());
+                    if (dpStandby.standby) return false;//待机模式
                     if (NetUtils.getJfgNetType() == 0) {
                         //客户端断网了
                         stopPlayVideo(ERR_NETWORK).subscribe(ret -> {
@@ -1053,13 +1063,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                         setupRemoteAudio(micOn, true, true, micOn);
                                     }
                                     boolean result = setupLocalAudio(micOn, speakerOn, speakerOn, micOn);
-                                    if (result) {
-                                        dump("restore");
+                                    dump("restore?" + result);
+                                    if (result || (!micOn && !speakerOn)) {
                                         viewWeakReference.get().switchHotSeat(speakerOn,
                                                 !micOn,
                                                 micOn,
                                                 playType == TYPE_LIVE,
                                                 captureOn, true);
+                                    }
+                                    if (!result) {
+                                        viewWeakReference.get().onAudioPermissionCheck();
                                     }
                                 },
                                 AppLogger::e);
@@ -1150,8 +1163,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
 
         private void setupRemoteAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
-            BaseApplication.getAppComponent().getCmd().setAudio(true, remoteMic, localSpeaker);
-            AppLogger.d(String.format(Locale.getDefault(), "remoteMic:%s,remoteSpeaker:%s", remoteMic, remoteSpeaker));
+            BaseApplication.getAppComponent().getCmd().setAudio(false, localSpeaker, localMic);
+            AppLogger.d(String.format(Locale.getDefault(), "remoteMic:%s,remoteSpeaker:%s", localSpeaker, localMic));
         }
 
         private boolean setupLocalAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
@@ -1174,8 +1187,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     });
                     return false;
                 }
+            } else {
+                if (!PermissionUtils.hasSelfPermissions(viewWeakReference.get().getContext(), Manifest.permission.RECORD_AUDIO)) {
+                    return false;
+                }
             }
-            BaseApplication.getAppComponent().getCmd().setAudio(false, remoteMic, remoteSpeaker);
+            BaseApplication.getAppComponent().getCmd().setAudio(true, localMic, localSpeaker);
 
             if (presenterWeakReference.get().isEarpiecePlug()) {
                 Observable.just("webRtcJava层的设置影响了耳机")

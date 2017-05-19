@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
+import com.cylan.jiafeigou.n.view.activity.BindRsCamActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
@@ -226,21 +227,20 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                     zxVScan.stop();
                 }, 2000);
             } else {
+                getActivity().getSupportFragmentManager().popBackStack();
                 int iPid = Integer.parseInt(pid);
-                if (JFGRules.isCamera(iPid)) {
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                            .commitAllowingStateLoss();
+                if (JFGRules.isRS(iPid)) {
+                    if (getActivity() != null)
+                        startActivity(new Intent(getActivity(), BindRsCamActivity.class));
+                } else if (JFGRules.isCamera(iPid)) {
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindCamActivity.class));
                 } else if (JFGRules.isBell(iPid)) {
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                            .commitAllowingStateLoss();
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindBellActivity.class));
                 } else {
                     AppLogger.d("不支持的设备类型");
                     ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_QR_Fail));
-                    getActivity().getSupportFragmentManager().popBackStack();
                 }
                 zxVScan.stop();
             }

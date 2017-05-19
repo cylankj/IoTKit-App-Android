@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
@@ -273,16 +274,15 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     public void setPermissionDialog(String permission) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, permission))
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        builder.setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
-                })
-                .create()
-                .show();
+                });
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

@@ -97,7 +97,7 @@ public class SimpleBindFlow extends AFullBind {
                                 UdpConstant.PORT,
                                 new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                     AppLogger.i(BIND_TAG + integer);
                 }, AppLogger::e);
