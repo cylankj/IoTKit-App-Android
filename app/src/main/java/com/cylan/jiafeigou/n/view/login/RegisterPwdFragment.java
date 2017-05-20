@@ -234,7 +234,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, "");
         } else {
-            ToastUtil.showToast(getString(R.string.LOGIN_ERR));
+//            ToastUtil.showToast(getString(R.string.LOGIN_ERR));
         }
     }
 

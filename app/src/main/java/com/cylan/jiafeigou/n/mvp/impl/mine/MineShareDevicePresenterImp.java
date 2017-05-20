@@ -54,11 +54,11 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        } else {
-            subscription = new CompositeSubscription();
-            subscription.add(initData());
-            subscription.add(getDeviceInfoCallBack());
         }
+        subscription = new CompositeSubscription();
+        subscription.add(getDeviceInfoCallBack());
+        subscription.add(initData());
+
     }
 
     @Override
@@ -67,62 +67,56 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
-        clearData();
     }
 
     @Override
     public Subscription initData() {
         return Observable.just(getShareDeviceList())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<DeviceBean>>() {
-                    @Override
-                    public void call(ArrayList<DeviceBean> deviceList) {
-
-                        if (getView() != null && deviceList != null && deviceList.size() > 0) {
-                            AppLogger.d("share_device:" + deviceList.size());
-                            allDevice.clear();
-                            ArrayList<String> cidList = new ArrayList<String>();
-                            for (DeviceBean bean : deviceList) {
-                                if (TextUtils.isEmpty(bean.shareAccount)) {
-                                    cidList.add(bean.uuid);
-                                    allDevice.add(bean);
-                                }
+                .subscribe(deviceList -> {
+                    if (getView() != null && deviceList != null && deviceList.size() > 0) {
+                        AppLogger.d("share_device:" + deviceList.size());
+                        allDevice.clear();
+                        ArrayList<String> cidList = new ArrayList<String>();
+                        for (DeviceBean bean : deviceList) {
+                            if (TextUtils.isEmpty(bean.shareAccount)) {
+                                cidList.add(bean.uuid);
+                                allDevice.add(bean);
                             }
-
-                            if (NetUtils.getNetType(getView().getContext()) == -1) {
-                                ArrayList<JFGShareListInfo> shareList = BaseApplication.getAppComponent().getSourceManager().getShareList();
-                                if (shareList == null || shareList.size() == 0) {
-                                    handlerShareDeviceListData(allDevice);
-                                    return;
-                                }
-                                hasShareFriendList.clear();
-                                hasShareFriendList.addAll(shareList);
-                                for (int i = 0; i < allDevice.size(); i++) {
-                                    if (allDevice.get(i).uuid.equals(shareList.get(i).cid)) {
-                                        allDevice.get(i).hasShareCount = shareList.get(i).friends.size();
-                                    }
-                                }
-                                handlerShareDeviceListData(allDevice);
-                            } else {
-                                if (cidList.size() == 0) {
-                                    //都是分享设备
-                                    getView().hideLoadingDialog();
-                                    getView().showNoDeviceView();
-                                } else {
-                                    getDeviceInfo(cidList);
-                                }
-                            }
-                        } else {
-                            getView().hideLoadingDialog();
-                            getView().showNoDeviceView();
                         }
+
+                        if (NetUtils.getNetType(getView().getContext()) == -1) {
+                            ArrayList<JFGShareListInfo> shareList = BaseApplication.getAppComponent().getSourceManager().getShareList();
+                            if (shareList == null || shareList.size() == 0) {
+                                handlerShareDeviceListData(allDevice);
+                                return;
+                            }
+                            hasShareFriendList.clear();
+                            hasShareFriendList.addAll(shareList);
+                            for (int i = 0; i < allDevice.size(); i++) {
+                                if (allDevice.get(i).uuid.equals(shareList.get(i).cid)) {
+                                    allDevice.get(i).hasShareCount = shareList.get(i).friends.size();
+                                }
+                            }
+                            handlerShareDeviceListData(allDevice);
+                        } else {
+                            if (cidList.size() == 0) {
+                                //都是分享设备
+                                getView().hideLoadingDialog();
+                                getView().showNoDeviceView();
+                            } else {
+                                getDeviceInfo(cidList);
+                            }
+                        }
+                    } else {
+                        getView().hideLoadingDialog();
+                        getView().showNoDeviceView();
                     }
                 }, AppLogger::e);
     }
 
     @Override
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
-        hasShareFriendData.clear();
         ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
         if (shareSuccList != null && shareSuccList.size() > 0) {
             hasShareFriendData.addAll(shareSuccList);

@@ -132,7 +132,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 switch (state) {
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
-                        basePresenter.startPlay();
+                        CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
+                        if (prePlayType.type == TYPE_HISTORY){
+                            basePresenter.startPlayHistory(prePlayType.time * 1000L);
+                        }else if (prePlayType.type==TYPE_LIVE){
+                            basePresenter.startPlay();
+                        }
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop

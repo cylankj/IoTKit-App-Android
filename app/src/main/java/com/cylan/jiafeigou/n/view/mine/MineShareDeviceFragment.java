@@ -269,7 +269,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @OnClick(R.id.tv_toolbar_icon)
     public void onClick() {
-        presenter.clearData();
+//        presenter.clearData();
         getFragmentManager().popBackStack();
     }
 
@@ -284,7 +284,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.clearData();
+//        presenter.clearData();
     }
 
     @Override

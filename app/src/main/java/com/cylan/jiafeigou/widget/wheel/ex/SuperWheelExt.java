@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
@@ -343,7 +342,7 @@ public class SuperWheelExt extends View {
                 //开始吸附过程
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
-                setPositionByTime(timeCurrent);
+                setPositionByTime(timeTarget);
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
             } else {

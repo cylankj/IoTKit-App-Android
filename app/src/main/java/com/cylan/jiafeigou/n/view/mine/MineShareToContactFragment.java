@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
@@ -32,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -204,31 +204,25 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showShareDeviceDialog(final String account) {
-        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());//不能用 manager 里的,存在缓存复用,导致 account 不是最新的
         builder.setTitle(getString(R.string.Tap3_ShareDevice));
-        builder.setPositiveButton(getString(R.string.Button_Sure), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showShareingProHint();
-                changeShareingProHint("loading");
-                if (getView() != null && presenter != null) {
-                    getView().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            presenter.handlerShareClick(deviceinfo.uuid, account);
-                        }
-                    }, 2000);
-                }
+        builder.setPositiveButton(getString(R.string.Button_Sure), (dialog, which) -> {
+            showShareingProHint();
+            changeShareingProHint("loading");
+            if (getView() != null && presenter != null) {
+                getView().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppLogger.e("分享给:" + account);
+                        dialog.dismiss();
+                        presenter.handlerShareClick(deviceinfo.uuid, account);
+                    }
+                }, 2000);
             }
         });
 
-        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialogManager.getInstance().showDialog("showShareDeviceDialog", getActivity(), builder);
+        builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     @Override
