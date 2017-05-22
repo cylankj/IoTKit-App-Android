@@ -197,6 +197,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .subscribeOn(Schedulers.io())
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
+                        liveStreamAction.hasStarted = false;
                         try {
                             appCmd.screenshot(false, new CallBack<Bitmap>() {
                                 @Override
@@ -209,7 +210,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                                     AppLogger.d("保存门铃画像失败" + s);
                                 }
                             });
-                            liveStreamAction.hasStarted = false;
                             appCmd.stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
