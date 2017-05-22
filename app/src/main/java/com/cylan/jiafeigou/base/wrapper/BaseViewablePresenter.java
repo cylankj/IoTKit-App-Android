@@ -15,6 +15,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
+import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
@@ -65,8 +66,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 })
                 .filter(load -> load.slow)
                 .delay(4, TimeUnit.SECONDS)
+                .throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(ret -> {
-                    if (!sourceManager.isOnline() && liveStreamAction.hasStarted) {
+                    if (!sourceManager.isOnline() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
                         AppLogger.d("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
@@ -446,19 +448,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onFrameFailed() {
         Schedulers.io().createWorker().schedule(() -> {
-            try {
-                appCmd.stopPlay(uuid);
-                liveStreamAction.hasLiveError = true;
-                feedRtcp.stop();
-                AppLogger.d("加载失败了..........");
-                JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                disconn.code = BAD_FRAME_RATE;
-                disconn.remote = getViewHandler();
-                RxBus.getCacheInstance().post(disconn);
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-
+            liveStreamAction.hasLiveError = true;
+            feedRtcp.stop();
+            AppLogger.d("加载失败了..........");
+            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+            disconn.code = BAD_FRAME_RATE;
+            disconn.remote = getViewHandler();
+            RxBus.getCacheInstance().post(disconn);
         });
     }
 
