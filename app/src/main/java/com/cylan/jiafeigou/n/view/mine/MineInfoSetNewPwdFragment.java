@@ -192,44 +192,51 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
                 getString(R.string.Tap3_logout_tips), getString(R.string.Tap3_logout_tips),
                 getString(R.string.Button_Yes), (DialogInterface dialog, int which) -> {
                     jump2MineInfoFragment();
+                    IMEUtils.hide(getActivity());
                 }, getString(R.string.Button_No), null, false);
     }
 
     public void jump2MineInfoFragment() {
-        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
-        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
-        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");
-        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
-
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        if (personalInfoFragment != null) {
-            AppLogger.d("infoFrag不为空");
-            if (setNewPwdFragment != null) {
-                ft.remove(setNewPwdFragment);
+        if (getActivity() != null) {
+            int count = getActivity().getSupportFragmentManager().getBackStackEntryCount();
+            for (int i = 0; i < count; i++) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
-            if (mailBoxFragment != null) {
-                ft.remove(mailBoxFragment);
-                mailBoxFragment.getActivity().getSupportFragmentManager().popBackStack();
-            }
-            if (bindPhoneFragment != null) {
-                ft.remove(bindPhoneFragment);
-                bindPhoneFragment.getActivity().getSupportFragmentManager().popBackStack();
-            }
-            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .show(personalInfoFragment)
-                    .commit();
-        } else {
-            AppLogger.d("infoFrag为空");
-            HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
-            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, fragment, "mineReSetMailTip")
-                    .addToBackStack("personalInformationFragment")
-                    .commit();
         }
-        if (setNewPwdFragment != null) {
-            ft.remove(setNewPwdFragment);
-        }
+//        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
+//        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
+//        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");
+//        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
+//
+//        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//        if (personalInfoFragment != null) {
+//            AppLogger.d("infoFrag不为空");
+//            if (setNewPwdFragment != null) {
+//                ft.remove(setNewPwdFragment);
+//            }
+//            if (mailBoxFragment != null) {
+//                ft.remove(mailBoxFragment);
+//                mailBoxFragment.getActivity().getSupportFragmentManager().popBackStack();
+//            }
+//            if (bindPhoneFragment != null) {
+//                ft.remove(bindPhoneFragment);
+//                bindPhoneFragment.getActivity().getSupportFragmentManager().popBackStack();
+//            }
+//            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                    , R.anim.slide_in_left, R.anim.slide_out_right)
+//                    .show(personalInfoFragment)
+//                    .commit();
+//        } else {
+//            AppLogger.d("infoFrag为空");
+//            HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
+//            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                    , R.anim.slide_in_left, R.anim.slide_out_right)
+//                    .add(android.R.id.content, fragment, "mineReSetMailTip")
+//                    .addToBackStack("personalInformationFragment")
+//                    .commit();
+//        }
+//        if (setNewPwdFragment != null) {
+//            ft.remove(setNewPwdFragment);
+//        }
     }
 }

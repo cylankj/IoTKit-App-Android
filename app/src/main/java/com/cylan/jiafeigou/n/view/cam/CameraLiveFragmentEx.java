@@ -312,6 +312,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         }
         if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+            DpMsgDefine.DPStandby standby = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPStandby.class);
+            if (standby != null && standby.standby) {
+                basePresenter.stopPlayVideo(JFGRules.PlayErr.STOP_MAUNALLY);
+            } else {
+                if (basePresenter.getLiveStream().playState != JConstant.PLAY_STATE_PLAYING) {
+                    CamLiveContract.LiveStream stream = basePresenter.getLiveStream();
+                    //恢复播放
+                    if (stream.type == TYPE_HISTORY) {
+                        basePresenter.startPlayHistory(stream.time);
+                    } else
+                        basePresenter.startPlay();
+                }
+            }
             camLiveControlLayer.onDeviceStandByChanged(basePresenter.getDevice(), v -> jump2Setting());
         }
         if (msgId == DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD) {

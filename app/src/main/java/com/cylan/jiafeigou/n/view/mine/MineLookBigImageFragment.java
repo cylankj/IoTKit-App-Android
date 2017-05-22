@@ -103,22 +103,14 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      * desc:保存图片
      */
     private void showSaveImageDialog() {
-        AlertDialogManager.getInstance().showDialog(getActivity(), "ave", "",
-                getString(R.string.Tap3_SavePic), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
-                        if (presenter != null) {
-                            presenter.saveImage(bitmapSource);
-                        }
+        AlertDialogManager.getInstance().showDialog(getActivity(), "ave", getString(R.string.Tap3_SavePic),
+                getString(R.string.Tap3_SavePic), (DialogInterface dialog, int which) -> {
+                    dialog.dismiss();
+                    ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
+                    if (presenter != null) {
+                        presenter.saveImage(bitmapSource);
                     }
-                }, getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }, false);
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override

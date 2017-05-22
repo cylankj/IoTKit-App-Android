@@ -120,6 +120,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_wechat_friends));
                 AppLogger.e("tv_share_to_friends");
                 jump2ShareToFriendFragment(layoutPosition, item);
+                AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
             }
         });
         view.findViewById(R.id.tv_share_to_contract).setOnClickListener(new View.OnClickListener() {
@@ -129,6 +130,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
                 AppLogger.d("tv_share_to_contract");
                 MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(MineShareDeviceFragment.this);
+                AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
             }
         });
         builder.setView(view);

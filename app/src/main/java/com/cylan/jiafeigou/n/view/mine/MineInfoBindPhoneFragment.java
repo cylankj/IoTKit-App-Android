@@ -287,17 +287,15 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     @Override
     public void handlerCheckCodeResult(RxEvent.ResultVerifyCode resultVerifyCode) {
-        //是三方登录
-        jump2SetPWDFragment(userinfo.getAccount());
-//        if (resultVerifyCode.code == JError.ErrorOK) {
-//            showLoadingDialog();
-//            presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-//        } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
-//            hideLoadingDialog();
-//            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-//        } else {
-//            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
-//        }
+        if (resultVerifyCode.code == JError.ErrorOK) {
+            showLoadingDialog();
+            presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+        } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
+            hideLoadingDialog();
+            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+        } else {
+            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
+        }
     }
 
     /**
