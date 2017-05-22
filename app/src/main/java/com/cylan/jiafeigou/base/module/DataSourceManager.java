@@ -578,8 +578,6 @@ public class DataSourceManager implements JFGSourceManager {
                         device = event.devices[i];
                         result.remove(device.uuid);
                     }
-                    mCachedDeviceMap.clear();
-                    rawDeviceOrder.clear();
                     return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
@@ -587,15 +585,23 @@ public class DataSourceManager implements JFGSourceManager {
                         ArrayList<JFGDPMsg> parameters;
                         DBOption.DeviceOption option;
                         ArrayList<String> uuidList = new ArrayList<>();
-                        for (Device device : devices) {
-                            option = device.option(DBOption.DeviceOption.class);
-                            mCachedDeviceMap.put(device.getUuid(), device);
-                            rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
+                        synchronized (DataSourceManager.class) {
+                            mCachedDeviceMap.clear();
+                            rawDeviceOrder.clear();
+                            for (Device device : devices) {
+                                option = device.option(DBOption.DeviceOption.class);
+                                mCachedDeviceMap.put(device.getUuid(), device);
+                                rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
+                                if (!JFGRules.isShareDevice(device)) {
+                                    uuidList.add(device.getUuid());
+                                }
+                            }
+                        }
+                        Device device;
+                        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+                            device = entry.getValue();
                             parameters = device.getQueryParams();
                             appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
-                            if (!JFGRules.isShareDevice(device)) {
-                                uuidList.add(device.getUuid());
-                            }
                         }
                         appCmd.getShareList(uuidList);
                         getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));

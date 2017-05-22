@@ -244,7 +244,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
-        AppLogger.d("OnUnShareDeviceRsp :");
+        AppLogger.d("OnUnShareDeviceRsp :" + i + "," + s + "," + s1);
         RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i, s, s1));
     }
 

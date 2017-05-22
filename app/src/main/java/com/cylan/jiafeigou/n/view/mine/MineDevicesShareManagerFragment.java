@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineDevicesShareManagerPresenterImp;
@@ -168,22 +166,14 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancleShareDialog(final RelAndFriendBean bean) {
-        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
-        builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                presenter.cancleShare(devicebean.uuid, bean);
-            }
+        builder.setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
+            dialog.dismiss();
+            presenter.cancleShare(devicebean.uuid, bean);
         });
-        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialogManager.getInstance().showDialog("showCancleShareDialog", getActivity(), builder);
+        builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     @Override
@@ -224,8 +214,9 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void deleteItems() {
+        int i = hasShareAdapter.getList().indexOf(tempBean);
         hasShareAdapter.remove(tempBean);
-        hasShareAdapter.notifyDataSetHasChanged();
+        hasShareAdapter.notifyItemRemoved(i);
     }
 
     /**

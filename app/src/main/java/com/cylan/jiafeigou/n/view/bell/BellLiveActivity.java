@@ -590,7 +590,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onNewCallTimeOut() {
 //        dismissAlert();
-        mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
+//        mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
 //        INotify.NotifyBean notify = new INotify.NotifyBean();
 //        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
 //        int count = 0;

@@ -637,12 +637,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void orientationChanged(CamLiveContract.Presenter presenter, Device device, int orientation) {
         int playType = presenter.getPlayType();
         boolean isLand = isLand();
-        layoutA.setVisibility(isLand ? VISIBLE : GONE);
-        layoutF.setVisibility(isLand ? GONE : VISIBLE);
+        layoutA.setVisibility(isLand ? VISIBLE : INVISIBLE);
+        layoutF.setVisibility(isLand ? INVISIBLE : VISIBLE);
         //历史录像显示
         boolean showFlip = !presenter.isShareDevice();
-        findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : GONE);
-        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : GONE);
+        findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
+        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
         //直播
         findViewById(R.id.tv_live).setEnabled(playType == TYPE_HISTORY);
@@ -651,17 +651,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             lp.removeRule(3);//remove below rules
             lp.addRule(2, R.id.v_guide);//set above v_guide
             liveViewWithThumbnail.updateLayoutParameters(LayoutParams.MATCH_PARENT);
-            findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(GONE);
+            findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(INVISIBLE);
             layoutD.setBackgroundResource(android.R.color.transparent);
             layoutE.setBackgroundResource(R.color.color_4C000000);
-            findViewById(R.id.layout_port_flip).setVisibility(GONE);
+            findViewById(R.id.layout_port_flip).setVisibility(INVISIBLE);
             //显示 昵称
             String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             ((TextView) findViewById(R.id.imgV_cam_live_land_nav_back))
                     .setText(alias);
             findViewById(R.id.imgV_cam_live_land_play).setVisibility(VISIBLE);
         } else {
-            findViewById(R.id.imgV_cam_live_land_play).setVisibility(GONE);
+            findViewById(R.id.imgV_cam_live_land_play).setVisibility(INVISIBLE);
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(VISIBLE);
@@ -675,7 +675,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutG.setVisibility(GONE);
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
-        findViewById(R.id.v_divider).setVisibility(isLand ? VISIBLE : GONE);
+        findViewById(R.id.v_divider).setVisibility(isLand ? VISIBLE : INVISIBLE);
         findViewById(R.id.layout_e).setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }

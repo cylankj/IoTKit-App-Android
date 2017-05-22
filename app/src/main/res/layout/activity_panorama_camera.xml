@@ -326,6 +326,9 @@
             android:layout_toStartOf="@+id/act_panorama_bottom_panel_camera_photograph"
             android:background="@android:color/transparent"
             android:src="@drawable/camera720_icon_album_selector"
+            app:civ_border_color="@color/color_white"
+            app:civ_border_overlay="true"
+            app:civ_border_width="@dimen/y2"
             app:riv_oval="false" />
 
         <ImageButton

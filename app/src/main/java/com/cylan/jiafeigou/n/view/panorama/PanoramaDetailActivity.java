@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -80,6 +82,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     ImageButton topMenuShare;
     @BindView(R.id.tv_top_bar_left)
     Button topBack;
+    @BindView(R.id.act_panorama_detail_bottom_video_menu_container)
+    LinearLayout bottomMenuItemContainer;
+    @BindView(R.id.act_panorama_detail_bottom_picture_menu_photograph)
+    ImageButton bottomPictureMenuPicture;
+    @BindView(R.id.act_panorama_detail_pop_picture_vr_tips)
+    RelativeLayout popPictureVrTips;
     @Inject
     HttpProxyCacheServer httpProxy;
     private PanoramicView720_Ext panoramicView720Ext;
@@ -134,6 +142,55 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             JFGPlayer.StopRender(player);
             JFGPlayer.Stop(player);
         }
+    }
+
+    @Override
+    public void onScreenRotationChanged(boolean land) {
+        super.onScreenRotationChanged(land);
+        initViewLayoutParams(land);
+    }
+
+    private void initViewLayoutParams(boolean land) {
+        if (land) {
+            ViewUtils.clearViewMarginStatusBar(headerTitleContainer);
+            headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else {
+            headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            ViewUtils.setViewMarginStatusBar(headerTitleContainer);
+        }
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) panoramaPanelSwitcher.getLayoutParams();
+        params.height = ((int) getResources().getDimension(R.dimen.panorama_detail_panel_height));
+        panoramaPanelSwitcher.setLayoutParams(params);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) bottomVideoMenuGyroscope.getLayoutParams();
+        layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_last_margin));
+        bottomVideoMenuGyroscope.setLayoutParams(layoutParams);
+        layoutParams = (LinearLayout.LayoutParams) bottomVideoMenuMode.getLayoutParams();
+        layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_item_margin));
+        bottomVideoMenuMode.setLayoutParams(layoutParams);
+        layoutParams = (LinearLayout.LayoutParams) bottomVideoMenuVR.getLayoutParams();
+        layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_item_margin));
+        bottomVideoMenuVR.setLayoutParams(layoutParams);
+        params = (RelativeLayout.LayoutParams) bottomMenuItemContainer.getLayoutParams();
+        params.bottomMargin = (int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_margin_bottom);
+        bottomMenuItemContainer.setLayoutParams(params);
+        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuPicture.getLayoutParams();
+        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_margin_slide));
+        bottomPictureMenuPicture.setLayoutParams(layoutParams);
+        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuVR.getLayoutParams();
+        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_item_margin));
+        bottomPictureMenuVR.setLayoutParams(layoutParams);
+        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuMode.getLayoutParams();
+        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_item_margin));
+        bottomPictureMenuMode.setLayoutParams(layoutParams);
+        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuGyroscope.getLayoutParams();
+        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_item_margin));
+        layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_margin_slide));
+        bottomPictureMenuGyroscope.setLayoutParams(layoutParams);
     }
 
     private void initPanoramaView() {
@@ -201,6 +258,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         onBackPressed();
     }
 
+    @OnClick(R.id.act_panorama_detail_pop_picture_close)
+    public void closePopPictureTips() {
+        popPictureVrTips.setVisibility(View.INVISIBLE);
+    }
 
     @OnClick({R.id.act_panorama_detail_bottom_picture_menu_vr, R.id.act_panorama_detail_bottom_video_menu_vr})
     public void clickedVR() {
@@ -208,16 +269,21 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableVRMode(!panoramicView720Ext.isVREnabled());
             boolean vrEnabled = panoramicView720Ext.isVREnabled();
-            boolean gyroEnabled = panoramicView720Ext.isGyroEnabled();
+            panoramicView720Ext.enableGyro(vrEnabled || panoramicView720Ext.isGyroEnabled());
             bottomPictureMenuVR.setImageResource(vrEnabled ? R.drawable.photos_icon_vr_hl : R.drawable.photos_icon_vr);
             bottomVideoMenuVR.setImageResource(vrEnabled ? R.drawable.video_icon_vr_hl : R.drawable.video_icon_vr);
-            bottomPictureMenuGyroscope.setImageResource(gyroEnabled ? R.drawable.photos_icon_gyroscope : R.drawable.photos_icon_manual);
-            bottomVideoMenuGyroscope.setImageResource(gyroEnabled ? R.drawable.video_icon_gyroscope : R.drawable.video_icon_manual);
+            bottomPictureMenuGyroscope.setImageResource(panoramicView720Ext.isGyroEnabled() ? R.drawable.photos_icon_gyroscope : R.drawable.photos_icon_manual);
+            bottomVideoMenuGyroscope.setImageResource(panoramicView720Ext.isGyroEnabled() ? R.drawable.video_icon_gyroscope : R.drawable.video_icon_manual);
+            bottomPictureMenuGyroscope.setEnabled(!vrEnabled);
+            bottomVideoMenuGyroscope.setEnabled(!vrEnabled);
             bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_panorama);
             bottomVideoMenuMode.setImageResource(R.drawable.video_icon_panorama);
             bottomPictureMenuMode.setEnabled(!vrEnabled);
             bottomVideoMenuMode.setEnabled(!vrEnabled);
-
+            int orientation = getRequestedOrientation();
+            if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && vrEnabled) {
+                popPictureVrTips.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -272,7 +338,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 shareDialogFragment = ShareDialogFragment.newInstance();
             }
             if (panoramaItem.type == 0) {
-             shareDialogFragment.setPictureURL(new PanoramaThumbURL(uuid,panoramaItem.fileName));
+                shareDialogFragment.setPictureURL(new PanoramaThumbURL(uuid, panoramaItem.fileName));
             }
 
         }

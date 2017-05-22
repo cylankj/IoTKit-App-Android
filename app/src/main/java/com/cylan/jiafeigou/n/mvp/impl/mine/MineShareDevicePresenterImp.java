@@ -119,8 +119,10 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
         ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
         if (shareSuccList != null && shareSuccList.size() > 0) {
+            hasShareFriendData.clear();
             hasShareFriendData.addAll(shareSuccList);
         }
+        ArrayList<RelAndFriendBean> result = new ArrayList<>();
         if (this.hasShareFriendList != null && this.hasShareFriendList.size() != 0) {
             for (JFGFriendAccount info : this.hasShareFriendList.get(position).friends) {
                 RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
@@ -132,10 +134,13 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                hasShareFriendData.add(relAndFriendBean);
+
+                result.add(relAndFriendBean);
             }
         }
-        return hasShareFriendData;
+        result.removeAll(hasShareFriendData);
+        result.addAll(hasShareFriendData);
+        return result;
     }
 
     /**

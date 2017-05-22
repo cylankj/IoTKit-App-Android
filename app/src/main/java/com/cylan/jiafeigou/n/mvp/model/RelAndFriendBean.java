@@ -2,11 +2,10 @@ package com.cylan.jiafeigou.n.mvp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.support.db.annotation.Column;
 import com.cylan.jiafeigou.support.db.annotation.Table;
-
-import dagger.multibindings.ClassKey;
 
 /**
  * 作者：zsl
@@ -119,6 +118,13 @@ public class RelAndFriendBean implements Parcelable {
         this.alias = in.readString();
         this.account = in.readString();
         this.markName = in.readString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof RelAndFriendBean)) return false;
+        RelAndFriendBean bean = (RelAndFriendBean) obj;
+        return TextUtils.equals(bean.account, account);
     }
 
     public static final Creator<RelAndFriendBean> CREATOR = new Creator<RelAndFriendBean>() {

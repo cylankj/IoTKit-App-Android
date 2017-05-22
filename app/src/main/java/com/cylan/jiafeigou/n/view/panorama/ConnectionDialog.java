@@ -66,6 +66,7 @@ public class ConnectionDialog extends BaseDialog {
         }
         Intent intent = new Intent(getContext(), BindPanoramaCamActivity.class);
         intent.putExtra("PanoramaConfigure", "Family");
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
         dismiss();
     }
@@ -80,6 +81,7 @@ public class ConnectionDialog extends BaseDialog {
         }
         Intent intent = new Intent(getContext(), BindPanoramaCamActivity.class);
         intent.putExtra("PanoramaConfigure", "OutDoor");
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
         dismiss();
     }

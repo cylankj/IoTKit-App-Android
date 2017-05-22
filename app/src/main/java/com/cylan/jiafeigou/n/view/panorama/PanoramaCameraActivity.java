@@ -11,13 +11,16 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -152,6 +155,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private AlertDialog mobileAlert;
     private boolean allowMobile = false;
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+    }
 
     @Override
     public void onShowProperty(Device device) {

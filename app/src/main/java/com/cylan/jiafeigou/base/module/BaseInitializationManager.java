@@ -124,7 +124,6 @@ public final class BaseInitializationManager {
             RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         }
     }
-
     private void initDeviceInformationFetcher() {
         forwardHelper.setAppCmd(appCmd);
     }

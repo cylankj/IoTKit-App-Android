@@ -979,4 +979,7 @@
     <string name="connection_way_out_door"><u>摄像机直接与客户端连接>></u></string>
     <string name="connection_way_family"><u>摄像机通过网络与客户端连接>></u></string>
     <string name="wifi_connection">WiFi连接</string>
+    <string name="panorama_album">全景相册</string>
+    <string name="phone_album">手机相册</string>
+    <string name="panorama_and_phone_album">全景+手机相册</string>
 </resources>

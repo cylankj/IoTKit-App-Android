@@ -28,6 +28,7 @@ public class ApFilter {
     }
 
     public static boolean isAPMode(String ssid, String uuid) {
-        return accept(ssid) && !TextUtils.isEmpty(ssid) && !TextUtils.isEmpty(uuid) && TextUtils.equals(ssid.substring(ssid.length() - 6), uuid.substring(uuid.length() - 6));
+        String rssid = ssid.replace("\"", "");
+        return accept(ssid) && !TextUtils.isEmpty(ssid) && !TextUtils.isEmpty(uuid) && TextUtils.equals(rssid.substring(rssid.length() - 6), uuid.substring(uuid.length() - 6));
     }
 }

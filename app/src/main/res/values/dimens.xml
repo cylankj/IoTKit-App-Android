@@ -121,4 +121,12 @@
     <dimen name="WheelMargins">@dimen/y8</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <!--全景详情页 dimen start-->
+    <dimen name="panorama_detail_panel_height">@dimen/y73</dimen>
+    <dimen name="panorama_detail_panel_video_menu_last_margin">@dimen/y17</dimen>
+    <dimen name="panorama_detail_panel_video_menu_margin_bottom">@dimen/y16</dimen>
+    <dimen name="panorama_detail_panel_video_menu_item_margin">@dimen/y32</dimen>
+    <dimen name="panorama_detail_panel_picture_menu_item_margin">@dimen/y47</dimen>
+    <dimen name="panorama_detail_panel_picture_menu_margin_slide">@dimen/y33</dimen>
+    <!--全景详情页 dimen end-->
 </resources>

@@ -1,13 +1,13 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineLookBigImagePresenterImp;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -103,22 +102,18 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      * desc:保存图片
      */
     private void showSaveImageDialog() {
-        AlertDialogManager.getInstance().showDialog(getActivity(), "ave", "",
-                getString(R.string.Tap3_SavePic), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
-                        if (presenter != null) {
-                            presenter.saveImage(bitmapSource);
-                        }
+        new AlertDialog.Builder(getActivity())
+                .setPositiveButton(R.string.Tap3_SavePic, (dialog, which) -> {
+                    dialog.dismiss();
+                    ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
+                    if (presenter != null) {
+                        presenter.saveImage(bitmapSource);
                     }
-                }, getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }, false);
+                })
+                .setNegativeButton(R.string.CANCEL, null)
+                .setTitle(R.string.Tap3_SavePic)
+                .setCancelable(false)
+                .show();
     }
 
     @Override

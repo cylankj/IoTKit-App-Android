@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
@@ -95,6 +96,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         }
         Intent intent = new Intent(this, BindPanoramaCamActivity.class);
         intent.putExtra("PanoramaConfigure", "Family");
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
     }
 
@@ -107,6 +109,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         }
         Intent intent = new Intent(this, BindPanoramaCamActivity.class);
         intent.putExtra("PanoramaConfigure", "OutDoor");
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
     }
 

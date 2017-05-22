@@ -164,21 +164,14 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
         }
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().unShareDevice(cid, bean.account);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(o -> {
+                    try {
+                        AppLogger.e("正在取消分享:" + bean.account);
+                        BaseApplication.getAppComponent().getCmd().unShareDevice(cid, bean.account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("cancleShare" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("cancleShare" + throwable.getLocalizedMessage()));
     }
 
     /**

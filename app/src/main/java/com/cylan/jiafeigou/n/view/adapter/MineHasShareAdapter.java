@@ -5,13 +5,13 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -46,12 +46,9 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final RelAndFriendBean item) {
         holder.setText(R.id.tv_username, TextUtils.isEmpty(item.markName) ? item.alias : item.markName);
         holder.setText(R.id.tv_friend_account, item.account);
-        holder.setOnClickListener(R.id.tv_btn_cancle_share, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listenter != null) {
-                    listenter.onCancleShare(item);
-                }
+        holder.setOnClickListener(R.id.tv_btn_cancle_share, v -> {
+            if (listenter != null) {//存在复用的情况,不可取
+                listenter.onCancleShare(item);
             }
         });
         userImag = holder.getView(R.id.iv_userhead);

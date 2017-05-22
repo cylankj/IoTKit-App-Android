@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.support.download.database.constants.TABLES;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
