@@ -246,7 +246,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             //返回上一个fragment
             case R.id.tv_toolbar_icon:
                 IMEUtils.hide((Activity) getContext());
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             //绑定邮箱
             case R.id.tv_toolbar_right:
@@ -273,12 +273,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     @Override
     public void showSendReqHint() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.upload));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.upload));
     }
 
     @Override
     public void hideSendReqHint() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**
@@ -309,7 +309,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         Bundle bundle = new Bundle();
         bundle.putString("useraccount", getEditText());
         MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, fragment, "MineReSetMailTip")
@@ -326,7 +326,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         bundle.putString("useraccount", account);
         bundle.putString("token", "");
         MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, fragment, "MineInfoSetNewPwdFragment")

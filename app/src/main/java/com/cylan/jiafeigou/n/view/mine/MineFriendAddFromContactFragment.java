@@ -117,7 +117,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_friends_add_from_contact_back:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
     }
@@ -149,7 +149,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         Bundle bundle = new Bundle();
         bundle.putString("account", friendAccount);
         MineAddFromContactFragment mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
@@ -176,7 +176,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.getting));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.getting));
     }
 
     /**
@@ -184,7 +184,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void hideLoadingPro() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**

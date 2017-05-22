@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -91,9 +92,12 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     if (!JFGRules.isDeviceOnline(dpNet)) {
                         return;
                     }
+                    //局域网弹出
+                    if (!MiscUtils.isDeviceInWLAN(uuid)) return;
                     long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
                     if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         //弹框的时间,从弹出算起
+                        if (!MiscUtils.isDeviceInWLAN(uuid)) return;
                         PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid, System.currentTimeMillis());
                         mView.showFirmwareDialog();
                     }

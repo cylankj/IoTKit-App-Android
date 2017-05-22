@@ -132,7 +132,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 if (listener != null) {
                     listener.shareSucceed(shareSucceedNum, shareSucceedFriend);
                 }
@@ -182,7 +182,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void showShareAllSuccess() {
         //TODO 完善
         ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-        getFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -199,12 +199,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @Override
     public void showSendProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideSendProgress() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

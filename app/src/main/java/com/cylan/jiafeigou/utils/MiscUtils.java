@@ -7,12 +7,14 @@ import android.content.res.Configuration;
 import android.content.res.XmlResourceParser;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.net.wifi.SupplicantState;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -21,6 +23,7 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
@@ -549,5 +552,22 @@ public class MiscUtils {
 //        String url = "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-test/package/camera/JFG1W-2.4.6.28-V1-SENSOR_8330.bin?Expires=1521872297&Signature=dbu%2F0nQ3aNGz0wGIAieB7opsNiI%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI";
         String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
         return fileName.substring(0, fileName.lastIndexOf('.'));
+    }
+
+    public static boolean isDeviceInWLAN(String uuid) {
+        if (TextUtils.isEmpty(uuid) && BuildConfig.DEBUG)
+            throw new IllegalArgumentException("uuid is  null");
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        if (!JFGRules.isDeviceOnline(net)) {
+            String localMac = NetUtils.getRouterMacAddress();
+            String deviceMac = device.$(202, "");
+            SupplicantState state = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo().getSupplicantState();
+            return TextUtils.equals(localMac, deviceMac) && !TextUtils.isEmpty(localMac) && state == SupplicantState.COMPLETED;
+        } else {
+            //在线
+            String appSSID = NetUtils.getNetName(ContextUtils.getContext());
+            return TextUtils.equals(appSSID, net.ssid);
+        }
     }
 }

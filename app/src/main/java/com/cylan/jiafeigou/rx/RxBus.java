@@ -71,10 +71,6 @@ public class RxBus implements IEventBus {
     }
 
     /**
-     * Stciky 相关
-     */
-
-    /**
      * 发送一个新Sticky事件
      */
     public void postSticky(Object event) {

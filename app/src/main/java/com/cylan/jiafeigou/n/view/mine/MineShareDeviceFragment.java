@@ -143,7 +143,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         bundle.putParcelable("deviceinfo", whichClick);
         bundle.putParcelableArrayList("sharefriend", presenter.getJFGInfo(position));
         MineShareToContactFragment mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
@@ -159,7 +159,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         bundle.putParcelable("deviceinfo", item);
         bundle.putParcelableArrayList("hasSharefriend", presenter.getJFGInfo(position));
         shareToRelativeAndFriendFragment = MineShareToFriendFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
@@ -224,7 +224,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         bundle.putParcelable("devicebean", bean);
         bundle.putParcelableArrayList("friendlist", presenter.getJFGInfo(position));
         mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
@@ -253,7 +253,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      */
     @Override
     public void showLoadingDialog() {
-//        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+//        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -261,13 +261,13 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      */
     @Override
     public void hideLoadingDialog() {
-//        LoadingDialog.dismissLoading(getFragmentManager());
+//        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @OnClick(R.id.tv_toolbar_icon)
     public void onClick() {
         presenter.clearData();
-        getFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override

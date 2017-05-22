@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -196,7 +197,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         switch (view.getId()) {
             //点击回退到Mine的fragment
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
@@ -256,7 +257,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
         }
         MyQRCodeDialog qRCodeDialog = myQrcodeDialog.get();
-        qRCodeDialog.show(getFragmentManager(), "myqrcode");
+        qRCodeDialog.show(getActivity().getSupportFragmentManager(), "myqrcode");
     }
 
     /**
@@ -266,7 +267,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
         MineInfoSetPassWordFragment setPassWordFragment = MineInfoSetPassWordFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, setPassWordFragment, "setPassWordFragment")
@@ -281,14 +282,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
         MineSetUserAliasFragment setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, setUserNameFragment, "setUserNameFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
 
-        if (getActivity() != null && getActivity().getFragmentManager() != null) {
+        if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
             setUserNameFragment.setOnSetUsernameListener(name -> {
                 tvUserName.setText(name);
                 argumentData.setAlias(name);
@@ -303,7 +304,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", isDefaultPhoto(argumentData.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : argumentData.getPhotoUrl());
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, bigHeadFragment, "bigHeadFragment")
@@ -389,13 +390,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
         HomeMineInfoMailBoxFragment mailBoxFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mailBoxFragment, "mailBoxFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
-        if (getActivity() != null && getActivity().getFragmentManager() != null) {
+        if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
             mailBoxFragment.setListener(content -> mTvMailBox.setText(content));
         }
     }
@@ -523,12 +524,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                bindPhoneFragment, android.R.id.content);
         bindPhoneFragment.setOnChangePhoneListener(phone -> tvHomeMinePersonalPhone.setText(phone));
     }
 

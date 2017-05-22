@@ -153,7 +153,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_personal_information_old_password_clear:
                 etMinePersonalInformationOldPassword.setText("");
@@ -207,7 +207,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
             AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount(), 1, getNewPassword());
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 }

@@ -134,7 +134,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_share_to_contact_back:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
 
             case R.id.iv_mine_share_to_contact_search:
@@ -233,12 +233,12 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showShareingProHint() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideShareingProHint() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

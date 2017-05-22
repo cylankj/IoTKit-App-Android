@@ -50,7 +50,7 @@ public class WebsiteFragement extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         customToolbar.setBackAction((View v) -> {
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         });
     }
 

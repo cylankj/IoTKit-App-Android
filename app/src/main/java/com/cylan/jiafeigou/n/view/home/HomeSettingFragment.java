@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -103,7 +104,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rlHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
-        customToolbar.setBackAction(click -> getFragmentManager().popBackStack());
+        customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
     }
 
     private void initPresenter() {
@@ -126,12 +127,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             case R.id.rl_home_setting_about:
                 ViewUtils.deBounceClick(view);
                 AppLogger.e("rl_home_setting_about");
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, aboutFragment, "aboutFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                        aboutFragment, android.R.id.content);
                 break;
 
             case R.id.rl_home_setting_clear:
@@ -163,13 +160,13 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void showClearingCacheProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.ClearingTips));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.ClearingTips));
     }
 
     @Override
     public void hideClearingCacheProgress() {
-        if (LoadingDialog.isShowing(getFragmentManager()))
-            LoadingDialog.dismissLoading(getFragmentManager());
+        if (LoadingDialog.isShowing(getActivity().getSupportFragmentManager()))
+            LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

@@ -121,7 +121,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void showResultDialog(RxEvent.CheckAccountCallback callback) {
         if (callback.i == JError.ErrorFriendAlready | callback.b) {
             ToastUtil.showToast(getString(R.string.Tap3_Added));
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         } else if (callback.i == JError.ErrorFriendToSelf) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
@@ -131,12 +131,12 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showSendReqHint() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.submiting));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.submiting));
     }
 
     @Override
     public void hideSendReqHint() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**
@@ -161,7 +161,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void sendReqBack(int code) {
         if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-            getFragmentManager().popBackStack("AddFlowStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().getSupportFragmentManager().popBackStack("AddFlowStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else if (code == JError.ErrorFriendToSelf) {
             ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
@@ -182,7 +182,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
                 presenter.checkAccount(contactItem);
                 break;
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
     }

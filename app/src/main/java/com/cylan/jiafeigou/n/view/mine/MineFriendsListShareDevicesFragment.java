@@ -118,7 +118,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:
                 if (chooseList.size() == 0) return;
@@ -232,7 +232,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -240,7 +240,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideSendReqProgress() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**
@@ -262,7 +262,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
         if (chooseList.size() == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         } else if (chooseList.size() == totalFriend) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_FailTips));
         } else {
@@ -275,7 +275,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -283,7 +283,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
 }

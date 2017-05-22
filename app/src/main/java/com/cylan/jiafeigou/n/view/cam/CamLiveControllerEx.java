@@ -434,9 +434,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 YoYo.with(Techniques.SlideInDown)
                         .duration(250)
                         .playOn(layoutA);
+                if (!layoutD.isShown()) layoutD.setVisibility(VISIBLE);//
                 YoYo.with(Techniques.SlideInUp)
                         .duration(250)
                         .playOn(layoutD);
+                if(!layoutE.isShown())layoutE.setVisibility(VISIBLE);//
                 YoYo.with(Techniques.SlideInUp)
                         .duration(250)
                         .playOn(layoutE);
@@ -898,9 +900,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } else
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
         TimeZone timeZone = JFGRules.getDeviceTimezone(device);
-        liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+        liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
         liveTimeDateFormat.setTimeZone(timeZone);
-        AppLogger.d("得到设备时区:" + timeZone.getID());
+        AppLogger.d("得到设备时区:" + timeZone.getID() + "," + timeZone.getRawOffset());
     }
 
     @Override

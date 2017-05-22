@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNewPwdContract;
@@ -23,8 +24,6 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +36,8 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/12/28
  * 描述：
  */
-public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfoSetNewPwdContract.View, BaseDialog.BaseDialogAction {
+public class MineInfoSetNewPwdFragment extends IBaseFragment implements
+        MineInfoSetNewPwdContract.View {
 
     @BindView(R.id.et_mine_set_newpwd)
     EditText etMineSetNewpwd;
@@ -48,7 +48,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     private MineInfoSetNewPwdContract.Presenter presenter;
-    private String useraccount;
+    private String userAccount;
     private String token;
 
     public static MineInfoSetNewPwdFragment newInstance(Bundle bundle) {
@@ -61,7 +61,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        useraccount = arguments.getString("useraccount");
+        userAccount = arguments.getString("useraccount");
         token = arguments.getString("token");
     }
 
@@ -134,7 +134,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                     return;
                 }
 
-                presenter.openLoginRegister(useraccount, getNewPwd(), token);
+                presenter.openLoginRegister(userAccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
                 etMineSetNewpwd.setText("");
@@ -177,9 +177,9 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void jump2MailConnectFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("useraccount", useraccount);
+        bundle.putString("useraccount", userAccount);
         MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, fragment, "MineReSetMailTip")
@@ -188,33 +188,20 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     }
 
     public void backDialog() {
-        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("backPress");
-        if (f == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_logout_tips));
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.Button_No));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.Button_Yes));
-            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-            dialogFragment.setAction(this);
-            dialogFragment.show(getActivity().getSupportFragmentManager(), "backPress");
-        }
-    }
-
-    @Override
-    public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right) {
-            jump2MineInfoFragment();
-        }
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                getString(R.string.Tap3_logout_tips), getString(R.string.Tap3_logout_tips),
+                getString(R.string.Button_Yes), (DialogInterface dialog, int which) -> {
+                    jump2MineInfoFragment();
+                }, getString(R.string.Button_No), null, false);
     }
 
     public void jump2MineInfoFragment() {
-        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getFragmentManager().findFragmentByTag("personalInformationFragment");
-        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
-        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getFragmentManager().findFragmentByTag("bindPhoneFragment");
-        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getFragmentManager().findFragmentByTag("mailBoxFragment");
+        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
+        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
+        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");
+        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         if (personalInfoFragment != null) {
             AppLogger.d("infoFrag不为空");
             if (setNewPwdFragment != null) {
@@ -222,11 +209,11 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
             }
             if (mailBoxFragment != null) {
                 ft.remove(mailBoxFragment);
-                mailBoxFragment.getFragmentManager().popBackStack();
+                mailBoxFragment.getActivity().getSupportFragmentManager().popBackStack();
             }
             if (bindPhoneFragment != null) {
                 ft.remove(bindPhoneFragment);
-                bindPhoneFragment.getFragmentManager().popBackStack();
+                bindPhoneFragment.getActivity().getSupportFragmentManager().popBackStack();
             }
             ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                     , R.anim.slide_in_left, R.anim.slide_out_right)

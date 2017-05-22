@@ -123,7 +123,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:
                 if (presenter != null) {
@@ -161,7 +161,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             if (listener != null) {
                 listener.remarkNameChange(getEditName());
             }
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         } else {
             ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
         }
@@ -173,7 +173,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showSendReqPro() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.is_creating));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.is_creating));
     }
 
     /**
@@ -181,7 +181,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void hideSendReqPro() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**

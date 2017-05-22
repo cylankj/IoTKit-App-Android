@@ -264,9 +264,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         if (getIntent().hasExtra(JUST_SEND_INFO)) {
-            runOnUiThread(() -> {
-                ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
-            });
+            runOnUiThread(() -> ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG)));
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

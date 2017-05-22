@@ -80,12 +80,12 @@ public class MineReSetMailTip extends Fragment {
     }
 
     public void jump2MineInfoFragment() {
-        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getFragmentManager().findFragmentByTag("personalInformationFragment");
-        MineReSetMailTip mailTip = (MineReSetMailTip) getFragmentManager().findFragmentByTag("MineReSetMailTip");
-        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
-        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getFragmentManager().findFragmentByTag("mailBoxFragment");
+        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
+        MineReSetMailTip mailTip = (MineReSetMailTip) getActivity().getSupportFragmentManager().findFragmentByTag("MineReSetMailTip");
+        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
+        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         if (personalInfoFragment != null) {
             AppLogger.d("infoFrag不为空");
             if (setNewPwdFragment != null) {

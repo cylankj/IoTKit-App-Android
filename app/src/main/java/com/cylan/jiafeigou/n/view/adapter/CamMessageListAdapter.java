@@ -136,11 +136,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     public void markItemSelected(int position) {
         if (!editMode)
             return;
-//        if (selectedMap.containsKey(position)) {
-//            selectedMap.remove(position);
-//        } else {
-        selectedMap.put(position, position);
-//        }
+        if (selectedMap.containsKey(position)) {
+            selectedMap.remove(position);
+        } else {
+            selectedMap.put(position, position);
+        }
         notifyItemChanged(position);
     }
 
