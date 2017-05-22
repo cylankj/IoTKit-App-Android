@@ -104,12 +104,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         bundle.putBoolean("isFrom", true);
         bundle.putSerializable("addRequestItems", bean);
         addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                .addToBackStack("mineHelpFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                addReqDetailFragment, android.R.id.content);
 
         addReqDetailFragment.setOnAcceptAddListener(backbean -> {
             addReqDeleteItem(position, backbean);
@@ -137,12 +133,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             bundle.putBoolean("isFrom", false);
             bundle.putSerializable("addRequestItems", item);
             MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, addReqDetailFragment, addReqDetailFragment.getClass().getName())
-                    .addToBackStack("AddFlowStack")
-                    .commit();
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    addReqDetailFragment, android.R.id.content);
             presenter.deleteAddReq(item.account);
             //向对方发送请求
         });
@@ -214,7 +206,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -235,7 +227,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void hideLoadingDialog() {
-//        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -268,7 +259,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
 
             case R.id.tv_toolbar_right:
@@ -366,12 +357,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         bundle.putInt("position", position);
         bundle.putParcelable("frienditembean", account);
         relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
-                .addToBackStack("mineHelpFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), relativeAndFrienDetialFragment,
+                android.R.id.content);
         initFriendDeleteListener();
     }
 

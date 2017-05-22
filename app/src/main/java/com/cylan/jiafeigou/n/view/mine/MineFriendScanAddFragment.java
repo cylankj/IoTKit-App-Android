@@ -101,7 +101,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
 
@@ -127,7 +127,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
             bundle.putBoolean("isFrom", isFrom);
             bundle.putSerializable("addRequestItems", bean);
             MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
@@ -144,7 +144,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
             bundle.putInt("position", -1);
             bundle.putParcelable("frienditembean", friendBean);
             MineFriendDetailFragment relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
@@ -175,7 +175,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -196,7 +196,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void hideLoadingPro() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

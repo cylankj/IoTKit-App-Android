@@ -127,6 +127,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (!JFGRules.isDeviceOnline(dpNet)) {
                         return;
                     }
+                    //局域网弹出
+                    if (!MiscUtils.isDeviceInWLAN(uuid)) return;
                     long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
                     if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         //弹框的时间,从弹出算起
@@ -919,7 +921,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 weakReference.get().onTakeSnapShot(bitmap);//弹窗
             PerformanceUtils.stopTrace("takeCapture");
             String filePath;
+            String fileName = "";
             if (forPopWindow) {
+                fileName = System.currentTimeMillis() + ".png";
                 filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
             } else {
                 filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
@@ -930,7 +934,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             }
             BitmapUtils.saveBitmap2file(bitmap, filePath);
             if (forPopWindow)//添加到相册
-                MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
+            {
+                MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+            }
+//            MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
             if (weakReference.get() != null && !forPopWindow)
                 weakReference.get().onPreviewResourceReady(bitmap);
             shareSnapshot(forPopWindow, filePath);//最后一步处理分享
@@ -1091,7 +1098,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(ret -> {
                             if (presenterWeakReference.get() != null) {
-                                setupLocalAudio(true, false, false, false);
+                                setupLocalAudio(false, false, false, false);
                             }
                         }, AppLogger::e);
             }

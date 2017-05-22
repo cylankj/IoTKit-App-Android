@@ -162,7 +162,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_friends_add_by_num_back:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
     }
@@ -183,12 +183,12 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     @Override
     public void showFindLoading() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideFindLoading() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**
@@ -215,7 +215,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             bundle.putBoolean("isFrom", isFrom);
             bundle.putSerializable("addRequestItems", bean);
             MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, addReqDetailFragment, addReqDetailFragment.getClass().getName())
@@ -232,7 +232,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             bundle.putInt("position", -1);
             bundle.putParcelable("frienditembean", friendBean);
             MineFriendDetailFragment relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")

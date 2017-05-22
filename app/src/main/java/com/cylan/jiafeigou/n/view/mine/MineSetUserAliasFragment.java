@@ -124,12 +124,12 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
 
     @Override
     public void showSendHint() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideSendHint() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**
@@ -152,7 +152,7 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
             if (getEditName().equals(accountArrived.jfgAccount.getAlias())) {
                 ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
                 RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
             } else {
                 ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
             }
@@ -173,7 +173,7 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:
                 if (presenter.isEditEmpty(getEditName())) {

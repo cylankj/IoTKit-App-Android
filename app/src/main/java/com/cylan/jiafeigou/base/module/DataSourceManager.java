@@ -457,7 +457,8 @@ public class DataSourceManager implements JFGSourceManager {
                     try {
                         ArrayList<JFGDPMsg> list = new ArrayList<>();
                         for (DataPoint data : value) {
-                            device.setValue((int) data.msgId, data);
+                            boolean result = device.setValue((int) data.msgId, data);
+                            AppLogger.d("update dp:" + result + " " + data.msgId);
                             JFGDPMsg jfgdpMsg = new JFGDPMsg(data.msgId, System.currentTimeMillis());
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
@@ -578,12 +579,15 @@ public class DataSourceManager implements JFGSourceManager {
                         device = event.devices[i];
                         result.remove(device.uuid);
                     }
+                    AppLogger.d("已删除的设备数:" + result.size());
                     return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
                     try {
                         ArrayList<JFGDPMsg> parameters;
                         DBOption.DeviceOption option;
+                        mCachedDeviceMap.clear();
+                        rawDeviceOrder.clear();
                         ArrayList<String> uuidList = new ArrayList<>();
                         synchronized (DataSourceManager.class) {
                             mCachedDeviceMap.clear();

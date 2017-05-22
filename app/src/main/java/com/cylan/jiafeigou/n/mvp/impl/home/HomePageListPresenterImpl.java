@@ -6,10 +6,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -21,6 +23,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -155,7 +158,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        getView().onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
+        List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+        Log.d("subUuidList", "subUuidList?" + ListUtils.getSize(list));
+        getView().onItemsRsp(list);
         getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
@@ -189,6 +194,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .map(o -> {
                     subUuidList();
                     AppLogger.d("get list");

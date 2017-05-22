@@ -115,7 +115,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
     }
@@ -178,14 +178,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancleShareProgress() {
-        if (getFragmentManager() != null) {
-            LoadingDialog.showLoading(getFragmentManager(), ContextUtils.getContext().getString(R.string.LOADING));
-        }
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideCancleShareProgress() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override
