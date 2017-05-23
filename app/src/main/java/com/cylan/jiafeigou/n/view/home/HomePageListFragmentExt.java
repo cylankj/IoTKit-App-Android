@@ -457,6 +457,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             if (srLayoutMainContentHolder.isRefreshing()) {
                 srLayoutMainContentHolder.setRefreshing(false);
                 srLayoutMainContentHolder.clearAnimation();
+                enableNestedScroll();
                 AppLogger.d("stop refreshing ui");
             }
 

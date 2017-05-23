@@ -165,7 +165,8 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
                 try {
-                    resutBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", checkAccountCallback.s));
+                    int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                    resutBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", checkAccountCallback.s));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

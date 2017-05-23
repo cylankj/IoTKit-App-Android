@@ -376,7 +376,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
         @Override
         protected void setResource(Bitmap resource) {
-            if (resource == null)
+            if (resource == null || image.get() == null)
                 return;
             RoundedBitmapDrawable circularBitmapDrawable =
                     RoundedBitmapDrawableFactory.create(resources.get(), resource);

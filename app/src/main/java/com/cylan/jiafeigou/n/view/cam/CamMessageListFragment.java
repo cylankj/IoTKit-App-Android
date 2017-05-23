@@ -189,13 +189,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onStart() {
         super.onStart();
-        //刚刚进入页面，尽量少点加载
-
+        //从通知栏跳进来
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+                startRequest(true);
+            }
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        //刚刚进入页面，尽量少点加载
         if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
             if (camMessageListAdapter.getCount() == 0)
                 startRequest(true);

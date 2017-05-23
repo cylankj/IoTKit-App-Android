@@ -110,6 +110,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             @Override
             public void onSystemUiVisibilityChange(int visibility) {
                 Log.d("show", "show: " + visibility);
+                if (visibility == 0 && MiscUtils.isLand())
+                    handleSystemBar(false, 100);
             }
         });
     }
@@ -198,10 +200,15 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 return true;
         });
         Intent intent = getIntent();
-        if (intent.hasExtra("jump_to_message")) {
+        if (intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
             //跳转到
             if (vpCameraLive.getAdapter().getCount() > 1) {
                 vpCameraLive.setCurrentItem(1);
+            }
+            try {
+                BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
     }

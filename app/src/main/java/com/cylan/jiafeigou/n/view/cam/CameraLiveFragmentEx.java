@@ -319,7 +319,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
             DpMsgDefine.DPStandby standby = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPStandby.class);
             if (standby != null && standby.standby) {
-                basePresenter.stopPlayVideo(JFGRules.PlayErr.STOP_MAUNALLY);
+                basePresenter.stopPlayVideo(JFGRules.PlayErr.STOP_MAUNALLY)
+                        .subscribe(ret -> {
+                        }, AppLogger::e);
             } else {
                 if (basePresenter.getLiveStream().playState != JConstant.PLAY_STATE_PLAYING) {
                     CamLiveContract.LiveStream stream = basePresenter.getLiveStream();
@@ -368,6 +370,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     int vId = capture.getId();
                     switch (vId) {
                         case R.id.imgV_cam_trigger_capture:
+                        case R.id.imgV_land_cam_trigger_capture:
                             basePresenter.takeSnapShot(true);
                             break;
                     }

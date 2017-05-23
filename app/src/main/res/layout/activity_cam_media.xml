@@ -12,8 +12,7 @@
     <com.cylan.jiafeigou.misc.HackyViewPager
         android:id="@+id/vp_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/v_layout"
+        android:layout_height="400dp"
         android:layout_below="@+id/custom_toolbar" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -26,21 +25,21 @@
         hunt:ct_icon="@drawable/nav_tab_back_selector"
         hunt:ct_title_color="@color/color_white" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/v_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:layout_above="@+id/fLayout_cam_handle_bar"
+        android:layout_below="@+id/vp_container"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/lLayout_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="2dp"
-            android:gravity="center"
-            android:visibility="gone">
+            android:gravity="center">
 
             <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
                 android:layout_width="56dp"
@@ -79,35 +78,37 @@
                 hunt:riv_corner_radius="5dp" />
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/fLayout_cam_handle_bar"
-            android:layout_width="match_parent"
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fLayout_cam_handle_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom">
+
+        <ImageView
+            android:id="@+id/imgV_big_pic_download"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
+            android:padding="@dimen/x15"
+            android:src="@drawable/icon_download" />
 
-            <ImageView
-                android:id="@+id/imgV_big_pic_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/x15"
-                android:src="@drawable/icon_download" />
+        <ImageView
+            android:id="@+id/imgV_big_pic_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/x15"
+            android:src="@drawable/icon_share" />
 
-            <ImageView
-                android:id="@+id/imgV_big_pic_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/x15"
-                android:src="@drawable/icon_share" />
-
-            <ImageView
-                android:id="@+id/imgV_big_pic_collect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:padding="@dimen/x15"
-                android:src="@drawable/icon_collection" />
-        </FrameLayout>
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/imgV_big_pic_collect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="@dimen/x15"
+            android:src="@drawable/icon_collection" />
+    </FrameLayout>
 
 </RelativeLayout>
