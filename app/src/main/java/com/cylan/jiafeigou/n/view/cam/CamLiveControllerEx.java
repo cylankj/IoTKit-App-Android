@@ -1063,7 +1063,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         if (historyFile != null) {
                             handler.setNav2Time(timeTarget);
                             presenter.startPlayHistory(timeTarget);
+                            setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
                             AppLogger.d("找到历史录像?" + historyFile);
+                            AppLogger.d("目标历史录像时间?" + timeTarget);
                         }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
