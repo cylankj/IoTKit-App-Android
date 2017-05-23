@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -124,6 +125,7 @@ public final class BaseInitializationManager {
             RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         }
     }
+
     private void initDeviceInformationFetcher() {
         forwardHelper.setAppCmd(appCmd);
     }
@@ -206,7 +208,7 @@ public final class BaseInitializationManager {
         try {
             System.loadLibrary("jfgsdk");
             appCmd.setCallBack(callBackHolder);
-            appCmd.initNativeParam(vid, vkey, serverAddress);
+            appCmd.initNativeParam(vid, vkey, serverAddress, JConstant.ROOT_DIR);
             appCmd.enableLog(true, logPath);
         } catch (Exception e) {
             AppLogger.e("初始化出现错误!!!" + e.getMessage());

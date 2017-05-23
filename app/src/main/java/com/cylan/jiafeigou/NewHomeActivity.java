@@ -226,7 +226,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     @Override
-    public void needUpdate(String desc, String filePath) {
+    public void needUpdate(String desc, String filePath, int force) {
         getAlertDialogManager().showDialog(this, getString(R.string.UPGRADE), getString(R.string.UPGRADE),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     /**
@@ -236,7 +236,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
                     startActivity(i);
-                }, getString(R.string.CANCEL), null, false);
+                }, force == 1 ? "" : getString(R.string.CANCEL), null, false);
     }
 
     @Override

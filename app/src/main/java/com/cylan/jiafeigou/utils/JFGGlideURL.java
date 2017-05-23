@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
@@ -32,9 +33,10 @@ public class JFGGlideURL extends GlideUrl {
         this.vid = Security.getVId();
         if (device != null) {
             this.V2 = TextUtils.isEmpty(device.vid);
+            Log.d("V2", "V2? " + V2);
             this.regionType = device.regionType;
             if (this.regionType > 1 || this.regionType < 0) regionType = 0;
-        }
+        } else Log.d("V2", "V2? is empty ");
         this.timestamp = fileName;
         this.cid = cid;
     }

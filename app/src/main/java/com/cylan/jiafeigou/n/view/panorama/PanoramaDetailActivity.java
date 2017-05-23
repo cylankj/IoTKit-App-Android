@@ -434,7 +434,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     @Override
-    public void OnPlayerReady(long l, int i, int i1) {
+    public void OnPlayerReady(long l, int i, int i1, int i2) {
         AppLogger.d("播放器初始化成功了");
         JFGPlayer.StartRender(player, panoramicView720Ext);
     }
