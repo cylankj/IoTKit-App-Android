@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
@@ -133,7 +134,8 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 addReqBean.alias = checkAccountCallback.s1;
                 try {
                     //头像
-                    addReqBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", addReqBean.account));
+                    int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                    addReqBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", addReqBean.account));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

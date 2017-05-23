@@ -135,7 +135,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
                 try {
-                    relAndFriendBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", info.account));
+                    int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                    relAndFriendBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", info.account));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

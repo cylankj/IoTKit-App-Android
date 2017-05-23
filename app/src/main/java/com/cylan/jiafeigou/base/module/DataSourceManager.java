@@ -529,6 +529,12 @@ public class DataSourceManager implements JFGSourceManager {
         }
     }
 
+    @Override
+    public int getStorageType() {
+        RxEvent.StorageTypeUpdate storage = RxBus.getCacheInstance().getStickyEvent(RxEvent.StorageTypeUpdate.class);
+        return storage == null ? 0 : storage.type;
+    }
+
     private Subscription makeCacheAccountSub() {
         return getCacheInstance().toObservable(RxEvent.SerializeCacheAccountEvent.class)
                 .onBackpressureBuffer()

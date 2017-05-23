@@ -753,7 +753,7 @@ public class RxEvent {
 //    }
 
     public static class StorageTypeUpdate {
-        private int type;
+        public int type;
 
         public StorageTypeUpdate(int type) {
             this.type = type;
