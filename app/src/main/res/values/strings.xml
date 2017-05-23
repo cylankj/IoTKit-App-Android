@@ -976,4 +976,7 @@
     <string name="web">http://www.cleverdog.com.cn/</string>
     <string name="wifi_authentication">Verify %s WiFi connection</string>
     <string name="wifi_hasnot">Not find this WIFI</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

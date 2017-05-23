@@ -2,6 +2,7 @@ package com.cylan.jiafeigou;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,7 +32,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -187,7 +187,11 @@ public class SmartcallActivity extends NeedLoginActivity
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (grantResults[0] == -1) {
-                    ToastUtil.showToast(getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)));
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)), getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)),
+                            getString(R.string.OK), (DialogInterface dialog, int which) -> {
+
+                            },
+                            getString(R.string.CANCEL), null);
                     return;
                 }
                 SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);

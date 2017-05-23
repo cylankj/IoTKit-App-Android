@@ -75,6 +75,7 @@ public class DataSourceManager implements JFGSourceManager {
     private IDBHelper dbHelper;
     private IPropertyParser propertyParser;
     private AppCmd appCmd;
+    private int storageType;
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
@@ -519,10 +520,15 @@ public class DataSourceManager implements JFGSourceManager {
         }
     }
 
+
     @Override
     public int getStorageType() {
-        RxEvent.StorageTypeUpdate storage = RxBus.getCacheInstance().getStickyEvent(RxEvent.StorageTypeUpdate.class);
-        return storage == null ? 0 : storage.type;
+        return this.storageType;
+    }
+
+    @Override
+    public void setStorageType(int type) {
+        this.storageType = type;
     }
 
     private Subscription makeCacheAccountSub() {

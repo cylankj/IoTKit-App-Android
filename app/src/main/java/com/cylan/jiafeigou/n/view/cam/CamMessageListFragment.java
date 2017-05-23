@@ -231,7 +231,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      * @param position
      */
     private void setCurrentPosition(int position) {
-        if (getView() != null) getView().post(() -> {
+        if (getView() != null && isAdded()) getView().post(() -> {
             if (camMessageListAdapter.getCount() == 0) return;
             long time = camMessageListAdapter.getList().get(0).version;
             boolean isToday = TimeUtils.isToday(time);

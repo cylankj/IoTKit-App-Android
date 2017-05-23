@@ -63,6 +63,7 @@ public class AutoSignIn {
 
     public void autoLogin() {
         RxBus.getCacheInstance().removeAllStickyEvents();
+        AppLogger.e("此处使用removeAll,可能引发潜在的bug");
         Observable.just(PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY))
                 .subscribeOn(Schedulers.io())
                 .flatMap(account -> {

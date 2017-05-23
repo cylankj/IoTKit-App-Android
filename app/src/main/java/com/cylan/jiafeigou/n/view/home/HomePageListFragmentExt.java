@@ -55,8 +55,6 @@ import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
 import com.cylan.jiafeigou.widget.WrapContentLinearLayoutManager;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
-import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -138,11 +136,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         boolean show = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
         if (show) {
             PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
-            imgBtnAddDevices.post(() -> {
-                SimplePopupWindow popupWindow = new SimplePopupWindow(getActivity(), R.drawable.add_device_bg_tips, R.string.Tap1_Add_Tips);
-                popupWindow.showOnAnchor(imgBtnAddDevices, RelativePopupWindow.VerticalPosition.BELOW,
-                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x10), 0);
-            });
+            imgBtnAddDevices.post(() -> getActivity().getSupportFragmentManager()
+                    .beginTransaction().add(android.R.id.content, new HomePageCoverFragment())
+                    .addToBackStack("HomePageCoverFragment")
+                    .commitAllowingStateLoss());
+//            imgBtnAddDevices.post(() -> {
+//                SimplePopupWindow popupWindow = new SimplePopupWindow(getActivity(), R.drawable.add_device_bg_tips, R.string.Tap1_Add_Tips);
+//                popupWindow.showOnAnchor(imgBtnAddDevices, RelativePopupWindow.VerticalPosition.BELOW,
+//                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x10), 0);
+//            });
         }
     }
 

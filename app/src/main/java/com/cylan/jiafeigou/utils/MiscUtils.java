@@ -8,6 +8,9 @@ import android.content.res.XmlResourceParser;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -568,6 +571,46 @@ public class MiscUtils {
             //在线
             String appSSID = NetUtils.getNetName(ContextUtils.getContext());
             return TextUtils.equals(appSSID, net.ssid);
+        }
+    }
+
+    /**
+     * 属于绑定过程,恢复公网的wifi
+     */
+    public static void recoveryWiFi() {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        List<WifiConfiguration> list =
+                wifiManager.getConfiguredNetworks();
+        WifiInfo info = wifiManager.getConnectionInfo();
+        AppLogger.d("当前连接的网络:" + info.getSSID() + ":" + info.getNetworkId());
+        boolean disconnect = wifiManager.disconnect();
+        AppLogger.d("断开网络是否成功:" + disconnect);
+        boolean disableNetwork = wifiManager.disableNetwork(info.getNetworkId());
+        AppLogger.d("禁用网络是否成功:" + disableNetwork);
+        if (list != null) {
+            int highPriority = -1;
+            int index = -1;
+            for (int i = 0; i < list.size(); i++) {
+                String ssid = list.get(i).SSID;
+                if (!JFGRules.isCylanDevice(ssid)) {
+                    //恢复之前连接过的wifi
+                    if (highPriority < list.get(i).priority) {
+                        highPriority = list.get(i).priority;
+                        index = i;
+                    }
+                } else {
+                    WifiConfiguration configuration = list.get(i);
+                    boolean s = wifiManager.disableNetwork(configuration.networkId);
+                    boolean b = wifiManager.removeNetwork(configuration.networkId);
+                    AppLogger.d("禁用加菲狗 Dog:" + s + "移除加菲狗 dog:" + b);
+                }
+            }
+            if (index != -1) {
+                boolean enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, false);
+                AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
+                boolean reconnect = wifiManager.reconnect();
+                AppLogger.d("re connect :" + reconnect);
+            }
         }
     }
 }

@@ -128,8 +128,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
                 imgVBigPicCollect.post(() -> {
                     SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
-                    popupWindow.showOnAnchor(imgVBigPicShare, RelativePopupWindow.VerticalPosition.ABOVE,
-                            RelativePopupWindow.HorizontalPosition.LEFT, (int) getResources().getDimension(R.dimen.x20), 0);
+                    popupWindow.showOnAnchor(imgVBigPicCollect, RelativePopupWindow.VerticalPosition.ABOVE,
+                            RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, -20, 0);
                 });
             }
         });

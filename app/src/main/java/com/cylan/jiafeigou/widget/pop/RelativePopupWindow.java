@@ -9,15 +9,16 @@ import android.support.v4.widget.PopupWindowCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by cylan-hunt on 17-2-23.
+ * @author kakajika
+ * @since 2016/07/01
  */
-
 public class RelativePopupWindow extends PopupWindow {
 
     @IntDef({
@@ -101,6 +102,18 @@ public class RelativePopupWindow extends PopupWindow {
     }
 
     /**
+     * Show at relative position to anchor View.
+     *
+     * @param anchor      Anchor View
+     * @param vertPos     Vertical Position Flag
+     * @param horizPos    Horizontal Position Flag
+     * @param fitInScreen Automatically fit in screen or not
+     */
+    public void showOnAnchor(@NonNull View anchor, @VerticalPosition int vertPos, @HorizontalPosition int horizPos, boolean fitInScreen) {
+        showOnAnchor(anchor, vertPos, horizPos, 0, 0, fitInScreen);
+    }
+
+    /**
      * Show at relative position to anchor View with translation.
      *
      * @param anchor   Anchor View
@@ -110,45 +123,89 @@ public class RelativePopupWindow extends PopupWindow {
      * @param y        Translation Y
      */
     public void showOnAnchor(@NonNull View anchor, @VerticalPosition int vertPos, @HorizontalPosition int horizPos, int x, int y) {
+        showOnAnchor(anchor, vertPos, horizPos, x, y, true);
+    }
+
+    /**
+     * Show at relative position to anchor View with translation.
+     *
+     * @param anchor      Anchor View
+     * @param vertPos     Vertical Position Flag
+     * @param horizPos    Horizontal Position Flag
+     * @param xv           Translation X
+     * @param yv           Translation Y
+     * @param fitInScreen Automatically fit in screen or not
+     */
+    public void showOnAnchor(@NonNull View anchor, @VerticalPosition int vertPos, @HorizontalPosition int horizPos, int xv, int yv, final boolean fitInScreen) {
+        setClippingEnabled(fitInScreen);
         View contentView = getContentView();
-        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        final int measuredW = contentView.getMeasuredWidth();
-        final int measuredH = contentView.getMeasuredHeight();
-        switch (vertPos) {
-            case VerticalPosition.ABOVE:
-                y -= measuredH + anchor.getHeight();
-                break;
-            case VerticalPosition.ALIGN_BOTTOM:
-                y -= measuredH;
-                break;
-            case VerticalPosition.CENTER:
-                y -= anchor.getHeight() / 2 + measuredH / 2;
-                break;
-            case VerticalPosition.ALIGN_TOP:
-                y -= anchor.getHeight();
-                break;
-            case VerticalPosition.BELOW:
-                // Default position.
-                break;
+        contentView.post(() -> {
+            int x = xv, y = yv;
+            contentView.measure(makeDropDownMeasureSpec(getWidth()), makeDropDownMeasureSpec(getHeight()));
+            final int measuredW = contentView.getMeasuredWidth();
+            final int measuredH = contentView.getMeasuredHeight();
+            if (!fitInScreen) {
+                final int[] anchorLocation = new int[2];
+                anchor.getLocationInWindow(anchorLocation);
+                x += anchorLocation[0];
+                y += anchorLocation[1] + anchor.getHeight();
+            }
+            switch (vertPos) {
+                case VerticalPosition.ABOVE:
+                    y -= measuredH + anchor.getHeight();
+                    break;
+                case VerticalPosition.ALIGN_BOTTOM:
+                    y -= measuredH;
+                    break;
+                case VerticalPosition.CENTER:
+                    y -= anchor.getHeight() / 2 + measuredH / 2;
+                    break;
+                case VerticalPosition.ALIGN_TOP:
+                    y -= anchor.getHeight();
+                    break;
+                case VerticalPosition.BELOW:
+                    // Default position.
+                    break;
+            }
+            switch (horizPos) {
+                case HorizontalPosition.LEFT:
+                    x -= measuredW;
+                    break;
+                case HorizontalPosition.ALIGN_RIGHT:
+                    x -= measuredW - anchor.getWidth();
+                    break;
+                case HorizontalPosition.CENTER:
+                    x += anchor.getWidth() / 2 - measuredW / 2;
+                    break;
+                case HorizontalPosition.ALIGN_LEFT:
+                    // Default position.
+                    break;
+                case HorizontalPosition.RIGHT:
+                    x += anchor.getWidth();
+                    break;
+            }
+            if (fitInScreen) {
+                PopupWindowCompat.showAsDropDown(this, anchor, x, y, Gravity.NO_GRAVITY);
+            } else {
+                showAtLocation(anchor, Gravity.NO_GRAVITY, x, y);
+            }
+        });
+
+    }
+
+    @SuppressWarnings("ResourceType")
+    private static int makeDropDownMeasureSpec(int measureSpec) {
+        return View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(measureSpec), getDropDownMeasureSpecMode(measureSpec));
+    }
+
+    private static int getDropDownMeasureSpecMode(int measureSpec) {
+        switch (measureSpec) {
+            case ViewGroup.LayoutParams.WRAP_CONTENT:
+                return View.MeasureSpec.UNSPECIFIED;
+            default:
+                return View.MeasureSpec.EXACTLY;
         }
-        switch (horizPos) {
-            case HorizontalPosition.LEFT:
-                x -= measuredW;
-                break;
-            case HorizontalPosition.ALIGN_RIGHT:
-                x -= measuredW + anchor.getWidth();
-                break;
-            case HorizontalPosition.CENTER:
-                x += anchor.getWidth() / 2 - measuredW / 2;
-                break;
-            case HorizontalPosition.ALIGN_LEFT:
-                // Default position.
-                break;
-            case HorizontalPosition.RIGHT:
-                x += anchor.getWidth();
-                break;
-        }
-        PopupWindowCompat.showAsDropDown(this, anchor, x, y, Gravity.NO_GRAVITY);
     }
 
 }
+
