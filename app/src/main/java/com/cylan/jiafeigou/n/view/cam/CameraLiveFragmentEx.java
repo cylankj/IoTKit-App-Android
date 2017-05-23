@@ -363,6 +363,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     int vId = capture.getId();
                     switch (vId) {
                         case R.id.imgV_cam_trigger_capture:
+                        case R.id.imgV_land_cam_trigger_capture:
                             basePresenter.takeSnapShot(true);
                             break;
                     }

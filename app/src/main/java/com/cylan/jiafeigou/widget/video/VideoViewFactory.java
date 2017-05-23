@@ -70,6 +70,8 @@ public class VideoViewFactory {
         void performTouch();
 
         void detectOrientationChanged();
+
+        Bitmap getCacheBitmap();
     }
 
     public interface ILiveView {
