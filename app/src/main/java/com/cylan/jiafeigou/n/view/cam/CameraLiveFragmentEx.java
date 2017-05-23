@@ -241,13 +241,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 AppLogger.d("需要定位到时间轴");
                 if (time == 0 && BuildConfig.DEBUG)
                     throw new IllegalArgumentException("play history time is 0");
-//                startLiveHistory(time);
-                AppLogger.e("历史录像");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
                 //满足条件才需要播放
                 if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
                     return;
-                basePresenter.startPlayHistory(time);
+                if (String.valueOf(time).length() != String.valueOf(System.currentTimeMillis()).length()) {
+                    time = time * 1000L;//确保是毫秒
+                }
+                camLiveControlLayer.reAssembleHistory(basePresenter, time);
+//
                 return;
             }
             playAfterCheck();

@@ -193,6 +193,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
+                    if (historyDataProvider == null)
+                        historyDataProvider = DataExt.getInstance();
                     historyDataProvider.flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
                     return Observable.just(historyDataProvider);
                 });
