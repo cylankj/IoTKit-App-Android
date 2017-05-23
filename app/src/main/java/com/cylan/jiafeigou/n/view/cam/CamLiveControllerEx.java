@@ -29,6 +29,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -44,6 +45,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
@@ -65,6 +67,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
@@ -115,6 +120,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private HistoryWheelHandler historyWheelHandler;
 
+    private CamLiveContract.Presenter presenter;
     /**
      * 设备的时区
      */
@@ -188,6 +194,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void initView(CamLiveContract.Presenter presenter, String uuid) {
+        this.presenter = presenter;
         this.uuid = uuid;
         //disable 6个view
         setHotSeatState(-1, false, false, false, false, false, false);
@@ -233,6 +240,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private boolean isSightSettingShow = false;
+
+    public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
+        reInitHistoryHandler(presenter);
+        return historyWheelHandler;
+    }
 
     /**
      * 全景视角设置
@@ -794,9 +806,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void onHistoryDataRsp(CamLiveContract.Presenter presenter) {
         showHistoryWheel(true);
-        if (historyWheelHandler == null) {
-            historyWheelHandler = new HistoryWheelHandler((ViewGroup) layoutG, superWheelExt, presenter);
-        }
+        reInitHistoryHandler(presenter);
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
@@ -805,6 +815,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 prepareLayoutDAnimation(state == STATE_FINISH);
             });
         });
+    }
+
+    private void reInitHistoryHandler(CamLiveContract.Presenter presenter) {
+        if (historyWheelHandler == null) {
+            historyWheelHandler = new HistoryWheelHandler((ViewGroup) layoutG, superWheelExt, presenter);
+        }
     }
 
     @Override
@@ -1028,6 +1044,29 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(null, null, true);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
+    }
+
+    @Override
+    public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
+        long timeStart = TimeUtils.getSpecificDayStartTime(timeTarget);
+        presenter.assembleTheDay(timeStart / 1000L)
+                .subscribeOn(Schedulers.io())
+                .filter(iData -> iData != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
+                .subscribe(iData -> {
+                    HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
+                    AppLogger.d("历史录像导航条空?" + (handler == null));
+                    if (handler != null) {
+                        handler.setupHistoryData(iData);
+                        HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
+                        if (historyFile != null) {
+                            handler.setNav2Time(timeTarget);
+                            presenter.startPlayHistory(timeTarget);
+                            AppLogger.d("找到历史录像?" + historyFile);
+                        }
+                    }
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override

@@ -104,4 +104,6 @@ public interface ICamLiveLayer {
     void resumeGoodFrame();
 
     void startBadFrame();
+
+    void reAssembleHistory(CamLiveContract.Presenter presenter, long timeTarget);
 }
