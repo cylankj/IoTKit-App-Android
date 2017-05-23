@@ -337,7 +337,7 @@ public class JConstant {
     public static final String NEED_SHOW_COLLECT_USE_CASE = "show_collect_use_case";
     public static final String NEED_SHOW_BIND_USE_CASE = "show_bind_use_case";
     public static final String IS_FIRST_PAGE_VIS = "is_first_page_vis";
-
+    public static final String KEY_JUMP_TO_MESSAGE = "jump_to_message";
     public static final String KEY_CLIENT_CHECK_VERSION_ID = "client_id";
 
     private static final String VERSION_URL = "http://yun.app8h.com/app?act=check_version&id=%s&platform=androidPhone&appid=%s";

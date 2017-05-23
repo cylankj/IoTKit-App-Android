@@ -792,7 +792,7 @@ public class DataSourceManager implements JFGSourceManager {
                                     bean.subContent = ContextUtils.getContext().getString(R.string.receive_new_news, count > 99 ? "99+" : count);
                                     final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                                    intent.putExtra("jump_to_message", "jump_to_message");
+                                    intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
                                     bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, AppLogger::e);

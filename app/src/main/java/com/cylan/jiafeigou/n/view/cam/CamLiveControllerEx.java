@@ -288,9 +288,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             //只有播放的时候才能操作//loading的时候 不能点击
             if (livePlayState == PLAY_STATE_PLAYING) {
-                layoutA.setTranslationY(0);
-                layoutD.setTranslationY(0);
-                layoutE.setTranslationY(0);
+//                layoutA.setTranslationY(0);
+//                layoutD.setTranslationY(0);
+//                layoutE.setTranslationY(0);
                 boolean toHide = layoutD.isShown();
                 if (toHide) {
                     removeCallbacks(portShowRunnable);

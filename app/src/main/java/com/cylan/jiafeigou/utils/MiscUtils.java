@@ -538,12 +538,12 @@ public class MiscUtils {
                 }
             }
             MediaStore.Images.Media.insertImage(ContextUtils.getContext().getContentResolver(),
-                    filePath, fileName, null);
+                    filePath + File.separator + fileName, fileName, null);
             // 最后通知图库更新
-            ContextUtils.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + filePath)));
+            ContextUtils.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + filePath + File.separator + fileName)));
             return true;
         } catch (Exception e) {
-            AppLogger.e("err: " + MiscUtils.getErr(e));
+            AppLogger.e("insertImage err: " + MiscUtils.getErr(e));
             return false;
         }
     }
