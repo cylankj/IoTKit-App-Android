@@ -138,7 +138,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     private void decideWhichView() {
         if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
             vpContainer.setLocked(true);
-            lLayoutPreview.setVisibility(View.VISIBLE);
+            findViewById(R.id.v_layout).setVisibility(View.VISIBLE);
             int count = MiscUtils.getCount(alarmMsg.fileIndex);
             for (int i = 3; i > count; i--) {
                 View v = lLayoutPreview.getChildAt(i - 1);

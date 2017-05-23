@@ -438,7 +438,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 YoYo.with(Techniques.SlideInUp)
                         .duration(250)
                         .playOn(layoutD);
-                if(!layoutE.isShown())layoutE.setVisibility(VISIBLE);//
+                if (!layoutE.isShown()) layoutE.setVisibility(VISIBLE);//
                 YoYo.with(Techniques.SlideInUp)
                         .duration(250)
                         .playOn(layoutE);
@@ -745,9 +745,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void setLiveRectTime(int type, long timestamp) {
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
-        if (timestamp == 0) timestamp = System.currentTimeMillis() / 1000;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", getTime(timestamp * 1000L));
+                + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
     }

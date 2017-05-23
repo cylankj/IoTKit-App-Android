@@ -403,10 +403,13 @@ public class JFGRules {
     public static TimeZone getDeviceTimezone(Device device) {
         if (device == null) return TimeZone.getDefault();
         DpMsgDefine.DPTimeZone timeZone = device.$(214, new DpMsgDefine.DPTimeZone());
-        String[] ids = TimeZone.getAvailableIDs(timeZone.offset * 1000);
-        if (ids != null && ids.length > 0) {
-            return TimeZone.getTimeZone(ids[0]);
-        }
-        return TimeZone.getDefault();
+        return TimeZone.getTimeZone(getGMTFormat(timeZone.offset * 1000));
+    }
+
+    private static String getGMTFormat(int rawOffset) {
+        int hour = Math.abs(rawOffset / 1000 / 60 / 60);
+        int minute = Math.abs(rawOffset) - Math.abs(hour) * 1000 * 60 * 60 > 0 ? 30 : 0;
+        String factor = rawOffset > 0 ? "+" : "-";
+        return String.format(Locale.getDefault(), "GMT%s%02d:%02d", factor, hour, minute);
     }
 }
