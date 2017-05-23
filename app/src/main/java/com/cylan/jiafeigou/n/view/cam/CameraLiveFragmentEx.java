@@ -238,6 +238,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             Bundle bundle = getArguments();
             if (getArguments().containsKey(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME)) {
                 long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                AppLogger.d("需要定位到时间轴");
                 if (time == 0 && BuildConfig.DEBUG)
                     throw new IllegalArgumentException("play history time is 0");
 //                startLiveHistory(time);
