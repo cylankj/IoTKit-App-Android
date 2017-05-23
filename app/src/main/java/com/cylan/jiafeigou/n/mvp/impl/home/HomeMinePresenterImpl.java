@@ -67,6 +67,18 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         subscription.add(loginInMe());
     }
 
+//    private Subscription storageTypeUpdate() {
+//        return RxBus.getCacheInstance().toObservableSticky(RxEvent.StorageTypeUpdate.class)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(ret -> mView != null && mView.isAdded())
+//                .filter(ret -> {
+//                    JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+//                    return account != null && !TextUtils.isEmpty(account.getPhotoUrl());
+//                })
+//                .subscribe(ret -> mView.setUserImageHeadByUrl(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getPhotoUrl()),
+//                        AppLogger::e);
+//    }
+
     @Override
     public void stop() {
         super.stop();

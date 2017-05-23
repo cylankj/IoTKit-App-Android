@@ -251,7 +251,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (JFGRules.isFreeCam(device.pid)) {
             //freeCam直接进入
             Intent intent = new Intent(this, BindCamActivity.class);
-            intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+            intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
             startActivity(intent);
         } else {
             DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());

@@ -752,6 +752,13 @@ public class RxEvent {
 //
 //    }
 
+    public static class StorageTypeUpdate {
+        private int type;
+
+        public StorageTypeUpdate(int type) {
+            this.type = type;
+        }
+    }
 
     public static class CheckVersionRsp implements Parcelable {
         public long seq;
@@ -1272,6 +1279,7 @@ public class RxEvent {
         public PanoramaApiAvailable(int apiType) {
             this.ApiType = apiType;
         }
+
         public static final PanoramaApiAvailable API_HTTP = new PanoramaApiAvailable(0);
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
     }

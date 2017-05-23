@@ -304,6 +304,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnNotifyStorageType(int i) {
         AppLogger.d("OnNotifyStorageType:" + i);
+//        RxBus.getCacheInstance().postSticky(new RxEvent.StorageTypeUpdate(i));
+        BaseApplication.getAppComponent().getCmd().getAccount();
     }
 
     @Override

@@ -267,6 +267,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Account account = getAppComponent().getSourceManager().getAccount();
         if (account == null || getContext() == null) return;
         AppLogger.d("account Token:" + account.getToken());
+        if (TextUtils.isEmpty(url)) return;//空 不需要加载
         Glide.with(getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
