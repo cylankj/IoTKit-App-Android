@@ -204,7 +204,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     //    public static final class U {
 //        public static int FAILED_DEVICE_FAILED = -4;//设备返回非0
 //        public static int FAILED_FPING_ERR = -3;
-//        public static int FAILED_30S = -2;
+//        public static int FAILED_60S = -2;
 //        public static int FAILED_60S = -1;
 //        public static int IDLE = 0;
 //        public static int UPDATING = 1;

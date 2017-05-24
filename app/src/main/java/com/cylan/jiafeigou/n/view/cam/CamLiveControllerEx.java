@@ -811,7 +811,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
             post(() -> {
-                setLiveRectTime(livePlayType, time / 1000);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+                setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
                 prepareLayoutDAnimation(state == STATE_FINISH);
             });
         });
