@@ -84,6 +84,7 @@ public final class BaseInitializationManager {
                                      BaseDeviceInformationFetcher fetcher,
                                      BaseForwardHelper forwardHelper
     ) {
+
         compositeSubscription = new CompositeSubscription();
         this.manager = manager;
         this.helper = helper;
@@ -107,6 +108,7 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
+        hasInitFinished = false;
         enableDebugOptions();
         initSourceManager();
         initDBHelper();
@@ -121,9 +123,7 @@ public final class BaseInitializationManager {
         initDeviceInformationFetcher();
         OkGo.init((Application) appContext);
         hasInitFinished = true;
-        if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.GlobalInitFinishEvent.class)) {
-            RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
-        }
+        RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
     }
 
     private void initDeviceInformationFetcher() {
@@ -235,7 +235,7 @@ public final class BaseInitializationManager {
     }
 
     public void observeInitFinish() {
-        if (hasInitFinished && !RxBus.getCacheInstance().hasStickyEvent(RxEvent.GlobalInitFinishEvent.class)) {
+        if (hasInitFinished) {
             RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         }
     }

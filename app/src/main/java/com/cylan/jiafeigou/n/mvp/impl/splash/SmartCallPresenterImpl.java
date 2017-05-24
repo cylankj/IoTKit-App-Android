@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import android.util.Log;
-
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -36,7 +34,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 
     public void autoLogin() {
         AppLogger.d("before autoLogin");
-        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class).map(event -> true)
                 .first()
                 .observeOn(Schedulers.io())
                 .subscribe(event -> AutoSignIn.getInstance().autoLogin(), AppLogger::e);
