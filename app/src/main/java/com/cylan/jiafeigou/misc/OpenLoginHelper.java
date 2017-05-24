@@ -85,6 +85,9 @@ public class OpenLoginHelper {
      * @param type
      */
     public void loginAuthorize(int type) {
+        PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY, false);
+        PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY, false);
+
         switch (type) {
             case 3:
                 qqAuthorize(activity);
