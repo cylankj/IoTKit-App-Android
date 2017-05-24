@@ -45,7 +45,7 @@ public class RoundCardPopup extends RelativePopupWindow {
     public void showOnAnchor(@NonNull View anchor, int vertPos, int horizPos, int x, int y) {
         super.showOnAnchor(anchor, vertPos, horizPos, x, y);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            circularReveal(anchor);
+//            circularReveal(anchor);
         }
         if (dismissTime != -1)
             getContentView().postDelayed(this::dismiss, dismissTime);
