@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
@@ -88,6 +88,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     ImageButton bottomPictureMenuPicture;
     @BindView(R.id.act_panorama_detail_pop_picture_vr_tips)
     RelativeLayout popPictureVrTips;
+    @BindView(R.id.act_panorama_detail_bottom_video_menu_photograph)
+    ImageButton bottomVideoMenuPicture;
+    @BindView(R.id.act_panorama_detail_bottom_video_menu_time_title)
+    TextView bottomVideoMenuPlayTime;
     @Inject
     HttpProxyCacheServer httpProxy;
     private PanoramicView720_Ext panoramicView720Ext;
@@ -175,6 +179,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         layoutParams = (LinearLayout.LayoutParams) bottomVideoMenuVR.getLayoutParams();
         layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_item_margin));
         bottomVideoMenuVR.setLayoutParams(layoutParams);
+        layoutParams = (LinearLayout.LayoutParams) bottomVideoMenuPicture.getLayoutParams();
+        layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_item_margin));
+        bottomVideoMenuPicture.setLayoutParams(layoutParams);
         params = (RelativeLayout.LayoutParams) bottomMenuItemContainer.getLayoutParams();
         params.bottomMargin = (int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_margin_bottom);
         bottomMenuItemContainer.setLayoutParams(params);
@@ -221,6 +228,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     panoramaPanelSwitcher.showPrevious();
                 }
                 if (downloadInfo != null && downloadInfo.getState() == 4) {
+
                     player = JFGPlayer.InitPlayer(this);
                     JFGPlayer.Play(player, downloadInfo.getTargetPath());
                 } else {
@@ -238,6 +246,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         }
         panoramicView720Ext.enableGyro(true);
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
+        panoramaPanelSeekBar.setMax(panoramaItem.duration);
     }
 
     @OnClick(R.id.act_panorama_detail_bottom_picture_menu_photograph)
@@ -280,8 +289,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             bottomVideoMenuMode.setImageResource(R.drawable.video_icon_panorama);
             bottomPictureMenuMode.setEnabled(!vrEnabled);
             bottomVideoMenuMode.setEnabled(!vrEnabled);
-            int orientation = getRequestedOrientation();
-            if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && vrEnabled) {
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation != Configuration.ORIENTATION_LANDSCAPE && vrEnabled) {
                 popPictureVrTips.setVisibility(View.VISIBLE);
             }
         }
@@ -435,7 +444,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void OnPlayerReady(long l, int i, int i1, int i2) {
-        AppLogger.d("播放器初始化成功了");
+        AppLogger.d("播放器初始化成功了" + i + "," + i1 + "," + i2);
         JFGPlayer.StartRender(player, panoramicView720Ext);
     }
 
@@ -451,8 +460,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void OnUpdateProgress(long l, int i) {
-        AppLogger.d("当前播放进度为:" + i);
-        panoramaPanelSeekBar.setProgress(i);
+        AppLogger.d("当前播放进度为:" + i + "," + l);
+        panoramaPanelSeekBar.setProgress(i / 1000);
     }
 
     @Override

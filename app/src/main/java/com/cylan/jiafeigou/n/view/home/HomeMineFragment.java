@@ -340,44 +340,37 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             case R.id.home_mine_item_friend:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_friend));
-                AppLogger.e("home_mine_item_friend");
                 friendItem(view);
                 break;
             case R.id.home_mine_item_share:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_share));
-                AppLogger.e("home_mine_item_share");
                 shareItem(view);
                 break;
             case R.id.home_mine_item_help:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
-                AppLogger.e("home_mine_item_help");
                 helpItem(view);
                 break;
             case R.id.home_mine_item_settings:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_settings));
-                AppLogger.e("home_mine_item_settings");
                 settingsItem(view);
                 break;
             case R.id.shadow_layout:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
-                AppLogger.e("shadow_layout");
                 portrait();
                 break;
             case R.id.tv_home_mine_nick:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_nick));
-                AppLogger.e("tv_home_mine_nick");
                 jump2UserInfo();
                 break;
 
             case R.id.tv_home_mine_msg_count:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_msg_count));
-                AppLogger.e("tv_home_mine_msg_count");
                 jump2MesgFragment();
                 break;
         }

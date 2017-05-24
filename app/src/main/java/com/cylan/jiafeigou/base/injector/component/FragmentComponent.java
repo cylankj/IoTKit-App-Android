@@ -35,4 +35,5 @@ public interface FragmentComponent {
     void inject(DelayRecordGuideFragment fragment);
 
     void inject(DelayRecordMainFragment fragment);
+
 }
