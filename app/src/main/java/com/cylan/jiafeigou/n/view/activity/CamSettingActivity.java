@@ -297,15 +297,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         final int count = viewGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
-            if (view.getId() == R.id.sv_setting_device_wifi) {
-                continue;
-            }
+//            if (view.getId() == R.id.sv_setting_device_wifi) {
+//                continue;
+//            }
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
             }
-//            if (view.getId() == R.id.sv_setting_device_detail) {
-//                continue;//解绑按钮
-//            }
+            if (view.getId() == R.id.sv_setting_device_standby_mode) {
+                continue;//解绑按钮
+            }
             view.setAlpha(enable ? 1.f : 0.6f);
             view.setEnabled(enable);
         }
@@ -397,7 +397,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 basePresenter.updateInfoReq(list);
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
-            switchBtn(lLayoutSettingItemContainer, !dpStandby.standby || net.net > 0);
         }
         /////////////////////////////led/////////////////////////////////////
         if (JFGRules.showLedIndicator(device.pid)) {
@@ -494,6 +493,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
         } else sbtnSettingSight.setVisibility(View.GONE);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
+        switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
     }
 
     @Override

@@ -115,7 +115,9 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
                 pid == JConstant.PID_CAMERA_PANORAMA_HAISI_960 ||
                 pid == JConstant.PID_CAMERA_PANORAMA_HAISI_1080 ||
-                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
+                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE ||
+                pid == 36 ||
+                pid == 37;
     }
 
     public static boolean show110VLayout(int pid) {
@@ -234,6 +236,9 @@ public class JFGRules {
             case 1092:
             case 1071:
             case 1090:
+            case 21:
+            case 36:
+            case 37:
                 return true;
             default:
                 return false;
@@ -274,13 +279,7 @@ public class JFGRules {
      * @return
      */
     public static boolean isNeedPanoramicView(int pid) {
-        switch (pid) {
-            case JConstant.OS_CAMERA_PANORAMA_HAISI:
-            case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
-            case JConstant.OS_CAMERA_PANORAMA_GUOKE:
-                return true;
-        }
-        return false;
+        return isPanoramicCam(pid);
     }
 
     public static boolean is2WCam(int pid) {

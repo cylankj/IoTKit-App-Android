@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
@@ -133,9 +134,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
                         CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
-                        if (prePlayType.type == TYPE_HISTORY){
+                        if (prePlayType.type == TYPE_HISTORY) {
                             basePresenter.startPlayHistory(prePlayType.time * 1000L);
-                        }else if (prePlayType.type==TYPE_LIVE){
+                        } else if (prePlayType.type == TYPE_LIVE) {
                             basePresenter.startPlay();
                         }
                         break;
@@ -458,7 +459,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onTakeSnapShot(Bitmap bitmap) {
-        if (bitmap == null) {
+        if (bitmap == null || MiscUtils.isLand()) {//横屏 不需要弹窗.
 //            if (getView() != null)
 //                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
             return;

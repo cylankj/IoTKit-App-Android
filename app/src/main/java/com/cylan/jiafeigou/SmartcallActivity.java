@@ -4,12 +4,15 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -187,11 +190,7 @@ public class SmartcallActivity extends NeedLoginActivity
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (grantResults[0] == -1) {
-                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)), getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)),
-                            getString(R.string.OK), (DialogInterface dialog, int which) -> {
-
-                            },
-                            getString(R.string.CANCEL), null);
+//                    reEnablePermission();
                     return;
                 }
                 SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
@@ -199,10 +198,27 @@ public class SmartcallActivity extends NeedLoginActivity
         }
     }
 
+    /**
+     * 拒绝也弹框,知道用户做出,app弹框的选择.
+     */
+    private void reEnablePermission() {
+        Log.d("reEnablePermission", "reEnablePermission");
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)), getString(R.string.permission_auth, getString(R.string.VALID_STORAGE)),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                },
+                getString(R.string.CANCEL), (DialogInterface dialog, int which) -> finish());
+    }
+
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteStoragePermissionsDenied() {
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + ",onWriteSdCardDenied");
         AppLogger.permissionGranted = false;
+        reEnablePermission();
     }
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})

@@ -67,14 +67,14 @@ public class AlertDialogManager {
         if (activity == null || activity.isFinishing()) return;
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
-        if (dialog == null) {
-            dialog = getCustomDialog(activity)
-                    .setMessage(message)
-                    .create();
-            if (weakReferenceMap == null)
-                weakReferenceMap = new HashMap<>();
-            weakReferenceMap.put(tag, new WeakReference<>(dialog));
-        }
+//        if (dialog == null) {
+        dialog = getCustomDialog(activity)
+                .setMessage(message)
+                .create();
+        if (weakReferenceMap == null)
+            weakReferenceMap = new HashMap<>();
+        weakReferenceMap.put(tag, new WeakReference<>(dialog));
+//        }
         finalShow(activity, dialog);
     }
 
@@ -84,14 +84,14 @@ public class AlertDialogManager {
         if (activity == null || activity.isFinishing()) return;
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
-        if (dialog == null) {
-            dialog = getCustomDialog(activity)
-                    .setMessage(message)
-                    .create();
-            if (weakReferenceMap == null)
-                weakReferenceMap = new HashMap<>();
-            weakReferenceMap.put(tag, new WeakReference<>(dialog));
-        }
+//        if (dialog == null) {
+        dialog = getCustomDialog(activity)
+                .setMessage(message)
+                .create();
+        if (weakReferenceMap == null)
+            weakReferenceMap = new HashMap<>();
+        weakReferenceMap.put(tag, new WeakReference<>(dialog));
+//        }
         dialog.setCanceledOnTouchOutside(canceltouchOutSide);
         dialog.setCancelable(canceltouchOutSide);
         finalShow(activity, dialog);
@@ -103,15 +103,15 @@ public class AlertDialogManager {
         if (activity == null || activity.isFinishing()) return;
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
-        if (dialog == null) {
-            dialog = getCustomDialog(activity)
-                    .setMessage(message)
-                    .setPositiveButton(ok, okClickListener)
-                    .create();
-            if (weakReferenceMap == null)
-                weakReferenceMap = new HashMap<>();
-            weakReferenceMap.put(tag, new WeakReference<>(dialog));
-        }
+//        if (dialog == null) {
+        dialog = getCustomDialog(activity)
+                .setMessage(message)
+                .setPositiveButton(ok, okClickListener)
+                .create();
+        if (weakReferenceMap == null)
+            weakReferenceMap = new HashMap<>();
+        weakReferenceMap.put(tag, new WeakReference<>(dialog));
+//        }
         finalShow(activity, dialog);
     }
 
@@ -121,15 +121,15 @@ public class AlertDialogManager {
         if (activity == null || activity.isFinishing()) return;
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
-        if (dialog == null) {
-            dialog = getCustomDialog(activity)
-                    .setMessage(message)
-                    .setPositiveButton(ok, okClickListener)
-                    .create();
-            if (weakReferenceMap == null)
-                weakReferenceMap = new HashMap<>();
-            weakReferenceMap.put(tag, new WeakReference<>(dialog));
-        }
+//        if (dialog == null) {
+        dialog = getCustomDialog(activity)
+                .setMessage(message)
+                .setPositiveButton(ok, okClickListener)
+                .create();
+        if (weakReferenceMap == null)
+            weakReferenceMap = new HashMap<>();
+        weakReferenceMap.put(tag, new WeakReference<>(dialog));
+//        }
         dialog.setCanceledOnTouchOutside(mCancelable);
         dialog.setCancelable(mCancelable);
         finalShow(activity, dialog);
@@ -141,16 +141,16 @@ public class AlertDialogManager {
         if (activity == null || activity.isFinishing()) return;
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
-        if (dialog == null) {
-            dialog = getCustomDialog(activity)
-                    .setMessage(message)
-                    .setPositiveButton(ok, okClickListener)
-                    .setNegativeButton(cancel, cancelClickListener)
-                    .create();
-            if (weakReferenceMap == null)
-                weakReferenceMap = new HashMap<>();
-            weakReferenceMap.put(tag, new WeakReference<>(dialog));
-        }
+//        if (dialog == null) {
+        dialog = getCustomDialog(activity)
+                .setMessage(message)
+                .setPositiveButton(ok, okClickListener)
+                .setNegativeButton(cancel, cancelClickListener)
+                .create();
+        if (weakReferenceMap == null)
+            weakReferenceMap = new HashMap<>();
+        weakReferenceMap.put(tag, new WeakReference<>(dialog));
+//        }
         finalShow(activity, dialog);
     }
 
@@ -160,16 +160,16 @@ public class AlertDialogManager {
         if (activity == null || activity.isFinishing()) return;
         if (dialog != null && dialog.isShowing()) return;
         dismissOtherDialog();
-        if (dialog == null) {
-            dialog = getCustomDialog(activity)
-                    .setMessage(message)
-                    .setPositiveButton(ok, okClickListener)
-                    .setNegativeButton(cancel, cancelClickListener)
-                    .create();
-            if (weakReferenceMap == null)
-                weakReferenceMap = new HashMap<>();
-            weakReferenceMap.put(tag, new WeakReference<>(dialog));
-        }
+//        if (dialog == null) {
+        dialog = getCustomDialog(activity)
+                .setMessage(message)
+                .setPositiveButton(ok, okClickListener)
+                .setNegativeButton(cancel, cancelClickListener)
+                .create();
+        if (weakReferenceMap == null)
+            weakReferenceMap = new HashMap<>();
+        weakReferenceMap.put(tag, new WeakReference<>(dialog));
+//        }
         dialog.setCanceledOnTouchOutside(mCancelable);
         dialog.setCancelable(mCancelable);
         finalShow(activity, dialog);
