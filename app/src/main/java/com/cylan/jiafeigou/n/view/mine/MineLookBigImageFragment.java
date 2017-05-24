@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineLookBigImagePresenterImp;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -102,18 +104,14 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      * desc:保存图片
      */
     private void showSaveImageDialog() {
-        new AlertDialog.Builder(getActivity())
-                .setPositiveButton(R.string.Tap3_SavePic, (dialog, which) -> {
+        AlertDialogManager.getInstance().showDialog(getActivity(), "ave", getString(R.string.Tap3_SavePic),
+                getString(R.string.Tap3_SavePic), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                     ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
                     if (presenter != null) {
                         presenter.saveImage(bitmapSource);
                     }
-                })
-                .setNegativeButton(R.string.CANCEL, null)
-                .setTitle(R.string.Tap3_SavePic)
-                .setCancelable(false)
-                .show();
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override
@@ -132,7 +130,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      * desc:加载图片
      */
     private void loadImage() {
-        myViewTarget = new MyViewTarget(ivLookBigImage, ContextUtils.getContext(), getFragmentManager());
+        myViewTarget = new MyViewTarget(ivLookBigImage, ContextUtils.getContext(), getActivity().getSupportFragmentManager());
         showLoadImageProgress();
         Glide.with(getContext())
                 .load(imageUrl)
@@ -196,7 +194,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         switch (view.getId()) {
             case R.id.iv_look_big_image:                //点击大图退出全屏
                 if (loadResult) {
-                    getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 } else {
                     loadImage();
                 }
@@ -215,10 +213,10 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     }
 
     public void showLoadImageProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     public void hideLoadImageProgress() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 }

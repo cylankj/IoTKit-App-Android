@@ -129,7 +129,7 @@ public class HomeMineHelpFragment extends Fragment {
         switch (view.getId()) {
             //点击退回home_mine的fragment
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             //点击进入意见反馈的页面
             case R.id.tv_toolbar_right:

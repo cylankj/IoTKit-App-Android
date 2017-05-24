@@ -71,6 +71,10 @@ public interface JFGSourceManager {
 
     int getLoginState();
 
+    int getStorageType();
+
+    void setStorageType(int type);
+
     void setJfgAccount(JFGAccount jfgAccount);
 
     boolean updateDevice(Device device);

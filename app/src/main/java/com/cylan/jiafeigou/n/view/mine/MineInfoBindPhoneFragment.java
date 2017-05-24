@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -192,7 +193,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
-                if(!BaseApplication.getAppComponent().getSourceManager().isOnline()){
+                if (!BaseApplication.getAppComponent().getSourceManager().isOnline()) {
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
@@ -205,7 +206,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 break;
 
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
 
             case R.id.iv_mine_bind_phone_clear:
@@ -231,45 +232,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     /**
      * 跳转到设置密码界面
      */
-    private void jump2SetpassFragment(String account) {
+    private void jump2SetPWDFragment(String account) {
         Bundle bundle = new Bundle();
         bundle.putString("useraccount", account);
         bundle.putString("token", PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-        MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "MineInfoSetNewPwdFragment")
-//                .addToBackStack("personalInformationFragment")
-                .commit();
-
-    }
-
-    /**
-     * 处理绑定者更改手机号
-     */
-    private void handlerChangeOrBindPhone() {
-        //绑定手机号
-        if (tvMeterGetCode.getText().equals(getString(R.string.GET_CODE))) {
-            if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
-                presenter.checkPhoneIsBind(getInputPhone());
-            } else {
-                ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
-            }
-        } else {
-            // 发送修改用户属性请求
-            if (getInputPhone().equals(PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN))) {
-                if (!tvMeterGetCode.getText().toString().equals(getString(R.string.Button_ReObtain))) {
-                    userinfo.setPhone(getInputPhone(), getInputCheckCode());
-                    userinfo.resetFlag();
-                    presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-                } else {
-                    ToastUtil.showToast(getString(R.string.Tap0_invaildcode));
-                }
-            } else {
-                ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
-            }
-        }
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                MineInfoSetNewPwdFragment.newInstance(bundle), android.R.id.content);
     }
 
     @Override
@@ -343,7 +311,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 if (isBindOrChange) {
                     if (presenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
                         //是三方登录
-                        jump2SetpassFragment(userinfo.getAccount());
+                        jump2SetPWDFragment(userinfo.getAccount());
                         return;
                     }
                 }
@@ -352,7 +320,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                     if (changeAccListener != null) {
                         changeAccListener.onChange(getInputPhone());
                     }
-                    getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.SUBMIT_FAIL));
@@ -365,7 +333,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -373,7 +341,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**

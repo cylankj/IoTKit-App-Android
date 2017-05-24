@@ -243,15 +243,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             Bundle bundle = getArguments();
             if (getArguments().containsKey(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME)) {
                 long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                AppLogger.d("需要定位到时间轴");
                 if (time == 0 && BuildConfig.DEBUG)
                     throw new IllegalArgumentException("play history time is 0");
-//                startLiveHistory(time);
-                AppLogger.e("历史录像");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
                 //满足条件才需要播放
                 if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
                     return;
-                basePresenter.startPlayHistory(time);
+                if (String.valueOf(time).length() != String.valueOf(System.currentTimeMillis()).length()) {
+                    time = time * 1000L;//确保是毫秒
+                }
+                camLiveControlLayer.reAssembleHistory(basePresenter, time);
+//
                 return;
             }
             playAfterCheck();
@@ -317,6 +320,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         }
         if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+            DpMsgDefine.DPStandby standby = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPStandby.class);
+            if (standby != null && standby.standby) {
+                basePresenter.stopPlayVideo(JFGRules.PlayErr.STOP_MAUNALLY)
+                        .subscribe(ret -> {
+                        }, AppLogger::e);
+            } else {
+                if (basePresenter.getLiveStream().playState != JConstant.PLAY_STATE_PLAYING) {
+                    CamLiveContract.LiveStream stream = basePresenter.getLiveStream();
+                    //恢复播放
+                    if (stream.type == TYPE_HISTORY) {
+                        basePresenter.startPlayHistory(stream.time);
+                    } else
+                        basePresenter.startPlay();
+                }
+            }
             camLiveControlLayer.onDeviceStandByChanged(basePresenter.getDevice(), v -> jump2Setting());
         }
         if (msgId == DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD) {
@@ -355,6 +373,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     int vId = capture.getId();
                     switch (vId) {
                         case R.id.imgV_cam_trigger_capture:
+                        case R.id.imgV_land_cam_trigger_capture:
                             basePresenter.takeSnapShot(true);
                             break;
                     }

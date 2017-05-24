@@ -5,17 +5,19 @@
     android:id="@+id/activity_cam_media"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context="com.cylan.jiafeigou.n.view.media.CamMediaActivity">
 
 
     <com.cylan.jiafeigou.misc.HackyViewPager
         android:id="@+id/vp_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="400dp"
+        android:layout_below="@+id/custom_toolbar" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_enable_shadow="false"
@@ -23,47 +25,60 @@
         hunt:ct_icon="@drawable/nav_tab_back_selector"
         hunt:ct_title_color="@color/color_white" />
 
-    <LinearLayout
-        android:id="@+id/lLayout_preview"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/v_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fLayout_cam_handle_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="2dp"
-        android:gravity="center"
+        android:layout_below="@+id/vp_container"
+        android:orientation="vertical"
         android:visibility="gone">
 
-        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginLeft="7.5dp"
-            android:layout_marginRight="7.5dp"
-            android:minHeight="56dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_load_failed"
-            hunt:riv_corner_radius="5dp" />
+        <LinearLayout
+            android:id="@+id/lLayout_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
 
-        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginLeft="7.5dp"
-            android:layout_marginRight="7.5dp"
-            android:minHeight="56dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_load_failed"
-            hunt:riv_corner_radius="5dp" />
+            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="7.5dp"
+                android:layout_marginRight="7.5dp"
+                android:minHeight="56dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_load_failed"
+                hunt:riv_border_color="@color/color_4b9fd5"
+                hunt:riv_border_width="1dp"
+                hunt:riv_corner_radius="5dp" />
 
-        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginLeft="7.5dp"
-            android:layout_marginRight="7.5dp"
-            android:minHeight="56dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_load_failed"
-            hunt:riv_corner_radius="5dp" />
-    </LinearLayout>
+            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="7.5dp"
+                android:layout_marginRight="7.5dp"
+                android:minHeight="56dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_load_failed"
+                hunt:riv_border_color="@color/color_4b9fd5"
+                hunt:riv_border_width="1dp"
+                hunt:riv_corner_radius="5dp" />
+
+            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="7.5dp"
+                android:layout_marginRight="7.5dp"
+                android:minHeight="56dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_load_failed"
+                hunt:riv_border_color="@color/color_4b9fd5"
+                hunt:riv_border_width="1dp"
+                hunt:riv_corner_radius="5dp" />
+        </LinearLayout>
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/fLayout_cam_handle_bar"
@@ -76,7 +91,6 @@
             android:id="@+id/imgV_big_pic_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x25"
             android:padding="@dimen/x15"
             android:src="@drawable/icon_download" />
 
@@ -85,7 +99,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/x25"
             android:padding="@dimen/x15"
             android:src="@drawable/icon_share" />
 
@@ -94,8 +107,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_margin="@dimen/x25"
             android:padding="@dimen/x15"
             android:src="@drawable/icon_collection" />
     </FrameLayout>
+
 </RelativeLayout>

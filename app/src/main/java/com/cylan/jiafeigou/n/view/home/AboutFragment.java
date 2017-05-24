@@ -101,12 +101,8 @@ public class AboutFragment extends Fragment {
             case R.id.tv_user_agreement:
                 IMEUtils.hide(getActivity());
                 AgreementFragment fragment = AgreementFragment.getInstance(null);
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, fragment, "homeSettingAboutFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                        fragment, android.R.id.content);
                 break;
         }
     }

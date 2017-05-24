@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
@@ -102,5 +103,22 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
     @Override
     public void detectOrientationChanged() {
 
+    }
+
+    @Override
+    public Bitmap getCacheBitmap() {
+        setDrawingCacheEnabled(true);
+        // this is the important code :)
+        // Without it the view will have a dimension of 0,0 and the bitmap will be null
+        measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        buildDrawingCache(true);
+        Bitmap source = getDrawingCache();
+        Log.d("getCacheBitmap", "getCacheBitmap result?" + (source == null));
+        if (source == null) return null;
+        Bitmap b = Bitmap.createBitmap(source);
+        setDrawingCacheEnabled(false); // clear drawing cache
+        return b;
     }
 }

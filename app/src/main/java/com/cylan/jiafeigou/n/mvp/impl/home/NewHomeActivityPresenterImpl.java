@@ -39,7 +39,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                     boolean force = ret.rsp != null && ret.rsp.forceUpdate == 1;//强制升级
                     if (force || time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         PreferencesUtils.putLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG, System.currentTimeMillis());
-                        mView.needUpdate("", ret.filePath);
+                        mView.needUpdate("", ret.filePath, ret.rsp.forceUpdate);
                     }
                     if (!force) {
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);

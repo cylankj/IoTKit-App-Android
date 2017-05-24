@@ -217,7 +217,8 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
             try {
-                bean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", friendAccount.account));
+                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                bean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", friendAccount.account));
             } catch (Exception e) {
                 e.printStackTrace();
             }

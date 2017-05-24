@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.utils;
 
-import org.apache.tools.ant.taskdefs.Local;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -152,14 +151,31 @@ public class TimeUtilsTest {
 
     @Test
     public void testTimezone() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
-        String a[] = TimeZone.getAvailableIDs(28800000);
+        System.out.println(TimeZone.getDefault().getDisplayName());
+        System.out.println(TimeZone.getDefault().getID());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm",
+                Locale.getDefault());
+        System.out.println(-16200000 / 1000 / 60 / 60);//04:30
+        System.out.println("GMT" + -36000000 / 60 / 60);
+
+        String a[] = TimeZone.getAvailableIDs(-36000000);
         for (int i = 0; i < a.length; i++) {
             System.out.println(a[i]);
-            dateFormat.setTimeZone(TimeZone.getTimeZone(a[i]));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT-10:00"));
             System.out.println(dateFormat.format(new Date(System.currentTimeMillis())));
         }
         System.out.println(TimeZone.getDefault().getRawOffset());
+        getTimeFormat(-16200000);
+        getTimeFormat(36000000);
+    }
+
+    private String getTimeFormat(int rawOffset) {
+        int hour = Math.abs(rawOffset / 1000 / 60 / 60);
+        int minute = Math.abs(rawOffset) - Math.abs(hour) * 1000 * 60 * 60 > 0 ? 30 : 0;
+        String factor = rawOffset > 0 ? "+" : "-";
+        System.out.println(String.format(Locale.getDefault(), "GMT%s%02d:%02d", factor, hour, minute));
+        return hour + ":" + minute;
     }
 
 }

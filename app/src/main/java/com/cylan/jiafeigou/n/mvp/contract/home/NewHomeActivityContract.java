@@ -22,7 +22,7 @@ public interface NewHomeActivityContract {
 
         void start();
 
-        void needUpdate(String desc, String filePath);
+        void needUpdate(String desc, String filePath, int force);
     }
 
 

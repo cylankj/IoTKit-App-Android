@@ -315,7 +315,7 @@ public class ClientUpdateManager {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     InputStream is = null;
-                    byte[] buf = new byte[2048];
+                    byte[] buf = new byte[4096];
                     int len = 0;
                     FileOutputStream fos = null;
                     try {
@@ -331,6 +331,7 @@ public class ClientUpdateManager {
                         is = response.body().byteStream();
                         fos = new FileOutputStream(file);
                         downloadState = JConstant.D.DOWNLOADING;
+                        AppLogger.d("下载启动:" + rsp);
                         while ((len = is.read(buf)) != -1) {
                             current += len;
                             fos.write(buf, 0, len);
@@ -341,6 +342,7 @@ public class ClientUpdateManager {
                                 downloadListener.process(current, total);
                             }
                         }
+                        AppLogger.d("下载完成:" + rsp);
                         rsp.downloadState = JConstant.D.SUCCESS;
                         rsp.lastUpdateTime = System.currentTimeMillis();
                         updateInfo(rsp.uuid, rsp);
@@ -351,6 +353,7 @@ public class ClientUpdateManager {
                         downloadState = JConstant.D.SUCCESS;
                         downloadMap.remove(getKey(rsp));
                     } catch (Exception e) {
+                        AppLogger.d("下载失败:" + rsp);
                         Log.d(TAG, e.toString());
                         rsp.downloadState = JConstant.D.FAILED;
                         rsp.lastUpdateTime = System.currentTimeMillis();

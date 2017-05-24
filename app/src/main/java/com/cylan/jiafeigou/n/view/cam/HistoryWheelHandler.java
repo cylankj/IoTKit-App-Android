@@ -167,7 +167,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         switch (state) {
             case STATE_DRAGGING:
                 Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
-                if (datePickerListener != null) datePickerListener.onPickDate(time, STATE_DRAGGING);
+                if (datePickerListener != null)
+                    datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
@@ -175,7 +176,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
                 presenter.startPlayHistory(time);
-                if (datePickerListener != null) datePickerListener.onPickDate(time, STATE_FINISH);
+                if (datePickerListener != null)
+                    datePickerListener.onPickDate(time / 1000, STATE_FINISH);
                 break;
         }
     }

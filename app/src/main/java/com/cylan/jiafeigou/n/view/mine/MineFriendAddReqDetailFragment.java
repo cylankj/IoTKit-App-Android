@@ -170,7 +170,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.iv_detail_user_head:                      //查看大头像
                 if (getView() != null)
@@ -193,7 +193,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", addRequestItems.iconUrl);
         MineLookBigImageFragment lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, lookBigImageFragment, "lookBigImageFragment")
@@ -230,7 +230,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void showSendAddReqResult(boolean flag) {
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
@@ -241,7 +241,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             if (addListener != null) {
                 addListener.onAccept(addRequestItems);
             }
-            getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
         } else {
             ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
         }
@@ -255,7 +255,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle addReqBundle = new Bundle();
         addReqBundle.putString("account", addRequestItems.account);
         MineAddFromContactFragment addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addReqFragment, addReqFragment.getClass().getName())

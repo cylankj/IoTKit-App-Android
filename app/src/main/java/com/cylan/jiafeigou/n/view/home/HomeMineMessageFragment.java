@@ -157,7 +157,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:        //返回
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:       //删除
                 if (messageAdapter == null) return;

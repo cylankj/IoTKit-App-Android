@@ -227,7 +227,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                     zxVScan.stop();
                 }, 2000);
             } else {
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
+                        .commitAllowingStateLoss();//不需要动画.
                 int iPid = Integer.parseInt(pid);
                 if (JFGRules.isRS(iPid)) {
                     if (getActivity() != null)

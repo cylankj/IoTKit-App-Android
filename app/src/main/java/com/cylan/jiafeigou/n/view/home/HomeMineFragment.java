@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -37,13 +39,12 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
@@ -57,7 +58,7 @@ import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
 
 public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
-        implements HomeMineContract.View, BaseDialog.BaseDialogAction {
+        implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
     @BindView(R.id.tv_home_mine_nick)
@@ -157,7 +158,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             }
         }
         MineFriendsFragment mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineRelativesandFriendsFragment,
@@ -172,14 +173,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     private void showBindPhoneOrEmailDialog(String title) {
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("bindphone");
         if (f == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, title);
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.Tap2_Index_Open_NoDeviceOption));
-            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-            dialogFragment.setAction(this);
-            dialogFragment.show(getActivity().getSupportFragmentManager(), "bindphone");
+            AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
+                    getString(R.string.Tap2_Index_Open_NoDeviceOption),
+                    (DialogInterface dialog, int which) -> {
+                        basePresenter.loginType();
+                    }, getString(R.string.CANCEL), null, false);
         }
     }
 
@@ -190,7 +188,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         HomeSettingFragment homeSettingFragment = HomeSettingFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, homeSettingFragment,
@@ -215,7 +213,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         }
 
         MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
@@ -269,6 +267,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Account account = getAppComponent().getSourceManager().getAccount();
         if (account == null || getContext() == null) return;
         AppLogger.d("account Token:" + account.getToken());
+        if (TextUtils.isEmpty(url)) return;//空 不需要加载
         Glide.with(getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
@@ -400,7 +399,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         HomeMineHelpFragment mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
@@ -420,7 +419,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Bundle bundle = new Bundle();
         bundle.putBoolean("hasNewMesg", basePresenter.hasUnReadMesg());
         HomeMineMessageFragment homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
@@ -446,7 +445,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2UserInfoFrgment() {
         HomeMineInfoFragment personalInformationFragment = HomeMineInfoFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
@@ -462,12 +461,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", getAppComponent().getSourceManager().getJFGAccount());
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                bindPhoneFragment, android.R.id.content);
     }
 
     /**
@@ -478,7 +473,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", getAppComponent().getSourceManager().getJFGAccount());
         HomeMineInfoMailBoxFragment bindMailFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, bindMailFragment, "bindMailFragment")
@@ -487,16 +482,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     @Override
-    public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right) {
-            basePresenter.loginType();
-        }
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
+        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
         mineInfoFragment.onActivityResult(requestCode, resultCode, data);
     }
 

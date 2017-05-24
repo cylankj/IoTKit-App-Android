@@ -1,0 +1,34 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/v_home_cover"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:clickable="true"
+    tools:context="com.cylan.jiafeigou.n.view.home.HomePageCoverFragment">
+
+
+    <ImageView
+        android:id="@+id/v_guide"
+        style="@style/ripple_background_borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="@dimen/x5"
+        android:layout_marginRight="@dimen/x5"
+        android:padding="@dimen/x10"
+        android:src="@drawable/btn_common_add" />
+
+    <TextView
+        android:id="@+id/tv_pop_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/v_guide"
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        android:background="@drawable/add_device_bg_tips"
+        android:text="@string/Tap1_Add_Tips"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp13" />
+</RelativeLayout>

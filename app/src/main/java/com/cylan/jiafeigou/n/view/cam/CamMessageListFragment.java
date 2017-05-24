@@ -189,13 +189,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onStart() {
         super.onStart();
-        //刚刚进入页面，尽量少点加载
-
+        //从通知栏跳进来
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+                startRequest(true);
+            }
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        //刚刚进入页面，尽量少点加载
         if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
             if (camMessageListAdapter.getCount() == 0)
                 startRequest(true);
@@ -226,7 +231,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      * @param position
      */
     private void setCurrentPosition(int position) {
-        if (getView() != null) getView().post(() -> {
+        if (getView() != null && isAdded()) getView().post(() -> {
             if (camMessageListAdapter.getCount() == 0) return;
             long time = camMessageListAdapter.getList().get(0).version;
             boolean isToday = TimeUtils.isToday(time);
@@ -443,7 +448,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
                             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
                             tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false);
                         }, getString(R.string.CANCEL), null, false);
                 break;
         }
@@ -465,7 +470,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             camMessageListAdapter.removeAll(list);
                             if (basePresenter != null)
                                 basePresenter.removeItems(list);
-                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false);
                         }, getString(R.string.CANCEL), null, false);
             }
             break;

@@ -92,7 +92,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = jfgFriendRequest.account;
             emMessage.time = jfgFriendRequest.time;
             try {
-                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
+                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -112,7 +113,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = account.account;
             emMessage.alias = account.alias;
             try {
-                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
+                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
             } catch (Exception e) {
                 e.printStackTrace();
             }

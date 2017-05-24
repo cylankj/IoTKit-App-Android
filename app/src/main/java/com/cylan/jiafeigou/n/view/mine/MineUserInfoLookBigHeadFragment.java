@@ -75,7 +75,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         ivUserinfoBigImage.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
             public void onPhotoTap(View view, float x, float y) {
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
 
             @Override
@@ -98,7 +98,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
             return;
         }
         showLoadImageProgress();
-        MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail), getFragmentManager());
+        MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail), getActivity().getSupportFragmentManager());
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
@@ -144,33 +144,28 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         switch (view.getId()) {
             case R.id.rl_root_view:
                 if (loadResult) {
-                    getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
                 break;
             case R.id.iv_userinfo_big_image:
                 if (!loadResult) {
                     loadBigImage(iamgeUrl);
                 } else {
-                    getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
                 break;
         }
-//        if (loadResult) {
-//            getFragmentManager().popBackStack();
-//        } else {
-//            loadBigImage(iamgeUrl);
-//        }
     }
 
 
     @Override
     public void showLoadImageProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideLoadImageProgress() {
-        dismissLoading(getFragmentManager());
+        dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

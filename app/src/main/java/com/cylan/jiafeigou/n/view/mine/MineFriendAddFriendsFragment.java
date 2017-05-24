@@ -83,7 +83,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:        //返回
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
 
             case R.id.tv_scan_add:                                      //扫一扫添加
@@ -106,7 +106,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
     private void jump2AddByNumberFragment() {
         MineFriendAddByNumFragment addByNumFragment = MineFriendAddByNumFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addByNumFragment, addByNumFragment.getClass().getName())
@@ -116,7 +116,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
     private void jump2AddFromContactFragment() {
         MineFriendAddFromContactFragment addFromContactFragment = MineFriendAddFromContactFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
                 .addToBackStack("AddFlowStack")
@@ -125,7 +125,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
     private void jump2ScanAddFragment() {
         MineFriendScanAddFragment scanAddFragment = MineFriendScanAddFragment.newInstance();
-        getFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(0, 0
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fragment_container, scanAddFragment, "scanAddFragment")

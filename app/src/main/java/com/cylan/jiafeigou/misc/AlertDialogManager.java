@@ -93,6 +93,7 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.setCanceledOnTouchOutside(canceltouchOutSide);
+        dialog.setCancelable(canceltouchOutSide);
         finalShow(activity, dialog);
     }
 
@@ -130,6 +131,7 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.setCanceledOnTouchOutside(mCancelable);
+        dialog.setCancelable(mCancelable);
         finalShow(activity, dialog);
     }
 
@@ -169,6 +171,7 @@ public class AlertDialogManager {
             weakReferenceMap.put(tag, new WeakReference<>(dialog));
         }
         dialog.setCanceledOnTouchOutside(mCancelable);
+        dialog.setCancelable(mCancelable);
         finalShow(activity, dialog);
 
     }
