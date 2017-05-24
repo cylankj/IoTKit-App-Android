@@ -397,8 +397,8 @@ public class ClientUpdateManager {
         }
 
         /**
-         * {@link com.cylan.jiafeigou.misc.JConstant.U#FAILED_30S}
-         * {@link com.cylan.jiafeigou.misc.JConstant.U#FAILED_60S}
+         * {@link com.cylan.jiafeigou.misc.JConstant.U#FAILED_90S}
+         * {@link com.cylan.jiafeigou.misc.JConstant.U#FAILED_120S}
          * {@link com.cylan.jiafeigou.misc.JConstant.U#IDLE}
          * {@link com.cylan.jiafeigou.misc.JConstant.U#UPDATING}
          * {@link com.cylan.jiafeigou.misc.JConstant.U#SUCCESS}
@@ -473,8 +473,8 @@ public class ClientUpdateManager {
             AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
             if (listener != null) listener.upgradeStart();
             resetRspRecv(true);
-            makeUpdateRspRecv(60);//30s
-            makeUpdateRspRecv(90);//60s
+            makeUpdateRspRecv(90);//90s
+            makeUpdateRspRecv(120);//120s
             try {
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(remoteIp, (short) port, new UdpConstant.UdpFirmwareUpdate(localUrl, uuid, remoteIp, 8765).toBytes());
@@ -539,7 +539,7 @@ public class ClientUpdateManager {
                             handleResult(uuid, timeout, ((RxEvent.HelperBreaker) throwable).localUdpMsg.data);
                             Log.d(TAG, "Client: " + ((RxEvent.HelperBreaker) throwable).localUdpMsg);
                         } else if (throwable instanceof TimeoutException) {
-                            int err = timeout == 30 ? JConstant.U.FAILED_30S : JConstant.U.FAILED_60S;
+                            int err = timeout == 90 ? JConstant.U.FAILED_90S : JConstant.U.FAILED_120S;
                             updateState = err;
                             handleTimeout(err);
                         }
@@ -568,11 +568,12 @@ public class ClientUpdateManager {
                     AppLogger.d("升级成功,清空配置:" + uuid);
                     PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
                 }
+                AppLogger.d(String.format(Locale.getDefault(), "got %s firmware rsp :,uuid,%s,data:%s ", tag, uuid, fAck));
                 updatingTaskHashMap.remove(uuid);
             } catch (IOException e) {
                 AppLogger.e("err:" + MiscUtils.getErr(e));
             }
-            AppLogger.d(String.format(Locale.getDefault(), "got %s firmware rsp :,uuid,%s,data:%s ", tag, uuid, data));
+
         }
 
         @Override

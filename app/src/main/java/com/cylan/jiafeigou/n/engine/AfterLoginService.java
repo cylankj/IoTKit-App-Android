@@ -206,7 +206,7 @@ public class AfterLoginService extends IntentService {
             RxEvent.CheckVersionRsp rsp = new RxEvent.CheckVersionRsp(true,
                     url, versionName, desc, "");
             rsp.forceUpdate = clientCheckVersion.forceUpgrade;
-            rsp.fileDir = JConstant.MISC_PATH;
+            rsp.fileDir = JConstant.ROOT_DIR;
             rsp.fileSize = getFileSizeFromUrl(url);
             rsp.fileName = versionName + ".apk";
             rsp.preKey = JConstant.KEY_CLIENT_UPDATE_DESC;

@@ -177,7 +177,7 @@ public class FirmwareCheckerService extends Service {
                                 .build();
                         Response response = new OkHttpClient().newCall(request).execute();
                         ret.fileSize = response.body().contentLength();
-                        ret.fileDir = ContextUtils.getContext().getFilesDir().getAbsolutePath();
+                        ret.fileDir = JConstant.ROOT_DIR;
                         ret.hasNew = true;
                         ret.fileName = "." + uuid + MiscUtils.getFileNameWithoutExn(ret.url);
                         ret.uuid = uuid;

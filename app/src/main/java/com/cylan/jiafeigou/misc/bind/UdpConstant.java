@@ -151,5 +151,13 @@ public class UdpConstant {
         public int ack;
         @Index(3)
         public int ret;
+
+        @Override
+        public String toString() {
+            return "FAck{" +
+                    "ack=" + ack +
+                    ", ret=" + ret +
+                    '}';
+        }
     }
 }
