@@ -449,6 +449,21 @@ public class RxBusTest {
 
         System.out.println(time / 1000);
         System.out.println(time / 1000 + 10 + 1);
+        Observable.just("go")
+                .timeout(2, TimeUnit.SECONDS)
+                .map(ret -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return ret;
+                })
+
+                .subscribe(ret -> {
+                    System.out.println(ret);
+                }, throwable -> System.out.println(throwable));
+        Thread.sleep(5000);
 //        ArrayList<Integer> list = new ArrayList<>();
 //        for (int i = 0; i < 100; i++)
 //            list.add(i);

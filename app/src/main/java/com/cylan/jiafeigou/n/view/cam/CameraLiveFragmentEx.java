@@ -459,11 +459,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onTakeSnapShot(Bitmap bitmap) {
-        if (bitmap == null || MiscUtils.isLand()) {//横屏 不需要弹窗.
-//            if (getView() != null)
-//                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
+        if (bitmap == null) {
+            if (getView() != null)
+                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
             return;
         }
+        if (MiscUtils.isLand()) return;//横屏 不需要弹窗.
         PerformanceUtils.startTrace("takeSnapShot_pre");
         camLiveControlLayer.post(() -> camLiveControlLayer.onCaptureRsp(getActivity(), bitmap));
         PerformanceUtils.stopTrace("takeSnapShot_pre");

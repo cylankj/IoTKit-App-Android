@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -27,6 +26,8 @@ public interface SdCardInfoContract {
         void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus);
 
         void showSdPopDialog();
+
+        void onNetworkChanged(boolean connected);
 
     }
 

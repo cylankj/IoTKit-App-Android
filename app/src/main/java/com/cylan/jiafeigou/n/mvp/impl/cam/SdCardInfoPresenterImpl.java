@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -13,6 +16,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +27,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
+
 /**
  * 作者：zsl
  * 创建时间：2017/2/13
@@ -30,7 +36,8 @@ import rx.schedulers.Schedulers;
  */
 public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContract.View> implements SdCardInfoContract.Presenter {
 
-    private long clearTimeFlag;//格式化sd卡,开始时间.
+    private static long clearTimeFlag;//格式化sd卡,开始时间.
+    private static final long TIMEOUT = 2 * 60L;
 
     public SdCardInfoPresenterImpl(SdCardInfoContract.View view, String uuid) {
         super(view, uuid);
@@ -40,7 +47,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     protected Subscription[] register() {
         if (needRegisterTimeout()) {
-            addSubscription(clearCountTime(), "clearCountTime");
+//            mView.showLoading();
+            addSubscription(clearCountTime((System.currentTimeMillis() - clearTimeFlag) / 1000), "clearCountTime");
         }
         return new Subscription[]{
                 onClearSdReqBack(),
@@ -76,11 +84,11 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     public void updateInfoReq() {
         clearTimeFlag = System.currentTimeMillis();
-        addSubscription(clearCountTime(), "clearCountTime");
+        addSubscription(clearCountTime(TIMEOUT), "clearCountTime");
         addSubscription(Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .delay(500, TimeUnit.MILLISECONDS)
-                .subscribe((Object o) -> {
+                .map(ret -> {
                     try {
                         ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
@@ -91,24 +99,35 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     } catch (Exception e) {
                         AppLogger.e("err_sd: " + e.getLocalizedMessage());
                     }
-                }, (Throwable throwable) -> {
-                    AppLogger.e("updateInfoReq_sd" + throwable.getLocalizedMessage());
-                }), "updateInfoReq");
+                    return ret;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((Object o) -> {
+                }, AppLogger::e), "updateInfoReq");
     }
 
     public boolean needRegisterTimeout() {
-        return System.currentTimeMillis() - clearTimeFlag < 2 * 60 * 1000;
+        return System.currentTimeMillis() - clearTimeFlag < TIMEOUT * 1000;
     }
 
-    public Subscription clearCountTime() {
+    public Subscription clearCountTime(long timeout) {
         return Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .timeout(2 * 60 * 1000L - System.currentTimeMillis() + clearTimeFlag, TimeUnit.MILLISECONDS)
+                .map(ret -> {
+                    try {
+                        Thread.sleep(timeout * 1000L + 100L);
+                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+                    }
+                    return ret;
+                })
+                //timeout的使用需要注意
+                .timeout(timeout, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {
-                        AppLogger.d("两分钟超时时间到了!!!");
+                        AppLogger.d("两分钟超时到了!!!");
                         if (getView() != null) getView().clearSdResult(2);
                     }
                 });
@@ -136,6 +155,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     } else {
                         getView().clearSdResult(1);
                     }
+                    unSubscribe("clearCountTime");
+                    clearTimeFlag = 0;
                 }, AppLogger::e);
     }
 
@@ -148,6 +169,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .filter(ret -> ret.id == 204 || ret.id == 222)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(jfgDpMsg -> {
+                    unSubscribe("clearCountTime");
+                    clearTimeFlag = 0;
                     return null;
                 })
                 .subscribe(o -> {
@@ -162,5 +185,18 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     public void getSdCapacity(String uuid) {
 
+    }
+
+    @Override
+    protected String[] registerNetworkAction() {
+        return new String[]{ConnectivityManager.CONNECTIVITY_ACTION,
+                NETWORK_STATE_CHANGED_ACTION};
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        if (mView != null) {
+            mView.onNetworkChanged(NetUtils.getJfgNetType() > 0);
+        }
     }
 }

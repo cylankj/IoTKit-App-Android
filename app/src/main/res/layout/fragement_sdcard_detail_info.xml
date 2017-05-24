@@ -92,12 +92,11 @@
             android:id="@+id/tv_clear_sdcard"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y42"
-            android:layout_centerVertical="true"
             android:background="@drawable/long_btn_bg_shape_white"
             android:gravity="center"
             android:padding="@dimen/x10"
             android:text="@string/Clear_Sdcard"
-            android:textColor="#4B9FD5"
+            android:textColor="@color/common_btn_color_state"
             android:textSize="@dimen/sp16" />
 
         <ImageView

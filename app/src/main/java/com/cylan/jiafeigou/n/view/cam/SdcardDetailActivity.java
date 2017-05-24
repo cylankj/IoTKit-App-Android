@@ -57,9 +57,6 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     TextView tvClearRestart;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    //    private AlertDialog alertDialog;
-//    private AlertDialog formatSdcardDialog;
-//    private AlertDialog noSdcardDialog;
     private String uuid;
     private Subscription subscription;
 
@@ -113,26 +110,22 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     }
 
     private void showClearSdDialog() {
-        String[] split = tvSdcardVolume.getText().toString().split("/");
-        if (split == null || split.length == 0) {
+        if (NetUtils.getJfgNetType() == 0) {
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
             return;
         }
-        if ("0.0MB".equals(split[0])) {
-        } else {
-            Device device =
-                    BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-            DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
-            if (!JFGRules.isDeviceOnline(dpNet)) {
-                ToastUtil.showToast(getString(R.string.RET_EUNONLINE_CID));
-                return;
-            }
-            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Clear_Sdcard_tips),
-                    getString(R.string.Clear_Sdcard_tips),
-                    getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                        basePresenter.updateInfoReq();
-                        showLoading();
-                    }, getString(R.string.CANCEL), null);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
+        if (!JFGRules.isDeviceOnline(dpNet)) {
+            ToastUtil.showToast(getString(R.string.RET_EUNONLINE_CID));
+            return;
         }
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Clear_Sdcard_tips),
+                getString(R.string.Clear_Sdcard_tips),
+                getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                    basePresenter.updateInfoReq();
+                    showLoading();
+                }, getString(R.string.CANCEL), null);
     }
 
     @Override
@@ -209,6 +202,12 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                         getString(R.string.OK), null);
     }
 
+    @Override
+    public void onNetworkChanged(boolean connected) {
+        if (isFinishing()) return;
+        tvClecrSdcard.post(() -> tvClecrSdcard.setEnabled(connected));
+    }
+
     private void initDetailData() {
         if (!basePresenter.getSdcardState()) {
             AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
@@ -220,11 +219,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         if (device != null && JFGRules.is3GCam(device.pid)) {
             tvClearRestart.setVisibility(View.VISIBLE);
         }
-
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         boolean show = net != null && JFGRules.isDeviceOnline(net);
         if (!show || NetUtils.getNetType(getContext()) == -1) {
-            tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));
             tvClecrSdcard.setEnabled(false);
         }
     }
