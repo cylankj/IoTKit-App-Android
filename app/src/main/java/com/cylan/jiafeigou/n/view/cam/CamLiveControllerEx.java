@@ -858,6 +858,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onCaptureRsp(FragmentActivity activity, Bitmap bitmap) {
+        if (MiscUtils.isLand()) return;
         try {
             PerformanceUtils.startTrace("showPopupWindow");
             roundCardPopup = new RoundCardPopup(getContext(), view -> {

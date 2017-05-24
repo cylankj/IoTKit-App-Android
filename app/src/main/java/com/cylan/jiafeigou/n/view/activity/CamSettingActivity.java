@@ -303,9 +303,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
             }
-//            if (view.getId() == R.id.sv_setting_device_detail) {
-//                continue;//解绑按钮
-//            }
+            if (view.getId() == R.id.sv_setting_device_standby_mode) {
+                continue;//解绑按钮
+            }
             view.setAlpha(enable ? 1.f : 0.6f);
             view.setEnabled(enable);
         }
