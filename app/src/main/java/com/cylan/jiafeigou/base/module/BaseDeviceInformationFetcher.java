@@ -91,8 +91,8 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         //改变背景或者 处理网络的全局变量
-        boolean avaible = (mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected());
-        RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(avaible);
+        boolean available = (mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected());
+        RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(available);
         connectionEvent.mobile = mobNetInfo;
         connectionEvent.wifi = wifiNetInfo;
         connectionEvent.isOnLine = BaseApplication.isOnline();

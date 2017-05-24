@@ -189,47 +189,39 @@
         android:id="@+id/act_panorama_detail_pop_picture_vr_tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:background="#99000000"
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible">
 
         <ImageView
+
             android:id="@+id/act_panorama_detail_pop_picture_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="@dimen/y95"
-            android:layout_toEndOf="@+id/linearLayout"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/y61"
+            android:padding="@dimen/y17"
             android:src="@drawable/nav_icon_close_selector" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+
+        <ImageView
+            android:id="@+id/act_panorama_detail_pop_picture"
+            android:layout_width="@dimen/y112"
+            android:layout_height="@dimen/y86"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/y234"
+            android:src="@drawable/pop_pic_vr_tips" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/act_panorama_detail_pop_picture"
-                android:layout_width="@dimen/y168"
-                android:layout_height="@dimen/y129"
-                android:src="@drawable/pop_pic_vr_tips"
-                android:visibility="visible" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y22"
-                android:text="请将手机放入VR眼镜"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/sp24" />
-
-        </LinearLayout>
+            android:layout_below="@+id/act_panorama_detail_pop_picture"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/y15"
+            android:text="请将手机放入VR眼镜"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/sp16" />
 
 
     </RelativeLayout>

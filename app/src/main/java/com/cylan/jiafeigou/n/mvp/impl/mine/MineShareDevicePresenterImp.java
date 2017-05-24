@@ -118,8 +118,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
         ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
+        hasShareFriendData.clear();
         if (shareSuccList != null && shareSuccList.size() > 0) {
-            hasShareFriendData.clear();
             hasShareFriendData.addAll(shareSuccList);
         }
         ArrayList<RelAndFriendBean> result = new ArrayList<>();

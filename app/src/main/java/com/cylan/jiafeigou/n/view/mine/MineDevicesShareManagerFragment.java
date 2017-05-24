@@ -214,9 +214,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void deleteItems() {
-        int i = hasShareAdapter.getList().indexOf(tempBean);
         hasShareAdapter.remove(tempBean);
-        hasShareAdapter.notifyItemRemoved(i);
+        hasShareAdapter.notifyDataSetChanged();
     }
 
     /**

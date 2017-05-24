@@ -15,4 +15,6 @@ public class BaseAlertManager implements IAlertManager {
     public AlertDialog.Builder getAlertBuilder() {
         return null;
     }
+
+
 }

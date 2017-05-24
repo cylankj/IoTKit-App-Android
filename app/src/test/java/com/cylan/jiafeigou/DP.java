@@ -50,8 +50,7 @@ public class DP {
 
     @Test
     public void ssg() {
-        boolean accept = accept("184", "333", "ehgoh/184/333/jegoh.jph");
-        System.out.println(accept);
+
     }
 
     @Test

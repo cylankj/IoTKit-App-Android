@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.download.database.constants.TABLES;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -202,6 +201,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             //跳转到
             if (vpCameraLive.getAdapter().getCount() > 1) {
                 vpCameraLive.setCurrentItem(1);
+
             }
         }
     }

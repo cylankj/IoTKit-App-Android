@@ -280,8 +280,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private boolean reverseEditionMode() {
         if (bellCallRecordListAdapter.getMode() == 1) {
             bellCallRecordListAdapter.setMode(0);
-            final int lPos = ((LinearLayoutManager) rvBellList.getLayoutManager())
-                    .findLastVisibleItemPosition();
+            final int lPos = bellCallRecordListAdapter.getCount();
             bellCallRecordListAdapter.reverseEdition(true, lPos);
             showEditBar(false);
             return true;
@@ -378,8 +377,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @OnClick({R.id.tv_bell_home_list_cancel, R.id.tv_bell_home_list_select_all, R.id.tv_bell_home_list_delete})
     public void onEditBarClick(View view) {
-        final int lPos = ((LinearLayoutManager) rvBellList.getLayoutManager())
-                .findLastVisibleItemPosition();
+        final int lPos = rvBellList.getAdapter().getItemCount();
         switch (view.getId()) {
             case R.id.tv_bell_home_list_cancel:
                 bellCallRecordListAdapter.reverseEdition(true, lPos);

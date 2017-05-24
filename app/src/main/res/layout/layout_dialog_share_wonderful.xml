@@ -45,7 +45,8 @@
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y20"
             android:paddingStart="@dimen/y20"
-            android:text="QQ" />
+            android:text="QQ"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_share_to_tencent_qzone"
@@ -57,7 +58,8 @@
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y20"
             android:paddingStart="@dimen/y20"
-            android:text="@string/Qzone_QQ" />
+            android:text="@string/Qzone_QQ"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_share_to_sina_weibo"
@@ -69,7 +71,8 @@
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y20"
             android:paddingStart="@dimen/y20"
-            android:text="@string/Weibo" />
+            android:text="@string/Weibo"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_share_to_twitter_friends"

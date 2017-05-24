@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -20,6 +22,9 @@ public class DividerView extends View {
     static public int ORIENTATION_VERTICAL = 1;
     private Paint mPaint;
     private int orientation;
+    private int width;
+    private int height;
+    private Path mPath;
 
     public DividerView(Context context) {
         this(context, null);
@@ -41,23 +46,37 @@ public class DividerView extends View {
         color = a.getColor(R.styleable.DividerView_dv_color, 0xff000000);
         orientation = a.getInt(R.styleable.DividerView_dv_orientation, ORIENTATION_HORIZONTAL);
         a.recycle();
-        mPaint = new Paint();
+        mPaint = new TextPaint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(color);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(dashThickness);
-        mPaint.setPathEffect(new DashPathEffect(new float[]{dashLength, dashGap,}, 0));
+        mPaint.setPathEffect(new DashPathEffect(new float[]{dashLength, dashGap}, 0));
+        mPath = new Path();
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        this.width = w;
+        this.height = h;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (orientation == ORIENTATION_HORIZONTAL) {
-            float center = getHeight() * .5f;
-            canvas.drawLine(0, center, getWidth(), center, mPaint);
+            mPath.moveTo(0, height / 2);
+            mPath.lineTo(width, height / 2);
+            canvas.drawPath(mPath, mPaint);
         } else {
-            float center = getWidth() * .5f;
-            canvas.drawLine(center, 0, center, getHeight(), mPaint);
+            mPath.moveTo(width / 2, 0);
+            mPath.lineTo(width / 2, height);
+            canvas.drawPath(mPath, mPaint);
         }
     }
 }
