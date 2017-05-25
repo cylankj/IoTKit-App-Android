@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -36,23 +35,11 @@ import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
  */
 public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContract.View> implements SdCardInfoContract.Presenter {
 
-    private static long clearTimeFlag;//格式化sd卡,开始时间.
     private static final long TIMEOUT = 2 * 60L;
 
     public SdCardInfoPresenterImpl(SdCardInfoContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
-    }
-
-    @Override
-    protected Subscription[] register() {
-        if (needRegisterTimeout()) {
-//            mView.showLoading();
-            addSubscription(clearCountTime((System.currentTimeMillis() - clearTimeFlag) / 1000), "clearCountTime");
-        }
-        return new Subscription[]{
-                onClearSdReqBack(),
-                onClearSdResult()};
     }
 
     @Override
@@ -81,100 +68,60 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         return true;
     }
 
-    @Override
-    public void updateInfoReq() {
-        clearTimeFlag = System.currentTimeMillis();
-        addSubscription(clearCountTime(TIMEOUT), "clearCountTime");
-        addSubscription(Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .delay(500, TimeUnit.MILLISECONDS)
-                .map(ret -> {
-                    try {
-                        ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
-                        mesg.packValue = DpUtils.pack(0);
-                        ipList.add(mesg);
-                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
-                        AppLogger.d("clear_execute:");
-                    } catch (Exception e) {
-                        AppLogger.e("err_sd: " + e.getLocalizedMessage());
-                    }
-                    return ret;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object o) -> {
-                }, AppLogger::e), "updateInfoReq");
-    }
-
-    public boolean needRegisterTimeout() {
-        return System.currentTimeMillis() - clearTimeFlag < TIMEOUT * 1000;
-    }
-
-    public Subscription clearCountTime(long timeout) {
-        return Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .map(ret -> {
-                    try {
-                        Thread.sleep(timeout * 1000L + 100L);
-                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-                    }
-                    return ret;
-                })
-                //timeout的使用需要注意
-                .timeout(timeout, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object o) -> {
-                }, throwable -> {
-                    if (throwable instanceof TimeoutException) {
-                        AppLogger.d("两分钟超时到了!!!");
-                        if (getView() != null) getView().clearSdResult(2);
-                    }
-                });
-    }
-
-    @Override
-    public Subscription onClearSdReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
-                .map(ret -> ret.rets)
-                .flatMap(Observable::from)
-                .filter(msg -> msg.id == 218)
-                .map(msg -> {
-                    if (msg.ret == 0) {
-                        History.getHistory().clearHistoryFile(uuid);
-                        AppLogger.d("清空历史录像");
-                    }
-                    return msg;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    if (result.ret == 0) {
-                        getView().clearSdResult(0);
-                    } else {
-                        getView().clearSdResult(1);
-                    }
-                    unSubscribe("clearCountTime");
-                    clearTimeFlag = 0;
-                }, AppLogger::e);
-    }
-
-    @Override
-    public Subscription onClearSdResult() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+    public void clearSDCard() {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                ArrayList<JFGDPMsg> params = new ArrayList<JFGDPMsg>();
+                JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
+                msg.packValue = DpUtils.pack(0);
+                params.add(msg);
+                long seq = BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                AppLogger.d("正在格式化 SDCard:Seq 为:" + seq);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+                AppLogger.e("err_sd: " + e.getLocalizedMessage());
+            }
+        })
                 .subscribeOn(Schedulers.io())
-                .filter(ret -> TextUtils.equals(ret.uuid, uuid))
-                .flatMap(deviceSyncRsp -> Observable.from(deviceSyncRsp.dpList))
-                .filter(ret -> ret.id == 204 || ret.id == 222)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(jfgDpMsg -> {
-                    unSubscribe("clearCountTime");
-                    clearTimeFlag = 0;
-                    return null;
+                .observeOn(Schedulers.io())
+                .flatMap(seq -> handleClearSDCardResponse(seq, uuid))
+                .timeout(120, TimeUnit.SECONDS, Observable.just(null))
+                .map(success -> {
+                    if (success) {
+                        History.getHistory().clearHistoryFile(uuid);
+                    }
+                    return success;
                 })
-                .subscribe(o -> {
-                }, e -> AppLogger.d(e.getMessage()));
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                    mView.clearSdResult(success == null ? 2 : (success ? 0 : 1));
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
+    }
+
+    private Observable<Boolean> handleClearSDCardResponse(long seq, String uuid) {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+                .map(rsp -> {
+                    if (rsp != null && rsp.dpList != null && rsp.dpList.size() > 0) {
+                        for (JFGDPMsg msg : rsp.dpList) {
+                            if (msg.id == 204) {
+                                DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                return status != null && status.err == 0 && status.hasSdcard;
+                            } else if (msg.id == 222) {
+                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                return summary != null && summary.hasSdcard && summary.errCode == 0;
+                            }
+                        }
+                    }
+                    return false;
+                })
+                .first(has -> has)
+                .first();
     }
 
     /**

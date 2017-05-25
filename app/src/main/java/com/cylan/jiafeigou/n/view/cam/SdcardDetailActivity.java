@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +122,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Clear_Sdcard_tips),
                 getString(R.string.Clear_Sdcard_tips),
                 getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                    basePresenter.updateInfoReq();
+                    basePresenter.clearSDCard();
                     showLoading();
                 }, getString(R.string.CANCEL), null);
     }

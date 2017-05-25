@@ -236,7 +236,7 @@ public class JFGRules {
             case 1092:
             case 1071:
             case 1090:
-            case 21:
+//            case 21:
             case 36:
             case 37:
                 return true;

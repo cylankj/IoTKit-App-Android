@@ -111,7 +111,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
 
     private void monitorDeviceInformationSuggestion() {
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
-                .retry()
+
                 .observeOn(Schedulers.io())
                 .filter(event -> !event.success && deviceInformation != null && !TextUtils.isEmpty(deviceInformation.uuid))
                 .map(event -> {
@@ -139,6 +139,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                         .filter(this::resolveDeviceInformation)
                         .first().timeout(5, TimeUnit.SECONDS, Observable.just(null)))
+                .retry()
                 .subscribe(ret -> {
                     RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                 }, e -> {

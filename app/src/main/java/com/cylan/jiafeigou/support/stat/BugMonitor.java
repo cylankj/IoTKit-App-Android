@@ -1,9 +1,10 @@
 package com.cylan.jiafeigou.support.stat;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
-import com.tencent.bugly.Bugly;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -12,7 +13,19 @@ import com.tencent.bugly.crashreport.CrashReport;
 public class BugMonitor {
 
     public static void init(Context context) {
-        Bugly.enable = BuildConfig.DEBUG;
-        CrashReport.initCrashReport(context);
+        try {
+            CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+            strategy.setAppChannel(PackageUtils.getMetaString(context, "BUGLY_APP_CHANNEL"));
+            strategy.setAppVersion(PackageUtils.getAppVersionName(context));
+            strategy.setAppPackageName(context.getPackageName());
+            strategy.setAppReportDelay(20000);//改为20s
+            //...在这里设置strategy的属性,在bugly初始化时传入
+            //...
+            String appId = PackageUtils.getMetaString(context, "BUGLY_APPID");
+            Log.d("BugMonitor", "BugMonitor: " + appId);
+            CrashReport.initCrashReport(context, appId, BuildConfig.DEBUG, strategy);
+        } catch (Exception e) {
+
+        }
     }
 }
