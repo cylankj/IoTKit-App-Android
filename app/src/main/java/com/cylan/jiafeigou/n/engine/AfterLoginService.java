@@ -203,7 +203,7 @@ public class AfterLoginService extends IntentService {
                 }
             } catch (Exception e) {
             }
-            RxEvent.CheckVersionRsp rsp = new RxEvent.CheckVersionRsp(true,
+            final RxEvent.CheckVersionRsp rsp = new RxEvent.CheckVersionRsp(true,
                     url, versionName, desc, "");
             rsp.forceUpdate = clientCheckVersion.forceUpgrade;
             rsp.fileDir = JConstant.ROOT_DIR;
@@ -233,7 +233,7 @@ public class AfterLoginService extends IntentService {
 
                 @Override
                 public void finished(File file) {
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(file.getAbsolutePath()));
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(file.getAbsolutePath()).setRsp(rsp));
                 }
 
                 @Override
