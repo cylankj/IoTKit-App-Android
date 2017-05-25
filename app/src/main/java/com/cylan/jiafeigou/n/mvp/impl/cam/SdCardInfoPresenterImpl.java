@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -86,42 +87,76 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(seq -> handleClearSDCardResponse(seq, uuid))
-                .timeout(120, TimeUnit.SECONDS, Observable.just(null))
-                .map(success -> {
-                    if (success) {
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                        .first(rsp -> rsp.seq == seq)
+                        .map(rsp -> {
+                            if (rsp.rets != null) {
+                                for (JFGDPMsgRet msgRet : rsp.rets) {
+                                    if (msgRet.id == 218) {
+                                        return msgRet.ret;
+                                    }
+                                }
+                            }
+                            return 1;
+                        }))
+                .timeout(120, TimeUnit.SECONDS, Observable.just(2))
+                .map(code -> {
+                    if (code == 0) {
                         History.getHistory().clearHistoryFile(uuid);
                     }
-                    return success;
+                    return code;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> {
-                    mView.clearSdResult(success == null ? 2 : (success ? 0 : 1));
+                .subscribe(code -> {
+                    mView.clearSdResult(code);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
         addSubscription(subscribe);
     }
 
-    private Observable<Boolean> handleClearSDCardResponse(long seq, String uuid) {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-                .map(rsp -> {
-                    if (rsp != null && rsp.dpList != null && rsp.dpList.size() > 0) {
-                        for (JFGDPMsg msg : rsp.dpList) {
-                            if (msg.id == 204) {
-                                DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
-                                return status != null && status.err == 0 && status.hasSdcard;
-                            } else if (msg.id == 222) {
-                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
-                                return summary != null && summary.hasSdcard && summary.errCode == 0;
+    private Observable<Integer> handleClearSDCardResponse(long seq, String uuid) {
+        return Observable.zip(RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).first(rsp -> rsp.seq == seq),
+                RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class).first(deviceSyncRsp -> {
+                    if (!TextUtils.equals(deviceSyncRsp.uuid, uuid)) {
+                        return false;
+                    }
+                    if (deviceSyncRsp.dpList != null && deviceSyncRsp.dpList.size() > 0) {
+                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+                            if (msg.id == 204 || msg.id == 222) {
+                                return true;
                             }
                         }
                     }
                     return false;
                 })
-                .first(has -> has)
-                .first();
+                , (setDataRsp, deviceSyncRsp) -> {
+                    boolean setSuccess = false;
+                    boolean hasSDCard = false;
+                    if (setDataRsp.rets != null) {
+                        for (JFGDPMsgRet msgRet : setDataRsp.rets) {
+                            if (msgRet.id == 218) {
+                                setSuccess = msgRet.ret == 0;
+                                break;
+                            }
+                        }
+                    }
+                    if (deviceSyncRsp.dpList != null) {
+                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+                            if (msg.id == 204) {
+                                DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
+                                break;
+                            } else if (msg.id == 222) {
+                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                hasSDCard = summary != null && summary.errCode == 0 && summary.hasSdcard;
+                                break;
+                            }
+                        }
+                    }
+                    return setSuccess && hasSDCard ? 0 : 1;
+                }
+        );
     }
 
     /**

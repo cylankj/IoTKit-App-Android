@@ -29,6 +29,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.gson.Gson;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -294,6 +295,10 @@ public class ShareUtils {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
                         Bundle bundle = new Bundle();
+//                        bundle.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, resource.getAbsolutePath());
+                        bundle.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+                        bundle.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://www.cylan.com.cn");
+                        bundle.putString(QQShare.SHARE_TO_QQ_TITLE, "this is my share");
                         bundle.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, resource.getAbsolutePath());
                         mTencent.get().shareToQQ(activity, bundle, new IUiListener() {
                             @Override
@@ -303,6 +308,7 @@ public class ShareUtils {
 
                             @Override
                             public void onError(UiError uiError) {
+                                AppLogger.e("QQ 分享:" + new Gson().toJson(uiError));
                                 ToastUtil.showNegativeToast("分享失败");
                             }
 
@@ -342,6 +348,10 @@ public class ShareUtils {
     }
 
     public static void sharePictureToQZone(Activity activity) {
+        if (mTencent == null || mTencent.get() == null) {
+            String APP_KEY = PackageUtils.getMetaString(activity, "qqAppKey");
+            mTencent = new WeakReference<>(Tencent.createInstance(APP_KEY, activity));
+        }
 
     }
 

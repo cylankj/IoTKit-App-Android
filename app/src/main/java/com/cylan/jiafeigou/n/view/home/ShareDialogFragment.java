@@ -77,7 +77,13 @@ public class ShareDialogFragment extends BaseDialog {
         return view;
     }
 
-    @OnClick({R.id.tv_share_to_timeline, R.id.tv_share_to_wechat_friends, R.id.tv_share_to_facebook_friends, R.id.tv_share_to_twitter_friends})
+    @OnClick({R.id.tv_share_to_timeline,
+            R.id.tv_share_to_wechat_friends,
+            R.id.tv_share_to_facebook_friends,
+            R.id.tv_share_to_tencent_qq,
+            R.id.tv_share_to_tencent_qzone,
+            R.id.tv_share_to_sina_weibo,
+            R.id.tv_share_to_twitter_friends})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {
@@ -134,7 +140,7 @@ public class ShareDialogFragment extends BaseDialog {
                 }
                 break;
             case R.id.tv_share_to_tencent_qq:
-                if (TextUtils.isEmpty(mVideoURL)) {
+                if (!TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToQQ(getActivity(), mVideoURL);
                 } else if (glideUrl != null) {
                     ShareUtils.sharePictureToQQ(getActivity(), glideUrl);
