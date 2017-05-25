@@ -103,11 +103,11 @@
 
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="${BUGLY_APPID}>" />
+            android:value="${BUGLY_APPID}" />
         <!-- 配置APP版本号 -->
-        <meta-data
-            android:name="BUGLY_APP_VERSION"
-            android:value="${BUGLY_APP_VERSION}" />
+        <!--<meta-data-->
+            <!--android:name="BUGLY_APP_VERSION"-->
+            <!--android:value="${BUGLY_APP_VERSION}" />-->
         <!-- 配置APP渠道号 -->
         <meta-data
             android:name="BUGLY_APP_CHANNEL"

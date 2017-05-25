@@ -168,7 +168,7 @@ android {
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
                                     "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
-                                    "BUGLY_APPID"        : "\\ 3101553102",
+                                    "BUGLY_APPID"        : "2e94bf542f",
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "cylan"
             ]
@@ -191,7 +191,7 @@ android {
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
                                     "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
-                                    "BUGLY_APPID"        : "\\ 3101553102",
+                                    "BUGLY_APPID"        : "2e94bf542f",
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "cylan"
             ]
@@ -214,7 +214,7 @@ android {
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5721736791425",
                                     "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
-                                    "BUGLY_APPID"        : "\\ 3101835188",
+                                    "BUGLY_APPID"        : "2e94bf542f",
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "doby"
             ]
@@ -237,7 +237,7 @@ android {
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "xxx",
                                     "XiaoMiAppKey"       : "xxx",
-                                    "BUGLY_APPID"        : "\\ 3101835188",//
+                                    "BUGLY_APPID"        : "2e94bf542f",//
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "cylan"
 
@@ -261,7 +261,7 @@ android {
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
                                     "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
-                                    "BUGLY_APPID"        : "\\ 3101835188",//
+                                    "BUGLY_APPID"        : "2e94bf542f",//
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "cylan"
             ]
