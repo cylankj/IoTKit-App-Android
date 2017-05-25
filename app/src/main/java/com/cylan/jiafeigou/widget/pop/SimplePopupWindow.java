@@ -52,7 +52,7 @@ public class SimplePopupWindow extends RelativePopupWindow {
         }
         super.showOnAnchor(anchor, vertPos, horizPos, x, y);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            circularReveal(anchor);
+//            circularReveal(anchor);
         }
         tvContent.setBackgroundResource(bgResId);
         tvContent.setText(tvContent.getContext().getString(contentResId));
