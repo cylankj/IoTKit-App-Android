@@ -293,7 +293,7 @@ public class JConstant {
      * @return
      */
     public final static String KEY_ACCOUNT = "key_account";
-
+    //登录状态,应该保存在内存中
     public final static String KEY_ACCOUNT_LOG_STATE = "key_log_state";
 
     public final static String KEY_NTP_INTERVAL = "ntp_key";

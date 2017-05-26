@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -71,15 +72,24 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
+//        goAheadAfterPermissionGranted();应该是权限允许之后,才登录,免得登录后,没有权限,导致奔溃
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+    }
+
+    private void goAheadAfterPermissionGranted() {
+        //是否登录
+        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
+        if (state == LogState.STATE_ACCOUNT_ON) {
+            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
+            startActivity(new Intent(this, NewHomeActivity.class), bundle);
+            finish();
+        }
         if (presenter != null) {
-            presenter.start();
             presenter.autoLogin();
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
             presenter.selectNext(showSplash);
         }
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
-
 
     @Override
     protected void onStop() {
@@ -229,6 +239,7 @@ public class SmartcallActivity extends NeedLoginActivity
             ((BaseApplication) getApplication()).try2init();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ShouldCheckPermission.class);
         }
+        goAheadAfterPermissionGranted();
     }
 
     @NeedsPermission({Manifest.permission.SYSTEM_ALERT_WINDOW})

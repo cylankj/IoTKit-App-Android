@@ -76,6 +76,7 @@ public class DataSourceManager implements JFGSourceManager {
     private IPropertyParser propertyParser;
     private AppCmd appCmd;
     private int storageType;
+    private LogState logState;
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
@@ -511,6 +512,7 @@ public class DataSourceManager implements JFGSourceManager {
         return false;
     }
 
+    @Override
     public int getLoginState() {
         JFGAccount account = this.getJFGAccount();
         if (account == null || TextUtils.isEmpty(account.getAccount())) {
