@@ -111,7 +111,6 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
 
     private void monitorDeviceInformationSuggestion() {
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
-
                 .observeOn(Schedulers.io())
                 .filter(event -> !event.success && deviceInformation != null && !TextUtils.isEmpty(deviceInformation.uuid))
                 .map(event -> {
