@@ -201,110 +201,122 @@ public class LoginButton extends AppCompatTextView {
     }
 
     public void viewZoomSmall() {
-        if (viewW < viewH) {
-            return;
-        }
+        try {
+            if (viewW < viewH) {
+                return;
+            }
 
-        if (valueAnimator == null) {
-            valueAnimator = ValueAnimator.ofInt(viewW, viewH);
-        }
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int currW = (int) animation.getAnimatedValue();
-                if (currW < viewH) {
-                    currW = viewH;
+            if (valueAnimator == null) {
+                valueAnimator = ValueAnimator.ofInt(viewW, viewH);
+            }
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int currW = (int) animation.getAnimatedValue();
+                    if (currW < viewH) {
+                        currW = viewH;
+                    }
+                    ViewGroup.LayoutParams params = getLayoutParams();
+                    params.width = currW;
+                    setLayoutParams(params);
                 }
-                ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = currW;
-                setLayoutParams(params);
+            });
+            valueAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    setText("");
+                    viewRotate();
+                }
+            });
+            valueAnimator.setDuration(600);
+            if (!valueAnimator.isRunning() && !hasRotate) {
+                valueAnimator.start();
             }
-        });
-        valueAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                setText("");
-                viewRotate();
-            }
-        });
-        valueAnimator.setDuration(600);
-        if (!valueAnimator.isRunning() && !hasRotate) {
-            valueAnimator.start();
+        } catch (Exception e) {
         }
     }
 
 
     private void viewRotate() {
-        hasRotate = true;
-        if (valueAnimator2 != null && valueAnimator2.isRunning()) {
-            return;
-        }
-        valueAnimator2 = ValueAnimator.ofInt(0, 360);
-        valueAnimator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                degrees = (int) animation.getAnimatedValue();
-                invalidate();
+        try {
+            hasRotate = true;
+            if (valueAnimator2 != null && valueAnimator2.isRunning()) {
+                return;
             }
-        });
-        valueAnimator2.setInterpolator(new LinearInterpolator());
-        valueAnimator2.setDuration(800);
-        valueAnimator2.setRepeatCount(ValueAnimator.INFINITE);//动画重复次数
-        valueAnimator2.setRepeatMode(ValueAnimator.RESTART);
-        valueAnimator2.start();
+            valueAnimator2 = ValueAnimator.ofInt(0, 360);
+            valueAnimator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    degrees = (int) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+            valueAnimator2.setInterpolator(new LinearInterpolator());
+            valueAnimator2.setDuration(800);
+            valueAnimator2.setRepeatCount(ValueAnimator.INFINITE);//动画重复次数
+            valueAnimator2.setRepeatMode(ValueAnimator.RESTART);
+            valueAnimator2.start();
+        } catch (Exception e) {
+        }
     }
 
 
     public void viewZoomBig() {
-        degrees = 0;
-        if (valueAnimator2 != null) {
-            valueAnimator2.cancel();
-        }
-        if (valueAnimator3 != null && valueAnimator3.isRunning()) {
-            return;
-        }
-        if (viewW != viewH) {
-            return;
-        }
-        valueAnimator3 = ValueAnimator.ofFloat(viewW, srcW - strokeWidth);
-        valueAnimator3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float currW = (float) animation.getAnimatedValue();
-                ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = (int) (currW + strokeWidth);
-                setLayoutParams(params);
+        try {
+            degrees = 0;
+            if (valueAnimator2 != null) {
+                valueAnimator2.cancel();
             }
-        });
-        valueAnimator3.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                setText(text);
-                hasRotate = false;
+            if (valueAnimator3 != null && valueAnimator3.isRunning()) {
+                return;
             }
-        });
-        valueAnimator3.setDuration(600);
-        valueAnimator3.start();
+            if (viewW != viewH) {
+                return;
+            }
+            valueAnimator3 = ValueAnimator.ofFloat(viewW, srcW - strokeWidth);
+            valueAnimator3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float currW = (float) animation.getAnimatedValue();
+                    ViewGroup.LayoutParams params = getLayoutParams();
+                    params.width = (int) (currW + strokeWidth);
+                    setLayoutParams(params);
+                }
+            });
+            valueAnimator3.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    setText(text);
+                    hasRotate = false;
+                }
+            });
+            valueAnimator3.setDuration(600);
+            valueAnimator3.start();
+        } catch (Exception e) {
+        }
     }
 
     public void cancelAnim() {
-        if (valueAnimator2 != null) {
-            valueAnimator2.cancel();
+        try {
+            if (valueAnimator2 != null) {
+                valueAnimator2.cancel();
+            }
+            if (valueAnimator != null) {
+                valueAnimator.cancel();
+            }
+            if (valueAnimator3 != null) {
+                valueAnimator3.cancel();
+            }
+            hasRotate = false;
+            ViewGroup.LayoutParams params = getLayoutParams();
+            params.width = srcW;
+            params.height = srcH;
+            degrees = 0;
+            setLayoutParams(params);
+            invalidate();
+        } catch (Exception e) {
         }
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
-        }
-        if (valueAnimator3 != null) {
-            valueAnimator3.cancel();
-        }
-        hasRotate = false;
-        ViewGroup.LayoutParams params = getLayoutParams();
-        params.width = srcW;
-        params.height = srcH;
-        degrees = 0;
-        setLayoutParams(params);
-        invalidate();
     }
 }
