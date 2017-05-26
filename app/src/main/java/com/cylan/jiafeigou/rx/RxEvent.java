@@ -1284,4 +1284,34 @@ public class RxEvent {
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
         public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
     }
+
+    public static class AdsRsp {
+        public int ret;
+        public long time;
+        public String picUrl;
+        public String tagUrl;
+
+        public AdsRsp() {
+        }
+
+        public AdsRsp setRet(int ret) {
+            this.ret = ret;
+            return this;
+        }
+
+        public AdsRsp setTime(long time) {
+            this.time = time;
+            return this;
+        }
+
+        public AdsRsp setPicUrl(String picUrl) {
+            this.picUrl = picUrl;
+            return this;
+        }
+
+        public AdsRsp setTagUrl(String tagUrl) {
+            this.tagUrl = tagUrl;
+            return this;
+        }
+    }
 }

@@ -24,8 +24,10 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -216,10 +218,7 @@ public final class BaseInitializationManager {
     }
 
     private void initBugMonitor() {
-        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(appContext);
-        strategy.setAppChannel(BuildConfig.DEBUG ? "DEBUG" : "CLEVER_DOG");
-        CrashReport.initCrashReport(appContext, strategy);
-        com.tencent.bugly.Bugly.enable = BuildConfig.DEBUG;
+        BugMonitor.init(ContextUtils.getContext());
     }
 
     private void initBlockCanary() {

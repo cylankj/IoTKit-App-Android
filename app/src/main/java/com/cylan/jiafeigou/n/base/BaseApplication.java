@@ -102,7 +102,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             startService(new Intent(this, WakeupService.class));
             try2init();
             PreferencesUtils.init(getApplicationContext());
-            BugMonitor.init(getApplicationContext());
             PerformanceUtils.startTrace("appStart");
             PerformanceUtils.startTrace("FirstActivity");
             //Dagger2 依赖注入

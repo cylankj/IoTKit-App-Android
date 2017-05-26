@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cylan.jiafeigou.ads.AdsActivity">
+
+    <ImageView
+        android:id="@+id/imv_ads_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.cylan.jiafeigou.widget.AdsTimerView
+        android:id="@+id/imv_ads_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/y15"
+        android:layout_marginTop="@dimen/y15"
+        android:gravity="center"
+        android:text="跳过"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp15"
+        hunt:a_bg_color="#cc000000"
+        hunt:a_progress_width="2dp" />
+</FrameLayout>

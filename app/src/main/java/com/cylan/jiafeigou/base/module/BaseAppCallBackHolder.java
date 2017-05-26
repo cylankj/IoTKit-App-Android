@@ -359,7 +359,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     }
 
     @Override
-    public void OnGetAdPolicyRsp(int i, long l, String s, String s1) {
+    public void OnGetAdsPolicyRsp(int i, long l, String s, String s1) {
         AppLogger.d(String.format("OnGetAdPolicyRsp:ret:%s,time:%s,picUrl:%s,tagUrl:%s", i, l, s, s1));
+        RxBus.getCacheInstance().postSticky(new RxEvent.AdsRsp().setPicUrl(s).setTagUrl(s1)
+                .setRet(i).setTime(l));
     }
 }

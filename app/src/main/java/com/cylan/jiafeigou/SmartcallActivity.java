@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.cylan.jiafeigou.ads.AdsActivity;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
@@ -29,7 +30,7 @@ import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
-import com.cylan.jiafeigou.n.view.splash.GuideFragment;
+import com.cylan.jiafeigou.n.view.splash.GuideFragmentV3_2;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -42,6 +43,7 @@ import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by chen on 5/24/16.
@@ -76,6 +78,9 @@ public class SmartcallActivity extends NeedLoginActivity
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
+    /**
+     * 执行登录与跳转.此处可以插入广告页面.
+     */
     private void goAheadAfterPermissionGranted() {
         //是否登录
         int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
@@ -128,7 +133,7 @@ public class SmartcallActivity extends NeedLoginActivity
     private void showGuidePage() {
         Bundle bundle = new Bundle();
         bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.welcome_frame_container);
-        GuideFragment fragment = GuideFragment.newInstance();
+        GuideFragmentV3_2 fragment = GuideFragmentV3_2.newInstance();
         fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.welcome_frame_container, fragment)
@@ -239,7 +244,26 @@ public class SmartcallActivity extends NeedLoginActivity
             ((BaseApplication) getApplication()).try2init();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ShouldCheckPermission.class);
         }
-        goAheadAfterPermissionGranted();
+        //检查广告的有效性
+        if (presenter != null)
+            presenter.showAds()
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .flatMap(ret -> {
+                        goAheadAfterPermissionGranted();
+                        if (ret != null) {
+                            //需要显示广告.
+                            AppLogger.d("显示广告");
+                            Intent intent = new Intent(SmartcallActivity.this, AdsActivity.class);
+                            intent.putExtra(JConstant.KEY_ADD_DESC, ret);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            //跳过广告
+                        }
+                        return null;
+                    })
+                    .subscribe(ret -> {
+                    }, AppLogger::e);
     }
 
     @NeedsPermission({Manifest.permission.SYSTEM_ALERT_WINDOW})

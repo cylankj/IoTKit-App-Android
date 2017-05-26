@@ -100,19 +100,17 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${BUGLY_APPID}" />
         <!-- 配置APP版本号 -->
-        <!--<meta-data-->
-            <!--android:name="BUGLY_APP_VERSION"-->
-            <!--android:value="${BUGLY_APP_VERSION}" />-->
+        <!-- <meta-data -->
+        <!-- android:name="BUGLY_APP_VERSION" -->
+        <!-- android:value="${BUGLY_APP_VERSION}" /> -->
         <!-- 配置APP渠道号 -->
         <meta-data
             android:name="BUGLY_APP_CHANNEL"
             android:value="${BUGLY_APP_CHANNEL}" />
-
 
         <!-- 华为推送 Start -->
         <meta-data
@@ -662,6 +660,22 @@
 
         <activity
             android:name=".n.view.mine.FeedbackActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/CamActivityTheme" />
+        <activity
+            android:name=".ads.AdsActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/CamActivityTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ads.AdsDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/CamActivityTheme" />
