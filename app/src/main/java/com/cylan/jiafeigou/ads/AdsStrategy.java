@@ -52,22 +52,22 @@ public class AdsStrategy {
                             RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
                                     .first()
                                     .subscribeOn(Schedulers.newThread())
-                                    .delay(3, TimeUnit.SECONDS)
+                                    .delay(10, TimeUnit.SECONDS)
                                     .subscribe(ret -> {
                                         Log.d("AdsStrategy", "初始化成功'AdsStrategy,手动结束'");
                                         throw new RxEvent.HelperBreaker();
                                     }, throwable -> {
                                         //手动结束订阅
-//                                        try {
-//                                            cmd.GetAdPolicy(JFGRules.getLanguageType(ContextUtils.getContext()),
-//                                                    PackageUtils.getAppVersionName(ContextUtils.getContext()),
-//                                                    getResolutionForAds());
-//                                            AppLogger.d("开始获取广告");
-//                                            RxBus.getCacheInstance().removeStickyEvent(AdsStrategy.AdsDescription.class);
-//                                        } catch (JfgException e) {
-//                                            if (BuildConfig.DEBUG)
-//                                                throw new IllegalArgumentException("出错了");
-//                                        }
+                                        try {
+                                            cmd.GetAdPolicy(JFGRules.getLanguageType(ContextUtils.getContext()),
+                                                    PackageUtils.getAppVersionName(ContextUtils.getContext()),
+                                                    getResolutionForAds());
+                                            AppLogger.d("开始获取广告");
+                                            RxBus.getCacheInstance().removeStickyEvent(AdsStrategy.AdsDescription.class);
+                                        } catch (JfgException e) {
+                                            if (BuildConfig.DEBUG)
+                                                throw new IllegalArgumentException("出错了");
+                                        }
                                     });
                         }
                         return null;

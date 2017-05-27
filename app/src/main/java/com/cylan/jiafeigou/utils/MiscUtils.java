@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
+import org.jsoup.Jsoup;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -612,5 +613,25 @@ public class MiscUtils {
                 AppLogger.d("re connect :" + reconnect);
             }
         }
+    }
+
+    public static Observable<String> getAppVersionFromGooglePlay() {
+        return Observable.just("getVersion")
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(s -> {
+                    try {
+                        String newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + "com.cylan.jiafeigou" + "&hl=en")
+                                .timeout(30000)
+                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                .referrer("http://www.google.com")
+                                .get()
+                                .select("div[itemprop=softwareVersion]")
+                                .first()
+                                .ownText();
+                        return Observable.just(newVersion);
+                    } catch (IOException e) {
+                        return Observable.just("");
+                    }
+                });
     }
 }

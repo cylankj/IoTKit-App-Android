@@ -81,9 +81,9 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     int l = JFGRules.getLanguageType(ContextUtils.getContext());
                     if (l != JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
                         //非简体中文
-//                        AdsStrategy.AdsDescription description = new AdsStrategy.AdsDescription();
-//                        description.tagUrl = "http://www.baidu.com";
-//                        description.url = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
+                        AdsStrategy.AdsDescription description = new AdsStrategy.AdsDescription();
+                        description.tagUrl = "http://www.baidu.com";
+                        description.url = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
                         return null;
                     }
                     String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");

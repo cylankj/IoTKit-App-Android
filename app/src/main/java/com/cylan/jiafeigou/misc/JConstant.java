@@ -342,6 +342,8 @@ public class JConstant {
     public static final String KEY_CLIENT_CHECK_VERSION_ID = "client_id";
 
     public static final String KEY_ADD_DESC = "key_ads";
+    public static final int CODE_AD_FINISH = 222;
+    public static final String KEY_NEED_LOGIN = "needLogin";
     private static final String VERSION_URL = "http://yun.app8h.com/app?act=check_version&id=%s&platform=androidPhone&appid=%s";
 
     public static String assembleUrl(String id, String packageName) {
