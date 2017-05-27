@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
-import com.cylan.jiafeigou.n.view.mine.WebsiteFragement;
+import com.cylan.jiafeigou.n.view.mine.WebsiteFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
@@ -53,6 +53,8 @@ public class AboutFragment extends Fragment {
     SettingItemView0 svHotLine;
     @BindView(R.id.tv_copy_right)
     TextView tvCopyRight;
+    @BindView(R.id.sv_official_website)
+    SettingItemView0 svOfficialWebsite;
 
     private Intent intent;
     private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
@@ -78,7 +80,10 @@ public class AboutFragment extends Fragment {
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
+        tvCopyRight.setVisibility(getResources().getBoolean(R.bool.show_all_right) ? View.VISIBLE : View.INVISIBLE);
         tvUserAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.INVISIBLE);
+        svOfficialWebsite.setVisibility(getResources().getBoolean(R.bool.show_official_website) ? View.VISIBLE : View.INVISIBLE);
+        svHotLine.setVisibility(getResources().getBoolean(R.bool.show_official_hot_line) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @OnClick({R.id.sv_hot_line, R.id.tv_user_agreement, R.id.sv_official_website})
@@ -109,7 +114,7 @@ public class AboutFragment extends Fragment {
 
     private void enterWeb() {
         IMEUtils.hide(getActivity());
-        WebsiteFragement fragment = WebsiteFragement.getInstance(null);
+        WebsiteFragment fragment = WebsiteFragment.getInstance(null);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 fragment, android.R.id.content);
     }
@@ -162,4 +167,8 @@ public class AboutFragment extends Fragment {
         startActivity(localIntent);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

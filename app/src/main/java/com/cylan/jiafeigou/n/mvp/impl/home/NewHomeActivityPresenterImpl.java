@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.engine.AfterLoginService;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -36,10 +37,10 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     long time = PreferencesUtils.getLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG);
-                    boolean force = ret.rsp != null && ret.rsp.forceUpdate == 1;//强制升级
+                    boolean force = ret.updateType == RxEvent.UpdateType.GOOGLE_PLAY || (ret.rsp != null && ret.rsp.forceUpdate == 1);//强制升级
                     if (force || time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         PreferencesUtils.putLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG, System.currentTimeMillis());
-                        mView.needUpdate("", ret.filePath, ret.rsp.forceUpdate);
+                        mView.needUpdate(ret.updateType, "", ret.filePath, ret.rsp.forceUpdate);
                     }
                     if (!force) {
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);

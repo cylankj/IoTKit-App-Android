@@ -31,6 +31,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -612,5 +614,36 @@ public class MiscUtils {
                 AppLogger.d("re connect :" + reconnect);
             }
         }
+    }
+
+    public static Observable<String> getAppVersionFromGooglePlay() {
+        return Observable.just("getVersion")
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> {
+                    GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+                    int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
+                    return resultCode == ConnectionResult.SUCCESS;//可用的时候,检查
+                })
+                .flatMap(s -> {
+                    try {
+                        String newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + "com.cylan.jiafeigou" + "&hl=en")
+                                .timeout(10000)
+                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                .referrer("http://www.google.com")
+                                .get()
+                                .select("div[itemprop=softwareVersion]")
+                                .first()
+                                .ownText();
+                        return Observable.just(newVersion);
+                    } catch (Exception e) {
+                        return Observable.just("");
+                    }
+                });
+    }
+
+    public static boolean isGooglePlayServiceAvailable(){
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
+        return resultCode == ConnectionResult.SUCCESS;//可用的时候,检查
     }
 }

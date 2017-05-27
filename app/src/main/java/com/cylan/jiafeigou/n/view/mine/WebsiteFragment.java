@@ -15,8 +15,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -25,15 +23,15 @@ import butterknife.ButterKnife;
  * 创建时间：2017/2/17
  * 描述：
  */
-public class WebsiteFragement extends Fragment {
+public class WebsiteFragment extends Fragment {
 
     @BindView(R.id.wv_website)
     WebView wvWebsite;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-    public static WebsiteFragement getInstance(Bundle bundle) {
-        WebsiteFragement fragment = new WebsiteFragement();
+    public static WebsiteFragment getInstance(Bundle bundle) {
+        WebsiteFragment fragment = new WebsiteFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
