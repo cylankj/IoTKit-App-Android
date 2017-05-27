@@ -1284,4 +1284,12 @@ public class RxEvent {
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
         public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
     }
+
+    public static class GetVideoShareUrlEvent {
+        public String url;
+
+        public GetVideoShareUrlEvent(String s) {
+            this.url = s;
+        }
+    }
 }

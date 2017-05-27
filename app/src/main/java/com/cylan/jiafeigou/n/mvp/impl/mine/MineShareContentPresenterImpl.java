@@ -42,7 +42,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
 
     @Override
     public void loadFromServer(long version, boolean refresh) {
-        Subscription subscribe = Observable.just(new DPEntity(null, 606, 0, DBAction.QUERY, DBOption.SingleQueryOption.ASC_20_LIMIT))
+        Subscription subscribe = Observable.just(new DPEntity(null, 606, 0, DBAction.QUERY, DBOption.SingleQueryOption.DESC_20_LIMIT))
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
                 .map(result -> {

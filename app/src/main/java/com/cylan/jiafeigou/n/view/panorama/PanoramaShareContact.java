@@ -20,6 +20,6 @@ public interface PanoramaShareContact {
 
         void upload(String fileName, String filePath);
 
-        void share();
+        void share(PanoramaAlbumContact.PanoramaItem item, String desc);
     }
 }

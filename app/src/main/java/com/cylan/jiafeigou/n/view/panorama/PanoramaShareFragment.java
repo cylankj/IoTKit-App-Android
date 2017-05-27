@@ -99,5 +99,6 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     public void share(View view) {
+        presenter.share(shareItem, description.get());
     }
 }
