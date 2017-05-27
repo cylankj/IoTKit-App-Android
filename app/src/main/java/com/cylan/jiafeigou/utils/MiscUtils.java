@@ -35,6 +35,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 
+import org.jsoup.Jsoup;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -641,7 +642,7 @@ public class MiscUtils {
                 });
     }
 
-    public static boolean isGooglePlayServiceAvailable(){
+    public static boolean isGooglePlayServiceAvailable() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
         return resultCode == ConnectionResult.SUCCESS;//可用的时候,检查
