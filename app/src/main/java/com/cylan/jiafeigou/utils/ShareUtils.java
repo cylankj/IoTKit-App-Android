@@ -45,6 +45,8 @@ import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
+
 /**
  * Created by yzd on 16-12-9.
  */
@@ -349,6 +351,21 @@ public class ShareUtils {
             }
         });
     }
+
+    public static void shareLinkToWechat(Activity activity, String h5Link) {
+        if (shareWeakReference == null || shareWeakReference.get() == null)
+            shareWeakReference = new WeakReference<>(new WechatShare(activity));
+        //find bitmap from glide
+        WechatShare wechatShare = shareWeakReference.get();
+        final WechatShare.ShareContent shareContent = new WechatShare.ShareContentImpl();
+        //链接
+        shareContent.shareScene = WXSceneTimeline;//scene 朋友圈
+        shareContent.shareContent = WechatShare.WEIXIN_SHARE_CONTENT_WEBPAGE;//内容
+        shareContent.url = h5Link;
+        shareContent.title = "一元购机";
+        wechatShare.shareByWX(shareContent);
+    }
+
 
     public static void sharePictureToQZone(Activity activity) {
         if (mTencent == null || mTencent.get() == null) {
