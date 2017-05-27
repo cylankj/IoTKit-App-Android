@@ -68,7 +68,7 @@
   <string name="CREATING">Aggiungere&#8230;</string>
   <string name="CURRENT_PWD">Password attuale non valida</string>
   <string name="CancelingTips">Annullando&#8230;</string>
-  <string name="Cellular_Data_Method">Dati mobili, fare riferimento al seguente metodo:</string>
+  <string name="Cellular_Data_Method">Dati mobili:</string>
   <string name="Cellular_Data_Set_Up">Abilita i dati mobili nel dispositivo, per favore usa il modo seguente, Impostazioni> Dati mobili</string>
   <string name="ChargingLight">Spia Charging</string>
   <string name="ChargingLight_BlueFlashing">Blu infiammante: Charging</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">Indicatore di stato LED</string>
   <string name="DailyGreatTips_Full">il numero di Raccolta dei Splendida della giornata ha raggiunto il limite massimo di 50, andando a eliminare?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Elimina condivisione?</string>
   <string name="Device_Disconnected">Disconnessa</string>
+  <string name="Dont_Show_Again">Non mostrarlo più</string>
   <string name="Download_Then_Share">Scarica il video e poi condividi</string>
   <string name="Downloading">Il video viene scaricato</string>
   <string name="EDIT_IMAGE">Modifica</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">VEN</string>
   <string name="FRI_2">Ven</string>
   <string name="FROME">Da</string>
+  <string name="Fail_Record">Non registrare</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Il messaggio non è riuscito a inviare</string>
   <string name="Feedback_Sending">Inviare &#8230;</string>
+  <string name="Formatting">formattazione</string>
   <string name="GENERAL">Generale</string>
   <string name="GET_CODE">Codice di verifica</string>
   <string name="GIVE_UP">Esci</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">La disconnessione non elimina tutti i dati</string>
   <string name="LOW_BATTERY">Batteria bassa</string>
   <string name="Loaded">Loaded</string>
+  <string name="Logo_Selection">Nessuna</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Informarmi quando l\'interruttore magnetico è on / off</string>
   <string name="MAGNETISM_OFF">Chiuso</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Riaggiungere</string>
   <string name="RE_ADD_LABEL">Aggiornamento completato</string>
   <string name="RIGN_SUC">Registrazione eseguita</string>
+  <string name="Record_Operate">Impossibile operare durante la registrazione</string>
   <string name="Request_TimeOut">Tempo scaduto</string>
   <string name="Reset_Suc">Reset effettuato</string>
   <string name="RuiShi_Guide">Usare l\'ago per premere a lungo il pulsante RESET per 3s</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">Condivisione della gestione</string>
   <string name="Slogan">Sicurezza domestica? usa Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">Si prega di passare alla modalità esterna per visualizzare i contenuti di ripresa</string>
+  <string name="Switch_Mode_Pop">Si prega di passare i contenuti di ripresa in rete corrente alla modalità esterna</string>
   <string name="TAKE_PHOTO">Scatta immagine</string>
   <string name="TERM_OF_USE">Area legale e privacy</string>
   <string name="THEME_DELETED">%s è stato cancellato</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">La mail di attivazione è stato inviato a %s, si prega di fare clic sul link per attivare l\'account.</string>
   <string name="Tap0_wrongcode">Codice di verifica errato</string>
   <string name="Tap1_AddDeviceTips">Clicca il\"+\"a destra in alto per aggiungere il dispositivo</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Premere brevemente il pulsante Wi&#8211;Fi per 1 secondi</string>
   <string name="Tap1_AddDevice_CameraTips">Attendere che l\'indicatore lampeggi in blu</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Premere il pulsante Wi&#8211;Fi per 3 secondi</string>
   <string name="Tap1_AddDevice_ConnectWifi">Connettersi con WiFi</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">Nessuna connessione di rete, fare clic su Aggiorna</string>
   <string name="Tap1_Device_UpgradeTips">Trovare un nuovo firmware del dispositivo, per aggiornare o no?</string>
   <string name="Tap1_Disconnected">Scollegato</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Scollegato, controllare la connessione di rete.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Scollegato, controllare la connessione di rete>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Scollegato, controllare la connessione di rete.</string>
   <string name="Tap1_DoorFun_VoiceTips">Il suono sarà riprodotto dall\'auricolare</string>
   <string name="Tap1_DoorFun_Waitting">Attendere la risposta</string>
   <string name="Tap1_DownloadFirmwareFai">Download del firmware fallito</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">Esigenze scheda SD per inizializzare e dati sarebbero stati cancellati, sicuro di continuare?</string>
   <string name="Tap1_NewFirmware">Nuovi firmware</string>
   <string name="Tap1_NoMessages">Nessun messaggio</string>
-  <string name="Tap1_Offline">Offline, prega ricollegare.</string>
+  <string name="Tap1_Offline">Offline, prega ricollegare>></string>
   <string name="Tap1_OutdoorMode">modalità Outdoor</string>
   <string name="Tap1_OutdoorMode_Opened">Modalità esterni è stato aperto</string>
   <string name="Tap1_Refreshed">Refreshed</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">Cancellazione fallita</string>
   <string name="Tips_Device_ConnectFail">Connessione fallita</string>
   <string name="Tips_Device_TimeoutRetry">Timeout, riprovare</string>
+  <string name="Tips_ShortVideo">Premere a lungo per registrare un breve video</string>
   <string name="Tips_SureDelete">Procedo alla cancellazione?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Nessuna reazione, riprova per favore</string>
   <string name="UPDATE_FAIL">Impossibile collegare la macchina fotografica, riprova per favore</string>
   <string name="UPDATING_BUTTON">Aggiornamento</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blu flashing: Aggiornamento</string>
   <string name="WiFiLight_SteadyBlue">Blu fisso: WiFi on line</string>
   <string name="Wifi_Hotspot">Nel dispositivo [Impostazioni> Wireless LAN], scegliere un punto di accesso Wi&#8211;Fi per connettersi.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi, fare riferimento ai seguenti metodi:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi Reti:</string>
   <string name="Wifi_Set_Up">Vai alla configurazione</string>
   <string name="Word_Hours">ore</string>
   <string name="XX_DISCOVERY">Nuovi dispositivi di \'%s\'</string>
@@ -943,8 +956,7 @@
   <string name="getting">Ricezione&#8230;</string>
   <string name="has_copy">Replicato</string>
   <string name="has_not_sdcard">Scheda SD non trovata</string>
-  <string name="help_url">https://%s:8081/helps/it.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">Sulla scheda SD non c\'è abbastanza spazio</string>
   <string name="is_connecting_video">Connessione in corso</string>
   <string name="is_creating">Salvataggio&#8230;</string>

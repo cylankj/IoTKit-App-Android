@@ -68,7 +68,7 @@
   <string name="CREATING">Adicionando. Aguarde&#8230;</string>
   <string name="CURRENT_PWD">Por favor, insira a senha atual</string>
   <string name="CancelingTips">Cancelando&#8230;</string>
-  <string name="Cellular_Data_Method">Dados móveis, consulte o seguinte método:</string>
+  <string name="Cellular_Data_Method">Dados móveis:</string>
   <string name="Cellular_Data_Set_Up">Ativar dados móveis no dispositivo, use abaixo caminho, Configurações> Dados móveis</string>
   <string name="ChargingLight">Luz de carga</string>
   <string name="ChargingLight_BlueFlashing">Piscando azul: Carga</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">Descrição do status do dispositivo</string>
   <string name="DailyGreatTips_Full">Número da coleção de Show Diário atingiu o limite superior de 50, vai para apagar?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Excluir compartilhamento?</string>
   <string name="Device_Disconnected">Desconectado</string>
+  <string name="Dont_Show_Again">Não mostrar novamente</string>
   <string name="Download_Then_Share">Faça o download do vídeo e compartilhe</string>
   <string name="Downloading">O vídeo está sendo baixado</string>
   <string name="EDIT_IMAGE">Editar</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">Sexta&#8211;feira</string>
   <string name="FRI_2">Sex</string>
   <string name="FROME">Hora de início</string>
+  <string name="Fail_Record">Falha ao gravar</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Falha ao enviar mensagem</string>
   <string name="Feedback_Sending">Enviando</string>
+  <string name="Formatting">Formatação</string>
   <string name="GENERAL">Geral</string>
   <string name="GET_CODE">Obter código</string>
   <string name="GIVE_UP">Sair</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">Sair não vai remover as informações da conta. Você ainda poderá fazer login novamente</string>
   <string name="LOW_BATTERY">Bateria fraca</string>
   <string name="Loaded">Carregado</string>
+  <string name="Logo_Selection">Nenhum</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Notifique&#8211;me quando o interruptor magnético for ligado/desligado</string>
   <string name="MAGNETISM_OFF">Fechar</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Adicionar novamente</string>
   <string name="RE_ADD_LABEL">Atualização do dispositivo concluída</string>
   <string name="RIGN_SUC">Registrado com sucesso</string>
+  <string name="Record_Operate">Não é possível operar durante a gravação</string>
   <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Já brilhou em vermelho</string>
   <string name="RuiShi_Guide">Use a agulha para pressionar o botão RESET durante 3 segundos</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">Gerenciamento de compartilhamento</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">Mude para o modo exterior para ver o conteúdo de disparo</string>
+  <string name="Switch_Mode_Pop">Mude o conteúdo da fotografia da rede para o modo exterior</string>
   <string name="TAKE_PHOTO">Tirar foto</string>
   <string name="TERM_OF_USE">Termos e privacidade</string>
   <string name="THEME_DELETED">A localização %s já foi apagada</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">O email de ativação foi enviado para a %s, clique no link para ativar sua conta.</string>
   <string name="Tap0_wrongcode">Erro em código</string>
   <string name="Tap1_AddDeviceTips">Clique no botão\"+\"no canto direito superior e o adicione</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Pressione brevemente o botão Wi&#8211;Fi para 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Aguarde até que o indicador a piscar em azul</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">prima o botão Wi&#8211;Fi para 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Conectar à rede Wi&#8211;Fi</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">Sem ligação à rede, clique Refrescar</string>
   <string name="Tap1_Device_UpgradeTips">Encontrar novo firmware do dispositivo, para atualizar ou não?</string>
   <string name="Tap1_Disconnected">Desconectado</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Desconectado, verifique a conexão de rede.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Desconectado, verifique a conexão de rede>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Desconectado, verifique a conexão de rede.</string>
   <string name="Tap1_DoorFun_VoiceTips">Serão emitidos sons do dispositivo</string>
   <string name="Tap1_DoorFun_Waitting">Aguardando&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Download de firmware falhou</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">Cartão SD precisa ser inicializado e os dados seriam limpos, com certeza continuar?</string>
   <string name="Tap1_NewFirmware">Novo firmware</string>
   <string name="Tap1_NoMessages">Nenhuma mensagem</string>
-  <string name="Tap1_Offline">Offline, por favor volte a ligar.</string>
+  <string name="Tap1_Offline">Offline, por favor volte a ligar>></string>
   <string name="Tap1_OutdoorMode">Modo outdoor</string>
   <string name="Tap1_OutdoorMode_Opened">Modo de casa foi aberto</string>
   <string name="Tap1_Refreshed">Refreshed</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">Falha ao excluir</string>
   <string name="Tips_Device_ConnectFail">Falhou ao conectar</string>
   <string name="Tips_Device_TimeoutRetry">Timeout, tente novamente</string>
+  <string name="Tips_ShortVideo">Pressão longa para gravar um pequeno vídeo</string>
   <string name="Tips_SureDelete">Claro que para apagar?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">O dispositivo não responde. Por favor tente novamente</string>
   <string name="UPDATE_FAIL">Conexão com dispositivo falhou. Por favor tente novamente</string>
   <string name="UPDATING_BUTTON">Atualizando</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blue piscando: Atualizando</string>
   <string name="WiFiLight_SteadyBlue">Azul fixo: WiFi online</string>
   <string name="Wifi_Hotspot">No dispositivo [Definições> LAN sem fios], escolha um ponto de acesso Wi&#8211;Fi para ligar.</string>
-  <string name="Wifi_Method">Rede Wi&#8211;Fi, consulte os seguintes métodos:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi Rede:</string>
   <string name="Wifi_Set_Up">Ir para configurar</string>
   <string name="Word_Hours">hora</string>
   <string name="XX_DISCOVERY">%s registrou novas descobertas</string>
@@ -943,8 +956,7 @@
   <string name="getting">Obtendo&#8230;</string>
   <string name="has_copy">Copiado</string>
   <string name="has_not_sdcard">Cartão microSD não detectado</string>
-  <string name="help_url">https://%s:8081/helps/pt.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">microSD sem espaço disponível</string>
   <string name="is_connecting_video">Conectando</string>
   <string name="is_creating">Adicionando</string>
