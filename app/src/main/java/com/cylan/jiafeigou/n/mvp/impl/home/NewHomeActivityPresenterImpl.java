@@ -47,7 +47,8 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                     }
                 }, throwable -> {
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
-                    addSubscription(updateRsp());
+                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);
+//                    addSubscription(updateRsp());
                 });
     }
 

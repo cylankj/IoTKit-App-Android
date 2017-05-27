@@ -157,7 +157,7 @@ public class AfterLoginService extends IntentService {
                     AppLogger.d("有没有?" + v + ",gV: " + gVersion);
                     //有新包
                     RxEvent.ClientCheckVersion version = new RxEvent.ClientCheckVersion(0, null, 1);
-                    if (BindUtils.versionCompare(v, gVersion) > 0) {
+                    if (BindUtils.versionCompare(gVersion, v) > 0) {
                         version.ret = NEW_VERSION;
                     } else {
                         version.ret = NO_VERSION;
@@ -211,6 +211,7 @@ public class AfterLoginService extends IntentService {
                         AppLogger.d("google play检查版本结果?" + ret);
                         if (ret.ret == NEW_VERSION) {
                             RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload("")
+                                    .setRsp(new RxEvent.CheckVersionRsp(true, "", "", "", ""))
                                     .setUpdateType(RxEvent.UpdateType.GOOGLE_PLAY));
                         }
                     }, AppLogger::e);
