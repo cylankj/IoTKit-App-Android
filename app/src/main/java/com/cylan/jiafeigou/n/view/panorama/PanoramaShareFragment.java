@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -60,6 +61,7 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
         shareBinding.setUploadSuccess(uploadSuccess);
         shareBinding.setBackClick(this::cancelShare);
         shareBinding.setShareClick(this::share);
+        Glide.with(this).load(filePath).into(shareBinding.sharePreview);
         presenter.upload(shareItem.fileName, filePath);
     }
 
