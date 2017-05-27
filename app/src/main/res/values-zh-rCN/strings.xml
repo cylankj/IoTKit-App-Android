@@ -875,6 +875,7 @@
     <string name="VIDEO_REFRESHING">正在加载，请稍后</string>
     <string name="VIDEO_SD_DESC">Micro SD卡需要初始化，才能存储视频</string>
     <string name="WARN_TIME">报警时间段</string>
+    <string name="MIJIA">米家</string>
     <string name="WEB">加菲狗官网</string>
     <string name="WED">星期三</string>
     <string name="WED_1">每周三</string>

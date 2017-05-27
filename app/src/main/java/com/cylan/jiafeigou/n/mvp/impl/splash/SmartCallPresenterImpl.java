@@ -79,12 +79,12 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     //1.广告页仅在加菲狗版本、中国大陆地区(简体中文)版本显示，其余版本屏蔽。
                     //2.在广告投放时间期限内，每个用户看到的广告展示次数最多为三次，广告展示次数满三次后不再显示。
                     int l = JFGRules.getLanguageType(ContextUtils.getContext());
-                    if (l == JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
+                    if (l != JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
                         //非简体中文
-                        AdsStrategy.AdsDescription description = new AdsStrategy.AdsDescription();
-                        description.tagUrl = "www.baidu.com";
-                        description.url = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
-                        return description;
+//                        AdsStrategy.AdsDescription description = new AdsStrategy.AdsDescription();
+//                        description.tagUrl = "http://www.baidu.com";
+//                        description.url = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
+                        return null;
                     }
                     String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
                     if (TextUtils.isEmpty(content)) {
