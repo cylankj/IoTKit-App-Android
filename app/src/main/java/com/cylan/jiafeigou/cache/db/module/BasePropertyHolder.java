@@ -55,7 +55,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     @Override
     public final boolean setValue(int msgId, DataPoint value) {
         DPEntity property = getProperty(msgId);
-        return property != null && property.setValue(value, value == null ? null : value.toBytes(), value == null ? 0 : value.version);
+        return property != null && property.setValue(value, value == null ? null : value.toBytes(), value == null ? 0 : value.getVersion());
     }
 
     public DPEntity getProperty(int msgId) {

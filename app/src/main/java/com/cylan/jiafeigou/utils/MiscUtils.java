@@ -284,9 +284,9 @@ public class MiscUtils {
         if (set != null && set.size() > 0) {
             Collections.sort(set);
             if (min)
-                return set.get(set.size() - 1).version;
+                return set.get(set.size() - 1).getVersion();
             else {
-                return set.get(0).version;
+                return set.get(0).getVersion();
             }
         }
         return 0L;

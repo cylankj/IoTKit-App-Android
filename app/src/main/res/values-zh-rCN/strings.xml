@@ -982,4 +982,8 @@
     <string name="panorama_album">全景相册</string>
     <string name="phone_album">手机相册</string>
     <string name="panorama_and_phone_album">全景+手机相册</string>
+    <string name="share_manager_center">分享管理</string>
+    <string name="QQ">QQ</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
 </resources>

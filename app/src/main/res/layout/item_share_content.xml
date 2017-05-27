@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem" />
+
+        <variable
+            name="sharedContentItem"
+            type="ShareContentItem" />
+
+        <variable
+            name="itemPosition"
+            type="Integer" />
+
+        <variable
+            name="unShareListener"
+            type="com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem.UnShareListener" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y67">
+
+        <ImageView
+            android:id="@+id/sharedContentIcon"
+            android:layout_width="@dimen/y43"
+            android:layout_height="@dimen/y43"
+            android:layout_marginStart="@dimen/y15"
+            android:src="@drawable/bg_default_photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sharedContentDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/y15"
+            android:maxLength="14"
+            android:text="@{sharedContentItem.shareItem.desc}"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintRight_toLeftOf="@+id/unShareContent"
+            app:layout_constraintStart_toEndOf="@+id/sharedContentIcon"
+            app:layout_constraintTop_toTopOf="@+id/sharedContentIcon" />
+
+        <TextView
+            android:id="@+id/tv_has_share_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y8"
+            android:text="2017/2/5"
+            android:textColor="@color/color_8c8c8c"
+            android:textSize="@dimen/sp12"
+            app:layout_constraintStart_toStartOf="@id/sharedContentDetail"
+            app:layout_constraintTop_toBottomOf="@+id/sharedContentDetail" />
+
+
+        <TextView
+            android:id="@+id/unShareContent"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y28"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y15"
+            android:background="@drawable/btn_accept_add_request_shape"
+            android:gravity="center"
+            android:onClick="@{v->unShareListener.unShare(sharedContentItem,itemPosition)}"
+            android:paddingEnd="@dimen/y14"
+            android:paddingStart="@dimen/y14"
+            android:text="@string/Tap3_ShareDevice_Delete"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp13"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--android:onClick="@{v->unShareListener.unShare(sharedContentItem,itemPosition)}"-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y1"
+            android:background="@color/color_f2f2f2"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

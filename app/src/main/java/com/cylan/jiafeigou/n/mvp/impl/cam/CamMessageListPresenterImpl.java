@@ -150,8 +150,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     ArrayList<CamMessageBean> list = new ArrayList<>();
                     for (DataPoint dataPoint : result) {
                         CamMessageBean bean = new CamMessageBean();
-                        bean.id = dataPoint.msgId;
-                        bean.version = dataPoint.version;
+                        bean.id = dataPoint.getMsgId();
+                        bean.version = dataPoint.getVersion();
                         if (bean.id == 222) {
                             bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
                         }

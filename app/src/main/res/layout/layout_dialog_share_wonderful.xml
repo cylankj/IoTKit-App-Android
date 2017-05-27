@@ -1,108 +1,125 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lLayout_dialog_share_wonderful"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="shareListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/lLayout_dialog_share_wonderful"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_share_to_timeline"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/y20"
-            android:drawableStart="@drawable/icon_friend"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:text="@string/Tap2_Share_Moments" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_share_to_wechat_friends"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/y20"
-            android:drawableStart="@drawable/icon_wechat"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:text="@string/Tap2_Share_Wechat" />
+            <TextView
+                android:id="@+id/tv_share_to_timeline"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/icon_friend"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
+                android:text="@string/Tap2_Share_Moments" />
 
-        <TextView
-            android:id="@+id/tv_share_to_tencent_qq"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/y20"
-            android:drawableStart="@drawable/share_icon_qq"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:text="QQ"
-            android:visibility="visible" />
+            <TextView
+                android:id="@+id/tv_share_to_wechat_friends"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/icon_wechat"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
+                android:text="@string/Tap2_Share_Wechat" />
 
-        <TextView
-            android:id="@+id/tv_share_to_tencent_qzone"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/y20"
-            android:drawableStart="@drawable/share_icon_qqspace"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:text="@string/Qzone_QQ"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_share_to_tencent_qq"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/share_icon_qq"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
+                android:text="QQ"
+                android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tv_share_to_sina_weibo"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/y20"
-            android:drawableStart="@drawable/share_icon_weibo"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:text="@string/Weibo"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_share_to_tencent_qzone"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/share_icon_qqspace"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
+                android:text="@string/Qzone_QQ"
+                android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tv_share_to_twitter_friends"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/y20"
-            android:drawableStart="@drawable/twitter_icon_twitter"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/y20"
-            android:paddingStart="@dimen/y20"
-            android:text="twitter" />
+            <TextView
+                android:id="@+id/tv_share_to_sina_weibo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/share_icon_weibo"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
+                android:text="@string/Weibo"
+                android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tv_share_to_facebook_friends"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            android:drawablePadding="@dimen/x20"
-            android:drawableStart="@drawable/share_icon_facebook"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/x20"
-            android:paddingStart="@dimen/x20"
-            android:text="facebook" />
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/tv_share_to_twitter_friends"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/twitter_icon_twitter"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
+                android:text="twitter" />
+
+            <TextView
+                android:id="@+id/tv_share_to_facebook_friends"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/x20"
+                android:drawableStart="@drawable/share_icon_facebook"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{shareListener}"
+                android:paddingEnd="@dimen/x20"
+                android:paddingStart="@dimen/x20"
+                android:text="facebook" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</layout>

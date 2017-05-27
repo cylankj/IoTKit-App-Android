@@ -44,6 +44,7 @@ public class ShareDialogFragment extends BaseDialog {
 
     private GlideUrl glideUrl;
     private String mVideoURL;
+    private boolean isH5;
 
     public static ShareDialogFragment newInstance(Bundle bundle) {
         ShareDialogFragment fragment = new ShareDialogFragment();
@@ -62,7 +63,6 @@ public class ShareDialogFragment extends BaseDialog {
     public void setVideoURL(String url) {
         this.mVideoURL = url;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +92,7 @@ public class ShareDialogFragment extends BaseDialog {
                     ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
                     return;
                 }
+
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneTimeline, glideUrl);
                 } else if (glideUrl != null) {

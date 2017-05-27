@@ -100,14 +100,16 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
-
+        <meta-data
+            android:name="com.cylan.jiafeigou.base.module.JFGGlideCacheModule"
+            android:value="GlideModule" />
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${BUGLY_APPID}" />
         <!-- 配置APP版本号 -->
         <!--<meta-data-->
-            <!--android:name="BUGLY_APP_VERSION"-->
-            <!--android:value="${BUGLY_APP_VERSION}" />-->
+        <!--android:name="BUGLY_APP_VERSION"-->
+        <!--android:value="${BUGLY_APP_VERSION}" />-->
         <!-- 配置APP渠道号 -->
         <meta-data
             android:name="BUGLY_APP_CHANNEL"

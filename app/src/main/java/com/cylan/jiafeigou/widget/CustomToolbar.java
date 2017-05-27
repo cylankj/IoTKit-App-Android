@@ -69,7 +69,11 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         }
         viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
         if (enableTheme) {
-            bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_0ba8cf : R.color.color_23344e;
+            if (isInEditMode()) {
+                bgColor = R.color.color_0ba8cf;//这是方便在 xml 布局中显示
+            } else {
+                bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_0ba8cf : R.color.color_23344e;
+            }
             viewGroup.setBackgroundColor(getResources().getColor(bgColor));
         }
         if (customContentLayoutId != -1) {
@@ -165,6 +169,18 @@ public class CustomToolbar extends LinearLayout implements ITheme {
     public void setBackAction(OnClickListener clickListener) {
         if (clickListener != null && customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             tvToolbarIcon.setOnClickListener(clickListener);
+        }
+    }
+
+    public void setRightAction(OnClickListener clickListener) {
+        if (clickListener != null && customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.setOnClickListener(clickListener);
+        }
+    }
+
+    public void setRightEnable(boolean enable) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.setEnabled(enable);
         }
     }
 

@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;

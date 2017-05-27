@@ -132,7 +132,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         }
                         List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
                         Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
-                        return result.subList(0, 20);
+                        return result.subList(0, result.size() > 20 ? 20 : result.size());
                     }))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {

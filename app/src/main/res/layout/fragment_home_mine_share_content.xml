@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="backAction"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="rightAction"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="editMode"
+            type="android.databinding.ObservableBoolean" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
+
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backAction="@{backAction}"
+            app:ct_background_color="@color/color_0ba8cf"
+            app:ct_enable_shadow="true"
+            app:ct_enable_theme="true"
+            app:ct_fit_system_window="true"
+            app:ct_icon="@drawable/nav_icon_back_white"
+            app:ct_left_title="已分享内容"
+            app:ct_left_title_color="@color/color_white"
+            app:ct_right_title_color="@color/color_white"
+            app:rightAction="@{rightAction}"
+            app:toolbarRightTitle="@{editMode?@string/CANCEL:@string/EDIT_THEME}" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sharedContentList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
