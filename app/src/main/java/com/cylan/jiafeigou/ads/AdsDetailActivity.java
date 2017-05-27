@@ -12,7 +12,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -21,7 +20,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.gson.Gson;
 
@@ -74,9 +72,7 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
             AppLogger.d("分享");
             ShareDialogFragment fragment = new ShareDialogFragment();
             fragment.setPictureURL(new GlideUrl(description.tagUrl));
-//            if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_VIDEO) {
-//                fragment.setVideoURL(bean.fileName);
-//            }
+            fragment.setVideoURL(description.tagUrl);
             fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
         });
     }

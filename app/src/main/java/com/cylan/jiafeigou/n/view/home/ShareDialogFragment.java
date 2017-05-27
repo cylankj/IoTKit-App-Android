@@ -141,7 +141,7 @@ public class ShareDialogFragment extends BaseDialog {
                 break;
             case R.id.tv_share_to_tencent_qq:
                 if (!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.shareVideoToQQ(getActivity(), mVideoURL);
+                    ShareUtils.shareLinkToQQ(getActivity(), mVideoURL);
                 } else if (glideUrl != null) {
                     ShareUtils.sharePictureToQQ(getActivity(), glideUrl);
                 } else {

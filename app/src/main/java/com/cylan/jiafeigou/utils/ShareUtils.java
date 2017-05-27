@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.v4.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +39,8 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetcomposer.TweetUploadService;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -322,7 +325,7 @@ public class ShareUtils {
 
     }
 
-    public static void shareVideoToQQ(Activity activity, String h5) {
+    public static void shareLinkToQQ(Activity activity, String h5) {
         if (mTencent == null || mTencent.get() == null) {
             String APP_KEY = PackageUtils.getMetaString(activity, "qqAppKey");
             mTencent = new WeakReference<>(Tencent.createInstance(APP_KEY, activity));
@@ -359,14 +362,28 @@ public class ShareUtils {
 
     }
 
-    public static void sharePictureToWeiBo(Activity activity) {
 
+    public static void shareLinkTo(@ShareTo int share, Activity activity, String link) {
+        if (share == ShareTo.QQ) {
+            shareLinkToQQ(activity, link);
+        }
     }
 
-    public static void shareVideoToWeibo(Activity activity) {
-
+    @IntDef({
+            ShareTo.QQ,
+            ShareTo.WECHAT,
+            ShareTo.SINA,
+            ShareTo.FB,
+            ShareTo.TT
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ShareTo {
+        int QQ = 0;
+        int WECHAT = 1;
+        int SINA = 2;
+        int FB = 3;
+        int TT = 4;
     }
-
 
     public static class MyResultReceiver extends BroadcastReceiver {
         @Override
