@@ -115,7 +115,7 @@ public class FirmwareCheckerService extends Service {
                 return;
             }
             //不需要升级的
-            if (!JFGRules.needShowFirmware(device.pid)) {
+            if (!JFGRules.showFirmware(device.pid)) {
                 tryStopSelf();
                 return;
             }

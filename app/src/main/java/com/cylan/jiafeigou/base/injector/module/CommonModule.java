@@ -15,6 +15,8 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -146,6 +148,11 @@ public class CommonModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    public static IProperty getProductProperty() {
+        return new PropertiesLoader();
+    }
 //    @Provides
 //    @Singleton
 //    @Named("IHttpApi")

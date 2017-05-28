@@ -430,7 +430,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
-        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileLayout(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
@@ -456,7 +456,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSetting110v.setVisibility(View.GONE);
 
         /////////////////////////旋转/////////////////////////////////////////
-        if (JFGRules.isPanoramicCam(device.pid)) {
+        if (JFGRules.showRotate(device.pid)) {
             svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
             int state = device.$(DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
@@ -484,7 +484,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (JFGRules.isShareDevice(uuid)) {
             sbtnSettingSight.setVisibility(View.GONE);
         }
-        if (JFGRules.isPanoramicCam(device.pid)) {
+        if (JFGRules.showSight(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
             try {
                 String dpPrimary = device.$(509, "0");

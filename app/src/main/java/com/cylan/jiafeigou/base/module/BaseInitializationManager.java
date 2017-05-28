@@ -16,6 +16,8 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -63,6 +65,7 @@ public final class BaseInitializationManager {
     private BaseDeviceInformationFetcher deviceInformationFetcher;
     private BasePanoramaApiHelper apiHelper;
     private BaseForwardHelper forwardHelper;
+    private IProperty iProperty;
     private boolean hasInitFinished = false;
 
     @Inject
@@ -84,7 +87,8 @@ public final class BaseInitializationManager {
                                      BaseBellCallEventListener listener,
                                      BasePanoramaApiHelper apiHelper,
                                      BaseDeviceInformationFetcher fetcher,
-                                     BaseForwardHelper forwardHelper
+                                     BaseForwardHelper forwardHelper,
+                                     IProperty iProperty
     ) {
 
         compositeSubscription = new CompositeSubscription();
@@ -107,6 +111,7 @@ public final class BaseInitializationManager {
         this.deviceInformationFetcher = fetcher;
         this.apiHelper = apiHelper;
         this.forwardHelper = forwardHelper;
+        this.iProperty = iProperty;
     }
 
     public void initialization() {
@@ -124,6 +129,7 @@ public final class BaseInitializationManager {
         initPushResult();
         initDeviceInformationFetcher();
         OkGo.init((Application) appContext);
+        this.iProperty.initialize();
         hasInitFinished = true;
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
     }

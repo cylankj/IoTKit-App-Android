@@ -124,12 +124,12 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean showBattery = JFGRules.showSettingBatteryItem(device != null ? device.pid : 0);
+        boolean showBattery = JFGRules.showBattery(device != null ? device.pid : 0);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
         //全景不显示固件升级 显示软件版本
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
-        boolean showFU = JFGRules.needShowFirmware(device != null ? device.pid : 0);
+        boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0);
         rlHardwareUpdate.setVisibility(showFU ? View.VISIBLE : View.GONE);
     }
 
@@ -156,7 +156,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
         //是否显示移动网络
         boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
-        tvDeviceMobileNet.setVisibility(JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
+        tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
         DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());

@@ -120,34 +120,6 @@ public class JFGRules {
                 pid == 37;
     }
 
-    public static boolean show110VLayout(int pid) {
-        return isPanoramicCam(pid) || isWifiCam(pid) ||
-                isRS(pid) ||
-                pid == 21 || pid == 1089;
-    }
-
-    public static boolean showHomeBatteryIcon(int pid) {
-        return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
-    }
-
-    public static boolean showSettingBatteryItem(int pid) {
-        if (isRS(pid)) return false;//睿思,不显示电量.
-        return is3GCam(pid) || isFreeCam(pid)
-                || pid == 1089
-                || pid == 21
-                || pid == 1088
-                || pid == 26
-                || pid == 1093
-                || pid == 6
-                || pid == 1094
-                || pid == 25
-                || pid == 11
-                || pid == 17
-                || pid == 1158
-                || pid == 1160
-                || pid == 27;
-
-    }
 
     public static boolean isMobileNet(int net) {
         return net >= 2;
@@ -162,38 +134,9 @@ public class JFGRules {
         return pid == JConstant.OS_CAMERA_CC3200;
     }
 
-    public static boolean showStandbyItem(int pid) {
-        if (isRS(pid)) return true;
-        return pid == 4
-                || pid == 5
-                || pid == 7
-                || pid == 10
-                || pid == 18
-                || pid == 26
-                || pid == 1152
-                || pid == 1090
-                || pid == 1071
-                || pid == 1092
-                || pid == 1091
-                || pid == 1088;
-    }
 
     public static boolean isFreeCam(Device jfgDevice) {
         return jfgDevice != null && jfgDevice.pid == JConstant.OS_CAMERA_CC3200;
-    }
-
-    public static boolean showLedIndicator(int pid) {
-        if (isRS(pid)) return true;
-        return pid == 4
-                || pid == 5
-                || pid == 7
-                || pid == 10
-                || pid == 18
-                || pid == 1090
-                || pid == 1091
-                || pid == 1092
-                || pid == 1071
-                || pid == 1152;
     }
 
 
@@ -207,10 +150,6 @@ public class JFGRules {
         return false;
     }
 
-    //freeCam 海思 wifi
-    public static boolean showMobileLayout(int pid) {
-        return is3GCam(pid);
-    }
 
     public static boolean isRS(int pid) {
         return pid == 38;
@@ -282,25 +221,54 @@ public class JFGRules {
         return isPanoramicCam(pid);
     }
 
-    public static boolean needShowFirmware(int pid) {
-        if (isPanoramicCam(pid)) return false;
-        if (isRS(pid)) return false;
-        if (isPan720(pid)) return true;
-        return true;
+    public static boolean showSight(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "sight");
+    }
+
+    public static boolean showRotate(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "hangup");
+    }
+
+    public static boolean showStandbyItem(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "standby");
+    }
+
+    public static boolean show110VLayout(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "110V");
+    }
+
+    public static boolean showHomeBatteryIcon(int pid) {
+        return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
+    }
+
+    public static boolean showBattery(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "battery");
+    }
+
+    //freeCam 海思 wifi
+    public static boolean showMobileNet(int pid) {
+        return is3GCam(pid);
+    }
+
+    public static boolean showLedIndicator(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "led");
+    }
+
+
+    public static boolean showFirmware(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "fu");
     }
 
     public static boolean showSoftWare(int pid) {
-        if (isPanoramicCam(pid)) return false;
-        if (isPan720(pid)) return false;
-        return true;
-    }
-
-    public static boolean isPan720(int pid) {
-        return pid == 1089 || pid == 21;
-    }
-
-    public static boolean is2WCam(int pid) {
-        return pid == JConstant.OS_CAMERA_PANORAMA_HAISI;
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "softVersion");
     }
 
     public static class PlayErr {

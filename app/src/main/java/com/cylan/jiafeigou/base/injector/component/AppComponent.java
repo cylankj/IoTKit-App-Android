@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
+import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 import javax.inject.Singleton;
@@ -55,5 +56,7 @@ public interface AppComponent {
     BaseDeviceInformationFetcher getDeviceInformationFetcher();
 
     OkHttpClient getOkHttpClient();
+
+    IProperty getProductProperty();
 
 }

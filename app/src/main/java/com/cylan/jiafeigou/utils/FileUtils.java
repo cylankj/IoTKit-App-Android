@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
@@ -732,6 +733,43 @@ public class FileUtils {
             CloseUtils.close(is);
         }
 
+    }
+    /**
+     * Reads the text of an asset. Should not be run on the UI thread.
+     *
+     * @param mgr  The {@link AssetManager} obtained via {@link Context#getAssets()}
+     * @param path The path to the asset.
+     * @return The plain text of the asset
+     */
+    public static String readAsset(AssetManager mgr, String path) {
+        StringBuilder contents = new StringBuilder();
+        InputStream is = null;
+        BufferedReader reader = null;
+        try {
+            is = mgr.open(path);
+            reader = new BufferedReader(new InputStreamReader(is));
+            contents.append(reader.readLine());
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                contents.append('\n' + line);
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return contents.toString();
     }
 
 
