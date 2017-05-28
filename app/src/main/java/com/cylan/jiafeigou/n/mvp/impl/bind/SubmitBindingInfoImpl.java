@@ -116,10 +116,10 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(ret -> {
-                            mView.bindState(ret.bindResult);
-                            unSubscribe("submitBindDeviceSub");
-                        },
-                        AppLogger::e);
+                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
+                    mView.bindState(ret.bindResult);
+                    unSubscribe("submitBindDeviceSub");
+                }, AppLogger::e);
     }
 
     private Subscription submitBindDeviceSub() {
