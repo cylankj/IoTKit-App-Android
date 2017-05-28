@@ -1,0 +1,9 @@
+
+#yun平台
+yun.jfgou.com:443
+
+#test1平台
+test1.jfgou.com:443
+
+#yf平台
+yf.jfgou.com:443
