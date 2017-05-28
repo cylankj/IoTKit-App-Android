@@ -300,7 +300,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                     }
                 }
                 onRefreshFinish();
-                enableNestedScroll();
+//                enableNestedScroll();
                 emptyViewState.setVisibility(mItemAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                 Log.d("onItemsRsp", "onItemsRsp:" + resultList);
             }
