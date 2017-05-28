@@ -14,7 +14,7 @@
     <com.rd.PageIndicatorView
         android:id="@+id/pageIndicatorView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/y9"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/y35"
         attrs:piv_animationType="WORM"
