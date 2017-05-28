@@ -59,7 +59,7 @@ public class AgreementFragment extends Fragment {
 
     private void loadWeb() {
         final String packageNameSuffix = ContextUtils.getContext().getPackageName()
-                .replace("com.cylan.jiafeigou", "");
+                .replace("com.cylan.jiafeigou", "").replace(".", "");
         final String agreementUrl = getString(R.string.Treaty_url,
                 packageNameSuffix.length() == 0 ? "" : "_" + packageNameSuffix);
         WebSettings settings = webview.getSettings();

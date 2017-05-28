@@ -84,7 +84,8 @@ public class HomeMineHelpFragment extends Fragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        final String packageNameSuffix = ContextUtils.getContext().getPackageName().replace("com.cylan.jiafeigou", "");
+        final String packageNameSuffix = ContextUtils.getContext().getPackageName().replace("com.cylan.jiafeigou", "")
+                .replace(".", "");
         String agreementUrl = getString(R.string.help_url, OptionsImpl.getServer().split(":")[0],
                 packageNameSuffix.length() == 0 ? "" : "_" + packageNameSuffix);
         if (agreementUrl.contains("–")) {

@@ -289,12 +289,9 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            String con = getString(R.string.share_content);
-            if (!TextUtils.isEmpty(JConstant.EFAMILY_URL_PREFIX)) {
-                con += JConstant.EFAMILY_URL_PREFIX;
-            }
+            final String con = getString(R.string.share_content)
+                    + JConstant.EFAMILY_URL_PREFIX + "id=" + getContext().getPackageName();
             intent.putExtra(Intent.EXTRA_TEXT, con);
-
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
                 appAdater = new AppAdater(getContext());
