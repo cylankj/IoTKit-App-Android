@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.os.Process;
+import android.support.annotation.IntDef;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
@@ -15,6 +16,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -27,6 +29,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -36,6 +40,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.n.engine.AfterLoginService.GooglePlayCheckResult.NEW_VERSION;
+import static com.cylan.jiafeigou.n.engine.AfterLoginService.GooglePlayCheckResult.NO_VERSION;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -122,37 +129,101 @@ public class AfterLoginService extends IntentService {
             } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 AppLogger.d("尝试检查版本");
-                Observable.just("check_version")
-                        .subscribeOn(Schedulers.newThread())
-                        .delay(3, TimeUnit.SECONDS)
-                        .timeout(10, TimeUnit.SECONDS)
-                        .filter(s -> {
-                            int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
-                            return netType == 1;//wifi
-                        })
-                        .flatMap(s -> {
-                            int req = -1;
-                            try {
-                                String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
-                                req = BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
-                            } catch (JfgException e) {
-                                AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
-                            }
-                            return Observable.just(req);
-                        })
-                        .filter(ret -> ret >= 0)
-                        .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.ClientCheckVersion.class)
-                                .flatMap(clientCheckVersion -> {
-                                    throw new RxEvent.HelperBreaker(clientCheckVersion);
-                                }))
-                        .subscribe(ret -> {
-                        }, throwable -> {//让整条订阅连结束
-                            if (throwable instanceof RxEvent.HelperBreaker) {
-                                if (((RxEvent.HelperBreaker) throwable).object != null && ((RxEvent.HelperBreaker) throwable).object instanceof RxEvent.ClientCheckVersion)
-                                    checkRsp((RxEvent.ClientCheckVersion) ((RxEvent.HelperBreaker) throwable).object);
-                            }
-                        });
+                checkVersion();
             }
+        }
+    }
+
+    @IntDef({
+            NO_VERSION,
+            NEW_VERSION,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface GooglePlayCheckResult {
+        int NO_VERSION = 100;
+        int NEW_VERSION = 200;
+    }
+
+    /**
+     * 从Google Play检查
+     *
+     * @return
+     */
+    private Observable<RxEvent.ClientCheckVersion> checkVersionFromGooglePlay() {
+        return MiscUtils.getAppVersionFromGooglePlay()
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(gVersion -> {
+                    String v = PackageUtils.getAppVersionName(ContextUtils.getContext());
+                    AppLogger.d("有没有?" + v + ",gV: " + gVersion);
+                    //有新包
+                    RxEvent.ClientCheckVersion version = new RxEvent.ClientCheckVersion(0, null, 1);
+                    if (BindUtils.versionCompare(gVersion, v) > 0) {
+                        version.ret = NEW_VERSION;
+                    } else {
+                        version.ret = NO_VERSION;
+                        version.forceUpgrade = 0;
+                    }
+                    return Observable.just(version);
+                });
+    }
+
+    /**
+     * 从8小时检查
+     *
+     * @return
+     */
+    private Observable<RxEvent.ClientCheckVersion> checkVersionFrom8Hour() {
+        return Observable.just("check_version")
+                .subscribeOn(Schedulers.newThread())
+                .delay(3, TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS)
+                .filter(s -> {
+                    int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
+                    return netType == 1;//wifi
+                })
+                .flatMap(s -> {
+                    int req = -1;
+                    try {
+                        String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
+                        req = BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
+                    } catch (JfgException e) {
+                        AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
+                    }
+                    return Observable.just(req);
+                })
+                .filter(ret -> ret >= 0)
+                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.ClientCheckVersion.class)
+                        .flatMap(clientCheckVersion -> {
+                            throw new RxEvent.HelperBreaker(clientCheckVersion);
+                        }));
+    }
+
+    private void checkVersion() {
+        int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
+        if (netType != 1)//wifi
+            return;
+        if (MiscUtils.isGooglePlayServiceAvailable()) {
+            //google play 可用 只走google play
+            checkVersionFromGooglePlay()
+                    .subscribeOn(Schedulers.newThread())
+                    .filter(ret -> ret != null)
+                    .subscribe(ret -> {
+                        AppLogger.d("google play检查版本结果?" + ret);
+                        if (ret.ret == NEW_VERSION) {
+                            RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload("")
+                                    .setRsp(new RxEvent.CheckVersionRsp(true, "", "", "", ""))
+                                    .setUpdateType(RxEvent.UpdateType.GOOGLE_PLAY));
+                        }
+                    }, AppLogger::e);
+        } else {
+            checkVersionFrom8Hour().subscribeOn(Schedulers.newThread())
+                    .subscribe(ret -> {
+                    }, throwable -> {//让整条订阅连结束
+                        if (throwable instanceof RxEvent.HelperBreaker) {
+                            if (((RxEvent.HelperBreaker) throwable).object != null && ((RxEvent.HelperBreaker) throwable).object instanceof RxEvent.ClientCheckVersion)
+                                checkRsp((RxEvent.ClientCheckVersion) ((RxEvent.HelperBreaker) throwable).object);
+                        }
+                    });
         }
     }
 
@@ -217,7 +288,8 @@ public class AfterLoginService extends IntentService {
                 AppLogger.d("文件已经下载好");
                 rsp.downloadState = JConstant.D.SUCCESS;
                 PreferencesUtils.putString(JConstant.KEY_CLIENT_UPDATE_DESC, new Gson().toJson(rsp));
-                RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(rsp.fileDir + File.separator + rsp.fileName).setRsp(rsp));
+                RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(rsp.fileDir + File.separator + rsp.fileName).setRsp(rsp)
+                        .setUpdateType(RxEvent.UpdateType._8HOUR));
                 return;
             }
             ClientUpdateManager.getInstance().downLoadFile(rsp, new ClientUpdateManager.DownloadListener() {

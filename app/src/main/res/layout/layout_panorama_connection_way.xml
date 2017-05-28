@@ -49,7 +49,6 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/y25"
                     android:autoLink="all"
-                    android:text="@string/connection_way_family"
                     android:textColor="#666666"
                     android:textSize="@dimen/sp14" />
 
@@ -94,7 +93,6 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/y21"
                     android:autoLink="all"
-                    android:text="@string/connection_way_out_door"
                     android:textColor="#666666"
                     android:textSize="@dimen/sp14" />
             </RelativeLayout>

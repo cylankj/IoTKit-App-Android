@@ -68,7 +68,7 @@
   <string name="CREATING">Ekleniyor&#8230;</string>
   <string name="CURRENT_PWD">Mevcut şifre</string>
   <string name="CancelingTips">İptal&#8230;</string>
-  <string name="Cellular_Data_Method">Mobil veri, lütfen aşağıdaki yönteme bakın:</string>
+  <string name="Cellular_Data_Method">Mobil veri:</string>
   <string name="Cellular_Data_Set_Up">Cihazdaki Mobil verileri etkinleştirin, lütfen aşağıdaki şekilde kullanın; Ayarlar> Mobil veri</string>
   <string name="ChargingLight">Şarj ışığı</string>
   <string name="ChargingLight_BlueFlashing">Mavi yanıp sönüyor: Şarj</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">LED Durum Göstergesi</string>
   <string name="DailyGreatTips_Full">Koleksiyonun Günlük Mükemmel sayısı 50\'ye ulaştı, silinecek mi?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Paylaşımı silinsin mi?</string>
   <string name="Device_Disconnected">Bağlantısız</string>
+  <string name="Dont_Show_Again">Tekrar gösterme</string>
   <string name="Download_Then_Share">Lütfen videoyu indirin ve ardından paylaşın</string>
   <string name="Downloading">Video indiriliyor</string>
   <string name="EDIT_IMAGE">Düzenle</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">Cuma</string>
   <string name="FRI_2">Cuma</string>
   <string name="FROME">den</string>
+  <string name="Fail_Record">Kayıt başarısız</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Mesaj gönderilemedi</string>
   <string name="Feedback_Sending">Gönderiliyor &#8230;</string>
+  <string name="Formatting">Biçimlendirme</string>
   <string name="GENERAL">Genel</string>
   <string name="GET_CODE">Al</string>
   <string name="GIVE_UP">Çıkış</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">Oturumu kapatmak herhangi bir veriyi silmeyecektir, hala giriş yapabilirsiniz.</string>
   <string name="LOW_BATTERY">Düşük batarya</string>
   <string name="Loaded">Yüklü</string>
+  <string name="Logo_Selection">Yok</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Manyetik anahtar açık/kapalı iken beni uyar</string>
   <string name="MAGNETISM_OFF">Kapalı</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Tekrar ekle</string>
   <string name="RE_ADD_LABEL">Tüm güncellemeler tamalandığında</string>
   <string name="RIGN_SUC">Başarılı bir şekilde kaydedildi</string>
+  <string name="Record_Operate">Kayıt sırasında çalışılamıyor</string>
   <string name="Request_TimeOut">Zaman aşımı</string>
   <string name="Reset_Suc">Zaten kırmızı çaktı</string>
   <string name="RuiShi_Guide">3s için RESET düğmesine uzun basmak için iğne kullanın</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">Paylaşım yönetimi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen açık hava moduna geçin</string>
+  <string name="Switch_Mode_Pop">Lütfen geçerli ağdaki çekim içeriğini açık hava moduna değiştirin</string>
   <string name="TAKE_PHOTO">Fotoğraf çek</string>
   <string name="TERM_OF_USE">Şartlar ve gizlilik</string>
   <string name="THEME_DELETED">%s silindi</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">Etkinleştirme e&#8211;postası %s\'ya gönderildi, lütfen hesabınızı etkinleştirmek için bağlantıyı tıklayın.</string>
   <string name="Tap0_wrongcode">Hata</string>
   <string name="Tap1_AddDeviceTips">Cihaz eklemek için\"+\"ya tıklayın</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Kısa süreli basma 1s WiFi düğmesi</string>
   <string name="Tap1_AddDevice_CameraTips">Gösterge mavi titremesine bekleyin</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Uzun süreli basma 3s WiFi düğmesi</string>
   <string name="Tap1_AddDevice_ConnectWifi">Wi&#8211;Fi ağına bağlan</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">No ağ bağlantısı, Yenile tıklayın</string>
   <string name="Tap1_Device_UpgradeTips">Güncellemek veya güncellemek için cihazın yeni ürün bilgisini bulma?</string>
   <string name="Tap1_Disconnected">Bağlantı kesildi</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Bağlantı kesildi, lütfen ağ bağlantısını kontrol edin.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Bağlantı kesildi, lütfen ağ bağlantısını kontrol edin>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Bağlantı kesildi, lütfen ağ bağlantısını kontrol edin.</string>
   <string name="Tap1_DoorFun_VoiceTips">Sesler, alıcı tarafından çıkacak</string>
   <string name="Tap1_DoorFun_Waitting">Bekleniyor&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">İndir firmware başarısız</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">SD kartının başlatılması gerekiyor ve veriler silinecek, emin misiniz?</string>
   <string name="Tap1_NewFirmware">yeni firmware</string>
   <string name="Tap1_NoMessages">Mesaj yok</string>
-  <string name="Tap1_Offline">Çevrimdışı, lütfen yeniden bağlanın.</string>
+  <string name="Tap1_Offline">Çevrimdışı, lütfen yeniden bağlanın>></string>
   <string name="Tap1_OutdoorMode">Dış mekan modu</string>
   <string name="Tap1_OutdoorMode_Opened">Açık modu açılmış</string>
   <string name="Tap1_Refreshed">Tazelenmiş</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">silme başarısız</string>
   <string name="Tips_Device_ConnectFail">Bağlanma hatası</string>
   <string name="Tips_Device_TimeoutRetry">Zaman aşımı, tekrar deneyin</string>
+  <string name="Tips_ShortVideo">Kısa bir video kaydetmek için uzun basın</string>
   <string name="Tips_SureDelete">Emin silmek için？</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="UPDATE_FAIL">Kameraya bağlantı başarısız, lütfen tekrar deneyiniz.</string>
   <string name="UPDATING_BUTTON">Güncelleme</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blue yanıp: Güncellenmesi</string>
   <string name="WiFiLight_SteadyBlue">Sabit mavi: WiFi çevrimiçi</string>
   <string name="Wifi_Hotspot">Aygıtta [Settings> Wireless LAN], bağlanmak için lütfen bir Wi&#8211;Fi hotspot seçin.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi şebekesi, lütfen aşağıdaki yöntemlere bakın:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi şebekesi:</string>
   <string name="Wifi_Set_Up">Kurmaya git</string>
   <string name="Word_Hours">saat</string>
   <string name="XX_DISCOVERY">%s in yeni bir keşfi var</string>
@@ -943,8 +956,7 @@
   <string name="getting">Elde ediliyor&#8230;</string>
   <string name="has_copy">Çoğaltılmış</string>
   <string name="has_not_sdcard">Mikro SD kartı bulamadık</string>
-  <string name="help_url">https://%s:8081/helps/tr.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">SD kartınızda yeterli yer yok</string>
   <string name="is_connecting_video">Bağlanılıyor</string>
   <string name="is_creating">Ekleniyor</string>

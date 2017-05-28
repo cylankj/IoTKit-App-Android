@@ -45,7 +45,6 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-
     defaultConfig {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -196,8 +195,78 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "doby"
             ]
         }
+        _doby_test1 {
+            applicationId "com.cylan.jiafeigou.zhongxing"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
+                                    "HW_APP_ID"          : "\\ 100005405",
+                                    "VID"                : "\\ 0002",
+                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "qqAppKey"           : "\\ 1104534926",
+                                    "mtaAppKey"          : "ATQ1JV694AKT",
+                                    "weChatAppKey"       : "wx382033a16e5cc4a5",
+                                    "sinaAppKey"         : "\\ 1821035549",
+                                    "SERVER"             : "test1.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
+                                    "ApplicationId"      : applicationId,
+                                    "XiaoMiAppId"        : "\\ 5721736791425",
+                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
+                                    "BUGLY_APPID"        : "2e94bf542f",
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "doby"
+            ]
+        }
+        _cell_c {
+            applicationId "com.cylan.jiafeigou.cell_c"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider",
+                                    "HW_APP_ID"          : "xxx",
+                                    "VID"                : "\\  0060",
+                                    "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
+                                    "qqAppKey"           : "",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "",
+                                    "sinaAppKey"         : "",
+                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
+                                    "ApplicationId"      : applicationId,
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx",
+                                    "BUGLY_APPID"        : "2e94bf542f",//
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan"
+
+            ]
+        }
+        _yf {
+            applicationId "com.cylan.jiafeigou.yf"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "HW_APP_ID"          : "\\ 10515998",
+                                    "VID"                : "\\ 0001",
+                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "qqAppKey"           : "\\ 1103156296",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
+                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "SERVER"             : "yf.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
+                                    "ApplicationId"      : applicationId,
+                                    "XiaoMiAppId"        : "\\ 5241757040488",
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
+                                    "BUGLY_APPID"        : "2e94bf542f",//
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan"
+            ]
+        }
     }
-    buildToolsVersion '25.0.0'
+
 }
 
 

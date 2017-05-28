@@ -68,7 +68,7 @@
   <string name="CREATING">Menambahkan&#8230;</string>
   <string name="CURRENT_PWD">Kata sandi sekarang</string>
   <string name="CancelingTips">Membatalkan&#8230;</string>
-  <string name="Cellular_Data_Method">Data seluler, lihat metode berikut:</string>
+  <string name="Cellular_Data_Method">Data seluler:</string>
   <string name="Cellular_Data_Set_Up">Aktifkan data Mobile di perangkat, gunakan cara di bawah ini, Settings> Mobile data</string>
   <string name="ChargingLight">Charging cahaya</string>
   <string name="ChargingLight_BlueFlashing">Biru berkedip: Daya rendah</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
   <string name="DailyGreatTips_Full">Nomor koleksi untuk Daily Great telah mencapai batas atas 50, pergi ke menghapus?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Hapus berbagi?</string>
   <string name="Device_Disconnected">Terputus</string>
+  <string name="Dont_Show_Again">Jangan tampilkan lagi</string>
   <string name="Download_Then_Share">Silahkan download video dan kemudian bagikan</string>
   <string name="Downloading">Video sedang didownload</string>
   <string name="EDIT_IMAGE">Ubah</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">Jumat</string>
   <string name="FRI_2">Jumat</string>
   <string name="FROME">Dari</string>
+  <string name="Fail_Record">Gagal mencatat</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Pesan gagal dikirim</string>
   <string name="Feedback_Sending">Mengirim &#8230;</string>
+  <string name="Formatting">Format</string>
   <string name="GENERAL">Umum</string>
   <string name="GET_CODE">Mendapatkan</string>
   <string name="GIVE_UP">Keluar</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">Keluar tidak akan menghapus data apapun, anda masih bisa masuk</string>
   <string name="LOW_BATTERY">Baterai Lemah</string>
   <string name="Loaded">Sarat</string>
+  <string name="Logo_Selection">Tidak ada</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Beritahu saya ketika saklar magnetik nyala/mati</string>
   <string name="MAGNETISM_OFF">Tutup</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Menambahkan ulang</string>
   <string name="RE_ADD_LABEL">Ketika semua perbaruan sudah selesai</string>
   <string name="RIGN_SUC">Berhasil mendaftarkan</string>
+  <string name="Record_Operate">Tidak bisa beroperasi saat merekam</string>
   <string name="Request_TimeOut">Time out</string>
   <string name="Reset_Suc">Sudah berkedip&#8211;kedip merah</string>
   <string name="RuiShi_Guide">Gunakan jarum untuk lama menekan tombol RESET selama 3 detik</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">Manajemen berbagi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">Silahkan beralih ke mode outdoor untuk melihat konten pemotretan</string>
+  <string name="Switch_Mode_Pop">Tolong aktifkan konten pemotretan jaringan ke mode luar ruangan</string>
   <string name="TAKE_PHOTO">Ambil Foto</string>
   <string name="TERM_OF_USE">Syarat dan privasi</string>
   <string name="THEME_DELETED">%s sudah dihapus</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">Mail aktivasi telah dikirim ke %s, silakan klik link untuk mengaktifkan account Anda.</string>
   <string name="Tap0_wrongcode">Error</string>
   <string name="Tap1_AddDeviceTips">Tekan\"+\"untuk menambahkan perangkat</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Tekan sebentar lama tombol WiFi untuk 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Tunggu indikator berkedip biru</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">tekan lama tombol WiFi untuk 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Sambung WiFi</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">Ada koneksi jaringan, klik Refresh</string>
   <string name="Tap1_Device_UpgradeTips">Cari firmware baru perangkat, untuk memperbarui atau tidak?</string>
   <string name="Tap1_Disconnected">Terputus</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Terputus, silakan periksa koneksi jaringan.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Terputus, silakan periksa koneksi jaringan>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Terputus, silakan periksa koneksi jaringan.</string>
   <string name="Tap1_DoorFun_VoiceTips">Suara akan keluar dari receiver</string>
   <string name="Tap1_DoorFun_Waitting">Sedang menunggu&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Download firmware gagal</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">kebutuhan kartu SD diinisialisasi dan data akan dibersihkan, pasti untuk melanjutkan?</string>
   <string name="Tap1_NewFirmware">Firmware baru</string>
   <string name="Tap1_NoMessages">Tidak ada pesan</string>
-  <string name="Tap1_Offline">Offline, silakan berhubungan kembali.</string>
+  <string name="Tap1_Offline">Offline, silakan berhubungan kembali>></string>
   <string name="Tap1_OutdoorMode">Modus luar ruangan</string>
   <string name="Tap1_OutdoorMode_Opened">Modus luar ruangan telah dibuka</string>
   <string name="Tap1_Refreshed">Refreshed</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">Gagal menghapus</string>
   <string name="Tips_Device_ConnectFail">Gagal untuk menghubungkan</string>
   <string name="Tips_Device_TimeoutRetry">Timeout, coba lagi</string>
+  <string name="Tips_ShortVideo">Tekan lama untuk merekam video singkat</string>
   <string name="Tips_SureDelete">Pastikan untuk delete?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Tidak ada respon , silahkan coba lagi</string>
   <string name="UPDATE_FAIL">Gagal menyambung ke kamera , silahkan coba lagi</string>
   <string name="UPDATING_BUTTON">Sedang memperbarui</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blue flashing: Memperbarui</string>
   <string name="WiFiLight_SteadyBlue">Mantap biru: WiFi secara online</string>
   <string name="Wifi_Hotspot">Di perangkat [Settings> Wireless LAN], pilih hotspot Wi&#8211;Fi untuk terhubung.</string>
-  <string name="Wifi_Method">Jaringan Wi&#8211;Fi, lihat metode berikut:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi Jaringan:</string>
   <string name="Wifi_Set_Up">Pergi ke set up</string>
   <string name="Word_Hours">jam</string>
   <string name="XX_DISCOVERY">\"%s\" ada penemuan baru</string>
@@ -943,8 +956,7 @@
   <string name="getting">Mendapatkan&#8230;</string>
   <string name="has_copy">Direplikasi</string>
   <string name="has_not_sdcard">Tidak dapat menemukan Kartu SD</string>
-  <string name="help_url">https://%s:8081/helps/id.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">Kartu SD anda tidak cukup ruang</string>
   <string name="is_connecting_video">Sedang menyambungkan&#8230;</string>
   <string name="is_creating">Sedang menambahkan</string>

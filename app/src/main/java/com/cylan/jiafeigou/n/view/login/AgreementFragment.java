@@ -11,9 +11,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -59,9 +58,10 @@ public class AgreementFragment extends Fragment {
     }
 
     private void loadWeb() {
-        final String agreementUrl = LocaleUtils.getLanguageType(getContext()) == JConstant.LOCALE_SIMPLE_CN ?
-                "http://www.jfgou.com/app/treaty_cn.html" :
-                "http://www.jfgou.com/app/treaty_en.html";
+        final String packageNameSuffix = ContextUtils.getContext().getPackageName()
+                .replace("com.cylan.jiafeigou", "");
+        final String agreementUrl = getString(R.string.Treaty_url,
+                packageNameSuffix.length() == 0 ? "" : "_" + packageNameSuffix);
         WebSettings settings = webview.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);

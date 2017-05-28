@@ -68,7 +68,7 @@
   <string name="CREATING">Đang thêm vào&#8230;</string>
   <string name="CURRENT_PWD">Mật khẩu hiện tại</string>
   <string name="CancelingTips">Hủy&#8230;</string>
-  <string name="Cellular_Data_Method">Dữ liệu di động, vui lòng tham khảo phương pháp sau:</string>
+  <string name="Cellular_Data_Method">Dữ liệu di động:</string>
   <string name="Cellular_Data_Set_Up">Bật dữ liệu di động trong thiết bị, vui lòng sử dụng dưới đây, Cài đặt> Dữ liệu di động</string>
   <string name="ChargingLight">đèn sạc</string>
   <string name="ChargingLight_BlueFlashing">Màu xanh nhấp nháy: Công suất thấp</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">Trạng thái đèn LED</string>
   <string name="DailyGreatTips_Full">số lượng các Daily Great Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Xóa chia sẻ?</string>
   <string name="Device_Disconnected">Đã ngắt kết nối</string>
+  <string name="Dont_Show_Again">Không hiển thị lại</string>
   <string name="Download_Then_Share">Vui lòng tải video xuống và chia sẻ</string>
   <string name="Downloading">Video đang được tải xuống</string>
   <string name="EDIT_IMAGE">Sửa</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">Thứ sáu</string>
   <string name="FRI_2">Sáu</string>
   <string name="FROME">Từ</string>
+  <string name="Fail_Record">Không ghi</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Không thể gửi tin nhắn</string>
   <string name="Feedback_Sending">gửi&#8230;</string>
+  <string name="Formatting">Định dạng</string>
   <string name="GENERAL">Thông thường</string>
   <string name="GET_CODE">Nhận</string>
   <string name="GIVE_UP">Thoát</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">Thoát ra sẽ không bị xoá dữ liệu, bạn có thể đăng nhập lại</string>
   <string name="LOW_BATTERY">Pin yếu</string>
   <string name="Loaded">Nạp vào</string>
+  <string name="Logo_Selection">Không ai</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Nhắc tôi khi cảm biến từ bật/tắt</string>
   <string name="MAGNETISM_OFF">Đóng</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Thêm lại</string>
   <string name="RE_ADD_LABEL">Khi tất cả cập nhật hoàn thành</string>
   <string name="RIGN_SUC">Đăng ký thành công</string>
+  <string name="Record_Operate">Không thể hoạt động trong khi ghi âm</string>
   <string name="Request_TimeOut">Hết giờ</string>
   <string name="Reset_Suc">Đã chập chờn trong màu đỏ</string>
   <string name="RuiShi_Guide">Sử dụng kim để nhấn và giữ nút RESET trong 3 giây</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">Quản lý chia sẻ</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">Vui lòng chuyển sang chế độ ngoài trời để xem nội dung chụp</string>
+  <string name="Switch_Mode_Pop">Vui lòng chuyển đổi nội dung chụp mạng hiện tại sang chế độ ngoài trời</string>
   <string name="TAKE_PHOTO">Chụp ảnh</string>
   <string name="TERM_OF_USE">Điều khoản và quyền riêng tư</string>
   <string name="THEME_DELETED">%s đã xoá</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">Mail kích hoạt đã được gửi đến %s, xin vui lòng nhấp vào liên kết để kích hoạt tài khoản của bạn.</string>
   <string name="Tap0_wrongcode">Lỗi</string>
   <string name="Tap1_AddDeviceTips">Nhấn\"+\"để thêm thiết bị</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Short nhấn nút WiFi cho 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Chờ cho chỉ số nhấp nháy màu xanh lam</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Long nhấn nút WiFi cho 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Kết nối Wi&#8211;Fi</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">No network connection,click Refresh</string>
   <string name="Tap1_Device_UpgradeTips">Tìm firmware mới của thiết bị, cập nhật hay không?</string>
   <string name="Tap1_Disconnected">Ngắt kết nối</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Ngắt kết nối, vui lòng kiểm tra kết nối mạng.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Ngắt kết nối, vui lòng kiểm tra kết nối mạng>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Ngắt kết nối, vui lòng kiểm tra kết nối mạng.</string>
   <string name="Tap1_DoorFun_VoiceTips">Âm thanh phát ra từ thiết bị nhận</string>
   <string name="Tap1_DoorFun_Waitting">Đang chờ&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Download firmware failed</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">Thẻ SD cần được khởi tạo và dữ liệu sẽ bị xóa, chắc chắn để tiếp tục?</string>
   <string name="Tap1_NewFirmware">Fimware mới</string>
   <string name="Tap1_NoMessages">Không có tin nhắn</string>
-  <string name="Tap1_Offline">Ngoại tuyến, vui lòng kết nối lại.</string>
+  <string name="Tap1_Offline">Ngoại tuyến, vui lòng kết nối lại>></string>
   <string name="Tap1_OutdoorMode">Chế độ ngoài trời</string>
   <string name="Tap1_OutdoorMode_Opened">Chế độ ngoài trời đã được mở</string>
   <string name="Tap1_Refreshed">Đã làm mới</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">Failed to delete</string>
   <string name="Tips_Device_ConnectFail">Kết nối thất bại</string>
   <string name="Tips_Device_TimeoutRetry">Timeout, hãy thử lại</string>
+  <string name="Tips_ShortVideo">Bấm dài để ghi lại một đoạn video ngắn</string>
   <string name="Tips_SureDelete">Chắc chắn để delete?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Không phản hồi, hãy thử lại</string>
   <string name="UPDATE_FAIL">Lỗi kết nối camera, hãy thử lại</string>
   <string name="UPDATING_BUTTON">Đang cập nhật</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blue nhấp nháy: Đang cập nhật</string>
   <string name="WiFiLight_SteadyBlue">Ổn định màu xanh: WiFi trực tuyến</string>
   <string name="Wifi_Hotspot">Trong thiết bị [Cài đặt> Mạng LAN không dây], Vui lòng chọn điểm truy cập Wi&#8211;Fi để kết nối.</string>
-  <string name="Wifi_Method">Mạng Wi&#8211;Fi, vui lòng tham khảo các phương pháp sau:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi Mạng:</string>
   <string name="Wifi_Set_Up">Đi tới thiết lập</string>
   <string name="Word_Hours">giờ</string>
   <string name="XX_DISCOVERY">\"%s\" có khám phá mới</string>
@@ -943,8 +956,7 @@
   <string name="getting">Đang lấy&#8230;</string>
   <string name="has_copy">Đã nhân bản</string>
   <string name="has_not_sdcard">Không tìm thấy SD card</string>
-  <string name="help_url">https://%s:8081/helps/vn.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">Thẻ SD không còn đủ dung lượng</string>
   <string name="is_connecting_video">Đang kết nối</string>
   <string name="is_creating">Đang thêm vào&#8230;</string>

@@ -282,6 +282,17 @@ public class JFGRules {
         return isPanoramicCam(pid);
     }
 
+    public static boolean needShowFirmware(int pid) {
+        if (isPanoramicCam(pid)) return false;
+        if (isRS(pid)) return false;
+        return true;
+    }
+
+    public static boolean showSoftWare(int pid) {
+        if (isPanoramicCam(pid)) return false;
+        return true;
+    }
+
     public static boolean is2WCam(int pid) {
         return pid == JConstant.OS_CAMERA_PANORAMA_HAISI;
     }
