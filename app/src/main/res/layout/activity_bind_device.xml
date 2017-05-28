@@ -65,7 +65,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y67"
             android:background="@color/color_white"
-            android:visibility="gone"
             hunt:leftDrawable="@drawable/home_icon_720camera_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="720°摄像机"

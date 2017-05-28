@@ -53,7 +53,7 @@ public class UdpConstant {
         public String version;
         public int net;
         public String bindCode;
-        public int bindFlag = 1;//默认
+        public int bindFlag = 0;//默认,普通绑定.
 
         @Override
         public String toString() {
