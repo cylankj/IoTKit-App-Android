@@ -285,12 +285,18 @@ public class JFGRules {
     public static boolean needShowFirmware(int pid) {
         if (isPanoramicCam(pid)) return false;
         if (isRS(pid)) return false;
+        if (isPan720(pid)) return true;
         return true;
     }
 
     public static boolean showSoftWare(int pid) {
         if (isPanoramicCam(pid)) return false;
+        if (isPan720(pid)) return false;
         return true;
+    }
+
+    public static boolean isPan720(int pid) {
+        return pid == 1089 || pid == 21;
     }
 
     public static boolean is2WCam(int pid) {
