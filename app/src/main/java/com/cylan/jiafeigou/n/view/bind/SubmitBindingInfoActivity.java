@@ -79,7 +79,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     public void onBackPressed() {
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    onClick();
+                    onBindNext();
                 }, getString(R.string.CANCEL), null, false);
     }
 
@@ -95,6 +95,11 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 //            customToolbar.setVisibility(View.INVISIBLE);
         } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
             basePresenter.endCounting();
+            getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        //强绑提示按钮,
+                        onBindNext();
+                    });
         } else if (state == BindUtils.BIND_SUC) {//成功
             progressLoading.setVisibility(View.INVISIBLE);
             if (basePresenter != null)
@@ -140,7 +145,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     }
 
     @OnClick(R.id.btn_bind_failed_repeat)
-    public void onClick() {
+    public void onBindNext() {
         String device = getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE);
         Class<?> nextActivity;
         if (TextUtils.equals(device, getString(R.string.DOG_CAMERA_NAME))) {
