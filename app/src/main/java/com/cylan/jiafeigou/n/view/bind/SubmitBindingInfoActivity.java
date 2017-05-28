@@ -15,9 +15,10 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
-import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
+import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
@@ -52,7 +53,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_submit_binding_info);
         ButterKnife.bind(this);
-        this.basePresenter = new SubmitBindingInfoContractImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+        this.basePresenter = new SubmitBindingInfoImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
         adjustViewSize();
         customToolbar.setBackAction(v -> {
             onBackPressed();
@@ -93,13 +94,13 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         if (state == BindUtils.BIND_FAILED) {//失败
             vsLayoutSwitch.showNext();
 //            customToolbar.setVisibility(View.INVISIBLE);
-        } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
+        } else if (state == JError.ErrorCIDBinded) {//强绑
             basePresenter.endCounting();
             getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
                     getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         //强绑提示按钮,
                         onBindNext();
-                    });
+                    }, false);
         } else if (state == BindUtils.BIND_SUC) {//成功
             progressLoading.setVisibility(View.INVISIBLE);
             if (basePresenter != null)

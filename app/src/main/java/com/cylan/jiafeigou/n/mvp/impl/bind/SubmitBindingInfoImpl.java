@@ -28,7 +28,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
@@ -37,20 +36,19 @@ import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
  * Created by cylan-hunt on 16-11-12.
  */
 
-public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindingInfoContract.View>
+public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoContract.View>
         implements SubmitBindingInfoContract.Presenter, SimulatePercent.OnAction {
 
     private SimulatePercent simulatePercent;
-    private CompositeSubscription subscription;
-    private Subscription submitSubscription;
-    private int bindResult;
-    private long startTick;
+    private static int bindResult;
+    private static long startTick;
 
-    public SubmitBindingInfoContractImpl(SubmitBindingInfoContract.View view, String uuid) {
+    public SubmitBindingInfoImpl(SubmitBindingInfoContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
         simulatePercent = new SimulatePercent();
         simulatePercent.setOnAction(this);
+        startTick = 0;
         bindResult = BindUtils.BIND_PREPARED;
     }
 
@@ -86,8 +84,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         }
         if (System.currentTimeMillis() - startTick > 60 * 1000) {
             //timeout
-            mView.bindState(this.bindResult = BIND_TIME_OUT);
-
+            mView.bindState(bindResult = BIND_TIME_OUT);
             return;
         }
         //3.重新获取,
@@ -101,18 +98,28 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         //超时
         if (bindResult == BindUtils.BIND_PREPARED) {
             bindResult = BindUtils.BIND_ING;
-            if ((subscription == null || subscription.isUnsubscribed())) {
-                subscription = new CompositeSubscription();
-                AppLogger.d("add sub result");
-                if (submitSubscription == null || !submitSubscription.isUnsubscribed()) {
-                    submitSubscription = submitBindDeviceSub();
-                    subscription.add(submitSubscription);
-                }
-            }
+            addSubscription(submitBindDeviceSub(), "submitBindDeviceSub");
         }
         if (bindResult == BindUtils.BIND_ING) {
             if (simulatePercent != null) simulatePercent.resume();
         }
+        addSubscription(bindResultSub(), "bindResultSub");
+    }
+
+    /**
+     * 绑定结果
+     *
+     * @return
+     */
+    private Subscription bindResultSub() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .subscribe(ret -> {
+                            mView.bindState(ret.bindResult);
+                            unSubscribe("submitBindDeviceSub");
+                        },
+                        AppLogger::e);
     }
 
     private Subscription submitBindDeviceSub() {
@@ -161,11 +168,12 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(net -> {
                     AppLogger.d("绑定成功,网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
+                    bindResult = BIND_SUC;
                     endCounting();
                     sendTimeZone(uuid);
                 }, e -> {
                     if (e instanceof TimeoutException) {
-                        mView.bindState(this.bindResult = BIND_TIME_OUT);
+                        mView.bindState(bindResult = BIND_TIME_OUT);
                         AppLogger.d("绑定设备超时");
                     }
                     AppLogger.d("擦,出错了:" + e.getMessage());
@@ -181,9 +189,6 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             if (simulatePercent != null)
                 simulatePercent.stop();
         }
-        if (subscription != null && subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
         bindResult = BindUtils.BIND_PREPARED;
     }
 
@@ -194,7 +199,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
-                    getView().bindState(this.bindResult = BIND_SUC);
+                    getView().bindState(bindResult);
                 }, AppLogger::e);
         addSubscription(subscription, "actionDone");
     }

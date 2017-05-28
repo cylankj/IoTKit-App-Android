@@ -359,7 +359,6 @@ public class RxEvent {
         }
     }
 
-    @Deprecated
     public static final class BindDeviceEvent {
         public int bindResult;
         public String uuid;
