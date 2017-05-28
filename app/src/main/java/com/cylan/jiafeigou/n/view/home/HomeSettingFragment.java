@@ -289,7 +289,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            final String app = "http://a.app.qq.com/o/simple.jsp?pkgname=%s";
+            final String app = getString(R.string.share_content) + "http://a.app.qq.com/o/simple.jsp?pkgname=%s";
             intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
