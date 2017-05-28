@@ -116,9 +116,11 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(ret -> {
-                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
-                    mView.bindState(ret.bindResult);
-                    unSubscribe("submitBindDeviceSub");
+                    if (ret.bindResult != 0) {//0表示正常绑定
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
+                        mView.bindState(ret.bindResult);
+                        unSubscribe("submitBindDeviceSub");
+                    }
                 }, AppLogger::e);
     }
 
@@ -198,7 +200,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         Subscription subscription = Observable.just(null)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object integer) -> {
-                    AppLogger.i("actionDone: " + integer);
+                    AppLogger.i("actionDone: ");
                     getView().bindState(bindResult);
                 }, AppLogger::e);
         addSubscription(subscription, "actionDone");

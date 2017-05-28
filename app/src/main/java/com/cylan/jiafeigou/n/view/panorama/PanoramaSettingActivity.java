@@ -130,7 +130,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
                 getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                     presenter.unBindDevice();
                     LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
-                }, getString(R.string.CANCEL), null);
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override
