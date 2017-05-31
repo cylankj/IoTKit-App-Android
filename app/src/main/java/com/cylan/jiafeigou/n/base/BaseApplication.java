@@ -99,7 +99,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             viewCount = 0;
-            startService(new Intent(this, WakeupService.class));
+//            startService(new Intent(this, WakeupService.class));
             try2init();
             PreferencesUtils.init(getApplicationContext());
             BugMonitor.init(getApplicationContext());
