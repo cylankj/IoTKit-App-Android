@@ -581,6 +581,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //        CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrantProgramCheckWithCheck(this);
     }
 
+    @Override
+    public void onBatteryDrainOut() {
+        if (!isAdded()) return;
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                "onBatteryDrainOut", getString(R.string.Tap1_LowPower),
+                getString(R.string.OK), null, false);
+    }
+
 
     @Override
     public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
