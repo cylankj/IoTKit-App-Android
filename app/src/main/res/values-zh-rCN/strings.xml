@@ -988,5 +988,4 @@
   <string name="web">http://www.jfgou.com</string>
   <string name="wifi_authentication">正在验证%s连接</string>
   <string name="wifi_hasnot">未找到此WiFi网络</string>
->>>>>>> 3.1.0
 </resources>

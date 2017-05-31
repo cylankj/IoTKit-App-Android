@@ -45,7 +45,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.AVersi
     }
 
     @Override
-    public Observable<AVersion> startCheck() {
+    public Observable<AbstractVersion.AVersion> startCheck() {
         final String uuid = portrait.getCid();
         Observable.just("go")
                 .subscribeOn(Schedulers.newThread())

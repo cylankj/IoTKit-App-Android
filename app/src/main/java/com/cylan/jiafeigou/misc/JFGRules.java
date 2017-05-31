@@ -221,6 +221,10 @@ public class JFGRules {
         return isPanoramicCam(pid);
     }
 
+    public static boolean isPan720(int pid) {
+        return pid == 1089 || pid == 21;
+    }
+
     public static boolean showSight(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "sight");
