@@ -105,7 +105,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             }
         }
         //2 电量
-        if (mDevice != null && net != null && net.net > 0 && JFGRules.showHomeBatteryIcon(mDevice.pid)) {//设备在线才显示电量
+        if (mDevice != null && JFGRules.isDeviceOnline(net) && JFGRules.showHomeBatteryIcon(mDevice.pid)) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
             if (battery < 20 && (JFGRules.isBell(mDevice.pid) || JFGRules.isFreeCam(mDevice.pid))) {//门铃和freeCam 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);

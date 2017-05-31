@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
-import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.text.TextUtils;
@@ -47,7 +46,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -115,6 +113,39 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void start() {
         super.start();
         FirmwareCheckerService.checkVersion(uuid);
+        getBatterySub();
+    }
+
+    /**
+     * 1.需要获取设备电量并且,一天一次提醒弹窗.
+     * 2.
+     *
+     * @return
+     */
+    private Subscription getBatterySub() {
+        //按照首页过滤条件
+        if (JFGRules.showHomeBatteryIcon(getDevice().pid)) {
+            Observable.just("getBatterySub")
+                    .subscribeOn(Schedulers.newThread())
+                    .filter(ret -> NetUtils.getJfgNetType() > 0)//在线
+                    .filter(ret -> !JFGRules.isShareDevice(uuid))//非分享
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        Device device = getDevice();
+                        Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
+                        DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+                        if (battery < 20 && net.net > 0) {//电量低
+                            DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
+                            if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
+                                option.lastLowBatteryTime = System.currentTimeMillis();
+                                device.setOption(option);
+                                BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
+                                mView.onBatteryDrainOut();
+                            }
+                        }
+                    }, AppLogger::e);
+        }
+        return null;
     }
 
     private Subscription checkNewVersionRsp() {
