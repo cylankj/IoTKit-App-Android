@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="backAction"
             type="android.view.View.OnClickListener" />
@@ -15,6 +17,10 @@
         <variable
             name="editMode"
             type="android.databinding.ObservableBoolean" />
+
+        <variable
+            name="selectNumber"
+            type="android.databinding.ObservableInt" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -41,14 +47,56 @@
             app:rightAction="@{rightAction}"
             app:toolbarRightTitle="@{editMode?@string/CANCEL:@string/EDIT_THEME}" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/sharedContentList"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/sharedRefresh"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/sharedContentList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <FrameLayout
+            android:id="@+id/act_panorama_album_bottom_menu_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48"
+            android:background="@color/color_f6f9fa"
+            android:visibility="@{editMode?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:background="@color/color_d2d2d2" />
+
+            <TextView
+                android:id="@+id/tv_msg_full_select"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/x28"
+                android:paddingStart="@dimen/x28"
+                android:text="@{selectNumber>0?@string/CANCEL:@string/SELECT_ALL}"
+                android:textColor="@color/color_4b9fd5" />
+
+            <TextView
+                android:id="@+id/tv_msg_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:enabled="@{selectNumber>0}"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/x28"
+                android:paddingStart="@dimen/x28"
+                android:text="@string/DELETE"
+                android:textColor="@color/common_btn_color_state" />
+        </FrameLayout>
     </android.support.constraint.ConstraintLayout>
 </layout>

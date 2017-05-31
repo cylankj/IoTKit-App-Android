@@ -186,6 +186,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 //AP 模式
                 bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_ap);
                 bannerConnectionText.setText(R.string.Tap1_OutdoorMode);
+                quickMenuItem1Mic.setEnabled(false);
+                quickMenuItem2Voice.setEnabled(false);
+
             } else {
                 //非 AP 模式
                 bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_wifi);

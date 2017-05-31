@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
+import com.cylan.jiafeigou.n.view.mine.ShareContentH5DetailFragment;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullFragment;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureFragment;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaShareFragment;
@@ -45,4 +46,5 @@ public interface FragmentComponent {
 
     void inject(PanoramaShareFragment fragment);
 
+    void inject(ShareContentH5DetailFragment fragment);
 }

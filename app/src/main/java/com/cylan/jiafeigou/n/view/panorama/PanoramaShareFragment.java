@@ -4,16 +4,20 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ShareUtils;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 
 /**
  * Created by yanzhendong on 2017/5/27.
@@ -36,6 +40,7 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     private int shareType;
     private PanoramaAlbumContact.PanoramaItem shareItem;
     private String filePath;
+    private String h5Url;
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {
@@ -61,6 +66,8 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
         shareBinding.setUploadSuccess(uploadSuccess);
         shareBinding.setBackClick(this::cancelShare);
         shareBinding.setShareClick(this::share);
+        shareBinding.shareContextEditor.requestFocus();
+        shareBinding.shareRetry.setOnClickListener(v -> presenter.upload(shareItem.fileName, filePath));
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
         presenter.upload(shareItem.fileName, filePath);
     }
@@ -88,12 +95,37 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     @Override
     public void onUploadResult(int code) {
         uploadSuccess.set(code == 200);
+        shareBinding.shareRetry.setVisibility(uploadSuccess.get() ? View.GONE : View.VISIBLE);
         AppLogger.d("上传到服务器返回的结果为:" + code);
     }
 
     @Override
-    public void onShareH5UrlResponse(String h5) {
-        AppLogger.d("得到上传服务器返回的 h5网址,将进行对应的分享");
+    public void onShareH5Result(boolean success, String s) {
+        if (success && !TextUtils.isEmpty(s)) {
+            shareWithH5ByType(shareType, this.h5Url);
+            AppLogger.d("得到上传服务器返回的 h5网址,将进行对应的分享");
+        }
+    }
+
+    private void shareWithH5ByType(int shareType, String h5) {
+        switch (shareType) {
+            case SHARE_TYPE_TIME_LINE://
+                ShareUtils.shareVideoToWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
+                break;
+            case SHARE_TYPE_WECHAT:
+                ShareUtils.shareVideoToWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
+                break;
+            case SHARE_TYPE_QQ:
+                break;
+            case SHARE_TYPE_QZONE:
+                break;
+            case SHARE_TYPE_WEIBO:
+                break;
+            case SHARE_TYPE_FACEBOOK:
+                break;
+            case SHARE_TYPE_TWITTER:
+                break;
+        }
     }
 
     public void cancelShare(View view) {
@@ -101,6 +133,6 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     public void share(View view) {
-        presenter.share(shareItem, description.get());
+        presenter.share(shareItem, description.get() == null ? "" : description.get());
     }
 }

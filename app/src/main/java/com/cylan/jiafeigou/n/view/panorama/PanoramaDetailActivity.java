@@ -369,6 +369,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void onShareToH5(View view) {
         AppLogger.d("点击了分享按钮");
         dismissDialogs();
+        JFGPlayer.Stop(player);
         PanoramaShareFragment fragment = new PanoramaShareFragment();
         Bundle bundle = new Bundle();
         switch (view.getId()) {

@@ -32,7 +32,6 @@ public class WonderGlideURL extends GlideUrl {
         if (device != null)
             this.regionType = device.regionType;
     }
-
     @Override
     public String getCacheKey() {
         return OptionsImpl.getServer() + "-" + mBean.cid + "-" + mBean.msgType + "-" + mBean.time + "-" + mBean.fileName;

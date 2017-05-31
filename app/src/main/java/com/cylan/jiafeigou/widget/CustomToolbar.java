@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
@@ -52,7 +53,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         int bgColor = at.getColor(R.styleable.CustomToolbar_ct_background_color, Color.TRANSPARENT);
         int titleColor = at.getColor(R.styleable.CustomToolbar_ct_title_color, Color.TRANSPARENT);
         int leftTitleColor = at.getColor(R.styleable.CustomToolbar_ct_left_title_color, Color.TRANSPARENT);
-        int rightTitleColor = at.getColor(R.styleable.CustomToolbar_ct_right_title_color, Color.TRANSPARENT);
+        ColorStateList rightTitleColor = at.getColorStateList(R.styleable.CustomToolbar_ct_right_title_color);
         String title = at.getString(R.styleable.CustomToolbar_ct_title);
         String leftTitle = at.getString(R.styleable.CustomToolbar_ct_left_title);
         String rightTitle = at.getString(R.styleable.CustomToolbar_ct_right_title);
@@ -85,7 +86,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
             tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
             tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
             tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
-            if (rightTitleColor != 0) tvToolbarRight.setTextColor(rightTitleColor);
+            if (rightTitleColor != null) tvToolbarRight.setTextColor(rightTitleColor);
             tvToolbarTitle.setVisibility(VISIBLE);
             tvToolbarTitle.setText(title);
             if (titleColor != 0)

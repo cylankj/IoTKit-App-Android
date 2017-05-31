@@ -26,14 +26,23 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
 
 
     @Override
-    public void unShareContent(ShareContentItem item, int position) {
-        Subscription subscribe = Observable.just(new DPEntity(null, 606, item.shareItem.version, DBAction.DELETED, null))
+    public void unShareContent(List<ShareContentItem> item, Iterable<Integer> selection) {
+        Subscription subscribe = Observable.just(item)
+                .map(items -> {
+                    List<DPEntity> result = new ArrayList<>();
+                    DPEntity entity;
+                    for (ShareContentItem contentItem : items) {
+                        entity = new DPEntity(null, 606, contentItem.shareItem.version, DBAction.DELETED, null);
+                        result.add(entity);
+                    }
+                    return result;
+                })
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     AppLogger.d("取消分享返回结果为:" + new Gson().toJson(result));
-                    mView.onUnShareContentResponse(result.getResultCode(), position);
+                    mView.onUnShareContentResponse(result.getResultCode(), selection);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });

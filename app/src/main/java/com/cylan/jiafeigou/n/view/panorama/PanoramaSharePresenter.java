@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.support.v4.util.Pair;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
@@ -79,6 +82,12 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.GetVideoShareUrlEvent.class))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(h5 -> {
+                    mView.onH5ResourceAvailable(h5.url);
+                    return h5;
+                })
+                .observeOn(Schedulers.io())
                 .map(h5 -> {
                     AppLogger.e("当前分享的 H5URL为:" + h5.url);
                     long seq = -1;
@@ -100,12 +109,25 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
                     }
-                    return seq;
+                    return new Pair<>(seq, h5.url);
                 })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).first(rsp -> rsp.seq == seq))
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .flatMap(pair -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                        .first(rsp -> rsp.seq == pair.first)
+                        .map(rsp -> new Pair<>(rsp, pair.second))
+                        .timeout(30, TimeUnit.SECONDS, Observable.just(new Pair<>(null, pair.second))))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
+                    boolean success = false;
+                    if (result != null && result.first != null && result.first.rets != null && result.first.rets.size() > 0) {
+                        for (JFGDPMsgRet msgRet : result.first.rets) {
+                            if (msgRet.id == 606) {
+                                success = msgRet.ret == 0;
+                                break;
+                            }
+                        }
+                    }
+                    success = success && result.second != null;
+                    mView.onShareH5Result(success, success ? result.second : "");
                     AppLogger.d("AAAAA:" + new Gson().toJson(result));
                 });
 

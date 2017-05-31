@@ -80,6 +80,17 @@ public class TimeUtils {
             return new SimpleDateFormat("yy/MM/dd", Locale.getDefault());
         }
     };
+    private static final ThreadLocal<SimpleDateFormat> SimpleDateFormatYYYYHHMM = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        }
+    };
+
+    public static String getYHM(long time) {
+        return SimpleDateFormatYYYYHHMM.get().format(new Date(time));
+    }
+
     /**
      * 历史录像,使用0时区
      */
@@ -392,4 +403,5 @@ public class TimeUtils {
         time2 = startOfDay(time2);
         return time1 == time2;
     }
+
 }

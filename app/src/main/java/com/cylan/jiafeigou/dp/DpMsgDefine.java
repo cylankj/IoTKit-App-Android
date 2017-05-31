@@ -1083,6 +1083,17 @@ public class DpMsgDefine {
         @Index(6)
         public String url;
 
+        public DPWonderItem toWonderItem() {
+            DPWonderItem wonderItem = new DPWonderItem();
+            wonderItem.cid = cid;
+            wonderItem.time = time;
+            wonderItem.msgType = msgType;
+            wonderItem.regionType = regionType;
+            wonderItem.fileName = fileName;
+            wonderItem.place = desc;
+            return wonderItem;
+        }
+
         @Override
         public int describeContents() {
             return 0;

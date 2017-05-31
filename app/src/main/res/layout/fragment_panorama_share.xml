@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="shareClick"
             type="android.view.View.OnClickListener" />
@@ -45,7 +47,7 @@
             app:ct_left_title="@string/CANCEL"
             app:ct_left_title_color="@color/color_white"
             app:ct_right_title="@string/Tap3_ShareDevice_Button"
-            app:ct_right_title_color="@color/color_white"
+            app:ct_right_title_color="@color/normal_btn_color_selector"
             app:ct_title_color="@color/color_white"
             app:rightAction="@{shareClick}"
             app:rightEnable="@{uploadSuccess}"
@@ -58,7 +60,7 @@
             android:background="@color/color_white"
             app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
 
-        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+        <com.cylan.jiafeigou.support.photoselect.CircleImageView
             android:id="@+id/sharePreview"
             android:layout_width="@dimen/y66"
             android:layout_height="@dimen/y66"
@@ -68,10 +70,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/shareContentBackGround" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/round_gray_background"
+            android:visibility="@{uploadSuccess?View.GONE:View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@id/sharePreview"
+            app:layout_constraintEnd_toEndOf="@id/sharePreview"
+            app:layout_constraintStart_toStartOf="@id/sharePreview"
+            app:layout_constraintTop_toTopOf="@id/sharePreview" />
+
         <ImageView
             android:id="@+id/shareRetry"
             android:layout_width="@dimen/y24"
             android:layout_height="@dimen/y24"
+            android:src="@drawable/btn_video_retry"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/sharePreview"
+            app:layout_constraintEnd_toEndOf="@id/sharePreview"
+            app:layout_constraintStart_toStartOf="@id/sharePreview"
+            app:layout_constraintTop_toTopOf="@id/sharePreview" />
+
+        <TextView
+            android:id="@+id/sharePercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20%"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/sp13"
+            android:visibility="@{uploadSuccess?View.GONE:View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@id/sharePreview"
             app:layout_constraintEnd_toEndOf="@id/sharePreview"
             app:layout_constraintStart_toStartOf="@id/sharePreview"
@@ -85,8 +112,11 @@
             android:layout_marginEnd="@dimen/y15"
             android:layout_marginStart="@dimen/y15"
             android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="top"
-            android:maxLength="120"
+            android:hint="请输入照片/视频的描述..."
+            android:maxLength="128"
             android:text="@={description}"
             android:textColor="@color/color_666666"
             android:textCursorDrawable="@drawable/cursor_ba8cf"
@@ -101,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/y15"
-            android:text="@{String.valueOf(120-description.get().length())}"
+            android:text="@{String.valueOf(128-description.get().length())}"
             android:textColor="@color/color_adadad"
             android:textSize="@dimen/sp13"
             app:layout_constraintBottom_toBottomOf="@id/shareContentBackGround"

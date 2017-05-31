@@ -15,15 +15,13 @@ public interface MineShareContentContract {
 
         void onShareContentResponse(List<ShareContentItem> shareContentItems, boolean refresh);
 
-        void onUnShareContentResponse(int resultCode, int position);
+        void onUnShareContentResponse(int resultCode, Iterable<Integer> selection);
     }
 
     interface Presenter extends JFGPresenter<View> {
-        /**
-         * 取消分享
-         */
-        void unShareContent(ShareContentItem item, int position);
 
         void loadFromServer(long version, boolean refresh);
+
+        void unShareContent(List<ShareContentItem> items, Iterable<Integer> selection);
     }
 }

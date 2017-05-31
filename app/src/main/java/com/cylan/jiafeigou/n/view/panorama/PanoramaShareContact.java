@@ -13,7 +13,7 @@ public interface PanoramaShareContact {
 
         void onUploadResult(int code);//-1 上传失败;200 上传成功
 
-        void onShareH5UrlResponse(String h5);
+        void onShareH5Result(boolean success, String h5);
     }
 
     interface Presenter extends JFGPresenter<View> {
