@@ -128,9 +128,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
         //全景不显示固件升级 显示软件版本
-        boolean showSoftWare = JFGRules.needShowFirmware(device != null ? device.pid : 0);
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
-        rlHardwareUpdate.setVisibility(showSoftWare ? View.GONE : View.VISIBLE);
+        boolean showFirmware = JFGRules.needShowFirmware(device != null ? device.pid : 0);
+        rlHardwareUpdate.setVisibility(showFirmware ? View.VISIBLE : View.GONE);
     }
 
     @Override
