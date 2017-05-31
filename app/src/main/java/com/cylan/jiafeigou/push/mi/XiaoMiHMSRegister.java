@@ -4,9 +4,11 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.cylan.jiafeigou.push.IPushRegister;
 import com.cylan.jiafeigou.utils.PackageUtils;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 /**
  * Created by hds on 17-4-22.
@@ -46,6 +48,8 @@ public class XiaoMiHMSRegister extends IntentService implements IPushRegister {
         //简单粗暴,只要一行代码即可
         // 注册push服务，注册成功后会向xxxMessageReceiver发送广播
         // 可以从DemoMessageReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
-//        MiPushClient.registerPush(this, AppId, AppKey);
+        Log.d("XiaoMiHMSRegister", "XiaoMiHMSRegister:AppId " + AppId);
+        Log.d("XiaoMiHMSRegister", "XiaoMiHMSRegister:AppKey " + AppKey);
+        MiPushClient.registerPush(this, AppId, AppKey);
     }
 }
