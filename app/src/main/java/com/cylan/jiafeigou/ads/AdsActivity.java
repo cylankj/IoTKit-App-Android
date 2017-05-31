@@ -12,7 +12,9 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.AdsTimerView;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,10 +46,29 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
         });
         imvAdsTimer.startTimer();
         AdsStrategy.AdsDescription description = getIntent().getParcelableExtra(JConstant.KEY_ADD_DESC);
+
         if (description != null)//加载广告图片
+        {
+            description.showCount++;
+            PreferencesUtils.putString(JConstant.KEY_ADD_DESC, new Gson().toJson(description));
+            //遇到网络不好的情况会出现白屏,因为图片还没下载,所以先下载图片.
             Glide.with(this)
                     .load(description.url)
                     .into(imvAdsPic);
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideSystemUI();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        showSystemUI();
     }
 
     @Override

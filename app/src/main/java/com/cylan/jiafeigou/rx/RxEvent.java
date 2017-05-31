@@ -1333,5 +1333,15 @@ public class RxEvent {
             this.tagUrl = tagUrl;
             return this;
         }
+
+        @Override
+        public String toString() {
+            return "AdsRsp{" +
+                    "ret=" + ret +
+                    ", time=" + time +
+                    ", picUrl='" + picUrl + '\'' +
+                    ", tagUrl='" + tagUrl + '\'' +
+                    '}';
+        }
     }
 }

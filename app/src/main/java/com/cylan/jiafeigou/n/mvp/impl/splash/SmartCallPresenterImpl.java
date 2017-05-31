@@ -1,22 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import android.text.TextUtils;
-
 import com.cylan.jiafeigou.ads.AdsStrategy;
 import com.cylan.jiafeigou.misc.AutoSignIn;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
@@ -73,46 +66,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 
     @Override
     public Observable<AdsStrategy.AdsDescription> showAds() {
-        return Observable.just("check and get ads")
-                .subscribeOn(Schedulers.newThread())
-                .map(s -> {
-                    //1.广告页仅在加菲狗版本、中国大陆地区(简体中文)版本显示，其余版本屏蔽。
-                    //2.在广告投放时间期限内，每个用户看到的广告展示次数最多为三次，广告展示次数满三次后不再显示。
-                    int l = JFGRules.getLanguageType(ContextUtils.getContext());
-                    if (l != JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
-                        //非简体中文
-                        AdsStrategy.AdsDescription description = new AdsStrategy.AdsDescription();
-                        description.tagUrl = "http://www.baidu.com";
-                        description.url = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
-                        return null;
-                    }
-                    String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
-                    if (TextUtils.isEmpty(content)) {
-                        AdsStrategy.getStrategy().fetchAds();
-                        return null;
-                    }
-                    try {
-                        AdsStrategy.AdsDescription description = new Gson().fromJson(content, AdsStrategy.AdsDescription.class);
-                        if (description != null) {
-                            //展示两次
-                            if (description.showCount > 2) {
-                                PreferencesUtils.remove(JConstant.KEY_ADD_DESC);
-                                AdsStrategy.getStrategy().fetchAds();
-                                return null;
-                            }
-                            //过期了
-                            if (System.currentTimeMillis() / 1000 > description.expireTime) {
-                                PreferencesUtils.remove(JConstant.KEY_ADD_DESC);
-                                AdsStrategy.getStrategy().fetchAds();
-                                return null;
-                            }
-                            return description;
-                        } else return null;
-                    } catch (Exception e) {
-                        AdsStrategy.getStrategy().fetchAds();
-                        return null;
-                    }
-                });
+        return AdsStrategy.getStrategy().needShowAds();
     }
 }
 

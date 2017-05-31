@@ -20,9 +20,7 @@ import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,8 +58,6 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
             }
         });
         wAdsContent.loadUrl(description.tagUrl);
-        description.showCount++;
-        PreferencesUtils.putString(JConstant.KEY_ADD_DESC, new Gson().toJson(description));
         try {
             BaseApplication.getAppComponent().getCmd().countADClick(description.showCount,
                     PackageUtils.getAppVersionName(ContextUtils.getContext()), description.tagUrl);
