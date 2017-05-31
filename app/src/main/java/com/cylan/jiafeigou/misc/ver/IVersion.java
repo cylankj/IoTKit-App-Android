@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.misc.ver;
 
+import rx.Observable;
+
 /**
  * Created by hds on 17-5-28.
  */
@@ -18,7 +20,7 @@ public interface IVersion<T extends IVersion.BaseVersion> {
     /**
      * 开始检测
      */
-    T startCheck();
+    Observable<T> startCheck();
 
 
     class BaseVersion {

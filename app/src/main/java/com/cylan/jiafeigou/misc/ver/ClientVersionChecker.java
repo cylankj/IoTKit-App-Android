@@ -1,5 +1,10 @@
 package com.cylan.jiafeigou.misc.ver;
 
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.utils.NetUtils;
+
+import rx.Observable;
+
 /**
  * Created by hds on 17-5-28.
  */
@@ -9,11 +14,14 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
 
     @Override
     public boolean checkCondition() {
-        return false;
+        //当前网络不行
+        if (NetUtils.getJfgNetType() == 0) return false;
+
+        return true;
     }
 
     @Override
-    public CVersion startCheck() {
+    public Observable<CVersion> startCheck() {
         return null;
     }
 
