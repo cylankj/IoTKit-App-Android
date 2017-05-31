@@ -79,5 +79,6 @@ public class PickImageFragment extends BaseDialog {
                 if (takeListener != null) takeListener.onClick(view);
                 break;
         }
+        dismiss();
     }
 }
