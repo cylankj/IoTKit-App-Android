@@ -49,7 +49,7 @@
             android:paddingEnd="@dimen/y20"
             android:paddingStart="@dimen/y20"
             android:text="QQ"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_share_to_tencent_qzone"
