@@ -283,14 +283,42 @@ public class JFGRules {
     }
 
     public static boolean needShowFirmware(int pid) {
-        if (isPanoramicCam(pid)) return false;
-        if (isRS(pid)) return false;
-        return true;
+        switch (pid) {
+            case 7:
+            case 5:
+            case 4:
+            case 21:
+            case 26:
+            case 6:
+            case 25:
+            case 1089:
+            case 1088:
+            case 1093:
+            case 1094:
+            case 1090:
+            case 1071:
+            case 17:
+            case 1152:
+            case 1158:
+            case 1160:
+                return true;
+        }
+        return false;
     }
 
     public static boolean showSoftWare(int pid) {
-        if (isPanoramicCam(pid)) return false;
-        return true;
+        switch (pid) {
+            case 1092:
+            case 1091:
+            case 10:
+            case 18:
+            case 36:
+            case 37:
+            case 38:
+            case 39:
+                return true;
+        }
+        return false;
     }
 
     public static boolean is2WCam(int pid) {
