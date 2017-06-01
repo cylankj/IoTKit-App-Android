@@ -252,6 +252,20 @@ public class JFGRules {
                 "led");
     }
 
+    public static boolean showIp(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "ip");
+    }
+
+    public static boolean showWiredMode(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "wired");
+    }
+
+    public static boolean showEnableAp(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "enableAP");
+    }
 
     public static boolean showFirmware(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,

@@ -94,6 +94,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceCid;
     @BindView(R.id.tv_device_software_version)
     SettingItemView0 tvDeviceSoftwareVersion;
+    @BindView(R.id.tv_device_ip)
+    SettingItemView0 tvDeviceIp;
 
     private String uuid;
     private EditFragmentDialog editDialogFragment;
@@ -131,6 +133,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
         boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0);
         rlHardwareUpdate.setVisibility(showFU ? View.VISIBLE : View.GONE);
+        tvDeviceIp.setVisibility(JFGRules.showIp(device.pid) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -453,5 +456,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
         }
         updateDetails();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

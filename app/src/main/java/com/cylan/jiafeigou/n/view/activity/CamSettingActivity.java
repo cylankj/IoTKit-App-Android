@@ -99,6 +99,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     CustomToolbar customToolbar;
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
+    @BindView(R.id.sv_setting_wired)
+    SettingItemView0 svSettingWired;
+    @BindView(R.id.sv_setting_open_ap)
+    SettingItemView0 svSettingOpenAp;
     private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -494,6 +498,22 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSettingSight.setVisibility(View.GONE);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
+
+        //有线模式,开启AP
+        svSettingWired.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
+        svSettingWired.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (!isChecked) {//关闭
+                AlertDialogManager.getInstance().showDialog(this, "closeWired",
+                        "关闭可能会使设备断开连接，确定关闭？", getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            ToastUtil.showToast("what");
+                            svSettingWired.setChecked(true);
+                        }, getString(R.string.CANCEL), null);
+            }
+        });
+        svSettingOpenAp.setVisibility(JFGRules.showEnableAp(device.pid) ? View.VISIBLE : View.GONE);
+        svSettingOpenAp.setOnClickListener(v -> {
+
+        });
     }
 
     @Override
