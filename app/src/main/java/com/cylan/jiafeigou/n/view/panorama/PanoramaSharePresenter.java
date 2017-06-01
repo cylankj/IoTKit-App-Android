@@ -68,7 +68,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void share(PanoramaAlbumContact.PanoramaItem item, String desc) {
-        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 long seq = appCmd.getVideoShareUrl(getRemoteFilePath(item.fileName), desc, 0, item.type);
                 AppLogger.e("获取 H5返回码为:" + seq);
@@ -81,7 +81,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.GetVideoShareUrlEvent.class))
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.GetVideoShareUrlEvent.class).first())
                 .map(h5 -> {
                     AppLogger.e("当前分享的 H5URL为:" + h5.url);
                     long seq = -1;
@@ -124,6 +124,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     mView.onShareH5Result(success, success ? result.second : "");
                     AppLogger.d("AAAAA:" + new Gson().toJson(result));
                 });
+        registerSubscription(subscribe);
 
     }
 }

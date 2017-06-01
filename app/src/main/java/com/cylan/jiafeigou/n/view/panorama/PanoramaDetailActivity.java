@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,13 +24,12 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
-import com.cylan.jiafeigou.databinding.LayoutDialogShareWonderfulBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.support.share.ShareActivity;
+import com.cylan.jiafeigou.support.share.ShareContanst;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -46,6 +44,7 @@ import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
 import com.lzy.okserver.listener.DownloadListener;
+import com.umeng.socialize.UMShareAPI;
 
 import javax.inject.Inject;
 
@@ -104,7 +103,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private TextView download;
     private int mode;
     private View deleted;
-    private AlertDialog shareDialog;
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -136,18 +134,29 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onStart() {
         super.onStart();
-        initPanoramaContent(panoramaItem);
         ViewUtils.setViewPaddingStatusBar(headerTitleContainer);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initPanoramaContent(panoramaItem);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (player != 0) {
+            JFGPlayer.StopRender(player);
+            JFGPlayer.Stop(player);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(headerTitleContainer);
-        if (player != 0) {
-            JFGPlayer.StopRender(player);
-            JFGPlayer.Stop(player);
-        }
+
     }
 
     @Override
@@ -345,62 +354,26 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         } else if (panoramaItem.duration > 8) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_Share_NoLonger8STips));
         } else {
-            if (shareDialog == null) {
-                LayoutDialogShareWonderfulBinding binding = LayoutDialogShareWonderfulBinding.inflate(getLayoutInflater());
-                binding.setShareListener(this::onShareToH5);
-                shareDialog = new AlertDialog.Builder(this)
-                        .setView(binding.getRoot())
-                        .create();
-            }
-            if (!shareDialog.isShowing()) {
-                shareDialog.show();
-            }
+            AppLogger.d("点击了分享按钮");
+            dismissDialogs();
+            JFGPlayer.Stop(player);
+            Intent intent = new Intent(this, ShareActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            intent.putExtra(ShareContanst.SHARE_ITEM, panoramaItem);
+            intent.putExtra(ShareContanst.FILE_PATH, downloadInfo.getTargetPath());
+            intent.putExtra(ShareContanst.SHARE_STYLE, ShareContanst.SHARE_CONTENT_H5_WITH_UPLOAD);
+            startActivity(intent);
         }
     }
 
     private void dismissDialogs() {
-        if (shareDialog != null) {
-            shareDialog.dismiss();
-        }
         if (morePopMenu != null) {
             morePopMenu.dismiss();
         }
     }
 
     public void onShareToH5(View view) {
-        AppLogger.d("点击了分享按钮");
-        dismissDialogs();
-        JFGPlayer.Stop(player);
-        PanoramaShareFragment fragment = new PanoramaShareFragment();
-        Bundle bundle = new Bundle();
-        switch (view.getId()) {
-            case R.id.tv_share_to_timeline://
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_TIME_LINE);
-                break;
-            case R.id.tv_share_to_wechat_friends:
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_WECHAT);
-                break;
-            case R.id.tv_share_to_tencent_qq:
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_QQ);
-                break;
-            case R.id.tv_share_to_tencent_qzone:
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_QZONE);
-                break;
-            case R.id.tv_share_to_facebook_friends:
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_FACEBOOK);
-                break;
-            case R.id.tv_share_to_twitter_friends:
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_TWITTER);
-                break;
-            case R.id.tv_share_to_sina_weibo:
-                bundle.putInt(PanoramaShareFragment.SHARE_TYPE, PanoramaShareFragment.SHARE_TYPE_WEIBO);
-                break;
-        }
-        bundle.putParcelable(PanoramaShareFragment.SHARE_ITEM, panoramaItem);
-        bundle.putString(PanoramaShareFragment.FILE_PATH, downloadInfo.getTargetPath());
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        fragment.setArguments(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
+
     }
 
 
@@ -542,7 +515,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppLogger.e("ADGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-        ShareUtils.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 }

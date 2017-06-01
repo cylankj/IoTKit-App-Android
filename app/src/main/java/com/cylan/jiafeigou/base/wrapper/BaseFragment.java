@@ -75,7 +75,13 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             View contentView = inflater.inflate(getContentViewID(), container, false);
             unbinder = ButterKnife.bind(this, contentView);
             return contentView;
+        } else if (getContentRootView() != null) {
+            return getContentRootView();
         }
+        return null;
+    }
+
+    protected View getContentRootView() {
         return null;
     }
 

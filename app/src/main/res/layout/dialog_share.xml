@@ -7,6 +7,7 @@
             type="android.view.View.OnClickListener" />
     </data>
 
+
     <android.support.v7.widget.CardView
         android:id="@+id/lLayout_dialog_share_wonderful"
         android:layout_width="match_parent"
@@ -32,12 +33,14 @@
                 android:onClick="@{shareListener}"
                 android:paddingEnd="@dimen/y20"
                 android:paddingStart="@dimen/y20"
+                android:tag="0"
                 android:text="@string/Tap2_Share_Moments" />
 
             <TextView
                 android:id="@+id/tv_share_to_wechat_friends"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
+                android:tag="1"
                 android:clickable="true"
                 android:drawablePadding="@dimen/y20"
                 android:drawableStart="@drawable/icon_wechat"
@@ -54,6 +57,7 @@
                 android:layout_height="@dimen/y48"
                 android:clickable="true"
                 android:drawablePadding="@dimen/y20"
+                android:tag="2"
                 android:drawableStart="@drawable/share_icon_qq"
                 android:focusable="true"
                 android:gravity="center_vertical"
@@ -72,6 +76,7 @@
                 android:drawableStart="@drawable/share_icon_qqspace"
                 android:focusable="true"
                 android:gravity="center_vertical"
+                android:tag="3"
                 android:onClick="@{shareListener}"
                 android:paddingEnd="@dimen/y20"
                 android:paddingStart="@dimen/y20"
@@ -83,6 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
                 android:clickable="true"
+                android:tag="4"
                 android:drawablePadding="@dimen/y20"
                 android:drawableStart="@drawable/share_icon_weibo"
                 android:focusable="true"
@@ -99,6 +105,7 @@
                 android:layout_height="@dimen/y48"
                 android:clickable="true"
                 android:drawablePadding="@dimen/y20"
+                android:tag="5"
                 android:drawableStart="@drawable/twitter_icon_twitter"
                 android:focusable="true"
                 android:gravity="center_vertical"
@@ -112,6 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
                 android:clickable="true"
+                android:tag="6"
                 android:drawablePadding="@dimen/x20"
                 android:drawableStart="@drawable/share_icon_facebook"
                 android:focusable="true"

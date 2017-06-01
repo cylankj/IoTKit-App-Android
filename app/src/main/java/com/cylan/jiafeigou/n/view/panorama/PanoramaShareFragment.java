@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import android.content.Intent;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.os.Bundle;
@@ -11,36 +10,41 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ShareUtils;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
+
+import static com.cylan.jiafeigou.support.share.ShareContanst.FILE_PATH;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_ITEM;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_FACEBOOK;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_QQ;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_QZONE;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_TIME_LINE;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_TWITTER;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_WECHAT;
+import static com.cylan.jiafeigou.support.share.ShareContanst.SHARE_TYPE_WEIBO;
 
 /**
  * Created by yanzhendong on 2017/5/27.
  */
 
 public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Presenter> implements PanoramaShareContact.View {
-    public static final String SHARE_TYPE = "share_type";
-    public static final String SHARE_ITEM = "share_item";
-    public static final String FILE_PATH = "file_path";
-    public static final int SHARE_TYPE_TIME_LINE = 0;
-    public static final int SHARE_TYPE_WECHAT = 1;
-    public static final int SHARE_TYPE_QQ = 3;
-    public static final int SHARE_TYPE_QZONE = 4;
-    public static final int SHARE_TYPE_WEIBO = 5;
-    public static final int SHARE_TYPE_FACEBOOK = 6;
-    public static final int SHARE_TYPE_TWITTER = 7;
+
     private FragmentPanoramaShareBinding shareBinding;
     private ObservableField<String> description = new ObservableField<>();
     private ObservableBoolean uploadSuccess = new ObservableBoolean(false);
     private int shareType;
     private PanoramaAlbumContact.PanoramaItem shareItem;
     private String filePath;
+
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {
@@ -107,29 +111,60 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
         }
     }
 
+    private UMShareListener listener = new UMShareListener() {
+        @Override
+        public void onStart(SHARE_MEDIA share_media) {
+            AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+        }
+
+        @Override
+        public void onResult(SHARE_MEDIA share_media) {
+            AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+            AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA share_media) {
+            AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
+        }
+    };
+
     private void shareWithH5ByType(int shareType, String h5) {
+        UMWeb umWeb = new UMWeb(h5);
+        umWeb.setTitle("这是我通过友盟分享");
+        umWeb.setDescription(description.get());
+        umWeb.setThumb(new UMImage(getContext(), R.drawable.default_diagram_mask));
+        ShareAction shareAction = new ShareAction(getActivity());
+        shareAction.withMedia(umWeb);
+        shareAction.setCallback(listener);
         switch (shareType) {
             case SHARE_TYPE_TIME_LINE://
-                ShareUtils.shareWebPageWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
+                shareAction.setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE);
                 break;
             case SHARE_TYPE_WECHAT:
-                ShareUtils.shareWebPageWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
+                shareAction.setPlatform(SHARE_MEDIA.WEIXIN);
                 break;
             case SHARE_TYPE_QQ:
-                ShareUtils.shareVideoToQQ(getActivity(), h5);
+                shareAction.setPlatform(SHARE_MEDIA.QQ);
                 break;
             case SHARE_TYPE_QZONE:
+                shareAction.setPlatform(SHARE_MEDIA.QZONE);
                 break;
             case SHARE_TYPE_WEIBO:
-                ShareUtils.shareH5ToWeibo(getActivity(), description.get() == null ? "" : description.get());
+                shareAction.setPlatform(SHARE_MEDIA.SINA);
                 break;
             case SHARE_TYPE_FACEBOOK:
-                ShareUtils.shareVideoToFacebook(getActivity(), h5, new GlideUrl(filePath));
+                shareAction.setPlatform(SHARE_MEDIA.FACEBOOK);
                 break;
             case SHARE_TYPE_TWITTER:
-                ShareUtils.shareVideoToTwitter(getActivity(), h5, new GlideUrl(filePath));
+                shareAction.setPlatform(SHARE_MEDIA.TWITTER);
                 break;
         }
+        shareAction.share();
     }
 
     public void cancelShare(View view) {
@@ -138,12 +173,5 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
 
     public void share(View view) {
         presenter.share(shareItem, description.get() == null ? "" : description.get());
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        AppLogger.e("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-        ShareUtils.onActivityResult(requestCode, resultCode, data);
     }
 }
