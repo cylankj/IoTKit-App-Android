@@ -94,6 +94,7 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
     }
 
     private void initWheel(int index, WheelVerticalView wheelHourPick, final int count) {
+        if (!isAdded()) return;
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
