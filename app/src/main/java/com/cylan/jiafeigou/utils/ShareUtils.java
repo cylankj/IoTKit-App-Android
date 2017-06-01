@@ -30,6 +30,13 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.Gson;
+import com.sina.weibo.sdk.api.WebpageObject;
+import com.sina.weibo.sdk.api.WeiboMessage;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
+import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
+import com.sina.weibo.sdk.api.share.WeiboShareSDK;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -49,6 +56,8 @@ import java.net.URL;
 public class ShareUtils {
     private static WeakReference<WechatShare> shareWeakReference = null;
     private static WeakReference<Tencent> mTencent;
+    private static String SINA_APP_KEY;
+    private static SsoHandler ssoHandler;
 
 
     public static boolean isQQInstalled() {
@@ -57,6 +66,13 @@ public class ShareUtils {
 
     public static boolean isWeiBoInstalled() {
         return true;
+    }
+
+    public static void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ssoHandler != null) {
+            ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+            ssoHandler = null;
+        }
     }
 
     public static void sharePictureToWechat(Activity activity, GlideUrl glideUrl, final int type) {
@@ -214,6 +230,34 @@ public class ShareUtils {
                         wechatShare.shareByWX(shareContent);
                     }
                 });
+    }
+
+    public static void shareWebPageWechat(Activity activity, String VideoURL, int WXSceneSession, GlideUrl videoThumbURL) {
+        if (shareWeakReference == null || shareWeakReference.get() == null)
+            shareWeakReference = new WeakReference<>(new WechatShare(activity));
+        //find bitmap from glide
+        WechatShare wechatShare = shareWeakReference.get();
+        final WechatShare.ShareContent shareContent = new WechatShare.ShareContentImpl();
+        //朋友圈，微信
+        shareContent.shareScene = WXSceneSession;
+        shareContent.shareContent = WechatShare.WEIXIN_SHARE_CONTENT_WEBPAGE;
+        shareContent.url = VideoURL;
+        Glide.with(activity)
+                .load(videoThumbURL)
+                .asBitmap()
+                .format(DecodeFormat.DEFAULT)
+                .into(new SimpleTarget<Bitmap>(150, 150) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        shareContent.bitmap = resource;
+                        wechatShare.shareByWX(shareContent);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        wechatShare.shareByWX(shareContent);
+                    }
+                });
 
 
     }
@@ -329,6 +373,7 @@ public class ShareUtils {
         }
         Bundle bundle = new Bundle();
         bundle.putString(QQShare.SHARE_TO_QQ_TARGET_URL, h5);
+        bundle.putString(QQShare.SHARE_TO_QQ_TITLE, "QQ 分享");
         mTencent.get().shareToQQ(activity, bundle, new IUiListener() {
             @Override
             public void onComplete(Object o) {
@@ -364,7 +409,63 @@ public class ShareUtils {
     }
 
     public static void shareVideoToWeibo(Activity activity) {
+        SINA_APP_KEY = PackageUtils.getMetaString(activity, "sinaAppKey");
+        IWeiboShareAPI weiboAPI = WeiboShareSDK.createWeiboAPI(activity, SINA_APP_KEY);
+        WeiboMessage message = new WeiboMessage();
+        WebpageObject object = new WebpageObject();
+    }
 
+    public static void shareH5ToWeibo(Activity activity, String desc) {
+        SINA_APP_KEY = PackageUtils.getMetaString(activity, "sinaAppKey");
+//        Oauth2AccessToken oauth2AccessToken = AccessTokenKeeper.readAccessToken(activity);
+//        AuthInfo authInfo = new AuthInfo(activity, SINA_APP_KEY, REDIRECT_URL, SCOPE);
+//        if (!oauth2AccessToken.isSessionValid()) {
+//            ssoHandler = new SsoHandler(activity, authInfo);
+//            ssoHandler.authorize(new WeiboAuthListener() {
+//                @Override
+//                public void onComplete(Bundle bundle) {
+//                    Oauth2AccessToken oauth2AccessToken = Oauth2AccessToken.parseAccessToken(bundle);
+//                    if (oauth2AccessToken.isSessionValid()) {
+//                        AccessTokenKeeper.writeAccessToken(activity, oauth2AccessToken);
+//                        AppLogger.e("将进行微博分享!!!!!!");
+//                        IWeiboShareAPI weiboAPI = WeiboShareSDK.createWeiboAPI(activity, SINA_APP_KEY);
+//                        weiboAPI.registerApp();
+//                        SendMessageToWeiboRequest request = new SendMessageToWeiboRequest();
+//                        WeiboMessage message = new WeiboMessage();
+//                        WebpageObject object = new WebpageObject();
+//                        object.description = desc;
+//                        object.title = "微博分享";
+//                        message.mediaObject = object;
+//                        request.message = message;
+//                        request.transaction = String.valueOf(System.currentTimeMillis());
+//                        weiboAPI.sendRequest(activity, request, authInfo, oauth2AccessToken.getToken(), null);
+//                    }
+//                }
+//
+//                @Override
+//                public void onWeiboException(WeiboException e) {
+//
+//                }
+//
+//                @Override
+//                public void onCancel() {
+//
+//                }
+//            });
+//        } else {
+        AppLogger.e("将进行微博分享!!!!!!");
+        IWeiboShareAPI weiboAPI = WeiboShareSDK.createWeiboAPI(activity, SINA_APP_KEY);
+        weiboAPI.registerApp();
+        SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
+        WeiboMultiMessage message = new WeiboMultiMessage();
+        WebpageObject object = new WebpageObject();
+        object.description = desc;
+        object.title = "微博分享";
+        message.mediaObject = object;
+        request.multiMessage = message;
+        request.transaction = String.valueOf(System.currentTimeMillis());
+        weiboAPI.sendRequest(activity, request);
+//        }
     }
 
 

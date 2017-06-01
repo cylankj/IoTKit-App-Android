@@ -94,15 +94,16 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             AppLogger.i("bind: " + info);
             return;
         }
-        if (NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI && ApFilter.isAPMode(info.getSSID(), getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID))) {
-            String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+
+        String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+        if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), getUuid())
+                && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
             Bundle bundle = new Bundle();
             bundle.putString("PanoramaConfigure", panoramaConfigure);
             bundle.putBoolean("Success", true);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
             ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    newInstance, android.R.id.content);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), newInstance, android.R.id.content);
         } else {
             Intent intent = getIntent();
             intent.setClass(this, ConfigWifiActivity.class);

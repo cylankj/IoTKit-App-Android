@@ -82,12 +82,6 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.GetVideoShareUrlEvent.class))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(h5 -> {
-                    mView.onH5ResourceAvailable(h5.url);
-                    return h5;
-                })
-                .observeOn(Schedulers.io())
                 .map(h5 -> {
                     AppLogger.e("当前分享的 H5URL为:" + h5.url);
                     long seq = -1;

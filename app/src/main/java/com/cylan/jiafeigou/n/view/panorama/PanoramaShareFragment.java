@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.content.Intent;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.os.Bundle;
@@ -40,7 +41,6 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     private int shareType;
     private PanoramaAlbumContact.PanoramaItem shareItem;
     private String filePath;
-    private String h5Url;
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {
@@ -100,9 +100,9 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     @Override
-    public void onShareH5Result(boolean success, String s) {
-        if (success && !TextUtils.isEmpty(s)) {
-            shareWithH5ByType(shareType, this.h5Url);
+    public void onShareH5Result(boolean success, String h5) {
+        if (success && !TextUtils.isEmpty(h5)) {
+            shareWithH5ByType(shareType, h5);
             AppLogger.d("得到上传服务器返回的 h5网址,将进行对应的分享");
         }
     }
@@ -110,20 +110,24 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
     private void shareWithH5ByType(int shareType, String h5) {
         switch (shareType) {
             case SHARE_TYPE_TIME_LINE://
-                ShareUtils.shareVideoToWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
+                ShareUtils.shareWebPageWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
                 break;
             case SHARE_TYPE_WECHAT:
-                ShareUtils.shareVideoToWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
+                ShareUtils.shareWebPageWechat(getActivity(), h5, SendMessageToWX.Req.WXSceneTimeline, new GlideUrl(filePath));
                 break;
             case SHARE_TYPE_QQ:
+                ShareUtils.shareVideoToQQ(getActivity(), h5);
                 break;
             case SHARE_TYPE_QZONE:
                 break;
             case SHARE_TYPE_WEIBO:
+                ShareUtils.shareH5ToWeibo(getActivity(), description.get() == null ? "" : description.get());
                 break;
             case SHARE_TYPE_FACEBOOK:
+                ShareUtils.shareVideoToFacebook(getActivity(), h5, new GlideUrl(filePath));
                 break;
             case SHARE_TYPE_TWITTER:
+                ShareUtils.shareVideoToTwitter(getActivity(), h5, new GlideUrl(filePath));
                 break;
         }
     }
@@ -134,5 +138,12 @@ public class PanoramaShareFragment extends BaseFragment<PanoramaShareContact.Pre
 
     public void share(View view) {
         presenter.share(shareItem, description.get() == null ? "" : description.get());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        AppLogger.e("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+        ShareUtils.onActivityResult(requestCode, resultCode, data);
     }
 }

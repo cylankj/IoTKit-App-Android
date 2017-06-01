@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -536,5 +537,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void onSnapshot(Bitmap bitmap, boolean b) {
         BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + "/" + System.currentTimeMillis() / 1000 + ".jpg");
         ToastUtil.showPositiveToast("截图成功");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        AppLogger.e("ADGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+        ShareUtils.onActivityResult(requestCode, resultCode, data);
     }
 }
