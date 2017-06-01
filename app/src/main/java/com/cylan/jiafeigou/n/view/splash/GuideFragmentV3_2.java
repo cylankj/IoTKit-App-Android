@@ -69,6 +69,7 @@ public class GuideFragmentV3_2 extends Fragment {
         viewPager.setAdapter(viewAdapter);
         pageIndicatorView.setAnimationType(AnimationType.WORM);
         pageIndicatorView.setViewPager(viewPager);
+        pageIndicatorView.setCount(3);
         pageIndicatorView.setRadius(getResources().getDimension(R.dimen.y4));
     }
 
