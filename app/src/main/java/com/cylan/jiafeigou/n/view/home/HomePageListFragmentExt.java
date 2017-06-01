@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.WrapContentLinearLayoutManager;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -563,6 +564,27 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+    private void prepareNext(int position, boolean jump2Message) {
+        Device device = mItemAdapter.getItem(position).getDevice();
+        if (device != null && !TextUtils.isEmpty(device.uuid)) {
+            Intent intent = new Intent();
+            //有新消息
+            if (jump2Message)
+                intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
+            if (JFGRules.isPan720(device.pid)) {
+                intent.setClass(getActivity(), PanoramaCameraActivity.class);
+                startActivity(intent);
+            } else if (JFGRules.isCamera(device.pid)) {
+                intent.setClass(getActivity(), CameraLiveActivity.class);
+                startActivity(intent);
+            } else if (JFGRules.isBell(device.pid)) {
+                intent.setClass(getActivity(), DoorBellHomeActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
+
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == R.id.tv_dialog_btn_right) {
@@ -582,7 +604,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public boolean onClick(View v, IAdapter<HomeItem> adapter, HomeItem item, int position) {
         if (position != -1) {
-            prepareNext(position);
+            boolean hasNew = ((ImageViewTip) v.findViewById(R.id.img_device_icon))
+                    .isShowDot();
+            prepareNext(position, hasNew);
         } else {
             AppLogger.e("dis match position : " + position);
         }
