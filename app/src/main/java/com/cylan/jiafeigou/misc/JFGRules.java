@@ -157,6 +157,7 @@ public class JFGRules {
 
     public static boolean isCamera(int pid) {
         if (isRS(pid)) return true;
+        if (isPan720(pid)) return true;
         switch (pid) {
             case 4:
             case 5:
@@ -202,15 +203,6 @@ public class JFGRules {
         return false;
     }
 
-    public static boolean isVRCam(int pid) {
-        switch (pid) {
-            case 21:
-            case 1089:
-                return true;
-        }
-        return false;
-    }
-
     /**
      * 判断是否全景
      *
@@ -243,10 +235,6 @@ public class JFGRules {
     public static boolean show110VLayout(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "110V");
-    }
-
-    public static boolean showHomeBatteryIcon(int pid) {
-        return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
     }
 
     public static boolean showBattery(int pid) {

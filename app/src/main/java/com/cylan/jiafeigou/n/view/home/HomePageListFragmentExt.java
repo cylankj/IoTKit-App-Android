@@ -551,14 +551,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (device != null && !TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
-            if (JFGRules.isCamera(device.pid)) {
+            if (JFGRules.isPan720(device.pid)) {
+                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+            } else if (JFGRules.isCamera(device.pid)) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             } else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            } else if (JFGRules.isVRCam(device.pid)) {
-                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             }
         }
     }
