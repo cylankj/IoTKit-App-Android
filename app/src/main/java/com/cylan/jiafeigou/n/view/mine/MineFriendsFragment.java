@@ -46,7 +46,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     @BindView(R.id.recyclerview_request_add)
     RecyclerView recyclerviewRequestAdd;
-    @BindView(R.id.recyclerview_relativesandfriends_list)
+    @BindView(R.id.rv_friends_list)
     RecyclerView recyclerviewRelativesandfriendsList;
     @BindView(R.id.ll_relative_and_friend)
     LinearLayout llRelativeAndFriend;
@@ -420,5 +420,15 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @OnClick(R.id.btn_to_add)
+    public void onClickToAdd() {
+        jump2AddReAndFriendFragment();
     }
 }
