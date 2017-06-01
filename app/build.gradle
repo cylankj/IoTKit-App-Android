@@ -320,7 +320,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.romandanylyk:pageindicatorview:0.2.0'
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.9'
-    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+//    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 }
 
 //谷歌推送
