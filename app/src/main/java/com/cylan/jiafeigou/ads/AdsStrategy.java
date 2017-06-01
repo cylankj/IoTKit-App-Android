@@ -112,6 +112,7 @@ public class AdsStrategy {
 
     private void try2DownloadAds(AdsDescription description) {
         //没有可以先后台下载,必须在主线程调用
+        if (description == null || TextUtils.isEmpty(description.url)) return;
         Glide.with(ContextUtils.getContext())
                 .load(description.url)
                 //加上签名
