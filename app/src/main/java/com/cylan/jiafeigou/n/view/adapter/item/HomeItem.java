@@ -212,7 +212,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
             holder.setVisibility(R.id.img_device_state_2, GONE);
         }
-        if (isAPDirect()) {
+        if (MiscUtils.isAPDirect(getDevice().$(202, ""))) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_ap);
         } else {
@@ -261,17 +261,17 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             if (net.net == 1) return mContext.getString(R.string.DEVICE_WIFI_ONLINE);
 //            else return mContext.getString(R.string.OFF_LINE);//离线
         } else {
-            if (isAPDirect())
+            if (MiscUtils.isAPDirect(getDevice().$(202, "")))
                 return mContext.getString(R.string.Tap1_OutdoorMode);
         }
         return mContext.getString(R.string.OFF_LINE);//离线
     }
 
-    private boolean isAPDirect() {
-        //没有连接公网.//必须是连接状态
-        return TextUtils.equals(NetUtils.getRouterMacAddress(), getDevice().$(202, ""))
-                && NetUtils.isNetworkAvailable();
-    }
+//    private boolean isAPDirect() {
+//        //没有连接公网.//必须是连接状态
+//        return TextUtils.equals(NetUtils.getRouterMacAddress(), getDevice().$(202, ""))
+//                && NetUtils.isNetworkAvailable();
+//    }
 
     /**
      * 显示未读消息的条件

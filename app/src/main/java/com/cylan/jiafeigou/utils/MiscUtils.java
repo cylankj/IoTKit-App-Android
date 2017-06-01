@@ -647,4 +647,10 @@ public class MiscUtils {
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
         return resultCode == ConnectionResult.SUCCESS;//可用的时候,检查
     }
+
+    public static boolean isAPDirect(String mac) {
+        //没有连接公网.//必须是连接状态
+        return TextUtils.equals(NetUtils.getRouterMacAddress(), mac)
+                && NetUtils.isNetworkAvailable();
+    }
 }

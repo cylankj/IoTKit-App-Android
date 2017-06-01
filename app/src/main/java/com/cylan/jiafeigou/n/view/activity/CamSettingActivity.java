@@ -41,6 +41,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -503,16 +504,30 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingWired.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
         svSettingWired.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (!isChecked) {//关闭
-                AlertDialogManager.getInstance().showDialog(this, "closeWired",
-                        "关闭可能会使设备断开连接，确定关闭？", getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                AlertDialogManager.getInstance().showDialog(this, "closeWired", getString(R.string.CloseTips),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
                             ToastUtil.showToast("what");
                             svSettingWired.setChecked(true);
                         }, getString(R.string.CANCEL), null);
             }
         });
+        //不可用
+        //1、AP直连的情况下。
+        //2、设备离线，没有连接任何网络。
+        //3、连接公网。
         svSettingOpenAp.setVisibility(JFGRules.showEnableAp(device.pid) ? View.VISIBLE : View.GONE);
+        boolean apDirect = MiscUtils.isAPDirect(device.$(202, ""));
+        boolean online = JFGRules.isDeviceOnline(net);
+        svSettingOpenAp.setEnabled(!apDirect || !online);
         svSettingOpenAp.setOnClickListener(v -> {
-
+            if (NetUtils.getJfgNetType() == 0) {
+                ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                return;
+            }
+            AlertDialogManager.getInstance().showDialog(CamSettingActivity.this, "enableAP",
+                    getString(R.string.CmdSend), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        basePresenter.enableAp();
+                    });
         });
     }
 

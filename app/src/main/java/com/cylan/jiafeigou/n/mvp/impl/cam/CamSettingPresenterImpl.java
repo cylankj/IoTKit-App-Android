@@ -39,8 +39,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
-
 /**
  * Created by cylan-hunt on 16-7-27.
  */
@@ -209,6 +207,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (!alarmFlag && deviceAutoVideoRecord == 0)//不开启,默认不选择
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
+    }
+
+    @Override
+    public void enableAp() {
+        AppLogger.e("还没实现");
     }
 
     @Override

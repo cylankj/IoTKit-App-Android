@@ -991,4 +991,6 @@
   <string name="IP_Address">IP地址</string>
   <string name="WiredMode">有线模式</string>
   <string name="EnableAP">开启热点</string>
+  <string name="CmdSend">指令已经发送,请等待设备蓝灯闪烁</string>
+  <string name="CloseTips">关闭可能会使设备断开连接，确定关闭？</string>
 </resources>
