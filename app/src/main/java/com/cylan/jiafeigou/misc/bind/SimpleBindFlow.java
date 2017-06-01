@@ -96,6 +96,12 @@ public class SimpleBindFlow extends AFullBind {
                         BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 new JfgUdpMsg.FPing().toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.Ping().toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
@@ -165,6 +171,10 @@ public class SimpleBindFlow extends AFullBind {
                         UdpConstant.PORT, code.toBytes());
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                         UdpConstant.PORT, code.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                        UdpConstant.PORT, code.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                        UdpConstant.PORT, code.toBytes());
             } catch (JfgException e) {
                 AppLogger.e("e: " + e.getLocalizedMessage());
             }
@@ -177,6 +187,13 @@ public class SimpleBindFlow extends AFullBind {
                         setServer.toBytes());
                 //
                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                        UdpConstant.PORT,
+                        setLanguage.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                        UdpConstant.PORT,
+                        setServer.toBytes());
+                //
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
                         UdpConstant.PORT,
                         setLanguage.toBytes());
             } catch (JfgException e) {
@@ -251,6 +268,9 @@ public class SimpleBindFlow extends AFullBind {
                         BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                UdpConstant.PORT,
+                                setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -315,6 +335,12 @@ public class SimpleBindFlow extends AFullBind {
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
                         BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                setWifi.toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                UdpConstant.PORT,
+                                setWifi.toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
