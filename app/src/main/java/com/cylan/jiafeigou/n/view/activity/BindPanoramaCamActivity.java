@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
@@ -63,6 +64,7 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
             initAnimation();
             ViewUtils.setViewMarginStatusBar(customToolbar);
             ViewUtils.setViewMarginStatusBar(expainGray);
+            ViewUtils.setViewMarginStatusBar(expainGray);
         }
     }
 
@@ -75,8 +77,9 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
     public void onClick() {
         Intent intent = getIntent();
         intent.setClass(this, BindGuideActivity.class);
-        intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME));
+        intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string._720PanoramicCamera));
         intent.putExtra(JConstant.KEY_BIND_DEVICE_ALIAS, getString(R.string._720PanoramicCamera));
+        intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
         finish();
     }

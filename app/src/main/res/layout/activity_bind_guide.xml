@@ -1,11 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:clickable="true"
-    tools:context="com.cylan.jiafeigou.n.view.bind.BindGuideFragment">
+    android:clickable="true">
 
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -15,6 +13,15 @@
         android:layout_height="wrap_content"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_gary" />
+
+    <ImageView
+        android:id="@+id/iv_explain_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/y15"
+        android:src="@drawable/icon_explain_gray"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/lLayout_guide_content"

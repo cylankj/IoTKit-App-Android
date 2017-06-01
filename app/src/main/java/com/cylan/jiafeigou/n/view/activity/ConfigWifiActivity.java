@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,12 +8,15 @@ import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -25,8 +29,10 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
+import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoActivity;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -67,6 +73,20 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     ViewSwitcher vsShowContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.iv_explain_gray)
+    ImageView ivExplainGray;
+    @BindView(R.id.lLayout_action)
+    LinearLayout lLayoutAction;
+    @BindView(R.id.img_complete)
+    ImageView imgComplete;
+    @BindView(R.id.img_upgrade)
+    ImageView imgUpgrade;
+    @BindView(R.id.upgrade_des)
+    TextView upgradeDes;
+    @BindView(R.id.update_btn)
+    Button updateBtn;
+    @BindView(R.id.lLayout_config_ap)
+    RelativeLayout lLayoutConfigAp;
 
     private List<ScanResult> cacheList;
 
@@ -78,6 +98,14 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         basePresenter = new ConfigApPresenterImpl(this);
         //默认隐藏
         ViewUtils.showPwd(etWifiPwd, false);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
+        if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                getString(R.string._720PanoramicCamera))) {
+            ivExplainGray.setVisibility(View.VISIBLE);
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
+        }
     }
 
     @Override
@@ -187,20 +215,10 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_disconnected), getString(R.string.Tap1_AddDevice_disconnected),
                 getString(R.string.OK), (dialog, which) -> {
                     basePresenter.finish();
-                    if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
-                            getString(R.string.DOG_CAMERA_NAME))) {
-                        //is cam
-                        Intent intent = new Intent(this, BindCamActivity.class);
-                        startActivity(intent);
-                    } else if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
-                            getString(R.string.RuiShi_Name))) {
-                        Intent intent = new Intent(this, BindRsCamActivity.class);
-                        startActivity(intent);
-                    } else {
-                        //default bell
-                        Intent intent = new Intent(this, BindBellActivity.class);
-                        startActivity(intent);
-                    }
+                    final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName(this, className));
+                    startActivity(intent);
                 }, false);
     }
 
@@ -221,6 +239,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                             startActivity(intent);
                         }
                     }
+
                 }, getString(R.string.CANCEL), null, false);
     }
 
@@ -272,19 +291,16 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            if (basePresenter != null) {
-                basePresenter.finish();
-            }
         } else {
-            if (basePresenter != null) {
-                basePresenter.finish();
-            }
             Intent intent = getIntent();// new Intent(this, SubmitBindingInfoActivity.class);
             intent.setClass(this, SubmitBindingInfoActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
             intent.putExtra(KEY_BIND_DEVICE, getIntent().getStringExtra(KEY_BIND_DEVICE));
             startActivity(intent);
             finishExt();
+        }
+        if (basePresenter != null) {
+            basePresenter.finish();
         }
     }
 
@@ -321,21 +337,15 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         tvWifiPwdSubmit.viewZoomBig();
         tvWifiPwdSubmit.setText(R.string.NEXT);
 
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.RET_EISBIND_BYSELF)
                 .setMessage(R.string.RET_ESCENE_DELETE_EXIST_CID)
                 .setCancelable(false)
                 .setPositiveButton(R.string.TRY_AGAIN, (dialog, which) -> {
-                    if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
-                            getString(R.string.DOG_CAMERA_NAME))) {
-                        //is cam
-                        Intent intent = new Intent(this, BindCamActivity.class);
-                        startActivity(intent);
-                    } else {
-                        //default bell
-                        Intent intent = new Intent(this, BindBellActivity.class);
-                        startActivity(intent);
-                    }
+                    final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName(this, className));
+                    startActivity(intent);
                 })
                 .show();
     }
@@ -352,5 +362,12 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     @OnClick(R.id.lLayout_config_ap)
     public void onClick() {
         IMEUtils.hide(this);
+    }
+
+    @OnClick(R.id.iv_explain_gray)
+    public void onExplain() {
+        PanoramaExplainFragment fragment = PanoramaExplainFragment.newInstance(null);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 }

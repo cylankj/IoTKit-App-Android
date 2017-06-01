@@ -117,6 +117,7 @@ public class JConstant {
     public static final java.lang.String KEY_PANORAMA_POP_HINT = "KEY_PANORAMA_POP_HINT";
     public static final String BELL_HOME_LAST_ENTER_TIME = "BELL_HOME_LAST_ENTER_TIME";
 
+    public static final String KEY_COMPONENT_NAME = "key_component";
     public static final int REQ_CODE_ACTIVITY = 1;
     public static final int RESULT_CODE_FINISH = 1;
     public static final int RESULT_CODE_REMOVE_ITEM = 2;
