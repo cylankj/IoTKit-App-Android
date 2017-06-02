@@ -2,9 +2,11 @@ package com.cylan.jiafeigou.n.view.adapter.item;
 
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.ItemShareContentBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -43,5 +45,8 @@ public class ShareContentItem extends AbstractItem<ShareContentItem, AbstractBin
         viewDataBinding.setSharedContentItem(this);
         viewDataBinding.setShareDate(TimeUtils.getYHM(shareItem.time * 1000L));
         viewDataBinding.ShareContentCheckBox.setChecked(isSelected());
+        Glide.with(viewDataBinding.sharedContentIcon.getContext())
+                .load(new PanoramaThumbURL(shareItem.cid, shareItem.fileName))
+                .into(viewDataBinding.sharedContentIcon);
     }
 }

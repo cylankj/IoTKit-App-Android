@@ -100,7 +100,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         initFragment();
         if (basePresenter != null) {
             LoadingDialog.showLoading(getSupportFragmentManager(),
-                    getString(R.string.LOADING), false);
+                    getString(R.string.LOADING), false, null);
             basePresenter.refreshWifiList();
             basePresenter.check3GDogCase();
         }

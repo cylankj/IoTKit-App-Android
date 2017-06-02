@@ -66,17 +66,13 @@ public class JFGGlideURL extends GlideUrl {
         }
     }
 
-    public interface FetchCallback {
-        void onFilePath(String localPath);
-    }
-
-    public void fetch(FetchCallback callback) {
+    public void fetch(WonderGlideURL.FileInterface callback) {
         Glide.with(ContextUtils.getContext())
                 .load(this)
                 .downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        callback.onFilePath(resource.getAbsolutePath());
+                        callback.onResourceReady(resource.getAbsolutePath());
                     }
                 });
     }

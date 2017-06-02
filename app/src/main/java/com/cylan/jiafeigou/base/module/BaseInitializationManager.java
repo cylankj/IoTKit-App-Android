@@ -138,11 +138,10 @@ public final class BaseInitializationManager {
         PlatformConfig.setSinaWeibo("1315129656", "5feab23e093b43f220bccf7fbab8f6c5", "https://api.weibo.com/oauth2/default.html");
         PlatformConfig.setTwitter("kCEeFDWzz5xHi8Ej9Wx6FWqRL", "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5");
         UMShareConfig config = new UMShareConfig();
-        config.isNeedAuthOnGetUserInfo(false);
+        config.isNeedAuthOnGetUserInfo(true);
         config.isOpenShareEditActivity(true);
         config.setSinaAuthType(UMShareConfig.AUTH_TYPE_SSO);
         config.setFacebookAuthType(UMShareConfig.AUTH_TYPE_SSO);
-
         UMShareAPI.get(appContext).setShareConfig(config);
     }
 

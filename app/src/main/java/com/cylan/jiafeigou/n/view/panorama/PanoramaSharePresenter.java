@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.support.v4.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -58,16 +58,8 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
         return "/long/" + Security.getVId() + "/" + sourceManager.getAccount().getAccount() + "/wonder/" + uuid + "/" + fileName;
     }
 
-    private DpMsgDefine.DPShareItem convert(PanoramaAlbumContact.PanoramaItem item) {
-        DpMsgDefine.DPShareItem shareItem = new DpMsgDefine.DPShareItem();
-        shareItem.cid = uuid;
-        shareItem.msgType = item.type;
-//        shareItem.desc
-        return shareItem;
-    }
-
     @Override
-    public void share(PanoramaAlbumContact.PanoramaItem item, String desc) {
+    public void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath) {
         Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 long seq = appCmd.getVideoShareUrl(getRemoteFilePath(item.fileName), desc, 0, item.type);
@@ -109,18 +101,30 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                         .first(rsp -> rsp.seq == pair.first)
                         .map(rsp -> new Pair<>(rsp, pair.second))
                         .timeout(30, TimeUnit.SECONDS, Observable.just(new Pair<>(null, pair.second))))
+                .map(rsp -> {
+                    long result = -1;
+                    int code = rsp.first.rets.get(0).ret;
+                    if (code != 0) throw new BaseDPTaskException(code, "分享步骤一失败");
+                    AppLogger.d("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
+                    try {
+                        String remotePath = getRemoteFilePath(item.fileName);
+                        result = appCmd.putFileToCloud(remotePath, thumbPath);
+
+                    } catch (Exception e) {
+                        AppLogger.d("分享操作步骤二操作失败,错误信息为:" + e.getMessage());
+                        throw new BaseDPTaskException(-3, "分享步骤二失败");
+                    }
+                    AppLogger.d("分享操作步骤二操作seq 为" + result);
+                    if (result == -1) throw new BaseDPTaskException(-3, "分享步骤二失败");
+                    return new Pair<>(result, rsp.second);
+                })
+                .flatMap(pair -> RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
+                        .filter(ret -> ret.requestId == pair.first)
+                        .first().map(rsp -> new Pair<>(rsp, pair.second)))
+
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    boolean success = false;
-                    if (result != null && result.first != null && result.first.rets != null && result.first.rets.size() > 0) {
-                        for (JFGDPMsgRet msgRet : result.first.rets) {
-                            if (msgRet.id == 606) {
-                                success = msgRet.ret == 0;
-                                break;
-                            }
-                        }
-                    }
-                    success = success && result.second != null;
+                    boolean success = result != null && result.first.ret == 200 && result.second != null;
                     mView.onShareH5Result(success, success ? result.second : "");
                     AppLogger.d("AAAAA:" + new Gson().toJson(result));
                 });

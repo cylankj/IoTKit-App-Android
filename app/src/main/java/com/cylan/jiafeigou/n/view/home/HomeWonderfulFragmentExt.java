@@ -9,7 +9,6 @@ import android.os.Parcelable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +34,7 @@ import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareActivity;
-import com.cylan.jiafeigou.support.share.ShareContanst;
+import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -84,7 +83,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 //    @BindView(R.msgId.fragment_wonderful_guide)
 //    ViewGroup mWonderfulGuideContainer;
 
-    private ShareDialogFragment shareDialogFragment;
     private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
 
     @BindView(R.id.tv_sec_title_head_wonder)
@@ -161,13 +159,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         return deleteDialogFragmentWeakReference.get();
     }
 
-    private ShareDialogFragment initShareDialog() {
-        if (shareDialogFragment == null) {
-            shareDialogFragment = ShareDialogFragment.newInstance();
-        }
-        return shareDialogFragment;
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -182,7 +173,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onDetach() {
         super.onDetach();
-        dismissShareDialog();
     }
 
     @Override
@@ -190,14 +180,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         fragmentComponent.inject(this);
     }
 
-    private void dismissShareDialog() {
-        if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
-            Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag("ShareDialogFragment");
-            if (fragment != null && fragment instanceof ShareDialogFragment) {
-                ((ShareDialogFragment) fragment).dismiss();
-            }
-        }
-    }
 
     private void initSomeViewMargin() {
 //        ViewUtils.setFitsSystemWindowsCompat(appbar);
@@ -408,20 +390,18 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private void onShareWonderfulContent(DPWonderItem bean) {
-//        ShareDialogFragment fragment = initShareDialog();
+//        ShareOptionMenuDialog fragment = initShareDialog();
 //        fragment.setPictureURL(new WonderGlideURL(bean));
 //        if (bean.msgType == DPWonderItem.TYPE_VIDEO) {
 //            fragment.setVideoURL(bean.fileName);
 //        }
-//        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
-        try {
+//        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
+        new WonderGlideURL(bean).fetchFile(filePath -> {
             Intent intent = new Intent(getActivity(), ShareActivity.class);
-            intent.putExtra(ShareContanst.SHARE_IMAGE_URL, new WonderGlideURL(bean).toURL().toString());
-            intent.putExtra(ShareContanst.SHARE_STYLE, ShareContanst.SHARE_CONTENT_PICTURE);
+            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, filePath);
+            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
             startActivity(intent);
-        } catch (Exception e) {
-            AppLogger.e(e.getMessage());
-        }
+        });
     }
 
     private void onDeleteWonderfulContent(DPWonderItem bean, int position) {
@@ -479,7 +459,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         initDeleteDialog();
         SimpleDialogFragment fragment = deleteDialogFragmentWeakReference.get();
         fragment.setValue(position);
-        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
     }
 
     @Override

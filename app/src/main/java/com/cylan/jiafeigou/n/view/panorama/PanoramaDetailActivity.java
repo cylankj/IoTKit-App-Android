@@ -27,9 +27,10 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareActivity;
-import com.cylan.jiafeigou.support.share.ShareContanst;
+import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -357,12 +358,16 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             AppLogger.d("点击了分享按钮");
             dismissDialogs();
             JFGPlayer.Stop(player);
-            Intent intent = new Intent(this, ShareActivity.class);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            intent.putExtra(ShareContanst.SHARE_ITEM, panoramaItem);
-            intent.putExtra(ShareContanst.FILE_PATH, downloadInfo.getTargetPath());
-            intent.putExtra(ShareContanst.SHARE_STYLE, ShareContanst.SHARE_CONTENT_H5_WITH_UPLOAD);
-            startActivity(intent);
+            new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
+                Intent intent = new Intent(this, ShareActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, panoramaItem);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, downloadInfo.getTargetPath());
+                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, filePath);
+                startActivity(intent);
+            });
+
         }
     }
 

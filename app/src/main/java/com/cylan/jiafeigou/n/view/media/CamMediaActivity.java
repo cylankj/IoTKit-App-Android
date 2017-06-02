@@ -38,8 +38,9 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
-import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.share.ShareActivity;
+import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -53,8 +54,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -248,9 +247,12 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                ShareDialogFragment fragment = initShareDialog();
-                fragment.setPictureURL(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
-                fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
+                new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg").fetch(file -> {
+                    Intent intent = new Intent(this, ShareActivity.class);
+                    intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
+                    intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
+                    startActivity(intent);
+                });
                 break;
             case R.id.imgV_big_pic_collect:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
@@ -274,15 +276,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     public void onBackPressed() {
         finishExt();
-    }
-
-    private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
-
-    private ShareDialogFragment initShareDialog() {
-        if (shareDialogFragmentWeakReference == null || shareDialogFragmentWeakReference.get() == null) {
-            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance(null));
-        }
-        return shareDialogFragmentWeakReference.get();
     }
 
     @Override

@@ -36,11 +36,12 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
 import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
-import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
+import com.cylan.jiafeigou.support.share.ShareActivity;
+import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -150,7 +151,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private View mPagerContentView;
     private boolean mEnterAnimationFinished = false;
     private WeakReference<VideoMoreDialog> mMoreDialog;
-    private WeakReference<ShareDialogFragment> mShareDialog;
     private File mDownloadFile;
     private int mCurrentPlayState = PLAY_STATE_RESET;
     private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
@@ -661,11 +661,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @OnClick({R.id.act_media_header_opt_share, R.id.act_media_picture_opt_share})
     public void share() {
         if (NetUtils.isNetworkAvailable(this)) {
-            if (mShareDialog == null || mShareDialog.get() == null) {
-                mShareDialog = new WeakReference<>(ShareDialogFragment.newInstance());
-            }
-            mShareDialog.get().setPictureURL(new WonderGlideURL(mCurrentMediaBean));
-            mShareDialog.get().show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
+            new WonderGlideURL(mCurrentMediaBean).fetchFile(file -> {
+                Intent intent = new Intent(this, ShareActivity.class);
+                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
+                startActivity(intent);
+            });
         } else {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         }

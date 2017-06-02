@@ -33,7 +33,7 @@
         android:descendantFocusability="blocksDescendants"
         android:focusable="true">
 
-        <ImageView
+        <com.cylan.jiafeigou.support.photoselect.CircleImageView
             android:id="@+id/sharedContentIcon"
             android:layout_width="@dimen/y43"
             android:layout_height="@dimen/y43"

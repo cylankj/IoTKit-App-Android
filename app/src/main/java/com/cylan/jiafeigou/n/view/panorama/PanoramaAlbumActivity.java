@@ -308,14 +308,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
                     .setMessage("视频正在下载中，是否删除?")
                     .setCancelable(false)
                     .setPositiveButton(R.string.DELETE, (dialog, which) -> {
-                        new AlertDialog.Builder(this)
-                                .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
-                                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog1, int which1) -> {
-                                    bottomMenuContainer.setVisibility(View.INVISIBLE);
-                                    presenter.deletePanoramaItem(items, albumViewMode);
-                                })
-                                .setNegativeButton(getString(R.string.CANCEL), null)
-                                .show();
+                        bottomMenuContainer.setVisibility(View.INVISIBLE);
+                        presenter.deletePanoramaItem(items, albumViewMode);
                     })
                     .setNegativeButton(R.string.CANCEL, null)
                     .show();

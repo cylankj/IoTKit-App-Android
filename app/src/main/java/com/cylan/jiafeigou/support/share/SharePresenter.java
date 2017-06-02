@@ -39,7 +39,7 @@ public class SharePresenter extends BasePresenter<ShareContact.View> implements 
 //        Observable.create((Observable.OnSubscribe<ShareAction>) subscriber -> {
 //            if (shareStyle == SHARE_CONTENT_PICTURE) {
 //                AppLogger.e("图片分享,直接分享");
-//                String imageUrl = bundle.getString(ShareContanst.SHARE_IMAGE_URL);
+//                String imageUrl = bundle.getString(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH);
 //                Glide.with(mView.getAppContext()).load(imageUrl)
 //                        .downloadOnly(new SimpleTarget<File>() {
 //                            @Override
