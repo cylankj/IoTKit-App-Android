@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.ads.AdsStrategy;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
@@ -31,6 +32,19 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     @Override
     public void start() {
         super.start();
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class).map(event -> true)
+                .first()
+                .observeOn(Schedulers.io())
+                .subscribe(event -> {
+                    try {
+                        BaseApplication.getAppComponent()
+                                .getCmd().enableLog(true, BaseApplication.getAppComponent().getLogPath());
+                        throw new RxEvent.HelperBreaker("reEnableLog");
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }, AppLogger::e);
+        addSubscription(subscribe);
     }
 
     public void autoLogin() {

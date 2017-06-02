@@ -30,6 +30,11 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.request.GetRequest;
+import com.lzy.okserver.download.DownloadInfo;
+import com.lzy.okserver.download.DownloadManager;
+import com.lzy.okserver.listener.DownloadListener;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -80,63 +85,72 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         Device device = basePresenter.getDevice();
         currentVersion = device.$(207, "");
         tvCurrentVersion.setText(currentVersion);
-        RxEvent.CheckVersionRsp description = null;
-        ClientUpdateManager.PackageDownloadTask packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
-        if (packageDownloadTask == null) {
+        DownloadManager manager = DownloadManager.getInstance();
+        DownloadInfo info = manager.getDownloadInfo(getUuid());
+        if (info == null) {
+
         } else {
-            //下载中
-            packageDownloadTask.setDownloadListener(new FirmwareUpdateActivity.Download(this));
-            description = packageDownloadTask.getCheckDevVersionRsp();
+            GetRequest request = OkGo.get("");
+            manager.addTask(getUuid(), request, new DListener(this));
         }
-        try {
-            //没下载,下载失败,或者下载成功.
-            if (description == null) {
-                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                if (!TextUtils.isEmpty(content)) {
-                    description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
-                    if (TextUtils.equals(description.version, currentVersion)) {
-                        description = null;
-                        PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-                        //已经是最新的了.
-                        basePresenter.cleanFile();
-                    }
-                }
-            }
-            newVersion = description.version;
-            tvHardwareNewVersion.setText(newVersion);
-            hardwareUpdatePoint.setVisibility(description.hasNew ? View.VISIBLE : View.INVISIBLE);
-            tvVersionDescribe.setText(description.tip);
-            if (validateFile(description)) {
-                //下载成功
-                tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-            } else if (description.downloadState == JConstant.D.DOWNLOADING && System.currentTimeMillis() - description.lastUpdateTime < 3 * 1000) {
-                //下载中
-                tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, "0/" + MiscUtils.FormatSdCardSize(description.fileSize)));
-                ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
-            } else if (description.downloadState == JConstant.D.FAILED) {
-                tvDownloadSoftFile.setText(getString(R.string.Tap1_Album_DownloadFailed));
-            } else {
-                //异常.下载中App挂了.
-                //失败
-                tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(description.fileSize)));
-            }
-        } catch (Exception e) {
-            AppLogger.e("err :" + MiscUtils.getErr(e));
-            tvCurrentVersion.setText(currentVersion);
-            tvHardwareNewVersion.setText(currentVersion);
-            hardwareUpdatePoint.setVisibility(View.INVISIBLE);
-            tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-            basePresenter.cleanFile();
-        }
-        packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
-        if (packageDownloadTask != null && packageDownloadTask.getCheckDevVersionRsp().downloadState == JConstant.U.UPDATING)
-            return;
-        ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
-        if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {
-            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
-        } else {
-            ClientUpdateManager.getInstance().removeTask(getUuid());
-        }
+//        RxEvent.CheckVersionRsp description = null;
+//        ClientUpdateManager.PackageDownloadTask packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+//        if (packageDownloadTask == null) {
+//        } else {
+//            //下载中
+//            packageDownloadTask.setDownloadListener(new FirmwareUpdateActivity.Download(this));
+//            description = packageDownloadTask.getCheckDevVersionRsp();
+//        }
+//        try {
+//            //没下载,下载失败,或者下载成功.
+//            if (description == null) {
+//                String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+//                if (!TextUtils.isEmpty(content)) {
+//
+//                    description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
+//                    if (TextUtils.equals(description.version, currentVersion)) {
+//                        description = null;
+//                        PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+//                        //已经是最新的了.
+//                        basePresenter.cleanFile();
+//                    }
+//                }
+//            }
+//            newVersion = description.version;
+//            tvHardwareNewVersion.setText(newVersion);
+//            hardwareUpdatePoint.setVisibility(description.hasNew ? View.VISIBLE : View.INVISIBLE);
+//            tvVersionDescribe.setText(description.tip);
+//            if (validateFile(description)) {
+//                //下载成功
+//                tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+//            } else if (description.downloadState == JConstant.D.DOWNLOADING && System.currentTimeMillis() - description.lastUpdateTime < 3 * 1000) {
+//                //下载中
+//                tvDownloadSoftFile.setText(getString(R.string.Tap1_FirmwareDownloading, "0/" + MiscUtils.FormatSdCardSize(description.fileSize)));
+//                ClientUpdateManager.getInstance().downLoadFile(description, new Download(this));
+//            } else if (description.downloadState == JConstant.D.FAILED) {
+//                tvDownloadSoftFile.setText(getString(R.string.Tap1_Album_DownloadFailed));
+//            } else {
+//                //异常.下载中App挂了.
+//                //失败
+//                tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(description.fileSize)));
+//            }
+//        } catch (Exception e) {
+//            AppLogger.e("err :" + MiscUtils.getErr(e));
+//            tvCurrentVersion.setText(currentVersion);
+//            tvHardwareNewVersion.setText(currentVersion);
+//            hardwareUpdatePoint.setVisibility(View.INVISIBLE);
+//            tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+//            basePresenter.cleanFile();
+//        }
+//        packageDownloadTask = ClientUpdateManager.getInstance().getUpdateAction(getUuid());
+//        if (packageDownloadTask != null && packageDownloadTask.getCheckDevVersionRsp().downloadState == JConstant.U.UPDATING)
+//            return;
+//        ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+//        if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {
+//            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
+//        } else {
+//            ClientUpdateManager.getInstance().removeTask(getUuid());
+//        }
     }
 
     private boolean validateFile(RxEvent.CheckVersionRsp description) {
@@ -403,5 +417,28 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             listenerRef.get().upgradeSuccess();
         }
 
+    }
+
+    private static final class DListener extends DownloadListener {
+        private WeakReference<FirmwareUpdateActivity> activityWeakReference;
+
+        public DListener(FirmwareUpdateActivity activity) {
+            this.activityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onProgress(DownloadInfo downloadInfo) {
+            if (activityWeakReference.get() == null) return;
+        }
+
+        @Override
+        public void onFinish(DownloadInfo downloadInfo) {
+            if (activityWeakReference.get() == null) return;
+        }
+
+        @Override
+        public void onError(DownloadInfo downloadInfo, String s, Exception e) {
+            if (activityWeakReference.get() == null) return;
+        }
     }
 }

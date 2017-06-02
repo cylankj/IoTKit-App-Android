@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
  * Created by hds on 17-5-28.
  */
 
-public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.AVersion> {
+public class DeviceVersionChecker extends AbstractVersion<IVersion.BaseVersion> {
 
 
     @Override
@@ -45,7 +45,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.AVersi
     }
 
     @Override
-    public Observable<AbstractVersion.AVersion> startCheck() {
+    public Observable<IVersion.BaseVersion> startCheck() {
         final String uuid = portrait.getCid();
         Observable.just("go")
                 .subscribeOn(Schedulers.newThread())

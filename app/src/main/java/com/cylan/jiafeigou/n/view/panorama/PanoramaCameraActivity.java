@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.view.bell.LBatteryWarnDialog;
+import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.BitmapUtils;
@@ -880,6 +882,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 break;
         }
         bottomPanelPhotoGraphItem.setEnabled(true);
+    }
+
+    @Override
+    public void onNewFirmwareRsp() {
+        if (isFinishing()) return;
+        AlertDialogManager.getInstance().showDialog(this,
+                getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    Intent intent = new Intent(this, FirmwareUpdateActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    startActivity(intent);
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override

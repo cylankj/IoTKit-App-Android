@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.danikula.videocache.HttpProxyCacheServer;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -59,4 +60,6 @@ public interface AppComponent {
 
     IProperty getProductProperty();
 
+    @Named("LogPath")
+    String getLogPath();
 }

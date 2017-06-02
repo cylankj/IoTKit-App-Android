@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -116,24 +119,19 @@ public class FirmwareCheckerService extends Service {
             }
             //不需要升级的
             if (!JFGRules.showFirmware(device.pid)) {
-                tryStopSelf();
-                return;
+                AppLogger.e("记得改回来");
+//                tryStopSelf();
+//                return;
             }
-//            DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
-//            //设备离线就不要检查了
-//            if (!JFGRules.isDeviceOnline(dpNet)) {
-//                tryStopSelf();
-//                return;
-//            }
-//            String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-//            String remoteSSid = dpNet.ssid;
-//            //原型上说,局域网才弹框.
-//            //客户端和设备相同的网络才去检查.因为检查是很快的.
-//            if (!TextUtils.equals(localSSid, remoteSSid)) {
-//                tryStopSelf();
-//                return;
-//            }
-            handleCheckFlow(uuid, device.$(207, ""), device.pid);
+            AbstractVersion<PanDeviceVersionChecker.PanVersion> version = new PanDeviceVersionChecker();
+            version.setPortrait(new AbstractVersion.Portrait().setCid(device.uuid).setPid(device.pid));
+            if (JFGRules.isPan720(device.pid)) {
+                version.startCheck().subscribe(ret -> {
+                    Log.d("PanDeviceVersionChecker", "PanDeviceVersionChecker result:" + ret);
+                }, AppLogger::e);
+            } else {
+                handleCheckFlow(uuid, device.$(207, ""), device.pid);
+            }
         }
     }
 

@@ -4,29 +4,31 @@ package com.cylan.jiafeigou.misc.ver;
  * Created by hds on 17-5-28.
  */
 
-public abstract class AbstractVersion<T extends AbstractVersion.AVersion> implements IVersion<T> {
+public abstract class AbstractVersion<T extends IVersion.BaseVersion> implements IVersion<T> {
 
     protected Portrait portrait;
+
+//    private T defaultVersion = ;
+
+
 
     public void setPortrait(Portrait portrait) {
         this.portrait = portrait;
     }
 
-    public class AVersion extends BaseVersion {
-        private int pid;
-        private String cid;
-    }
 
     public static final class Portrait {
         private String cid;
         private int pid;
 
-        public void setCid(String cid) {
+        public Portrait setCid(String cid) {
             this.cid = cid;
+            return this;
         }
 
-        public void setPid(int pid) {
+        public Portrait setPid(int pid) {
             this.pid = pid;
+            return this;
         }
 
         public String getCid() {

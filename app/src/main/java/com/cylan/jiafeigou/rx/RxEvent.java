@@ -20,6 +20,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.misc.ver.IVersion;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.lang.annotation.Retention;
@@ -1155,6 +1156,25 @@ public class RxEvent {
 
         public FirmwareUpdateRsp(String uuid) {
             this.uuid = uuid;
+        }
+    }
+
+    public static final class VersionRsp<T extends IVersion.BaseVersion> {
+        public String uuid;
+        public T version;
+
+        public VersionRsp<T> setUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        public VersionRsp<T> setVersion(T version) {
+            this.version = version;
+            return this;
+        }
+
+        public T getVersion() {
+            return version;
         }
     }
 

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
@@ -8,10 +10,14 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -56,6 +62,34 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         super.onRegisterSubscription();
         registerSubscription(getNetWorkChangedSub());
         registerSubscription(getFetchDeviceInformationSub());
+        registerSubscription(newVersionRspSub());
+    }
+
+    private Subscription newVersionRspSub() {
+        Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> {
+                    if (!TextUtils.equals(ret.uuid, uuid)) return false;
+                    if (ret.getVersion() instanceof PanDeviceVersionChecker.PanVersion) {
+                        return ((PanDeviceVersionChecker.PanVersion) ret.getVersion()).showVersion();
+                    }
+                    return false;
+                })
+                .subscribe(ret -> {
+                    PanDeviceVersionChecker.PanVersion version = (PanDeviceVersionChecker.PanVersion) ret.getVersion();
+                    version.setLastShowTime(System.currentTimeMillis());
+                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
+                    mView.onNewFirmwareRsp();
+                    //必须手动断开,因为rxBus订阅不会断开
+                    throw new RxEvent.HelperBreaker(ret);
+                }, AppLogger::e);
+        AbstractVersion<PanDeviceVersionChecker.PanVersion> version = new PanDeviceVersionChecker();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
+        version.startCheck().subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                }, AppLogger::e);
+        return subscription;
     }
 
     private Subscription getFetchDeviceInformationSub() {

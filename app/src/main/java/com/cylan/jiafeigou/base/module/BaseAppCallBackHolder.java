@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 import android.util.Log;
 
+import com.cylan.entity.jniCall.DevUpgradleInfo;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -26,6 +27,7 @@ import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -290,16 +292,6 @@ public class BaseAppCallBackHolder implements AppCallBack {
         BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
     }
 
-    @Override
-    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3, String s4) {
-        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + s + ":" + s1 + ":" + s2 + ":" + s3);
-//        b = true;
-//        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
-//        s1 = "3.0.0";
-//        s2 = "你好";
-//        s3 = "xx";
-        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setUuid(s4).setSeq(0));
-    }
 
     @Override
     public void OnNotifyStorageType(int i) {
@@ -367,5 +359,48 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        picUrl = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
         RxBus.getCacheInstance().postSticky(new RxEvent.AdsRsp().setPicUrl(picUrl).setTagUrl(tagUrl)
                 .setRet(i).setTime(l));
+    }
+
+    @Override
+    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3, String s4) {
+        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + s + ":" + s1 + ":" + s2 + ":" + s3);
+//        b = true;
+//        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
+//        s1 = "3.0.0";
+//        s2 = "你好";
+//        s3 = "xx";
+        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setUuid(s4).setSeq(0));
+    }
+
+
+    @Override
+    public void OnCheckTagDeviceVersionRsp(int ret, String cid,
+                                           String tagVersion,
+                                           String content,
+                                           ArrayList<DevUpgradleInfo> arrayList) {
+        AppLogger.d("OnCheckTagDeviceVersionRsp:" + ret + ":" + cid + ",:" + tagVersion + "," + new Gson().toJson(arrayList));
+        arrayList = testList();
+        cid = "290000000065";
+        tagVersion = "1.0.0.009";
+        content = "test";
+        PanDeviceVersionChecker.PanVersion version = new PanDeviceVersionChecker.PanVersion();
+        version.setCid(cid);
+        version.setContent(content);
+        version.setList(arrayList);
+        version.setTagVersion(tagVersion);
+        RxBus.getCacheInstance().post(version);
+    }
+
+    private ArrayList<DevUpgradleInfo> testList() {
+        ArrayList<DevUpgradleInfo> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            DevUpgradleInfo info = new DevUpgradleInfo();
+            info.md5 = "";
+            info.tag = i;
+            info.url = "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI";
+            info.version = "1.0.0.009";
+            list.add(info);
+        }
+        return list;
     }
 }
