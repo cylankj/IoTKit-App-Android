@@ -123,7 +123,7 @@ public class FirmwareCheckerService extends Service {
 //                tryStopSelf();
 //                return;
             }
-            AbstractVersion<PanDeviceVersionChecker.PanVersion> version = new PanDeviceVersionChecker();
+            AbstractVersion<PanDeviceVersionChecker.BinVersion> version = new PanDeviceVersionChecker();
             version.setPortrait(new AbstractVersion.Portrait().setCid(device.uuid).setPid(device.pid));
             if (JFGRules.isPan720(device.pid)) {
                 version.startCheck().subscribe(ret -> {

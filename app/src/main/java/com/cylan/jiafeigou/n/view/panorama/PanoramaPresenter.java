@@ -66,24 +66,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private Subscription newVersionRspSub() {
-        Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
+        Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
                 .subscribeOn(Schedulers.newThread())
                 .filter(ret -> {
-                    if (!TextUtils.equals(ret.uuid, uuid)) return false;
-                    if (ret.getVersion() instanceof PanDeviceVersionChecker.PanVersion) {
-                        return ((PanDeviceVersionChecker.PanVersion) ret.getVersion()).showVersion();
-                    }
-                    return false;
+                    if (!TextUtils.equals(ret.getCid(), uuid)) return false;
+                    return ret.showVersion();
                 })
-                .subscribe(ret -> {
-                    PanDeviceVersionChecker.PanVersion version = (PanDeviceVersionChecker.PanVersion) ret.getVersion();
+                .subscribe(version -> {
                     version.setLastShowTime(System.currentTimeMillis());
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
                     mView.onNewFirmwareRsp();
                     //必须手动断开,因为rxBus订阅不会断开
-                    throw new RxEvent.HelperBreaker(ret);
+                    throw new RxEvent.HelperBreaker(version);
                 }, AppLogger::e);
-        AbstractVersion<PanDeviceVersionChecker.PanVersion> version = new PanDeviceVersionChecker();
+        AbstractVersion<PanDeviceVersionChecker.BinVersion> version = new PanDeviceVersionChecker();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
         version.startCheck().subscribeOn(Schedulers.newThread())

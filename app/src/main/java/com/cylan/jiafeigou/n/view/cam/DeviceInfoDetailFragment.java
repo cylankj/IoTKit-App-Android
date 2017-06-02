@@ -376,7 +376,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
             RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
             rlHardwareUpdate.setTvSubTitle(description.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
-            rlHardwareUpdate.showRedHint(description.hasNew);
+            rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
         }
     }

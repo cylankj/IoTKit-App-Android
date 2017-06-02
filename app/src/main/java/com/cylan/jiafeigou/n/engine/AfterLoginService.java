@@ -277,8 +277,8 @@ public class AfterLoginService extends IntentService {
             final RxEvent.CheckVersionRsp rsp = new RxEvent.CheckVersionRsp(true,
                     url, versionName, desc, "");
             rsp.forceUpdate = clientCheckVersion.forceUpgrade;
-            rsp.fileDir = JConstant.ROOT_DIR;
-            rsp.fileSize = getFileSizeFromUrl(url);
+            rsp.fileDir = JConstant.UPDATE_FILE_PATH;
+            rsp.fileSize = MiscUtils.getFileSizeFromUrl(url);
             rsp.fileName = versionName + ".apk";
             rsp.preKey = JConstant.KEY_CLIENT_UPDATE_DESC;
             //2.文件大小
@@ -320,15 +320,5 @@ public class AfterLoginService extends IntentService {
 
     }
 
-    private long getFileSizeFromUrl(String url) {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        try {
-            Response response = new OkHttpClient().newCall(request).execute();
-            return response.body().contentLength();
-        } catch (IOException e) {
-            return 0;
-        }
-    }
+
 }

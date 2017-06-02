@@ -57,6 +57,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
@@ -90,7 +91,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.act_panorama_camera_banner)
     ViewSwitcher bannerSwitcher;
     @BindView(R.id.imgv_toolbar_right)
-    ImageButton setting;
+    ImageViewTip setting;
     @BindView(act_panorama_camera_banner_information_connection_icon)
     ImageView bannerConnectionIcon;
     @BindView(R.id.act_panorama_camera_banner_information_connection_text)
@@ -355,7 +356,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
-
+        setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         int netType = NetUtils.getNetType(this);
         if (netType == ConnectivityManager.TYPE_MOBILE && !allowMobile) {
             onNetWorkChangedToMobile();

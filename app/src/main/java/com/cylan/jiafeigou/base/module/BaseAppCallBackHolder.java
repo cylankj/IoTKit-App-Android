@@ -383,12 +383,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
         cid = "290000000065";
         tagVersion = "1.0.0.009";
         content = "test";
-        PanDeviceVersionChecker.PanVersion version = new PanDeviceVersionChecker.PanVersion();
+        PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
         version.setCid(cid);
         version.setContent(content);
         version.setList(arrayList);
         version.setTagVersion(tagVersion);
-        RxBus.getCacheInstance().post(version);
+        RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
     }
 
     private ArrayList<DevUpgradleInfo> testList() {
@@ -397,10 +397,18 @@ public class BaseAppCallBackHolder implements AppCallBack {
             DevUpgradleInfo info = new DevUpgradleInfo();
             info.md5 = "";
             info.tag = i;
-            info.url = "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI";
+            info.url = tmp[i];
             info.version = "1.0.0.009";
             list.add(info);
         }
         return list;
     }
+
+    private static final String[] tmp = new String[]{
+            "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI",
+            "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/ChangeLog.txt",
+            "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/com.cylan.jiafeigou-test1.jfgou.com_443-release-v3.2.0.286-20170602.apk",
+            "http://tse4.mm.bing.net/th?id=OIP.QxZxJAfP-lq-OxYjS3bFLAFNC7&pid=15.1",
+            "http://a2.att.hudong.com/18/04/14300000931600128341040320614.jpg"
+    };
 }
