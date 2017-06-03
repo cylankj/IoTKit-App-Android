@@ -70,6 +70,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         initToolbar();
         initAdapter();
+        JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
     @Override

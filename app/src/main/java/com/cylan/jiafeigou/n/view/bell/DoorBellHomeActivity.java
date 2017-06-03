@@ -110,6 +110,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirmwareCheckerService.checkVersion(uuid);
+        JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
     @Override

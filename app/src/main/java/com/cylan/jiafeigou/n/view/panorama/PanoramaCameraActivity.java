@@ -165,6 +165,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
     @Override
@@ -892,6 +893,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     Intent intent = new Intent(this, FirmwareUpdateActivity.class);
+                    intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                     startActivity(intent);
                 }, getString(R.string.CANCEL), null, false);

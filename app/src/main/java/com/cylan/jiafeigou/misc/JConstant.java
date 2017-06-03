@@ -378,4 +378,6 @@ public class JConstant {
         public static int UPDATING = 1;
         public static int SUCCESS = 2;
     }
+
+    public static String KEY_CURRENT_PLAY_VIEW = "";
 }
