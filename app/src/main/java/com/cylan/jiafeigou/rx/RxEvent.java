@@ -1312,17 +1312,17 @@ public class RxEvent {
 
     public static class ApkDownload {
         public String filePath;
+        public int forceUpdate;
         public
         @UpdateType
         int updateType;//google play或者 直接安装
-        public RxEvent.CheckVersionRsp rsp;
 
         public ApkDownload(String filePath) {
             this.filePath = filePath;
         }
 
-        public ApkDownload setRsp(RxEvent.CheckVersionRsp rsp) {
-            this.rsp = rsp;
+        public ApkDownload setForceUpdate(int forceUpdate) {
+            this.forceUpdate = forceUpdate;
             return this;
         }
 

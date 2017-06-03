@@ -205,24 +205,6 @@ public class ClientUpdateManager {
     private Map<String, PackageDownloadTask> downloadMap = new HashMap<>();
     private HashMap<String, FirmWareUpdatingTask> updatingTaskHashMap = new HashMap<>();
 
-    /**
-     * 下载文件
-     */
-    public void downLoadFile(RxEvent.CheckVersionRsp rsp, DownloadListener listener) {
-        if (rsp == null) return;
-        String key = getKey(rsp);
-        PackageDownloadTask downloadTask = downloadMap.get(key);
-        if (downloadTask != null && downloadTask.getDownloadState() == JConstant.D.DOWNLOADING) {
-            downloadTask.setDownloadListener(listener);
-        } else downloadMap.remove(key);
-        downloadTask = new PackageDownloadTask(rsp);
-        downloadTask.setDownloadListener(listener);
-        downloadMap.put(key, downloadTask);
-        Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(downloadTask, AppLogger::e);
-    }
-
     private String getKey(RxEvent.CheckVersionRsp rsp) {
         return TextUtils.isEmpty(rsp.uuid) ? rsp.url : rsp.uuid;
     }
