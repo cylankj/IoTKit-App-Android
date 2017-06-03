@@ -41,7 +41,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
 
     @Override
     public void startCheck() {
-        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 2 * 10 * 1000) {
+        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60 * 1000) {
             lastCheckTime = System.currentTimeMillis();
         } else return;
         final String uuid = portrait.getCid();

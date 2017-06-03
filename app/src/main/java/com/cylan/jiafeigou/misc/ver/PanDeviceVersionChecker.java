@@ -41,7 +41,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
 
     @Override
     public void startCheck() {
-        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 2 * 10 * 1000) {
+        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60* 1000) {
             lastCheckTime = System.currentTimeMillis();
         } else return;
         if (!checkCondition()) return;

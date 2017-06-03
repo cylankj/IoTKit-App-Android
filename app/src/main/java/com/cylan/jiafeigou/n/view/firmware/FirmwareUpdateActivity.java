@@ -145,6 +145,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             newVersion = currentVersion;
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
             hardwareUpdatePoint.setVisibility(View.INVISIBLE);
+            tvCurrentVersion.setText(currentVersion);
+            tvNewVersionName.setText(newVersion);
             return false;
         } else {
             newVersion = binVersion.getTagVersion();
@@ -282,7 +284,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
 
-    private boolean checkNet() {
+    private boolean checkEnv() {
         Device device = basePresenter.getDevice();
         //相同版本
         if (TextUtils.equals(tvCurrentVersion.getText(), tvNewVersionName.getText())) {
@@ -329,7 +331,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         if (TextUtils.equals(txt, getString(R.string.Tap1_Update))) {
             //升级
             //1.网络环境{是否同一局域网}
-            if (!checkNet()) return;
+            if (!checkEnv()) return;
             //2.电量
             int battery = basePresenter.getDevice().$(206, 0);
             if (battery <= 30) {
