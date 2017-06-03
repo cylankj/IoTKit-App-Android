@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -36,7 +35,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -372,10 +370,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         String s = device.$(207, "");
         rlHardwareUpdate.setTvSubTitle(s);
         try {
-            if (JFGRules.isPanoramicCam(getDevice().pid)) return;//全景不显示
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
-            rlHardwareUpdate.setTvSubTitle(description.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
+            rlHardwareUpdate.setTvSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
             rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
         }

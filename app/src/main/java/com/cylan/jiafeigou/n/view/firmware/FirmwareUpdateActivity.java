@@ -207,19 +207,56 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         return downloading;
     }
 
+    /**
+     * 下载结束,检查
+     *
+     * @param binVersion
+     * @return
+     */
     private boolean validateFile(AbstractVersion.BinVersion binVersion) {
+        final int count = ListUtils.getSize(binVersion.getList());
+        for (int i = 0; i < count; i++) {
+            final String key = binVersion.getList().get(i).url;
+            DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(key);
+            if (info != null) {
+                File file = new File(info.getTargetPath());
+                if (file.length() != binVersion.getList().get(i).fileSize) {
+                    //下载错误了.
+                    FileUtils.deleteFile(file.getAbsolutePath());
+                    DownloadManager.getInstance().removeTask(key);
+                    return false;
+                }
+            } else return false;
+        }
+        return true;
+    }
+
+    /**
+     * 升级前的检查,文件的
+     *
+     * @return
+     */
+    private boolean preUpdateCheck() {
         final int count = ListUtils.getSize(binVersion.getList());
         for (int i = 0; i < count; i++) {
             final String key = binVersion.getList().get(i).url;
             DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(key);
             if (info == null) {
                 return false;
-            } else if (!new File(info.getTargetPath()).exists()) {
-                DownloadManager.getInstance().removeTask(key);
-                return false;
+            } else {
+                File file = new File(info.getTargetPath());
+                if (!file.exists()) {
+                    DownloadManager.getInstance().removeTask(key);
+                    return false;
+                } else {
+                    if (file.length() != binVersion.getList().get(i).fileSize) {
+                        //下载错误了.
+
+                    }
+                }
             }
         }
-        return true;
+        return false;
     }
 
     private void dealUpdate() {

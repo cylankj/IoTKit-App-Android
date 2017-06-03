@@ -20,8 +20,14 @@ public interface IVersion<T extends IVersion.BaseVersion> {
     /**
      * 开始检测
      */
-    Observable<T> startCheck();
+    void startCheck();
 
+
+    void finalShow();
+
+    interface ShowCondition {
+        boolean show();
+    }
 
     class BaseVersion {
         private String desc;

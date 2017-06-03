@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 import android.util.Log;
 
-import com.cylan.entity.jniCall.DevUpgradleInfo;
+import com.cylan.entity.jniCall.DevUpgradeInfo;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -361,15 +361,33 @@ public class BaseAppCallBackHolder implements AppCallBack {
                 .setRet(i).setTime(l));
     }
 
+    //final boolean hasNew, final String url, final String version,
+    // final String tip, final String md5, final String cid
     @Override
-    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3, String s4) {
-        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + s + ":" + s1 + ":" + s2 + ":" + s3);
+    public void OnCheckDevVersionRsp(boolean b, String url, String tagVersion,
+                                     String tip, String md5, String cid) {
+        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + url + ":" + tagVersion
+                + ":" + tip + ":" + md5 + "," + cid);
 //        b = true;
 //        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
 //        s1 = "3.0.0";
 //        s2 = "你好";
 //        s3 = "xx";
-        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setUuid(s4).setSeq(0));
+        ArrayList<DevUpgradeInfo> arrayList = new ArrayList<>();
+        DevUpgradeInfo info = new DevUpgradeInfo();
+        info.md5 = "";
+        info.tag = 0;
+        info.url = tmp[2];
+        info.version = "1.0.0.009";
+        arrayList.add(info);
+        tagVersion = "1.0.0.009";
+        tip = "test";
+        PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
+        version.setCid(cid);
+        version.setContent(tip);
+        version.setList(arrayList);
+        version.setTagVersion(tagVersion);
+        RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
     }
 
 
@@ -377,7 +395,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnCheckTagDeviceVersionRsp(int ret, String cid,
                                            String tagVersion,
                                            String content,
-                                           ArrayList<DevUpgradleInfo> arrayList) {
+                                           ArrayList<DevUpgradeInfo> arrayList) {
         AppLogger.d("OnCheckTagDeviceVersionRsp:" + ret + ":" + cid + ",:" + tagVersion + "," + new Gson().toJson(arrayList));
         arrayList = testList();
         cid = "290000000065";
@@ -391,10 +409,10 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
     }
 
-    private ArrayList<DevUpgradleInfo> testList() {
-        ArrayList<DevUpgradleInfo> list = new ArrayList<>();
+    private ArrayList<DevUpgradeInfo> testList() {
+        ArrayList<DevUpgradeInfo> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            DevUpgradleInfo info = new DevUpgradleInfo();
+            DevUpgradeInfo info = new DevUpgradeInfo();
             info.md5 = "";
             info.tag = i;
             info.url = tmp[i];
@@ -407,7 +425,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     private static final String[] tmp = new String[]{
             "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI",
             "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/ChangeLog.txt",
-            "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/com.cylan.jiafeigou-test1.jfgou.com_443-release-v3.2.0.286-20170602.apk",
+            "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin",
             "http://tse4.mm.bing.net/th?id=OIP.QxZxJAfP-lq-OxYjS3bFLAFNC7&pid=15.1",
             "http://a2.att.hudong.com/18/04/14300000931600128341040320614.jpg"
     };

@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -89,7 +88,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public void start() {
         super.start();
         getView().deviceUpdate(device);
-        FirmwareCheckerService.checkVersion(uuid);
+        AppLogger.d("检查升级包");
     }
 
     /**

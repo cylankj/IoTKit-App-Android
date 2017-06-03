@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.misc.ver;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.DevUpgradeInfo;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -9,27 +10,21 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by hds on 17-5-28.
  */
 
-public class DeviceVersionChecker extends AbstractVersion<IVersion.BaseVersion> {
+public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVersion> {
 
 
     @Override
@@ -45,10 +40,12 @@ public class DeviceVersionChecker extends AbstractVersion<IVersion.BaseVersion> 
     }
 
     @Override
-    public Observable<IVersion.BaseVersion> startCheck() {
+    public void startCheck() {
+        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 2 * 10 * 1000) {
+            lastCheckTime = System.currentTimeMillis();
+        } else return;
         final String uuid = portrait.getCid();
-        Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
+        Observable.just("go").subscribeOn(Schedulers.newThread())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
@@ -56,49 +53,45 @@ public class DeviceVersionChecker extends AbstractVersion<IVersion.BaseVersion> 
                     final String currentVersion = device.$(207, "");
                     AppLogger.d("current version: " + currentVersion);
                     try {
-                        seq = BaseApplication.getAppComponent().getCmd().checkDevVersion(portrait.getPid(), portrait.getCid(),
-                                currentVersion);
+                        seq = BaseApplication.getAppComponent().getCmd()
+                                .checkDevVersion(device.pid, device.getUuid(), currentVersion);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         seq = -1L;
                     }
                     return Observable.just(seq);
                 })
-                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.CheckVersionRsp.class)
+                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
                         .subscribeOn(Schedulers.newThread())
-                        .filter(ret -> ret != null && TextUtils.equals(uuid, ret.uuid))
-                        .filter(ret -> {
-                            if (!ret.hasNew) {
-                                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + uuid);
-                            }
-                            return ret.hasNew;
-                        }))
-                .map(ret -> {
-                    try {
-                        Request request = new Request.Builder()
-                                .url(ret.url)
-                                .build();
-                        Response response = new OkHttpClient().newCall(request).execute();
-                        ret.fileSize = response.body().contentLength();
-                        ret.fileDir = JConstant.ROOT_DIR;
-                        ret.hasNew = true;
-                        ret.fileName = "." + uuid + MiscUtils.getFileNameWithoutExn(ret.url);
-                        ret.uuid = uuid;
-                        ret.preKey = JConstant.KEY_FIRMWARE_CONTENT + uuid;
-                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(ret));
-                        RxBus.getCacheInstance().post(new RxEvent.FirmwareUpdateRsp(uuid));
-                        AppLogger.d("检查到有新固件:" + uuid);
-                        return ret;
-                    } catch (IOException e) {
-                        return null;
-                    }
+                        .filter(ret -> ret != null && TextUtils.equals(uuid, ret.getUuid())))
+                .flatMap(ret -> {
+                    BinVersion oldVersion = getVersionFrom(uuid);
+                    long time = oldVersion.getLastShowTime();
+                    oldVersion = ret.getVersion();
+                    oldVersion.setLastShowTime(time);
+                    oldVersion.setTotalSize(totalSize(oldVersion));
+                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
+                    setBinVersion(oldVersion);
+                    finalShow();
+                    return Observable.just(ret.getVersion());
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                }, throwable -> {
-                    if (throwable instanceof TimeoutException) {
-                    }
-                });
-        return null;
+                }, AppLogger::e);
+    }
+
+    @Override
+    public void finalShow() {
+        if (showCondition == null || showCondition.show()) {
+            //弹框的时间,从弹出算起
+            long time = binVersion.getLastShowTime();
+            ArrayList<DevUpgradeInfo> list = binVersion.getList();
+            final String tagVersion = binVersion.getTagVersion();
+            boolean shouldShow = list != null && list.size() > 0 && !TextUtils.isEmpty(tagVersion)
+                    && (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000);
+            if (shouldShow) {
+                RxBus.getCacheInstance().post(binVersion);
+                AppLogger.d("检查到有新固件:" + binVersion);
+            }
+        }
     }
 }

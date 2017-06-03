@@ -1,9 +1,6 @@
 package com.cylan.jiafeigou.misc.ver;
 
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.utils.NetUtils;
-
-import rx.Observable;
 
 /**
  * Created by hds on 17-5-28.
@@ -21,8 +18,11 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
     }
 
     @Override
-    public Observable<CVersion> startCheck() {
-        return null;
+    public void startCheck() {
+    }
+
+    @Override
+    public void finalShow() {
     }
 
     public static final class CVersion extends IVersion.BaseVersion {
