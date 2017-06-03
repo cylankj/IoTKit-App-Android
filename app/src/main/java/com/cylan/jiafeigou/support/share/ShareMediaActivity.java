@@ -39,7 +39,7 @@ import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_PLATFORM_TYP
  * Created by yanzhendong on 2017/6/1.
  */
 
-public class ShareActivity extends BaseActivity<ShareContact.Presenter> implements ShareContact.View, ShareOptionMenuDialog.ShareOptionClickListener {
+public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter> implements ShareMediaContact.View, ShareOptionMenuDialog.ShareOptionClickListener {
     private int shareStyle = SHARE_CONTENT_PICTURE;
     private ShareOptionMenuDialog shareOptionMenuDialog;
 
@@ -159,8 +159,8 @@ public class ShareActivity extends BaseActivity<ShareContact.Presenter> implemen
                 String imagePath = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH);
                 AppLogger.e("图片分享,直接分享");
                 SHARE_MEDIA platform = getPlatform(shareItemType);
-                UMImage image = new UMImage(ShareActivity.this, new File(imagePath));
-                shareAction = new ShareAction(ShareActivity.this);
+                UMImage image = new UMImage(ShareMediaActivity.this, new File(imagePath));
+                shareAction = new ShareAction(ShareMediaActivity.this);
                 shareAction.setPlatform(platform);
                 shareAction.withMedia(image);
                 shareAction.withExtra(image);
@@ -173,7 +173,11 @@ public class ShareActivity extends BaseActivity<ShareContact.Presenter> implemen
                     LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, cancelListener);
                 }
                 String shareLinkUrl = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL);
+                String shareThumb = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH);
                 UMWeb web = new UMWeb(shareLinkUrl);
+                web.setThumb(new UMImage(this, new File(shareThumb)));
+                web.setTitle("来自加菲狗的分享");
+                web.setDescription("来自加菲狗的网页分享");
                 shareAction = new ShareAction(this);
                 shareAction.setPlatform(getPlatform(shareItemType));
                 shareAction.withMedia(web);

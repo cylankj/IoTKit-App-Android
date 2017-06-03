@@ -9,9 +9,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
@@ -86,14 +88,15 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         shareContentBinding.tvMsgDelete.setOnClickListener(this::deleteSelection);
     }
 
-    private void deleteSelection(View view) {
 
+    private void deleteSelection(View view) {
+        unShareWithAlert(adapter.getFastAdapter().getSelectedItems(), adapter.getFastAdapter().getSelections());
     }
 
     public class ShareContentItemHook extends ClickEventHook<ShareContentItem> {
         @Override
         public void onClick(View v, int position, FastAdapter<ShareContentItem> fastAdapter, ShareContentItem item) {
-            unShareWithAlert(item, position);
+            unShareWithAlert(Collections.singletonList(item), Collections.singleton(position));
         }
 
         @Nullable
@@ -105,13 +108,13 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         }
     }
 
-    private void unShareWithAlert(ShareContentItem item, int position) {
+    private void unShareWithAlert(Iterable<ShareContentItem> items, Iterable<Integer> selection) {
         new AlertDialog.Builder(getContext())
                 .setMessage("是否取消分享?")
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     dialog.dismiss();
                     AppLogger.d("正在取消分享");
-                    presenter.unShareContent(Collections.singletonList(item), Collections.singleton(position));
+                    presenter.unShareContent(items, selection);
                 })
                 .setNegativeButton(R.string.CANCEL, null)
                 .show();
@@ -129,18 +132,20 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private boolean onEnterShareDetail(View view, IAdapter<ShareContentItem> iAdapter, ShareContentItem iItem, int position) {
         if (!editMode.get()) {
             AppLogger.e("将进入分享详情页面");
-            ShareContentH5DetailFragment fragment = new ShareContentH5DetailFragment();
-
+            ShareContentH5DetailFragment fragment = ShareContentH5DetailFragment.newInstance(iItem.shareItem);
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
         }
         return !editMode.get();
     }
 
     private void reverseSelection(View view) {
-        if (selectNumber.get() > 0) {
-            adapter.getFastAdapter().deselect();
-        } else {
+        TextView textView = (TextView) view;
+        if (TextUtils.equals(getString(R.string.SELECT_ALL), textView.getText())) {
+            textView.setText(R.string.CANCEL);
             adapter.getFastAdapter().select();
+        } else {
+            textView.setText(R.string.SELECT_ALL);
+            adapter.getFastAdapter().deselect();
         }
     }
 

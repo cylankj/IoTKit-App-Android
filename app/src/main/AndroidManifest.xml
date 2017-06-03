@@ -709,7 +709,7 @@
             android:theme="@style/share_style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".support.share.ShareActivity"
+            android:name=".support.share.ShareMediaActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

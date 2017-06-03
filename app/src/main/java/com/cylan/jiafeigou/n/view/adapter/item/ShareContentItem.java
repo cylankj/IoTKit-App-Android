@@ -6,8 +6,8 @@ import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.ItemShareContentBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class ShareContentItem extends AbstractItem<ShareContentItem, AbstractBin
         viewDataBinding.setShareDate(TimeUtils.getYHM(shareItem.time * 1000L));
         viewDataBinding.ShareContentCheckBox.setChecked(isSelected());
         Glide.with(viewDataBinding.sharedContentIcon.getContext())
-                .load(new PanoramaThumbURL(shareItem.cid, shareItem.fileName))
+                .load(new WonderGlideURL(shareItem.toWonderItem()))
                 .into(viewDataBinding.sharedContentIcon);
     }
 }

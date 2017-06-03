@@ -201,7 +201,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         for (DownloadInfo item : items) {
                             int itemTime = parseTime(item.getFileName());
                             if (itemTime >= finalTime) continue;
-                            boolean endsWith = item.getTargetPath().endsWith(File.separator + uuid + File.separator + item.getFileName());
+                            boolean endsWith = item.getTargetPath() != null && item.getTargetPath().endsWith(File.separator + uuid + File.separator + item.getFileName());
                             if (item.getState() == 4 && FileUtils.isFileExist(item.getTargetPath()) && result.size() < 20 && endsWith) {
                                 panoramaItem = new PanoramaAlbumContact.PanoramaItem(item.getFileName());
                                 panoramaItem.location = 0;

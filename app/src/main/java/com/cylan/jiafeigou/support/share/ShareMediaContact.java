@@ -7,7 +7,7 @@ import com.cylan.jiafeigou.base.view.JFGView;
  * Created by yanzhendong on 2017/6/1.
  */
 
-public interface ShareContact {
+public interface ShareMediaContact {
 
     interface View extends JFGView {
 

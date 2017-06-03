@@ -26,7 +26,7 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.share.ShareActivity;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -359,7 +359,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             dismissDialogs();
             JFGPlayer.Stop(player);
             new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
-                Intent intent = new Intent(this, ShareActivity.class);
+                Intent intent = new Intent(this, ShareMediaActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, panoramaItem);
                 intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, downloadInfo.getTargetPath());

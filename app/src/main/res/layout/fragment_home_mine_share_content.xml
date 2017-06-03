@@ -81,9 +81,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:paddingEnd="@dimen/x28"
-                android:paddingStart="@dimen/x28"
-                android:text="@{selectNumber>0?@string/CANCEL:@string/SELECT_ALL}"
+                android:paddingEnd="@dimen/y28"
+                android:paddingStart="@dimen/y28"
+                android:text="@string/SELECT_ALL"
                 android:textColor="@color/color_4b9fd5" />
 
             <TextView

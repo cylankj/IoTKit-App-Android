@@ -170,7 +170,7 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgPowerLineRsp> getPowerLine() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getPowerLine() : forwardHelper.empty());
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getPowerLine() : forwardHelper.sendDataPoint(205));
     }
 
     public Observable<PanoramaEvent.MsgBatteryRsp> getBattery() {

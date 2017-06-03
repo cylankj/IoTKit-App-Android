@@ -40,7 +40,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
-import com.cylan.jiafeigou.support.share.ShareActivity;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
@@ -662,7 +662,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void share() {
         if (NetUtils.isNetworkAvailable(this)) {
             new WonderGlideURL(mCurrentMediaBean).fetchFile(file -> {
-                Intent intent = new Intent(this, ShareActivity.class);
+                Intent intent = new Intent(this, ShareMediaActivity.class);
                 intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
                 intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
                 startActivity(intent);

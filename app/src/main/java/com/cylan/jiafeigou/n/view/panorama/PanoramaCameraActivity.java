@@ -70,7 +70,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.cylan.jiafeigou.R.id.act_panorama_camera_banner_information_connection_icon;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_205_CHARGING;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_206_BATTERY;
@@ -89,7 +88,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     ViewSwitcher bannerSwitcher;
     @BindView(R.id.imgv_toolbar_right)
     ImageButton setting;
-    @BindView(act_panorama_camera_banner_information_connection_icon)
+    @BindView(R.id.act_panorama_camera_banner_information_connection_icon)
     ImageView bannerConnectionIcon;
     @BindView(R.id.act_panorama_camera_banner_information_connection_text)
     TextView bannerConnectionText;
@@ -167,18 +166,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onShowProperty(Device device) {
         int battery = device.$(ID_206_BATTERY, 0);
-        bannerChargeText.setText(battery + "%");
-        if (battery <= 20) {
-            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_low_power);
-        } else if (battery > 20 && battery < 80) {
-            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_half);
-        } else if (battery >= 80) {
-            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
-        }
         boolean charging = device.$(ID_205_CHARGING, false);
-        if (charging) {
-            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
-        }
+        onDeviceBatteryChanged(charging ? -1 : battery);
         String mac = device.$(ID_202_MAC, "");
         if (mac != null) {
             String routerMac = NetUtils.getRouterMacAddress(getApplication());
@@ -673,24 +662,45 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     public void onSetVideoRecordLayout(@PANORAMA_RECORD_MODE int mode) {
         panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
-        bottomPanelAlbumItem.setVisibility(View.GONE);
-        bottomPanelMoreItem.setVisibility(View.GONE);
-        bottomPanelPhotoGraphItem.setEnabled(true);
-        bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
-        if (bottomPanelSwitcher.getDisplayedChild() == 0) {
-            bottomPanelSwitcher.showNext();
-        }
         switch (panoramaRecordMode = mode) {
             case MODE_LONG:
                 bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
                 bottomCountDownLine.setVisibility(View.GONE);
                 bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
+                bottomPanelAlbumItem.setVisibility(View.GONE);
+                bottomPanelMoreItem.setVisibility(View.GONE);
+                bottomPanelPhotoGraphItem.setEnabled(true);
+                bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
+                if (bottomPanelSwitcher.getDisplayedChild() == 0) {
+                    bottomPanelSwitcher.showNext();
+                }
                 break;
             case MODE_SHORT:
                 bottomPanelSwitcherItem2DotIndicator.setVisibility(View.GONE);
                 bottomCountDownLine.setVisibility(View.VISIBLE);
                 bottomCountDownLine.setScaleX(1.0F);
                 bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_short_video_selector);
+                bottomPanelAlbumItem.setVisibility(View.GONE);
+                bottomPanelMoreItem.setVisibility(View.GONE);
+                bottomPanelPhotoGraphItem.setEnabled(true);
+                bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
+                if (bottomPanelSwitcher.getDisplayedChild() == 0) {
+                    bottomPanelSwitcher.showNext();
+                }
+                break;
+            case MODE_NONE:
+                bottomPanelSwitcherItem2DotIndicator.setVisibility(View.GONE);
+                bottomCountDownLine.setVisibility(View.GONE);
+                bottomCountDownLine.setScaleX(1.0F);
+                bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
+                bottomPanelAlbumItem.setVisibility(View.VISIBLE);
+                bottomPanelMoreItem.setVisibility(View.VISIBLE);
+                bottomPanelPhotoGraphItem.setEnabled(true);
+                bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
+                bottomPanelSwitcherItem1ViewMode.setEnabled(true);
+                if (bottomPanelSwitcher.getDisplayedChild() == 1) {
+                    bottomPanelSwitcher.showPrevious();
+                }
                 break;
         }
     }
@@ -710,6 +720,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             lBatteryWarnDialog = LBatteryWarnDialog.newInstance(null);
         if (!lBatteryWarnDialog.isAdded())
             lBatteryWarnDialog.show(getSupportFragmentManager(), "lBattery");
+    }
+
+    @Override
+    public void onDeviceBatteryChanged(Integer battery) {
+        bannerChargeText.setText(battery == -1 ? getString(R.string.CHARGING) : battery + "%");
+        if (battery == -1) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
+        } else if (battery <= 20) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_low_power);
+        } else if (battery > 20 && battery < 80) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_half);
+        } else if (battery >= 80) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
+        }
     }
 
     @Override
@@ -880,12 +904,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case -1:
                 break;
         }
+        restoreView();
         bottomPanelPhotoGraphItem.setEnabled(true);
     }
 
     @Override
     public void onSingleTap(float v, float v1) {
 
+    }
+
+    private void restoreView() {
+        onSetViewModeLayout(panoramaViewMode);
+        if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_VIDEO) {
+            onSetVideoRecordLayout(PANORAMA_RECORD_MODE.MODE_NONE);
+        }
     }
 
     @Override

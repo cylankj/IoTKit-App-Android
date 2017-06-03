@@ -7,10 +7,10 @@ package com.cylan.jiafeigou.support.share;
 public interface ShareConstant {
     String SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM = "share_content_h5_with_upload_extra_share_item";
     String SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH = "share_content_h5_with_upload_extra_file_path";
-    String SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH="share_content_h5_with_upload_extra_thumb_path";
+    String SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH = "share_content_h5_with_upload_extra_thumb_path";
     String SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH = "share_content_picture_extra_image_path";
     String SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL = "share_content_web_url_extra_link_url";
-
+    String SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH = "share_content_web_url_extra_thumb_path";
     String SHARE_CONTENT = "share_content";
     int SHARE_CONTENT_NONE = -1;
     int SHARE_CONTENT_PICTURE = 0;

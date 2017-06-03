@@ -53,6 +53,10 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         monitorDeviceInformationSuggestion();
     }
 
+    private void monitorDeviceInformationNotification() {
+
+    }
+
     private boolean resolveDeviceInformation(RxEvent.LocalUdpMsg udpMsg) {
         try {
             AppLogger.d("正在解析 UDP 消息:" + new Gson().toJson(udpMsg));

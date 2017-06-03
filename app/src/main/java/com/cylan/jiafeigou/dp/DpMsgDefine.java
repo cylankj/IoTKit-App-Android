@@ -1094,6 +1094,9 @@ public class DpMsgDefine {
             return wonderItem;
         }
 
+        public DPShareItem() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -1109,9 +1112,6 @@ public class DpMsgDefine {
             dest.writeString(this.fileName);
             dest.writeString(this.desc);
             dest.writeString(this.url);
-        }
-
-        public DPShareItem() {
         }
 
         protected DPShareItem(Parcel in) {

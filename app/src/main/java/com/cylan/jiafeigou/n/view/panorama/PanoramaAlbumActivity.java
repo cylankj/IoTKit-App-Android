@@ -76,7 +76,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-
         panoramaAdapter = new PanoramaAdapter(uuid, this, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
@@ -115,6 +114,18 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         });
         recyclerView.setAdapter(panoramaAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
+        String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
+        if (mac != null) {
+            String routerMac = NetUtils.getRouterMacAddress(getApplication());
+            if (TextUtils.equals(mac, routerMac)) {
+                albumViewMode = 2;
+                toolbarAlbumViewMode.setEnabled(true);
+            } else {
+                albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
+                toolbarAlbumViewMode.setEnabled(false);
+            }
+        }
+        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
     }
 
     private void onLoadMore() {
@@ -132,18 +143,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
-        String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
-        if (mac != null) {
-            String routerMac = NetUtils.getRouterMacAddress(getApplication());
-            if (TextUtils.equals(mac, routerMac)) {
-                albumViewMode = 2;
-                toolbarAlbumViewMode.setEnabled(true);
-            } else {
-                albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
-                toolbarAlbumViewMode.setEnabled(false);
-            }
-        }
-        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+
     }
 
     @Override

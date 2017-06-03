@@ -16,7 +16,7 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingPresenter;
-import com.cylan.jiafeigou.support.share.ShareContact;
+import com.cylan.jiafeigou.support.share.ShareMediaContact;
 import com.cylan.jiafeigou.support.share.SharePresenter;
 
 import dagger.Module;
@@ -74,7 +74,7 @@ public class ActivityModule {
 
     @Provides
     @PerActivity
-    public static ShareContact.Presenter provideSharePresenter(BasePresenterInjector injector) {
+    public static ShareMediaContact.Presenter provideSharePresenter(BasePresenterInjector injector) {
         return injector.inject(new SharePresenter());
     }
 }

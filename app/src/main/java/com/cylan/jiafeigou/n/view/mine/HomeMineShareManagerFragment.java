@@ -50,8 +50,8 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.custom_toolbar:
-                onBackPressed();
+            case R.id.tv_toolbar_icon:
+                getActivity().onBackPressed();
                 break;
             case R.id.sharedContent:
                 sharedContent();

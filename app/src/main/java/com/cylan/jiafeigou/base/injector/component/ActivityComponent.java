@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingActivity;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
-import com.cylan.jiafeigou.support.share.ShareActivity;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 
 import dagger.Component;
 
@@ -37,6 +37,6 @@ public interface ActivityComponent {
 
     void inject(DoorBellHomeActivity activity);
 
-    void inject(ShareActivity activity);
+    void inject(ShareMediaActivity activity);
 
 }

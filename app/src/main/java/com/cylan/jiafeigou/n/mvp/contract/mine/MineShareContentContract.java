@@ -22,6 +22,6 @@ public interface MineShareContentContract {
 
         void loadFromServer(long version, boolean refresh);
 
-        void unShareContent(List<ShareContentItem> items, Iterable<Integer> selection);
+        void unShareContent(Iterable<ShareContentItem> items, Iterable<Integer> selection);
     }
 }

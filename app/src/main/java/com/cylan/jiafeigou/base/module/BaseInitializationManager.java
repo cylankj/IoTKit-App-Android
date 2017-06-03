@@ -59,7 +59,7 @@ public final class BaseInitializationManager {
     private Context appContext;
     private String crashPath;
     private BaseJFGResultParser resultParser;
-    private BaseGlobalUdpParser udpParser;
+    private BaseUdpMsgParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
     private PushResultReceiver pushReceiver;
     private BaseDeviceInformationFetcher deviceInformationFetcher;
@@ -82,7 +82,7 @@ public final class BaseInitializationManager {
                                      BaseJFGResultParser resultParser,
                                      @ContextLife Context context,
                                      @Named("CrashPath") String crashPath,
-                                     BaseGlobalUdpParser udpParser,
+                                     BaseUdpMsgParser udpParser,
                                      BaseBellCallEventListener listener,
                                      BasePanoramaApiHelper apiHelper,
                                      BaseDeviceInformationFetcher fetcher,

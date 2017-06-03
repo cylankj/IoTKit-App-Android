@@ -11,7 +11,7 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
  * Created by yanzhendong on 2017/6/1.
  */
 
-public class SharePresenter extends BasePresenter<ShareContact.View> implements ShareContact.Presenter {
+public class SharePresenter extends BasePresenter<ShareMediaContact.View> implements ShareMediaContact.Presenter {
 
     private UMShareListener listener = new UMShareListener() {
         @Override
