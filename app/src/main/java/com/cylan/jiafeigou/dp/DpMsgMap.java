@@ -11,6 +11,7 @@ public final class DpMsgMap {
 
     public static final int ID_214_DEVICE_TIME_ZONE = 214;
 
+    //0俯视 1平视
     public static final int ID_509_CAMERA_MOUNT_MODE = 509;
 
     public static final int ID_502_CAMERA_ALARM_INFO = 502;

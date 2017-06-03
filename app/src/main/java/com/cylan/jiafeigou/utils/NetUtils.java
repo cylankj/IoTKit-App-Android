@@ -20,11 +20,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * 网络工具类
@@ -316,6 +311,9 @@ public class NetUtils {
         return "";
     }
 
+    public static final String QQ_HOST = "http://www.qq.com";
+    public static final String BAIDU_HOST = "http://www.baidu.com";
+
     public static boolean isInternetAvailable(String host) {
         try {
             URL url = new URL(host);
@@ -469,5 +467,13 @@ public class NetUtils {
                 ((i >> 8) & 0xFF) + "." +
                 ((i >> 16) & 0xFF) + "." +
                 (i >> 24 & 0xFF);
+    }
+
+    public static boolean isNetworkAvailable() {
+        boolean qq = isInternetAvailable(QQ_HOST);
+        if (qq) return true;
+        boolean baidu = isInternetAvailable(BAIDU_HOST);
+        if (baidu) return true;
+        return false;
     }
 }
