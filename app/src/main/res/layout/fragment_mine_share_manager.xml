@@ -28,7 +28,7 @@
             app:ct_enable_theme="true"
             app:ct_fit_system_window="true"
             app:ct_icon="@drawable/nav_icon_back_white"
-            app:ct_left_title="@string/share_manager_center"
+            app:ct_left_title="@string/Sharing_Management"
             app:ct_left_title_color="@color/color_white" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView

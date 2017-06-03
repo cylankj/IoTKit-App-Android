@@ -85,7 +85,7 @@ public class DataSourceManager implements JFGSourceManager {
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
     @Deprecated
-    private boolean isOnline;
+    private boolean isOnline = true;
     private JFGAccount jfgAccount;
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
@@ -702,6 +702,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 updateIdList.add((long) entity.getMsgId());
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
+                            AppLogger.d("收到设备同步消息");
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))

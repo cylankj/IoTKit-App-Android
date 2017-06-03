@@ -55,7 +55,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.umeng.socialize.UMShareAPI;
 
 import java.lang.ref.WeakReference;
 
@@ -1047,7 +1046,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
+
     }
 
 

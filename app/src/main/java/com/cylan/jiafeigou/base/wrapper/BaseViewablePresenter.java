@@ -256,21 +256,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected Observable<JFGMsgVideoDisconn> handlerVideoDisconnect(JFGMsgVideoResolution resolution) {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
-                .first()
+                .first(jfgMsgVideoDisconn -> jfgMsgVideoDisconn.code > 0)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dis -> {
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
-                    feedRtcp.stop();
-                    switch (dis.code) {
-                        case STOP_VIERER_BY_SYSTEM:
-                            break;
-                        default:
-                        case BAD_NET_WORK:
-                            if (mView != null) {
-                                mView.onVideoDisconnect(dis.code);
-                            }
-                    }
+                    mView.onVideoDisconnect(dis.code);
                     return dis;
                 });
     }

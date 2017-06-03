@@ -14,6 +14,7 @@ import org.msgpack.annotation.Message;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -48,9 +49,35 @@ public class DP {
         return filePath.matches("/" + account + "/" + uuid);
     }
 
-    @Test
-    public void ssg() {
+    @Message
+    static class MsgForwardT {
+        @Index(0)
+        public int mId;
+        @Index(1)
+        public String mCaller;
+        @Index(2)
+        public String mCallee;
+        @Index(3)
+        public long mSeq;
+        // 1.如果是客户端发起，则为设备CID数组；
+        // 2.如果是设备端发起：
+        //    a. 服务器查询主账号，再查询sessid，填充后转发给客户端；
+        //    b. dst为账号数组时，服务器查询sessid，填充后转发给客户端（暂未支持）； --- 第三方账号，绑定关系不在加菲狗平台。
+        @Index(4)
+        public List<String> dst;
+        @Index(5)
+        public int isAck;//非零需要对端响应，零不需要对端响应
+        @Index(6)
+        public int type;// 功能定义。见下表定义
+        @Index(7)
+        public byte[] msg;
+    }
 
+    @Test
+    public void ssg() throws IOException {
+        byte[] msg = {-104, -51, 78, 38, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 48, 48, 53, -96, -50, 33, 38, -48, 41, -112, 0, 0, -96};
+        MsgForwardT msgForward = DpUtils.unpackData(msg, MsgForwardT.class);
+        System.out.println(new Gson().toJson(msgForward));
     }
 
     @Test

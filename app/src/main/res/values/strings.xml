@@ -988,4 +988,5 @@
   <string name="web">http://www.cleverdog.com.cn/</string>
   <string name="wifi_authentication">Verify %s WiFi connection</string>
   <string name="wifi_hasnot">Not find this WIFI</string>
+  <string name="facebook_app_id">fb1866682200216878</string>
 </resources>

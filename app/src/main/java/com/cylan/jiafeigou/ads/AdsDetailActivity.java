@@ -7,7 +7,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -16,8 +15,9 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.share.ShareConstant;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -67,10 +67,11 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
         customToolbar.setBackAction(v -> onClick());
         customToolbar.getTvToolbarRight().setOnClickListener(v -> {
             AppLogger.d("分享");
-            ShareDialogFragment fragment = new ShareDialogFragment();
-            fragment.setPictureURL(new GlideUrl(description.tagUrl));
-            fragment.setVideoURL(description.tagUrl);
-            fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
+            Intent intent = new Intent(getContext(), ShareMediaActivity.class);
+            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_WEB_URL);
+            intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH, description.tagUrl);
+            intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL, description.tagUrl);
+            startActivity(intent);
         });
     }
 

@@ -475,7 +475,6 @@ public class BaseDBHelper implements IDBHelper {
                         for (Account account1 : accounts) {
                             if (TextUtils.equals(account1.getAccount(), account.getAccount())) {
                                 this.dpAccount = account1;
-
                                 continue;
                             }
                             if (account1.state() != DBState.SUCCESS) {
@@ -486,12 +485,12 @@ public class BaseDBHelper implements IDBHelper {
                     }
                     if (dpAccount == null) {
                         dpAccount = new Account(account);
-                        changed.add(dpAccount);
                     }
                     dpAccount.setAccount(account);
                     dpAccount.setState(DBState.ACTIVE);
                     dpAccount.setToken(UUID.randomUUID().toString());
                     dpAccount.setServer(getServer());
+                    changed.add(dpAccount);
                     accountDao.insertOrReplaceInTx(changed);
                     return dpAccount;
                 });

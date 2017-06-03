@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.module;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.annotation.Index;
@@ -27,6 +28,10 @@ public interface PanoramaEvent {
         public long version;
         @Index(2)
         public byte[] packValue;
+
+        public JFGDPMsg msg() {
+            return new JFGDPMsg(id, version, packValue);
+        }
     }
 
     @Message

@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.umeng.socialize.UMShareAPI;
 
 /**
  * Created by cylan-hunt on 16-7-6.
@@ -47,8 +48,6 @@ public class NeedLoginActivity<T extends BasePresenter> extends BaseFullScreenFr
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (loginFragment != null) {
-            loginFragment.onActivityResult(requestCode, resultCode, data);
-        }
+        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -88,15 +88,15 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             case SHARE_PLATFORM_TYPE_WECHAT:
                 return getString(R.string.WeChat);
             case SHARE_PLATFORM_TYPE_QQ:
-                return getString(R.string.QQ);
+                return "QQ";
             case SHARE_PLATFORM_TYPE_QZONE:
                 return getString(R.string.Qzone_QQ);
             case SHARE_PLATFORM_TYPE_WEIBO:
                 return getString(R.string.Weibo);
             case SHARE_PLATFORM_TYPE_FACEBOOK:
-                return getString(R.string.facebook);
+                return "Facebook";
             case SHARE_PLATFORM_TYPE_TWITTER:
-                return getString(R.string.twitter);
+                return "Twitter";
         }
         return "";
     }

@@ -277,6 +277,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);//接入了友盟登录功能,必须调用 super
         switch (requestCode) {
             case JConstant.CODE_AD_FINISH:
                 if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_ON) {

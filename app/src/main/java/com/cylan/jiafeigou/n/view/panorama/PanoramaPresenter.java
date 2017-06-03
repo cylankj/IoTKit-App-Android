@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
-import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
@@ -14,11 +14,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -26,7 +22,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.dp.DpUtils.unpack;
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /**
@@ -66,42 +61,28 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private Subscription getReportMsgSub() {
-        return RxBus.getCacheInstance().toObservable(PanoramaEvent.ReportMsg.class)
-                .filter(msg -> TextUtils.equals(msg.cid, uuid))
-                .observeOn(Schedulers.io())
-                .map(reportMsg -> {
-                    List<PanoramaEvent.DpMsgForward> forwards = null;
-                    try {
-                        PanoramaEvent.MsgForward msgForward = unpackData(reportMsg.bytes, PanoramaEvent.MsgForward.class);
-                        if (msgForward != null) {
-                            Type type = new TypeToken<List<PanoramaEvent.DpMsgForward>>() {
-                            }.getType();
-                            forwards = unpack(msgForward.msg, type);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return forwards;
-                })
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
+                    AppLogger.e("收到设备同步消息:"+new Gson().toJson(result));
                     try {
-                        for (PanoramaEvent.DpMsgForward forward : result) {
-                            if (forward.id == 204) {
-                                DpMsgDefine.DPSdStatus status = unpackData(forward.packValue, DpMsgDefine.DPSdStatus.class);
+                        for (JFGDPMsg msg : result.dpList) {
+                            if (msg.id == 204) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
                                 if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onReportError(2004);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
                                     mView.onReportError(2022);
                                 }
-                            } else if (forward.id == 205) {
-                                Boolean aBoolean = unpackData(forward.packValue, boolean.class);
+                            } else if (msg.id == 205) {
+                                Boolean aBoolean = unpackData(msg.packValue, boolean.class);
                                 if (aBoolean != null && aBoolean) {
                                     mView.onDeviceBatteryChanged(-1);
                                 }
-                            } else if (forward.id == 206) {
-                                Integer battery = unpackData(forward.packValue, int.class);
-                                if (battery != null && battery < 20) {
+                            } else if (msg.id == 206) {
+                                Integer battery = unpackData(msg.packValue, int.class);
+                                if (battery != null) {
                                     mView.onDeviceBatteryChanged(battery);
                                 }
                             }
