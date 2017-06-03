@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.DevUpgradeInfo;
@@ -373,15 +374,16 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        s1 = "3.0.0";
 //        s2 = "你好";
 //        s3 = "xx";
+        if (!b) {
+            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + cid);
+        }
         ArrayList<DevUpgradeInfo> arrayList = new ArrayList<>();
         DevUpgradeInfo info = new DevUpgradeInfo();
-        info.md5 = "";
+        info.md5 = md5;
         info.tag = 0;
-        info.url = tmp[2];
-        info.version = "1.0.0.009";
+        info.url = url;
+        info.version = tagVersion;
         arrayList.add(info);
-        tagVersion = "1.0.0.009";
-        tip = "test";
         PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
         version.setCid(cid);
         version.setContent(tip);
@@ -397,10 +399,14 @@ public class BaseAppCallBackHolder implements AppCallBack {
                                            String content,
                                            ArrayList<DevUpgradeInfo> arrayList) {
         AppLogger.d("OnCheckTagDeviceVersionRsp:" + ret + ":" + cid + ",:" + tagVersion + "," + new Gson().toJson(arrayList));
-        arrayList = testList();
-        cid = "290000000065";
-        tagVersion = "1.0.0.009";
-        content = "test";
+//        arrayList = testList();
+//        cid = "290000000065";
+//        tagVersion = "1.0.0.009";
+//        content = "test";
+        if (!TextUtils.isEmpty(cid)) {
+            if (ret != 0 || ListUtils.isEmpty(arrayList))
+                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + cid);
+        } else return;
         PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
         version.setCid(cid);
         version.setContent(content);
@@ -409,24 +415,24 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
     }
 
-    private ArrayList<DevUpgradeInfo> testList() {
-        ArrayList<DevUpgradeInfo> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            DevUpgradeInfo info = new DevUpgradeInfo();
-            info.md5 = "";
-            info.tag = i;
-            info.url = tmp[i];
-            info.version = "1.0.0.009";
-            list.add(info);
-        }
-        return list;
-    }
+//    private ArrayList<DevUpgradeInfo> testList() {
+//        ArrayList<DevUpgradeInfo> list = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            DevUpgradeInfo info = new DevUpgradeInfo();
+//            info.md5 = "";
+//            info.tag = i;
+//            info.url = tmp[i];
+//            info.version = "1.0.0.009";
+//            list.add(info);
+//        }
+//        return list;
+//    }
 
-    private static final String[] tmp = new String[]{
-            "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI",
-            "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/ChangeLog.txt",
-            "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin",
-            "http://tse4.mm.bing.net/th?id=OIP.QxZxJAfP-lq-OxYjS3bFLAFNC7&pid=15.1",
-            "http://a2.att.hudong.com/18/04/14300000931600128341040320614.jpg"
-    };
+//    private static final String[] tmp = new String[]{
+//            "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI",
+//            "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/ChangeLog.txt",
+//            "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin",
+//            "http://tse4.mm.bing.net/th?id=OIP.QxZxJAfP-lq-OxYjS3bFLAFNC7&pid=15.1",
+//            "http://a2.att.hudong.com/18/04/14300000931600128341040320614.jpg"
+//    };
 }
