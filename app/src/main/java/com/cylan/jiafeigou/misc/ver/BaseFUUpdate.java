@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.misc.ver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SimulatePercent;
@@ -66,7 +67,7 @@ public abstract class BaseFUUpdate implements IFUUpdate {
 
     private void getVersion() {
         final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-        if (content == null) {
+        if (TextUtils.isEmpty(content)) {
             binVersion = AbstractVersion.BinVersion.NULL;
             AppLogger.d("这里出错了,就坑了.");
         }

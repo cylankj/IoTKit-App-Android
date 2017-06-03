@@ -231,6 +231,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
             String result = response.body().string();
             AppLogger.d("check_version result: " + result);
             JSONObject jsonObject = new JSONObject(result);
+            if (jsonObject.has("ret") && jsonObject.getInt("ret") != 0) return;
             final String url = jsonObject.getString("url");
             final String versionName = jsonObject.getString("version");
             final String shortVersion = jsonObject.getString("shortversion");

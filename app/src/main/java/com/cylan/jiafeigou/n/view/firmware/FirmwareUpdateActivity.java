@@ -119,7 +119,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
 
     private AbstractVersion.BinVersion getVersion() {
         final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-        if (content == null) return AbstractVersion.BinVersion.NULL;
+        if (TextUtils.isEmpty(content)) return AbstractVersion.BinVersion.NULL;
         try {
             return new Gson().fromJson(content, AbstractVersion.BinVersion.class);
         } catch (Exception e) {
