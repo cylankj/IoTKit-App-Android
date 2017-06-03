@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -10,8 +9,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.io.File;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,8 +17,7 @@ import rx.schedulers.Schedulers;
  * Created by hunt on 16-5-23.
  */
 public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActivityContract.View>
-        implements NewHomeActivityContract.Presenter,
-        ClientUpdateManager.DownloadListener {
+        implements NewHomeActivityContract.Presenter {
 
     public NewHomeActivityPresenterImpl(NewHomeActivityContract.View view) {
         super(view);
@@ -103,23 +99,4 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
 //        }
 //    }
 
-    @Override
-    public void start(long totalByte) {
-
-    }
-
-    @Override
-    public void failed(Throwable throwable) {
-
-    }
-
-    @Override
-    public void finished(File file) {
-
-    }
-
-    @Override
-    public void process(long currentByte, long totalByte) {
-
-    }
 }

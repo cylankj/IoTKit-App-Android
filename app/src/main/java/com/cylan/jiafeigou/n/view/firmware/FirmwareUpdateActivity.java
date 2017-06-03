@@ -22,7 +22,12 @@ import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.misc.ver.BaseFUUpdate;
+import com.cylan.jiafeigou.misc.ver.IFUUpdate;
+import com.cylan.jiafeigou.misc.ver.NormalFUUpdate;
+import com.cylan.jiafeigou.misc.ver.PanFUUpdate;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -45,8 +50,10 @@ import com.lzy.okserver.listener.DownloadListener;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -55,7 +62,7 @@ import butterknife.OnClick;
 
 public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<FirmwareUpdateContract.Presenter>
         implements FirmwareUpdateContract.View,
-        ClientUpdateManager.FUpgradingListener {
+        IFUUpdate.FUpgradingListener {
     @BindView(R.id.tv_hardware_now_version)
     TextView tvCurrentVersion;
     @BindView(R.id.hardware_update_point)
@@ -129,12 +136,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         boolean result = isDownloading();
         if (!result)
             dealUpdate();
-//        ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
-//        if (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING) {
-//            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
-//        } else {
-//            ClientUpdateManager.getInstance().removeTask(getUuid());
-//        }
     }
 
     private boolean isDownloading() {
@@ -182,29 +183,13 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             toDownload();
         } else {//异常,或者未开始
             tvDownloadSoftFile.setText(getString(R.string.Tap1a_DownloadInstall, MiscUtils.FormatSdCardSize(binVersion.getTotalSize())));
-//            for (int i = 0; i < size; i++) {
-//                final String key = binVersion.getList().get(i).url;
-//                DownloadManager.getInstance().removeTask(key);
-//            }
         }
         return true;
     }
 
     private boolean isCurrentUpdating() {
-        ClientUpdateManager.FirmWareUpdatingTask updatingTask = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
-        return (updatingTask != null && updatingTask.getUpdateState() == JConstant.U.UPDATING);
-    }
-
-    private boolean isCurrentDownloading() {
-        final int size = binVersion.getList() == null ? 0 : binVersion.getList().size();
-        boolean downloading = false;
-        for (int i = 0; i < size; i++) {
-            DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(binVersion.getList().get(i).url);
-            if (info != null && info.getState() == DownloadManager.DOWNLOADING) {
-                downloading = true;
-            }
-        }
-        return downloading;
+        BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+        return update != null && update.getUpdateState() == JConstant.U.UPDATING;
     }
 
     /**
@@ -232,35 +217,16 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
     /**
-     * 升级前的检查,文件的
-     *
-     * @return
+     * 可能是在升级
      */
-    private boolean preUpdateCheck() {
-        final int count = ListUtils.getSize(binVersion.getList());
-        for (int i = 0; i < count; i++) {
-            final String key = binVersion.getList().get(i).url;
-            DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(key);
-            if (info == null) {
-                return false;
-            } else {
-                File file = new File(info.getTargetPath());
-                if (!file.exists()) {
-                    DownloadManager.getInstance().removeTask(key);
-                    return false;
-                } else {
-                    if (file.length() != binVersion.getList().get(i).fileSize) {
-                        //下载错误了.
-
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     private void dealUpdate() {
+        BaseFUUpdate baseFUUpdate = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+        if (baseFUUpdate != null && baseFUUpdate.getUpdateState() == JConstant.U.UPDATING) {
+            baseFUUpdate.setListener(new FUUpdating(this));
+        } else if (baseFUUpdate != null && baseFUUpdate.getUpdateState() == JConstant.U.SUCCESS) {
+            //成功
 
+        }
     }
 
     @Override
@@ -374,7 +340,15 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
                 return;
             }
             //开始升级
-            ClientUpdateManager.getInstance().enqueue(getUuid(), new Updating(this));
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
+            BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
+            if (JFGRules.isPan720(device.pid)) {
+                update = new PanFUUpdate(getUuid(), getFileNameList());
+            } else {
+                update = new NormalFUUpdate(getUuid(), getFileNameList().get(0));
+            }
+            update.setListener(this);
+            ClientUpdateManager.getInstance().enqueue(getUuid(), update);
         } else if (txt.contains(getString(R.string.Tap1_FirmwareDownloading).substring(0, 2))) {
             //Tap1_FirmwareDownloading:正在下载(%s),
         } else {
@@ -397,6 +371,22 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
     }
 
+    /**
+     * 很大可能出错
+     *
+     * @return
+     */
+    private List<String> getFileNameList() {
+        List<String> fileNameList = new ArrayList<>();
+        final int count = ListUtils.getSize(binVersion.getList());
+        for (int i = 0; i < count; i++) {
+            DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(binVersion.getList().get(i).url);
+            if (info != null) {
+                fileNameList.add(info.getTargetPath());
+            }
+        }
+        return fileNameList;
+    }
 
     private void toDownload() {
         final int size = binVersion == null ? 0 : ListUtils.getSize(binVersion.getList());
@@ -424,11 +414,14 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
     }
 
 
-    private static class Updating implements ClientUpdateManager.FUpgradingListener {
+    /**
+     * 固件升级的
+     */
+    private static class FUUpdating implements IFUUpdate.FUpgradingListener {
 
-        private WeakReference<ClientUpdateManager.FUpgradingListener> listenerRef;
+        private WeakReference<IFUUpdate.FUpgradingListener> listenerRef;
 
-        public Updating(ClientUpdateManager.FUpgradingListener listener) {
+        public FUUpdating(IFUUpdate.FUpgradingListener listener) {
             this.listenerRef = new WeakReference<>(listener);
         }
 
