@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
@@ -52,7 +53,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         int bgColor = at.getColor(R.styleable.CustomToolbar_ct_background_color, Color.TRANSPARENT);
         int titleColor = at.getColor(R.styleable.CustomToolbar_ct_title_color, Color.TRANSPARENT);
         int leftTitleColor = at.getColor(R.styleable.CustomToolbar_ct_left_title_color, Color.TRANSPARENT);
-        int rightTitleColor = at.getColor(R.styleable.CustomToolbar_ct_right_title_color, Color.TRANSPARENT);
+        ColorStateList rightTitleColor = at.getColorStateList(R.styleable.CustomToolbar_ct_right_title_color);
         String title = at.getString(R.styleable.CustomToolbar_ct_title);
         String leftTitle = at.getString(R.styleable.CustomToolbar_ct_left_title);
         String rightTitle = at.getString(R.styleable.CustomToolbar_ct_right_title);
@@ -69,7 +70,11 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         }
         viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
         if (enableTheme) {
-            bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_0ba8cf : R.color.color_23344e;
+            if (isInEditMode()) {
+                bgColor = R.color.color_0ba8cf;//这是方便在 xml 布局中显示
+            } else {
+                bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_0ba8cf : R.color.color_23344e;
+            }
             viewGroup.setBackgroundColor(getResources().getColor(bgColor));
         }
         if (customContentLayoutId != -1) {
@@ -81,7 +86,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
             tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
             tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
             tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
-            if (rightTitleColor != 0) tvToolbarRight.setTextColor(rightTitleColor);
+            if (rightTitleColor != null) tvToolbarRight.setTextColor(rightTitleColor);
             tvToolbarTitle.setVisibility(VISIBLE);
             tvToolbarTitle.setText(title);
             if (titleColor != 0)
@@ -165,6 +170,18 @@ public class CustomToolbar extends LinearLayout implements ITheme {
     public void setBackAction(OnClickListener clickListener) {
         if (clickListener != null && customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             tvToolbarIcon.setOnClickListener(clickListener);
+        }
+    }
+
+    public void setRightAction(OnClickListener clickListener) {
+        if (clickListener != null && customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.setOnClickListener(clickListener);
+        }
+    }
+
+    public void setRightEnable(boolean enable) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.setEnabled(enable);
         }
     }
 

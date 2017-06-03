@@ -32,6 +32,8 @@ public interface PanoramaCameraContact {
 
         void onBellBatteryDrainOut();
 
+        void onDeviceBatteryChanged(Integer battery);
+
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
         @interface SPEED_MODE {

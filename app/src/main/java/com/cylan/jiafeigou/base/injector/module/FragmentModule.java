@@ -6,13 +6,17 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullContract;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigurePresenter;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaSharePresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,5 +60,17 @@ public class FragmentModule {
     @PerFragment
     public static CamDelayRecordContract.Presenter provideCamDelayRecordPresenter(BasePresenterInjector injector) {
         return injector.inject(new CamDelayRecordContract.Presenter());
+    }
+
+    @Provides
+    @PerFragment
+    public static MineShareContentContract.Presenter provideShareContentPresenter(BasePresenterInjector injector) {
+        return injector.inject(new MineShareContentPresenterImpl());
+    }
+
+    @Provides
+    @PerFragment
+    public static PanoramaShareContact.Presenter providePanoramaSharePresenter(BasePresenterInjector injector) {
+        return injector.inject(new PanoramaSharePresenter());
     }
 }

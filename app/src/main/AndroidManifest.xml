@@ -101,6 +101,9 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <meta-data
+            android:name="com.cylan.jiafeigou.base.module.JFGGlideCacheModule"
+            android:value="GlideModule" />
+        <meta-data
             android:name="BUGLY_APPID"
             android:value="${BUGLY_APPID}" />
         <!-- 配置APP版本号 -->
@@ -497,7 +500,7 @@
             android:enabled="true" />
 
         <provider
-            android:name="com.facebook.FacebookContentProvider"
+            android:name="com.umeng.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
             android:exported="true" />
 
@@ -676,6 +679,53 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme" />
+
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="592fa9b6f5ade446c7001a9c"></meta-data>
+
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/share_style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".WBShareActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.umeng.facebook.FacebookActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/share_style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".support.share.ShareMediaActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/share_style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.umeng.socialize.handler.TwitterWebActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>

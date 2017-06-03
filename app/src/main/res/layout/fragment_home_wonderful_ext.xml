@@ -1,102 +1,112 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout>
 
+    <data>
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        <variable
+            name="themeRules"
+            type="com.cylan.jiafeigou.misc.JFGRules" />
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y163"
-        android:background="@drawable/wonderful_bg_top_daytime"
-        android:theme="@style/AppTheme.PopupOverlay"
-        app:statusBarScrim="@android:color/transparent">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/rl_top_head_wonder"
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="@dimen/y62"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
+            android:layout_height="@dimen/y163"
+            android:background="@drawable/wonderful_bg_top_daytime"
+            android:theme="@style/AppTheme.PopupOverlay"
+            app:statusBarScrim="@android:color/transparent">
 
-            <TextView
-                android:id="@+id/tv_title_head_wonder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/tv_sec_title_head_wonder"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/y12"
-                android:text="@string/Tap2_TitleName"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp22" />
-
-            <TextView
-                android:id="@+id/tv_sec_title_head_wonder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/y50"
-                android:text="@string/Tap2_Index_Greetings"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp15" />
-
-            <ImageView
-                android:id="@+id/img_wonderful_title_cover"
+            <RelativeLayout
+                android:id="@+id/rl_top_head_wonder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="0"
-                android:background="@color/color_0ba8cf" />
+                android:minHeight="@dimen/y62"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
 
-            <TextView
-                android:id="@+id/tv_date_item_head_wonder"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:alpha="0"
-                android:gravity="center"
-                android:text="@string/Tap2_TitleName"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_title_head_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/tv_sec_title_head_wonder"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/y12"
+                    android:text="@string/Tap2_TitleName"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp22" />
+
+                <TextView
+                    android:id="@+id/tv_sec_title_head_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/y50"
+                    android:text="@string/Tap2_Index_Greetings"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp15" />
+
+                <ImageView
+                    android:id="@+id/img_wonderful_title_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0"
+                    android:background="@{themeRules.timeRule==0?@color/color_0ba8cf:@color/color_23344e}" />
+
+                <TextView
+                    android:id="@+id/tv_date_item_head_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y48"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:alpha="0"
+                    android:gravity="center"
+                    android:text="@string/Tap2_TitleName"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp18" />
+            </RelativeLayout>
 
 
-        <!--</FrameLayout>-->
+            <!--</FrameLayout>-->
 
-    </android.support.design.widget.AppBarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/fLayout_main_content_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <FrameLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/fLayout_main_content_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:background="@color/color_white">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rV_wonderful_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <FrameLayout
-                android:id="@+id/fLayout_empty_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
                 android:background="@color/color_white">
 
-                <include
-                    android:id="@+id/fragment_wonderful_empty"
-                    layout="@layout/layout_wonderful_list_empty_view" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rV_wonderful_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <FrameLayout
+                    android:id="@+id/fLayout_empty_view_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_white">
+
+                    <include
+                        android:id="@+id/fragment_wonderful_empty"
+                        layout="@layout/layout_wonderful_list_empty_view" />
+                </FrameLayout>
             </FrameLayout>
-        </FrameLayout>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

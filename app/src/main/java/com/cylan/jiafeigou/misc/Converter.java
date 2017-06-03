@@ -19,11 +19,11 @@ public class Converter {
             return beanArrayList;
         for (DataPoint base : baseValueList) {
             CamMessageBean bean = new CamMessageBean();
-            bean.id = base.msgId;
-            bean.version = base.version;
-            if (base.msgId == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
+            bean.id = base.getMsgId();
+            bean.version = base.getVersion();
+            if (base.getMsgId() == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
                 bean.alarmMsg = (DpMsgDefine.DPAlarm) base;
-            } else if (base.msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+            } else if (base.getMsgId() == DpMsgMap.ID_222_SDCARD_SUMMARY) {
                 bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) base;
             }
             beanArrayList.add(bean);

@@ -84,7 +84,8 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_1001_CAM_505_UNREAD_COUNT, new DPProperty(int.class, CAMERA));
 
         properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(boolean.class));//set
-        properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));
+        properties.put(606, new DPProperty(DpMsgDefine.DPShareItem.class));
+        properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));//set
         properties.put(ID_601_ACCOUNT_STATE, new DPProperty(String.class));
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
@@ -144,8 +145,8 @@ public class BasePropertyParser implements IPropertyParser {
             } else {
                 result = (T) value;
             }
-            result.msgId = msgId;
-            result.version = version;
+            result.setMsgId(msgId);
+            result.setVersion(version);
             return result;
         } catch (Exception e) {
             Log.d("parser", "parser:" + msgId + " " + e.getLocalizedMessage());

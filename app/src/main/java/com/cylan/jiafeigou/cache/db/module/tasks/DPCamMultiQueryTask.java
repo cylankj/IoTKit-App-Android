@@ -85,8 +85,8 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                         for (DPEntity item : items) {
                             DataPoint parse = propertyParser.parser(item.getMsgId(), item.getBytes(), item.getVersion());
                             if (parse != null) {
-                                parse.version = item.getVersion();
-                                parse.msgId = item.getMsgId();
+                                parse.setVersion(item.getVersion());
+                                parse.setMsgId(item.getMsgId());
                             }
                             if (!result.contains(parse))
                                 result.add(parse);

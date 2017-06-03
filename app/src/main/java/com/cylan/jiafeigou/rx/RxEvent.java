@@ -16,6 +16,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
@@ -1283,6 +1284,24 @@ public class RxEvent {
         public static final PanoramaApiAvailable API_HTTP = new PanoramaApiAvailable(0);
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
         public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
+    }
+
+    public static class GetVideoShareUrlEvent {
+        public String url;
+
+        public GetVideoShareUrlEvent(String s) {
+            this.url = s;
+        }
+    }
+
+    public static class ReportMsgEvent {
+        public String cid;
+        public PanoramaEvent.MsgForward forward;
+
+        public ReportMsgEvent(String cid, PanoramaEvent.MsgForward forward) {
+            this.cid = cid;
+            this.forward = forward;
+        }
     }
 
     public static class AdsRsp {

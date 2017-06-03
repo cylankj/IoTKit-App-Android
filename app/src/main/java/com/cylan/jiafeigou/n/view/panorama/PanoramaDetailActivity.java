@@ -25,8 +25,9 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
+import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PanoramaThumbURL;
@@ -44,6 +45,7 @@ import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
 import com.lzy.okserver.listener.DownloadListener;
+import com.umeng.socialize.UMShareAPI;
 
 import javax.inject.Inject;
 
@@ -102,7 +104,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private TextView download;
     private int mode;
     private View deleted;
-    private ShareDialogFragment shareDialogFragment;
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -134,18 +135,29 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onStart() {
         super.onStart();
-        initPanoramaContent(panoramaItem);
         ViewUtils.setViewPaddingStatusBar(headerTitleContainer);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initPanoramaContent(panoramaItem);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (player != 0) {
+            JFGPlayer.StopRender(player);
+            JFGPlayer.Stop(player);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(headerTitleContainer);
-        if (player != 0) {
-            JFGPlayer.StopRender(player);
-            JFGPlayer.Stop(player);
-        }
+
     }
 
     @Override
@@ -343,15 +355,32 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         } else if (panoramaItem.duration > 8) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_Share_NoLonger8STips));
         } else {
-            if (shareDialogFragment == null) {
-                shareDialogFragment = ShareDialogFragment.newInstance();
-            }
-            if (panoramaItem.type == 0) {
-                shareDialogFragment.setPictureURL(new PanoramaThumbURL(uuid, panoramaItem.fileName));
-            }
+            AppLogger.d("点击了分享按钮");
+            dismissDialogs();
+            JFGPlayer.Stop(player);
+            new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
+                Intent intent = new Intent(this, ShareMediaActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, panoramaItem);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, downloadInfo.getTargetPath());
+                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD);
+                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, filePath);
+                startActivity(intent);
+            });
 
         }
     }
+
+    private void dismissDialogs() {
+        if (morePopMenu != null) {
+            morePopMenu.dismiss();
+        }
+    }
+
+    public void onShareToH5(View view) {
+
+    }
+
 
     @OnClick(R.id.act_panorama_detail_toolbar_more)
     public void clickedMore() {
@@ -486,5 +515,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void onSnapshot(Bitmap bitmap, boolean b) {
         BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + "/" + System.currentTimeMillis() / 1000 + ".jpg");
         ToastUtil.showPositiveToast("截图成功");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 }

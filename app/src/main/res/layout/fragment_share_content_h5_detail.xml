@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="themeRules"
+            type="com.cylan.jiafeigou.misc.JFGRules" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <RelativeLayout
+            android:id="@+id/headerToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@{themeRules.timeRule==0?@color/color_0ba8cf:@color/color_23344e}"
+            android:minHeight="@dimen/y48">
+
+            <ImageView
+                android:id="@+id/headerMenuBack"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:padding="@dimen/y14"
+                android:src="@drawable/nav_tab_back_selector" />
+
+            <TextView
+                android:id="@+id/headerMenuTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <ImageButton
+                android:id="@+id/headerMenuShare"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:layout_marginEnd="@dimen/y14"
+                android:layout_toStartOf="@+id/headerMenuDelete"
+                android:background="@android:color/transparent"
+                android:src="@drawable/details_icon_share" />
+
+            <ImageButton
+                android:id="@+id/headerMenuDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/y14"
+                android:background="@android:color/transparent"
+                android:src="@drawable/album_delete_selector" />
+        </RelativeLayout>
+
+        <WebView
+            android:id="@+id/shareH5WebView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerToolbar" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.cache.db.module.tasks.DPSimpleMultiQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleClearTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleDeleteTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleQueryTask;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleShareH5Task;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleSharedTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPUnBindDeviceTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPUpdateTask;
@@ -61,6 +62,8 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
             case CAM_DATE_QUERY:
                 result = new DPCamDateQueryTask();
                 break;
+            case SHARE_H5:
+                result = new DPSingleShareH5Task();
         }
         return result;
     }

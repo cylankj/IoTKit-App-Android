@@ -16,6 +16,8 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingPresenter;
+import com.cylan.jiafeigou.support.share.ShareMediaContact;
+import com.cylan.jiafeigou.support.share.SharePresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,5 +70,11 @@ public class ActivityModule {
     @PerActivity
     public static DoorBellHomeContract.Presenter provideDoorBellHomePresenter(BasePresenterInjector injector) {
         return injector.inject(new DBellHomePresenterImpl());
+    }
+
+    @Provides
+    @PerActivity
+    public static ShareMediaContact.Presenter provideSharePresenter(BasePresenterInjector injector) {
+        return injector.inject(new SharePresenter());
     }
 }

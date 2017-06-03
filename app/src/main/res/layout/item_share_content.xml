@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="sharedContentItem"
+            type="ShareContentItem" />
+
+        <variable
+            name="itemPosition"
+            type="Integer" />
+
+        <variable
+            name="shareDate"
+            type="String" />
+
+        <variable
+            name="editMode"
+            type="android.databinding.ObservableBoolean" />
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y67"
+        android:clickable="true"
+        android:descendantFocusability="blocksDescendants"
+        android:focusable="true">
+
+        <com.cylan.jiafeigou.support.photoselect.CircleImageView
+            android:id="@+id/sharedContentIcon"
+            android:layout_width="@dimen/y43"
+            android:layout_height="@dimen/y43"
+            android:layout_marginStart="@dimen/y15"
+            android:padding="0dp"
+            android:src="@drawable/bg_default_photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sharedContentDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
+            android:layout_marginStart="@dimen/y15"
+            android:ellipsize="end"
+            android:maxLength="128"
+            android:maxLines="1"
+            android:text="@{sharedContentItem.shareItem.desc}"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintEnd_toStartOf="@+id/rightAction"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/sharedContentIcon"
+            app:layout_constraintTop_toTopOf="@+id/sharedContentIcon" />
+
+        <TextView
+            android:id="@+id/sharedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y8"
+            android:text="@{shareDate}"
+            android:textColor="@color/color_8c8c8c"
+            android:textSize="@dimen/sp12"
+            app:layout_constraintStart_toStartOf="@id/sharedContentDetail"
+            app:layout_constraintTop_toBottomOf="@+id/sharedContentDetail" />
+
+
+        <FrameLayout
+            android:id="@+id/rightAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/unShareContent"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y28"
+                android:background="@drawable/btn_accept_add_request_shape"
+                android:gravity="center"
+                android:paddingEnd="@dimen/y14"
+                android:paddingStart="@dimen/y14"
+                android:text="@string/Tap3_ShareDevice_Delete"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp13"
+                android:visibility="@{editMode?View.GONE:View.VISIBLE}" />
+
+            <RadioButton
+                android:id="@+id/ShareContentCheckBox"
+                android:layout_width="@dimen/y21"
+                android:layout_height="@dimen/y21"
+                android:layout_gravity="center_vertical|end"
+                android:background="@drawable/custom_rtbn_style1"
+                android:button="@null"
+                android:clickable="false"
+                android:focusable="false"
+                android:visibility="@{editMode?View.VISIBLE:View.GONE}" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y1"
+            android:background="@color/color_f2f2f2"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

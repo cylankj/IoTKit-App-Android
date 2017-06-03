@@ -58,10 +58,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     BaseApplication.getAppComponent().getCmd().logout();
                     NotifyManager.getNotifyManager().clearAll();
                     RxBus.getCacheInstance().removeAllStickyEvents();
-                    AutoSignIn.getInstance().autoSave(retAccount.getAccount(), 1, "")
-                            .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                            .subscribe(ret -> {
-                            }, throwable -> AppLogger.e("err:" + throwable));
+                    AutoSignIn.getInstance().autoSave(retAccount.getAccount(), 1, "");
                     //emit failed event.
                     //是三方登录获取绑定的手机或者邮箱用于登录页回显
                     if (isOpenLogin) {

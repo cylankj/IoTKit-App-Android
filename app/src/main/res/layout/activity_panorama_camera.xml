@@ -81,26 +81,27 @@
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp12" />
 
-                <ImageView
-                    android:id="@+id/act_panorama_camera_banner_information_charge_icon"
+                <TextView
+                    android:id="@+id/act_panorama_camera_banner_information_charge_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/y5"
-                    android:layout_toStartOf="@+id/act_panorama_camera_banner_information_charge_text"
-                    android:src="@drawable/camera720_icon_electricity_charge" />
+                    android:layout_toStartOf="@+id/act_panorama_camera_banner_information_charge_icon"
+                    android:drawablePadding="@dimen/y5"
+                    android:text="25%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/sp12" />
 
-                <TextView
-                    android:id="@+id/act_panorama_camera_banner_information_charge_text"
+                <ImageView
+                    android:id="@+id/act_panorama_camera_banner_information_charge_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/y15"
-                    android:drawablePadding="@dimen/y5"
-                    android:text="25%"
-                    android:textColor="#FFFFFF"
-                    android:textSize="@dimen/sp12" />
+                    android:src="@drawable/camera720_icon_electricity_charge" />
+
 
             </RelativeLayout>
 
@@ -223,7 +224,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="速率:自动"
+                android:text="速率:高清"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/sp15" />
 

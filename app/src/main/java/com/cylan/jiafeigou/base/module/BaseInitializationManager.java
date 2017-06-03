@@ -30,6 +30,10 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareConfig;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,7 +61,7 @@ public final class BaseInitializationManager {
     private Context appContext;
     private String crashPath;
     private BaseJFGResultParser resultParser;
-    private BaseGlobalUdpParser udpParser;
+    private BaseUdpMsgParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
     private PushResultReceiver pushReceiver;
     private BaseDeviceInformationFetcher deviceInformationFetcher;
@@ -80,7 +84,7 @@ public final class BaseInitializationManager {
                                      BaseJFGResultParser resultParser,
                                      @ContextLife Context context,
                                      @Named("CrashPath") String crashPath,
-                                     BaseGlobalUdpParser udpParser,
+                                     BaseUdpMsgParser udpParser,
                                      BaseBellCallEventListener listener,
                                      BasePanoramaApiHelper apiHelper,
                                      BaseDeviceInformationFetcher fetcher,
@@ -124,8 +128,23 @@ public final class BaseInitializationManager {
         initPushResult();
         initDeviceInformationFetcher();
         OkGo.init((Application) appContext);
+        initUmengSdk();
         hasInitFinished = true;
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
+    }
+
+    private void initUmengSdk() {
+        Config.DEBUG = true;
+        PlatformConfig.setWeixin("wx3081bcdae8a842cf", "");
+        PlatformConfig.setQQZone("1103156296", "lfQJHRh8dDCJtwHu");
+        PlatformConfig.setSinaWeibo("1315129656", "5feab23e093b43f220bccf7fbab8f6c5", "https://api.weibo.com/oauth2/default.html");
+        PlatformConfig.setTwitter("kCEeFDWzz5xHi8Ej9Wx6FWqRL", "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5");
+        UMShareConfig config = new UMShareConfig();
+        config.isNeedAuthOnGetUserInfo(true);
+        config.isOpenShareEditActivity(true);
+        config.setSinaAuthType(UMShareConfig.AUTH_TYPE_SSO);
+        config.setFacebookAuthType(UMShareConfig.AUTH_TYPE_SSO);
+        UMShareAPI.get(appContext).setShareConfig(config);
     }
 
     private void initDeviceInformationFetcher() {

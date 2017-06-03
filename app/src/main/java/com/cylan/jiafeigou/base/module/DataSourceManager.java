@@ -116,10 +116,8 @@ public class DataSourceManager implements JFGSourceManager {
                 .map(dpAccount -> {
                     RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
                     accountArrived.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
-                    if (accountArrived.jfgAccount != null) {
-                        getCacheInstance().postSticky(accountArrived);
-                    }
-                    getCacheInstance().post(accountArrived);
+                    getCacheInstance().postSticky(accountArrived);
+                    AppLogger.d("正在从数据库初始化...");
                     return dpAccount;
                 })
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
@@ -440,8 +438,8 @@ public class DataSourceManager implements JFGSourceManager {
     public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws
             IllegalAccessException {
         ArrayList<T> list = new ArrayList<>();
-        value.msgId = msgId;
-        value.version = System.currentTimeMillis();
+        value.setMsgId(msgId);
+        value.setVersion(System.currentTimeMillis());
         list.add(value);
         return updateValue(uuid, list);
     }
@@ -459,9 +457,9 @@ public class DataSourceManager implements JFGSourceManager {
                     try {
                         ArrayList<JFGDPMsg> list = new ArrayList<>();
                         for (DataPoint data : value) {
-                            boolean result = device.setValue((int) data.msgId, data);
-                            AppLogger.d("update dp:" + result + " " + data.msgId);
-                            JFGDPMsg jfgdpMsg = new JFGDPMsg(data.msgId, System.currentTimeMillis());
+                            boolean result = device.setValue((int) data.getMsgId(), data);
+                            AppLogger.d("update dp:" + result + " " + data.getMsgId());
+                            JFGDPMsg jfgdpMsg = new JFGDPMsg(data.getMsgId(), System.currentTimeMillis());
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
                         }

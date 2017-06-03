@@ -448,7 +448,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
                             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
                             tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false);
+                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false, null);
                         }, getString(R.string.CANCEL), null, false);
                 break;
         }
@@ -470,7 +470,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             camMessageListAdapter.removeAll(list);
                             if (basePresenter != null)
                                 basePresenter.removeItems(list);
-                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false);
+                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false, null);
                         }, getString(R.string.CANCEL), null, false);
             }
             break;

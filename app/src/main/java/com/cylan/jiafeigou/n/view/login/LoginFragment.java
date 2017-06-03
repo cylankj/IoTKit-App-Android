@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,19 +34,13 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.OpenLoginHelper;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
-import com.cylan.jiafeigou.support.sina.SinaLogin;
-import com.cylan.jiafeigou.support.twitter.TwitterInstance;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -53,7 +48,6 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -61,11 +55,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.facebook.CallbackManager;
-import com.sina.weibo.sdk.auth.sso.SsoHandler;
-import com.tencent.connect.common.Constants;
-import com.tencent.tauth.Tencent;
-import com.twitter.sdk.android.core.identity.TwitterAuthClient;
+import com.umeng.socialize.UMShareAPI;
 
 import java.lang.ref.WeakReference;
 
@@ -87,37 +77,26 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public static final String KEY_TEMP_ACCOUNT = "temp_account";
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
-
     @BindView(R.id.iv_login_clear_username)
     ImageView ivLoginClearUsername;
-
     @BindView(R.id.et_login_pwd)
     EditText etLoginPwd;
-
     @BindView(R.id.iv_login_clear_pwd)
     ImageView ivLoginClearPwd;
-
     @BindView(R.id.cb_show_pwd)
     CheckBox cbShowPwd;
-
     @BindView(R.id.vsLayout_login_box)
     ViewSwitcher vsLayoutSwitcher;
-
     @BindView(R.id.rLayout_login_third_party)
     RelativeLayout rLayoutLoginThirdParty;
-
     @BindView(R.id.rLayout_login)
     LinearLayout rLayoutLogin;
-
     @BindView(R.id.tv_qqLogin_commit)
     TextView tvQqLoginCommit;
-
     @BindView(R.id.tv_xlLogin_commit)
     TextView tvXlLoginCommit;
-
     @BindView(R.id.tv_login_forget_pwd)
     TextView tvForgetPwd;
-
     @BindView(R.id.lb_login_commit)
     LoginButton lbLogin;
     @BindView(R.id.rLayout_pwd_input_box)
@@ -435,10 +414,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 etLoginUsername.getText().clear();
                 break;
             case R.id.tv_login_forget_pwd:
-                boolean validAccount = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
-                        || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();
-//                if (!validAccount && !TextUtils.isEmpty(etLoginUsername.getText()))
-//                    ToastUtil.showToast(getString(R.string.ACCOUNT_ERR));
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
@@ -446,14 +421,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(3);
+                basePresenter.performAuthentication(3);
                 break;
             case R.id.tv_xlLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(4);
+                basePresenter.performAuthentication(4);
                 break;
             case R.id.tv_toolbar_icon:
                 IMEUtils.hide(getActivity());
@@ -474,22 +449,23 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             break;
             case R.id.tv_twitterLogin_commit:
-                if (ShareUtils.isTwitterInstalled()) {
-                    OpenLoginHelper.getInstance(getActivity()).loginAuthorize(6);
-                } else {
-                    ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "twitter"));
+                if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
                 }
+                basePresenter.performAuthentication(6);
                 break;
 
             case R.id.tv_facebookLogin_commit:
-                if (ShareUtils.isFacebookInstalled()) {
-                    OpenLoginHelper.getInstance(getActivity()).loginAuthorize(7);
-                } else {
-                    ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "facebook"));
+                if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
                 }
+                basePresenter.performAuthentication(7);
                 break;
         }
     }
+
 
     /**
      * 页面切换
@@ -541,14 +517,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
             return;
         }
-
-        LoginAccountBean login = new LoginAccountBean();
-        login.userName = ViewUtils.getTextViewContent(etLoginUsername);
-        login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
-        login.loginType = false;
-        login.openLoginType = 1;
         if (basePresenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
-            basePresenter.executeLogin(login);
+            String account = ViewUtils.getTextViewContent(etLoginUsername);
+            String password = ViewUtils.getTextViewContent(etLoginPwd);
+            basePresenter.performLogin(account, password);
         }
         IMEUtils.hide(getActivity());
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
@@ -624,6 +596,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void loginResult(int code) {
         if (code == JError.ErrorOK) {
+            hideLoading();
             if (!(getActivity() instanceof NewHomeActivity))
                 getActivity().finish();
             else {
@@ -645,10 +618,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
             resetView();
-            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "")
-                    .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                    .subscribe(ret -> {
-                    }, AppLogger::e);
+            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");
         }
     }
 
@@ -862,11 +832,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     }
 
-    @Override
-    public void authorizeResult() {
-        ToastUtil.showNegativeToast("authorize failed");
-    }
-
     //回显
     @Override
     public void reShowAccount(String account) {
@@ -1002,11 +967,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onDestroy() {
         super.onDestroy();
         clearSomeThing();
-        SinaLogin.release();
-        TencentInstance.release();
-        TwitterInstance.release();
-        FacebookInstance.release();
-        OpenLoginHelper.release();
+////        SinaLogin.release();
+//        TencentInstance.release();
+//        TwitterInstance.release();
+//        FacebookInstance.release();
+////        OpenLoginHelper.release();
     }
 
     @Override
@@ -1081,47 +1046,40 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        SsoHandler sinaCallBack = SinaLogin.getInstance(getActivity()).mSsoHandler;
-
-        if (sinaCallBack != null) {
-            sinaCallBack.authorizeCallBack(requestCode, resultCode, data);
-            return;
-        }
-
-        if (requestCode == Constants.REQUEST_LOGIN ||
-                requestCode == Constants.REQUEST_APPBAR) {
-            Tencent.onActivityResultData(requestCode, resultCode, data, TencentInstance.getInstance(getActivity()).listener);
-            return;
-        }
-
-        if (PreferencesUtils.getBoolean(JConstant.TWITTER_INIT_KEY, false)) {
-            TwitterAuthClient twitterBack = TwitterInstance.getInstance().twitterAuthClient;
-            if (twitterBack != null) {
-                twitterBack.onActivityResult(requestCode, resultCode, data);
-            }
-            PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY, false);
-        }
-
-        if (PreferencesUtils.getBoolean(JConstant.FACEBOOK_INIT_KEY, false)) {
-            CallbackManager faceBookBackObj = FacebookInstance.getInstance().callbackManager;
-            if (faceBookBackObj != null) {
-                faceBookBackObj.onActivityResult(requestCode, resultCode, data);
-            }
-            PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY, false);
-        }
         super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
     }
 
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        if (isAdded()) {
+            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        }
     }
 
     @Override
     public void hideLoading() {
-        if (LoadingDialog.isShowing(getFragmentManager())) {
+        if (isAdded() && LoadingDialog.isShowing(getFragmentManager())) {
             LoadingDialog.dismissLoading(getFragmentManager());
+        }
+    }
+
+    @Override
+    public Activity getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
+    public void onAuthenticationResult(int code) {
+        if (code == 0) {
+
+        } else if (code == -1) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+            hideLoading();
+        } else if (code == 1) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_DeleteSucces));
+            hideLoading();
         }
     }
 }

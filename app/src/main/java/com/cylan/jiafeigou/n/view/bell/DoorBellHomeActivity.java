@@ -222,7 +222,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     private void startLoadData(boolean asc, long version) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
         mIsLastLoadFinish = false;
         presenter.fetchBellRecordsList(asc, version);
     }

@@ -8,14 +8,24 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="dialog" parent="Theme.AppCompat.Dialog">
+    <style name="dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowFrame">@null</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="share_style" parent="CamActivityTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 
     <style name="AppSplash" parent="AppTheme">
@@ -197,7 +207,7 @@
         <item name="android:scrollHorizontally">true</item>
     </style>
 
-    <style name="dialog_activity_style" parent="@android:style/Theme.Holo.Light.Dialog">
+    <style name="dialog_activity_style" parent="@style/Theme.AppCompat.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowTitleBackgroundStyle">@android:color/transparent</item>
         <!--<item name="windowActionBar">false</item> -->

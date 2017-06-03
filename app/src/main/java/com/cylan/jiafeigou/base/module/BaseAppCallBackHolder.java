@@ -325,6 +325,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetVideoShareUrl(String s) {
         AppLogger.d(String.format(Locale.getDefault(), "OnGetVideoShareUrl:%s", s));
+        RxBus.getCacheInstance().post(new RxEvent.GetVideoShareUrlEvent(s));
     }
 
     @Override
