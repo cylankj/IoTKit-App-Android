@@ -111,6 +111,12 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                    UdpConstant.PORT,
+                    setWifi.toBytes());
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                    UdpConstant.PORT,
+                    setWifi.toBytes());
             AppLogger.i(TAG + new Gson().toJson(setWifi));
         } catch (JfgException e) {
             e.printStackTrace();

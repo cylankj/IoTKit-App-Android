@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
+import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindRsCamActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
@@ -233,6 +234,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 if (JFGRules.isRS(iPid)) {
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindRsCamActivity.class));
+                } else if (JFGRules.isPan720(iPid)) {
+                    if (getActivity() != null)
+                        startActivity(new Intent(getActivity(), BindPanoramaCamActivity.class));
                 } else if (JFGRules.isCamera(iPid)) {
                     if (getActivity() != null)
                         startActivity(new Intent(getActivity(), BindCamActivity.class));

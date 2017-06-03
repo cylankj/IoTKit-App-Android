@@ -15,6 +15,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.rd.PageIndicatorView;
+import com.rd.animation.type.AnimationType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +27,8 @@ import butterknife.ButterKnife;
 public class GuideFragmentV3_2 extends Fragment {
     @BindView(R.id.v_pager)
     HackyViewPager viewPager;
+    @BindView(R.id.pageIndicatorView)
+    PageIndicatorView pageIndicatorView;
 
     public static GuideFragmentV3_2 newInstance() {
         return new GuideFragmentV3_2();
@@ -55,13 +59,23 @@ public class GuideFragmentV3_2 extends Fragment {
                 if (position == 3) {
                     PreferencesUtils.putBoolean(JConstant.KEY_FRESH, false);
                     /**
-                     * 删除前面三张,无法回去了.
+                     * 锁住
                      */
                     viewPager.setLocked(true);
+                    pageIndicatorView.setVisibility(View.GONE);
                 }
             }
         });
         viewPager.setAdapter(viewAdapter);
+        pageIndicatorView.setAnimationType(AnimationType.WORM);
+        pageIndicatorView.setViewPager(viewPager);
+        pageIndicatorView.setCount(3);
+        pageIndicatorView.setRadius(getResources().getDimension(R.dimen.y4));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     private class SimpleAdapter extends FragmentPagerAdapter {

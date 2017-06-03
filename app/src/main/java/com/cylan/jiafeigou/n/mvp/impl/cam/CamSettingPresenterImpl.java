@@ -210,6 +210,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
+    public void enableAp() {
+        AppLogger.e("还没实现");
+    }
+
+    @Override
     public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Subscription subscription = Observable.just(value)
                 .subscribeOn(Schedulers.io())

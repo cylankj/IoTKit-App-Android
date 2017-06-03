@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,11 +11,15 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -115,7 +120,17 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
 
     @OnClick(R.id.tv_setting_unbind)
     public void unBindDevice() {
-        presenter.unBindDevice();
+        if (NetUtils.getJfgNetType() == 0) {
+            ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+            return;
+        }
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
+                getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
+                getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
+                    presenter.unBindDevice();
+                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override

@@ -1,24 +1,36 @@
 package com.cylan.jiafeigou.ads;
 
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -52,30 +64,45 @@ public class AdsStrategy {
                             RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
                                     .first()
                                     .subscribeOn(Schedulers.newThread())
-                                    .delay(3, TimeUnit.SECONDS)
+                                    .delay(10, TimeUnit.SECONDS)
                                     .subscribe(ret -> {
                                         Log.d("AdsStrategy", "初始化成功'AdsStrategy,手动结束'");
                                         throw new RxEvent.HelperBreaker();
                                     }, throwable -> {
                                         //手动结束订阅
-//                                        try {
-//                                            cmd.GetAdPolicy(JFGRules.getLanguageType(ContextUtils.getContext()),
-//                                                    PackageUtils.getAppVersionName(ContextUtils.getContext()),
-//                                                    getResolutionForAds());
-//                                            AppLogger.d("开始获取广告");
-//                                            RxBus.getCacheInstance().removeStickyEvent(AdsStrategy.AdsDescription.class);
-//                                        } catch (JfgException e) {
-//                                            if (BuildConfig.DEBUG)
-//                                                throw new IllegalArgumentException("出错了");
-//                                        }
+                                        try {
+                                            cmd.GetAdPolicy(JFGRules.getLanguageType(ContextUtils.getContext()),
+                                                    PackageUtils.getAppVersionName(ContextUtils.getContext()),
+                                                    getResolutionForAds());
+                                            AppLogger.d("开始获取广告");
+                                            RxBus.getCacheInstance().removeStickyEvent(AdsStrategy.AdsDescription.class);
+                                        } catch (JfgException e) {
+                                            if (BuildConfig.DEBUG)
+                                                throw new IllegalArgumentException("出错了");
+                                        }
                                     });
                         }
                         return null;
                     })
-                    .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(AdsStrategy.AdsDescription.class)
+                    .flatMap(ret -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AdsRsp.class)
                             .first()
-                            .flatMap(adsDescription -> {
-                                AppLogger.d("广告啊:" + adsDescription);
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .flatMap(adsRsp -> {
+                                AppLogger.d("广告啊:" + adsRsp);
+                                String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
+                                if (!TextUtils.isEmpty(content)) {
+                                    //判断是否同一个广告
+                                    try {
+                                        AdsStrategy.AdsDescription description = new Gson().fromJson(content, AdsStrategy.AdsDescription.class);
+                                        if (!TextUtils.equals(description.url, adsRsp.picUrl)) {
+                                            try2DownloadAds(convert(adsRsp));
+                                        }
+                                    } catch (Exception e) {
+                                        try2DownloadAds(convert(adsRsp));
+                                    }
+                                } else {
+                                    try2DownloadAds(convert(adsRsp));
+                                }
                                 return null;
                             }))
                     .subscribe(ret -> {
@@ -83,7 +110,100 @@ public class AdsStrategy {
         }
     }
 
-    public static class AdsDescription implements Parcelable{
+    private void try2DownloadAds(AdsDescription description) {
+        //没有可以先后台下载,必须在主线程调用
+        if (description == null || TextUtils.isEmpty(description.url)) return;
+        Glide.with(ContextUtils.getContext())
+                .load(description.url)
+                //加上签名
+//                .signature(new StringSignature(String.valueOf(description.expireTime)))
+                .into(new SimpleTarget<GlideDrawable>() {
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        AppLogger.d("广告下载失败: " + MiscUtils.getErr(e));
+                        //表示找不到.
+                    }
+
+                    @Override
+                    public void onDestroy() {
+                        super.onDestroy();
+                    }
+
+                    @Override
+                    public void onLoadCleared(Drawable placeholder) {
+                        super.onLoadCleared(placeholder);
+                    }
+
+                    @Override
+                    public void onStop() {
+                        super.onStop();
+                    }
+
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        //下载成功,才发出
+                        AppLogger.d("广告下载成功: ");
+                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC, new Gson().toJson(description));
+                    }
+                });
+    }
+
+    private AdsDescription convert(RxEvent.AdsRsp adsRsp) {
+        AdsDescription description = new AdsDescription();
+        description.url = adsRsp.picUrl;
+        description.tagUrl = adsRsp.tagUrl;
+        description.expireTime = adsRsp.time;
+        return description;
+    }
+
+    /**
+     * 是否显示广告
+     *
+     * @return
+     */
+    public Observable<AdsStrategy.AdsDescription> needShowAds() {
+        return Observable.just("check and get ads")
+                .subscribeOn(Schedulers.newThread())
+                .map(s -> {
+                    //1.广告页仅在加菲狗版本、中国大陆地区(简体中文)版本显示，其余版本屏蔽。
+                    //2.在广告投放时间期限内，每个用户看到的广告展示次数最多为三次，广告展示次数满三次后不再显示。
+                    int l = JFGRules.getLanguageType(ContextUtils.getContext());
+                    if (l != JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
+                        //非简体中文
+                        return null;
+                    }
+                    String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
+                    if (TextUtils.isEmpty(content)) {
+                        AdsStrategy.getStrategy().fetchAds();
+                        return null;
+                    }
+                    try {
+                        AdsStrategy.AdsDescription description = new Gson().fromJson(content, AdsStrategy.AdsDescription.class);
+                        if (description != null) {
+                            //展示两次
+                            if (description.showCount > 2) {
+                                //不需要主动删,因为服务器不会帮忙处理.需要本地记录显示过的.
+//                                PreferencesUtils.remove(JConstant.KEY_ADD_DESC);
+                                AdsStrategy.getStrategy().fetchAds();
+                                return null;
+                            }
+                            //过期了
+                            if (System.currentTimeMillis() / 1000 > description.expireTime) {
+//                                PreferencesUtils.remove(JConstant.KEY_ADD_DESC);
+                                AdsStrategy.getStrategy().fetchAds();
+                                return null;
+                            }
+                            return description;
+                        } else return null;
+                    } catch (Exception e) {
+                        AdsStrategy.getStrategy().fetchAds();
+                        return null;
+                    }
+                });
+    }
+
+    public static class AdsDescription implements Parcelable {
         /**
          * 图片链接
          */

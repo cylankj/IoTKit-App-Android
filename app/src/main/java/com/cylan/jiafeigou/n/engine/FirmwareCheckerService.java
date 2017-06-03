@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -36,7 +34,6 @@ import okhttp3.Response;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -117,8 +114,8 @@ public class FirmwareCheckerService extends Service {
                 tryStopSelf();
                 return;
             }
-            //全景设备不显示
-            if (JFGRules.isPanoramicCam(device.pid)) {
+            //不需要升级的
+            if (!JFGRules.showFirmware(device.pid)) {
                 tryStopSelf();
                 return;
             }

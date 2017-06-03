@@ -181,7 +181,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             } else {
                 //非 AP 模式
                 bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_wifi);
-                bannerConnectionText.setText(R.string.wifi_connection);
+                bannerConnectionText.setText(".....");
             }
         }
     }
@@ -596,7 +596,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         presenter.switchVideoResolution(move(speedMode, false));
     }
 
-    private int move(@SPEED_MODE int mode, boolean next) {
+    private
+    @SPEED_MODE
+    int move(@SPEED_MODE int mode, boolean next) {
         switch (mode) {
             case SPEED_MODE.NORMAL:
                 return next ? SPEED_MODE.HD : SPEED_MODE.HD;
@@ -883,17 +885,17 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case 150://低电量
                 AppLogger.d("设备电量过低");
                 bottomPanelPhotoGraphItem.setEnabled(true);
-                ToastUtil.showNegativeToast("设备电量过低");
+                ToastUtil.showNegativeToast(getString(R.string.DOOR_LOWBETTERY));
                 break;
             case 2003://sd 卡没有容量
                 AppLogger.d("SD 卡内存已满");
                 bottomPanelPhotoGraphItem.setEnabled(true);
-                ToastUtil.showNegativeToast("SD卡存储空间已满");
+                ToastUtil.showNegativeToast(getString(R.string.Tap1_SDCardFullyTips));
                 break;
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
                 bottomPanelPhotoGraphItem.setEnabled(true);
-                ToastUtil.showNegativeToast("未检测到SD卡");
+                ToastUtil.showNegativeToast(getString(R.string.Tap1_Camera_NoSDCardTips));
                 break;
             case 2007://正在录像
                 break;

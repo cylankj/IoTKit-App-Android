@@ -41,6 +41,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -99,6 +100,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     CustomToolbar customToolbar;
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
+    @BindView(R.id.sv_setting_wired)
+    SettingItemView0 svSettingWired;
+    @BindView(R.id.sv_setting_open_ap)
+    SettingItemView0 svSettingOpenAp;
     private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -430,7 +435,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
-        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileLayout(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
@@ -456,7 +461,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSetting110v.setVisibility(View.GONE);
 
         /////////////////////////旋转/////////////////////////////////////////
-        if (JFGRules.isPanoramicCam(device.pid)) {
+        if (JFGRules.showRotate(device.pid)) {
             svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
             int state = device.$(DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
@@ -484,7 +489,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (JFGRules.isShareDevice(uuid)) {
             sbtnSettingSight.setVisibility(View.GONE);
         }
-        if (JFGRules.isPanoramicCam(device.pid)) {
+        if (JFGRules.showSight(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
             try {
                 String dpPrimary = device.$(509, "0");
@@ -494,6 +499,36 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSettingSight.setVisibility(View.GONE);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
+
+        //有线模式,开启AP
+        svSettingWired.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
+        svSettingWired.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (!isChecked) {//关闭
+                AlertDialogManager.getInstance().showDialog(this, "closeWired", getString(R.string.CloseTips),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            ToastUtil.showToast("what");
+                            svSettingWired.setChecked(true);
+                        }, getString(R.string.CANCEL), null);
+            }
+        });
+        //不可用
+        //1、AP直连的情况下。
+        //2、设备离线，没有连接任何网络。
+        //3、连接公网。
+        svSettingOpenAp.setVisibility(JFGRules.showEnableAp(device.pid) ? View.VISIBLE : View.GONE);
+        boolean apDirect = MiscUtils.isAPDirect(device.$(202, ""));
+        boolean online = JFGRules.isDeviceOnline(net);
+        svSettingOpenAp.setEnabled(!apDirect || !online);
+        svSettingOpenAp.setOnClickListener(v -> {
+            if (NetUtils.getJfgNetType() == 0) {
+                ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                return;
+            }
+            AlertDialogManager.getInstance().showDialog(CamSettingActivity.this, "enableAP",
+                    getString(R.string.CmdSend), getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        basePresenter.enableAp();
+                    });
+        });
     }
 
     @Override

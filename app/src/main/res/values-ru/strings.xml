@@ -68,7 +68,7 @@
   <string name="CREATING">Загрузка&#8230;</string>
   <string name="CURRENT_PWD">Текущий Пароль</string>
   <string name="CancelingTips">Отмена&#8230;</string>
-  <string name="Cellular_Data_Method">Мобильные данные, пожалуйста, обратитесь к следующему методу:</string>
+  <string name="Cellular_Data_Method">Мобильные данные:</string>
   <string name="Cellular_Data_Set_Up">Включите мобильные данные в устройстве, используйте нижеуказанные настройки: Настройки> Мобильные данные</string>
   <string name="ChargingLight">Зарядка свет</string>
   <string name="ChargingLight_BlueFlashing">Синий мигающий: Зарядка</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">Светодиодный индикатор состояния</string>
   <string name="DailyGreatTips_Full">Число коллекции Ежедневное чудо достиг верхнего предела 50, собирается удалять?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Удалить общий доступ?</string>
   <string name="Device_Disconnected">Отключен</string>
+  <string name="Dont_Show_Again">Больше не показывать</string>
   <string name="Download_Then_Share">Загрузите видео, а затем отправьте его</string>
   <string name="Downloading">Видео загружается</string>
   <string name="EDIT_IMAGE">Редактировать</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">Кажд. пт</string>
   <string name="FRI_2">Пт</string>
   <string name="FROME">От</string>
+  <string name="Fail_Record">Не удалось записать</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Не удалось отправить сообщение</string>
   <string name="Feedback_Sending">Отправка &#8230;</string>
+  <string name="Formatting">форматирование</string>
   <string name="GENERAL">Основные настройки</string>
   <string name="GET_CODE">Отправить</string>
   <string name="GIVE_UP">Выход</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">Выход не удалит информацию аккуанта, вы сможете войти снова</string>
   <string name="LOW_BATTERY">Низкий уровень заряда</string>
   <string name="Loaded">Hагруженный</string>
+  <string name="Logo_Selection">Никто</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Уведомить меня, когда дверной магнитный переключатель вкл./выкл.</string>
   <string name="MAGNETISM_OFF">Закрыто</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Добавить снова</string>
   <string name="RE_ADD_LABEL">Обновление программного обеспечения завершено</string>
   <string name="RIGN_SUC">Регистрация прошла успешно</string>
+  <string name="Record_Operate">Не может работать во время записи</string>
   <string name="Request_TimeOut">Таймаут</string>
   <string name="Reset_Suc">Уже мелькали в красном</string>
   <string name="RuiShi_Guide">Используйте иглу для длительного нажатия кнопки RESET в течение 3 с</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">совместное управление</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">переключитесь в режим открытого для просмотра содержимого съемки</string>
+  <string name="Switch_Mode_Pop">переключите текущее содержание сети съемки в режиме открытой</string>
   <string name="TAKE_PHOTO">Сделать фото</string>
   <string name="TERM_OF_USE">Условия и конфиденциальность</string>
   <string name="THEME_DELETED">Местоположение %s удалено</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">Почты активации отправлен %s, пожалуйста, нажмите на следующую ссылку, чтобы активировать учетную запись.</string>
   <string name="Tap0_wrongcode">Ошибка подтверждения</string>
   <string name="Tap1_AddDeviceTips">Нахмите\"+\"для добавления устройства</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Короткое нажатие кнопки WiFi в течение 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Подождите, пока индикатор мерцать синим цветом</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Длительное нажатие кнопки WiFi в течение 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Подключиться к сети Wi&#8211;Fi</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">Нет подключения к сети,щелчок Обновить</string>
   <string name="Tap1_Device_UpgradeTips">Найти новую прошивку устройства, обновлять или нет?</string>
   <string name="Tap1_Disconnected">Отсоединившись</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Отсоединившись, проверьте сетевое подключение.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Отсоединившись, проверьте сетевое подключение>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Отсоединившись, проверьте сетевое подключение.</string>
   <string name="Tap1_DoorFun_VoiceTips">Звуки будут вне от приемника</string>
   <string name="Tap1_DoorFun_Waitting">Ожидание&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Скачать прошивку не удалось</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">потребности карты SD для инициализации и данные будут очищены, обязательно продолжить?</string>
   <string name="Tap1_NewFirmware">Новая прошивка</string>
   <string name="Tap1_NoMessages">Нет сообщений</string>
-  <string name="Tap1_Offline">Автономно, повторите попытку.</string>
+  <string name="Tap1_Offline">Автономно, повторите попытку>></string>
   <string name="Tap1_OutdoorMode">Наружный режим</string>
   <string name="Tap1_OutdoorMode_Opened">Открытый режим был открыт</string>
   <string name="Tap1_Refreshed">Refreshed</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">Ошибка удаления</string>
   <string name="Tips_Device_ConnectFail">Не удалось подключиться</string>
   <string name="Tips_Device_TimeoutRetry">Тайм&#8211;аут, пожалуйста, попробуйте еще раз</string>
+  <string name="Tips_ShortVideo">Длительное нажатие для записи короткого видео</string>
   <string name="Tips_SureDelete">Уверенный удалить?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Нет ответа, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATE_FAIL">Подключение устройства не удалось, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATING_BUTTON">Обновляется</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">Мигает красный и синий: обновление</string>
   <string name="WiFiLight_SteadyBlue">Устойчивый синий: WiFi онлайн</string>
   <string name="Wifi_Hotspot">В устройстве [Настройки> Беспроводная ЛВС], выберите точку доступа Wi&#8211;Fi для подключения.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi сеть, пожалуйста, обратитесь к следующим методам:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi сеть:</string>
   <string name="Wifi_Set_Up">Перейти к настройке</string>
   <string name="Word_Hours">часов</string>
   <string name="XX_DISCOVERY">%s Перемещение объектов</string>
@@ -943,8 +956,7 @@
   <string name="getting">Пожалуйста, подождите&#8230;</string>
   <string name="has_copy">Скопировано</string>
   <string name="has_not_sdcard">карта памяти microSD не найдена</string>
-  <string name="help_url">https://%s:8081/helps/ru.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">На Вашей карте памяти microSD не хватает места</string>
   <string name="is_connecting_video">Подключение к камере</string>
   <string name="is_creating">Добавление</string>

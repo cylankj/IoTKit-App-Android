@@ -670,13 +670,11 @@
         <activity
             android:name=".ads.AdsActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme" />
         <activity
             android:name=".ads.AdsDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme" />
 

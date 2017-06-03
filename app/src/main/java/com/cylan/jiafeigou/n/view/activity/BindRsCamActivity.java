@@ -61,6 +61,7 @@ public class BindRsCamActivity extends BaseBindActivity {
         Intent intent = getIntent();
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.RuiShi_Name));
+        intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
         if (subscription != null) subscription.unsubscribe();
     }

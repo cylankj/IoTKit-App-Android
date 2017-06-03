@@ -42,6 +42,8 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     CustomToolbar customToolbar;
     @BindView(R.id.tv_guide_main_content)
     TextView tvGuideMainContent;
+    @BindView(R.id.iv_explain_gray)
+    ImageView ivExplainGray;
     private AFullBind aFullBind;
 
     @Override
@@ -50,6 +52,13 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         setContentView(R.layout.activity_bind_guide);
         ButterKnife.bind(this);
         ViewUtils.setViewMarginStatusBar(customToolbar);
+        if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                getString(R.string._720PanoramicCamera))) {
+            ivExplainGray.setVisibility(View.VISIBLE);
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
+        }
     }
 
     @Override
@@ -111,5 +120,12 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    @OnClick(R.id.iv_explain_gray)
+    public void onExplain() {
+        PanoramaExplainFragment fragment = PanoramaExplainFragment.newInstance(null);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 }

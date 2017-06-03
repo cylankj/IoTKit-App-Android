@@ -113,6 +113,39 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public void start() {
         super.start();
         FirmwareCheckerService.checkVersion(uuid);
+        getBatterySub();
+    }
+
+    /**
+     * 1.需要获取设备电量并且,一天一次提醒弹窗.
+     * 2.
+     *
+     * @return
+     */
+    private Subscription getBatterySub() {
+        //按照首页过滤条件
+        if (JFGRules.showBattery(getDevice().pid)) {
+            Observable.just("getBatterySub")
+                    .subscribeOn(Schedulers.newThread())
+                    .filter(ret -> NetUtils.getJfgNetType() > 0)//在线
+                    .filter(ret -> !JFGRules.isShareDevice(uuid))//非分享
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        Device device = getDevice();
+                        Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
+                        DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+                        if (battery < 20 && net.net > 0) {//电量低
+                            DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
+                            if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
+                                option.lastLowBatteryTime = System.currentTimeMillis();
+                                device.setOption(option);
+                                BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
+                                mView.onBatteryDrainOut();
+                            }
+                        }
+                    }, AppLogger::e);
+        }
+        return null;
     }
 
     private Subscription checkNewVersionRsp() {

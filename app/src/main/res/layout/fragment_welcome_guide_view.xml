@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?><!--<merge xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:card="http://schemas.android.com/apk/res-auto"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:animateLayoutChanges="true"--><!--android:background="@drawable/bg_welcome_page"--><!--android:clickable="true">-->
-<com.cylan.jiafeigou.misc.HackyViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/v_pager"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:attrs="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:clickable="true" />
+    android:layout_height="match_parent">
+
+    <com.cylan.jiafeigou.misc.HackyViewPager
+        android:id="@+id/v_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:clickable="true" />
+
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/y35"
+        attrs:piv_animationType="WORM"
+        attrs:piv_viewPager="@id/v_pager" />
+</FrameLayout>
+
 
     <!--<com.cylan.jiafeigou.widget.GuideIndicatorLayout--><!--android:background="#eee000"--><!--android:msgId="@+msgId/v_guide_indicator"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="bottom|center_horizontal"--><!--android:layout_marginBottom="@dimen/y50" />--><!--</merge>-->

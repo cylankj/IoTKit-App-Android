@@ -68,7 +68,7 @@
   <string name="CREATING">作成中、しばらくお待ちください&#8230;</string>
   <string name="CURRENT_PWD">現在のパスワードを入力してください</string>
   <string name="CancelingTips">キャンセル中&#8230;</string>
-  <string name="Cellular_Data_Method">モバイルデータは、次の方法を参照してください：</string>
+  <string name="Cellular_Data_Method">モバイルデータネットワーク：</string>
   <string name="Cellular_Data_Set_Up">端末でモバイルデータを有効にするには、以下の方法で[設定]> [モバイルデータ]を使用してください</string>
   <string name="ChargingLight">充電ライト</string>
   <string name="ChargingLight_BlueFlashing">青色の点滅：充電</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">デバイスのライト状態説明</string>
   <string name="DailyGreatTips_Full">毎日の見どころのコレクションは削除に行くかどうか、50の上限に達していますか？</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">共有を削除しますか？</string>
   <string name="Device_Disconnected">接続が切断されました</string>
+  <string name="Dont_Show_Again">再度表示しない</string>
   <string name="Download_Then_Share">動画をダウンロードして共有してください</string>
   <string name="Downloading">ビデオがダウンロードされています</string>
   <string name="EDIT_IMAGE">画像編集</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">毎週金曜日</string>
   <string name="FRI_2">金曜日</string>
   <string name="FROME">開始時刻</string>
+  <string name="Fail_Record">記録に失敗する</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">メッセージの送信に失敗しました</string>
   <string name="Feedback_Sending">送信&#8230;</string>
+  <string name="Formatting">書式設定</string>
   <string name="GENERAL">一般</string>
   <string name="GET_CODE">検証コードをゲット</string>
   <string name="GIVE_UP">キャンセル</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">ログアウトによりアカウント情報が削除されません。再度ログインできます</string>
   <string name="LOW_BATTERY">バッテリー残量が低いです</string>
   <string name="Loaded">ロードされた</string>
+  <string name="Logo_Selection">なし</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">電磁式ドアセンサーが開閉する時にお知らせします</string>
   <string name="MAGNETISM_OFF">オフ</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">再度追加</string>
   <string name="RE_ADD_LABEL">ソフトウェアのアップデートが完了しました</string>
   <string name="RIGN_SUC">登録完了</string>
+  <string name="Record_Operate">録音中は操作できません</string>
   <string name="Request_TimeOut">タイムアウト</string>
   <string name="Reset_Suc">既に赤に点滅</string>
   <string name="RuiShi_Guide">ニードルを使用してRESETボタンを3秒間押し続けます</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">共有管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">撮影モード屋外のビューに切り替えてください</string>
+  <string name="Switch_Mode_Pop">現在のネットワークは、撮影モード屋外のビューに切り替えてください</string>
   <string name="TAKE_PHOTO">一枚写真を撮る</string>
   <string name="TERM_OF_USE">ユーザー使用契約書</string>
   <string name="THEME_DELETED">位置\"%s\"削除しました</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">アクティベーションメールが%sに送信されました。リンクをクリックしてアカウントを有効にしてください。</string>
   <string name="Tap0_wrongcode">確認コードが間違いました</string>
   <string name="Tap1_AddDeviceTips">右上の「＋」をクリックし、デバイスを追加しましょう</string>
+  <string name="Tap1_AddDevice_CameraTipShort">短押し1秒のためのWiFiボタン</string>
   <string name="Tap1_AddDevice_CameraTips">インジケータが青色で点滅されるまで待ち</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">長押し3秒のためのWiFiボタン</string>
   <string name="Tap1_AddDevice_ConnectWifi">WI&#8211;FIネットワークを接続します</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">いいえ、ネットワーク接続、[更新]をクリックしません</string>
   <string name="Tap1_Device_UpgradeTips">更新するかどうか、デバイスの新しいファームウェアを見つける？</string>
   <string name="Tap1_Disconnected">接続が切断されました</string>
-  <string name="Tap1_DisconnectedPleaseCheck">接続が切断されました。ネットワーク接続を確認してください。</string>
+  <string name="Tap1_DisconnectedPleaseCheck">接続が切断されました。ネットワーク接続を確認してください>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">接続が切断されました。ネットワーク接続を確認してください。</string>
   <string name="Tap1_DoorFun_VoiceTips">音声はスピーカーから放送します。</string>
   <string name="Tap1_DoorFun_Waitting">呼び出しの応答を待ってます。</string>
   <string name="Tap1_DownloadFirmwareFai">ファームウェアのダウンロードに失敗しました</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">SDカードを初期化してデータをクリアする必要がありますか？</string>
   <string name="Tap1_NewFirmware">新しいファームウェア</string>
   <string name="Tap1_NoMessages">メッセージはありません</string>
-  <string name="Tap1_Offline">オフラインです。再接続してください。</string>
+  <string name="Tap1_Offline">オフラインです。再接続してください>></string>
   <string name="Tap1_OutdoorMode">屋外モード</string>
   <string name="Tap1_OutdoorMode_Opened">屋外モードが開かれています</string>
   <string name="Tap1_Refreshed">リフレッシュ</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">削除に失敗しました</string>
   <string name="Tips_Device_ConnectFail">接続に失敗した</string>
   <string name="Tips_Device_TimeoutRetry">タイムアウト、再試行してください</string>
+  <string name="Tips_ShortVideo">長押しして短いビデオを録画する</string>
   <string name="Tips_SureDelete">必ず削除して？</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">デバイスに反応がありません。再試行してください</string>
   <string name="UPDATE_FAIL">デバイスの接続に失敗しました、再試行してください</string>
   <string name="UPDATING_BUTTON">アップグレード中</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">赤と青の点滅：アップデート中</string>
   <string name="WiFiLight_SteadyBlue">青色の常時点灯：WiFiオンライン</string>
   <string name="Wifi_Hotspot">[設定]> [無線LAN]のデバイスで、接続するWi&#8211;Fiホットスポットを選択してください。</string>
-  <string name="Wifi_Method">Wi&#8211;Fiネットワークの場合は、次の方法を参照してください。</string>
+  <string name="Wifi_Method">Wi&#8211;Fiネットワーク：</string>
   <string name="Wifi_Set_Up">セットアップに行く</string>
   <string name="Word_Hours">時間</string>
   <string name="XX_DISCOVERY">\"%s\"に移動する物体があります</string>
@@ -943,8 +956,7 @@
   <string name="getting">獲得中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">Micro SDカードを検出できません</string>
-  <string name="help_url">https://%s:8081/helps/ja.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">Micro SDカードが使用できるスペースがない場合、古い動画を順番に削除する</string>
   <string name="is_connecting_video">接続中</string>
   <string name="is_creating">保存中</string>

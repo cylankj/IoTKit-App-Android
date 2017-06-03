@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -264,7 +265,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      */
     private Observable<IDPTaskResult> getDateListQuery() {
         DPEntity entity = new DPEntity();
-        entity.setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount());
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        entity.setAccount(account == null ? "" : account.getAccount());
         entity.setUuid(uuid);
         entity.setAction(DBAction.CAM_DATE_QUERY);
         try {

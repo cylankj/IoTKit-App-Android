@@ -31,10 +31,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragmentV3_2;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
@@ -60,6 +57,8 @@ public class SmartcallActivity extends NeedLoginActivity
     ViewSwitcher welcomeSwitcher;
     @Nullable
     private SplashContract.Presenter presenter;
+
+    private boolean showOnceInCircle = true;
 
     //这个页面先请求 sd卡权限
     @Override
@@ -112,18 +111,28 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public void onBackPressed() {
-        View view = findViewById(R.id.welcome_frame_container);
-        if (view != null) {
-            View beforeLoginLayout = ((ViewGroup) view).getChildAt(0);
-            //此处逻辑和GuideFragment有关
-            if (beforeLoginLayout != null
-                    && beforeLoginLayout.getId() == R.id.rLayout_before_login
-                    && ((ViewGroup) view).getChildCount() == 1) {
-                //只有 beforeLoginFragment页面
-                finish();
-            } else {
+        //3.1.0
+//        View view = findViewById(R.id.welcome_frame_container);
+//        if (view != null) {
+//            View beforeLoginLayout = ((ViewGroup) view).getChildAt(0);
+//            //此处逻辑和GuideFragment有关
+//            if (beforeLoginLayout != null
+//                    && beforeLoginLayout.getId() == R.id.rLayout_before_login
+//                    && ((ViewGroup) view).getChildCount() == 1) {
+//                //只有 beforeLoginFragment页面
+//                finish();
+//            } else {
+//                getSupportFragmentManager().popBackStack();
+//            }
+//        }
+        //3.2.0
+        View view = findViewById(android.R.id.content);
+        if (view != null && ((ViewGroup) view).getChildCount() >= 2) {
+            if (((ViewGroup) view).getChildAt(1).getId() == R.id.rLayout_login) {
                 getSupportFragmentManager().popBackStack();
             }
+        } else {
+            finishExt();
         }
     }
 
@@ -138,17 +147,6 @@ public class SmartcallActivity extends NeedLoginActivity
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.welcome_frame_container, fragment)
                 .commitAllowingStateLoss();
-    }
-
-    public void signInFirst(Bundle extra) {
-        if (extra == null)
-            extra = new Bundle();
-        extra.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.welcome_frame_container);
-        extra.putInt(JConstant.KEY_SHOW_LOGIN_FRAGMENT, 1);
-        loginFragment = LoginFragment.newInstance(extra);
-        loginFragment.setArguments(extra);
-        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                loginFragment, R.id.welcome_frame_container, 0);
     }
 
     /**
@@ -166,12 +164,17 @@ public class SmartcallActivity extends NeedLoginActivity
         if (welcomeSwitcher.getDisplayedChild() != 1) welcomeSwitcher.showNext();
         if (isFirstUseApp()) {
             showGuidePage();
-        } else if (!isLogin()) {
+        } else if (!isInLoginPage()) {
             showBeforeLoginPage();
         }
     }
 
-    private boolean isLogin() {
+    /**
+     * 登录页面拉起
+     *
+     * @return
+     */
+    private boolean isInLoginPage() {
         return getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName()) != null;
     }
 
@@ -236,16 +239,22 @@ public class SmartcallActivity extends NeedLoginActivity
         reEnablePermission();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d("onNewIntent", "onNewIntent");
+        if (intent != null && intent.hasExtra(JConstant.KEY_NEED_LOGIN)) {
+            showBeforeLoginPage();
+        }
+    }
+
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
-        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ShouldCheckPermission.class)) {
-            ((BaseApplication) getApplication()).try2init();
-            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ShouldCheckPermission.class);
-        }
         //检查广告的有效性
-        if (presenter != null)
+        if (presenter != null && showOnceInCircle) {
+            showOnceInCircle = false;
             presenter.showAds()
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .flatMap(ret -> {
@@ -255,8 +264,7 @@ public class SmartcallActivity extends NeedLoginActivity
                             AppLogger.d("显示广告");
                             Intent intent = new Intent(SmartcallActivity.this, AdsActivity.class);
                             intent.putExtra(JConstant.KEY_ADD_DESC, ret);
-                            startActivity(intent);
-                            finish();
+                            startActivityForResult(intent, JConstant.CODE_AD_FINISH);
                         } else {
                             //跳过广告
                         }
@@ -264,6 +272,24 @@ public class SmartcallActivity extends NeedLoginActivity
                     })
                     .subscribe(ret -> {
                     }, AppLogger::e);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case JConstant.CODE_AD_FINISH:
+                if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_ON) {
+                    Intent intent = new Intent(this, NewHomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else {
+                    //splashOver
+                    splashOver();
+                    AppLogger.d("进入登录页面");
+                }
+                break;
+        }
     }
 
     @NeedsPermission({Manifest.permission.SYSTEM_ALERT_WINDOW})

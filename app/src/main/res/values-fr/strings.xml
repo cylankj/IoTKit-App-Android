@@ -68,7 +68,7 @@
   <string name="CREATING">Création&#8230;</string>
   <string name="CURRENT_PWD">Saisir le mot de passe actuel</string>
   <string name="CancelingTips">Annulation&#8230;</string>
-  <string name="Cellular_Data_Method">Les données mobiles, se référer à la méthode suivante:</string>
+  <string name="Cellular_Data_Method">Les données mobiles:</string>
   <string name="Cellular_Data_Set_Up">Activer les données mobiles dans l\'appareil, utilisez ci&#8211;dessous, Paramètres> Données mobiles</string>
   <string name="ChargingLight">Lampe de charge</string>
   <string name="ChargingLight_BlueFlashing">Clignotement bleu: charge</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">Voyant indicateur d\'état</string>
   <string name="DailyGreatTips_Full">Collection nombre de Merveilleux de la journée a atteint la limite supérieure de 50, va supprimer?</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">Supprimer partager?</string>
   <string name="Device_Disconnected">Débranché</string>
+  <string name="Dont_Show_Again">Ne plus afficher</string>
   <string name="Download_Then_Share">Téléchargez la vidéo puis partagez</string>
   <string name="Downloading">La vidéo est en cours de téléchargement</string>
   <string name="EDIT_IMAGE">Modifier</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">Tous Les Vendredis</string>
   <string name="FRI_2">Vendredis</string>
   <string name="FROME">De</string>
+  <string name="Fail_Record">Échec de l\'enregistrement</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">Message échoué à envoyer</string>
   <string name="Feedback_Sending">envoi&#8230;</string>
+  <string name="Formatting">Mise en forme</string>
   <string name="GENERAL">Général</string>
   <string name="GET_CODE">Code De Vérification</string>
   <string name="GIVE_UP">Abandonner</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">Se déconnecter du compte n\'entraînera pas de perte de données, vous pourrez vous connecter à nouveau</string>
   <string name="LOW_BATTERY">Batterie faible</string>
   <string name="Loaded">Loaded</string>
+  <string name="Logo_Selection">Aucun</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">Notification de l\'état du détecteur d\'ouverture</string>
   <string name="MAGNETISM_OFF">Fermé</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">Ajouter de nouveau</string>
   <string name="RE_ADD_LABEL">Mise à jour du logiciel est terminée</string>
   <string name="RIGN_SUC">Inscription réussie</string>
+  <string name="Record_Operate">Ne peut pas fonctionner pendant l\'enregistrement</string>
   <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Déjà clignotaient en rouge</string>
   <string name="RuiShi_Guide">Utilisez l\'aiguille pour appuyer longuement sur le bouton RESET pour 3s</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">Partage de la gestion</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Switch_Mode">Passez en mode extérieur pour voir le contenu de la prise de vue</string>
+  <string name="Switch_Mode_Pop">Passez le contenu actuel de la prise de vue réseau au mode extérieur</string>
   <string name="TAKE_PHOTO">Prendre une photo</string>
   <string name="TERM_OF_USE">Conditions et confidentialité</string>
   <string name="THEME_DELETED">%s a été supprimé</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">Le mail d\'activation a été envoyé à %s, s\'il vous plaît cliquer sur le lien pour activer votre compte.</string>
   <string name="Tap0_wrongcode">Code de vérification incorrect</string>
   <string name="Tap1_AddDeviceTips">Cliquez vite sur\"+\"en haut à droite pour ajouter un dispositif</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Appuyez brièvement sur le bouton WiFi pour 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Attendez que l\'indicateur de scintillement en bleu</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">appuyez longuement sur le bouton WiFi pour 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Se connecter au réseau Wi&#8211;Fi</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">Ni connexion réseau, cliquez sur Actualiser</string>
   <string name="Tap1_Device_UpgradeTips">Trouver un nouveau firmware de l\'appareil, à mettre à jour ou pas?</string>
   <string name="Tap1_Disconnected">Déconnecté</string>
-  <string name="Tap1_DisconnectedPleaseCheck">Déconnecté, veuillez vérifier la connexion réseau.</string>
+  <string name="Tap1_DisconnectedPleaseCheck">Déconnecté, veuillez vérifier la connexion réseau>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">Déconnecté, veuillez vérifier la connexion réseau.</string>
   <string name="Tap1_DoorFun_VoiceTips">Sounds seront hors du récepteur</string>
   <string name="Tap1_DoorFun_Waitting">Attendre&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Télécharger firmware a échoué</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">Carte SD doit être initialisé et les données seraient effacées, bien sûr à continuer?</string>
   <string name="Tap1_NewFirmware">Nouveau firmware</string>
   <string name="Tap1_NoMessages">Aucun message</string>
-  <string name="Tap1_Offline">Hors ligne, s\'il vous plaît reconnecter.</string>
+  <string name="Tap1_Offline">Hors ligne, s\'il vous plaît reconnecter>></string>
   <string name="Tap1_OutdoorMode">Mode extérieur</string>
   <string name="Tap1_OutdoorMode_Opened">Mode extérieur a été ouvert</string>
   <string name="Tap1_Refreshed">Refreshed</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">Échec de la suppression</string>
   <string name="Tips_Device_ConnectFail">Connexion échouée</string>
   <string name="Tips_Device_TimeoutRetry">Timeout, essayez à nouveau</string>
+  <string name="Tips_ShortVideo">Appuyez longuement pour enregistrer une courte vidéo</string>
   <string name="Tips_SureDelete">Sure supprimer?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">La caméra ne répond pas, essayer à nouveau</string>
   <string name="UPDATE_FAIL">Échec de connexion de la caméra, essayer à nouveau</string>
   <string name="UPDATING_BUTTON">Mise à jour en cours</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">rouge &amp; bleu Clignotement: mise à jour</string>
   <string name="WiFiLight_SteadyBlue">Steady blue: WiFi en ligne</string>
   <string name="Wifi_Hotspot">Dans l\'appareil [Paramètres> LAN sans fil], choisissez un point d\'accès Wi&#8211;Fi pour vous connecter.</string>
-  <string name="Wifi_Method">Réseau Wi&#8211;Fi, veuillez vous référer aux méthodes suivantes:</string>
+  <string name="Wifi_Method">Wi&#8211;Fi Réseau:</string>
   <string name="Wifi_Set_Up">Aller à la mise en place</string>
   <string name="Word_Hours">Heure</string>
   <string name="XX_DISCOVERY">%s a découvert du mouvement.</string>
@@ -943,8 +956,7 @@
   <string name="getting">Recherche&#8230;</string>
   <string name="has_copy">Dupliqué</string>
   <string name="has_not_sdcard">Carte Micro SD non détectée</string>
-  <string name="help_url">https://%s:8081/helps/fr.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">Mémoire insuffisante sur la carte Micro SD</string>
   <string name="is_connecting_video">Connexion en cours</string>
   <string name="is_creating">Création</string>

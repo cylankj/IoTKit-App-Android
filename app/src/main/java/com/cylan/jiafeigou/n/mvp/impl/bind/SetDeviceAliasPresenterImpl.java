@@ -9,9 +9,9 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -33,9 +33,11 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
         this.uuid = uuid;
     }
 
+    private int count = 0;
 
     @Override
     public void setupAlias(String alias) {
+        count = 0;
         Subscription subscribe = Observable.interval(0, 2, TimeUnit.SECONDS)
                 .timeout(5, TimeUnit.SECONDS)//5s超时
                 .takeUntil(aLong -> {
@@ -47,7 +49,12 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .map((String s) -> {
                     if (s != null && s.trim().length() == 0) return -1;//如果是空格则跳过,显示默认名称
                     try {
+                        count++;
+                        if (count > 5) {
+                            throw new RxEvent.HelperBreaker("超时了");
+                        }
                         int ret = BaseApplication.getAppComponent().getCmd().setAliasByCid(uuid, s);
+                        if (NetUtils.getJfgNetType() == 0) throw new RxEvent.HelperBreaker("无网络");
                         AppLogger.i("setup alias: " + s + ",ret:" + ret);
                         return ret;
                     } catch (JfgException e) {
@@ -58,14 +65,12 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                         .flatMap(setAlias -> Observable.just(setAlias != null
                                 && setAlias.result != null
                                 && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1)))
-                .delay(1000, TimeUnit.MILLISECONDS)
+                .delay(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer result) -> {
                     getView().setupAliasDone(result);
                 }, throwable -> {
-                    if (throwable instanceof TimeoutException) {
-                        getView().setupAliasDone(-1);
-                    }
+                    getView().setupAliasDone(-1);
                     AppLogger.e(throwable);
                 });
         addSubscription(subscribe, "setupAlias");

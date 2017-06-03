@@ -99,8 +99,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             viewCount = 0;
-            startService(new Intent(this, WakeupService.class));
-            try2init();
+            //设计师不需要这个固定通知栏.20170531
+//            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
             PerformanceUtils.startTrace("appStart");
             PerformanceUtils.startTrace("FirstActivity");
@@ -116,19 +116,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.stopTrace("appStart");
         }
     }
-
-    /**
-     * 先检查，是否有读写权限
-     */
-    public void try2init() {
-        if (PermissionUtils.hasSelfPermissions(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-        } else {
-            RxBus.getCacheInstance().postSticky(new RxEvent.ShouldCheckPermission());
-            Log.d("try2init", "try2init failed");
-        }
-    }
-
 
     @Override
     public void onTerminate() {

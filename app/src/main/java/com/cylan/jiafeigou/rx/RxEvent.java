@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -22,9 +23,14 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.cylan.jiafeigou.rx.RxEvent.UpdateType.GOOGLE_PLAY;
+import static com.cylan.jiafeigou.rx.RxEvent.UpdateType._8HOUR;
 
 
 /**
@@ -354,7 +360,6 @@ public class RxEvent {
         }
     }
 
-    @Deprecated
     public static final class BindDeviceEvent {
         public int bindResult;
         public String uuid;
@@ -963,9 +968,6 @@ public class RxEvent {
     public static class ShowWonderPageEvent {
     }
 
-    public static final class ShouldCheckPermission {
-    }
-
     public static class DevicesArrived {
         public List<Device> devices;
 
@@ -1249,8 +1251,21 @@ public class RxEvent {
         }
     }
 
+    @IntDef({
+            GOOGLE_PLAY,
+            _8HOUR,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface UpdateType {
+        int GOOGLE_PLAY = 100;
+        int _8HOUR = 200;
+    }
+
     public static class ApkDownload {
         public String filePath;
+        public
+        @UpdateType
+        int updateType;//google play或者 直接安装
         public RxEvent.CheckVersionRsp rsp;
 
         public ApkDownload(String filePath) {
@@ -1259,6 +1274,11 @@ public class RxEvent {
 
         public ApkDownload setRsp(RxEvent.CheckVersionRsp rsp) {
             this.rsp = rsp;
+            return this;
+        }
+
+        public ApkDownload setUpdateType(@UpdateType int updateType) {
+            this.updateType = updateType;
             return this;
         }
     }
@@ -1331,6 +1351,16 @@ public class RxEvent {
         public AdsRsp setTagUrl(String tagUrl) {
             this.tagUrl = tagUrl;
             return this;
+        }
+
+        @Override
+        public String toString() {
+            return "AdsRsp{" +
+                    "ret=" + ret +
+                    ", time=" + time +
+                    ", picUrl='" + picUrl + '\'' +
+                    ", tagUrl='" + tagUrl + '\'' +
+                    '}';
         }
     }
 }

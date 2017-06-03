@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,9 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX + "id=" + jfgaccount.getAccount(), ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
+        String content = jfgaccount == null ? "God!" :
+                TextUtils.isEmpty(jfgaccount.getAlias()) ? jfgaccount.getAccount() + "!" : jfgaccount.getAlias() + "!";
+        ivUserQrcode.setImageBitmap(Qrcode.createQRImage("Hi," + content, ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
     }
 
     private void initView() {

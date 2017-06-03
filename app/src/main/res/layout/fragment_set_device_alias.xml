@@ -42,7 +42,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:maxLength="12"
+            android:maxLength="24"
             android:paddingLeft="@dimen/x40"
             android:paddingRight="@dimen/x40"
             android:textColor="@color/color_666666"

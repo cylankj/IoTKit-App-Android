@@ -71,6 +71,25 @@
                 hunt:sv_title="@string/WIFI"
                 hunt:sv_v_divider="true" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_wired"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_wifi"
+                hunt:sv_sub_title="cylan608"
+                hunt:sv_switch_visibility="true"
+                hunt:sv_title="@string/WiredMode"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_open_ap"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_wifi"
+                hunt:sv_sub_title="cylan608"
+                hunt:sv_title="@string/EnableAP"
+                hunt:sv_v_divider="true" />
+
             <com.cylan.jiafeigou.widget.SettingItemView1
                 android:id="@+id/sv_setting_device_mobile_network"
                 android:layout_width="match_parent"

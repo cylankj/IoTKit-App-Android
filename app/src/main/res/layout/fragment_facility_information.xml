@@ -150,6 +150,16 @@
                 hunt:sv_title="@string/MAC"
                 hunt:sv_v_divider="true" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_ip"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginStart="@dimen/x6"
+                android:visibility="gone"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/IP_Address"
+                hunt:sv_v_divider="true" />
+
 
             <!-- 系统版本 -->
             <com.cylan.jiafeigou.widget.SettingItemView0

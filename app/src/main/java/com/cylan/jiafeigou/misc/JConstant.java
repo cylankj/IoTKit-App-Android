@@ -117,6 +117,7 @@ public class JConstant {
     public static final java.lang.String KEY_PANORAMA_POP_HINT = "KEY_PANORAMA_POP_HINT";
     public static final String BELL_HOME_LAST_ENTER_TIME = "BELL_HOME_LAST_ENTER_TIME";
 
+    public static final String KEY_COMPONENT_NAME = "key_component";
     public static final int REQ_CODE_ACTIVITY = 1;
     public static final int RESULT_CODE_FINISH = 1;
     public static final int RESULT_CODE_REMOVE_ITEM = 2;
@@ -259,10 +260,10 @@ public class JConstant {
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_online;
         if (JFGRules.isBell(pid))
             return R.drawable.icon_home_doorbell_online;
+        if (JFGRules.isPan720(pid))
+            return R.drawable.home_icon_720camera_online;
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_online;
-        if (JFGRules.isVRCam(pid))
-            return R.drawable.home_icon_720camera_online;
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
@@ -271,10 +272,10 @@ public class JConstant {
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_offline;
         if (JFGRules.isBell(pid))
             return R.drawable.icon_home_doorbell_offline;
+        if (JFGRules.isPan720(pid))
+            return R.drawable.home_icon_720camera_offline;
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_offline;
-        if (JFGRules.isVRCam(pid))
-            return R.drawable.home_icon_720camera_offline;
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
     }
@@ -342,6 +343,8 @@ public class JConstant {
     public static final String KEY_CLIENT_CHECK_VERSION_ID = "client_id";
 
     public static final String KEY_ADD_DESC = "key_ads";
+    public static final int CODE_AD_FINISH = 222;
+    public static final String KEY_NEED_LOGIN = "needLogin";
     private static final String VERSION_URL = "http://yun.app8h.com/app?act=check_version&id=%s&platform=androidPhone&appid=%s";
 
     public static String assembleUrl(String id, String packageName) {

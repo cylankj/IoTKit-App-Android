@@ -68,7 +68,7 @@
   <string name="CREATING">正在新增，請稍候&#8230;</string>
   <string name="CURRENT_PWD">請輸入原本密碼</string>
   <string name="CancelingTips">正在取消&#8230;</string>
-  <string name="Cellular_Data_Method">移動數據網絡請參照下面方法：</string>
+  <string name="Cellular_Data_Method">移動數據網絡：</string>
   <string name="Cellular_Data_Set_Up">在設備的“設置”>“移動網絡”中啟動移動數據網絡。</string>
   <string name="ChargingLight">充電燈</string>
   <string name="ChargingLight_BlueFlashing">藍色閃爍：低電量</string>
@@ -145,7 +145,9 @@
   <string name="DOOR_WIFI_HINT">設備指示燈狀態說明</string>
   <string name="DailyGreatTips_Full">每日精彩收藏數量已達50條上限，是否前去刪除？</string>
   <string name="Dec">Dec.</string>
+  <string name="Delete_Share">是否刪除分享</string>
   <string name="Device_Disconnected">對端斷開</string>
+  <string name="Dont_Show_Again">不再提示</string>
   <string name="Download_Then_Share">請先下載視頻再分享</string>
   <string name="Downloading">視頻正在下載中</string>
   <string name="EDIT_IMAGE">圖片編輯</string>
@@ -213,9 +215,11 @@
   <string name="FRI_1">每週五</string>
   <string name="FRI_2">五</string>
   <string name="FROME">開始時間</string>
+  <string name="Fail_Record">錄像失敗</string>
   <string name="Feb">Feb.</string>
   <string name="Feedback_MessageFailed">消息發送失敗</string>
   <string name="Feedback_Sending">發送中&#8230;</string>
+  <string name="Formatting">格式化過程中</string>
   <string name="GENERAL">基本</string>
   <string name="GET_CODE">獲取驗證碼</string>
   <string name="GIVE_UP">放棄</string>
@@ -275,6 +279,7 @@
   <string name="LOGOUT_INFO">退出不會刪除任何資訊，可以再次登錄</string>
   <string name="LOW_BATTERY">電量較低</string>
   <string name="Loaded">已加載完畢</string>
+  <string name="Logo_Selection">無</string>
   <string name="MAC">MAC</string>
   <string name="MAGNETISM_NOTIFY">當門磁開關時通知我</string>
   <string name="MAGNETISM_OFF">關閉</string>
@@ -455,6 +460,7 @@
   <string name="RE_ADD_BUTTONG">重新添加</string>
   <string name="RE_ADD_LABEL">設備軟體更新完成</string>
   <string name="RIGN_SUC">註冊成功</string>
+  <string name="Record_Operate">錄像中不能進行其他操作</string>
   <string name="Request_TimeOut">請求超時</string>
   <string name="Reset_Suc">復位成功</string>
   <string name="RuiShi_Guide">使用取卡針長按重置鍵3秒</string>
@@ -541,8 +547,11 @@
   <string name="Sep">Sep.</string>
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
+  <string name="Sharing_Management">分享管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
+  <string name="Switch_Mode">拍攝內容請切換至戶外模式查看</string>
+  <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至戶外模式查看</string>
   <string name="TAKE_PHOTO">拍照</string>
   <string name="TERM_OF_USE">用戶使用協議</string>
   <string name="THEME_DELETED">位置\“%s\”已被刪除</string>
@@ -581,6 +590,7 @@
   <string name="Tap0_register_VerificationTips">已發送郵件到%s，請點擊郵件內的鏈接激活賬號</string>
   <string name="Tap0_wrongcode">驗證碼不正確</string>
   <string name="Tap1_AddDeviceTips">點擊右上角“+”新增設備</string>
+  <string name="Tap1_AddDevice_CameraTipShort">短按無線鍵3秒</string>
   <string name="Tap1_AddDevice_CameraTips">等待藍燈閃爍</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">長按無線鍵3秒</string>
   <string name="Tap1_AddDevice_ConnectWifi">連接Wi&#8211;Fi網路</string>
@@ -676,7 +686,8 @@
   <string name="Tap1_Device_NoConnection">無網絡連接，請單擊刷新</string>
   <string name="Tap1_Device_UpgradeTips">發現設備新固件，是否升級？</string>
   <string name="Tap1_Disconnected">連接中斷</string>
-  <string name="Tap1_DisconnectedPleaseCheck">無網絡連接，請檢查網絡設置</string>
+  <string name="Tap1_DisconnectedPleaseCheck">無網絡連接，請檢查網絡設置>></string>
+  <string name="Tap1_DisconnectedPleaseChecked">無網絡連接，請檢查網絡設置</string>
   <string name="Tap1_DoorFun_VoiceTips">聲音將通過聽筒播放</string>
   <string name="Tap1_DoorFun_Waitting">等待接聽</string>
   <string name="Tap1_DownloadFirmwareFai">固件下載失敗</string>
@@ -708,7 +719,7 @@
   <string name="Tap1_NeedsInitializedTips">設備SD卡需要先初始化，但會刪除卡內數據，確定初始化嗎？</string>
   <string name="Tap1_NewFirmware">新固件</string>
   <string name="Tap1_NoMessages">無消息</string>
-  <string name="Tap1_Offline">設備離線，請重新配置連接</string>
+  <string name="Tap1_Offline">設備離線，請重新配置連接>></string>
   <string name="Tap1_OutdoorMode">戶外模式</string>
   <string name="Tap1_OutdoorMode_Opened">戶外模式已開啟</string>
   <string name="Tap1_Refreshed">刷新成功</string>
@@ -859,7 +870,9 @@
   <string name="Tips_DeleteFail">刪除失敗</string>
   <string name="Tips_Device_ConnectFail">連接設備失敗</string>
   <string name="Tips_Device_TimeoutRetry">連接超時，請重試</string>
+  <string name="Tips_ShortVideo">長按錄製短視頻</string>
   <string name="Tips_SureDelete">是否刪除？</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">設備無回應，請重試</string>
   <string name="UPDATE_FAIL">設備連接失敗，請重試</string>
   <string name="UPDATING_BUTTON">正在更新</string>
@@ -913,7 +926,7 @@
   <string name="WiFiLight_RedNBlueFlashing">紅/藍閃爍：固件升級中</string>
   <string name="WiFiLight_SteadyBlue">藍色長亮：WiFi在線</string>
   <string name="Wifi_Hotspot">在設備的【設置>無線局域網】請選擇一個Wi&#8211;Fi熱點連接。</string>
-  <string name="Wifi_Method">Wi&#8211;Fi網絡請參照下面方法：</string>
+  <string name="Wifi_Method">Wi&#8211;Fi網絡：</string>
   <string name="Wifi_Set_Up">立即去設置</string>
   <string name="Word_Hours">小時</string>
   <string name="XX_DISCOVERY">“%s”有新的發現</string>
@@ -943,8 +956,7 @@
   <string name="getting">獲取中&#8230;</string>
   <string name="has_copy">已複製</string>
   <string name="has_not_sdcard">未發現Micro SD卡</string>
-  <string name="help_url">https://%s:8081/helps/zh&#8211;hk.html</string>
-  <string name="help_url_Doby">https://%s:8081/helps/en_doby.html</string>
+  <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
   <string name="isStorageLow">Micro SD卡存儲空間不足，無法下載。</string>
   <string name="is_connecting_video">正在連接攝影機</string>
   <string name="is_creating">正在新增</string>
