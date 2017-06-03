@@ -90,10 +90,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.act_panorama_camera_banner)
     ViewSwitcher bannerSwitcher;
     @BindView(R.id.imgv_toolbar_right)
-    ImageButton setting;
-    @BindView(R.id.act_panorama_camera_banner_information_connection_icon)
     ImageViewTip setting;
-    @BindView(act_panorama_camera_banner_information_connection_icon)
+    @BindView(R.id.act_panorama_camera_banner_information_connection_icon)
     ImageView bannerConnectionIcon;
     @BindView(R.id.act_panorama_camera_banner_information_connection_text)
     TextView bannerConnectionText;

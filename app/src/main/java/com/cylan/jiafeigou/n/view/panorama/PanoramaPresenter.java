@@ -1,16 +1,23 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.text.TextUtils;
+
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -88,7 +95,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         });
         version.startCheck();
         return subscription;
-        registerSubscription(getReportMsgSub());
     }
 
     private Subscription getReportMsgSub() {
