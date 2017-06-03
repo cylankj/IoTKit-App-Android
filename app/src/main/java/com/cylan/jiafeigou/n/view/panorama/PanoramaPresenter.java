@@ -1,13 +1,13 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import android.text.TextUtils;
-
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -57,6 +57,37 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         super.onRegisterSubscription();
         registerSubscription(getNetWorkChangedSub());
         registerSubscription(getFetchDeviceInformationSub());
+        registerSubscription(newVersionRspSub());
+        registerSubscription(getReportMsgSub());
+    }
+
+    private Subscription newVersionRspSub() {
+        Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(version -> {
+                    version.setLastShowTime(System.currentTimeMillis());
+                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
+                    mView.onNewFirmwareRsp();
+                    //必须手动断开,因为rxBus订阅不会断开
+                    throw new RxEvent.HelperBreaker(version);
+                }, AppLogger::e);
+        AbstractVersion<PanDeviceVersionChecker.BinVersion> version = new PanDeviceVersionChecker();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
+        version.setShowCondition(() -> {
+            Device d = BaseApplication.getAppComponent().getSourceManager().
+                    getDevice(uuid);
+            DpMsgDefine.DPNet dpNet = d.$(201, new DpMsgDefine.DPNet());
+            //设备离线就不需要弹出来
+            if (!JFGRules.isDeviceOnline(dpNet)) {
+                return false;
+            }
+            //局域网弹出
+            if (!MiscUtils.isDeviceInWLAN(uuid)) return false;
+            return true;
+        });
+        version.startCheck();
+        return subscription;
         registerSubscription(getReportMsgSub());
     }
 

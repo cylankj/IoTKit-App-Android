@@ -91,11 +91,21 @@
                     android:textSize="@dimen/sp16" />
 
                 <TextView
-                    android:id="@+id/tv_hardware_new_version"
+                    android:id="@+id/tv_new_version_name"
                     style="@style/information_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_hardware_update_title"
+                    android:layout_marginTop="@dimen/y6"
+                    android:textColor="#8c8c8c"
+                    android:textSize="@dimen/sp14" />
+
+                <TextView
+                    android:id="@+id/tv_version_desc"
+                    style="@style/information_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_new_version_name"
                     android:layout_marginTop="@dimen/y6"
                     android:textColor="#8c8c8c"
                     android:textSize="@dimen/sp14" />
@@ -107,8 +117,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/x20"
-                    android:background="@drawable/hardware_update_point"
-                    android:visibility="invisible" />
+                    android:background="@drawable/hardware_update_point" />
             </RelativeLayout>
 
             <TextView

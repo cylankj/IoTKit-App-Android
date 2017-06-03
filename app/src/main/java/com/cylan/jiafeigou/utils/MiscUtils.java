@@ -46,6 +46,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -652,5 +655,17 @@ public class MiscUtils {
         //没有连接公网.//必须是连接状态
         return TextUtils.equals(NetUtils.getRouterMacAddress(), mac)
                 && NetUtils.isNetworkAvailable();
+    }
+
+    public static long getFileSizeFromUrl(String url) {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        try {
+            Response response = new OkHttpClient().newCall(request).execute();
+            return response.body().contentLength();
+        } catch (IOException e) {
+            return 0;
+        }
     }
 }

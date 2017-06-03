@@ -134,7 +134,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             }
 
         } else if (state == BindUtils.BIND_NULL) {
-            getAlertDialogManager().showDialog(this, "null", "",
+            getAlertDialogManager().showDialog(this, "null", getString(R.string.RET_ECID_INVALID),
                     getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     }, false);

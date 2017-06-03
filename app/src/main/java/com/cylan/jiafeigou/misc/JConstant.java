@@ -174,6 +174,7 @@ public class JConstant {
      * 程序文件存放目录
      */
     public static final String ROOT_DIR = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getRoot();
+    public static final String UPDATE_FILE_PATH = ROOT_DIR;
     public static final String BLOCK_LOG_PATH = ROOT_DIR + File.separator + "block";
     public static final String CRASH_PATH = ROOT_DIR + File.separator + "crash";
     public static final String DAEMON_DIR = ROOT_DIR + File.separator + "daemon";
@@ -377,4 +378,6 @@ public class JConstant {
         public static int UPDATING = 1;
         public static int SUCCESS = 2;
     }
+
+    public static String KEY_CURRENT_PLAY_VIEW = "";
 }

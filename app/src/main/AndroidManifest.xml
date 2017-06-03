@@ -657,10 +657,6 @@
             android:launchMode="singleTask"
             android:theme="@style/CamActivityTheme" />
 
-        <service
-            android:name=".n.engine.FirmwareCheckerService"
-            android:exported="true" />
-
         <activity
             android:name=".n.view.mine.FeedbackActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"

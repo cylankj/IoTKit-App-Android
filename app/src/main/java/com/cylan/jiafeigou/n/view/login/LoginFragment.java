@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -505,10 +506,13 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @OnClick({R.id.lb_login_commit})
     public void login(View view) {
-        if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+        final String netName = NetUtils.getNetName(ContextUtils.getContext());
+        if (netName != null && TextUtils.equals(netName, "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
+        if (netName != null && netName.contains("DOG"))
+            MiscUtils.recoveryWiFi();
 
         boolean b = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
                 || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();

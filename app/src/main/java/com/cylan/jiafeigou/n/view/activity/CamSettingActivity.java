@@ -29,7 +29,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
@@ -37,9 +36,7 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -50,7 +47,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -125,7 +121,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             jumpDetail(false);
         }
         deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
-        FirmwareCheckerService.checkVersion(uuid, true);
+        AppLogger.d("检查升级包");
     }
 
     @Override
@@ -337,9 +333,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (JFGRules.isPanoramicCam(device.pid)) return;
             if (JFGRules.isShareDevice(device)) return;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
-            String currentV = device.$(207, "");
-            svSettingDeviceDetail.showRedHint(description.hasNew && BindUtils.versionCompare(description.version, currentV) > 0);
+            svSettingDeviceDetail.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
         }
     }

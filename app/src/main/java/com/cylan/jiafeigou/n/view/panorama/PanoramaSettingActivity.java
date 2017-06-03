@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -64,6 +65,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         super.initViewAndListener();
         Device device = sourceManager.getDevice(uuid);
         deviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
+        deviceDetail.showRedHint(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
     }
 
     @Override

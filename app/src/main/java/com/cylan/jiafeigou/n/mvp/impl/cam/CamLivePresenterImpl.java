@@ -36,8 +36,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -112,7 +113,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void start() {
         super.start();
-        FirmwareCheckerService.checkVersion(uuid);
         getBatterySub();
     }
 
@@ -149,24 +149,29 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     private Subscription checkNewVersionRsp() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class)
-                .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.uuid, uuid))
+        Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
+                .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.getCid(), uuid))
                 .retry()
-                .subscribe(ret -> {
-                    DpMsgDefine.DPNet dpNet = getDevice().$(201, new DpMsgDefine.DPNet());
-                    //设备离线就不需要弹出来
-                    if (!JFGRules.isDeviceOnline(dpNet)) {
-                        return;
-                    }
-                    //局域网弹出
-                    if (!MiscUtils.isDeviceInWLAN(uuid)) return;
-                    long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
-                    if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
-                        //弹框的时间,从弹出算起
-                        PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid, System.currentTimeMillis());
-                        mView.showFirmwareDialog();
-                    }
+                .subscribe(version -> {
+                    version.setLastShowTime(System.currentTimeMillis());
+                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
+                    mView.showFirmwareDialog();
                 }, AppLogger::e);
+        AbstractVersion<AbstractVersion.BinVersion> version = new DeviceVersionChecker();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
+        version.setShowCondition(() -> {
+            DpMsgDefine.DPNet dpNet = getDevice().$(201, new DpMsgDefine.DPNet());
+            //设备离线就不需要弹出来
+            if (!JFGRules.isDeviceOnline(dpNet)) {
+                return false;
+            }
+            //局域网弹出
+            if (!MiscUtils.isDeviceInWLAN(uuid)) return false;
+            return true;
+        });
+        version.startCheck();
+        return subscription;
     }
 
     /**

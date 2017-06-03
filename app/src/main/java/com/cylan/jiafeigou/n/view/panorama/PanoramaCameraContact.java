@@ -92,6 +92,8 @@ public interface PanoramaCameraContact {
 
         void onReportError(int err);
 
+        void onNewFirmwareRsp();
+
     }
 
     interface Presenter extends ViewablePresenter<View> {

@@ -54,12 +54,16 @@ public class JFGGlideURL extends GlideUrl {
     @Override
     public URL toURL() throws MalformedURLException {
         try {
-            String urlV2 = String.format(Locale.getDefault(), "/%s/%s", cid, timestamp);
-            String urlV3 = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
-            urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
-            urlV3 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV3);
-            AppLogger.d("图片 URLV2:" + urlV2 + ",图片 URLV3:" + urlV3);
-            return new URL(V2 ? urlV2 : urlV3);
+            String urlV2;
+            if (V2) {
+                urlV2 = String.format(Locale.getDefault(), "/%s/%s", cid, timestamp);
+                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+            } else {
+                urlV2 = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
+                urlV2 = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, urlV2);
+            }
+            AppLogger.d("图片 URLV2:" + V2 + ",regionType:" + regionType + "," + urlV2);
+            return new URL(urlV2);
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
             return new URL("");

@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.view.bell.LBatteryWarnDialog;
+import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.BitmapUtils;
@@ -55,6 +57,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
@@ -89,6 +92,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.imgv_toolbar_right)
     ImageButton setting;
     @BindView(R.id.act_panorama_camera_banner_information_connection_icon)
+    ImageViewTip setting;
+    @BindView(act_panorama_camera_banner_information_connection_icon)
     ImageView bannerConnectionIcon;
     @BindView(R.id.act_panorama_camera_banner_information_connection_text)
     TextView bannerConnectionText;
@@ -161,6 +166,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
     @Override
@@ -345,7 +351,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
-
+        setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         int netType = NetUtils.getNetType(this);
         if (netType == ConnectivityManager.TYPE_MOBILE && !allowMobile) {
             onNetWorkChangedToMobile();
@@ -908,6 +914,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         restoreView();
         bottomPanelPhotoGraphItem.setEnabled(true);
+    }
+
+    @Override
+    public void onNewFirmwareRsp() {
+        if (isFinishing()) return;
+        AlertDialogManager.getInstance().showDialog(this,
+                getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    Intent intent = new Intent(this, FirmwareUpdateActivity.class);
+                    intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    startActivity(intent);
+                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.lang.annotation.Retention;
@@ -1159,6 +1160,55 @@ public class RxEvent {
         }
     }
 
+    public static final class VersionRsp {
+        public AbstractVersion.BinVersion version;
+        public String uuid;
+
+        public AbstractVersion.BinVersion getVersion() {
+            return version;
+        }
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public VersionRsp setVersion(AbstractVersion.BinVersion version) {
+            this.version = version;
+            return this;
+        }
+
+        public VersionRsp setUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "VersionRsp{" +
+                    "version=" + version +
+                    ", uuid='" + uuid + '\'' +
+                    '}';
+        }
+    }
+//    public static final class VersionRsp<T extends IVersion.BaseVersion> {
+//        public String uuid;
+//        public T version;
+//
+//        public VersionRsp<T> setUuid(String uuid) {
+//            this.uuid = uuid;
+//            return this;
+//        }
+//
+//        public VersionRsp<T> setVersion(T version) {
+//            this.version = version;
+//            return this;
+//        }
+//
+//        public T getVersion() {
+//            return version;
+//        }
+//    }
+
 //    public static class NewVersionApkDesc {
 //        public String url;
 //        public String fileName;
@@ -1263,17 +1313,17 @@ public class RxEvent {
 
     public static class ApkDownload {
         public String filePath;
+        public int forceUpdate;
         public
         @UpdateType
         int updateType;//google play或者 直接安装
-        public RxEvent.CheckVersionRsp rsp;
 
         public ApkDownload(String filePath) {
             this.filePath = filePath;
         }
 
-        public ApkDownload setRsp(RxEvent.CheckVersionRsp rsp) {
-            this.rsp = rsp;
+        public ApkDownload setForceUpdate(int forceUpdate) {
+            this.forceUpdate = forceUpdate;
             return this;
         }
 
