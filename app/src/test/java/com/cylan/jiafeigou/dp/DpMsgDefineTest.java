@@ -12,6 +12,7 @@ import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -129,4 +130,82 @@ public class DpMsgDefineTest {
     }
 
 
+    @Test
+    public void some() {
+        try {
+            System.out.println(unpackData(new byte[]{-109, -86, 114, 101, 112, 111, 114, 116, 95, 109, 115, 103, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 48, 48, 53, -69, -104, -51, 78, 38, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 48, 48, 53, -96, -50, 85, -61, 120, -78, -112, 0, 0, -96}, TTest.class));
+            System.out.println(unpackData(new byte[]{-104, -51, 78, 38, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 48, 48, 53, -96, -50, 85, -61, 120, -78, -112, 0, 0, -96}, Mesg.class));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Message
+    public static final class TTest {
+        @Index(0)
+        public String what;
+        @Index(1)
+        public String cid;
+        @Index(2)
+        public byte[] msg;
+
+        @Override
+        public String toString() {
+            return "TTest{" +
+                    "what='" + what + '\'' +
+                    ", cid='" + cid + '\'' +
+                    ", msg=" + Arrays.toString(msg) +
+                    '}';
+        }
+    }
+
+    @Message
+    public static final class Mesg {
+        @Index(0)
+        public int ret;
+        @Index(1)
+        public String w;
+        @Index(2)
+        public String wa;
+        @Index(3)
+        public int wa0;
+        @Index(4)
+        public TT wa1;
+
+        @Override
+        public String toString() {
+            return "Mesg{" +
+                    "ret=" + ret +
+                    ", w='" + w + '\'' +
+                    ", wa='" + wa + '\'' +
+                    ", wa0='" + wa0 + '\'' +
+                    ", wa0='" + wa1 + '\'' +
+                    '}';
+        }
+    }
+
+    @Message
+    public static final class TT {
+        @Index(0)
+        public String v;
+        @Index(1)
+        public String v0;
+        @Index(2)
+        public String v1;
+        @Index(3)
+        public String v2;
+        @Index(4)
+        public String v3;
+
+        @Override
+        public String toString() {
+            return "TT{" +
+                    "v='" + v + '\'' +
+                    ", v0='" + v0 + '\'' +
+                    ", v1='" + v1 + '\'' +
+                    ", v2='" + v2 + '\'' +
+                    ", v2='" + v3 + '\'' +
+                    '}';
+        }
+    }
 }

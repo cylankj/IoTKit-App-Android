@@ -50,7 +50,7 @@ public class BindRsCamActivity extends BaseBindActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_rs_cam);
         ButterKnife.bind(this);
-        ViewUtils.setViewMarginStatusBar(customToolbar);
+//        ViewUtils.addViewMargins(customToolbar, 0, (int) getResources().getDimension(R.dimen.y9), 0, 0);
         customToolbar.setBackAction(v -> finishExt());
         customToolbar.postDelayed(this::prepareAnimation, 500);
     }

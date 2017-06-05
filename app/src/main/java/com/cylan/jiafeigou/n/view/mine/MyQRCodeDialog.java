@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -82,9 +83,9 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        String content = jfgaccount == null ? "God!" :
-                TextUtils.isEmpty(jfgaccount.getAlias()) ? jfgaccount.getAccount() + "!" : jfgaccount.getAlias() + "!";
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage("Hi," + content, ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
+        if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return;
+        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName()) + "id=" + jfgaccount.getAccount();
+        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     private void initView() {

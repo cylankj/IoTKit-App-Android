@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.ViewServer;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
@@ -81,6 +82,7 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         super.onStop();
         if (basePresenter != null)
             basePresenter.stop();
+        IMEUtils.hide(this);
     }
 
     @Override

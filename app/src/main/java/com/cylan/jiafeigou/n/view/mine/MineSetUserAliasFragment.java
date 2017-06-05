@@ -110,7 +110,7 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     }
 
     private void initEditText() {
-        etMinePersonalInformationNewName.setText(TextUtils.isEmpty(userinfo.getAlias()) ? "" : userinfo.getAlias());
+        etMinePersonalInformationNewName.setText(userinfo == null || TextUtils.isEmpty(userinfo.getAlias()) ? "" : userinfo.getAlias());
     }
 
     private void initPresenter() {

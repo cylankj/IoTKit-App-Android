@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,10 +60,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription checkNetSub() {
         return Observable.interval(2, TimeUnit.SECONDS)
                 .observeOn(Schedulers.newThread())
+                .map(aLong -> {
+                    return NetUtils.isPublicNetwork();
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(ret ->
-                        mView.onNetworkChanged(BaseApplication.getAppComponent().getSourceManager().isOnline()), AppLogger::e);
+                        mView.onNetworkChanged(ret), AppLogger::e);
     }
 
     private Subscription getShareDevicesListRsp() {
@@ -268,7 +272,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void updateConnectInfo(NetworkInfo networkInfo) {
         Observable.just(networkInfo)
                 .subscribeOn(Schedulers.newThread())
-                .flatMap(ret -> Observable.just(BaseApplication.getAppComponent().getSourceManager().isOnline()))
+                .map(aLong -> {
+                    return NetUtils.isPublicNetwork();
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
                 .subscribe(ret -> getView().onNetworkChanged(ret), AppLogger::e);

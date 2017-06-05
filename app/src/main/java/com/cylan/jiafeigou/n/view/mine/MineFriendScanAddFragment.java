@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
@@ -19,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -114,7 +114,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void showQrCode(String account) {
-        ivErweima.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX + "id=" + account, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName()) + "id=" + account;
+        ivErweima.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     /**

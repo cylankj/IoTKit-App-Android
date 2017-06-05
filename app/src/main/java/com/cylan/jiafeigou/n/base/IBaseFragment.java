@@ -7,6 +7,7 @@ import android.util.Log;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.jiafeigou.utils.IMEUtils;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
@@ -57,6 +58,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
         Log.d(TAG, TAG + ",onStop");
         super.onStop();
         if (basePresenter != null) basePresenter.stop();
+        if (getActivity() != null) IMEUtils.hide(getActivity());
     }
 
     @Override
