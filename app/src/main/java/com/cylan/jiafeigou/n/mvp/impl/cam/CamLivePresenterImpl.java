@@ -234,16 +234,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             historyDataProvider = DataExt.getInstance();
         }
         //全景设备,会有多次回调.
-        if (historyDataProvider.getDataCount() == 0 || !containsSubscription("hisFlat")) {
-            Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ret -> {
-                        mView.onHistoryDataRsp(historyDataProvider);
-                        AppLogger.d("历史录像wheel准备好");
-                    }, AppLogger::e);
-            addSubscription(subscription, "hisFlat");
-        }
+//        if (historyDataProvider.getDataCount() == 0 || !containsSubscription("hisFlat")) {
+        Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
+                .subscribeOn(Schedulers.io())
+                .delay(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    mView.onHistoryDataRsp(historyDataProvider);
+                    AppLogger.d("历史录像wheel准备好");
+                }, AppLogger::e);
+        addSubscription(subscription, "hisFlat");
+//        }
     }
 
     private void test() {
