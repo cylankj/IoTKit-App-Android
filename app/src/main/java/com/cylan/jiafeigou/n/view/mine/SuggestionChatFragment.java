@@ -13,8 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContract;
 import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContract;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;

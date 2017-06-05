@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import rx.Observable;
 import rx.Subscription;

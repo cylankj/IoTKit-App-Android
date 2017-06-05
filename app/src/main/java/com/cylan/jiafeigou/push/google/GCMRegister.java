@@ -8,8 +8,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.push.IPushRegister;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;

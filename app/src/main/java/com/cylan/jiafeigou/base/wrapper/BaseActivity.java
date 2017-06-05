@@ -83,7 +83,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
 
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

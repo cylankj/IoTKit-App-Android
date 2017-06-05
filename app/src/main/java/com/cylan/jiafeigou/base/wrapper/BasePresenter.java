@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

@@ -2,21 +2,9 @@ package com.cylan.jiafeigou.support.twitter;
 
 import android.app.Activity;
 
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterApiClient;
-import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
-import com.twitter.sdk.android.core.models.User;
-
-import retrofit2.Call;
 
 /**
  * 作者：zsl

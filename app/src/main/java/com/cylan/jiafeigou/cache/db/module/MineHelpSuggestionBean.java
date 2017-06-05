@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.cache.db.module;
 
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * 创建者     谢坤

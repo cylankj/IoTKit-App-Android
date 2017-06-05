@@ -5,7 +5,7 @@ package com.cylan.jiafeigou.cache.db.module;
  */
 //@Entity
 public class DownloadRecord {
-//    @Id
+    //    @Id
     public Long id;
     public String fileName;
     public String account;

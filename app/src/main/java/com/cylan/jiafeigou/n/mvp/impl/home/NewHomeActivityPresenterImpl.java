@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.AfterLoginService;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;

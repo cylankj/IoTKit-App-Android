@@ -7,8 +7,6 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
