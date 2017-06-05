@@ -48,7 +48,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static android.Manifest.permission.CAMERA;
 import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG;
 import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG_WITH_SN;
 import static com.cylan.jiafeigou.misc.JError.ErrorCIDBinded;
@@ -93,17 +92,17 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         BindScanFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (permissions.length == 1) {
-            if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
-                BindScanFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
-            }
-        }
+//        if (permissions.length == 1) {
+//            if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
+//                BindScanFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
+//            }
+//        }
     }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void onCameraPermissionDenied() {
-        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-            ((BindDeviceActivity) getActivity()).finishExt();
+        if (getActivity() != null && getView() != null) {
+            getView().post(() -> getActivity().getSupportFragmentManager().popBackStack());
         }
     }
 

@@ -61,8 +61,6 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
             ButterKnife.bind(this);
             customToolbar.setBackAction(v -> finishExt());
             initAnimation();
-//            ViewUtils.setViewMarginStatusBar(customToolbar);
-//            ViewUtils.setViewMarginStatusBar(expainGray);
         }
     }
 
