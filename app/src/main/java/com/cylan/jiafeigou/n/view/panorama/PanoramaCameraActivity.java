@@ -814,17 +814,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");
-                bottomPanelPhotoGraphItem.setEnabled(true);
                 ToastUtil.showNegativeToast(getString(R.string.DOOR_LOWBETTERY));
                 break;
             case 2003://sd 卡没有容量
                 AppLogger.d("SD 卡内存已满");
-                bottomPanelPhotoGraphItem.setEnabled(true);
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_SDCardFullyTips));
                 break;
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
-                bottomPanelPhotoGraphItem.setEnabled(true);
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_Camera_NoSDCardTips));
                 break;
             case 2007://正在录像
