@@ -8,6 +8,8 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 
 /**
@@ -18,16 +20,24 @@ public class MsgPackTest {
 
     @Test
     public void test() {
-        byte[] data = new byte[]{-108, 0, -82, 49, 52, 56, 57, 55, 53, 50, 55, 48, 53, 46, 106, 112, 103, -50, 0, 27, -79, 101, -80, 93, -83, -8, 107, 63, -68, -51, -74, 66, 2, -104, 104, -8, -56, -3, -127};
-        MessagePack mp = new MessagePack();
+//        byte[] data = new byte[]{-108, 0, -82, 49, 52, 56, 57, 55, 53, 50, 55, 48, 53, 46, 106, 112, 103, -50, 0, 27, -79, 101, -80, 93, -83, -8, 107, 63, -68, -51, -74, 66, 2, -104, 104, -8, -56, -3, -127};
+//        MessagePack mp = new MessagePack();
+//        try {
+//            Test1 test = mp.createBufferUnpacker(data).read(Test1.class);
+//            System.out.printf("t:" + test);
+//            System.out.printf(MD5Util.MD5(test.md5));
+//        } catch (IOException e) {
+//            System.out.printf("");
+//        }
         try {
-            Test1 test = mp.createBufferUnpacker(data).read(Test1.class);
-            System.out.printf("t:" + test);
-            System.out.printf(MD5Util.MD5(test.md5));
-        } catch (IOException e) {
-            System.out.printf("");
+            InetAddress[] machines = InetAddress.getAllByName("yahoo.com");
+            System.out.println(machines.length);
+            for (InetAddress address : machines) {
+                System.out.println(address.getHostAddress());
+            }
+        } catch (UnknownHostException e) {
+            System.out.println("null:" + e.getLocalizedMessage());
         }
-
 
     }
 
