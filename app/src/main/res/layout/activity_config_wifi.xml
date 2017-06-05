@@ -8,10 +8,6 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
-    <Space
-        android:layout_width="@dimen/x1"
-        android:layout_height="@dimen/y33" />
-
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
         layout="@layout/layout_default_custom_tool_bar"

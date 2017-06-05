@@ -15,14 +15,12 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -42,14 +40,12 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     CustomToolbar customToolbar;
     @BindView(R.id.tv_guide_main_content)
     TextView tvGuideMainContent;
-    private AFullBind aFullBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_guide);
         ButterKnife.bind(this);
-        ViewUtils.setViewMarginStatusBar(customToolbar);
     }
 
     @Override
