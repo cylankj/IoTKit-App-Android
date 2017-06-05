@@ -307,17 +307,16 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     @Override
-    public void onStop() {
-        AppLogger.d("stop" + getViewHandler());
+    public void onPause() {
+        super.onPause();
+        AppLogger.d("onPause" + getViewHandler());
         if (getViewHandler() != null) {
             if (liveStreamAction.hasStarted) {
                 Subscription subscribe = stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
                 registerSubscription(subscribe);
             }
         }
-        super.onStop();
     }
-
     protected void setViewHandler(String handler) {
     }
 

@@ -136,6 +136,22 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (presenter != null) {
+            presenter.onPause();
+        }
+    }
+
+    @Override
     public void showLoadingMsg(String msg) {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
     }

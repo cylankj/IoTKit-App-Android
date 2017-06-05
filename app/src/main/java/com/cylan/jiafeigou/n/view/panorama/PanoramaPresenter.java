@@ -102,7 +102,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    AppLogger.e("收到设备同步消息:"+new Gson().toJson(result));
+                    AppLogger.e("收到设备同步消息:" + new Gson().toJson(result));
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
@@ -137,9 +137,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ApiType >= 0) {
-                        mView.onEnableControllerView();
+                        mView.onRefreshControllerView(true);
                     } else {
-                        mView.onDisableControllerView();
+                        mView.onRefreshControllerView(false);
                     }
                 }, AppLogger::e);
     }
@@ -154,7 +154,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         if (liveStreamAction.hasResolution) {
                             cancelViewer();
                         }
-                        mView.onDisableControllerView();
+                        mView.onRefreshControllerView(false);
                         mView.onNetWorkChangedToMobile();
                     } else if (event.wifi != null && event.wifi.isConnected()) {
                         //wifi 网络,关闭流量提醒
@@ -198,7 +198,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp != null && rsp.ret == 0) {//检查录像状态
-                        mView.onStartVideoRecordSuccess(rsp.videoType);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
                         refreshVideoRecordUI(rsp.seconds, rsp.videoType);
                     }
                     AppLogger.d("初始化录像状态结果为:" + new Gson().toJson(rsp));
@@ -290,14 +290,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.d("开启视频录制返回结果为" + new Gson().toJson(rsp));
                     if (rsp.ret == 0) {
                         AppLogger.d("开启视频录制成功了");
-                        mView.onStartVideoRecordSuccess(type);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
                         refreshVideoRecordUI(0, type);
                     } else {
-                        mView.onStartVideoRecordError(type, rsp.ret);
+                        mView.onReportError(rsp.ret);
                     }
                 }, e -> {
                     AppLogger.e(e);
-                    mView.onStartVideoRecordError(type, -88888);
+                    mView.onReportError(-1);
                 });
         registerSubscription(subscribe);
     }
@@ -311,13 +311,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
                         mView.onShowPreviewPicture(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/thumb/" + ret.files.get(0).replaceAll("mp4", "thumb"));
-                        mView.onStopVideoRecordSuccess(type);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
                     } else {//失败了
-                        mView.onStopVideoRecordError(type, ret.ret);
+                        mView.onReportError(ret.ret);
                     }
                     AppLogger.d("停止直播返回结果为:" + new Gson().toJson(ret));
                 }, e -> {
-                    mView.onStopVideoRecordError(type, -888888);
+                    mView.onReportError(-1);
                     AppLogger.e(e);
                 });
         registerSubscription(subscribe);
@@ -330,7 +330,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .takeUntil(second -> {
                     boolean finish = type == PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT && second >= 8;
                     if (finish) {
-                        mView.onStopVideoRecordSuccess(type);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
                     }
                     return finish;
                 })

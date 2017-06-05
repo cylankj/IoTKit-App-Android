@@ -70,10 +70,6 @@ public interface PanoramaCameraContact {
 
         void onNetWorkChangedToWiFi();
 
-        void onDisableControllerView();
-
-        void onEnableControllerView();
-
         void onShowPreviewPicture(String picture);
 
         void onSwitchSpeedMode(@SPEED_MODE int mode);
@@ -82,19 +78,13 @@ public interface PanoramaCameraContact {
 
         void onMakePhotoGraphSuccess();
 
-        void onStartVideoRecordSuccess(int type);
-
-        void onStartVideoRecordError(int type, int ret);
-
-        void onStopVideoRecordSuccess(int type);
-
-        void onStopVideoRecordError(int type, int ret);
-
         void onReportError(int err);
 
         void onNewFirmwareRsp();
 
         void onRefreshViewModeUI(int viewMode, boolean enable);
+
+        void onRefreshControllerView(boolean enable);
 
     }
 

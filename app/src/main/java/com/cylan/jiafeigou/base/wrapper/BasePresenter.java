@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -81,6 +82,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
             LocalBroadcastManager.getInstance(ContextUtils.getContext())
                     .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
         }
+    }
+
+    @Override
+    public void onResume() {
+    }
+
+    @Override
+    public void onPause() {
     }
 
     @CallSuper
