@@ -5,13 +5,11 @@ import android.graphics.drawable.Drawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
-import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.io.File;
 import java.util.List;
@@ -57,17 +55,20 @@ public class BasePanoramaApiHelper {
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
                             httpApi = retrofit.create(IHttpApi.class);
-                            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
+                            if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.PanoramaApiAvailable.class)) {
+                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
+                            }
                         } else {
-                            JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
-                            Device device = sourceManager.getDevice(uuid);
-                            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-                            if (net.net > 0) {
+                            if (NetUtils.isPublicNetwork()) {
                                 forwardHelper = BaseForwardHelper.getInstance();
                                 deviceInformation = null;
-                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+                                if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.PanoramaApiAvailable.class)) {
+                                    RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+                                }
                             } else {
-                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
+                                if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.PanoramaApiAvailable.class)) {
+                                    RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
+                                }
                             }
                         }
                     } else {

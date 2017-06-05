@@ -9,12 +9,9 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,7 +19,6 @@ import javax.inject.Singleton;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.dp.DpUtils.unpack;
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /**
@@ -79,23 +75,18 @@ public class BaseUdpMsgParser {
                 try {
                     PanoramaEvent.ReportMsg reportMsg = unpackData(localUdpMsg.data, PanoramaEvent.ReportMsg.class);
                     if (reportMsg == null) return;
-                    List<PanoramaEvent.DpMsgForward> forwards = null;
                     PanoramaEvent.MsgForward msgForward = unpackData(reportMsg.bytes, PanoramaEvent.MsgForward.class);
-                    if (msgForward != null) {
-                        Type type = new TypeToken<List<PanoramaEvent.DpMsgForward>>() {
-                        }.getType();
-                        forwards = unpack(msgForward.msg, type);
+                    if (msgForward == null) return;
+                    PanoramaEvent.ReportMsgList reportMsgList = unpackData(msgForward.msg, PanoramaEvent.ReportMsgList.class);
+                    if (reportMsgList == null) return;
+                    ArrayList<Long> idList = new ArrayList<>();
+                    ArrayList<JFGDPMsg> msgList = new ArrayList<>();
+                    for (PanoramaEvent.DpMsgForward forward : reportMsgList.msgForwards) {
+                        idList.add(forward.id);
+                        msgList.add(forward.msg());
                     }
-                    if (forwards != null) {
-                        ArrayList<Long> idList = new ArrayList<>();
-                        ArrayList<JFGDPMsg> msgList = new ArrayList<>();
-                        for (PanoramaEvent.DpMsgForward forward : forwards) {
-                            idList.add(forward.id);
-                            msgList.add(forward.msg());
-                        }
-                        RxEvent.DeviceSyncRsp syncData = new RxEvent.DeviceSyncRsp().setUuid(header.cid, idList, msgList);
-                        RxBus.getCacheInstance().post(syncData);
-                    }
+                    RxEvent.DeviceSyncRsp syncData = new RxEvent.DeviceSyncRsp().setUuid(header.cid, idList, msgList);
+                    RxBus.getCacheInstance().post(syncData);
                 } catch (IOException e) {
                     AppLogger.e(e.getMessage());
                 }

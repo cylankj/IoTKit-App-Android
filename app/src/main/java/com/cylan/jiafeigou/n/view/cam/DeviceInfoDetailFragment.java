@@ -175,7 +175,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                         }
                     }, AppLogger::e);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        String statusContent = getSdcardState(status.hasSdcard, status.err);
+        String statusContent = getSdcardState(status.hasSdcard==1, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
@@ -234,13 +234,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.tv_device_sdcard_state:
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-                String statusContent = getSdcardState(status.hasSdcard, status.err);
+                String statusContent = getSdcardState(status.hasSdcard==1, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
                     showClearSDDialog();
                     return;
                 }
 
-                if (status.hasSdcard)//没有sd卡,不能点击
+                if (status.hasSdcard==1)//没有sd卡,不能点击
                     jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:

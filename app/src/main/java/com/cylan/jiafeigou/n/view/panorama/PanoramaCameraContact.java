@@ -65,11 +65,6 @@ public interface PanoramaCameraContact {
             int MODE_SHORT = 1;
             int MODE_LONG = 2;
         }
-
-        void onNetWorkChangedToMobile();
-
-        void onNetWorkChangedToWiFi();
-
         void onShowPreviewPicture(String picture);
 
         void onSwitchSpeedMode(@SPEED_MODE int mode);
@@ -86,6 +81,7 @@ public interface PanoramaCameraContact {
 
         void onRefreshControllerView(boolean enable);
 
+        void onRefreshConnectionMode(int connectionType);
     }
 
     interface Presenter extends ViewablePresenter<View> {

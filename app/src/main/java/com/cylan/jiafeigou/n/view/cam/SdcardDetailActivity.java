@@ -184,7 +184,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     public void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus) {
         sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
                 .$(204, new DpMsgDefine.DPSdStatus());
-        if (sdStatus.err == 0 && sdStatus.hasSdcard) {
+        if (sdStatus.err == 0 && sdStatus.hasSdcard==1) {
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
             float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);

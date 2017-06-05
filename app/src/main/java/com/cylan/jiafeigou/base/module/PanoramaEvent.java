@@ -21,6 +21,12 @@ public interface PanoramaEvent {
     }
 
     @Message
+    class ReportMsgList {
+        @Index(0)
+        public List<DpMsgForward> msgForwards;
+    }
+
+    @Message
     class DpMsgForward {
         @Index(0)
         public long id;

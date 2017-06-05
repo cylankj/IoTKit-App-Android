@@ -66,10 +66,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     return load;
                 })
                 .filter(load -> load.slow)
-                .delay(4, TimeUnit.SECONDS)
-                .throttleFirst(2, TimeUnit.SECONDS)
+                .throttleLast(4, TimeUnit.SECONDS)
                 .subscribe(ret -> {
-                    if (!sourceManager.isOnline() && !NetUtils.isNetworkAvailable() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
+                    if (!NetUtils.isPublicNetwork() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
                         AppLogger.d("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
@@ -99,14 +98,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .filter(isOnline -> {
                     if (!isOnline && !NetUtils.isNetworkAvailable()) {
                         mView.onVideoDisconnect(BAD_NET_WORK);
-                        liveStreamAction.reset();
                         return false;
                     }
+                    liveStreamAction.reset();
                     return true;
                 })
                 .map(account -> {
                     feedRtcp.stop();//清空之前的状态
-                    liveStreamAction.reset();
                     mView.onViewer();
                     if (shouldShowPreview()) {
                         File file = new File(JConstant.MEDIA_PATH, "." + uuid + ".jpg");
@@ -155,6 +153,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
                     liveStreamAction.hasStarted = true;
+                    liveStreamAction.hasResolution = true;
                     feedRtcp.feed(rtcp);
                     if (mView != null) {
                         mView.onFlowSpeed(rtcp.bitRate);
@@ -201,12 +200,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      * 而且还会清除播放状态
      */
     protected Observable<Boolean> stopViewer() {
+        if (!liveStreamAction.hasStarted) return Observable.empty();
+        liveStreamAction.reset();
         return Observable.just(getViewHandler())
-                .filter(handler -> liveStreamAction.hasStarted)
                 .subscribeOn(Schedulers.io())
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
-                        liveStreamAction.hasStarted = false;
                         try {
                             appCmd.screenshot(false, new CallBack<Bitmap>() {
                                 @Override
@@ -255,6 +254,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                                         mView.onVideoDisconnect(dis.code);
                                 }
                             }
+                            liveStreamAction.reset();
                             return new RxEvent.LiveResponse(dis, false);
                         })
         ).first().map(rsp -> {
@@ -265,12 +265,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected Observable<JFGMsgVideoDisconn> handlerVideoDisconnect(JFGMsgVideoResolution resolution) {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .first(jfgMsgVideoDisconn -> jfgMsgVideoDisconn.code != BAD_FRAME_RATE)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(dis -> {
+                .first(dis -> {
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
+                    liveStreamAction.hasResolution = false;
+                    liveStreamAction.hasLiveError = true;
                     mView.onVideoDisconnect(dis.code);
-                    return dis;
+                    return true;
                 });
     }
 
@@ -307,23 +308,23 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        AppLogger.d("onPause" + getViewHandler());
+    public void onResume() {
+        super.onResume();
+        feedRtcp.setMonitorListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         if (getViewHandler() != null) {
-            if (liveStreamAction.hasStarted) {
+            if (liveStreamAction.hasResolution) {
                 Subscription subscribe = stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
                 registerSubscription(subscribe);
             }
         }
     }
-    protected void setViewHandler(String handler) {
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        feedRtcp.setMonitorListener(this);
+    protected void setViewHandler(String handler) {
     }
 
     protected String getViewHandler() {
@@ -445,15 +446,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void onFrameFailed() {
-        Schedulers.io().createWorker().schedule(() -> {
-            liveStreamAction.hasLiveError = true;
-            feedRtcp.stop();
-            AppLogger.d("加载失败了..........");
-            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-            disconn.code = BAD_FRAME_RATE;
-            disconn.remote = getViewHandler();
-            RxBus.getCacheInstance().post(disconn);
-        });
+        liveStreamAction.hasLiveError = true;
+        feedRtcp.stop();
+        mView.onVideoDisconnect(BAD_FRAME_RATE);
     }
 
     @Override

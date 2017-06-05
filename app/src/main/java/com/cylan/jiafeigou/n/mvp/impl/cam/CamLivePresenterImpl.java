@@ -765,7 +765,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && TextUtils.isEmpty(device.shareAccount)
-                && sdStatus.hasSdcard && sdStatus.err == 0
+                && sdStatus.hasSdcard == 1 && sdStatus.err == 0
                 && historyDataProvider != null && historyDataProvider.getDataCount() > 0;
         AppLogger.i("show: " + show);
         return show;
