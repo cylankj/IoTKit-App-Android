@@ -761,6 +761,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
+        if (type == TYPE_HISTORY && timestamp != 0) {
+            //移动导航条
+            historyWheelHandler.setNav2Time(timestamp * 1000);
+        }
     }
 
     private String getTime(long time) {
@@ -907,7 +911,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onActivityStart(CamLiveContract.Presenter presenter, Device device) {
         boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
         setFlipped(!safeIsOpen);
-        updateLiveViewMode(device.$(509, "0"));
+        updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
         Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.media;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -58,9 +60,14 @@ import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 
+@RuntimePermissions
 public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaContract.Presenter> implements
         CamMediaContract.View {
 
@@ -381,4 +388,27 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             this.callBack = callback;
         }
     }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+////        MediaActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+//    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionDenied() {
+        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionNeverAskAgain() {
+        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+    }
+
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void downloadFile() {
+
+    }
+
 }

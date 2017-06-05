@@ -15,7 +15,6 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -44,19 +43,16 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     TextView tvGuideMainContent;
     @BindView(R.id.iv_explain_gray)
     ImageView ivExplainGray;
-    private AFullBind aFullBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_guide);
         ButterKnife.bind(this);
-        ViewUtils.setViewMarginStatusBar(customToolbar);
         if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
                 && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
                 getString(R.string._720PanoramicCamera))) {
             ivExplainGray.setVisibility(View.VISIBLE);
-            ViewUtils.setViewMarginStatusBar(ivExplainGray);
             ViewUtils.setViewMarginStatusBar(ivExplainGray);
         }
     }

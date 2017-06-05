@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
 
@@ -45,6 +46,12 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        IMEUtils.hide(this);
     }
 
     private void handleIntent(Intent intent) {
