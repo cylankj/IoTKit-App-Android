@@ -313,6 +313,7 @@ public class NetUtils {
 
     public static final String QQ_HOST = "http://www.qq.com";
     public static final String BAIDU_HOST = "http://www.baidu.com";
+    public static final String BING = "http://www.bing.com";
 
     public static boolean isInternetAvailable(String host) {
         try {
@@ -323,7 +324,7 @@ public class NetUtils {
             urlc.setConnectTimeout(1000); // mTimeout is in seconds
             urlc.connect();
             return (urlc.getResponseCode() == 200);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("warning", "Error checking internet connection", e);
             return false;
         }
@@ -474,6 +475,6 @@ public class NetUtils {
         if (qq) return true;
         boolean baidu = isInternetAvailable(BAIDU_HOST);
         if (baidu) return true;
-        return false;
+        return isInternetAvailable(BING);
     }
 }

@@ -58,10 +58,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription checkNetSub() {
-        return Observable.interval(2, TimeUnit.SECONDS)
+        return Observable.interval(4, TimeUnit.SECONDS)
                 .observeOn(Schedulers.newThread())
                 .map(aLong -> {
-                    return NetUtils.isNetworkAvailable();
+                    //优先check online
+                    return BaseApplication.getAppComponent().getSourceManager().isOnline() || NetUtils.isNetworkAvailable();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
@@ -273,7 +274,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(networkInfo)
                 .subscribeOn(Schedulers.newThread())
                 .map(aLong -> {
-                    return NetUtils.isNetworkAvailable();
+                    return BaseApplication.getAppComponent().getSourceManager().isOnline() || NetUtils.isNetworkAvailable();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
