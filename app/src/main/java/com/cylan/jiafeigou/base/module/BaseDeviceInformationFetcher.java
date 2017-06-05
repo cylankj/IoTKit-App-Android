@@ -100,7 +100,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         connectionEvent.mobile = mobNetInfo;
         connectionEvent.wifi = wifiNetInfo;
         connectionEvent.isOnLine = BaseApplication.isOnline();
-        RxBus.getCacheInstance().post(connectionEvent);
+        RxBus.getCacheInstance().postSticky(connectionEvent);
     }
 
     public void init(String uuid) {

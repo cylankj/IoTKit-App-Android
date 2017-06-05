@@ -11,8 +11,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -68,9 +66,9 @@ public class AutoSignIn {
                 .subscribeOn(Schedulers.io())
                 .flatMap(account -> {
                             try {
-                                final String netName = NetUtils.getNetName(ContextUtils.getContext());
-                                if (netName != null && netName.contains("DOG"))
-                                    MiscUtils.recoveryWiFi();
+//                                final String netName = NetUtils.getNetName(ContextUtils.getContext());
+//                                if (netName != null && netName.contains("DOG"))
+//                                    MiscUtils.recoveryWiFi();
                                 AppLogger.d("autoLogin");
                                 String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE, "");
                                 String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID, "");
