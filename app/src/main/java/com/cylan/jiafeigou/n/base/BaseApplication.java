@@ -192,7 +192,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private void cancelReportTask() {
         if (reportTask != null) reportTask.unsubscribe();
-        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
+//        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 
     public static boolean isBackground() {

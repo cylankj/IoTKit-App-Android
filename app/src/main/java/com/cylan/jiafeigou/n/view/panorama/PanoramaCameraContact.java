@@ -94,6 +94,8 @@ public interface PanoramaCameraContact {
 
         void onNewFirmwareRsp();
 
+        void onRefreshViewModeUI(int viewMode, boolean enable);
+
     }
 
     interface Presenter extends ViewablePresenter<View> {

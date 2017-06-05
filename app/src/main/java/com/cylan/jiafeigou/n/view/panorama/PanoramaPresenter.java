@@ -217,11 +217,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getSdInfo())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
-                    if (ret != null && ret.sdIsExist == 0) {//SDCard 不存在
-                        mView.onReportError(2004);
-                    } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
-                        mView.onReportError(2022);
-                    }
+//                    if (ret != null && ret.sdIsExist == 0) {//SDCard 不存在
+//                        mView.onReportError(2004);
+//                    } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
+//                        mView.onReportError(2022);
+//                    }
                     return ret;
                 })
                 .observeOn(Schedulers.io())

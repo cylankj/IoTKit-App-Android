@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.io.File;
@@ -68,7 +69,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .delay(4, TimeUnit.SECONDS)
                 .throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(ret -> {
-                    if (!sourceManager.isOnline() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
+                    if (!sourceManager.isOnline() && !NetUtils.isNetworkAvailable() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
                         AppLogger.d("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
@@ -95,6 +96,14 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void startViewer() {
         Subscription subscribe = Observable.just(sourceManager.isOnline())
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(isOnline -> {
+                    if (!isOnline && !NetUtils.isNetworkAvailable()) {
+                        mView.onVideoDisconnect(BAD_NET_WORK);
+                        liveStreamAction.reset();
+                        return false;
+                    }
+                    return true;
+                })
                 .map(account -> {
                     feedRtcp.stop();//清空之前的状态
                     liveStreamAction.reset();
@@ -256,7 +265,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected Observable<JFGMsgVideoDisconn> handlerVideoDisconnect(JFGMsgVideoResolution resolution) {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .first(jfgMsgVideoDisconn -> jfgMsgVideoDisconn.code > 0)
+                .first(jfgMsgVideoDisconn -> jfgMsgVideoDisconn.code != BAD_FRAME_RATE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dis -> {
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
