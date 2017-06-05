@@ -11,18 +11,20 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -45,87 +47,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         view.setPresenter(this);
     }
 
-    /**
-     * 登录
-     *
-     * @param o
-     * @return
-     */
-    private Observable<Object> loginObservable(LoginAccountBean o) {
-        return Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .map(login -> {
-                    Log.d("CYLAN_TAG", "map executeLogin next");
-                    try {
-                        if (o.loginType) {
-                            BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
-                            AppLogger.d("第三方登录:" + o.userName + ":" + o.pwd);
-                        } else {
-                            BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
-                            //账号和密码
-                        }
-                        AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
-                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                                .subscribe(ret -> {
-                                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-                        AppLogger.d("logresult:" + o.toString());
-                    } catch (Exception e) {
-                        AppLogger.e("err: " + e.getLocalizedMessage());
-                    }
-//                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
-                    //非三方登录的标记
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(o.loginType));
-                    return null;
-                });
-    }
-
-    /**
-     * 登录结果
-     *
-     * @return
-     */
-    private Observable<RxEvent.ResultUserLogin> loginResultObservable() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultUserLogin.class);
-    }
-
-    @Override
-    public void executeLogin(final LoginAccountBean login) {
-        //加入
-        Observable.zip(loginObservable(login), loginResultObservable(),
-                (Object o, RxEvent.ResultUserLogin resultLogin) -> {
-                    Log.d("CYLAN_TAG", "login: " + resultLogin);
-                    return resultLogin;
-                })
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map((Object o) -> {
-                            Log.d("CYLAN_TAG", "login timeout: ");
-                            if (getView() != null) getView().loginResult(JError.ErrorConnect);
-                            return null;
-                        }))
-                .subscribeOn(Schedulers.io())
-                .delay(1, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.ResultUserLogin o) -> {
-                    Log.d("CYLAN_TAG", "login subscribe: " + o);
-                    if (getView() != null) getView().loginResult(o.code);
-                }, throwable -> {
-                    try {
-                        if (getView() != null) getView().loginResult(JError.ErrorConnect);
-                        Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
-                    } catch (Exception e) {
-
-                    }
-                });
-    }
-
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
                 resultVerifyCodeSub(),
                 switchBoxSub(),
                 loginPopBackSub(),
-                thirdAuthorizeBack(),
                 reShowAccount()
         };
     }
@@ -277,20 +204,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     @Override
-    public Subscription thirdAuthorizeBack() {
-        return RxBus.getCacheInstance().toObservableSticky(LoginAccountBean.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginAccountBean -> {
-                    if (loginAccountBean != null && !TextUtils.isEmpty(loginAccountBean.userName)) {
-                        executeLogin(loginAccountBean);
-                        if (getView() != null) getView().showLoading();
-                    } else {
-                        getView().authorizeResult();
-                    }
-                }, AppLogger::e);
-    }
-
-    @Override
     public Subscription reShowAccount() {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
@@ -325,6 +238,134 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         getView().reShowAccount(s);
                     }
                 }, AppLogger::e);
+    }
+
+    @Override
+    public void performLogin(String account, String password) {
+        if (mView != null) mView.showLoading();
+        performLoginInternal(1, account, password);
+    }
+
+    private int parseLoginType(SHARE_MEDIA share_media) {
+        int loginType = 0;
+        switch (share_media) {
+            case QQ:
+                loginType = 3;
+                break;
+            case SINA:
+                loginType = 4;
+                break;
+            case TWITTER:
+                loginType = 6;
+                break;
+            case FACEBOOK:
+                loginType = 7;
+                break;
+        }
+        return loginType;
+    }
+
+    private UMAuthListener listener = new UMAuthListener() {
+        @Override
+        public void onStart(SHARE_MEDIA share_media) {
+            AppLogger.e("授权开始");
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
+
+        @Override
+        public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
+            AppLogger.e("授权完成,返回码为:" + i + ",返回信息为:" + new Gson().toJson(map));
+            String account = map.get("uid");
+            String token = map.get("accessToken");
+            if (TextUtils.isEmpty(token)) {
+                token = map.get("access_token");//Twitter 有 bug
+            }
+
+            String iconUrl = map.get("iconurl");
+            String nickname = map.get("name");
+            if (!TextUtils.isEmpty(iconUrl)) {
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, iconUrl);
+            }
+            if (!TextUtils.isEmpty(nickname)) {
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);//不需要,服务器会自己获取的
+            }
+            int loginType = parseLoginType(share_media);
+//            AutoSignIn.getInstance().autoSave(account, loginType, token);
+            performLoginInternal(loginType, account, token);
+            if (mView != null) {
+                mView.onAuthenticationResult(0);
+            }
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
+            AppLogger.e("授权失败,错误码为:" + i + ",错误信息为:" + throwable.getMessage());
+            if (mView != null) {
+                mView.onAuthenticationResult(-1);
+            }
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA share_media, int i) {
+            AppLogger.e("授权取消,错误码为:" + i);
+            if (mView != null) {
+                mView.onAuthenticationResult(1);
+            }
+        }
+    };
+
+    @Override
+    public void performAuthentication(int loginType) {
+        if (mView != null) {
+            if (loginType == 3) {
+                UMShareAPI.get(mView.getContext()).getPlatformInfo(mView.getActivityContext(), SHARE_MEDIA.QQ, listener);
+            } else if (loginType == 4) {
+                UMShareAPI.get(mView.getContext()).getPlatformInfo(mView.getActivityContext(), SHARE_MEDIA.SINA, listener);
+            } else if (loginType == 6) {
+                UMShareAPI.get(mView.getContext()).getPlatformInfo(mView.getActivityContext(), SHARE_MEDIA.TWITTER, listener);
+            } else if (loginType == 7) {
+                UMShareAPI.get(mView.getContext()).getPlatformInfo(mView.getActivityContext(), SHARE_MEDIA.FACEBOOK, listener);
+            }
+        }
+    }
+
+    private void performLoginInternal(int loginType, String account, String password) {
+        Subscription subscribe = Observable.create(subscriber -> {
+            try {
+                if (loginType >= 3) {//第三方登录
+                    BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account, password, loginType);
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
+                } else {//账号密码登录
+                    BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
+                }
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+            subscriber.onNext("登录流程开始了...");
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+                        .timeout(30, TimeUnit.SECONDS, Observable.just(null)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    AppLogger.d("获取到登录结果:" + new Gson().toJson(result));
+                    if (result != null && result.code == 0) {
+                        AutoSignIn.getInstance().autoSave(account, loginType, password);
+                    }
+                    if (getView() != null) {
+                        getView().loginResult(result == null ? JError.ErrorConnect : result.code);
+                    }
+                }, e -> {
+                    AppLogger.e("获取登录结果失败:" + e.getMessage());
+                    if (getView() != null) {
+                        getView().loginResult(JError.ErrorConnect);
+                    }
+                });
+        addSubscription(subscribe);
     }
 
 }

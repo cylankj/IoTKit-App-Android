@@ -27,16 +27,25 @@
     <style name="CamActivityTheme" parent="AppTheme" />
 
     <!--<style name="MediaActivityTransition" parent="AppTheme">-->
-        <!--<item name="android:statusBarColor">@android:color/black</item>-->
-        <!--<item name="android:windowContentTransitions">true</item>-->
-        <!--<item name="android:windowTranslucentStatus">false</item>-->
-        <!--<item name="android:windowEnterTransition">@transition/details_window_enter_transition-->
-        <!--</item>-->
-        <!--<item name="android:windowReturnTransition">@transition/details_window_return_transition-->
-        <!--</item>-->
+    <!--<item name="android:statusBarColor">@android:color/black</item>-->
+    <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--<item name="android:windowTranslucentStatus">false</item>-->
+    <!--<item name="android:windowEnterTransition">@transition/details_window_enter_transition-->
+    <!--</item>-->
+    <!--<item name="android:windowReturnTransition">@transition/details_window_return_transition-->
+    <!--</item>-->
     <!--</style>-->
 
     <style name="CamDelayRecordStyle" parent="AppTheme"></style>
+
+    <style name="share_style" parent="CamActivityTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
     <!--普通样式-->
     <style name="SwitchButtonNormal">
         <item name="kswThumbDrawable">@drawable/switch_btn_thumb_selector</item>
@@ -62,7 +71,7 @@
       android:windowIsFloating: false,
        windowActionModeOverlay: true,
        windowNoTitle: false }-->
-    <style name="dialog_activity_style" parent="@android:style/Theme.Holo.Light.Dialog">
+    <style name="dialog_activity_style" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
         <!--<item name="android:windowTitleBackgroundStyle">@android:color/transparent</item>-->
         <!--<item name="windowActionBar">false</item> -->

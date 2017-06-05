@@ -66,7 +66,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private int position;
     private boolean dataHasChange;
 
-    public static MineShareDeviceFragment newInstance() {
+    public static MineShareDeviceFragment newInstance(Bundle bundle) {
         return new MineShareDeviceFragment();
     }
 

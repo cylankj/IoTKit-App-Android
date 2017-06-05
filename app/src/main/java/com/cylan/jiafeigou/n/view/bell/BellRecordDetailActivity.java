@@ -36,12 +36,13 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
-import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
+import com.cylan.jiafeigou.support.share.ShareConstant;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
@@ -88,7 +89,6 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @BindView(R.id.act_bell_header_container)
     RelativeLayout mHeadContainer;
     private BellCallRecordBean mCallRecord;
-    private ShareDialogFragment mShareDialog;
     private File mDownloadFile;
 
     private boolean isCollect = false;
@@ -198,11 +198,12 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_share)
     public void share() {
-        if (mShareDialog == null) {
-            mShareDialog = ShareDialogFragment.newInstance();
-        }
-        mShareDialog.setPictureURL(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg"));
-        mShareDialog.show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
+        new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg").fetch(localPath -> {
+            Intent intent = new Intent(this, ShareMediaActivity.class);
+            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
+            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, localPath);
+            startActivity(intent);
+        });
     }
 
     @OnClick(R.id.act_bell_picture_opt_collection)

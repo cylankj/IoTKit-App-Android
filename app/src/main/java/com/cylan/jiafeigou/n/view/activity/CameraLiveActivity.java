@@ -18,15 +18,12 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -35,7 +32,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
-import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +66,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         initToolbar();
         initAdapter();
+        JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
     @Override
@@ -150,13 +147,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      */
     private boolean hasNewFirmware() {
         try {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-            if (JFGRules.isPanoramicCam(device.pid)) return false;//全景不显示
-            if (JFGRules.isShareDevice(device)) return false;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
-            String currentV = device.$(207, "");
-            return description.hasNew && BindUtils.versionCompare(description.version, currentV) > 0;
+            return !TextUtils.isEmpty(content);
         } catch (Exception e) {
             return false;
         }

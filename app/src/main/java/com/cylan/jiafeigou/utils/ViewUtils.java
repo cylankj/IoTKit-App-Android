@@ -86,6 +86,14 @@ public class ViewUtils {
         increaseMargins(v, 0, height, 0, 0);
     }
 
+    public static void addViewMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(p.leftMargin + l, p.topMargin + t, p.rightMargin + r, p.bottomMargin + b);
+            v.requestLayout();
+        }
+    }
+
     public static void setViewMarginStatusBar(Context context, View v) {
         final int height = getCompatStatusBarHeight(context);
         increaseMargins(v, 0, height, 0, 0);

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
-import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.text.TextUtils;
@@ -37,8 +36,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
+import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -47,7 +47,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -114,28 +113,65 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void start() {
         super.start();
-        FirmwareCheckerService.checkVersion(uuid);
+        getBatterySub();
+    }
+
+    /**
+     * 1.需要获取设备电量并且,一天一次提醒弹窗.
+     * 2.
+     *
+     * @return
+     */
+    private Subscription getBatterySub() {
+        //按照首页过滤条件
+        if (JFGRules.showBattery(getDevice().pid)) {
+            Observable.just("getBatterySub")
+                    .subscribeOn(Schedulers.newThread())
+                    .filter(ret -> NetUtils.getJfgNetType() > 0)//在线
+                    .filter(ret -> !JFGRules.isShareDevice(uuid))//非分享
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        Device device = getDevice();
+                        Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
+                        DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+                        if (battery < 20 && net.net > 0) {//电量低
+                            DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
+                            if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
+                                option.lastLowBatteryTime = System.currentTimeMillis();
+                                device.setOption(option);
+                                BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
+                                mView.onBatteryDrainOut();
+                            }
+                        }
+                    }, AppLogger::e);
+        }
+        return null;
     }
 
     private Subscription checkNewVersionRsp() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.FirmwareUpdateRsp.class)
-                .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.uuid, uuid))
+        Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
+                .filter(ret -> mView != null && mView.isAdded() && TextUtils.equals(ret.getCid(), uuid))
                 .retry()
-                .subscribe(ret -> {
-                    DpMsgDefine.DPNet dpNet = getDevice().$(201, new DpMsgDefine.DPNet());
-                    //设备离线就不需要弹出来
-                    if (!JFGRules.isDeviceOnline(dpNet)) {
-                        return;
-                    }
-                    //局域网弹出
-                    if (!MiscUtils.isDeviceInWLAN(uuid)) return;
-                    long time = PreferencesUtils.getLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid);
-                    if (time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
-                        //弹框的时间,从弹出算起
-                        PreferencesUtils.putLong(JConstant.KEY_FIRMWARE_POP_DIALOG_TIME + uuid, System.currentTimeMillis());
-                        mView.showFirmwareDialog();
-                    }
+                .subscribe(version -> {
+                    version.setLastShowTime(System.currentTimeMillis());
+                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));
+                    mView.showFirmwareDialog();
                 }, AppLogger::e);
+        AbstractVersion<AbstractVersion.BinVersion> version = new DeviceVersionChecker();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        version.setPortrait(new AbstractVersion.Portrait().setCid(uuid).setPid(device.pid));
+        version.setShowCondition(() -> {
+            DpMsgDefine.DPNet dpNet = getDevice().$(201, new DpMsgDefine.DPNet());
+            //设备离线就不需要弹出来
+            if (!JFGRules.isDeviceOnline(dpNet)) {
+                return false;
+            }
+            //局域网弹出
+            if (!MiscUtils.isDeviceInWLAN(uuid)) return false;
+            return true;
+        });
+        version.startCheck();
+        return subscription;
     }
 
     /**
@@ -729,7 +765,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && TextUtils.isEmpty(device.shareAccount)
-                && sdStatus.hasSdcard && sdStatus.err == 0
+                && sdStatus.hasSdcard == 1 && sdStatus.err == 0
                 && historyDataProvider != null && historyDataProvider.getDataCount() > 0;
         AppLogger.i("show: " + show);
         return show;

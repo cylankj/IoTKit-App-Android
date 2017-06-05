@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y20"
         android:gravity="center"
-        android:text="@string/Tap1_AddDevice_CameraTipsTitle"
+        android:text="@string/Tap1_AddDevice_CameraTipShort"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp26" />
 

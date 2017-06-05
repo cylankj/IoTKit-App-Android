@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -10,8 +9,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.io.File;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,8 +17,7 @@ import rx.schedulers.Schedulers;
  * Created by hunt on 16-5-23.
  */
 public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActivityContract.View>
-        implements NewHomeActivityContract.Presenter,
-        ClientUpdateManager.DownloadListener {
+        implements NewHomeActivityContract.Presenter {
 
     public NewHomeActivityPresenterImpl(NewHomeActivityContract.View view) {
         super(view);
@@ -36,17 +32,18 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     long time = PreferencesUtils.getLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG);
-                    boolean force = ret.rsp != null && ret.rsp.forceUpdate == 1;//强制升级
+                    boolean force = ret.updateType == RxEvent.UpdateType.GOOGLE_PLAY || (ret.forceUpdate == 1);//强制升级
                     if (force || time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         PreferencesUtils.putLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG, System.currentTimeMillis());
-                        mView.needUpdate("", ret.filePath, ret.rsp.forceUpdate);
+                        mView.needUpdate(ret.updateType, "", ret.filePath, ret.forceUpdate);
                     }
                     if (!force) {
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);
                     }
                 }, throwable -> {
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
-                    addSubscription(updateRsp());
+                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.ApkDownload.class);
+//                    addSubscription(updateRsp());
                 });
     }
 
@@ -102,23 +99,4 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
 //        }
 //    }
 
-    @Override
-    public void start(long totalByte) {
-
-    }
-
-    @Override
-    public void failed(Throwable throwable) {
-
-    }
-
-    @Override
-    public void finished(File file) {
-
-    }
-
-    @Override
-    public void process(long currentByte, long totalByte) {
-
-    }
 }

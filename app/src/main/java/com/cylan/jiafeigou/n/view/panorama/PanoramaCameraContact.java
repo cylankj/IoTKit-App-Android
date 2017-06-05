@@ -32,6 +32,8 @@ public interface PanoramaCameraContact {
 
         void onBellBatteryDrainOut();
 
+        void onDeviceBatteryChanged(Integer battery);
+
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
         @interface SPEED_MODE {
@@ -63,15 +65,6 @@ public interface PanoramaCameraContact {
             int MODE_SHORT = 1;
             int MODE_LONG = 2;
         }
-
-        void onNetWorkChangedToMobile();
-
-        void onNetWorkChangedToWiFi();
-
-        void onDisableControllerView();
-
-        void onEnableControllerView();
-
         void onShowPreviewPicture(String picture);
 
         void onSwitchSpeedMode(@SPEED_MODE int mode);
@@ -80,16 +73,15 @@ public interface PanoramaCameraContact {
 
         void onMakePhotoGraphSuccess();
 
-        void onStartVideoRecordSuccess(int type);
-
-        void onStartVideoRecordError(int type, int ret);
-
-        void onStopVideoRecordSuccess(int type);
-
-        void onStopVideoRecordError(int type, int ret);
-
         void onReportError(int err);
 
+        void onNewFirmwareRsp();
+
+        void onRefreshViewModeUI(int viewMode, boolean enable);
+
+        void onRefreshControllerView(boolean enable);
+
+        void onRefreshConnectionMode(int connectionType);
     }
 
     interface Presenter extends ViewablePresenter<View> {

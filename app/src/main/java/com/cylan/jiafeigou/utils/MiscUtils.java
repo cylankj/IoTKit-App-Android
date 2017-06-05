@@ -31,8 +31,11 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 
+import org.jsoup.Jsoup;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -43,6 +46,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -284,9 +290,9 @@ public class MiscUtils {
         if (set != null && set.size() > 0) {
             Collections.sort(set);
             if (min)
-                return set.get(set.size() - 1).version;
+                return set.get(set.size() - 1).getVersion();
             else {
-                return set.get(0).version;
+                return set.get(0).getVersion();
             }
         }
         return 0L;
@@ -611,6 +617,55 @@ public class MiscUtils {
                 boolean reconnect = wifiManager.reconnect();
                 AppLogger.d("re connect :" + reconnect);
             }
+        }
+    }
+
+    public static Observable<String> getAppVersionFromGooglePlay() {
+        return Observable.just("getVersion")
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> {
+                    GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+                    int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
+                    return resultCode == ConnectionResult.SUCCESS;//可用的时候,检查
+                })
+                .flatMap(s -> {
+                    try {
+                        String newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + "com.cylan.jiafeigou" + "&hl=en")
+                                .timeout(10000)
+                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                .referrer("http://www.google.com")
+                                .get()
+                                .select("div[itemprop=softwareVersion]")
+                                .first()
+                                .ownText();
+                        return Observable.just(newVersion);
+                    } catch (Exception e) {
+                        return Observable.just("");
+                    }
+                });
+    }
+
+    public static boolean isGooglePlayServiceAvailable() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
+        return resultCode == ConnectionResult.SUCCESS;//可用的时候,检查
+    }
+
+    public static boolean isAPDirect(String mac) {
+        //没有连接公网.//必须是连接状态
+        return TextUtils.equals(NetUtils.getRouterMacAddress(), mac)
+                && NetUtils.isNetworkAvailable();
+    }
+
+    public static long getFileSizeFromUrl(String url) {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        try {
+            Response response = new OkHttpClient().newCall(request).execute();
+            return response.body().contentLength();
+        } catch (IOException e) {
+            return 0;
         }
     }
 }

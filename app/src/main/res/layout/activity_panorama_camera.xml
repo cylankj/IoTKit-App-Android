@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -25,14 +24,20 @@
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp16" />
 
-        <ImageButton
+        <com.cylan.jiafeigou.widget.ImageViewTip
             android:id="@+id/imgv_toolbar_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:background="@android:color/transparent"
             android:padding="@dimen/y14"
-            android:src="@drawable/icon_setting" />
+            android:src="@drawable/icon_setting"
+            app:t_border_color="@color/color_white"
+            app:t_border_width="@dimen/y1"
+            app:t_point_color="@color/color_red_dot_f43531"
+            app:t_radius="@dimen/x4"
+            app:t_round_image="true"
+            app:t_show_point="false" />
     </FrameLayout>
 
     <RelativeLayout
@@ -81,26 +86,27 @@
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp12" />
 
-                <ImageView
-                    android:id="@+id/act_panorama_camera_banner_information_charge_icon"
+                <TextView
+                    android:id="@+id/act_panorama_camera_banner_information_charge_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/y5"
-                    android:layout_toStartOf="@+id/act_panorama_camera_banner_information_charge_text"
-                    android:src="@drawable/camera720_icon_electricity_charge" />
+                    android:layout_toStartOf="@+id/act_panorama_camera_banner_information_charge_icon"
+                    android:drawablePadding="@dimen/y5"
+                    android:text="25%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/sp12" />
 
-                <TextView
-                    android:id="@+id/act_panorama_camera_banner_information_charge_text"
+                <ImageView
+                    android:id="@+id/act_panorama_camera_banner_information_charge_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/y15"
-                    android:drawablePadding="@dimen/y5"
-                    android:text="25%"
-                    android:textColor="#FFFFFF"
-                    android:textSize="@dimen/sp12" />
+                    android:src="@drawable/camera720_icon_electricity_charge" />
+
 
             </RelativeLayout>
 
@@ -161,18 +167,6 @@
             android:text="0K/s"
             android:textColor="#FFFFFF" />
 
-        <com.cylan.jiafeigou.widget.SimpleProgressBar
-            android:id="@+id/act_panorama_camera_loading"
-            android:layout_width="@dimen/y48"
-            android:layout_height="@dimen/y48"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/y184"
-            android:padding="@dimen/y10"
-            android:visibility="visible"
-            app:progress_point_radius="@dimen/y3"
-            app:progress_radius="@dimen/y50"
-            app:progress_stroke_color="@color/color_cecece" />
-
 
     </RelativeLayout>
 
@@ -223,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="速率:自动"
+                android:text="速率:高清"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/sp15" />
 
@@ -240,6 +234,19 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/act_panorama_camera_bottom_panel"
+        android:layout_below="@+id/act_panorama_camera_toolbar">
+
+        <com.cylan.jiafeigou.widget.live.LivePlayControlView
+            android:id="@+id/act_panorama_camera_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+    </FrameLayout>
 
     <View
         android:id="@+id/act_panorama_camera_bottom_count_down_line"

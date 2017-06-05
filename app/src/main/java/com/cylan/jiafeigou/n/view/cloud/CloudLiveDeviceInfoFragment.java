@@ -122,7 +122,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             tvDeviceCid.setText(device.uuid);
         }
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        if (status == null || !status.hasSdcard) {
+        if (status == null || status.hasSdcard==0) {
             tvDeviceStorage.setText(getString(R.string.SD_NO));
         } else {
             if (status.err != 0) {

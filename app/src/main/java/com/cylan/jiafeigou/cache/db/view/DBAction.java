@@ -18,7 +18,7 @@ public enum DBAction {
             }
             return true;
         }
-    }, UNBIND;
+    }, UNBIND, SHARE_H5;
     private OP op;//op 只是在查询时有用,并不会保存到数据库
     private String action;
 

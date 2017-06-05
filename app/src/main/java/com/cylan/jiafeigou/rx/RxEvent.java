@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -16,14 +17,21 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.cylan.jiafeigou.rx.RxEvent.UpdateType.GOOGLE_PLAY;
+import static com.cylan.jiafeigou.rx.RxEvent.UpdateType._8HOUR;
 
 
 /**
@@ -353,7 +361,6 @@ public class RxEvent {
         }
     }
 
-    @Deprecated
     public static final class BindDeviceEvent {
         public int bindResult;
         public String uuid;
@@ -962,9 +969,6 @@ public class RxEvent {
     public static class ShowWonderPageEvent {
     }
 
-    public static final class ShouldCheckPermission {
-    }
-
     public static class DevicesArrived {
         public List<Device> devices;
 
@@ -1156,6 +1160,55 @@ public class RxEvent {
         }
     }
 
+    public static final class VersionRsp {
+        public AbstractVersion.BinVersion version;
+        public String uuid;
+
+        public AbstractVersion.BinVersion getVersion() {
+            return version;
+        }
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public VersionRsp setVersion(AbstractVersion.BinVersion version) {
+            this.version = version;
+            return this;
+        }
+
+        public VersionRsp setUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "VersionRsp{" +
+                    "version=" + version +
+                    ", uuid='" + uuid + '\'' +
+                    '}';
+        }
+    }
+//    public static final class VersionRsp<T extends IVersion.BaseVersion> {
+//        public String uuid;
+//        public T version;
+//
+//        public VersionRsp<T> setUuid(String uuid) {
+//            this.uuid = uuid;
+//            return this;
+//        }
+//
+//        public VersionRsp<T> setVersion(T version) {
+//            this.version = version;
+//            return this;
+//        }
+//
+//        public T getVersion() {
+//            return version;
+//        }
+//    }
+
 //    public static class NewVersionApkDesc {
 //        public String url;
 //        public String fileName;
@@ -1248,16 +1301,34 @@ public class RxEvent {
         }
     }
 
+    @IntDef({
+            GOOGLE_PLAY,
+            _8HOUR,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface UpdateType {
+        int GOOGLE_PLAY = 100;
+        int _8HOUR = 200;
+    }
+
     public static class ApkDownload {
         public String filePath;
-        public RxEvent.CheckVersionRsp rsp;
+        public int forceUpdate;
+        public
+        @UpdateType
+        int updateType;//google play或者 直接安装
 
         public ApkDownload(String filePath) {
             this.filePath = filePath;
         }
 
-        public ApkDownload setRsp(RxEvent.CheckVersionRsp rsp) {
-            this.rsp = rsp;
+        public ApkDownload setForceUpdate(int forceUpdate) {
+            this.forceUpdate = forceUpdate;
+            return this;
+        }
+
+        public ApkDownload setUpdateType(@UpdateType int updateType) {
+            this.updateType = updateType;
             return this;
         }
     }
@@ -1283,5 +1354,63 @@ public class RxEvent {
         public static final PanoramaApiAvailable API_HTTP = new PanoramaApiAvailable(0);
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
         public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
+    }
+
+    public static class GetVideoShareUrlEvent {
+        public String url;
+
+        public GetVideoShareUrlEvent(String s) {
+            this.url = s;
+        }
+    }
+
+    public static class ReportMsgEvent {
+        public String cid;
+        public PanoramaEvent.MsgForward forward;
+
+        public ReportMsgEvent(String cid, PanoramaEvent.MsgForward forward) {
+            this.cid = cid;
+            this.forward = forward;
+        }
+    }
+
+    public static class AdsRsp {
+        public int ret;
+        public long time;
+        public String picUrl;
+        public String tagUrl;
+
+        public AdsRsp() {
+        }
+
+        public AdsRsp setRet(int ret) {
+            this.ret = ret;
+            return this;
+        }
+
+        public AdsRsp setTime(long time) {
+            this.time = time;
+            return this;
+        }
+
+        public AdsRsp setPicUrl(String picUrl) {
+            this.picUrl = picUrl;
+            return this;
+        }
+
+        public AdsRsp setTagUrl(String tagUrl) {
+            this.tagUrl = tagUrl;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "AdsRsp{" +
+                    "ret=" + ret +
+                    ", time=" + time +
+                    ", picUrl='" + picUrl + '\'' +
+                    ", tagUrl='" + tagUrl + '\'' +
+                    '}';
+        }
     }
 }

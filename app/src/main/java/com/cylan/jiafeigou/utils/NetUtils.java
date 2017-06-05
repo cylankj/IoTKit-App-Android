@@ -20,11 +20,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * 网络工具类
@@ -316,20 +311,23 @@ public class NetUtils {
         return "";
     }
 
+    public static final String QQ_HOST = "http://www.qq.com";
+    public static final String BAIDU_HOST = "http://www.baidu.com";
+
     public static boolean isInternetAvailable(String host) {
         try {
             URL url = new URL(host);
             HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
             urlc.setRequestProperty("User-Agent", "test");
             urlc.setRequestProperty("Connection", "close");
-            urlc.setConnectTimeout(1000); // mTimeout is in seconds
+            urlc.setConnectTimeout(500); // mTimeout is in seconds
+            urlc.setReadTimeout(500);
             urlc.connect();
             return (urlc.getResponseCode() == 200);
         } catch (IOException e) {
             Log.e("warning", "Error checking internet connection", e);
             return false;
         }
-
     }
 
     public static String removeDoubleQuotes(String string) {
@@ -363,6 +361,28 @@ public class NetUtils {
      */
     public static boolean isNetworkAvailable(Context context) {
         context = ContextUtils.getContext();
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected()) {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED) {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检测当的网络（WLAN、3G/2G）状态
+     *
+     * @return true 表示网络可用
+     */
+    public static boolean isNetworkAvailable() {
+        Context context = ContextUtils.getContext();
         ConnectivityManager connectivity = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -469,5 +489,13 @@ public class NetUtils {
                 ((i >> 8) & 0xFF) + "." +
                 ((i >> 16) & 0xFF) + "." +
                 (i >> 24 & 0xFF);
+    }
+
+    public static boolean isPublicNetwork() {
+        boolean qq = isInternetAvailable(QQ_HOST);
+        if (qq) return true;
+        boolean baidu = isInternetAvailable(BAIDU_HOST);
+        if (baidu) return true;
+        return false;
     }
 }

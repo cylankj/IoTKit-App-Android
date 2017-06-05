@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +39,7 @@ import com.cylan.jiafeigou.widget.SafeSwitchButton;
 import com.cylan.jiafeigou.widget.ShareGridView;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -289,12 +289,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            String con = getString(R.string.share_content);
-            if (!TextUtils.isEmpty(JConstant.EFAMILY_URL_PREFIX)) {
-                con += JConstant.EFAMILY_URL_PREFIX;
-            }
-            intent.putExtra(Intent.EXTRA_TEXT, con);
-
+            final String app = getString(R.string.share_content) + "http://a.app.qq.com/o/simple.jsp?pkgname=%s";
+            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
                 appAdater = new AppAdater(getContext());

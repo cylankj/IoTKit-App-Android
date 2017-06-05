@@ -22,6 +22,7 @@ public class UdpConstant {
     public static final String UPGRADE_VERSION = "0.0.0.0";
     public static final String BIND_TAG = "bindTag:";
     public static final String DOORBELL_RING = "doorbell_ring";
+    public static final String REPORT_MSG = "report_msg";
 
 
     public static final class PingAckT {
@@ -53,7 +54,7 @@ public class UdpConstant {
         public String version;
         public int net;
         public String bindCode;
-        public int bindFlag = 1;//默认
+        public int bindFlag = 1;//默认强绑,又改了.
 
         @Override
         public String toString() {

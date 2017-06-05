@@ -16,6 +16,8 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -24,10 +26,16 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareConfig;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,12 +63,13 @@ public final class BaseInitializationManager {
     private Context appContext;
     private String crashPath;
     private BaseJFGResultParser resultParser;
-    private BaseGlobalUdpParser udpParser;
+    private BaseUdpMsgParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
     private PushResultReceiver pushReceiver;
     private BaseDeviceInformationFetcher deviceInformationFetcher;
     private BasePanoramaApiHelper apiHelper;
     private BaseForwardHelper forwardHelper;
+    private IProperty iProperty;
     private boolean hasInitFinished = false;
 
     @Inject
@@ -78,11 +87,12 @@ public final class BaseInitializationManager {
                                      BaseJFGResultParser resultParser,
                                      @ContextLife Context context,
                                      @Named("CrashPath") String crashPath,
-                                     BaseGlobalUdpParser udpParser,
+                                     BaseUdpMsgParser udpParser,
                                      BaseBellCallEventListener listener,
                                      BasePanoramaApiHelper apiHelper,
                                      BaseDeviceInformationFetcher fetcher,
-                                     BaseForwardHelper forwardHelper
+                                     BaseForwardHelper forwardHelper,
+                                     IProperty iProperty
     ) {
 
         compositeSubscription = new CompositeSubscription();
@@ -105,6 +115,7 @@ public final class BaseInitializationManager {
         this.deviceInformationFetcher = fetcher;
         this.apiHelper = apiHelper;
         this.forwardHelper = forwardHelper;
+        this.iProperty = iProperty;
     }
 
     public void initialization() {
@@ -122,8 +133,24 @@ public final class BaseInitializationManager {
         initPushResult();
         initDeviceInformationFetcher();
         OkGo.init((Application) appContext);
+        this.iProperty.initialize();
+        initUmengSdk();
         hasInitFinished = true;
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
+    }
+
+    private void initUmengSdk() {
+        Config.DEBUG = true;
+        PlatformConfig.setWeixin("wx3081bcdae8a842cf", "");
+        PlatformConfig.setQQZone("1103156296", "lfQJHRh8dDCJtwHu");
+        PlatformConfig.setSinaWeibo("1315129656", "5feab23e093b43f220bccf7fbab8f6c5", "https://api.weibo.com/oauth2/default.html");
+        PlatformConfig.setTwitter("kCEeFDWzz5xHi8Ej9Wx6FWqRL", "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5");
+        UMShareConfig config = new UMShareConfig();
+        config.isNeedAuthOnGetUserInfo(true);
+        config.isOpenShareEditActivity(true);
+        config.setSinaAuthType(UMShareConfig.AUTH_TYPE_SSO);
+        config.setFacebookAuthType(UMShareConfig.AUTH_TYPE_SSO);
+        UMShareAPI.get(appContext).setShareConfig(config);
     }
 
     private void initDeviceInformationFetcher() {
@@ -216,10 +243,7 @@ public final class BaseInitializationManager {
     }
 
     private void initBugMonitor() {
-        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(appContext);
-        strategy.setAppChannel(BuildConfig.DEBUG ? "DEBUG" : "CLEVER_DOG");
-        CrashReport.initCrashReport(appContext, strategy);
-        com.tencent.bugly.Bugly.enable = BuildConfig.DEBUG;
+        BugMonitor.init(ContextUtils.getContext());
     }
 
     private void initBlockCanary() {

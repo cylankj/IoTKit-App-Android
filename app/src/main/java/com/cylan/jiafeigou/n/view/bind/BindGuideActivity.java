@@ -15,7 +15,6 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -42,14 +41,20 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     CustomToolbar customToolbar;
     @BindView(R.id.tv_guide_main_content)
     TextView tvGuideMainContent;
-    private AFullBind aFullBind;
+    @BindView(R.id.iv_explain_gray)
+    ImageView ivExplainGray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_guide);
         ButterKnife.bind(this);
-        ViewUtils.setViewMarginStatusBar(customToolbar);
+        if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                getString(R.string._720PanoramicCamera))) {
+            ivExplainGray.setVisibility(View.VISIBLE);
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
+        }
     }
 
     @Override
@@ -94,15 +99,16 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             AppLogger.i("bind: " + info);
             return;
         }
-        if (NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI && ApFilter.isAPMode(info.getSSID(), getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID))) {
-            String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+
+        String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+        if (TextUtils.equals(panoramaConfigure, "OutDoor") && ApFilter.isAPMode(info.getSSID(), getUuid())
+                && NetUtils.getNetType(ContextUtils.getContext()) == ConnectivityManager.TYPE_WIFI) {
             Bundle bundle = new Bundle();
             bundle.putString("PanoramaConfigure", panoramaConfigure);
             bundle.putBoolean("Success", true);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
             ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    newInstance, android.R.id.content);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), newInstance, android.R.id.content);
         } else {
             Intent intent = getIntent();
             intent.setClass(this, ConfigWifiActivity.class);
@@ -110,5 +116,12 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    @OnClick(R.id.iv_explain_gray)
+    public void onExplain() {
+        PanoramaExplainFragment fragment = PanoramaExplainFragment.newInstance(null);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 }

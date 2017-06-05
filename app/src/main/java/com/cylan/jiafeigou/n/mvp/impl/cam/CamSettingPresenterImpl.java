@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -38,8 +37,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -91,7 +88,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public void start() {
         super.start();
         getView().deviceUpdate(device);
-        FirmwareCheckerService.checkVersion(uuid);
+        AppLogger.d("检查升级包");
     }
 
     /**
@@ -200,7 +197,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
-        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
+        if (sdStatus == null || sdStatus.hasSdcard==0 || sdStatus.err != 0)
             return "";
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
@@ -209,6 +206,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (!alarmFlag && deviceAutoVideoRecord == 0)//不开启,默认不选择
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
+    }
+
+    @Override
+    public void enableAp() {
+        AppLogger.e("还没实现");
     }
 
     @Override

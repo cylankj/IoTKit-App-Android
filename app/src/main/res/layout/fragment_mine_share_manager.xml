@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
+
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backAction="@{listener}"
+            app:ct_background_color="@color/color_0ba8cf"
+            app:ct_enable_shadow="true"
+            app:ct_enable_theme="true"
+            app:ct_fit_system_window="true"
+            app:ct_icon="@drawable/nav_icon_back_white"
+            app:ct_left_title="@string/Sharing_Management"
+            app:ct_left_title_color="@color/color_white" />
+
+        <com.cylan.jiafeigou.widget.HomeMineItemView
+            android:id="@+id/sharedDevice"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y60"
+            android:onClickListener="@{listener}"
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar"
+            app:rightDrawable="@drawable/icon_list_next"
+            app:text="@string/Tap3_ShareDevice"
+            app:textColor="@color/color_333333"
+            app:textSize="@dimen/sp16" />
+
+        <com.cylan.jiafeigou.widget.HomeMineItemView
+            android:id="@+id/sharedContent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y60"
+            android:onClickListener="@{listener}"
+            app:layout_constraintTop_toBottomOf="@id/sharedDevice"
+            app:rightDrawable="@drawable/icon_list_next"
+            app:text="已分享内容"
+            app:textColor="@color/color_333333"
+            app:textSize="@dimen/sp16" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

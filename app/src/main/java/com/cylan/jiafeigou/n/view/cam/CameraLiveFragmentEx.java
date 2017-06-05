@@ -175,7 +175,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
                 boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
                 //无卡不需要显示
-                if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard && dpSdStatus.err == 0) {
+                if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard ==1&& dpSdStatus.err == 0) {
                     AlertDialogManager.getInstance().showDialog(getActivity(),
                             getString(R.string.Tap1_Camera_MotionDetection_OffTips),
                             getString(R.string.Tap1_Camera_MotionDetection_OffTips),
@@ -352,7 +352,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         if (msgId == 509) {
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
-            String _509 = device.$(509, "0");
+            String _509 = device.$(509, "1");
             camLiveControlLayer.updateLiveViewMode(_509);
         }
     }
@@ -579,6 +579,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onAudioPermissionCheck() {
         if (!isAdded()) return;
 //        CameraLiveFragmentExPermissionsDispatcher.audioRecordPermissionGrantProgramCheckWithCheck(this);
+    }
+
+    @Override
+    public void onBatteryDrainOut() {
+        if (!isAdded()) return;
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                "onBatteryDrainOut", getString(R.string.Tap1_LowPower),
+                getString(R.string.OK), null, false);
     }
 
 

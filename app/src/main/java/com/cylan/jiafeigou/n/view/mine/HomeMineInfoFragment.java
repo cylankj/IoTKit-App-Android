@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,14 +22,12 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -58,6 +55,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
@@ -112,7 +110,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private JFGAccount argumentData;
     private Uri outPutUri;
     private File tempFile;
-    private PopupWindow popupWindow;
+    //    private PopupWindow popupWindow;
     private int navigationHeight;
     private WeakReference<MyQRCodeDialog> myQrcodeDialog;
 
@@ -431,54 +429,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * 弹出选择头像的对话框
      */
     private void pickImageDialog(View v) {
-        if (popupWindow != null && popupWindow.isShowing()) {
-            return;
-        }
-        //设置PopupWindow的View
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_pick_image_popupwindow, null);
-        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        //设置背景
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        //设置点击弹窗外隐藏自身
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        //设置动画
-        popupWindow.setAnimationStyle(R.style.PopupWindow);
-        //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
-        //设置消失监听
-        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
-        //设置PopupWindow的View点击事件
-        setOnPopupViewClick(view);
-        //设置背景色
-        setBackgroundAlpha(0.4f);
-    }
-
-    /**
-     * popupwindow条目点击
-     *
-     * @param view
-     */
-    private void setOnPopupViewClick(View view) {
-        TextView tv_pick_phone, tv_pick_zone, tv_cancel;
-        tv_pick_phone = (TextView) view.findViewById(R.id.tv_pick_gallery);
-        tv_pick_zone = (TextView) view.findViewById(R.id.tv_pick_camera);
-        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-        tv_pick_phone.setOnClickListener(v -> {
-            if (presenter.checkExternalStorePermission()) {
-                openGallery();
-            } else {
-                //申请权限
-                HomeMineInfoFragment.this.requestPermissions(
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        2);
-            }
-            popupWindow.dismiss();
-        });
-
-        tv_pick_zone.setOnClickListener(v -> {
-            //打开相机
+        ViewUtils.deBounceClick(v);
+        PickImageFragment fragment = PickImageFragment.newInstance(null);
+        fragment.setClickListener(vv -> {
+//打开相机
             if (presenter.checkHasCamera()) {
 
                 if (presenter.checkCameraPermission() && presenter.cameraIsCanUse()) {
@@ -493,11 +447,86 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             } else {
                 ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
             }
-            popupWindow.dismiss();
+        }, cc -> {
+            if (presenter.checkExternalStorePermission()) {
+                openGallery();
+            } else {
+                //申请权限
+                HomeMineInfoFragment.this.requestPermissions(
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        2);
+            }
         });
-
-        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
+        fragment.show(getActivity().getSupportFragmentManager(), "pickImageDialog");
+//        AlertDialogManager.getInstance().showDialog(getActivity(),"pickImageDialog",
+//                R.string.);
+//        if (popupWindow != null && popupWindow.isShowing()) {
+//            return;
+//        }
+//        //设置PopupWindow的View
+//        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_pick_image_popupwindow, null);
+//        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
+//                RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        //设置背景
+//        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//        //设置点击弹窗外隐藏自身
+//        popupWindow.setFocusable(true);
+//        popupWindow.setOutsideTouchable(true);
+//        //设置动画
+//        popupWindow.setAnimationStyle(R.style.PopupWindow);
+//        //设置位置
+//        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
+//        //设置消失监听
+//        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
+//        //设置PopupWindow的View点击事件
+//        setOnPopupViewClick(view);
+//        //设置背景色
+//        setBackgroundAlpha(0.4f);
     }
+
+//    /**
+//     * popupwindow条目点击
+//     *
+//     * @param view
+//     */
+//    private void setOnPopupViewClick(View view) {
+//        TextView tv_pick_phone, tv_pick_zone, tv_cancel;
+//        tv_pick_phone = (TextView) view.findViewById(R.id.tv_pick_gallery);
+//        tv_pick_zone = (TextView) view.findViewById(R.id.tv_pick_camera);
+//        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+//        tv_pick_phone.setOnClickListener(v -> {
+//            if (presenter.checkExternalStorePermission()) {
+//                openGallery();
+//            } else {
+//                //申请权限
+//                HomeMineInfoFragment.this.requestPermissions(
+//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        2);
+//            }
+//            popupWindow.dismiss();
+//        });
+//
+//        tv_pick_zone.setOnClickListener(v -> {
+//            //打开相机
+//            if (presenter.checkHasCamera()) {
+//
+//                if (presenter.checkCameraPermission() && presenter.cameraIsCanUse()) {
+//                    openCamera();
+//                } else {
+//                    //申请权限
+//                    HomeMineInfoFragment.this.requestPermissions(
+//                            new String[]{Manifest.permission.CAMERA},
+//                            1);
+//                }
+//
+//            } else {
+//                ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
+//            }
+//            popupWindow.dismiss();
+//        });
+//
+//        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
+//    }
 
     /**
      * 打开相册
@@ -554,54 +583,66 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * 删除亲友对话框
      */
     public void showLogOutDialog(View v) {
-        if (popupWindow != null && popupWindow.isShowing()) {
-            return;
-        }
-        //设置PopupWindow的View
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_del_friend_popupwindow, null);
-        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        //设置背景
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        //设置点击弹窗外隐藏自身
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        //设置动画
-        popupWindow.setAnimationStyle(R.style.PopupWindow);
-        //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
-        //设置消失监听
-        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
-        //设置PopupWindow的View点击事件
-        setOnLogoutClick(view);
-        //设置背景色
-        setBackgroundAlpha(0.4f);
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                "showLogOutDialog", getString(R.string.LOGOUT_INFO),
+                getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
+                    if (getView() != null && argumentData != null) {
+                        presenter.logOut(argumentData.getAccount());
+                        jump2LoginFragment();
+                        if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
+                            ((NewHomeActivity) getActivity()).finishExt();
+                        }
+                    }
+                }, getString(R.string.CANCEL), null, false);
+//
+//        if (popupWindow != null && popupWindow.isShowing()) {
+//            return;
+//        }
+//        //设置PopupWindow的View
+//        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_del_friend_popupwindow, null);
+//        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
+//                RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        //设置背景
+//        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//        //设置点击弹窗外隐藏自身
+//        popupWindow.setFocusable(true);
+//        popupWindow.setOutsideTouchable(true);
+//        //设置动画
+//        popupWindow.setAnimationStyle(R.style.PopupWindow);
+//        //设置位置
+//        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
+//        //设置消失监听
+//        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
+//        //设置PopupWindow的View点击事件
+//        setOnLogoutClick(view);
+//        //设置背景色
+//        setBackgroundAlpha(0.4f);
     }
 
-    private void setOnLogoutClick(View view) {
-        TextView tv_is_del, tv_pick_zone, tv_cancel;
-        tv_is_del = (TextView) view.findViewById(R.id.tv_is_del_frined);
-        tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
-        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-
-        tv_is_del.setTextSize(14);
-        tv_is_del.setText(getString(R.string.LOGOUT_INFO));
-
-        tv_pick_zone.setText(getString(R.string.LOGOUT));
-
-        tv_pick_zone.setOnClickListener(v -> {
-            popupWindow.dismiss();
-            if (getView() != null && argumentData != null) {
-                presenter.logOut(argumentData.getAccount());
-                jump2LoginFragment();
-                if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
-                    ((NewHomeActivity) getActivity()).finishExt();
-                }
-            }
-        });
-
-        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
-    }
+//    private void setOnLogoutClick(View view) {
+//        TextView tv_is_del, tv_pick_zone, tv_cancel;
+//        tv_is_del = (TextView) view.findViewById(R.id.tv_is_del_frined);
+//        tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
+//        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+//
+//        tv_is_del.setTextSize(14);
+//        tv_is_del.setText(getString(R.string.LOGOUT_INFO));
+//
+//        tv_pick_zone.setText(getString(R.string.LOGOUT));
+//
+//        tv_pick_zone.setOnClickListener(v -> {
+//            popupWindow.dismiss();
+//            if (getView() != null && argumentData != null) {
+//                presenter.logOut(argumentData.getAccount());
+//                jump2LoginFragment();
+//                if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
+//                    ((NewHomeActivity) getActivity()).finishExt();
+//                }
+//            }
+//        });
+//
+//        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
+//    }
 
 
     //设置屏幕背景透明效果
@@ -738,9 +779,5 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (popupWindow != null) {
-            popupWindow.dismiss();
-            popupWindow = null;
-        }
     }
 }

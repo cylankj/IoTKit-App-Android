@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lLayout_config_ap"
     android:layout_width="match_parent"
@@ -8,10 +8,6 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
-    <Space
-        android:layout_width="@dimen/x1"
-        android:layout_height="@dimen/y33" />
-
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
         layout="@layout/layout_default_custom_tool_bar"
@@ -19,10 +15,20 @@
         android:layout_height="wrap_content"
         hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
+    <ImageView
+        android:id="@+id/iv_explain_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/y15"
+        android:src="@drawable/icon_explain_gray"
+        android:visibility="gone" />
+
     <ViewSwitcher
         android:id="@+id/vs_show_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/custom_toolbar"
         android:layout_marginTop="@dimen/y20">
 
         <include
@@ -34,4 +40,4 @@
             layout="@layout/fragment_config_ap_next" />
 
     </ViewSwitcher>
-</LinearLayout>
+</RelativeLayout>

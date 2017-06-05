@@ -475,10 +475,6 @@ public class BaseDBHelper implements IDBHelper {
                         for (Account account1 : accounts) {
                             if (TextUtils.equals(account1.getAccount(), account.getAccount())) {
                                 this.dpAccount = account1;
-                                dpAccount.setAccount(account);
-                                dpAccount.setState(DBState.ACTIVE);
-                                dpAccount.setToken(UUID.randomUUID().toString());
-                                changed.add(dpAccount);
                                 continue;
                             }
                             if (account1.state() != DBState.SUCCESS) {
@@ -489,9 +485,12 @@ public class BaseDBHelper implements IDBHelper {
                     }
                     if (dpAccount == null) {
                         dpAccount = new Account(account);
-                        dpAccount.setServer(getServer());
-                        changed.add(dpAccount);
                     }
+                    dpAccount.setAccount(account);
+                    dpAccount.setState(DBState.ACTIVE);
+                    dpAccount.setToken(UUID.randomUUID().toString());
+                    dpAccount.setServer(getServer());
+                    changed.add(dpAccount);
                     accountDao.insertOrReplaceInTx(changed);
                     return dpAccount;
                 });
@@ -500,9 +499,10 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> getActiveAccount() {
-        return Observable.just(this.dpAccount).filter(item -> item != null)
-                .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).map(item -> this.dpAccount = item.account))
-                .mergeWith(accountDao.queryBuilder().where(AccountDao.Properties.Server.eq(getServer()), AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique().filter(item -> item != null).map(item -> this.dpAccount = item))
+        return Observable.merge(Observable.just(this.dpAccount).filter(item -> item != null),
+                RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).map(item -> this.dpAccount = item.account),
+                accountDao.queryBuilder().where(AccountDao.Properties.Server.eq(getServer()), AccountDao.Properties.State.eq(DBState.ACTIVE.state()))
+                        .rx().unique().filter(item -> item != null).map(item -> this.dpAccount = item))
                 .first();
     }
 

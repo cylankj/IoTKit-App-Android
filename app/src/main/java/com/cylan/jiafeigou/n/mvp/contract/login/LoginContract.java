@@ -1,8 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
+import android.app.Activity;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Subscription;
@@ -70,22 +71,18 @@ public interface LoginContract {
          */
         void checkAccountResult(RxEvent.CheckRegisterBack callback);
 
-        void authorizeResult();
-
         void reShowAccount(String account);
 
         void showLoading();
 
         void hideLoading();
+
+        Activity getActivityContext();
+
+        void onAuthenticationResult(int code);
     }
 
     interface Presenter extends BasePresenter {
-        /**
-         * 执行登陆
-         *
-         * @param info
-         */
-        void executeLogin(LoginAccountBean info);
 
         void registerByPhone(String phone, String verificationCode);
 
@@ -121,18 +118,15 @@ public interface LoginContract {
         boolean checkOverCount(String account);
 
         /**
-         * 三方授权结果
-         *
-         * @return
-         */
-        Subscription thirdAuthorizeBack();
-
-        /**
          * 回显账号
          *
          * @return
          */
         Subscription reShowAccount();
+
+        void performLogin(String account, String password);
+
+        void performAuthentication(int loginType);
     }
 
 }

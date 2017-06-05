@@ -93,6 +93,10 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     public DPEntity() {
     }
 
+    public DPEntity(String uuid, int msgId, long version, DBAction action, DBOption option) {
+        setUuid(uuid).setMsgId(msgId).setVersion(version).setAction(action).setOption(option);
+    }
+
     public IDPEntity set_id(Long id) {
         this._id = id;
         return this;

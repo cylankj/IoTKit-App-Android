@@ -34,9 +34,9 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoMailBoxFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
-import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -211,12 +211,19 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 return;
             }
         }
-
-        MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
+//
+//        MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
+//        getActivity().getSupportFragmentManager().beginTransaction()
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                        , R.anim.slide_in_left, R.anim.slide_out_right)
+//                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
+//                .addToBackStack("HomeMineFragment")
+//                .commit();
+        HomeMineShareManagerFragment managerFragment = HomeMineShareManagerFragment.newInstance(null);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
+                .add(android.R.id.content, managerFragment, HomeMineShareManagerFragment.class.getSimpleName())
                 .addToBackStack("HomeMineFragment")
                 .commit();
     }

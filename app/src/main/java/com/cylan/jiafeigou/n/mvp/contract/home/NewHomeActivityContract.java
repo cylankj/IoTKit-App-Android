@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.io.File;
 
@@ -22,7 +23,7 @@ public interface NewHomeActivityContract {
 
         void start();
 
-        void needUpdate(String desc, String filePath, int force);
+        void needUpdate(@RxEvent.UpdateType int type, String desc, String filePath, int force);
     }
 
 

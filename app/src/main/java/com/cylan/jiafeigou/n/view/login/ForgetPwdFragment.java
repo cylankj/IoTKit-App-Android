@@ -493,18 +493,18 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void submitResult(RequestResetPwdBean bean) {
-        final int ret = bean == null ? -1 : bean.ret;
+        final int ret = bean.ret;
         switch (ret) {
             case JConstant.THIS_ACCOUNT_NOT_REGISTERED:
                 tvForgetPwdSubmit.setEnabled(true);
                 Toast.makeText(getContext(), getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST), Toast.LENGTH_SHORT).show();
                 break;
             case JConstant.AUTHORIZE_MAIL:
-                if (bean != null && !TextUtils.equals(bean.content, etForgetUsername.getText())) {
-                    tvForgetPwdSubmit.setEnabled(true);
-                    Toast.makeText(getContext(), getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST), Toast.LENGTH_SHORT).show();
-                    break;
-                }
+//                if (!TextUtils.equals(bean.content, etForgetUsername.getText())) {
+//                    tvForgetPwdSubmit.setEnabled(true);
+//                    Toast.makeText(getContext(), getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST), Toast.LENGTH_SHORT).show();
+//                    break;
+//                }
                 prepareMailView();
                 break;
             case JConstant.AUTHORIZE_PHONE:

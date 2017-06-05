@@ -112,10 +112,15 @@ public class BaseForwardHelper {
                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
                 PanoramaEvent.MsgSdInfoRsp infoRsp = new PanoramaEvent.MsgSdInfoRsp();
                 infoRsp.sdcard_recogntion = status.err;
-                infoRsp.sdIsExist = status.hasSdcard ? 1 : 0;
+                infoRsp.sdIsExist = status.hasSdcard;
                 infoRsp.storage = status.total;
                 infoRsp.storage_used = status.used;
                 return (T) infoRsp;
+            } else if (msgId == 205) {
+                Boolean aBoolean = unpackData(msg.packValue, boolean.class);
+                PanoramaEvent.MsgPowerLineRsp powerLineRsp = new PanoramaEvent.MsgPowerLineRsp();
+                powerLineRsp.powerline = aBoolean != null && aBoolean ? 1 : 0;
+                return (T) powerLineRsp;
             } else if (msgId == 206) {
                 Integer battery = unpackData(msg.packValue, int.class);
                 PanoramaEvent.MsgBatteryRsp batteryRsp = new PanoramaEvent.MsgBatteryRsp();

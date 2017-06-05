@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SetDeviceAliasPresenterImpl;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoginButton;
 
@@ -111,6 +112,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
                     basePresenter.setupAlias(alias.toString());
                 }
                 btnBindDone.viewZoomSmall();
+                IMEUtils.hide(getActivity());
                 break;
         }
     }

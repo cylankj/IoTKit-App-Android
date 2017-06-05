@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.entity.jniCall.DevUpgradeInfo;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -26,6 +28,7 @@ import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -290,16 +293,6 @@ public class BaseAppCallBackHolder implements AppCallBack {
         BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
     }
 
-    @Override
-    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3, String s4) {
-        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + s + ":" + s1 + ":" + s2 + ":" + s3);
-//        b = true;
-//        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
-//        s1 = "3.0.0";
-//        s2 = "你好";
-//        s3 = "xx";
-        RxBus.getCacheInstance().post(new RxEvent.CheckVersionRsp(b, s, s1, s2, s3).setUuid(s4).setSeq(0));
-    }
 
     @Override
     public void OnNotifyStorageType(int i) {
@@ -325,6 +318,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetVideoShareUrl(String s) {
         AppLogger.d(String.format(Locale.getDefault(), "OnGetVideoShareUrl:%s", s));
+        RxBus.getCacheInstance().post(new RxEvent.GetVideoShareUrlEvent(s));
     }
 
     @Override
@@ -358,8 +352,88 @@ public class BaseAppCallBackHolder implements AppCallBack {
         AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
     }
 
+
     @Override
-    public void OnGetAdPolicyRsp(int i, long l, String s, String s1) {
-        AppLogger.d(String.format("OnGetAdPolicyRsp:ret:%s,time:%s,picUrl:%s,tagUrl:%s", i, l, s, s1));
+    public void OnGetAdPolicyRsp(int i, long l, String picUrl, String tagUrl) {
+        AppLogger.d("OnGetAdPolicyRsp:" + l + ":" + picUrl);
+//        l = System.currentTimeMillis() + 2 * 60 * 1000;
+//        tagUrl = "http://www.baidu.com";
+//        picUrl = "http://cdn.duitang.com/uploads/item/201208/19/20120819131358_2KR2S.thumb.600_0.png";
+        RxBus.getCacheInstance().postSticky(new RxEvent.AdsRsp().setPicUrl(picUrl).setTagUrl(tagUrl)
+                .setRet(i).setTime(l));
     }
+
+    //final boolean hasNew, final String url, final String version,
+    // final String tip, final String md5, final String cid
+    @Override
+    public void OnCheckDevVersionRsp(boolean b, String url, String tagVersion,
+                                     String tip, String md5, String cid) {
+        AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + url + ":" + tagVersion
+                + ":" + tip + ":" + md5 + "," + cid);
+//        b = true;
+//        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
+//        s1 = "3.0.0";
+//        s2 = "你好";
+//        s3 = "xx";
+        if (!b) {
+            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + cid);
+        }
+        ArrayList<DevUpgradeInfo> arrayList = new ArrayList<>();
+        DevUpgradeInfo info = new DevUpgradeInfo();
+        info.md5 = md5;
+        info.tag = 0;
+        info.url = url;
+        info.version = tagVersion;
+        arrayList.add(info);
+        PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
+        version.setCid(cid);
+        version.setContent(tip);
+        version.setList(arrayList);
+        version.setTagVersion(tagVersion);
+        RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
+    }
+
+
+    @Override
+    public void OnCheckTagDeviceVersionRsp(int ret, String cid,
+                                           String tagVersion,
+                                           String content,
+                                           ArrayList<DevUpgradeInfo> arrayList) {
+        AppLogger.d("OnCheckTagDeviceVersionRsp:" + ret + ":" + cid + ",:" + tagVersion + "," + new Gson().toJson(arrayList));
+//        arrayList = testList();
+//        cid = "290000000065";
+//        tagVersion = "1.0.0.009";
+//        content = "test";
+        if (!TextUtils.isEmpty(cid)) {
+            if (ret != 0 || ListUtils.isEmpty(arrayList))
+                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + cid);
+        } else return;
+        PanDeviceVersionChecker.BinVersion version = new PanDeviceVersionChecker.BinVersion();
+        version.setCid(cid);
+        version.setContent(content);
+        version.setList(arrayList);
+        version.setTagVersion(tagVersion);
+        RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
+    }
+
+//    private ArrayList<DevUpgradeInfo> testList() {
+//        ArrayList<DevUpgradeInfo> list = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            DevUpgradeInfo info = new DevUpgradeInfo();
+//            info.md5 = "";
+//            info.tag = i;
+//            info.url = tmp[i];
+//            info.version = "1.0.0.009";
+//            list.add(info);
+//        }
+//        return list;
+//    }
+
+//    private static final String[] tmp = new String[]{
+//            "http://oss-cn-hangzhou.aliyuncs.com/jiafeigou-yf/package/21/JFG5W-1.0.0.009-Kernel.bin?Expires=1527472979&Signature=m2KroyFfNhOVZi1YmzLWh14NUU4%3D&OSSAccessKeyId=xjBdwD1du8lf2wMI",
+//            "http://yf.cylan.com.cn:82/Garfield/Android-New/cylan/201706021000-3.2.0.286/ChangeLog.txt",
+//            "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin",
+//            "http://tse4.mm.bing.net/th?id=OIP.QxZxJAfP-lq-OxYjS3bFLAFNC7&pid=15.1",
+//            "http://a2.att.hudong.com/18/04/14300000931600128341040320614.jpg"
+//    };
 }

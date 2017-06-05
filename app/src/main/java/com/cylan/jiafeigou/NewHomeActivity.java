@@ -19,7 +19,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
@@ -34,6 +33,7 @@ import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -226,9 +226,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     @Override
-    public void needUpdate(String desc, String filePath, int force) {
+    public void needUpdate(@RxEvent.UpdateType int type, String desc, String filePath, int force) {
         getAlertDialogManager().showDialog(this, getString(R.string.UPGRADE), getString(R.string.UPGRADE),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    if (type == RxEvent.UpdateType.GOOGLE_PLAY) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + ContextUtils.getContext().getPackageName()));
+                        startActivity(intent);
+                        return;
+                    }
                     /**
                      * 安装apk
                      */

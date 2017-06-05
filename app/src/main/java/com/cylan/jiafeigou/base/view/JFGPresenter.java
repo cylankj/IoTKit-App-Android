@@ -10,7 +10,11 @@ public interface JFGPresenter<V extends JFGView> {
 
     void onStart();
 
+    void onResume();
+
     void onSetContentView();
+
+    void onPause();
 
     void onStop();
 

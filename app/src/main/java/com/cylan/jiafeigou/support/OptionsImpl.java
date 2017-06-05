@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mcxiaoke.packer.helper.PackerNg;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,13 +49,31 @@ public class OptionsImpl {
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectDiskReads().detectDiskWrites().detectNetwork().detectAll().penaltyLog().penaltyDialog().build());
     }
 
-
+    /**
+     * 1.debug环境下,先从配置文件中读取.
+     * 2.从渠道配置信息中读取
+     * 3.从Manifest中读取
+     *
+     * @return
+     */
     public static String getServer() {
         try {
-            if (configContent != null && configContent.has("server")) {
+            if (BuildConfig.DEBUG && configContent != null && configContent.has("server")) {
                 String configServer = configContent.get("server").getAsString();
-                if (!TextUtils.isEmpty(configServer)) return configServer;
+                if (!TextUtils.isEmpty(configServer)) {
+                    Log.d(TAG, "get serverFrom local: " + configServer);
+                    return configServer;
+                }
             }
+            // 如果没有使用PackerNg打包添加渠道，默认返回的是""
+            //他们说 服务器地址泄露没有关系,所以干脆用多渠道包的方式.
+            // com.mcxiaoke.packer.helper.PackerNg
+            final String domain = PackerNg.getMarket(ContextUtils.getContext());
+            if (!TextUtils.isEmpty(domain)) {
+                Log.d(TAG, "get serverFrom ng: " + domain);
+                return domain;
+            }
+
             String server = PackageUtils.getMetaString(ContextUtils.getContext(), "server");
             if (!BuildConfig.DEBUG) {
                 return server;

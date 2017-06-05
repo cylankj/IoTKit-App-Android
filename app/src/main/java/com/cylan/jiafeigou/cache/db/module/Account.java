@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import android.text.TextUtils;
+
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
@@ -61,8 +63,12 @@ public class Account extends BasePropertyHolder<Account> {
         this.email = account.getEmail();
         this.enableVibrate = account.isEnableVibrate();
         this.photoUrl = account.getPhotoUrl();
-        this.action = DBAction.SAVED.action();
-        this.state = DBState.SUCCESS.state();
+        if (TextUtils.isEmpty(this.action)) {
+            this.action = DBAction.SAVED.action();
+        }
+        if (TextUtils.isEmpty(this.state)) {
+            this.state = DBState.ACTIVE.state();
+        }
         return this;
     }
 

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.widget;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,8 +25,9 @@ public class LoadingDialog extends BaseDialog {
 
     private static final String KEY_CONTENT = "key_content";
     private static final String KEY_TOUCH = "key_touch";
+    private DialogInterface.OnCancelListener listener;
 
-    public static void showLoading(FragmentManager fragmentManager, String content, boolean dismissTouchOutside) {
+    public static void showLoading(FragmentManager fragmentManager, String content, boolean dismissTouchOutside, DialogInterface.OnCancelListener listener) {
         Fragment dialog = fragmentManager.findFragmentByTag("LoadingDialog");
         if (dialog != null && dialog.isVisible())
             ((LoadingDialog) dialog).dismiss();
@@ -34,7 +36,16 @@ public class LoadingDialog extends BaseDialog {
         bundle.putString(KEY_CONTENT, content);
         bundle.putBoolean(KEY_TOUCH, dismissTouchOutside);
         loadingDialog.setArguments(bundle);
+        loadingDialog.listener = listener;
         loadingDialog.show(fragmentManager, "LoadingDialog");
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if (listener != null) {
+            listener.onCancel(dialog);
+        }
     }
 
     public static boolean isShowing(FragmentManager fragmentManager) {
@@ -43,11 +54,11 @@ public class LoadingDialog extends BaseDialog {
     }
 
     public static void showLoading(FragmentManager fragmentManager, String content) {
-        showLoading(fragmentManager, content, true);
+        showLoading(fragmentManager, content, true, null);
     }
 
     public static void showLoading(FragmentManager fragmentManager) {
-        showLoading(fragmentManager, "", true);
+        showLoading(fragmentManager, "", true, null);
     }
 
     public static void dismissLoading(FragmentManager fragmentManager) {

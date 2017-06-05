@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
 
 import com.cylan.jfgapp.interfases.AppCmd;
@@ -64,8 +65,12 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getContentViewID());
-        ButterKnife.bind(this);
+        if (getContentViewID() != -1) {
+            setContentView(getContentViewID());
+            ButterKnife.bind(this);
+        } else if (getContentRootView() != null) {
+            setContentView(getContentRootView());
+        }
         AppComponent appComponent = BaseApplication.getAppComponent();
         this.component = DaggerActivityComponent.builder().appComponent(appComponent).build();
         if (this.component != null) {
@@ -82,7 +87,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         }
     }
 
-
+    protected View getContentRootView() {
+        return null;
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -129,6 +136,22 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (presenter != null) {
+            presenter.onPause();
+        }
+    }
+
+    @Override
     public void showLoadingMsg(String msg) {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
@@ -170,7 +193,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
 
-    protected abstract int getContentViewID();
+    protected int getContentViewID() {
+        return -1;
+    }
 
     protected void initViewAndListener() {
     }

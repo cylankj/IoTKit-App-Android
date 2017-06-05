@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -36,7 +35,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -94,6 +92,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceCid;
     @BindView(R.id.tv_device_software_version)
     SettingItemView0 tvDeviceSoftwareVersion;
+    @BindView(R.id.tv_device_ip)
+    SettingItemView0 tvDeviceIp;
 
     private String uuid;
     private EditFragmentDialog editDialogFragment;
@@ -124,14 +124,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean showBattery = JFGRules.showSettingBatteryItem(device != null ? device.pid : 0);
+        boolean showBattery = JFGRules.showBattery(device != null ? device.pid : 0);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
-
         //全景不显示固件升级 显示软件版本
-        boolean showSoftWare = JFGRules.isNeedPanoramicView(device != null ? device.pid : 0);
-        tvDeviceSoftwareVersion.setVisibility(showSoftWare ? View.VISIBLE : View.GONE);
-        rlHardwareUpdate.setVisibility(showSoftWare ? View.GONE : View.VISIBLE);
+        tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
+        boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0);
+        rlHardwareUpdate.setVisibility(showFU ? View.VISIBLE : View.GONE);
+        tvDeviceIp.setVisibility(JFGRules.showIp(device.pid) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
         //是否显示移动网络
         boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
-        tvDeviceMobileNet.setVisibility(JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
+        tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
         DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
@@ -175,7 +175,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                         }
                     }, AppLogger::e);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        String statusContent = getSdcardState(status.hasSdcard, status.err);
+        String statusContent = getSdcardState(status.hasSdcard==1, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
@@ -234,13 +234,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.tv_device_sdcard_state:
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-                String statusContent = getSdcardState(status.hasSdcard, status.err);
+                String statusContent = getSdcardState(status.hasSdcard==1, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
                     showClearSDDialog();
                     return;
                 }
 
-                if (status.hasSdcard)//没有sd卡,不能点击
+                if (status.hasSdcard==1)//没有sd卡,不能点击
                     jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:
@@ -370,11 +370,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         String s = device.$(207, "");
         rlHardwareUpdate.setTvSubTitle(s);
         try {
-            if (JFGRules.isPanoramicCam(getDevice().pid)) return;//全景不显示
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
-            rlHardwareUpdate.setTvSubTitle(description.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
-            rlHardwareUpdate.showRedHint(description.hasNew);
+            rlHardwareUpdate.setTvSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
+            rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
         }
     }
@@ -454,5 +452,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
         }
         updateDetails();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

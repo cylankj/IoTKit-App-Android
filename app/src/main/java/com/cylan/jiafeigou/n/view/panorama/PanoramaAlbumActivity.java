@@ -76,7 +76,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-
         panoramaAdapter = new PanoramaAdapter(uuid, this, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
@@ -115,6 +114,18 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         });
         recyclerView.setAdapter(panoramaAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
+        String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
+        if (mac != null) {
+            String routerMac = NetUtils.getRouterMacAddress(getApplication());
+            if (TextUtils.equals(mac, routerMac)) {
+                albumViewMode = 2;
+                toolbarAlbumViewMode.setEnabled(true);
+            } else {
+                albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
+                toolbarAlbumViewMode.setEnabled(false);
+            }
+        }
+        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
     }
 
     private void onLoadMore() {
@@ -132,18 +143,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
-        String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
-        if (mac != null) {
-            String routerMac = NetUtils.getRouterMacAddress(getApplication());
-            if (TextUtils.equals(mac, routerMac)) {
-                albumViewMode = 2;
-                toolbarAlbumViewMode.setEnabled(true);
-            } else {
-                albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
-                toolbarAlbumViewMode.setEnabled(false);
-            }
-        }
-        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+
     }
 
     @Override
@@ -308,14 +308,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
                     .setMessage("视频正在下载中，是否删除?")
                     .setCancelable(false)
                     .setPositiveButton(R.string.DELETE, (dialog, which) -> {
-                        new AlertDialog.Builder(this)
-                                .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
-                                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog1, int which1) -> {
-                                    bottomMenuContainer.setVisibility(View.INVISIBLE);
-                                    presenter.deletePanoramaItem(items, albumViewMode);
-                                })
-                                .setNegativeButton(getString(R.string.CANCEL), null)
-                                .show();
+                        bottomMenuContainer.setVisibility(View.INVISIBLE);
+                        presenter.deletePanoramaItem(items, albumViewMode);
                     })
                     .setNegativeButton(R.string.CANCEL, null)
                     .show();

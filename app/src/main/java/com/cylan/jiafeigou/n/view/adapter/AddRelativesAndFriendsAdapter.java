@@ -25,15 +25,14 @@ import java.util.List;
 
 public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> {
 
-    private OnAcceptClickLisenter lisenter;
-    private RoundedImageView headImag;
+    private OnAcceptClickListener listener;
 
-    public interface OnAcceptClickLisenter {
+    public interface OnAcceptClickListener {
         void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item);
     }
 
-    public void setOnAcceptClickLisenter(OnAcceptClickLisenter lisenter) {
-        this.lisenter = lisenter;
+    public void setOnAcceptClickListener(OnAcceptClickListener listener) {
+        this.listener = listener;
     }
 
     public AddRelativesAndFriendsAdapter(Context context, List<MineAddReqBean> items, IMulItemViewType<MineAddReqBean> mulItemViewType) {
@@ -48,10 +47,8 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
         } else {
             holder.setText(R.id.tv_add_message, item.sayHi);
         }
-
-        headImag = holder.getView(R.id.iv_userhead);
         //头像
-        MyViewTarget myViewTarget = new MyViewTarget(headImag, getContext().getResources());
+        MyViewTarget myViewTarget = new MyViewTarget(holder.getView(R.id.iv_userhead), getContext().getResources());
         Glide.with(getContext()).load(item.iconUrl)
                 .asBitmap().centerCrop()
                 .error(R.drawable.icon_mine_head_normal)
@@ -59,7 +56,6 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(myViewTarget);
-
         if (layoutPosition == getItemCount() - 1) {
             holder.setVisibility(R.id.view_line, View.INVISIBLE);
         }
@@ -67,8 +63,8 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
         holder.setOnClickListener(R.id.tv_accept_request, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (lisenter != null) {
-                    lisenter.onAccept(holder, viewType, layoutPosition, item);
+                if (listener != null) {
+                    listener.onAccept(holder, viewType, layoutPosition, item);
                 }
             }
         });

@@ -16,6 +16,15 @@
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
+    <ImageView
+        android:id="@+id/iv_explain_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:padding="@dimen/y15"
+        android:src="@drawable/icon_explain_gray"
+        android:visibility="gone" />
+
     <ViewSwitcher
         android:id="@+id/vs_layout_switch"
         android:layout_width="match_parent"

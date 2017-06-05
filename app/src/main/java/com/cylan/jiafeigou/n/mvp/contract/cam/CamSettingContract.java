@@ -42,6 +42,7 @@ public interface CamSettingContract {
 
         String getAutoRecordTitle(Context context);
 
+        void enableAp();
 //        BeanCamInfo getCamInfoBean();
 
 //        @Deprecated//不再使用

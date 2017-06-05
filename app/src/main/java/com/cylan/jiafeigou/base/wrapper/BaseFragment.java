@@ -71,9 +71,18 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(getContentViewID(), container, false);
-        unbinder = ButterKnife.bind(this, contentView);
-        return contentView;
+        if (getContentViewID() != -1) {//!=-1 会启动 butterknife ,==-1:自己设置 view, 可以使用 databinding
+            View contentView = inflater.inflate(getContentViewID(), container, false);
+            unbinder = ButterKnife.bind(this, contentView);
+            return contentView;
+        } else if (getContentRootView() != null) {
+            return getContentRootView();
+        }
+        return null;
+    }
+
+    protected View getContentRootView() {
+        return null;
     }
 
     @Override
@@ -187,7 +196,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         sToast.show();
     }
 
-    protected abstract int getContentViewID();
+    protected int getContentViewID() {
+        return -1;
+    }
 
     protected void initViewAndListener() {
     }

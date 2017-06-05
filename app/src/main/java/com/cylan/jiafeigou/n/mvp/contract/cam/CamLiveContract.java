@@ -107,6 +107,8 @@ public interface CamLiveContract {
                            boolean captureEnable);
 
         void onAudioPermissionCheck();
+
+        void onBatteryDrainOut();
     }
 
     interface Presenter extends BasePresenter {

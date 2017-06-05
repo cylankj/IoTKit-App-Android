@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ import rx.schedulers.Schedulers;
 public class DPSingleFindTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        if (sourceManager.isOnline()) {//如果在线则直接返回
+        if (NetUtils.isPublicNetwork()) {//如果在线则直接返回
             return Observable.just(BaseDPTaskResult.SUCCESS);
         }
         return null;

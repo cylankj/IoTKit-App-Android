@@ -1,11 +1,9 @@
 package com.cylan.jiafeigou.n.base;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
@@ -20,13 +18,10 @@ import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
-import com.cylan.jiafeigou.push.WakeupService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.stat.BugMonitor;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -34,9 +29,7 @@ import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -99,10 +92,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             viewCount = 0;
-            startService(new Intent(this, WakeupService.class));
-            try2init();
+            //设计师不需要这个固定通知栏.20170531
+//            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
-            BugMonitor.init(getApplicationContext());
             PerformanceUtils.startTrace("appStart");
             PerformanceUtils.startTrace("FirstActivity");
             //Dagger2 依赖注入
@@ -117,19 +109,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.stopTrace("appStart");
         }
     }
-
-    /**
-     * 先检查，是否有读写权限
-     */
-    public void try2init() {
-        if (PermissionUtils.hasSelfPermissions(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-        } else {
-            RxBus.getCacheInstance().postSticky(new RxEvent.ShouldCheckPermission());
-            Log.d("try2init", "try2init failed");
-        }
-    }
-
 
     @Override
     public void onTerminate() {
@@ -200,22 +179,20 @@ public class BaseApplication extends MultiDexApplication implements Application.
             if (reportTask != null) reportTask.unsubscribe();
             reportTask = Observable.just("report")
                     .subscribeOn(Schedulers.newThread())
-                    .timeout(3, TimeUnit.MINUTES)
+                    .delay(3, TimeUnit.MINUTES)
                     .subscribe(ret -> {
+                        AppLogger.d("timeout for report");
+                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     }, throwable -> {
-                        if (throwable instanceof TimeoutException) {
-                            getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
-//                            boolean state = NetUtils.pingQQ();
-//                            if (!state)
-//                                getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
-                        }
+                        AppLogger.d("timeout for report");
+                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     });
         }
     }
 
     private void cancelReportTask() {
         if (reportTask != null) reportTask.unsubscribe();
-        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
+//        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONTOP);
     }
 
     public static boolean isBackground() {

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="AdsTimerStyle">
+        <attr name="a_bg_color" format="color|reference" />
+        <attr name="a_progress_color" format="color|reference" />
+        <attr name="a_progress_width" format="dimension|reference" />
+        <attr name="a_max_time" format="integer|reference" />
+        <attr name="a_default_content" format="string|reference" />
+    </declare-styleable>
     <declare-styleable name="ImageViewTipsTheme">
         <attr name="t_radius" format="dimension" />
         <attr name="t_round_within" format="boolean|reference" />

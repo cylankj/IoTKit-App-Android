@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.base.module;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.udpMsgPack.JfgUdpMsg;
+
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
@@ -10,6 +13,33 @@ import java.util.List;
  */
 
 public interface PanoramaEvent {
+
+    @Message
+    class ReportMsg extends JfgUdpMsg.UdpRecvHeard {
+        @Index(2)
+        public byte[] bytes;
+    }
+
+    @Message
+    class ReportMsgList {
+        @Index(0)
+        public List<DpMsgForward> msgForwards;
+    }
+
+    @Message
+    class DpMsgForward {
+        @Index(0)
+        public long id;
+        @Index(1)
+        public long version;
+        @Index(2)
+        public byte[] packValue;
+
+        public JFGDPMsg msg() {
+            return new JFGDPMsg(id, version, packValue);
+        }
+    }
+
     @Message
     class MsgForward {
         @Index(0)
@@ -27,11 +57,11 @@ public interface PanoramaEvent {
         @Index(4)
         public List<String> dst;
         @Index(5)
-        int isAck;//非零需要对端响应，零不需要对端响应
+        public int isAck;//非零需要对端响应，零不需要对端响应
         @Index(6)
-        int type;// 功能定义。见下表定义
+        public int type;// 功能定义。见下表定义
         @Index(7)
-        byte[] msg = new byte[0];// 最大长度64K
+        public byte[] msg = new byte[0];// 最大长度64K
     }
 
     @Message

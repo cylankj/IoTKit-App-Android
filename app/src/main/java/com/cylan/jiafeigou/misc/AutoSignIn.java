@@ -58,8 +58,6 @@ public class AutoSignIn {
         return finish;
     }
 
-    public static final String KEY = "fxxx";
-
 
     public void autoLogin() {
         RxBus.getCacheInstance().removeAllStickyEvents();
@@ -68,6 +66,9 @@ public class AutoSignIn {
                 .subscribeOn(Schedulers.io())
                 .flatMap(account -> {
                             try {
+//                                final String netName = NetUtils.getNetName(ContextUtils.getContext());
+//                                if (netName != null && netName.contains("DOG"))
+//                                    MiscUtils.recoveryWiFi();
                                 AppLogger.d("autoLogin");
                                 String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE, "");
                                 String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID, "");
@@ -120,29 +121,23 @@ public class AutoSignIn {
                 .subscribe(resultLogin -> RxBus.getCacheInstance().post(resultLogin), AppLogger::e);
     }
 
-    public Observable<Integer> autoSave(String account, int type, String pwd) {
-        return Observable.just("save")
-                .subscribeOn(Schedulers.io())
-                .map(s -> {
-                    try {
-                        SignType signType = new SignType();
-                        signType.account = account;
-                        signType.type = type;
-                        //1.account的aes
-                        String aes = AESUtil.encrypt(new Gson().toJson(signType));
-                        PreferencesUtils.putString(JConstant.AUTO_SIGNIN_KEY, aes);
-                        Log.d(TAG, "account aes: " + aes.length());
-                        //2.保存密码
-                        FileUtils.writeFile(ContextUtils.getContext().getFilesDir() + File.separator + aes + ".dat", AESUtil.encrypt(pwd));
-                        if (TextUtils.isEmpty(pwd)) {
-                            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-                        }
-                        return 0;
-                    } catch (Exception e) {
-                        AppLogger.e("e:" + e.getLocalizedMessage());
-                        return -1;
-                    }
-                });
+    public void autoSave(String account, int type, String pwd) {
+        try {
+            SignType signType = new SignType();
+            signType.account = account;
+            signType.type = type;
+            //1.account的aes
+            String aes = AESUtil.encrypt(new Gson().toJson(signType));
+            PreferencesUtils.putString(JConstant.AUTO_SIGNIN_KEY, aes);
+            Log.d(TAG, "account aes: " + aes.length());
+            //2.保存密码
+            FileUtils.writeFile(ContextUtils.getContext().getFilesDir() + File.separator + aes + ".dat", AESUtil.encrypt(pwd));
+            if (TextUtils.isEmpty(pwd)) {
+                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+            }
+        } catch (Exception e) {
+            AppLogger.e("e:" + e.getLocalizedMessage());
+        }
     }
 
     public void clearPsw() {

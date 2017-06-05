@@ -5,8 +5,12 @@ import com.cylan.jiafeigou.base.injector.module.FragmentModule;
 import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
+import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
+import com.cylan.jiafeigou.n.view.mine.ShareContentH5DetailFragment;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullFragment;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureFragment;
+import com.cylan.jiafeigou.support.share.H5ShareEditorFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordDeviceFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordMainFragment;
@@ -36,4 +40,11 @@ public interface FragmentComponent {
 
     void inject(DelayRecordMainFragment fragment);
 
+    void inject(HomeMineShareManagerFragment fragment);
+
+    void inject(HomeMineShareContentFragment fragment);
+
+    void inject(H5ShareEditorFragment fragment);
+
+    void inject(ShareContentH5DetailFragment fragment);
 }

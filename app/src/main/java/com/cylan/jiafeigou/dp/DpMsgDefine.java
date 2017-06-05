@@ -17,7 +17,7 @@ import java.util.TimeZone;
 
 public class DpMsgDefine {
     @Message
-    public static final class DPStandby extends DataPoint {
+    public static final class DPStandby extends BaseDataPoint {
         @Index(0)
         public boolean standby;
         @Index(1)
@@ -81,7 +81,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPNet extends DataPoint {
+    public static final class DPNet extends BaseDataPoint {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -173,7 +173,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeZone extends DataPoint {
+    public static final class DPTimeZone extends BaseDataPoint {
         @Index(0)
         public String timezone;
         @Index(1)
@@ -224,7 +224,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBindLog extends DataPoint {
+    public static final class DPBindLog extends BaseDataPoint {
 
         @Index(0)
         public boolean isBind;
@@ -280,7 +280,7 @@ public class DpMsgDefine {
 
     //系统消息使用
     @Message
-    public static final class DPSdcardSummary extends DataPoint implements Parcelable {
+    public static final class DPSdcardSummary extends BaseDataPoint implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
         @Index(1)
@@ -350,7 +350,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPSdStatus extends DataPoint implements Parcelable {
+    public static final class DPSdStatus extends BaseDataPoint implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -358,7 +358,7 @@ public class DpMsgDefine {
         @Index(2)
         public int err = -1;
         @Index(3)
-        public boolean hasSdcard;
+        public int hasSdcard;
 
         public DPSdStatus() {
         }
@@ -384,7 +384,7 @@ public class DpMsgDefine {
             dest.writeLong(this.total);
             dest.writeLong(this.used);
             dest.writeInt(this.err);
-            dest.writeByte(this.hasSdcard ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.hasSdcard);
         }
 
         protected DPSdStatus(Parcel in) {
@@ -392,7 +392,7 @@ public class DpMsgDefine {
             this.total = in.readLong();
             this.used = in.readLong();
             this.err = in.readInt();
-            this.hasSdcard = in.readByte() != 0;
+            this.hasSdcard = in.readInt();
         }
 
         public static final Creator<DPSdStatus> CREATOR = new Creator<DPSdStatus>() {
@@ -409,7 +409,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarmInfo extends DataPoint implements Parcelable {
+    public static final class DPAlarmInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -469,7 +469,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarm extends DataPoint implements Parcelable {//505 报警消息
+    public static final class DPAlarm extends BaseDataPoint implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -562,7 +562,7 @@ public class DpMsgDefine {
     }
 
     @Message//504
-    public static final class DPNotificationInfo extends DataPoint implements Parcelable {
+    public static final class DPNotificationInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
@@ -633,7 +633,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeLapse extends DataPoint implements Parcelable {
+    public static final class DPTimeLapse extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -695,7 +695,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPCamCoord extends DataPoint implements Parcelable {
+    public static final class DPCamCoord extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -752,7 +752,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBellCallRecord extends DataPoint implements Parcelable {
+    public static final class DPBellCallRecord extends BaseDataPoint implements Parcelable {
 
         @Index(0)
         public int isOK;
@@ -817,7 +817,7 @@ public class DpMsgDefine {
         }
     }
 
-    public static final class DPPrimary<T> extends DataPoint {
+    public static final class DPPrimary<T> extends BaseDataPoint {
         @Index(0)
         public T value;
 
@@ -874,7 +874,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPWonderItem extends DataPoint implements Parcelable {
+    public static final class DPWonderItem extends BaseDataPoint implements Parcelable {
 
         public static final int TYPE_PIC = 0;
         public static final int TYPE_VIDEO = 1;
@@ -1064,5 +1064,77 @@ public class DpMsgDefine {
                     ", asc=" + asc +
                     '}';
         }
+    }
+
+    @Message
+    public static class DPShareItem extends BaseDataPoint {
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int time;
+        @Index(2)
+        public int msgType;
+        @Index(3)
+        public int regionType;
+        @Index(4)
+        public String fileName;
+        @Index(5)
+        public String desc;
+        @Index(6)
+        public String url;
+
+        public DPWonderItem toWonderItem() {
+            DPWonderItem wonderItem = new DPWonderItem();
+            wonderItem.cid = cid;
+            wonderItem.time = time;
+            wonderItem.msgType = msgType;
+            wonderItem.regionType = regionType;
+            wonderItem.fileName = fileName;
+            wonderItem.place = desc;
+            return wonderItem;
+        }
+
+        public DPShareItem() {
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeString(this.cid);
+            dest.writeInt(this.time);
+            dest.writeInt(this.msgType);
+            dest.writeInt(this.regionType);
+            dest.writeString(this.fileName);
+            dest.writeString(this.desc);
+            dest.writeString(this.url);
+        }
+
+        protected DPShareItem(Parcel in) {
+            super(in);
+            this.cid = in.readString();
+            this.time = in.readInt();
+            this.msgType = in.readInt();
+            this.regionType = in.readInt();
+            this.fileName = in.readString();
+            this.desc = in.readString();
+            this.url = in.readString();
+        }
+
+        public static final Creator<DPShareItem> CREATOR = new Creator<DPShareItem>() {
+            @Override
+            public DPShareItem createFromParcel(Parcel source) {
+                return new DPShareItem(source);
+            }
+
+            @Override
+            public DPShareItem[] newArray(int size) {
+                return new DPShareItem[size];
+            }
+        };
     }
 }

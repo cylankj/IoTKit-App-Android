@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
@@ -129,7 +128,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
-                if (!sourceManager.isOnline()) {
+                if (!NetUtils.isPublicNetwork()) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.bind;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,22 +10,21 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
-import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
-import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
-import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
-import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
-import com.cylan.jiafeigou.n.view.activity.BindRsCamActivity;
+import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
@@ -45,6 +45,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     ViewSwitcher vsLayoutSwitch;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.iv_explain_gray)
+    ImageView ivExplainGray;
 
 
     @Override
@@ -52,13 +54,19 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_submit_binding_info);
         ButterKnife.bind(this);
-        this.basePresenter = new SubmitBindingInfoContractImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+        this.basePresenter = new SubmitBindingInfoImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
         adjustViewSize();
         customToolbar.setBackAction(v -> {
             onBackPressed();
         });
         if (basePresenter != null) {
             basePresenter.startCounting();
+        }
+        if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                getString(R.string._720PanoramicCamera))) {
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
+            ViewUtils.setViewMarginStatusBar(ivExplainGray);
         }
     }
 
@@ -79,7 +87,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     public void onBackPressed() {
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    onClick();
+                    onBindNext();
                 }, getString(R.string.CANCEL), null, false);
     }
 
@@ -92,9 +100,15 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     public void bindState(int state) {
         if (state == BindUtils.BIND_FAILED) {//失败
             vsLayoutSwitch.showNext();
+            ivExplainGray.setVisibility(View.VISIBLE);
 //            customToolbar.setVisibility(View.INVISIBLE);
-        } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
+        } else if (state == JError.ErrorCIDBinded) {//强绑
             basePresenter.endCounting();
+            getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        //强绑提示按钮,
+                        onBindNext();
+                    }, false);
         } else if (state == BindUtils.BIND_SUC) {//成功
             progressLoading.setVisibility(View.INVISIBLE);
             if (basePresenter != null)
@@ -120,7 +134,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             }
 
         } else if (state == BindUtils.BIND_NULL) {
-            getAlertDialogManager().showDialog(this, "null", "",
+            getAlertDialogManager().showDialog(this, "null", getString(R.string.RET_ECID_INVALID),
                     getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     }, false);
@@ -130,6 +144,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             AppLogger.d("绑定失败了!!!!!!!!!!!!!");
             progressLoading.setVisibility(View.INVISIBLE);
             vsLayoutSwitch.showNext();
+            ivExplainGray.setVisibility(View.VISIBLE);
         }
     }
 
@@ -140,22 +155,19 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     }
 
     @OnClick(R.id.btn_bind_failed_repeat)
-    public void onClick() {
-        String device = getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE);
-        Class<?> nextActivity;
-        if (TextUtils.equals(device, getString(R.string.DOG_CAMERA_NAME))) {
-            nextActivity = BindCamActivity.class;
-        } else if (TextUtils.equals(device, getString(R.string.CALL_CAMERA_NAME))) {
-            nextActivity = BindBellActivity.class;
-        } else if (TextUtils.equals(device, getString(R.string.RuiShi_Name))) {
-            nextActivity = BindRsCamActivity.class;
-        } else {
-            nextActivity = BindPanoramaCamActivity.class;
-        }
-        Intent intent = getIntent();
-        intent.setClass(this, nextActivity);
+    public void onBindNext() {
+        final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(this, className));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
+        finishExt();
+    }
+
+    @OnClick(R.id.iv_explain_gray)
+    public void onExplain() {
+        PanoramaExplainFragment fragment = PanoramaExplainFragment.newInstance(null);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 }

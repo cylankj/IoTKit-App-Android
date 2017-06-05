@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
-import com.cylan.jiafeigou.n.engine.FirmwareCheckerService;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
@@ -109,7 +108,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirmwareCheckerService.checkVersion(uuid);
+        AppLogger.d("检查升级包");
+        JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
     @Override
@@ -222,7 +222,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     private void startLoadData(boolean asc, long version) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
         mIsLastLoadFinish = false;
         presenter.fetchBellRecordsList(asc, version);
     }
