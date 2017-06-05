@@ -15,10 +15,10 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 /**
@@ -471,10 +471,36 @@ public class NetUtils {
     }
 
     public static boolean isNetworkAvailable() {
-        boolean qq = isInternetAvailable(QQ_HOST);
-        if (qq) return true;
-        boolean baidu = isInternetAvailable(BAIDU_HOST);
-        if (baidu) return true;
-        return isInternetAvailable(BING);
+        try {
+            String yahooDomain = getDomain("yahoo");
+            if (TextUtils.isEmpty(yahooDomain)) {
+                String qqDomain = getDomain("qq.com");
+                return !TextUtils.isEmpty(qqDomain);
+            }
+            return !TextUtils.isEmpty(yahooDomain);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * yahoo.com
+     *
+     * @param host
+     * @return
+     */
+    public static String getDomain(String host) {
+        try {
+            InetAddress[] machines = InetAddress.getAllByName(host);
+            StringBuilder builder = new StringBuilder();
+            if (machines != null) {
+                for (InetAddress address : machines) {
+                    builder.append(address.getHostAddress());
+                }
+            }
+            return (builder.toString());
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
