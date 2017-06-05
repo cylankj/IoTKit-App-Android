@@ -293,30 +293,35 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     AppLogger.d("get history?" + ret);
                     return ret;
                 })
-                .timeout(30, TimeUnit.SECONDS)
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
-                        .map(rsp -> {
-                            //只需要初始化一天的就可以啦.//丢throwable就是为了让订阅链断开
-                            throw new RxEvent.HelperBreaker(rsp);
-                        })
-                        .filter(result -> mView != null))
-                .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(rsp -> makeTimeDelayForList(rsp.historyFiles)))
                 .subscribe(ret -> {
-                }, throwable -> {
-                    if (throwable instanceof RxEvent.HelperBreaker) {
-                        Object o = ((RxEvent.HelperBreaker) throwable).object;
-                        if (o != null && o instanceof RxEvent.JFGHistoryVideoParseRsp)
-                            assembleTheDay(((RxEvent.JFGHistoryVideoParseRsp) o).historyFiles);
-                        //更新日历
-                        ArrayList<Long> dateList = BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
-                        mView.onHistoryDateListUpdate(dateList);
-                        AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-                    }
-                });
+                }, AppLogger::e);
         removeSubscription("getHistoryList");
         addSubscription(subscription, "getHistoryList");
+    }
+
+    /**
+     * 对于大内存的设备,历史录像是好几条逐条rsp.但是不知道什么时候结束,不知道有几条.
+     * <p>
+     * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
+     */
+    private Observable<Boolean> makeTimeDelayForList(ArrayList<HistoryFile> rsp) {
+        return Observable.just(rsp)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<ArrayList<HistoryFile>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(ArrayList<HistoryFile> list) {
+                        assembleTheDay(list);
+                        //更新日历
+                        ArrayList<Long> dateList = BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
+//                        mView.onHistoryDateListUpdate(dateList);
+                        AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
+                        return Observable.just(true);
+                    }
+                });
     }
 
     @Override

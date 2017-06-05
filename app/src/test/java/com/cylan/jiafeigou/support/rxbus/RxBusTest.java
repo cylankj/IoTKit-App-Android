@@ -19,7 +19,6 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.observables.GroupedObservable;
 import rx.schedulers.Schedulers;
 
 import static org.junit.Assert.assertNotNull;
@@ -524,28 +523,34 @@ public class RxBusTest {
 
     @Test
     public void testTimeout1() throws InterruptedException {
-        RxBus.getCacheInstance().toObservable(String.class)
-                .groupBy(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        return s.substring(0, 3);
-                    }
-                })
-                .flatMap(new Func1<GroupedObservable<String, String>, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(GroupedObservable<String, String> stringStringGroupedObservable) {
-                        return stringStringGroupedObservable
-                                .throttleFirst(150, TimeUnit.MILLISECONDS);
-                    }
-                })
-                .subscribe(ret -> System.out.println(ret));
+        Subscription subscription = RxBus.getCacheInstance().toObservable(String.class)
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(TT.class)
+                        .map(new Func1<TT, Object>() {
+                            @Override
+                            public Object call(TT tt) {
+                                System.out.println("tt:" + tt.ret);
+                                return "good";
+                            }
+                        }))
+                .subscribe(ret -> {
+                    System.out.println("ret;" + ret);
+                });
         RxBus.getCacheInstance().post("1110000");
-        Thread.sleep(120);
         RxBus.getCacheInstance().post("111");
+        Thread.sleep(500);
+//        subscription.unsubscribe();
+        RxBus.getCacheInstance().post(new TT(10));
         RxBus.getCacheInstance().post("000dffa");
-        Thread.sleep(160);
         RxBus.getCacheInstance().post("000erter");
-        Thread.sleep(8000);
+        RxBus.getCacheInstance().post("000erte11r");
+        Thread.sleep(1000);
     }
 
+    public static final class TT {
+        public int ret;
+
+        public TT(int ret) {
+            this.ret = ret;
+        }
+    }
 }

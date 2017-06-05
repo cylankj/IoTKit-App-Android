@@ -83,12 +83,12 @@ public interface CamLiveContract {
 
         void showFirmwareDialog();
 
-        /**
-         * 保存了每一份数据的第一条的时间戳
-         *
-         * @param dateList
-         */
-        void onHistoryDateListUpdate(ArrayList<Long> dateList);
+//        /**
+//         * 保存了每一份数据的第一条的时间戳
+//         *
+//         * @param dateList
+//         */
+//        void onHistoryDateListUpdate(ArrayList<Long> dateList);
 
         void audioRecordPermissionDenied();
 
