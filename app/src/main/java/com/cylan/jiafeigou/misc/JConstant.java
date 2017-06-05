@@ -343,6 +343,7 @@ public class JConstant {
     public static final String KEY_JUMP_TO_MESSAGE = "jump_to_message";
     public static final String KEY_CLIENT_CHECK_VERSION_ID = "client_id";
 
+    public static final String KEY_DEVICE_MAC = "KEY_MAC";
     public static final String KEY_ADD_DESC = "key_ads";
     public static final int CODE_AD_FINISH = 222;
     public static final String KEY_NEED_LOGIN = "needLogin";

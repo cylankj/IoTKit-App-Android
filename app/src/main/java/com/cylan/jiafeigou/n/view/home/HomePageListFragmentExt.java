@@ -204,6 +204,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         itemFastAdapter.withOnClickListener(this);
         mItemAdapter.withComparator(null);
         rVDevicesList.setAdapter(mItemAdapter.wrap(itemFastAdapter));
+        enableNestedScroll();
     }
 
     private void initSomeViewMargin() {
@@ -385,6 +386,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, isVisibleToUser);
         if (isVisibleToUser && isResumed() && getActivity() != null) {
             srLayoutMainContentHolder.setRefreshing(false);
+            enableNestedScroll();
         }
     }
 

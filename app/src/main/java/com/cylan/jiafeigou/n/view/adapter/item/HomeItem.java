@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -212,7 +211,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
             holder.setVisibility(R.id.img_device_state_2, GONE);
         }
-        if (MiscUtils.isAPDirect(getDevice().$(202, ""))) {
+        if (JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""))) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_ap);
         } else {
@@ -256,22 +255,15 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     private String getPanOnlineMode(final String uuid) {
         boolean serverOnline = BaseApplication.getAppComponent().getSourceManager().isOnline();
         DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        if (serverOnline) {
+        if (serverOnline && net.net == 1) {
             //wifi在线
-            if (net.net == 1) return mContext.getString(R.string.DEVICE_WIFI_ONLINE);
-//            else return mContext.getString(R.string.OFF_LINE);//离线
-        } else {
-            if (MiscUtils.isAPDirect(getDevice().$(202, "")))
-                return mContext.getString(R.string.Tap1_OutdoorMode);
+            return mContext.getString(R.string.DEVICE_WIFI_ONLINE);
+        } else if (JFGRules.isAPDirect(mDevice.uuid, getDevice().$(202, ""))) {
+
+            return mContext.getString(R.string.Tap1_OutdoorMode);
         }
         return mContext.getString(R.string.OFF_LINE);//离线
     }
-
-//    private boolean isAPDirect() {
-//        //没有连接公网.//必须是连接状态
-//        return TextUtils.equals(NetUtils.getRouterMacAddress(), getDevice().$(202, ""))
-//                && NetUtils.isNetworkAvailable();
-//    }
 
     /**
      * 显示未读消息的条件
