@@ -491,7 +491,7 @@ public class NetUtils {
                 (i >> 24 & 0xFF);
     }
 
-    public static boolean isNetworkAvailable() {
+    public static boolean isPublicNetwork() {
         boolean qq = isInternetAvailable(QQ_HOST);
         if (qq) return true;
         boolean baidu = isInternetAvailable(BAIDU_HOST);
