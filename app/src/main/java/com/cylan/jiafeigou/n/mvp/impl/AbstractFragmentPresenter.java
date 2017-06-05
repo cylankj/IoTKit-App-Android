@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
+import com.cylan.jiafeigou.support.network.NetworkCallback;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.lang.ref.WeakReference;
@@ -31,7 +32,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by cylan-hunt on 16-6-30.
  */
 public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> implements BasePresenter,
-        NetMonitor.NetworkCallback, HeadsetObserver.HeadsetListener {
+        NetworkCallback, HeadsetObserver.HeadsetListener {
 
     protected final String TAG = this.getClass().getSimpleName();
     protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用

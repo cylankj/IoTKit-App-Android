@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.nineoldandroids.animation.Animator;
 
@@ -62,7 +61,6 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
             ButterKnife.bind(this);
             customToolbar.setBackAction(v -> finishExt());
             initAnimation();
-            ViewUtils.setViewMarginStatusBar(expainGray);
         }
     }
 

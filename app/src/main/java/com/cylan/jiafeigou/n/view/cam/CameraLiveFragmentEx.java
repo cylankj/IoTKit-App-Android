@@ -590,8 +590,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
 
-    @Override
-    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
-
-    }
+//    @Override
+//    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
+//
+//    }
 }

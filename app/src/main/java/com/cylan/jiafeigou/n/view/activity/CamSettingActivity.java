@@ -510,7 +510,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //2、设备离线，没有连接任何网络。
         //3、连接公网。
         svSettingOpenAp.setVisibility(JFGRules.showEnableAp(device.pid) ? View.VISIBLE : View.GONE);
-        boolean apDirect = MiscUtils.isAPDirect(device.$(202, ""));
+        boolean apDirect = JFGRules.isAPDirect(device.uuid, device.$(202, ""));
         boolean online = JFGRules.isDeviceOnline(net);
         svSettingOpenAp.setEnabled(!apDirect || !online);
         svSettingOpenAp.setOnClickListener(v -> {

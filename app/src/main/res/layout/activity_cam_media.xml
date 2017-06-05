@@ -80,17 +80,19 @@
 
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fLayout_cam_handle_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imgV_big_pic_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:padding="@dimen/x15"
             android:src="@drawable/icon_download" />
 
@@ -99,6 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:padding="@dimen/x15"
             android:src="@drawable/icon_share" />
 
@@ -107,8 +110,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:layout_weight="1"
             android:padding="@dimen/x15"
             android:src="@drawable/icon_collection" />
-    </FrameLayout>
+    </LinearLayout>
 
 </RelativeLayout>

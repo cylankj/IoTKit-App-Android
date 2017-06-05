@@ -618,6 +618,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
+            }else if(code==JError.ErrorP2PSocket){
+                ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
             }
             resetView();
             AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");

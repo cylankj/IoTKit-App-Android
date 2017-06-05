@@ -761,9 +761,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
-        if (type == TYPE_HISTORY && timestamp != 0) {
+        if (type == TYPE_HISTORY && timestamp != 0 && presenter != null && presenter.getPlayState() == PLAY_STATE_PLAYING) {
             //移动导航条
-            historyWheelHandler.setNav2Time(timestamp * 1000);
+            Log.d("TYPE_HISTORY time", "time: " + timestamp);
+//            historyWheelHandler.setNav2Time(timestamp * 1000);
         }
     }
 

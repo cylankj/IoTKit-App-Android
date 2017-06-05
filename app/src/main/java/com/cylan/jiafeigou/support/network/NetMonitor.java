@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by cylan-hunt on 17-2-23.
  */
 
-public class NetMonitor {
+public class NetMonitor implements NetworkCallback {
     private Network network;
     private final Object lock = new Object();
 
@@ -39,6 +39,11 @@ public class NetMonitor {
             }
         }
         return netMonitor;
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+
     }
 
 
@@ -66,10 +71,6 @@ public class NetMonitor {
     }
 
     private Map<String, NetworkCallback> networkCallbackList = new ConcurrentHashMap<>();
-
-    public interface NetworkCallback {
-        void onNetworkChanged(Context context, Intent intent);
-    }
 
     private HashMap<String, ArrayList<String>> filterMap = new HashMap<>();
 

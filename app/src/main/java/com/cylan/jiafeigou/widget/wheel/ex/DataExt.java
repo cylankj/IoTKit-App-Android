@@ -186,6 +186,7 @@ public class DataExt implements IData {
                 endIndex += 2;
             }
         }
+        if (endIndex < startIndex) return null;
         ArrayList<HistoryFile> finalList = new ArrayList<>(endIndex - startIndex);
         for (int i = startIndex; i < endIndex; i++) {
             finalList.add(rawList.get(i));

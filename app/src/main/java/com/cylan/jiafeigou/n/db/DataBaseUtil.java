@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.db;
 
-import android.os.Environment;
-
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
 import com.cylan.jiafeigou.utils.ContextUtils;

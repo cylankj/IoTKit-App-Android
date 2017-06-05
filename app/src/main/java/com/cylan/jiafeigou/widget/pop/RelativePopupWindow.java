@@ -132,8 +132,8 @@ public class RelativePopupWindow extends PopupWindow {
      * @param anchor      Anchor View
      * @param vertPos     Vertical Position Flag
      * @param horizPos    Horizontal Position Flag
-     * @param xv           Translation X
-     * @param yv           Translation Y
+     * @param xv          Translation X
+     * @param yv          Translation Y
      * @param fitInScreen Automatically fit in screen or not
      */
     public void showOnAnchor(@NonNull View anchor, @VerticalPosition int vertPos, @HorizontalPosition int horizPos, int xv, int yv, final boolean fitInScreen) {

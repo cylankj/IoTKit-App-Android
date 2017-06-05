@@ -567,16 +567,13 @@ public class MiscUtils {
         if (TextUtils.isEmpty(uuid) && BuildConfig.DEBUG)
             throw new IllegalArgumentException("uuid is  null");
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(net)) {
-            String localMac = NetUtils.getRouterMacAddress();
-            String deviceMac = device.$(202, "");
-            SupplicantState state = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo().getSupplicantState();
-            return TextUtils.equals(localMac, deviceMac) && !TextUtils.isEmpty(localMac) && state == SupplicantState.COMPLETED;
-        } else {
+        boolean isApDirect = JFGRules.isAPDirect(uuid, device.$(202, ""));
+        if (isApDirect) {//Ap
+            return true;
+        } else {//局域网
             //在线
             String appSSID = NetUtils.getNetName(ContextUtils.getContext());
-            return TextUtils.equals(appSSID, net.ssid);
+            return TextUtils.equals(appSSID, device.$(201, new DpMsgDefine.DPNet()).ssid);
         }
     }
 
@@ -653,8 +650,9 @@ public class MiscUtils {
 
     public static boolean isAPDirect(String mac) {
         //没有连接公网.//必须是连接状态
-        return TextUtils.equals(NetUtils.getRouterMacAddress(), mac)
-                && NetUtils.isNetworkAvailable();
+        WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+        boolean state = info != null && info.getSupplicantState() == SupplicantState.COMPLETED;
+        return TextUtils.equals(NetUtils.getRouterMacAddress(), mac) && state;
     }
 
     public static long getFileSizeFromUrl(String url) {
