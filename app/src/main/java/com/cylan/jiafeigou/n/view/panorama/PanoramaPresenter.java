@@ -132,8 +132,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     mView.onReportError(2004);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
                                     mView.onReportError(2022);
-                                } else {
-                                    mView.onRefreshControllerView(true);
                                 }
                             } else if (msg.id == 205) {
                                 Boolean aBoolean = unpackData(msg.packValue, boolean.class);

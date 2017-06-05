@@ -810,7 +810,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onReportError(int err) {
-        onRefreshViewModeUI(panoramaViewMode, false);
+        onRefreshViewModeUI(panoramaViewMode, true);
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");
