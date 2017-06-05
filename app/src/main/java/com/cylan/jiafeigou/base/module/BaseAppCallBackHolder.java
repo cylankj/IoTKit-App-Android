@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 import android.util.Log;
 
+import com.cylan.entity.jniCall.DevUpgradeInfo;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -361,5 +362,10 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetAdPolicyRsp(int i, long l, String s, String s1) {
         AppLogger.d(String.format("OnGetAdPolicyRsp:ret:%s,time:%s,picUrl:%s,tagUrl:%s", i, l, s, s1));
+    }
+
+    @Override
+    public void OnCheckTagDeviceVersionRsp(int i, String s, String s1, String s2, ArrayList<DevUpgradeInfo> arrayList) {
+
     }
 }
