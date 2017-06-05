@@ -614,11 +614,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            } else if (code == 162) {
+            } else if (code == JError.ErrorOpenLoginInvalidToken) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
-            }else if(code==JError.ErrorP2PSocket){
+            } else if (code == JError.ErrorP2PSocket) {
                 ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
             }
             resetView();

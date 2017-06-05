@@ -369,14 +369,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         addSubscription(subscribe);
         Subscription failedNetCheckSub = Observable.just("netCheck")
                 .subscribeOn(Schedulers.newThread())
-                .delay(2, TimeUnit.SECONDS)
                 .map(ret -> {
                     return NetUtils.isNetworkAvailable();
                 })
+                .timeout(3, TimeUnit.SECONDS)
                 .filter(ret -> !ret)//网络失败才回调
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> getView() != null)
-                .subscribe(ret -> getView().loginResult(JError.ErrorP2PSocket), AppLogger::e);
+                .subscribe(ret -> getView().loginResult(JError.ErrorP2PSocket), throwable -> getView().loginResult(JError.ErrorP2PSocket));
         addSubscription(failedNetCheckSub);
     }
 
