@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -91,7 +92,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
-        Observable.zip(loginObservable(login), loginResultObservable(),
+        Subscription subscription = Observable.zip(loginObservable(login), loginResultObservable(),
                 (Object o, RxEvent.ResultUserLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
@@ -117,6 +118,18 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
                     }
                 });
+        addSubscription(subscription);
+        Subscription failedNetCheckSub = Observable.just("netCheck")
+                .subscribeOn(Schedulers.newThread())
+                .map(ret -> {
+                    return NetUtils.isNetworkAvailable();
+                })
+                .timeout(3, TimeUnit.SECONDS)
+                .filter(ret -> !ret)//网络失败才回调
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> getView() != null)
+                .subscribe(ret -> getView().loginResult(JError.ErrorP2PSocket), throwable -> getView().loginResult(JError.ErrorP2PSocket));
+        addSubscription(failedNetCheckSub);
     }
 
     @Override
