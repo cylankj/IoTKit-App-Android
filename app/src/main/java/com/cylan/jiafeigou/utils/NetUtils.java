@@ -472,7 +472,7 @@ public class NetUtils {
 
     public static boolean isNetworkAvailable() {
         try {
-            String yahooDomain = getDomain("yahoo");
+            String yahooDomain = getDomain("yahoo.com");
             if (TextUtils.isEmpty(yahooDomain)) {
                 String qqDomain = getDomain("qq.com");
                 return !TextUtils.isEmpty(qqDomain);
