@@ -6,7 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,7 +23,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -247,8 +250,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.imgV_big_pic_download:
-                if (basePresenter != null)
-                    basePresenter.saveImage(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
+                CamMediaActivityPermissionsDispatcher.downloadFileWithCheck(this);
                 break;
             case R.id.imgV_big_pic_share:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
@@ -396,26 +398,36 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-////        MediaActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CamMediaActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void onDownloadPermissionDenied() {
-        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.VALID_STORAGE),
+                    getString(R.string.VALID_STORAGE),
+                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, 33);
+                    }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> finishExt(), false);
+        }
     }
 
     @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void onDownloadPermissionNeverAskAgain() {
-        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+        onDownloadPermissionDenied();
     }
 
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
-
+        if (basePresenter != null)
+            basePresenter.saveImage(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
     }
 
 }
