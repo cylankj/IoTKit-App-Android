@@ -907,7 +907,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onActivityStart(CamLiveContract.Presenter presenter, Device device) {
         boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
         setFlipped(!safeIsOpen);
-        updateLiveViewMode(device.$(509, "0"));
+        updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
         Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());

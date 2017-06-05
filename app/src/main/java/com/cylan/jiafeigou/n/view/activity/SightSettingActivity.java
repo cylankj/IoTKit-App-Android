@@ -44,8 +44,8 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         customToolbar.setBackAction((View v) -> onBackPressed());
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        //平视
-        String dpPrimary = device.$(509, "0");
+        //平视,1.平视.0俯视.默认平视
+        String dpPrimary = device.$(509, "1");
         initValue = dpPrimary;
         try {
             //0:俯视
@@ -109,7 +109,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         super.onDestroy();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //平视
-        String dpPrimary = device.$(509, "0");
+        String dpPrimary = device.$(509, "1");
         if (!TextUtils.equals(dpPrimary, initValue))
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
     }

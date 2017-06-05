@@ -352,7 +352,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
         if (msgId == 509) {
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
-            String _509 = device.$(509, "0");
+            String _509 = device.$(509, "1");
             camLiveControlLayer.updateLiveViewMode(_509);
         }
     }
