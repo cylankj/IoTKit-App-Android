@@ -128,10 +128,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
                                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                if (status != null && status.hasSdcard==0) {//SDCard 不存在
+                                if (status != null && status.hasSdcard == 0) {//SDCard 不存在
                                     mView.onReportError(2004);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
                                     mView.onReportError(2022);
+                                } else {
+                                    mView.onRefreshControllerView(true);
                                 }
                             } else if (msg.id == 205) {
                                 Boolean aBoolean = unpackData(msg.packValue, boolean.class);

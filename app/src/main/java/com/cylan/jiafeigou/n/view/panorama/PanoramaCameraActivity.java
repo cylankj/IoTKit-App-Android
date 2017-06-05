@@ -726,7 +726,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         quickMenuItem1Mic.setEnabled(!apMode);
         quickMenuItem2Voice.setEnabled(!apMode);
-        
+
         if (!apMode && !isOnline) return;
 
         if (connectionType == 0) {//wifi
@@ -810,7 +810,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onReportError(int err) {
-        onRefreshViewModeUI(panoramaViewMode, true);
+        onRefreshViewModeUI(panoramaViewMode, false);
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");

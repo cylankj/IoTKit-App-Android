@@ -525,4 +525,8 @@ public class NetUtils {
             return "";
         }
     }
+
+    public static boolean isPublicNetwork() {
+        return isNetworkAvailable();
+    }
 }
