@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;

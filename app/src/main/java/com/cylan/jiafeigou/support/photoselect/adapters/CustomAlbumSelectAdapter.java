@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.models.Album;
-import com.cylan.jiafeigou.support.photoselect.models.Image;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.bind;
 
-import android.os.Bundle;
-
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 

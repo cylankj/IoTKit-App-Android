@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.support.download.core;
 
 
-import android.content.Context;
-import android.os.Environment;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;

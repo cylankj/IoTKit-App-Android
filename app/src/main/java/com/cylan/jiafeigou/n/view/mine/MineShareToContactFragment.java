@@ -97,6 +97,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
@@ -161,6 +162,9 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         shareToContactAdapter = new ShareToContactAdapter(getView().getContext(), list, null);
         rcyMineShareToContactList.setAdapter(shareToContactAdapter);
         initAdaListener();
+        if (getView() != null) {
+            getView().post(() -> LoadingDialog.dismissLoading(getFragmentManager()));
+        }
     }
 
     /**

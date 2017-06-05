@@ -236,8 +236,8 @@ public class SuperWheelExt extends View {
         c = canvas.save();
         for (int i = 0; i < size; i++) {
             float pos = getPosition(timeList[i]);
-            if (DEBUG)
-                Log.d(TAG, "pos: " + pos);
+//            if (DEBUG)
+//                Log.d(TAG, "pos: " + pos);
             canvas.drawLine(pos,
                     0,
                     pos,
@@ -332,13 +332,13 @@ public class SuperWheelExt extends View {
      * @param newState
      * @param moveDirection
      */
-    public void autoSettle(int newState, int moveDirection) {
+    public void autoSettle(int newState, @ITouchHandler.MoveDirection int moveDirection) {
         if (iDataProvider != null) {
             //通过
             boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;//判断当前的位置是否是热区,即:mask区域.
             long timeCurrent = getCurrentFocusTime();
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
-            if (moveDirection != -1 && idle) {
+            if (moveDirection != ITouchHandler.MoveDirection.NONE && idle) {
                 //开始吸附过程
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
@@ -378,7 +378,7 @@ public class SuperWheelExt extends View {
      * @param newState
      */
     public void autoSettle(int newState) {
-        autoSettle(newState, -1);
+        autoSettle(newState, ITouchHandler.MoveDirection.NONE);
     }
 
     /**
@@ -387,11 +387,11 @@ public class SuperWheelExt extends View {
      * @param timeTarget
      */
     public void setPositionByTime(long timeTarget) {
-        post(() -> {
-            long timeCurrent = getCurrentFocusTime();
-            float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
-            touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
-        });
+//        post(() -> {
+        long timeCurrent = getCurrentFocusTime();
+        float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
+        touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+//        });
     }
 
     /**

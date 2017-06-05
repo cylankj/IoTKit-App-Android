@@ -139,7 +139,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
         MineFriendAddFriendsFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
-                MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
+//                MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
             } else if (TextUtils.equals(permissions[0], READ_CONTACTS) && grantResults[0] > -1) {
                 MineFriendAddFriendsFragmentPermissionsDispatcher.onContactsPermissionWithCheck(this);
             }

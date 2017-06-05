@@ -15,10 +15,10 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 /**
@@ -313,6 +313,7 @@ public class NetUtils {
 
     public static final String QQ_HOST = "http://www.qq.com";
     public static final String BAIDU_HOST = "http://www.baidu.com";
+    public static final String BING = "http://www.bing.com";
 
     public static boolean isInternetAvailable(String host) {
         try {
@@ -323,7 +324,7 @@ public class NetUtils {
             urlc.setConnectTimeout(1000); // mTimeout is in seconds
             urlc.connect();
             return (urlc.getResponseCode() == 200);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("warning", "Error checking internet connection", e);
             return false;
         }
@@ -376,27 +377,27 @@ public class NetUtils {
         return false;
     }
 
-    /**
-     * 检测当的网络（WLAN、3G/2G）状态
-     *
-     * @return true 表示网络可用
-     */
-    public static boolean isNetworkAvailable() {
-        Context context = ContextUtils.getContext();
-        ConnectivityManager connectivity = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo info = connectivity.getActiveNetworkInfo();
-            if (info != null && info.isConnected()) {
-                // 当前网络是连接的
-                if (info.getState() == NetworkInfo.State.CONNECTED) {
-                    // 当前所连接的网络可用
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    /**
+//     * 检测当的网络（WLAN、3G/2G）状态
+//     *
+//     * @return true 表示网络可用
+//     */
+//    public static boolean isNetworkAvailable() {
+//        Context context = ContextUtils.getContext();
+//        ConnectivityManager connectivity = (ConnectivityManager) context
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (connectivity != null) {
+//            NetworkInfo info = connectivity.getActiveNetworkInfo();
+//            if (info != null && info.isConnected()) {
+//                // 当前网络是连接的
+//                if (info.getState() == NetworkInfo.State.CONNECTED) {
+//                    // 当前所连接的网络可用
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     public static final int SECURITY_UNKNOWN = -1;
     public static final int SECURITY_NONE = 0;
@@ -491,11 +492,37 @@ public class NetUtils {
                 (i >> 24 & 0xFF);
     }
 
-    public static boolean isPublicNetwork() {
-        boolean qq = isInternetAvailable(QQ_HOST);
-        if (qq) return true;
-        boolean baidu = isInternetAvailable(BAIDU_HOST);
-        if (baidu) return true;
-        return false;
+    public static boolean isNetworkAvailable() {
+        try {
+            String yahooDomain = getDomain("yahoo");
+            if (TextUtils.isEmpty(yahooDomain)) {
+                String qqDomain = getDomain("qq.com");
+                return !TextUtils.isEmpty(qqDomain);
+            }
+            return !TextUtils.isEmpty(yahooDomain);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * yahoo.com
+     *
+     * @param host
+     * @return
+     */
+    public static String getDomain(String host) {
+        try {
+            InetAddress[] machines = InetAddress.getAllByName(host);
+            StringBuilder builder = new StringBuilder();
+            if (machines != null) {
+                for (InetAddress address : machines) {
+                    builder.append(address.getHostAddress());
+                }
+            }
+            return (builder.toString());
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

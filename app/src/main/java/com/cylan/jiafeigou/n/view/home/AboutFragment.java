@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -55,6 +56,8 @@ public class AboutFragment extends Fragment {
     TextView tvCopyRight;
     @BindView(R.id.sv_official_website)
     SettingItemView0 svOfficialWebsite;
+    @BindView(R.id.iv_logon)
+    ImageView ivLogon;
 
     private Intent intent;
     private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
@@ -80,10 +83,11 @@ public class AboutFragment extends Fragment {
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
-        tvCopyRight.setVisibility(getResources().getBoolean(R.bool.show_all_right) ? View.VISIBLE : View.INVISIBLE);
+        tvCopyRight.setVisibility(getResources().getBoolean(R.bool.show_copyright) ? View.VISIBLE : View.INVISIBLE);
         tvUserAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.INVISIBLE);
         svOfficialWebsite.setVisibility(getResources().getBoolean(R.bool.show_official_website) ? View.VISIBLE : View.INVISIBLE);
         svHotLine.setVisibility(getResources().getBoolean(R.bool.show_official_hot_line) ? View.VISIBLE : View.INVISIBLE);
+        ivLogon.setVisibility(getResources().getBoolean(R.bool.show_about_logo) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @OnClick({R.id.sv_hot_line, R.id.tv_user_agreement, R.id.sv_official_website})
@@ -170,5 +174,6 @@ public class AboutFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
     }
 }

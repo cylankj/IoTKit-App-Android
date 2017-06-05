@@ -9,7 +9,6 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;

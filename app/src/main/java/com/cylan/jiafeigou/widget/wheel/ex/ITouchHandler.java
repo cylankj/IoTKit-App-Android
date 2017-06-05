@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget.wheel.ex;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
@@ -9,6 +10,9 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.animation.OvershootInterpolator;
 import android.widget.OverScroller;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by cylan-hunt on 16-6-18.
@@ -65,13 +69,17 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
      */
     private static final int INVALID_POINTER = -1;
 
-    public static final int DIRECTION_LEFT = 1;
-    public static final int DIRECTION_RIGHT = 0;
+//    public static final int DIRECTION_LEFT = 1;
+//    public static final int DIRECTION_RIGHT = 0;
 
-    private int moveDirection = -1;//-1 nothing ,0:left ,1:right
+    private
+    @MoveDirection
+    int moveDirection = -1;//-1 nothing ,0:left ,1:right
 
     private boolean isActionUp = false;
-    private int dragOrFling = -1;//-1 nothing ,0:drag ,1:fling
+    private
+    @DragOrFling
+    int dragOrFling = -1;//-1 nothing ,0:drag ,1:fling
 
     boolean onTouchEvent(MotionEvent event) {
         gestureDetectorCompat.onTouchEvent(event);
@@ -85,10 +93,10 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
             if (scrollState != SCROLL_STATE_SETTLING) {
                 if (scroller.isFinished()) {
                     updateScrollStateIfRequired(SCROLL_STATE_IDLE);
-                    if (SuperWheelExt.DEBUG)
-                        Log.d(TAG, "onTouchEvent: up");
                 }
             }
+            if (SuperWheelExt.DEBUG)
+                Log.d(TAG, "onTouchEvent: up");
             return true;
         }
         switch (mask) {
@@ -96,13 +104,15 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                 isActionUp = false;
                 if (!scroller.isFinished())
                     scroller.abortAnimation();
-                moveDirection = -1;
-                dragOrFling = -1;
+                moveDirection = MoveDirection.NONE;
+                dragOrFling = DragOrFling.NONE;
                        /*
                  * Remember location of down touch.
                  * ACTION_DOWN always refers to pointer index 0.
                  */
                 mLastMotionX = mInitialMotionX = event.getX();
+                if (SuperWheelExt.DEBUG)
+                    Log.d(TAG, "onTouchEvent: ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (superWheel.getParent() != null) {
@@ -114,6 +124,8 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                     // If we don't have a valid id, the touch down wasn't on content.
                     break;
                 }
+                if (SuperWheelExt.DEBUG)
+                    Log.d(TAG, "onTouchEvent: ACTION_MOVE");
                 final int pointerIndex = MotionEventCompat.findPointerIndex(event, activePointerId);
                 final float x = MotionEventCompat.getX(event, pointerIndex);
                 final float dx = x - mLastMotionX;
@@ -121,9 +133,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                 if (xDiff > mTouchSlop) {
                     mLastMotionX = dx > 0 ? mInitialMotionX + mTouchSlop :
                             mInitialMotionX - mTouchSlop;
-                    moveDirection = dx > 0 ? DIRECTION_LEFT : DIRECTION_RIGHT;
+                    moveDirection = dx > 0 ? MoveDirection.LEFT : MoveDirection.RIGHT;
                 }
-                dragOrFling = 0;
+                dragOrFling = DragOrFling.DRAGGING;
                 updateScrollStateIfRequired(SCROLL_STATE_DRAGGING);
                 break;
         }
@@ -147,7 +159,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
     public void startSmoothScroll(int startX, int dx) {
         scroller.startScroll(startX, 0, dx, 0);
         superWheel.invalidate();
-        dragOrFling = -1;//清空fling标志.
+        dragOrFling = DragOrFling.NONE;//清空fling标志.
     }
 
     @Override
@@ -169,7 +181,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         if (SuperWheelExt.DEBUG) {
             Log.d(TAG, "fling:  " + superWheel.getScrollX() + " " + superWheel.getMaxScrollX());
         }
-        dragOrFling = 1;
+        dragOrFling = DragOrFling.FLING;
         scroller.fling(superWheel.getScrollX(), 0,
                 (int) -velocityX, 0,
                 -superWheel.getMaxScrollX(), 0,
@@ -181,12 +193,37 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
 
     private void updateScrollStateIfRequired(int newState) {
         Log.d(TAG, "updateScroll:" + dragOrFling + " state:" + newState + " moveDirection:" + moveDirection);
-        if (dragOrFling >= 0) {
+        if (dragOrFling == DragOrFling.FLING) {
             superWheel.autoSettle(newState, moveDirection);
-        } else if (dragOrFling == -1) {
+        } else {//touch_up or dragging finish
             superWheel.autoSettle(newState);
-//        dragging finish up
         }
     }
+
+    @IntDef({
+            MoveDirection.NONE,
+            MoveDirection.LEFT,
+            MoveDirection.RIGHT
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface MoveDirection {
+        int NONE = -1;
+        int LEFT = 0;
+        int RIGHT = 1;
+    }
+
+    @IntDef({
+            DragOrFling.NONE,
+            DragOrFling.DRAGGING,
+            DragOrFling.FLING
+    })
+    //-1 nothing ,0:drag ,1:fling
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DragOrFling {
+        int NONE = -1;
+        int DRAGGING = 0;
+        int FLING = 1;
+    }
+
 
 }

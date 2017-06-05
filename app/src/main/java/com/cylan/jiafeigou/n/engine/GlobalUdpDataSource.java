@@ -21,7 +21,6 @@ import org.msgpack.MessagePack;
 import java.io.IOException;
 
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 

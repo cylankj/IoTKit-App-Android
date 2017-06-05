@@ -2,22 +2,16 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.nfc.tech.IsoDep;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
