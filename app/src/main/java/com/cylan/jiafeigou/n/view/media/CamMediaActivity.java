@@ -82,7 +82,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.fLayout_cam_handle_bar)
-    FrameLayout fLayoutCamHandleBar;
+    LinearLayout fLayoutCamHandleBar;
     @BindView(R.id.lLayout_preview)
     LinearLayout lLayoutPreview;
     @BindView(R.id.imgV_big_pic_collect)
