@@ -60,22 +60,19 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected Subscription getLoadSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.VideoLoadingEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(load -> {
+                .subscribe(load -> {
                     AppLogger.d("正在加载中" + load.slow);
                     mView.onLoading(load.slow);
-                    return load;
-                })
-                .filter(load -> load.slow)
-                .throttleLast(4, TimeUnit.SECONDS)
-                .subscribe(ret -> {
-                    if (!NetUtils.isPublicNetwork() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
+                    if (load.slow && !sourceManager.isOnline() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
                         AppLogger.d("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
                         disconn.remote = getViewHandler();
                         RxBus.getCacheInstance().post(disconn);
                     }
-                }, AppLogger::e);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -96,7 +93,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         Subscription subscribe = Observable.just(sourceManager.isOnline())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(isOnline -> {
-                    if (!isOnline && !NetUtils.isNetworkAvailable()) {
+                    if (!isOnline && !NetUtils.isNetworkAvailable(mView.getAppContext())) {
                         mView.onVideoDisconnect(BAD_NET_WORK);
                         return false;
                     }
@@ -200,6 +197,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      * 而且还会清除播放状态
      */
     protected Observable<Boolean> stopViewer() {
+        AppLogger.e("stopViewer");
         if (!liveStreamAction.hasStarted) return Observable.empty();
         liveStreamAction.reset();
         return Observable.just(getViewHandler())
@@ -207,6 +205,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
+                            appCmd.stopPlay(handler);
+                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                            disconn.remote = getViewHandler();
+                            disconn.code = STOP_VIERER_BY_SYSTEM;
+                            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
+                            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
                             appCmd.screenshot(false, new CallBack<Bitmap>() {
                                 @Override
                                 public void onSucceed(Bitmap bitmap) {
@@ -218,12 +222,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                                     AppLogger.d("保存门铃画像失败" + s);
                                 }
                             });
-                            appCmd.stopPlay(handler);
-                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                            disconn.remote = getViewHandler();
-                            disconn.code = STOP_VIERER_BY_SYSTEM;
-                            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
-                            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
                             return true;
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -448,6 +446,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onFrameFailed() {
         liveStreamAction.hasLiveError = true;
         feedRtcp.stop();
+        Schedulers.io().createWorker().schedule(() -> {
+            liveStreamAction.reset();
+            if (TextUtils.isEmpty(getViewHandler())) return;
+            try {
+                appCmd.stopPlay(getViewHandler());
+            } catch (Exception e) {
+                AppLogger.e(e.getMessage());
+            }
+        });
         mView.onVideoDisconnect(BAD_FRAME_RATE);
     }
 

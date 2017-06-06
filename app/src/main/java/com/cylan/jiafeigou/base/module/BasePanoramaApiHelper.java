@@ -5,11 +5,14 @@ import android.graphics.drawable.Drawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.io.File;
 import java.util.List;
@@ -55,20 +58,14 @@ public class BasePanoramaApiHelper {
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
                             httpApi = retrofit.create(IHttpApi.class);
-                            if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.PanoramaApiAvailable.class)) {
-                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
-                            }
+                            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
                         } else {
-                            if (NetUtils.isPublicNetwork()) {
+                            if (BaseApplication.isOnline()) {
                                 forwardHelper = BaseForwardHelper.getInstance();
                                 deviceInformation = null;
-                                if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.PanoramaApiAvailable.class)) {
-                                    RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
-                                }
+                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
                             } else {
-                                if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.PanoramaApiAvailable.class)) {
-                                    RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
-                                }
+                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
                             }
                         }
                     } else {
@@ -167,15 +164,56 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> getSdInfo() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getSdInfo() : forwardHelper.sendDataPoint(204));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getSdInfo().map(ret -> {
+            //更新设备属性
+            DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
+            status.err = ret.sdcard_recogntion;
+            status.hasSdcard = ret.sdIsExist;
+            status.used = ret.storage_used;
+            status.total = ret.storage;
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            if (device.available()) {
+                DPEntity property = device.getProperty(204);
+                if (property == null) {
+                    property = device.getEmptyProperry(204);
+                }
+                property.setValue(status, DpUtils.pack(status), property.getVersion());
+                device.updateProperty(204, property);
+            }
+            return ret;
+        }) : forwardHelper.sendDataPoint(204));
     }
 
     public Observable<PanoramaEvent.MsgPowerLineRsp> getPowerLine() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getPowerLine() : forwardHelper.sendDataPoint(205));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getPowerLine().map(ret -> {
+            //更新设备属性
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            if (device.available()) {
+                DPEntity property = device.getProperty(205);
+                if (property == null) {
+                    property = device.getEmptyProperry(205);
+                }
+                property.setValue(new DpMsgDefine.DPPrimary<>(ret.powerline == 1), DpUtils.pack(ret.powerline == 1), property.getVersion());
+                device.updateProperty(205, property);
+            }
+            return ret;
+        }) : forwardHelper.sendDataPoint(205));
     }
 
     public Observable<PanoramaEvent.MsgBatteryRsp> getBattery() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getBattery() : forwardHelper.sendDataPoint(206));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getBattery().map(ret -> {
+            //更新设备属性
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            if (device.available()) {
+                DPEntity property = device.getProperty(206);
+                if (property == null) {
+                    property = device.getEmptyProperry(206);
+                }
+                property.setValue(new DpMsgDefine.DPPrimary<>(ret.battery), DpUtils.pack(ret.battery), property.getVersion());
+                device.updateProperty(206, property);
+            }
+            return ret;
+        }) : forwardHelper.sendDataPoint(206));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setLogo(int logType) {

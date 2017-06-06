@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
@@ -45,7 +46,10 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.RandomUtils;
 import com.google.gson.Gson;
+
+import org.msgpack.MessagePack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,6 +147,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .doOnCompleted(() -> {
                     Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
                     getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+//                    queryForwardInformation();
                 })
                 .subscribe(ret -> {
                 }, e -> {
@@ -151,6 +156,37 @@ public class DataSourceManager implements JFGSourceManager {
                     e.printStackTrace();
                 });
     }
+
+    private void queryForwardInformation() {
+        //这里尝试从 udp 获取设备属性
+        try {
+            List<String> dstArray = new ArrayList<>();
+            ArrayList<JFGDPMsg> queryParameters = null;
+            for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+                dstArray.add(entry.getKey());
+                queryParameters = BasePropertyParser.getInstance().getAllQueryParameters();
+            }
+            AppLogger.e("所有的设备属性为:" + new Gson().toJson(queryParameters));
+            MessagePack messagePack = new MessagePack();
+            messagePack.register(JFGDPMsg.class);
+            int seq = RandomUtils.getRandom(Integer.MAX_VALUE);
+            PanoramaEvent.MsgForward forward = new PanoramaEvent.MsgForward();
+            forward.dst = dstArray;
+            forward.mCaller = "";
+            forward.mCallee = "";
+            forward.mId = 20006;
+            forward.isAck = 1;
+            forward.type = 51;
+            forward.mSeq = seq;
+            forward.msg = messagePack.write(queryParameters);
+            AppLogger.d("正在向设备发送透传消息:" + new Gson().toJson(forward));
+            appCmd.sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, messagePack.write(forward));
+            appCmd.sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, messagePack.write(forward));
+        } catch (Exception e) {
+            AppLogger.e(e.getMessage());
+        }
+    }
+
 
     @Deprecated
     public void setOnline(boolean online) {

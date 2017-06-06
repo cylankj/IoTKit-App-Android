@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -48,6 +49,8 @@ public class ConnectionDialog extends BaseDialog {
         View view = inflater.inflate(R.layout.layout_panorama_connection_way, container, false);
         ButterKnife.bind(this, view);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        connectionWayFamily.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        connectionWayOutdoor.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         return view;
     }
 

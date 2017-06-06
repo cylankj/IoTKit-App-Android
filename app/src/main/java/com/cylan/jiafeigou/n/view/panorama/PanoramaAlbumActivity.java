@@ -337,6 +337,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         }
         //setEmptyView
         emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+        tvAlbumDelete.setEnabled(panoramaAdapter.getCount() > 0);
     }
 
     @Override

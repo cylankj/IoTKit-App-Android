@@ -18,7 +18,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     private static final int MAX_SIZE = 30;//现在统一30秒 loading
     private static final int TARGET_SIZE = 8;
     private static final int FINAL_LEVEL = 2;
-    private static final int SHOW_FREQUENCY = 3000;
+    private static final int SHOW_FREQUENCY = 4000;
     private boolean preStatus;
     private final ReentrantLock lock = new ReentrantLock();
     private long showFailedTime;

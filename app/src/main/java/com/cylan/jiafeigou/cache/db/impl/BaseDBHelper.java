@@ -291,7 +291,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public void clearDevice() {
         if (dpAccount == null || dpAccount.getAccount() == null) return;
-        String execSQL = "DELETE FROM DEVICE WHERE ACCOUNT = ? AND SERVER = ? ";
+        String execSQL = "DELETE FROM DEVICE WHERE PROPERTY = ? AND SERVER = ? ";
         Database database = daoSession.getDatabase();
         database.beginTransaction();
         database.execSQL(execSQL, new Object[]{dpAccount.getAccount(), getServer()});

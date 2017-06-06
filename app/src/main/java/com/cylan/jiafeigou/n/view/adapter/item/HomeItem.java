@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.adapter.item;
 
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,11 +12,13 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -162,7 +165,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         Log.d("handleState", "handleState: " + uuid + " " + net);
         int online = JConstant.getOnlineIcon(mDevice.pid);
         int offline = JConstant.getOfflineIcon(mDevice.pid);
-        int iconRes = (onLineState != 0 && onLineState != -1) ? online : offline;
+        String mac = mDevice.$(DpMsgMap.ID_202_MAC, "");
+        boolean apMode = TextUtils.equals(mac, NetUtils.getRouterMacAddress((Application) holder.itemView.getContext().getApplicationContext()));
+        int iconRes = (onLineState != 0 && onLineState != -1) || apMode ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!isPrimaryAccount(shareAccount))

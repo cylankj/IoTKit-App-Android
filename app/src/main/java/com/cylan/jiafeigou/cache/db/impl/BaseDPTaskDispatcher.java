@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 
@@ -86,7 +85,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(task -> NetUtils.isPublicNetwork()
+                .flatMap(task -> sourceManager.isOnline()
                         ? task.performLocal().observeOn(Schedulers.io()).flatMap(ret -> task.performServer())
                         : task.performLocal().observeOn(Schedulers.io())
                 );
@@ -109,7 +108,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                     }
                     return task != null;
                 })
-                .flatMap(task -> NetUtils.isPublicNetwork()
+                .flatMap(task -> sourceManager.isOnline()
                         ? task.performServer()
                         : task.performLocal().subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
                 );

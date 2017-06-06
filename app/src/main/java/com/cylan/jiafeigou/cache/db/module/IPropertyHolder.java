@@ -15,6 +15,8 @@ public interface IPropertyHolder {
 
     ArrayList<JFGDPMsg> getQueryParams();
 
+    ArrayList<JFGDPMsg> getAllQueryParams();
+
     boolean setValue(int msgId, byte[] bytes, long version);
 
     boolean setValue(int msgId, DataPoint value);

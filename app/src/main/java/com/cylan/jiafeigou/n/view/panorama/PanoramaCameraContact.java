@@ -65,15 +65,14 @@ public interface PanoramaCameraContact {
             int MODE_SHORT = 1;
             int MODE_LONG = 2;
         }
+
         void onShowPreviewPicture(String picture);
 
         void onSwitchSpeedMode(@SPEED_MODE int mode);
 
         void onRefreshVideoRecordUI(int second, int type);
 
-        void onMakePhotoGraphSuccess();
-
-        void onReportError(int err);
+        void onReportDeviceError(int err, boolean useAlert);
 
         void onNewFirmwareRsp();
 
@@ -85,9 +84,6 @@ public interface PanoramaCameraContact {
     }
 
     interface Presenter extends ViewablePresenter<View> {
-
-        class RecordFinish {
-        }
 
         void makePhotograph();//拍照
 

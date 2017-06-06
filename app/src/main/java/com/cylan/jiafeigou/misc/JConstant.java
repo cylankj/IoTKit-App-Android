@@ -139,6 +139,10 @@ public class JConstant {
      * 有区别于直接绑定
      */
     public static final String KEY_CONFIG_FREE_CAM = "config_free_cam";
+    public static final java.lang.String PANORAMA_THUMB_PICTURE = "panorama_thumb_picture";
+    public static final java.lang.String SWITCH_MODE_POP = "switch_mode_pop";
+    public static final String ALERT_MOBILE = "alert_mobile";
+
 
     /**
      * 保存了 {@link BellLiveActivity}的进程id

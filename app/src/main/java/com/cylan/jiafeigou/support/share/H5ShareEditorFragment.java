@@ -63,6 +63,13 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     @Override
+    protected boolean onBackPressed() {
+        getActivity().finish();
+        return true;
+
+    }
+
+    @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
         Bundle arguments = getArguments();

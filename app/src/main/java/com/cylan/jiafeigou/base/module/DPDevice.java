@@ -16,7 +16,7 @@ import java.util.List;
 public enum DPDevice {
     CAMERA(4, 5, 7, 10, 18, 21, 26, 17, 20, 23, 19, 36, 37, 38, 1152, 1158, 1088, 1089, 1091, 1092, 1071, 1090),
     DOORBELL(6, 25, 1093, 1094, 1158, 15, 1159, 24, 1160, 27),
-    ACCOUNT(-1);
+    PROPERTY(-1);
     private List<Integer> pids = new ArrayList<>();
 
     @IntDef({})

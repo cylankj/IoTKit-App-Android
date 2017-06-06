@@ -26,8 +26,8 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.share.ShareConstant;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PanoramaThumbURL;
@@ -97,7 +97,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Inject
     HttpProxyCacheServer httpProxy;
     private PanoramicView720_Ext panoramicView720Ext;
-    private long player;
+    private long player = 0;
     private PanoramaAlbumContact.PanoramaItem panoramaItem;
     private DownloadInfo downloadInfo;
     private PopupWindow morePopMenu;
@@ -357,7 +357,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         } else {
             AppLogger.d("点击了分享按钮");
             dismissDialogs();
-            JFGPlayer.Stop(player);
+            if (player != 0) {
+                JFGPlayer.Stop(player);
+            }
             new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
                 Intent intent = new Intent(this, ShareMediaActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
