@@ -224,7 +224,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * 初始化,progressBar的位置.
      */
     private void initProgressBarColor() {
-        rVDevicesList.post(() -> srLayoutMainContentHolder.setColorSchemeColors(Color.parseColor("#36BDFF")));
+        rVDevicesList.post(() -> srLayoutMainContentHolder.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF)));
     }
 
     @OnClick(R.id.imgV_add_devices)

@@ -1,17 +1,21 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -70,7 +74,28 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-                    .into(photoView);
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                            photoView.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            //破图的位置,属性不一样.
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.CENTER);
+                            photoView.setImageDrawable(errorDrawable);
+                        }
+                    });
         } else {
             photoView = new PhotoView(container.getContext());
             contentView = photoView;
@@ -82,7 +107,27 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .error(R.drawable.broken_image)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-                    .into(photoView);
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                            photoView.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            photoView.setLayoutParams(lp);
+                            photoView.setScaleType(ImageView.ScaleType.CENTER);
+                            photoView.setImageDrawable(errorDrawable);
+                        }
+                    });
         }
         container.addView(contentView);
         return contentView;

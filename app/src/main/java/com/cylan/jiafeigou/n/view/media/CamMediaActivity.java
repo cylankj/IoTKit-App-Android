@@ -139,7 +139,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 imgVBigPicCollect.post(() -> {
                     SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
                     popupWindow.showOnAnchor(imgVBigPicCollect, RelativePopupWindow.VerticalPosition.ABOVE,
-                            RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, -20, 0);
+                            RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, -imgVBigPicCollect.getWidth() / 2, 0);
                 });
             }
         });

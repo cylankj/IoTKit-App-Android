@@ -137,7 +137,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.COLOR_CACACA));
+        srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF));
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {

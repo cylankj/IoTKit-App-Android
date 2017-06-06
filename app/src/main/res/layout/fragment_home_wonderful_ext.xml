@@ -12,55 +12,93 @@
         android:theme="@style/AppTheme.PopupOverlay"
         app:statusBarScrim="@android:color/transparent">
 
-        <RelativeLayout
-            android:id="@+id/rl_top_head_wonder"
+        <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/y48"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:visibility="invisible"-->
+        <!--app:contentInsetStart="@dimen/x0"-->
+        <!--app:layout_collapseMode="pin">-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvHeaderLastTitle"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/y48"-->
+        <!--android:layout_gravity="bottom|center_horizontal"-->
+        <!--android:alpha="0"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/Tap1_TitleName"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="@dimen/sp20" />-->
+
+        <!--</android.support.v7.widget.Toolbar>-->
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="@dimen/y62"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@android:color/transparent"
+            app:expandedTitleGravity="bottom"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:statusBarScrim="@android:color/transparent">
 
-            <TextView
-                android:id="@+id/tv_title_head_wonder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/tv_sec_title_head_wonder"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/y12"
-                android:text="@string/Tap2_TitleName"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp22" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                app:layout_collapseMode="pin" />
 
-            <TextView
-                android:id="@+id/tv_sec_title_head_wonder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/y50"
-                android:text="@string/Tap2_Index_Greetings"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp15" />
-
-            <ImageView
-                android:id="@+id/img_wonderful_title_cover"
+            <RelativeLayout
+                android:id="@+id/rl_top_head_wonder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="0"
-                android:background="@color/color_0ba8cf" />
+                android:minHeight="@dimen/y62"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
 
-            <TextView
-                android:id="@+id/tv_date_item_head_wonder"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:alpha="0"
-                android:gravity="center"
-                android:text="@string/Tap2_TitleName"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_title_head_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/tv_sec_title_head_wonder"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/y12"
+                    android:text="@string/Tap2_TitleName"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp22" />
 
+                <TextView
+                    android:id="@+id/tv_sec_title_head_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/y50"
+                    android:text="@string/Tap2_Index_Greetings"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp15" />
+
+                <ImageView
+                    android:id="@+id/img_wonderful_title_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0"
+                    android:background="@color/color_0ba8cf" />
+
+                <TextView
+                    android:id="@+id/tv_date_item_head_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y48"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:alpha="0"
+                    android:gravity="center"
+                    android:text="@string/Tap2_TitleName"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp18" />
+            </RelativeLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
         <!--</FrameLayout>-->
 
