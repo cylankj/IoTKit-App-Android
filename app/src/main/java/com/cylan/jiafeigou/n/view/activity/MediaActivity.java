@@ -182,6 +182,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             postponeEnterTransition();
             initShareElementCallback();
         }
+        mPictureShare.setVisibility(getResources().getBoolean(R.bool.show_share_btn) ? View.VISIBLE : View.GONE);
     }
 
     @Override

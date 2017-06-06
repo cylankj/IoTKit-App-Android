@@ -62,6 +62,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
         ViewCompat.setTransitionName(holder.getView(R.id.iv_wonderful_item_content),
                 String.valueOf(layoutPosition) + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
         holder.setOnClickListener(R.id.iv_wonderful_item_content, deviceItemClickListener);
+        holder.setVisibility(R.id.tv_wonderful_item_share, getContext().getResources().getBoolean(R.bool.show_share_btn) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);
         holder.setOnLongClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemLongClickListener);

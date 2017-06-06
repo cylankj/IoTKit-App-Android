@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_login"
     xmlns:tim="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/y10"
@@ -207,6 +207,7 @@
         android:textSize="@dimen/sp12" />
 
     <FrameLayout
+        android:id="@+id/fLayout_third"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

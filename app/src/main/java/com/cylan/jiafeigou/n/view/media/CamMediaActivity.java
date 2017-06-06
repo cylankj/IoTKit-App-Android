@@ -128,7 +128,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         });
 
         customToolbar.setBackAction(v -> onBackPressed());
-
+        imgVBigPicShare.setVisibility(getResources().getBoolean(R.bool.show_share_btn) ? View.VISIBLE : View.GONE);
     }
 
     private void showCollectCase() {
