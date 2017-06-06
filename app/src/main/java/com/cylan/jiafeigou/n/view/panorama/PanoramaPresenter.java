@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -29,6 +28,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.ERROR_CODE_HTTP_NOT_AVAILABLE;
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /**
@@ -38,6 +38,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     private boolean isFirst = true;
     private Subscription subscribe;
+    private boolean shouldRefreshRecord = true;
+    private int battery;
 
     @Override
     public void onViewAttached(PanoramaCameraContact.View view) {
@@ -129,19 +131,22 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             if (msg.id == 204) {
                                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
                                 if (status != null && status.hasSdcard == 0) {//SDCard 不存在
-                                    mView.onReportError(2004);
+                                    mView.onReportDeviceError(2004, true);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
-                                    mView.onReportError(2022);
+                                    mView.onReportDeviceError(2022, true);
                                 }
+                                shouldRefreshRecord = status != null && status.hasSdcard == 1 && status.err == 0;
                             } else if (msg.id == 205) {
-                                Boolean aBoolean = unpackData(msg.packValue, boolean.class);
-                                if (aBoolean != null && aBoolean) {
+                                Integer charge = unpackData(msg.packValue, int.class);
+                                if (charge != null && charge == 1) {
                                     mView.onDeviceBatteryChanged(-1);
+                                } else if (charge != null && charge == 0) {
+                                    mView.onDeviceBatteryChanged(battery);
                                 }
                             } else if (msg.id == 206) {
                                 Integer battery = unpackData(msg.packValue, int.class);
                                 if (battery != null) {
-                                    mView.onDeviceBatteryChanged(battery);
+                                    mView.onDeviceBatteryChanged(this.battery = battery);
                                 }
                             }
                         }
@@ -172,18 +177,21 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
-                        mView.onMakePhotoGraphSuccess();
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE, true);
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
-                            mView.onShowPreviewPicture(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/images/" + msgFileRsp.files.get(0));
+                            if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
+                                mView.onShowPreviewPicture(msgFileRsp.files.get(0));
+                            } else {
+                                mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
+                            }
                         }
                     } else {
-                        mView.onReportError(msgFileRsp.ret);
+                        mView.onReportDeviceError(msgFileRsp.ret, false);
                     }
                     AppLogger.d("拍照返回结果为:" + new Gson().toJson(msgFileRsp));
                 }, e -> {
                     AppLogger.e(e);
-                    mView.onReportError(-1);//timeout
-                    ToastUtil.showNegativeToast("拍照操作超时");
+                    mView.onReportDeviceError(-1, false);//timeout
                 });
         registerSubscription(subscribe);
     }
@@ -203,6 +211,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp != null && rsp.ret == 0) {//检查录像状态
+                        shouldRefreshRecord = true;
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
                         refreshVideoRecordUI(rsp.seconds, rsp.videoType);
                     }
@@ -222,29 +231,21 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getSdInfo())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
-//                    if (ret != null && ret.sdIsExist == 0) {//SDCard 不存在
-//                        mView.onReportError(2004);
-//                    } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
-//                        mView.onReportError(2022);
-//                    }
-                    return ret;
-                })
-                .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(ret -> {
-                    if (ret != null && ret.powerline == 1) {
-                        mView.onDeviceBatteryChanged(-1);
+                    if (ret != null && ret.sdIsExist == 0) {//SDCard 不存在
+//                        mView.onReportDeviceError(2004);
+                        shouldRefreshRecord = false;
+                    } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
+//                        mView.onReportDeviceError(2022);
+                        shouldRefreshRecord = false;
                     }
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-                .filter(ret -> ret == null || ret.powerline == 0)
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
                     if (ret != null) {
-                        mView.onDeviceBatteryChanged(ret.battery);
+                        mView.onDeviceBatteryChanged(this.battery = ret.battery);
                         if (ret.battery < 20 && isFirst) {//检查电量
                             isFirst = false;
                             Device device = sourceManager.getDevice(uuid);
@@ -259,6 +260,16 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return ret;
                 })
+                .observeOn(Schedulers.io())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(ret -> {
+                    if (ret != null && ret.powerline == 1) {
+                        mView.onDeviceBatteryChanged(-1);
+                    }
+                    return ret;
+                })
+
                 .subscribe(ret -> {
                 }, e -> {
                     AppLogger.e(e.getMessage());
@@ -281,7 +292,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                 }, e -> {
                     AppLogger.e(e);
-                    ToastUtil.showNegativeToast("切换分辨率超时");
                 });
         registerSubscription(subscribe);
     }
@@ -295,53 +305,61 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.d("开启视频录制返回结果为" + new Gson().toJson(rsp));
                     if (rsp.ret == 0) {
                         AppLogger.d("开启视频录制成功了");
+                        shouldRefreshRecord = true;
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
                         refreshVideoRecordUI(0, type);
                     } else {
-                        mView.onReportError(rsp.ret);
+                        shouldRefreshRecord = false;
+                        mView.onReportDeviceError(rsp.ret, false);
                     }
                 }, e -> {
                     AppLogger.e(e);
-                    mView.onReportError(-1);
+                    shouldRefreshRecord = false;
+                    mView.onReportDeviceError(-1, false);
                 });
         registerSubscription(subscribe);
     }
 
     @Override
     public void stopVideoRecord(int type) {
-        RxBus.getCacheInstance().post(new RecordFinish());
+        shouldRefreshRecord = false;
         Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(type)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
-                        mView.onShowPreviewPicture(BasePanoramaApiHelper.getInstance().getDeviceIp() + "/thumb/" + ret.files.get(0).replaceAll("mp4", "thumb"));
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+                        if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
+                            mView.onShowPreviewPicture(ret.files.get(0));
+                        } else {
+                            mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
+                        }
                     } else {//失败了
-                        mView.onReportError(ret.ret);
+                        mView.onReportDeviceError(ret.ret, false);
                     }
                     AppLogger.d("停止直播返回结果为:" + new Gson().toJson(ret));
                 }, e -> {
-                    mView.onReportError(-1);
+                    mView.onReportDeviceError(-1, false);
                     AppLogger.e(e);
                 });
         registerSubscription(subscribe);
     }
 
     public void refreshVideoRecordUI(int offset, @PanoramaCameraContact.View.PANORAMA_RECORD_MODE int type) {
-        RxBus.getCacheInstance().post(new RecordFinish());
         Subscription subscribe = Observable.interval(0, 500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(count -> (int) (count / 2) + offset)
                 .takeUntil(second -> {
-                    boolean finish = type == PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT && second >= 8;
-                    if (finish) {
-                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+                    if (shouldRefreshRecord) {
+                        if (type == PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT && second >= 8) {
+                            shouldRefreshRecord = false;
+                        }
+                        mView.onRefreshVideoRecordUI(second, type);
                     }
-                    return finish;
+                    return !shouldRefreshRecord;
                 })
-                .takeUntil(RxBus.getCacheInstance().toObservable(RecordFinish.class))
-                .subscribe(second -> mView.onRefreshVideoRecordUI(second, type), AppLogger::e);
+                .subscribe(ret -> {
+                }, AppLogger::e);
         registerSubscription(subscribe);
     }
 }

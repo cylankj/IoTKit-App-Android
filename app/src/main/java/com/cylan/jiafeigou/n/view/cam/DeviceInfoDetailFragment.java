@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -175,7 +176,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                         }
                     }, AppLogger::e);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        String statusContent = getSdcardState(status.hasSdcard==1, status.err);
+        String statusContent = getSdcardState(status.hasSdcard == 1, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
@@ -187,13 +188,18 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceMac.setTvSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
         int b = device.$(DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setTvSubTitle(JFGRules.isDeviceOnline(net) ? (charging ? getString(R.string.CHARGING) + (b + "%") : (b + "%")) : "");
+        boolean apMode = TextUtils.equals(m, NetUtils.getRouterMacAddress(getActivity().getApplication()));
+        tvDeviceBatteryLevel.setTvSubTitle((JFGRules.isDeviceOnline(net) || apMode) ? (charging ? getString(R.string.CHARGING) + (b + "%") : (b + "%")) : "");
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(JFGRules.isDeviceOnline(net) ? u : 0));
         boolean isMobileNet = net.net > 1;
-        tvDeviceWifiState.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
+        if (apMode) {
+            tvDeviceWifiState.setTvSubTitle(getString(R.string.OFF));
+        } else {
+            tvDeviceWifiState.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
+        }
         String softWare = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvDeviceSoftwareVersion.setTvSubTitle(softWare);
     }
@@ -234,13 +240,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.tv_device_sdcard_state:
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-                String statusContent = getSdcardState(status.hasSdcard==1, status.err);
+                String statusContent = getSdcardState(status.hasSdcard == 1, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
                     showClearSDDialog();
                     return;
                 }
 
-                if (status.hasSdcard==1)//没有sd卡,不能点击
+                if (status.hasSdcard == 1)//没有sd卡,不能点击
                     jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:

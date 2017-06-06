@@ -14,6 +14,9 @@ import java.util.List;
 
 public interface PanoramaEvent {
 
+    int ERROR_CODE_HTTP_NOT_AVAILABLE = -20000;
+
+
     @Message
     class ReportMsg extends JfgUdpMsg.UdpRecvHeard {
         @Index(2)

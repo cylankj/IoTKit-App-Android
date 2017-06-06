@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white">
+
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ct_background_color="@color/color_0ba8cf"
+            app:ct_enable_shadow="false"
+            app:ct_enable_theme="true"
+            app:ct_fit_system_window="true"
+            app:ct_icon="@drawable/nav_icon_back_white"
+            app:ct_left_title="@string/Network_Description"
+            app:ct_left_title_color="@color/color_white" />
+
+
+        <TextView
+            android:id="@+id/descriptionTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:layout_marginTop="@dimen/y12"
+            android:text="@string/Unconnect_Network"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/wifiItem"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y72"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:layout_marginTop="@dimen/y3"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descriptionTitle"
+            app:sv_image_src="@drawable/setting_icon_wifi"
+            app:sv_sub_title="@string/Wifi_Hotspot"
+            app:sv_title="@string/Wifi_Method"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/mobileItem"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y72"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wifiItem"
+            app:sv_image_src="@drawable/setting_icon_3g"
+            app:sv_sub_title="@string/Cellular_Data_Set_Up"
+            app:sv_title="@string/Cellular_Data_Method"
+            app:sv_v_divider="false" />
+
+        <TextView
+            android:id="@+id/setUp"
+            android:layout_width="@dimen/y288"
+            android:layout_height="@dimen/y42"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:layout_marginTop="@dimen/y69"
+            android:background="@drawable/un_bind_device_btn_seletor"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@string/Wifi_Set_Up"
+            android:textColor="#333333"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mobileItem" />
+    </android.support.constraint.ConstraintLayout>
+</layout>
