@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SafeSwitchButton;
 import com.cylan.jiafeigou.widget.ShareGridView;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -78,7 +80,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     private HomeSettingContract.Presenter presenter;
     private AboutFragment aboutFragment;
     private Dialog mShareDlg;
-    private AppAdater appAdater;
+    private AppAdapter appAdater;
 
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
@@ -274,6 +276,21 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         }
     }
 
+    private static final String tencent = "tencent";
+    private static final String facebook = "facebook";
+    private static final String twitter = "twitter";
+    private static final String sina = "sina";
+
+    private boolean addFirst(final String name) {
+        if (TextUtils.isEmpty(name)) {
+            return false;
+        }
+        return name.contains(tencent)
+                || name.contains(facebook)
+                || name.contains(twitter)
+                || name.contains(sina);
+    }
+
     //*************
     public void share() {
         if (mShareDlg == null) {
@@ -289,18 +306,22 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            final String app = getString(R.string.share_content) + "http://a.app.qq.com/o/simple.jsp?pkgname=%s";
+            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
             intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
-                appAdater = new AppAdater(getContext());
+                appAdater = new AppAdapter(getContext());
+            LinkedList<ResolveInfoEx> finalList = new LinkedList<>();
             for (ResolveInfo info : list) {
+                final String name = info.activityInfo.packageName;
                 if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
-                    appAdater.add(info);
+                    if (addFirst(name)) finalList.add(0, new ResolveInfoEx().setInfo(info));
+                    else finalList.add(new ResolveInfoEx().setInfo(info));
                 }
             }
+            appAdater.addAll(finalList);
             gridView.setOnItemClickListener((parent, view, position, id) -> {
-                ResolveInfo info = appAdater.getItem(position);
+                ResolveInfo info = appAdater.getItem(position).getInfo();
                 intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
                 startActivity(intent);
             });
@@ -324,12 +345,24 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     class ViewHolder {
         ImageView icon;
         TextView name;
-        ResolveInfo info;
     }
 
-    class AppAdater extends ArrayAdapter<ResolveInfo> {
+    private static class ResolveInfoEx {
+        private ResolveInfo info;
 
-        public AppAdater(Context context) {
+        public ResolveInfoEx setInfo(ResolveInfo info) {
+            this.info = info;
+            return this;
+        }
+
+        public ResolveInfo getInfo() {
+            return info;
+        }
+    }
+
+    private class AppAdapter extends ArrayAdapter<ResolveInfoEx> {
+
+        public AppAdapter(Context context) {
             super(context, 0);
         }
 
@@ -345,7 +378,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             } else {
                 vh = (ViewHolder) convertView.getTag();
             }
-            ResolveInfo info = getItem(position);
+            ResolveInfo info = getItem(position).getInfo();
             PackageManager pm = getContext().getPackageManager();
             vh.name.setText(info.loadLabel(pm));
             vh.icon.setImageDrawable(info.loadIcon(pm));

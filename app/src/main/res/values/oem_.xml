@@ -10,4 +10,5 @@
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>
     <string name="qrcode_prefix">http://a.app.qq.com/o/simple.jsp?pkgname=%1$s&amp;id=%2$s</string>
+    <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s</string>
 </resources>

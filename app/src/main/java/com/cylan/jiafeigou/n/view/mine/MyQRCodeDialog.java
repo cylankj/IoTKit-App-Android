@@ -84,7 +84,7 @@ public class MyQRCodeDialog extends BaseDialog {
     public void onResume() {
         super.onResume();
         if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return;
-        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName()) + "id=" + jfgaccount.getAccount();
+        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName(), jfgaccount.getAccount());
         ivUserQrcode.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
