@@ -9,5 +9,5 @@
     <bool name="show_about_logo">true</bool>
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>
-    <string name="qrcode_prefix">"%s"</string>
+    <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
 </resources>

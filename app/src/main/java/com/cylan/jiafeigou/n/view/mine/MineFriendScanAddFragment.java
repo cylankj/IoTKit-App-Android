@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void showQrCode(String account) {
-        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName()) + "id=" + account;
+        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName(), account);
         ivErweima.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
@@ -210,15 +211,18 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         }
         if (getView() != null) {
             if (presenter != null) {
-                String[] split = rawResult.getText().split("=");
-                if (split.length == 2) {
-                    if (split[1].equals(account)) {
-                        ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-                    } else {
-                        presenter.checkScanAccount(split[1]);
-                    }
+                final String result = rawResult.getText();
+                final int start = result.indexOf("&id=");
+                if (start < 0 || start > result.length()) {
+                    //无效二维码
+                    ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
+                    return;
+                }
+                final String targetAccount = result.substring(start + 4);
+                if (TextUtils.equals(targetAccount, account)) {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
                 } else {
-                    scanNoResult();
+                    presenter.checkScanAccount(targetAccount);
                 }
             }
         }
