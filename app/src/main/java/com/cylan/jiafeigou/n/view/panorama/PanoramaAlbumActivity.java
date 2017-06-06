@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -157,12 +156,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
 
     @OnClick(R.id.act_panorama_album_toolbar_header_title)
-    public void showAlbumViewModePop() {
+    public void showAlbumViewModePop(View view) {
+        ViewUtils.deBounceClick(view);
         RoundRectPopup
                 albumModeSelectPop = new RoundRectPopup(this);
-        albumModeSelectPop.setTouchable(true);
-//        albumModeSelectPop.setOutsideTouchable(false);
-        albumModeSelectPop.setFocusable(false);
         albumModeSelectPop.setDismissListener((int id) -> {
             albumViewMode = resIdToMode(id);
             toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
@@ -357,8 +354,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     public void onViewModeChanged(int mode) {
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-//        toolbarAlbumViewMode.setEnabled(mode != 0);
-        AppLogger.e("记得改回来");
+        toolbarAlbumViewMode.setEnabled(mode != 0);
     }
 
     @Override
