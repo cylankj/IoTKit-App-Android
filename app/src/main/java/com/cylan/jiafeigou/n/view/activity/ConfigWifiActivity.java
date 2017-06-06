@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
+import com.cylan.jiafeigou.n.mvp.model.LocalWifiInfo;
 import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoActivity;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
@@ -197,6 +198,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
                 }
                 IMEUtils.hide(this);
+                LocalWifiInfo.Saver.getSaver().addOrUpdateInfo(new LocalWifiInfo()
+                        .setSsid(ssid).setPwd(pwd));
                 break;
             case R.id.tv_config_ap_name:
                 initFragment();
@@ -357,6 +360,11 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         tvConfigApName.setText(scanResult.SSID);
         rLayoutWifiPwdInputBox.setVisibility(BindUtils.getSecurity(scanResult) != 0
                 ? View.VISIBLE : View.GONE);
+        LocalWifiInfo info = LocalWifiInfo.Saver.getSaver().getInfo(scanResult.SSID.replace("\"", ""));
+        if (info != null && !TextUtils.isEmpty(info.getPwd())) {
+            //填充密码
+            etWifiPwd.setText(info.getPwd());
+        }
     }
 
     @OnClick(R.id.lLayout_config_ap)
