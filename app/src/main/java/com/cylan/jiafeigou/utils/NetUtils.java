@@ -321,14 +321,14 @@ public class NetUtils {
             HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
             urlc.setRequestProperty("User-Agent", "test");
             urlc.setRequestProperty("Connection", "close");
-            urlc.setConnectTimeout(1000); // mTimeout is in seconds
+            urlc.setConnectTimeout(500); // mTimeout is in seconds
+            urlc.setReadTimeout(500);
             urlc.connect();
             return (urlc.getResponseCode() == 200);
         } catch (Exception e) {
             Log.e("warning", "Error checking internet connection", e);
             return false;
         }
-
     }
 
     public static String removeDoubleQuotes(String string) {
@@ -524,5 +524,9 @@ public class NetUtils {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public static boolean isPublicNetwork() {
+        return isNetworkAvailable();
     }
 }

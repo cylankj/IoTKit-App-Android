@@ -183,10 +183,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
                     .delay(3, TimeUnit.MINUTES)
                     .subscribe(ret -> {
                         AppLogger.d("timeout for report");
-                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     }, throwable -> {
                         AppLogger.d("timeout for report");
-                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_ONBACK);
+                        getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
                     });
         }
     }

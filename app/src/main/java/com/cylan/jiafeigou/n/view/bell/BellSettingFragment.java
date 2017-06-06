@@ -128,7 +128,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
-                if (!sourceManager.isOnline()) {
+                if (!NetUtils.isPublicNetwork()) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

@@ -330,7 +330,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //1.sd
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (!status.hasSdcard || status.err != 0) {
+        if (status.hasSdcard==0 || status.err != 0) {
             //隐藏
             layoutE.setVisibility(INVISIBLE);
             return;
@@ -736,11 +736,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 }
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
 
-                if (status.hasSdcard && status.err != 0) {
+                if (status.hasSdcard == 1 && status.err != 0) {
                     ToastUtil.showNegativeToast(getContext().getString(R.string.VIDEO_SD_DESC));
                     return;
                 }
-                if (!status.hasSdcard || status.err != 0) {
+                if (status.hasSdcard == 0 || status.err != 0) {
                     ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
                     return;
                 }

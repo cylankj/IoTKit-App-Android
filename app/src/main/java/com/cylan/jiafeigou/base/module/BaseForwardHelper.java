@@ -112,7 +112,7 @@ public class BaseForwardHelper {
                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
                 PanoramaEvent.MsgSdInfoRsp infoRsp = new PanoramaEvent.MsgSdInfoRsp();
                 infoRsp.sdcard_recogntion = status.err;
-                infoRsp.sdIsExist = status.hasSdcard ? 1 : 0;
+                infoRsp.sdIsExist = status.hasSdcard;
                 infoRsp.storage = status.total;
                 infoRsp.storage_used = status.used;
                 return (T) infoRsp;

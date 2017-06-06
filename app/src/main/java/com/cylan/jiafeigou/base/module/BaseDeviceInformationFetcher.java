@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -53,10 +54,6 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         monitorDeviceInformationSuggestion();
     }
 
-    private void monitorDeviceInformationNotification() {
-
-    }
-
     private boolean resolveDeviceInformation(RxEvent.LocalUdpMsg udpMsg) {
         try {
             AppLogger.d("正在解析 UDP 消息:" + new Gson().toJson(udpMsg));
@@ -85,8 +82,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction()) &&
-                !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)) {
+        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             //网络状态发生了变化,这里我们判断当前连接的是否是设备AP,如果是设备AP 则主动请求设备信息,这样就做到了全局处理逻辑.
             AppLogger.d("网络状态发生了变化");
             RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
@@ -132,25 +128,26 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                         } catch (JfgException e) {
                             AppLogger.e(e.getMessage());
                         }
-                    } else if (BaseApplication.isOnline()) {
+                        return true;
+                    } else {
                         RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                         return false;
                     }
-                    return true;
                 })
                 .filter(send -> send)
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                        .filter(this::resolveDeviceInformation)
-                        .first().timeout(5, TimeUnit.SECONDS, Observable.just(null)))
+                        .first(this::resolveDeviceInformation)
+                        .timeout(5, TimeUnit.SECONDS, Observable.just(null)))
                 .retry()
                 .subscribe(ret -> {
                     RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                 }, e -> {
                     AppLogger.e(e.toString() + ":" + e.getMessage());
-                    if (BaseApplication.isOnline()) {
-                        RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
-                    }
+                    Schedulers.io().createWorker().schedule(() -> {
+                        if (NetUtils.isPublicNetwork()) {
+                            RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
+                        }
+                    });
                 });
-
     }
 }

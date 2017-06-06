@@ -42,11 +42,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.view.bell.LBatteryWarnDialog;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
@@ -60,7 +60,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.SimpleProgressBar;
+import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CommonPanoramicView;
@@ -73,6 +73,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_205_CHARGING;
@@ -135,11 +136,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.act_panorama_camera_video_container)
     FrameLayout videoLiveContainer;
     @BindView(R.id.act_panorama_camera_loading)
-    SimpleProgressBar loadingBar;
+    ILiveControl loadingBar;
     @BindView(R.id.act_panorama_camera_bottom_count_down_line)
     View bottomCountDownLine;
     @BindView(R.id.tv_top_bar_left)
     Button topLeftMenu;
+    @BindView(R.id.act_panorama_camera_quick_menu_item3_left)
+    ImageView quickMenuItem3Left;
+    @BindView(R.id.act_panorama_camera_quick_menu_item3_right)
+    ImageView quickMenuItem3Right;
 
     @SPEED_MODE
     private int speedMode = SPEED_MODE.AUTO;
@@ -152,7 +157,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private PopupWindow videoPopHint;
     private PanoramicView720_Ext surfaceView;
     private ConnectionDialog connectionDialog;
-    private LBatteryWarnDialog lBatteryWarnDialog;
     private AlertDialog mobileAlert;
     private boolean allowMobile = false;
     private boolean hasResolution = false;
@@ -172,28 +176,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         int battery = device.$(ID_206_BATTERY, 0);
         boolean charging = device.$(ID_205_CHARGING, false);
         onDeviceBatteryChanged(charging ? -1 : battery);
-        String mac = device.$(ID_202_MAC, "");
-        if (mac != null) {
-            String routerMac = NetUtils.getRouterMacAddress(getApplication());
-            if (TextUtils.equals(mac, routerMac)) {
-                //AP 模式
-                bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_ap);
-                bannerConnectionText.setText(R.string.Tap1_OutdoorMode);
-                quickMenuItem1Mic.setEnabled(false);
-                quickMenuItem2Voice.setEnabled(false);
-
-            } else {
-                //非 AP 模式
-                bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_wifi);
-                bannerConnectionText.setText(R.string.DEVICE_WIFI_ONLINE);
-            }
-        }
+        onRefreshConnectionMode(-1);
     }
 
     @Override
     public void onViewer() {
         liveFlowSpeedText.setText("0K/s");
-        loadingBar.setVisibility(View.VISIBLE);
+        loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
+        onHideBadNetWorkBanner();
     }
 
     @Override
@@ -239,6 +229,24 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             return false;
         });
 
+        loadingBar.setAction(new ILiveControl.Action() {
+            @Override
+            public void clickImage(View view, int state) {
+                onHideBadNetWorkBanner();
+                presenter.startViewer();
+            }
+
+            @Override
+            public void clickText(View view) {
+
+            }
+
+            @Override
+            public void clickHelp(View view) {
+
+            }
+        });
+
     }
 
     @Override
@@ -265,7 +273,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
-        loadingBar.setVisibility(View.GONE);
+        loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         onRefreshViewModeUI(panoramaViewMode, true);
     }
 
@@ -281,26 +289,31 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onConnectDeviceTimeOut() {
-        onShowBadNetWorkBanner();
+        onRefreshConnectionMode(-1);
     }
 
     @Override
     public void onVideoDisconnect(int code) {
-        hasResolution = false;
+        loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
+        if (code == BAD_FRAME_RATE) {
+            onRefreshControllerView(false);
+            return;
+        }
         if (code == JError.ErrorVideoPeerInConnect) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.CONNECTING)
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, (dialog, which) -> {
-                        finish();
                         dialog.dismiss();
+                        presenter.dismiss();
+                        finish();
                     })
                     .show();
-        } else if (code == BAD_NET_WORK) {
-            onShowBadNetWorkBanner();
         } else {
-            onShowDeviceOfflineBanner();
+            onRefreshConnectionMode(-1);
         }
+        onRefreshViewModeUI(panoramaViewMode, false);
+        hasResolution = false;
     }
 
     @Override
@@ -319,7 +332,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onLoading(boolean loading) {
-        loadingBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        loadingBar.setState(loading ? JConstant.PLAY_STATE_PREPARE : JConstant.PLAY_STATE_IDLE, null);
+        onRefreshControllerView(!loading);
+        if (!loading) {
+            onHideBadNetWorkBanner();
+        }
         AppLogger.d("正在加载中.......");
     }
 
@@ -345,13 +362,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         hasResolution = false;
         setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         int netType = NetUtils.getNetType(this);
-        if (netType == ConnectivityManager.TYPE_MOBILE && !allowMobile) {
-            onNetWorkChangedToMobile();
+        if (netType == ConnectivityManager.TYPE_MOBILE) {
+            onRefreshConnectionMode(1);
         } else {
             presenter.startViewer();
         }
         onRefreshViewModeUI(panoramaViewMode, false);
-        presenter.checkAndInitRecord();
     }
 
 
@@ -444,6 +460,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
+        presenter.dismiss();
         Intent intent = new Intent(this, PanoramaAlbumActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
@@ -599,24 +616,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         presenter.switchVideoResolution(move(speedMode, true));
     }
 
-    public void onShowBadNetWorkBanner() {
-        AppLogger.d("onShowBadNetWorkBanner");
-        int childIndex = bannerSwitcher.getDisplayedChild();
-        if (childIndex == 0) {
-            bannerSwitcher.showNext();
-        }
-        bannerWarmingTitle.setText("无网络连接，请检查网络设置>>");
-    }
-
-    public void onShowDeviceOfflineBanner() {
-        AppLogger.d("onShowBadNetWorkBanner");
-        int childIndex = bannerSwitcher.getDisplayedChild();
-        if (childIndex == 0) {
-            bannerSwitcher.showNext();
-        }
-        bannerWarmingTitle.setText("设备离线，请重新配置连接>>");
-    }
-
     public void onHideBadNetWorkBanner() {
         AppLogger.d("onHideBadNetWorkBanner");
         int childIndex = bannerSwitcher.getDisplayedChild();
@@ -627,11 +626,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onBellBatteryDrainOut() {
-        if (JFGRules.isShareDevice(uuid)) return;
-        if (lBatteryWarnDialog == null)
-            lBatteryWarnDialog = LBatteryWarnDialog.newInstance(null);
-        if (!lBatteryWarnDialog.isAdded())
-            lBatteryWarnDialog.show(getSupportFragmentManager(), "lBattery");
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.Tap1_LowPower)
+                .setCancelable(false)
+                .setPositiveButton(R.string.I_KNOW, null)
+                .show();
     }
 
     @Override
@@ -645,34 +644,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_half);
         } else if (battery >= 80) {
             bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
-        }
-    }
-
-    @Override
-    public void onNetWorkChangedToMobile() {
-        AppLogger.d("正在使用移动网络,请注意流量");
-        if (mobileAlert == null) {
-            mobileAlert = new AlertDialog.Builder(this)
-                    .setMessage(R.string.Tap1_Firmware_DataTips)
-                    .setPositiveButton(R.string.OK, (dialog, which) -> {
-                        presenter.startViewer();
-                    })
-                    .setNegativeButton(R.string.CANCEL, null)
-                    .create();
-        }
-        if (!mobileAlert.isShowing() && !allowMobile) {
-            mobileAlert.show();
-        }
-    }
-
-    @Override
-    public void onNetWorkChangedToWiFi() {
-        AppLogger.d("正在使用 WiFi 网络,可以放心观看");
-        if (mobileAlert != null && mobileAlert.isShowing()) {
-            mobileAlert.dismiss();
-        }
-        if (!hasResolution) {
-            presenter.startViewer();
         }
     }
 
@@ -693,9 +664,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case SPEED_MODE.FLUENCY:
             case SPEED_MODE.NORMAL:
                 quickMenuItem3TextContent.setText(R.string.Tap1_Camera_Video_SD);
+                quickMenuItem3Left.setEnabled(false);
+                quickMenuItem3Right.setEnabled(true);
                 break;
             case SPEED_MODE.HD:
                 quickMenuItem3TextContent.setText(R.string.Tap1_Camera_Video_HD);
+                quickMenuItem3Left.setEnabled(true);
+                quickMenuItem3Right.setEnabled(false);
+
                 break;
         }
     }
@@ -723,8 +699,70 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelPictureMode.setEnabled(hasResolution && enable);
         bottomPanelVideoMode.setEnabled(hasResolution && enable);
         bottomPanelPhotoGraphItem.setEnabled(hasResolution && enable);
-        bottomPanelMoreItem.setEnabled(hasResolution && enable && panoramaViewMode != PANORAMA_VIEW_MODE.MODE_VIDEO);
+        bottomPanelMoreItem.setEnabled(hasResolution && enable);
         setting.setEnabled(enable);
+    }
+
+    @Override
+    public void onRefreshConnectionMode(int connectionType) {
+        onRefreshControllerView(false);
+        Device device = sourceManager.getDevice(uuid);
+        String mac = device.$(ID_202_MAC, "");
+        DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+        boolean apMode = TextUtils.equals(mac, NetUtils.getRouterMacAddress(getApplication()));
+        boolean isOnline = net.net > 0;
+        bannerConnectionIcon.setImageResource(apMode ? R.drawable.camera720_icon_ap : R.drawable.camera720_icon_wifi);
+        bannerConnectionIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.GONE);
+        bannerConnectionText.setText(apMode ? R.string.Tap1_OutdoorMode : isOnline ? R.string.DEVICE_WIFI_ONLINE : R.string.NOT_ONLINE);
+        if ((apMode || isOnline) && bannerSwitcher.getDisplayedChild() == 1) {
+            bannerSwitcher.showPrevious();
+            loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
+        } else if (bannerSwitcher.getDisplayedChild() == 0 && connectionType < 0) {
+            bannerSwitcher.showNext();
+            loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
+            boolean online = sourceManager.isOnline();
+            bannerWarmingTitle.setText((!online && !apMode && !isOnline) ? R.string.Tap1_DisconnectedPleaseCheck : R.string.Tap1_Offline);
+        }
+
+        quickMenuItem1Mic.setEnabled(!apMode);
+        quickMenuItem2Voice.setEnabled(!apMode);
+
+        if (!apMode && !isOnline) return;
+
+        if (connectionType == 0) {//wifi
+            AppLogger.d("正在使用 WiFi 网络,可以放心观看");
+            if (mobileAlert != null && mobileAlert.isShowing()) {
+                mobileAlert.dismiss();
+            }
+            if (!hasResolution) {
+                presenter.startViewer();
+            }
+            ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
+        } else if (connectionType == 1) {//mobile
+            AppLogger.d("正在使用移动网络,请注意流量");
+            if (!allowMobile) {
+                presenter.cancelViewer();
+                onRefreshControllerView(false);
+                if (mobileAlert == null) {
+                    mobileAlert = new AlertDialog.Builder(this)
+                            .setMessage(R.string.Tap1_Firmware_DataTips)
+                            .setPositiveButton(R.string.OK, (dialog, which) -> {
+                                allowMobile = true;
+                                loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
+                                presenter.startViewer();
+                            })
+                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
+                                loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
+                            })
+                            .create();
+                }
+                mobileAlert.show();
+            } else {
+                loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
+                presenter.startViewer();
+                ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedNetwork));
+            }
+        }
     }
 
     @Override
@@ -776,17 +814,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");
-                bottomPanelPhotoGraphItem.setEnabled(true);
                 ToastUtil.showNegativeToast(getString(R.string.DOOR_LOWBETTERY));
                 break;
             case 2003://sd 卡没有容量
                 AppLogger.d("SD 卡内存已满");
-                bottomPanelPhotoGraphItem.setEnabled(true);
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_SDCardFullyTips));
                 break;
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
-                bottomPanelPhotoGraphItem.setEnabled(true);
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_Camera_NoSDCardTips));
                 break;
             case 2007://正在录像
@@ -825,12 +860,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onSnapshot(Bitmap bitmap, boolean b) {
         bottomPanelAlbumItem.setImageBitmap(bitmap);
-        BitmapUtils.saveBitmap2file(bitmap, JConstant.PANORAMA_MEDIA_THUMB_PATH + "/" + uuid + ".jpg");
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleX", 1.0f, 1.2f, 1.0f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleY", 1.0f, 1.2f, 1.0f);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(scaleX, scaleY);
         set.setDuration(200);
         set.start();
+        Schedulers.io().createWorker().schedule(() -> BitmapUtils.saveBitmap2file(bitmap, JConstant.PANORAMA_MEDIA_THUMB_PATH + "/" + uuid + ".jpg"));
     }
 }

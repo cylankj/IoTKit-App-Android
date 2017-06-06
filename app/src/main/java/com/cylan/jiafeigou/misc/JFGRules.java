@@ -310,7 +310,7 @@ public class JFGRules {
     }
 
     public static boolean hasSdcard(DpMsgDefine.DPSdStatus sdStatus) {
-        return sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard;
+        return sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard == 1;
     }
 
     public static boolean isShareDevice(String uuid) {
