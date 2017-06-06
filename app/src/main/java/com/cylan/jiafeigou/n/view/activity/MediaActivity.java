@@ -108,7 +108,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @BindView(R.id.act_media_picture_opt_delete)
     ImageView mPictureCollection;
     @BindView(R.id.act_media_pic_option)
-    FrameLayout mPictureFooterContainer;
+    LinearLayout mPictureFooterContainer;
     @BindView(R.id.act_media_video_opt_play)
     ImageView mVideoPlay;
     @BindView(R.id.act_media_video_opt_play_time)
