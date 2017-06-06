@@ -29,9 +29,11 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
+import com.cylan.jiafeigou.n.mvp.model.LocalWifiInfo;
 import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoActivity;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -49,6 +51,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
@@ -197,6 +200,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
                 }
                 IMEUtils.hide(this);
+                LocalWifiInfo.Saver.getSaver().addOrUpdateInfo(new LocalWifiInfo()
+                        .setSsid(ssid).setPwd(pwd));
                 break;
             case R.id.tv_config_ap_name:
                 initFragment();
@@ -280,6 +285,14 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         if (object == null) {
             tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
             tvConfigApName.setText(resultList.get(0).SSID);
+            LocalWifiInfo.Saver.getSaver().getInfo(resultList.get(0).SSID.replace("\"", ""))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(info -> {
+                        if (info != null && !TextUtils.isEmpty(info.getPwd())) {
+                            //填充密码
+                            etWifiPwd.setText(info.getPwd());
+                        } else etWifiPwd.setText("");
+                    }, AppLogger::e);
         }
     }
 
@@ -357,6 +370,14 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         tvConfigApName.setText(scanResult.SSID);
         rLayoutWifiPwdInputBox.setVisibility(BindUtils.getSecurity(scanResult) != 0
                 ? View.VISIBLE : View.GONE);
+        LocalWifiInfo.Saver.getSaver().getInfo(scanResult.SSID.replace("\"", ""))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(info -> {
+                    if (info != null && !TextUtils.isEmpty(info.getPwd())) {
+                        //填充密码
+                        etWifiPwd.setText(info.getPwd());
+                    } else etWifiPwd.setText("");
+                }, AppLogger::e);
     }
 
     @OnClick(R.id.lLayout_config_ap)
