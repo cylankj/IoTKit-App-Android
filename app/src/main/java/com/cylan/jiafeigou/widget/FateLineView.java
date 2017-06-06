@@ -141,7 +141,8 @@ public class FateLineView extends View {
     protected void onDraw(Canvas canvas) {
 //        super.onDraw(canvas);
         int rectTop = getPaddingTop();
-        int rectBottom = getMeasuredHeight() - getPaddingBottom();
+        //有些手机 getMeasureHeight()为0,需要使用getHeight();
+        int rectBottom = getHeight() - getPaddingBottom();
         float circleTop = centerVertical ? getMeasuredHeight() / 2 : outerCircleY + outerCircleRadius;
         final int count = canvas.save();
         //虚线
