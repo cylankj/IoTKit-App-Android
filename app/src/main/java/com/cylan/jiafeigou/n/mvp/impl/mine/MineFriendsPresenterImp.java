@@ -207,7 +207,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initAddReqRecyListData() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override

@@ -23,7 +23,9 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.LocalWifiInfo;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -38,9 +40,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_DEFAULT_EDIT_TEXT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_EXCLUDE_CHINESE;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_HINT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_LENGTH;
@@ -147,16 +151,28 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
         final ScanResult item = ((AAdapter) rvWifiList.getAdapter()).getItem(position);
-        Bundle bundle = new Bundle();
-        final String ssid = item.SSID.replace("\"", "");
-        bundle.putString(KEY_TITLE, ssid);
-        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
-        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-        bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
-        bundle.putInt(KEY_INPUT_LENGTH, 63);
-        bundle.putBoolean(KEY_EXCLUDE_CHINESE, true);
-        final int security = NetUtils.getSecurity(item);
-        bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
+        LocalWifiInfo.Saver.getSaver().getInfo(item.SSID.replace("\"", ""))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(info -> {
+                    Bundle bundle = new Bundle();
+                    final String ssid = item.SSID.replace("\"", "");
+                    bundle.putString(KEY_TITLE, ssid);
+                    bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
+                    bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+                    bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
+                    bundle.putInt(KEY_INPUT_LENGTH, 63);
+                    bundle.putBoolean(KEY_EXCLUDE_CHINESE, true);
+                    final int security = NetUtils.getSecurity(item);
+                    bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
+                    if (info != null && !TextUtils.isEmpty(info.getPwd())) {
+                        //填充密码
+                        bundle.putString(KEY_DEFAULT_EDIT_TEXT, info.getPwd());
+                    }
+                    loadDialog(ssid, security, bundle);
+                }, AppLogger::e);
+    }
+
+    private void loadDialog(final String ssid, final int security, Bundle bundle) {
         EditFragmentDialog dialog = EditFragmentDialog.newInstance(bundle);
         dialog.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {

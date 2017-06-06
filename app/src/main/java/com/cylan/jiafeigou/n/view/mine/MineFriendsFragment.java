@@ -45,9 +45,9 @@ import butterknife.OnClick;
 public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickListener {
 
     @BindView(R.id.recyclerview_request_add)
-    RecyclerView recyclerviewRequestAdd;
+    RecyclerView rvReqAdd;
     @BindView(R.id.rv_friends_list)
-    RecyclerView recyclerviewRelativesandfriendsList;
+    RecyclerView rvFriendsList;
     @BindView(R.id.ll_relative_and_friend)
     LinearLayout llRelativeAndFriend;
     @BindView(R.id.ll_relative_and_friend_none)
@@ -279,9 +279,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void initFriendRecyList(ArrayList<RelAndFriendBean> list) {
         hideLoadingDialog();
-        recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvFriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
         friendsListAdapter = new RelativesAndFriendsAdapter(getContext(), list, null);
-        recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
+        rvFriendsList.setAdapter(friendsListAdapter);
         initFriendAdaListener();
     }
 
@@ -299,9 +299,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
         hideLoadingDialog();
-        recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvReqAdd.setLayoutManager(new LinearLayoutManager(getContext()));
         addReqListAdapter = new AddRelativesAndFriendsAdapter(getContext(), list, null);
-        recyclerviewRequestAdd.setAdapter(addReqListAdapter);
+        rvReqAdd.setAdapter(addReqListAdapter);
         initAddReqAdaListener();
     }
 
@@ -329,25 +329,25 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void showFriendListTitle() {
         tvFriendListTitle.setVisibility(View.VISIBLE);
-        recyclerviewRelativesandfriendsList.setVisibility(View.VISIBLE);
+        rvFriendsList.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideFriendListTitle() {
         tvFriendListTitle.setVisibility(View.GONE);
-        recyclerviewRelativesandfriendsList.setVisibility(View.GONE);
+        rvFriendsList.setVisibility(View.GONE);
     }
 
     @Override
     public void showAddReqListTitle() {
         tvAddRequestTitle.setVisibility(View.VISIBLE);
-        recyclerviewRequestAdd.setVisibility(View.VISIBLE);
+        rvReqAdd.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideAddReqListTitle() {
         tvAddRequestTitle.setVisibility(View.GONE);
-        recyclerviewRequestAdd.setVisibility(View.GONE);
+        rvReqAdd.setVisibility(View.GONE);
     }
 
     @Override

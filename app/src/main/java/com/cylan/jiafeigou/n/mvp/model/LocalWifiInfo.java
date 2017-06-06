@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
-import android.text.TextUtils;
-
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -56,25 +54,13 @@ public class LocalWifiInfo {
             return saver;
         }
 
-        private Map<String, LocalWifiInfo> wifiInfoMap;
-
-        public void setWifiInfoMap(Map<String, LocalWifiInfo> wifiInfoMap) {
-            this.wifiInfoMap = wifiInfoMap;
-        }
+        private static Map<String, LocalWifiInfo> wifiInfoMap;
 
         public Map<String, LocalWifiInfo> getWifiInfoMap() {
             return wifiInfoMap;
         }
 
         private Saver() {
-            String content = PreferencesUtils.getString(secretKey);
-            if (TextUtils.isEmpty(content)) return;
-            try {
-                final String de = AESUtil.decrypt(content);
-                Saver saver = new Gson().fromJson(de, Saver.class);
-                this.wifiInfoMap = saver.getWifiInfoMap();
-            } catch (Exception e) {
-            }
         }
 
         public void addOrUpdateInfo(LocalWifiInfo localWifiInfo) {
@@ -84,16 +70,30 @@ public class LocalWifiInfo {
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(ret -> {
                         try {
-                            PreferencesUtils.putString(secretKey, AESUtil.encrypt(saver.toString()));
+                            PreferencesUtils.putString(secretKey, AESUtil.encrypt(new Gson().toJson(saver)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }, AppLogger::e);
         }
 
-        public LocalWifiInfo getInfo(String ssid) {
-            if (wifiInfoMap == null) return null;
-            return wifiInfoMap.get(ssid);
+        public Observable<LocalWifiInfo> getInfo(String ssid) {
+            return Observable.just(ssid)
+                    .subscribeOn(Schedulers.newThread())
+                    .flatMap(s -> {
+                        if (wifiInfoMap != null)
+                            return Observable.just(wifiInfoMap.get(s));
+                        String content = PreferencesUtils.getString(secretKey);
+                        try {
+                            final String de = AESUtil.decrypt(content);
+                            Saver saver = new Gson().fromJson(de, Saver.class);
+                            wifiInfoMap = saver.getWifiInfoMap();
+                            return Observable.just(wifiInfoMap.get(s));
+                        } catch (Exception e) {
+                            PreferencesUtils.remove(secretKey);
+                            return Observable.just(null);
+                        }
+                    });
         }
 
         @Override
