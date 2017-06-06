@@ -19,7 +19,7 @@
             android:orientation="vertical"
             android:weightSum="3">
 
-            <RadioButton
+            <com.cylan.jiafeigou.widget.SafeRadioButton
                 android:id="@+id/menu_item_album_pop_both"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -30,7 +30,7 @@
                 android:textColor="@color/color_panorama_album_menu_photo_mode"
                 android:textSize="@dimen/sp16" />
 
-            <RadioButton
+            <com.cylan.jiafeigou.widget.SafeRadioButton
                 android:id="@+id/menu_item_album_pop_panorama"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -42,7 +42,7 @@
                 android:textColor="@color/color_panorama_album_menu_photo_mode"
                 android:textSize="@dimen/sp16" />
 
-            <RadioButton
+            <com.cylan.jiafeigou.widget.SafeRadioButton
                 android:id="@+id/menu_item_album_pop_photo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

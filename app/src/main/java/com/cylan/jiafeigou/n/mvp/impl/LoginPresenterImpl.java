@@ -360,11 +360,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     if (getView() != null) {
                         getView().loginResult(result == null ? JError.ErrorConnect : result.code);
                     }
+                    unSubscribe("failedNetCheckSub");
                 }, e -> {
                     AppLogger.e("获取登录结果失败:" + e.getMessage());
                     if (getView() != null) {
                         getView().loginResult(JError.ErrorConnect);
                     }
+                   unSubscribe("failedNetCheckSub");
                 });
         addSubscription(subscribe);
         Subscription failedNetCheckSub = Observable.just("netCheck")
@@ -377,7 +379,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> getView() != null)
                 .subscribe(ret -> getView().loginResult(JError.ErrorP2PSocket), AppLogger::e);
-        addSubscription(failedNetCheckSub);
+        addSubscription(failedNetCheckSub, "failedNetCheckSub");
     }
 
 }

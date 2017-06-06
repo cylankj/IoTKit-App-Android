@@ -494,12 +494,12 @@ public class NetUtils {
 
     public static boolean isNetworkAvailable() {
         try {
-            String yahooDomain = getDomain("yahoo.com");
-            if (TextUtils.isEmpty(yahooDomain)) {
-                String qqDomain = getDomain("qq.com");
-                return !TextUtils.isEmpty(qqDomain);
+            String qqDomain = getDomain("qq.com");
+            if (TextUtils.isEmpty(qqDomain)) {
+//                String qqDomain = getDomain("qq.com");
+//                return !TextUtils.isEmpty(qqDomain);
             }
-            return !TextUtils.isEmpty(yahooDomain);
+            return !TextUtils.isEmpty(qqDomain);
         } catch (Exception e) {
             return false;
         }
@@ -513,14 +513,15 @@ public class NetUtils {
      */
     public static String getDomain(String host) {
         try {
-            InetAddress[] machines = InetAddress.getAllByName(host);
-            StringBuilder builder = new StringBuilder();
-            if (machines != null) {
-                for (InetAddress address : machines) {
-                    builder.append(address.getHostAddress());
-                }
-            }
-            return (builder.toString());
+
+            return InetAddress.getByName(host).isReachable(3000) ? "good" : "";
+//            StringBuilder builder = new StringBuilder();
+//            if (machines != null) {
+//                for (InetAddress address : machines) {
+//                    builder.append(address.getHostAddress());
+//                }
+//            }
+//            return (builder.toString());
         } catch (Exception e) {
             return "";
         }
