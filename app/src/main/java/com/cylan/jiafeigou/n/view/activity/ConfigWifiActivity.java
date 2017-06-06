@@ -285,6 +285,14 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         if (object == null) {
             tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
             tvConfigApName.setText(resultList.get(0).SSID);
+            LocalWifiInfo.Saver.getSaver().getInfo(resultList.get(0).SSID.replace("\"", ""))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(info -> {
+                        if (info != null && !TextUtils.isEmpty(info.getPwd())) {
+                            //填充密码
+                            etWifiPwd.setText(info.getPwd());
+                        } else etWifiPwd.setText("");
+                    }, AppLogger::e);
         }
     }
 
@@ -368,7 +376,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     if (info != null && !TextUtils.isEmpty(info.getPwd())) {
                         //填充密码
                         etWifiPwd.setText(info.getPwd());
-                    }
+                    } else etWifiPwd.setText("");
                 }, AppLogger::e);
     }
 
