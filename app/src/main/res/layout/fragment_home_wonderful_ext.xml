@@ -1,25 +1,32 @@
-<layout>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
 
-        <variable
-            name="themeRules"
-            type="com.cylan.jiafeigou.misc.JFGRules" />
-    </data>
-
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/y163"
+        android:background="@drawable/wonderful_bg_top_daytime"
+        android:theme="@style/AppTheme.PopupOverlay"
+        app:statusBarScrim="@android:color/transparent">
 
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y163"
-            android:background="@drawable/wonderful_bg_top_daytime"
-            android:theme="@style/AppTheme.PopupOverlay"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@android:color/transparent"
+            app:expandedTitleGravity="bottom"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:statusBarScrim="@android:color/transparent">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                app:layout_collapseMode="pin" />
 
             <RelativeLayout
                 android:id="@+id/rl_top_head_wonder"
@@ -55,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:alpha="0"
-                    android:background="@{themeRules.timeRule==0?@color/color_0ba8cf:@color/color_23344e}" />
+                    android:background="@color/color_0ba8cf" />
 
                 <TextView
                     android:id="@+id/tv_date_item_head_wonder"
@@ -69,44 +76,43 @@
                     android:textColor="@color/color_white"
                     android:textSize="@dimen/sp18" />
             </RelativeLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
+        <!--</FrameLayout>-->
 
-            <!--</FrameLayout>-->
+    </android.support.design.widget.AppBarLayout>
 
-        </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fLayout_main_content_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/fLayout_main_content_holder"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_marginBottom="0dp"
+            android:background="@color/color_white">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rV_wonderful_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <FrameLayout
+                android:id="@+id/fLayout_empty_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="0dp"
                 android:background="@color/color_white">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rV_wonderful_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <FrameLayout
-                    android:id="@+id/fLayout_empty_view_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_white">
-
-                    <include
-                        android:id="@+id/fragment_wonderful_empty"
-                        layout="@layout/layout_wonderful_list_empty_view" />
-                </FrameLayout>
+                <include
+                    android:id="@+id/fragment_wonderful_empty"
+                    layout="@layout/layout_wonderful_list_empty_view" />
             </FrameLayout>
+        </FrameLayout>
 
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
-</layout>
+</android.support.design.widget.CoordinatorLayout>

@@ -13,7 +13,9 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -51,6 +53,8 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 
@@ -80,6 +84,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     FrameLayout mWonderfulEmptyViewContainer;
     @BindView(R.id.fragment_wonderful_empty)
     ViewGroup mWonderfulEmptyContainer;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    Unbinder unbinder;
 //    @BindView(R.msgId.fragment_wonderful_guide)
 //    ViewGroup mWonderfulGuideContainer;
 
@@ -215,6 +222,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 }
             }
         });
+        ViewUtils.setViewMarginStatusBar(toolbar);
     }
 
     private void initHeaderView() {
@@ -575,4 +583,18 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private Bundle mTmpReenterState;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }
