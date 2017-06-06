@@ -325,7 +325,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
                 startActivity(intent);
             });
-            gridView.setMin
             gridView.setAdapter(appAdater);
             mShareDlg.setContentView(content);
             mShareDlg.setCanceledOnTouchOutside(true);

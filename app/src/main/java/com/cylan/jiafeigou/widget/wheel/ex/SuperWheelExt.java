@@ -326,6 +326,8 @@ public class SuperWheelExt extends View {
         return iDataProvider == null ? 0 : iDataProvider.getFlattenMaxTime() + timeDelta;
     }
 
+    private long tmpCurrentTime = 0;
+
     /**
      * fling,松手后调用
      *
@@ -337,7 +339,19 @@ public class SuperWheelExt extends View {
             //通过
             boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;//判断当前的位置是否是热区,即:mask区域.
             long timeCurrent = getCurrentFocusTime();
+            if (tmpCurrentTime == timeCurrent) {
+                if (idle && !iDataProvider.isHotRect(timeCurrent))//dragging finish,空白区域
+                {
+                    long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+                    setPositionByTime(timeTarget);
+                    Log.d("tmpCurrentTime", "tmpCurrentTime==");
+                }
+                return;
+            }
+            tmpCurrentTime = timeCurrent;
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+            Log.d("timeCurrent", "timeCurrent: " + timeCurrent);
+            Log.d("timeCurrent", "timeTarget: " + timeTarget);
             if (moveDirection != ITouchHandler.MoveDirection.NONE && idle) {
                 //开始吸附过程
                 if (wheelRollListener != null)
