@@ -300,6 +300,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             new AlertDialog.Builder(this)
                     .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
                     .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        bottomMenuContainer.setVisibility(View.INVISIBLE);
                         presenter.deletePanoramaItem(items, albumViewMode);
                     })
                     .setNegativeButton(getString(R.string.CANCEL), null)
