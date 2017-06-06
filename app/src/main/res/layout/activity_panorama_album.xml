@@ -47,6 +47,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/y11"
                 android:background="@drawable/album_delete_selector"
+                android:enabled="false"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />
         </RelativeLayout>

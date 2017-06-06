@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -164,10 +164,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             albumViewMode = resIdToMode(id);
             toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
             presenter.fetch(0, albumViewMode);
-            Log.d("llllll", "ddddd:" + id + "," + titles[modeToResId(albumViewMode, false)]);
         });
         albumModeSelectPop.setCheckIndex(modeToResId(albumViewMode, false));
         albumModeSelectPop.showOnAnchor(toolbarAlbumViewMode, RelativePopupWindow.VerticalPosition.ALIGN_TOP, RelativePopupWindow.HorizontalPosition.ALIGN_LEFT);
+        albumModeSelectPop.setMode(BasePanoramaApiHelper.getInstance().getDeviceIp() == null ? 0 : 2);
     }
 
     private int modeToResId(@ALBUM_VIEW_MODE int mode, boolean isPop) {
@@ -327,6 +327,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             swipeRefreshLayout.setRefreshing(false);
             swipeRefreshLayout.setEnabled(true);
         });
+        deleteSelected.setEnabled(panoramaAdapter.getItemCount() > 0);
     }
 
     @Override
@@ -344,6 +345,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     public void onUpdate(PanoramaAlbumContact.PanoramaItem needUpdate, int position) {
         swipeRefreshLayout.setRefreshing(false);
         panoramaAdapter.notifyItemChanged(position);
+        deleteSelected.setEnabled(panoramaAdapter.getItemCount() > 0);
     }
 
     @Override
@@ -355,7 +357,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     public void onViewModeChanged(int mode) {
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-        toolbarAlbumViewMode.setEnabled(mode != 0);
+//        toolbarAlbumViewMode.setEnabled(mode != 0);
     }
 
     @Override
