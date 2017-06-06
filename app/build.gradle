@@ -291,8 +291,6 @@ dependencies {
     compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
-    //不要使用 compile 'xxx-constraint-layout',打包机失败.
-    compile(name: 'constraint-layout-1.0.2', ext: 'aar')
     //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
     compile files('libs/mid-sdk-2.3.jar')
@@ -341,6 +339,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.romandanylyk:pageindicatorview:0.2.0'
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.9'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 //谷歌推送
