@@ -327,7 +327,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             swipeRefreshLayout.setRefreshing(false);
             swipeRefreshLayout.setEnabled(true);
         });
-        deleteSelected.setEnabled(panoramaAdapter.getItemCount() > 0);
+        tvAlbumDelete.setEnabled(panoramaAdapter.getItemCount() > 0);
     }
 
     @Override
@@ -345,7 +345,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     public void onUpdate(PanoramaAlbumContact.PanoramaItem needUpdate, int position) {
         swipeRefreshLayout.setRefreshing(false);
         panoramaAdapter.notifyItemChanged(position);
-        deleteSelected.setEnabled(panoramaAdapter.getItemCount() > 0);
+        tvAlbumDelete.setEnabled(panoramaAdapter.getItemCount() > 0);
     }
 
     @Override
