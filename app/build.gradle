@@ -192,6 +192,29 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "doby"
             ]
         }
+        _cell_c {
+            applicationId "com.cylan.jiafeigou.cell_c"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider",
+                                    "HW_APP_ID"          : "\\ 100005405",
+                                    "VID"                : "\\ 0060",
+                                    "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
+                                    "qqAppKey"           : "\\ 1104534926",
+                                    "mtaAppKey"          : "ATQ1JV694AKT",
+                                    "weChatAppKey"       : "wx382033a16e5cc4a5",
+                                    "sinaAppKey"         : "\\ 1821035549",
+                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
+                                    "ApplicationId"      : applicationId,
+                                    "XiaoMiAppId"        : "\\ 5721736791425",
+                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
+                                    "BUGLY_APPID"        : "2e94bf542f",
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cell_c"
+            ]
+        }
     }
 
 }

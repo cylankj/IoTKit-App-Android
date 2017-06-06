@@ -133,6 +133,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     FrameLayout rLayoutRegisterBox;
     @BindView(R.id.rLayout_login_top)
     CustomToolbar rLayoutLoginToolbar;
+    @BindView(R.id.fLayout_third)
+    FrameLayout fLayoutThird;
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
@@ -306,6 +308,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 初始化view
      */
     private void initView() {
+        fLayoutThird.setVisibility(getResources().getBoolean(R.bool.show_third_login) ? View.VISIBLE : View.GONE);
         lLayoutAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.GONE);
         ViewUtils.setChineseExclude(etLoginUsername, 65);
         ViewUtils.setChineseExclude(etLoginPwd, 12);
