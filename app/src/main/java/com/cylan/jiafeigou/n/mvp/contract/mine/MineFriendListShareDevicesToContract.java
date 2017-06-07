@@ -120,15 +120,6 @@ public interface MineFriendListShareDevicesToContract {
          */
         Subscription getDeviceInfoCallBack();
 
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
 
     }
 

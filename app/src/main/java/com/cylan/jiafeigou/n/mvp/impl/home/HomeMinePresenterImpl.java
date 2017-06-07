@@ -38,14 +38,11 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
  */
 public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
-
-    private CompositeSubscription subscription;
 
     private boolean isOpenLogin = false;
     private boolean hasUnRead;
@@ -58,21 +55,14 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void start() {
         super.start();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        subscription = new CompositeSubscription();
-        subscription.add(getAccountBack());
-        subscription.add(unReadMesgBack());
-        subscription.add(loginInMe());
+        addSubscription(getAccountBack());
+        addSubscription(unReadMesgBack());
+        addSubscription(loginInMe());
     }
 
     @Override
     public void stop() {
         super.stop();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
     }
 
     @Override

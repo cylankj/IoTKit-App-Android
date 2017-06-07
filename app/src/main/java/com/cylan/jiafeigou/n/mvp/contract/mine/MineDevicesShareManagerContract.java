@@ -60,7 +60,7 @@ public interface MineDevicesShareManagerContract {
         /**
          * 取消分享的结果
          */
-        void showUnShareResult(RxEvent.UnshareDeviceCallBack unshareDeviceCallBack);
+        void showUnShareResult(RxEvent.UnShareDeviceCallBack unshareDeviceCallBack);
 
         /**
          * 显示顶部标题头
@@ -101,22 +101,12 @@ public interface MineDevicesShareManagerContract {
          *
          * @param bean
          */
-        void cancleShare(String cid, RelAndFriendBean bean);
+        void cancelShare(String cid, RelAndFriendBean bean);
 
         /**
          * 取消分享的回调
          */
-        Subscription cancleShareCallBack();
-
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
+        Subscription cancelShareCallBack();
 
     }
 

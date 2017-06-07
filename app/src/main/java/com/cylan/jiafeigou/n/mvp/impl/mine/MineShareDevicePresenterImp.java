@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
@@ -222,37 +223,30 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      */
     @Override
     public Subscription getDeviceInfoCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListCallBack.class)
-                .flatMap(new Func1<RxEvent.GetShareListCallBack, Observable<ArrayList<DeviceBean>>>() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
+                .flatMap(new Func1<RxEvent.GetShareListRsp, Observable<ArrayList<DeviceBean>>>() {
                     @Override
-                    public Observable<ArrayList<DeviceBean>> call(RxEvent.GetShareListCallBack getShareListCallBack) {
-                        if (getShareListCallBack != null) {
-                            if (getShareListCallBack.i == 0 && getShareListCallBack.arrayList.size() != 0) {
-                                //每个设备已分享的亲友集合
-                                hasShareFriendList.clear();
-                                hasShareFriendList.addAll(getShareListCallBack.arrayList);
-                                //该设备以分享的亲友数赋值
-                                for (int i = 0; i < allDevice.size(); i++) {
-                                    if (allDevice.get(i).uuid.equals(getShareListCallBack.arrayList.get(i).cid)) {
-                                        allDevice.get(i).hasShareCount = getShareListCallBack.arrayList.get(i).friends.size();
-                                    }
+                    public Observable<ArrayList<DeviceBean>> call(RxEvent.GetShareListRsp getShareListCallBack) {
+                        ArrayList<JFGShareListInfo> list =
+                                BaseApplication.getAppComponent().getSourceManager().getShareList();
+                        if (ListUtils.getSize(list) > 0) {
+                            //每个设备已分享的亲友集合
+                            hasShareFriendList.clear();
+                            hasShareFriendList.addAll(list);
+                            //该设备以分享的亲友数赋值
+                            for (int i = 0; i < allDevice.size(); i++) {
+                                if (allDevice.get(i).uuid.equals(list.get(i).cid)) {
+                                    allDevice.get(i).hasShareCount = list.get(i).friends.size();
                                 }
-                                return Observable.just(allDevice);
-                            } else {
-                                return Observable.just(allDevice);
                             }
+                            return Observable.just(allDevice);
                         } else {
                             return Observable.just(allDevice);
                         }
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<DeviceBean>>() {
-                    @Override
-                    public void call(ArrayList<DeviceBean> deviceBeen) {
-                        handlerShareDeviceListData(deviceBeen);
-                    }
-                }, AppLogger::e);
+                .subscribe(this::handlerShareDeviceListData, AppLogger::e);
     }
 
     /**

@@ -24,6 +24,7 @@ import rx.schedulers.Schedulers;
 public class FetchFriendsTask implements Action1<Object> {
     @Override
     public void call(Object o) {
+        AppLogger.d("需要查询db");
         Observable.zip(getFriendListObservable(), getFriendReqListObservable(),
                 Pair::new)
                 .subscribeOn(Schedulers.io())
@@ -32,6 +33,7 @@ public class FetchFriendsTask implements Action1<Object> {
                     ArrayList<JFGFriendRequest> fReqList = pair.second.arrayList;
                     BaseApplication.getAppComponent().getSourceManager().setPairFriends(new Pair<>(fList, fReqList));
                     RxBus.getCacheInstance().post(new RxEvent.AllFriendsRsp());
+                    AppLogger.d("FetchFriendsTask rsp");
                     throw new RxEvent.HelperBreaker("yes, job done!");
                 }, AppLogger::e);
     }

@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.FetchSuggestionTask;
+import com.cylan.jiafeigou.n.task.SystemMsgTask;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
@@ -912,12 +913,13 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.newThread())
                 //可能是本地的
-                .filter(ret -> BaseApplication.getAppComponent().getSourceManager().isOnline())
+                .filter(ret -> isOnline())
                 .subscribe(ret -> {
                     try {
-                        Observable.just(new FetchSuggestionTask(), new FetchFriendsTask())
+                        Observable.just(new FetchSuggestionTask(), new FetchFriendsTask(), new SystemMsgTask())
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(objectAction1 -> {
+                                    objectAction1.call("");
                                 }, AppLogger::e);
                     } catch (Exception e) {
 

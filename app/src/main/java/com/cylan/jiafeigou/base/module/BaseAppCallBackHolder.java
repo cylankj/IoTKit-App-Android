@@ -245,13 +245,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnUnShareDeviceRsp :" + i + "," + s + "," + s1);
-        RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i, s, s1));
+        RxBus.getCacheInstance().post(new RxEvent.UnShareDeviceCallBack(i, s, s1));
     }
 
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :" + i);
-        RxBus.getCacheInstance().post(new RxEvent.GetShareListCallBack(i, arrayList));
         BaseApplication.getAppComponent().getSourceManager().cacheShareList(arrayList);
     }
 

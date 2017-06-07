@@ -15,7 +15,6 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
-import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.db.module.Account;
@@ -285,32 +284,6 @@ public class RxEvent {
 
     }
 
-    /**
-     * desc：获取到分享设备的信息
-     */
-    public static final class GetShareListCallBack {
-        public int i;
-
-        public ArrayList<JFGShareListInfo> arrayList;
-
-        public GetShareListCallBack(int i, ArrayList<JFGShareListInfo> arrayList) {
-            this.i = i;
-            this.arrayList = arrayList;
-        }
-    }
-
-
-    /**
-     * 设备列表返回,粗糙数据,任然需要通过查询
-     */
-    public static final class DeviceRawList {
-        public JFGDevice[] devices;
-
-        public DeviceRawList(JFGDevice[] list) {
-            this.devices = list;
-
-        }
-    }
 
     public static final class LocalUdpMsg {
         //消息的时间,可以用来判断有效性.
@@ -429,12 +402,12 @@ public class RxEvent {
     /**
      * 取消分享的回调
      */
-    public static final class UnshareDeviceCallBack {
+    public static final class UnShareDeviceCallBack {
         public int i;
         public String cid;
         public String account;
 
-        public UnshareDeviceCallBack(int i, String cid, String account) {
+        public UnShareDeviceCallBack(int i, String cid, String account) {
             this.i = i;
             this.cid = cid;
             this.account = account;
