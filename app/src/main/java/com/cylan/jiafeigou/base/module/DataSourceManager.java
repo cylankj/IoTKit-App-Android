@@ -10,6 +10,8 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
@@ -35,6 +37,8 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.task.FetchFriendsTask;
+import com.cylan.jiafeigou.n.task.FetchSuggestionTask;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
@@ -88,6 +92,7 @@ public class DataSourceManager implements JFGSourceManager {
     private Account account;//账号相关的数据全部保存到这里面
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
+    private Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pairFriends;
     @Deprecated
     private boolean isOnline = true;
     private JFGAccount jfgAccount;
@@ -155,6 +160,16 @@ public class DataSourceManager implements JFGSourceManager {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+    }
+
+    @Override
+    public Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> getPairFriends() {
+        return pairFriends;
+    }
+
+    @Override
+    public void setPairFriends(Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair) {
+        this.pairFriends = pair;
     }
 
     private void queryForwardInformation() {
@@ -884,6 +899,30 @@ public class DataSourceManager implements JFGSourceManager {
         makeCacheSyncDataSub();
         makeCacheAccountSub();
         makeCacheDeviceSub();
+        makeAccountSub();
+    }
+
+    /**
+     * 账号刷新了.需要更新账号相关的信息
+     *
+     * @return
+     */
+    private Subscription makeAccountSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
+                .onBackpressureBuffer()
+                .subscribeOn(Schedulers.newThread())
+                //可能是本地的
+                .filter(ret -> BaseApplication.getAppComponent().getSourceManager().isOnline())
+                .subscribe(ret -> {
+                    try {
+                        Observable.just(new FetchSuggestionTask(), new FetchFriendsTask())
+                                .subscribeOn(Schedulers.newThread())
+                                .subscribe(objectAction1 -> {
+                                }, AppLogger::e);
+                    } catch (Exception e) {
+
+                    }
+                }, AppLogger::e);
     }
 
     @Override

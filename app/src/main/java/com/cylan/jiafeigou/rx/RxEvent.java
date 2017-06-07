@@ -1409,4 +1409,10 @@ public class RxEvent {
                     '}';
         }
     }
+
+    /**
+     * 什么氢气列表,朋友列表,都包含
+     */
+    public static class AllFriendsRsp {
+    }
 }
