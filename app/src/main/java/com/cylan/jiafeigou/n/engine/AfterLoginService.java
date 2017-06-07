@@ -7,15 +7,12 @@ import android.os.Looper;
 import android.os.Process;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.misc.bind.BindTask;
 import com.cylan.jiafeigou.misc.ver.ClientVersionChecker;
 import com.cylan.jiafeigou.misc.ver.IVersion;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.google.gson.Gson;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -85,24 +82,12 @@ public class AfterLoginService extends IntentService {
         if (intent != null) {
             final String action = intent.getStringExtra(TAG);
             AppLogger.i("AfterLoginService: " + action + ",looper: " + (Looper.myLooper() == Looper.getMainLooper()));
-            if (TextUtils.equals(action, ACTION_SAVE_ACCOUNT)) {
-            } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
+            if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
                 BaseApplication.getAppComponent().getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
                 Observable.just("go and do something")
                         .subscribeOn(Schedulers.newThread())
-                        .subscribe(s -> {
-                            try {
-                                String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-                                UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                                if (portrait != null) {
-                                    BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                                    //设备上线后,需要设置时区.
-                                }
-                            } catch (Exception e) {
-                                AppLogger.d("err: " + e.getLocalizedMessage());
-                            }
-                        }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+                        .subscribe(new BindTask(), AppLogger::e);
             } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 AppLogger.d("尝试检查版本");

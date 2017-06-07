@@ -220,7 +220,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage:" + arrayList.size());
+        AppLogger.d("OnGetFriendRequestListRsp:" + arrayList.size());
         RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList(i, arrayList));
     }
 

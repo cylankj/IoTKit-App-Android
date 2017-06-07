@@ -24,7 +24,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
+import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -42,7 +42,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/21
  * 描述：
  */
-public class MineFriendAddReqDetailFragment extends Fragment implements MineFriendAddReqDetailContract.View {
+public class AddFriendReqDetailFragment extends Fragment implements MineFriendAddReqDetailContract.View {
 
     @BindView(R.id.iv_detail_user_head)
     ImageView ivDetailUserHead;
@@ -64,15 +64,15 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     private boolean isFrom;
 
     public interface OnAcceptAddListener {
-        void onAccept(MineAddReqBean backbean);
+        void onAccept(MineAddReqBean backBean);
     }
 
     public void setOnAcceptAddListener(OnAcceptAddListener addListener) {
         this.addListener = addListener;
     }
 
-    public static MineFriendAddReqDetailFragment newInstance(Bundle bundle) {
-        MineFriendAddReqDetailFragment fragment = new MineFriendAddReqDetailFragment();
+    public static AddFriendReqDetailFragment newInstance(Bundle bundle) {
+        AddFriendReqDetailFragment fragment = new AddFriendReqDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -94,7 +94,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     }
 
     private void initPresenter() {
-        presenter = new MineFriendAddReqDetailPresenterImp(this);
+        presenter = new AddFriendsReqDetailPresenterImp(this);
     }
 
     /**
