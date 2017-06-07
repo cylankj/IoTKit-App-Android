@@ -55,10 +55,6 @@ public class RxEvent {
     public static class GetShareListRsp {
     }
 
-    public static class CloudLiveDelete {
-
-    }
-
     /**
      * The type Result event.
      */
