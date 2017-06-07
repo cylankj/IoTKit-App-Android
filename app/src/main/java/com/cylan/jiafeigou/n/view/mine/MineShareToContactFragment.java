@@ -252,7 +252,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void startSendMesgActivity(String account) {
         Uri smsToUri = Uri.parse("smsto:" + account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips, JConstant.EFAMILY_URL_PREFIX, ContextUtils.getContext().getPackageName()));
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name)));
         startActivity(mIntent);
     }
 
@@ -305,7 +305,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         intent.putExtra(Intent.EXTRA_EMAIL,
                 new String[]{contractPhone});
         intent.putExtra(Intent.EXTRA_CC, contractPhone); // 抄送人
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Tap1_share_tips, JConstant.EFAMILY_URL_PREFIX, ContextUtils.getContext().getPackageName())); // 正文
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name))); // 正文
         startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));
     }
 
