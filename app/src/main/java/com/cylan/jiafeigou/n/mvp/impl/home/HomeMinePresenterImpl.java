@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
+import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -158,6 +159,13 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     }
                 }, AppLogger::e);
 
+    }
+
+    @Override
+    public void makeFriendsListReq() {
+        Observable.just(new FetchFriendsTask())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> ret.call(ret), AppLogger::e);
     }
 
     public Subscription unReadMesgBack() {

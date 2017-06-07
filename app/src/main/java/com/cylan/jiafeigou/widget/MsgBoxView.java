@@ -6,16 +6,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 
 /**
  * Created by cylan-hunt on 16-7-1.
  */
-public class MsgBoxView extends ImageView {
+public class MsgBoxView extends AppCompatImageView {
 
     private int textColor;
     private int circleColor;

@@ -122,5 +122,4 @@
             app:textColor="@color/color_333333"
             app:textSize="@dimen/sp16" />
     </LinearLayout>
-
 </RelativeLayout>
