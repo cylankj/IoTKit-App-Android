@@ -114,12 +114,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return subscription;
     }
 
-    @Override
-    public void startViewer() {
-        super.startViewer();
-        checkAndInitRecord();
-    }
-
     private Subscription getReportMsgSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
@@ -166,6 +160,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshControllerView(false);
                     } else {
                         mView.onRefreshControllerView(true);
+                        checkAndInitRecord();
                     }
                 }, AppLogger::e);
     }

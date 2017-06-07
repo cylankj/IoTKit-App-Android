@@ -80,6 +80,9 @@ public interface PanoramaCameraContact {
 
         void onRefreshControllerView(boolean enable);
 
+        /**
+         * @param connectionType -1:根据设备网络和真实网络情况决定是否显示 banner
+         */
         void onRefreshConnectionMode(int connectionType);
     }
 

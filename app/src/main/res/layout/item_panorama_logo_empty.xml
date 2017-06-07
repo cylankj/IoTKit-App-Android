@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:background="@drawable/logo_no_watermark"
         android:gravity="center"
-        android:text="无"
+        android:text="@string/Logo_Selection"
         android:textColor="#CCFFFFFF"
         android:textSize="@dimen/sp17" />
 

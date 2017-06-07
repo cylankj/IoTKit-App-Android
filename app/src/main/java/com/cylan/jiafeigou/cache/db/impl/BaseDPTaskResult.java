@@ -13,6 +13,7 @@ public class BaseDPTaskResult implements IDPTaskResult {
 
     private int resultCode = -1;
     private Object response;
+    private String message;
 
     @Override
     public <T extends IDPTaskResult> T setResultCode(int code) {
@@ -34,5 +35,16 @@ public class BaseDPTaskResult implements IDPTaskResult {
     @Override
     public <R> R getResultResponse() {
         return (R) this.response;
+    }
+
+    @Override
+    public <T extends IDPTaskResult> T setMessage(String response) {
+        this.message = response;
+        return (T) this;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
     }
 }

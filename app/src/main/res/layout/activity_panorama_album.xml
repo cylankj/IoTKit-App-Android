@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
@@ -35,7 +36,7 @@
                 android:drawableRight="@drawable/album_icon_open"
                 android:gravity="center_vertical"
                 android:padding="0dp"
-                android:text="相册+手机相册"
+                android:text="@string/Tap1_File_CameraNPhone"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />
 

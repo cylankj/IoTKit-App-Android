@@ -19,6 +19,9 @@ import rx.schedulers.Schedulers;
 public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
+        if (!sourceManager.isOnline()) {
+            return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
+        }
         return dpHelper.unBindDeviceNotConfirm(entity.getUuid()).map(device -> new BaseDPTaskResult().setResultCode(0).setResultResponse(device));
     }
 

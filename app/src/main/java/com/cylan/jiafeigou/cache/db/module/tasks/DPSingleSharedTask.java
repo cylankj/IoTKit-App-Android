@@ -40,6 +40,9 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
+        if (!sourceManager.isOnline()) {
+            return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
+        }
         AppLogger.d("正在执行离线收藏");
         return dpHelper.saveOrUpdate(entity.getUuid(), entity.getVersion(), entity.getMsgId(), entity.getBytes(), entity.action(), DBState.NOT_CONFIRM, option)
                 .flatMap(entity -> {

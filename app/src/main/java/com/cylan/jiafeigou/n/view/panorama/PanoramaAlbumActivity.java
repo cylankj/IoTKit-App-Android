@@ -18,10 +18,12 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
@@ -63,7 +65,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @ALBUM_VIEW_MODE
     private int albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
     //    private RadioGroup menuContainer;
-    private String[] titles = {"相机+手机相册", "全景相册", "手机相册"};
+    private int[] titles = {R.string.Tap1_File_CameraNPhone, R.string.Tap1_File_Camera, R.string.Tap1_File_Phone};
     private PanoramaAdapter panoramaAdapter;
     private LinearLayoutManager layoutManager;
     private boolean loading;
@@ -123,6 +125,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+        swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
     }
 
     private void onLoadMore() {
@@ -319,8 +322,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (isRefresh) {
             panoramaAdapter.clear();
         }
-        if (resultList != null && resultList.size() > 0)
+        if (resultList != null && resultList.size() > 0) {
             panoramaAdapter.addAll(resultList);
+            if (isRefresh) {
+                PreferencesUtils.putString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid, resultList.get(0).fileName);
+            }
+        }
         //setEmptyView
         emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         swipeRefreshLayout.setEnabled(false);

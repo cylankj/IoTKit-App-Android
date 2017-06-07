@@ -60,7 +60,7 @@ public interface IHttpApi {
     Observable<PanoramaEvent.MsgBatteryRsp> getBattery();
 
     @GET(CGI + "?Msg=setLog")
-    Observable<PanoramaEvent.MsgRsp> setLogo(@Query("req") int logType);
+    Observable<PanoramaEvent.MsgRsp> setLogo(@Query("logType") int logType);
 
     @GET(CGI + "?Msg=setResolution")
     Observable<PanoramaEvent.MsgRsp> setResolution(@Query("videoStandard") int videoStandard);

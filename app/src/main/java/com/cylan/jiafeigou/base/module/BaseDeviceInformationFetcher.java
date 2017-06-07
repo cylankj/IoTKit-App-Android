@@ -37,6 +37,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     public static BaseDeviceInformationFetcher INFORMATION_FETCHER;
     private volatile DeviceInformation deviceInformation;
+    private volatile boolean isFetching = false;
 
     public static BaseDeviceInformationFetcher getInstance() {
         return INFORMATION_FETCHER;
@@ -85,8 +86,9 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             //网络状态发生了变化,这里我们判断当前连接的是否是设备AP,如果是设备AP 则主动请求设备信息,这样就做到了全局处理逻辑.
             AppLogger.d("网络状态发生了变化");
-            RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
-
+            if (!isFetching) {
+                RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
+            }
         }
         //改变背景或者 处理网络的全局变量
         Schedulers.immediate().createWorker().schedule(() -> {
@@ -118,10 +120,11 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     private void monitorDeviceInformationSuggestion() {
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
                 .observeOn(Schedulers.io())
-                .filter(event -> !event.success && deviceInformation != null && !TextUtils.isEmpty(deviceInformation.uuid))
+                .filter(event -> !isFetching && !event.success && deviceInformation != null && !TextUtils.isEmpty(deviceInformation.uuid))
                 .map(event -> {
                     deviceInformation.ip = null;
                     deviceInformation.port = 0;
+                    isFetching = true;
                     ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                     if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
@@ -136,6 +139,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                         }
                         return true;
                     } else {
+                        isFetching = false;
                         RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                         return false;
                     }
@@ -146,8 +150,10 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                         .timeout(5, TimeUnit.SECONDS, Observable.just(null)))
                 .retry()
                 .subscribe(ret -> {
+                    isFetching = false;
                     RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.SUCCESS);
                 }, e -> {
+                    isFetching = false;
                     AppLogger.e(e.toString() + ":" + e.getMessage());
                     Schedulers.io().createWorker().schedule(() -> {
                         if (NetUtils.isPublicNetwork()) {
