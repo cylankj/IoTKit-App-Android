@@ -225,7 +225,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         intent.putExtra(Intent.EXTRA_EMAIL,
                 new String[]{friendAccount});
         intent.putExtra(Intent.EXTRA_CC, friendAccount); // 抄送人
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Tap1_share_tips, JConstant.EFAMILY_URL_PREFIX, ContextUtils.getContext().getPackageName())); // 正文
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name))); // 正文
         startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));
     }
 
@@ -235,7 +235,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     private void sendSms() {
         Uri smsToUri = Uri.parse("smsto:" + friendAccount);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips, JConstant.EFAMILY_URL_PREFIX, ContextUtils.getContext().getPackageName()));
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name)));
         startActivity(mIntent);
     }
 
