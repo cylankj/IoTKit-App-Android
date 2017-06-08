@@ -550,8 +550,8 @@
   <string name="Sharing_Management">Paylaşım yönetimi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen açık hava moduna geçin</string>
-  <string name="Switch_Mode_Pop">Lütfen geçerli ağdaki çekim içeriğini açık hava moduna değiştirin</string>
+  <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen doğrudan moda geçin</string>
+  <string name="Switch_Mode_Pop">Lütfen geçerli şebeke çekim içeriğini doğrudan moda geçirin</string>
   <string name="TAKE_PHOTO">Fotoğraf çek</string>
   <string name="TERM_OF_USE">Şartlar ve gizlilik</string>
   <string name="THEME_DELETED">%s silindi</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">yeni firmware</string>
   <string name="Tap1_NoMessages">Mesaj yok</string>
   <string name="Tap1_Offline">Çevrimdışı, lütfen yeniden bağlanın>></string>
-  <string name="Tap1_OutdoorMode">Dış mekan modu</string>
-  <string name="Tap1_OutdoorMode_Opened">Açık modu açılmış</string>
+  <string name="Tap1_OutdoorMode">Doğrudan mod</string>
+  <string name="Tap1_OutdoorMode_Opened">Doğrudan mod açıldı</string>
   <string name="Tap1_Refreshed">Tazelenmiş</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">tamamen işgal</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">Ses</string>
   <string name="submiting">Gönderiliyor&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">Mikro SD kart yok</string>
   <string name="turn_on_gps">Android sistem ayarlarında \"GPS\" erişimi açın</string>
   <string name="turn_on_storage">Normal kullanım için, %s Depolama erişmesine izin verin</string>

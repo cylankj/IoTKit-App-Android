@@ -175,7 +175,7 @@
   <string name="EFAMILY_NO_CONTENTS">Aucun enregistrement</string>
   <string name="EFAMILY_NO_DOOR">Pas d\'appareil</string>
   <string name="EFAMILY_PUSH_TO_LEAVE_MSG">Maintenir appuyé pour parler</string>
-  <string name="EFAMILY_QRCODE_BOTTOM_TEXT">Alignez le code QR dans le cadre à l\'arrière du périphérique pour numériser</string>
+  <string name="EFAMILY_QRCODE_BOTTOM_TEXT">Alignez le code QR dans l\'image à l\'appareil pour numériser</string>
   <string name="EFAMILY_READ_ALREADY">lecture</string>
   <string name="EFAMILY_RELEVANCE_ALARE">Dissocier %1$s&#8211; l\'appareil %2$s ne recevra pas de message d\'appel de la porte</string>
   <string name="EFAMILY_RELEVANCE_DOOR">Visiophone connecté</string>
@@ -550,8 +550,8 @@
   <string name="Sharing_Management">Partage de la gestion</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">Passez en mode extérieur pour voir le contenu de la prise de vue</string>
-  <string name="Switch_Mode_Pop">Passez le contenu actuel de la prise de vue réseau au mode extérieur</string>
+  <string name="Switch_Mode">Passez en mode direct pour afficher le contenu de la prise de vue</string>
+  <string name="Switch_Mode_Pop">Passez le contenu actuel de la prise de vue réseau au mode direct</string>
   <string name="TAKE_PHOTO">Prendre une photo</string>
   <string name="TERM_OF_USE">Conditions et confidentialité</string>
   <string name="THEME_DELETED">%s a été supprimé</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">Nouveau firmware</string>
   <string name="Tap1_NoMessages">Aucun message</string>
   <string name="Tap1_Offline">Hors ligne, s\'il vous plaît reconnecter>></string>
-  <string name="Tap1_OutdoorMode">Mode extérieur</string>
-  <string name="Tap1_OutdoorMode_Opened">Mode extérieur a été ouvert</string>
+  <string name="Tap1_OutdoorMode">Mode direct</string>
+  <string name="Tap1_OutdoorMode_Opened">Le mode direct a été ouvert</string>
   <string name="Tap1_Refreshed">Refreshed</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">Entièrement occupé</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">Son</string>
   <string name="submiting">Envoi&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">Carte Micro SD non détectée</string>
   <string name="turn_on_gps">Allumez dans les paramètres du système Android \"GPS\" accès</string>
   <string name="turn_on_storage">Pour une utilisation normale, s\'il vous plaît laissez %s pour accéder à votre stockage</string>

@@ -550,8 +550,8 @@
   <string name="Sharing_Management">共有管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">撮影モード屋外のビューに切り替えてください</string>
-  <string name="Switch_Mode_Pop">現在のネットワークは、撮影モード屋外のビューに切り替えてください</string>
+  <string name="Switch_Mode">撮影内容を見るにはダイレクトモードに切り替えてください</string>
+  <string name="Switch_Mode_Pop">現在のネットワークの撮影コンテンツをダイレクトモードに切り替えてください</string>
   <string name="TAKE_PHOTO">一枚写真を撮る</string>
   <string name="TERM_OF_USE">ユーザー使用契約書</string>
   <string name="THEME_DELETED">位置\"%s\"削除しました</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">新しいファームウェア</string>
   <string name="Tap1_NoMessages">メッセージはありません</string>
   <string name="Tap1_Offline">オフラインです。再接続してください>></string>
-  <string name="Tap1_OutdoorMode">屋外モード</string>
-  <string name="Tap1_OutdoorMode_Opened">屋外モードが開かれています</string>
+  <string name="Tap1_OutdoorMode">直接モード</string>
+  <string name="Tap1_OutdoorMode_Opened">直接モードが開かれています</string>
   <string name="Tap1_Refreshed">リフレッシュ</string>
   <string name="Tap1_RefreshedFailed">リフレッシュに失敗しました</string>
   <string name="Tap1_SDCardFullyTips">SDカードのメモリーもう足りないです。</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">音</string>
   <string name="submiting">送信中&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">Micro SDが存在しない</string>
   <string name="turn_on_gps">Androidのシステム設定での「位置」のアクセスをオンにします</string>
   <string name="turn_on_storage">通常の使用では、%sは、ストレージへのアクセスを許可してください</string>

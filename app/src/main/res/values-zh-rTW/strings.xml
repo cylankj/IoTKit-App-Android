@@ -175,7 +175,7 @@
   <string name="EFAMILY_NO_CONTENTS">快樂生活，快樂分享~</string>
   <string name="EFAMILY_NO_DOOR">暫無設備</string>
   <string name="EFAMILY_PUSH_TO_LEAVE_MSG">按住說話</string>
-  <string name="EFAMILY_QRCODE_BOTTOM_TEXT">請將取景框對准設備背面二維碼，\n即可自動掃描</string>
+  <string name="EFAMILY_QRCODE_BOTTOM_TEXT">請將取景框對准設備二維碼，\n即可自動掃描</string>
   <string name="EFAMILY_READ_ALREADY">已讀</string>
   <string name="EFAMILY_RELEVANCE_ALARE">若取消\“%1$s\”，\“%2$s\”將不會收到呼叫訊息</string>
   <string name="EFAMILY_RELEVANCE_DOOR">關聯門鈴</string>
@@ -550,8 +550,8 @@
   <string name="Sharing_Management">分享管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
-  <string name="Switch_Mode">拍攝內容請切換至戶外模式查看</string>
-  <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至戶外模式查看</string>
+  <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
+  <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至直連模式查看</string>
   <string name="TAKE_PHOTO">拍照</string>
   <string name="TERM_OF_USE">用戶使用協議</string>
   <string name="THEME_DELETED">位置\“%s\”已被刪除</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">新固件</string>
   <string name="Tap1_NoMessages">無消息</string>
   <string name="Tap1_Offline">設備離線，請重新配置連接>></string>
-  <string name="Tap1_OutdoorMode">戶外模式</string>
-  <string name="Tap1_OutdoorMode_Opened">戶外模式已開啟</string>
+  <string name="Tap1_OutdoorMode">直連模式</string>
+  <string name="Tap1_OutdoorMode_Opened">直連模式已開啟</string>
   <string name="Tap1_Refreshed">刷新成功</string>
   <string name="Tap1_RefreshedFailed">刷新失敗</string>
   <string name="Tap1_SDCardFullyTips">SD卡存儲空間已滿</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">錄音</string>
   <string name="submiting">正在發送&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">記憶體卡不存在</string>
   <string name="turn_on_gps">請在Android的系統設置中開啟“位置”訪問權限，可以更準確的查找設備</string>
   <string name="turn_on_storage">請在系統設置中開啟%s“存儲空間”訪問權限，以正常使用</string>

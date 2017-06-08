@@ -550,8 +550,8 @@
   <string name="Sharing_Management">Gerenciamento de compartilhamento</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">Mude para o modo exterior para ver o conteúdo de disparo</string>
-  <string name="Switch_Mode_Pop">Mude o conteúdo da fotografia da rede para o modo exterior</string>
+  <string name="Switch_Mode">Mude para o modo direto para ver o conteúdo de filmagem</string>
+  <string name="Switch_Mode_Pop">Mude o conteúdo atual da filmagem de rede para o modo direto</string>
   <string name="TAKE_PHOTO">Tirar foto</string>
   <string name="TERM_OF_USE">Termos e privacidade</string>
   <string name="THEME_DELETED">A localização %s já foi apagada</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">Novo firmware</string>
   <string name="Tap1_NoMessages">Nenhuma mensagem</string>
   <string name="Tap1_Offline">Offline, por favor volte a ligar>></string>
-  <string name="Tap1_OutdoorMode">Modo outdoor</string>
-  <string name="Tap1_OutdoorMode_Opened">Modo de casa foi aberto</string>
+  <string name="Tap1_OutdoorMode">Modo direto</string>
+  <string name="Tap1_OutdoorMode_Opened">O modo direto foi aberto</string>
   <string name="Tap1_Refreshed">Refreshed</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">Totalmente ocupado</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">Som</string>
   <string name="submiting">Enviando&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">Nenhum cartão microSD detectado</string>
   <string name="turn_on_gps">Por favor ative a permissão de "Localização" para o nas definições do sistema Android</string>
   <string name="turn_on_storage">Por favor ative a permissão de "Armazenamento" para o %s nas definições do sistema Android</string>
