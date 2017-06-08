@@ -23,6 +23,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
@@ -58,6 +59,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
@@ -264,7 +268,16 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair = BaseApplication.getAppComponent().getSourceManager().getPairFriends();
             if (pair != null && !ListUtils.isEmpty(pair.second)) {
                 AppLogger.d("好友请求");
+                int count = ListUtils.getSize(pair.second);
+                homeMineItemFriend.showNumber(count);
             }
+            //意见反馈
+            ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
+            homeMineItemHelp.showRedPoint(ListUtils.getSize(list) > 0);
+            //分享管理
+
+            //设置
+
         }
     }
 
@@ -318,8 +331,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 if (url.contains("default")) {
                     mFrameLayout.get().setBackground(mDrawable.get());
                 } else {
-                    Bitmap bitmap = Bitmap.createBitmap(resource);
-                    basePresenter.get().portraitBlur(bitmap);
+                    Observable.just("go")
+                            .subscribeOn(Schedulers.io())
+                            .map(s -> {
+                                return Bitmap.createBitmap(resource);
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .filter(ret -> basePresenter.get() != null)
+                            .subscribe(ret -> basePresenter.get().portraitBlur(ret), AppLogger::e);
                 }
             } else {
                 mFrameLayout.get().setBackground(mDrawable.get());

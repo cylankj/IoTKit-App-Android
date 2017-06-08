@@ -59,6 +59,7 @@ import org.msgpack.MessagePack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -97,6 +98,8 @@ public class DataSourceManager implements JFGSourceManager {
     @Deprecated
     private boolean isOnline = true;
     private JFGAccount jfgAccount;
+
+    private ArrayList<JFGFeedbackInfo> newFeedBackList = new ArrayList<>();
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
     private static DataSourceManager instance;
@@ -171,6 +174,22 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void setPairFriends(Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair) {
         this.pairFriends = pair;
+    }
+
+    @Override
+    public void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list) {
+        if (newFeedBackList == null) {
+            newFeedBackList = new ArrayList<>();
+        }
+        newFeedBackList.addAll(list);
+        newFeedBackList = new ArrayList<>(new HashSet<>(newFeedBackList));
+        RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp());
+        handleSystemNotification(newFeedBackList);
+    }
+
+    @Override
+    public ArrayList<JFGFeedbackInfo> getNewFeedbackList() {
+        return null;
     }
 
     private void queryForwardInformation() {

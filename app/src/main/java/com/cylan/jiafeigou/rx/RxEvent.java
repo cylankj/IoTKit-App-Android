@@ -11,7 +11,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
-import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
@@ -488,13 +487,7 @@ public class RxEvent {
      * 系统反馈回复
      */
     public static final class GetFeedBackRsp {
-        public int i;
-        public ArrayList<JFGFeedbackInfo> arrayList;
 
-        public GetFeedBackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
-            this.i = i;
-            this.arrayList = arrayList;
-        }
     }
 
 

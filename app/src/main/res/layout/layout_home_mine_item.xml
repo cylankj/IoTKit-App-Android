@@ -30,6 +30,7 @@
         android:src="@drawable/me_icon_friend" />
 
     <com.cylan.jiafeigou.widget.NumberBadge
+        android:id="@+id/number_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -38,7 +39,7 @@
         android:layout_toStartOf="@+id/iv_home_mine_item_friend"
         android:gravity="center"
         android:textColor="@color/color_white"
-        android:textSize="10sp"
+        android:textSize="@dimen/sp10"
         app:bg_color="@color/color_red"
         app:point_radius="@dimen/x4" />
 

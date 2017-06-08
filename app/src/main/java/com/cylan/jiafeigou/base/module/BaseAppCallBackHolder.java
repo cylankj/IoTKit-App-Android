@@ -280,16 +280,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
-        Object o = RxBus.getCacheInstance().getStickyEvent(RxEvent.GetFeedBackRsp.class);
-        ArrayList<JFGFeedbackInfo> array = new ArrayList<>();
-        if (o != null) {
-            //先加载之前的.
-            RxEvent.GetFeedBackRsp rsp = (RxEvent.GetFeedBackRsp) o;
-            if (ListUtils.getSize(rsp.arrayList) > 0) array.addAll(rsp.arrayList);
-        }
-        if (ListUtils.getSize(arrayList) > 0) array.addAll(arrayList);
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp(i, array));
-        BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
+        if (ListUtils.isEmpty(arrayList)) return;
+        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
     }
 
 

@@ -141,4 +141,8 @@ public interface JFGSourceManager {
     Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> getPairFriends();
 
     void setPairFriends(Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair);
+
+    void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list);
+
+    ArrayList<JFGFeedbackInfo> getNewFeedbackList();
 }

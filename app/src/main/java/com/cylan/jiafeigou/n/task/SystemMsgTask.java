@@ -5,6 +5,7 @@ import android.util.Log;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.List;
@@ -29,6 +30,6 @@ public class SystemMsgTask implements Action1<Object> {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(baseDPTaskResult -> {
                     Log.d("SystemMsgTask", "SystemMsgTask" + baseDPTaskResult);
-                });
+                }, AppLogger::e);
     }
 }

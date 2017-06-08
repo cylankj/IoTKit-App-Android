@@ -18,8 +18,8 @@ import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
+import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.FeedBackContractImpl;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
@@ -39,8 +39,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHelpSuggestionContract.Presenter>
-        implements HomeMineHelpSuggestionContract.View {
+public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackContract.Presenter>
+        implements FeedBackContract.View {
 
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
@@ -60,7 +60,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
     KPSwitchFSPanelLinearLayout panelRoot;
 
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
-    private HomeMineHelpSuggestionContract.Presenter presenter;
+    private FeedBackContract.Presenter presenter;
     private boolean resendFlag;
 
 
@@ -69,7 +69,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_mine_help_suggestion);
         ButterKnife.bind(this);
-        basePresenter = new HomeMineHelpSuggestionImpl(this);
+        basePresenter = new FeedBackContractImpl(this);
         initKeyBoard();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRvMineSuggestion.setLayoutManager(layoutManager);
@@ -318,7 +318,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<HomeMineHel
     }
 
     @Override
-    public void setPresenter(HomeMineHelpSuggestionContract.Presenter presenter) {
+    public void setPresenter(FeedBackContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
+import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -39,7 +39,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 创建者     谢坤
@@ -50,18 +49,17 @@ import rx.subscriptions.CompositeSubscription;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSuggestionContract.View>
-        implements HomeMineHelpSuggestionContract.Presenter {
+public class FeedBackContractImpl extends AbstractPresenter<FeedBackContract.View>
+        implements FeedBackContract.Presenter {
 
-    private CompositeSubscription compositeSubscription;
     private BaseDBHelper helper;
-    private JFGAccount userInfomation;
+    private JFGAccount userInformation;
     private boolean isOpenLogin;
     private boolean hasSendLog;
     private File outFile;
     private boolean isSending = false;
 
-    public HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
+    public FeedBackContractImpl(FeedBackContract.View view) {
         super(view);
         helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
         view.setPresenter(this);
@@ -70,18 +68,19 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(isOpenLogin());
-            compositeSubscription.add(getAccountInfo());
-            compositeSubscription.add(sendFeedBackReq());
-            compositeSubscription.add(sendLogBack());
-            compositeSubscription.add(getSystemAutoReplyCallBack());
-            compositeSubscription.add(getBadNetBack());
-        }
         getSystemAutoReply();
+    }
+
+    @Override
+    protected Subscription[] register() {
+        return new Subscription[]{
+                isOpenLogin(),
+                getAccountInfo(),
+                sendFeedBackReq(),
+                sendLogBack(),
+                getSystemAutoReplyCallBack(),
+                getBadNetBack()
+        };
     }
 
     private Subscription getBadNetBack() {
@@ -93,15 +92,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         getView().refrshRecycleView(-100);
                     }
                 }, AppLogger::e);
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-        unSubscribe(compositeSubscription);
-        //不能stop,因为重新获取该信息,服务器就不下发了.所以需要缓存在RxEvent.GetFeedBackRsp中.
-        //每次下发都addAll.看BaseAppCallBackHolder#OnGetFeedbackRsp
-//        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     /**
@@ -141,6 +131,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public void onClearAllTalk() {
         helper.getDaoSession().getMineHelpSuggestionBeanDao().deleteAll();
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
+        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(new ArrayList<>());
     }
 
     /**
@@ -152,7 +143,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userInfo -> {
                     if (userInfo != null) {
-                        userInfomation = userInfo.jfgAccount;
+                        userInformation = userInfo.jfgAccount;
                         helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
                         initData();
                     }
@@ -181,10 +172,10 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         if (isOpenLogin) {
             return PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
         }
-        if (userInfomation == null) {
+        if (userInformation == null) {
             return "";
         } else {
-            return userInfomation.getPhotoUrl();
+            return userInformation.getPhotoUrl();
         }
     }
 
@@ -263,15 +254,17 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetFeedBackRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getFeedBackRsp -> {
-                    if (getFeedBackRsp != null && getView() != null && ListUtils.getSize(getFeedBackRsp.arrayList) > 0) {
-                        int size = ListUtils.getSize(getFeedBackRsp.arrayList);
+                    if (getFeedBackRsp != null && getView() != null) {
+                        ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
+                        int size = ListUtils.getSize(list);
                         for (int i = 0; i < size; i++) {
-                            JFGFeedbackInfo info = getFeedBackRsp.arrayList.get(i);
+                            JFGFeedbackInfo info = list.get(i);
                             AppLogger.d("getSystemAuto:" + info.time);
                             AppLogger.d("getSystemAuto2:" + System.currentTimeMillis());
                             getView().addSystemAutoReply(info.time, info.msg);
                         }
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
+                        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(new ArrayList<>());
                     }
                 }, AppLogger::e);
     }
@@ -348,7 +341,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String fileName = (Long.parseLong(bean.getDate())) / 1000 + ".zip";
         String remoteUrl = null;
         try {
-            remoteUrl = "/log/" + Security.getVId() + "/" + userInfomation.getAccount() + "/" + fileName;
+            remoteUrl = "/log/" + Security.getVId() + "/" + userInformation.getAccount() + "/" + fileName;
             isSending = true;
             BaseApplication.getAppComponent().getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             AppLogger.d("upload log:" + remoteUrl);

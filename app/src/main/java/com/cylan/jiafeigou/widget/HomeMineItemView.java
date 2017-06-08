@@ -21,6 +21,7 @@ public class HomeMineItemView extends RelativeLayout {
 
     ImageView iv;
     TextView tv;
+    NumberBadge badge;
 
     public HomeMineItemView(Context context) {
         this(context, null);
@@ -35,6 +36,7 @@ public class HomeMineItemView extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.layout_home_mine_item, this);
         iv = (ImageView) findViewById(R.id.iv_home_mine_item_friend);
         tv = (TextView) findViewById(R.id.tv_home_mine_item_friend);
+        badge = (NumberBadge) findViewById(R.id.number_badge);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.HomeMineItemViewStyle, defStyleAttr, 0);
         Drawable leftDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_leftDrawable);
         Drawable rightDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_rightDrawable);
@@ -60,6 +62,15 @@ public class HomeMineItemView extends RelativeLayout {
     public void setText(String str) {
         tv.setText(str);
         invalidate();
+    }
+
+
+    public void showNumber(int number) {
+        badge.showNumber(number);
+    }
+
+    public void showRedPoint(boolean show) {
+        badge.showRedPoint(show);
     }
 
 }

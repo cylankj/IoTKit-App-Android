@@ -4,7 +4,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -25,7 +24,6 @@ public class FetchSuggestionTask implements Action1<Object> {
                     int req = BaseApplication.getAppComponent().getCmd().getFeedbackList();
                     return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetFeedBackRsp.class);
                 })
-                .filter(ret -> ListUtils.getSize(ret.arrayList) > 0)
                 .subscribeOn(Schedulers.io())
                 .subscribe(getFeedBackRsp -> {
                     AppLogger.d("FetchSuggestionTask rsp");

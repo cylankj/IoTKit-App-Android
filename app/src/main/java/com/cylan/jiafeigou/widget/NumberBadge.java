@@ -66,19 +66,26 @@ public class NumberBadge extends AppCompatTextView {
         setMeasuredDimension(width, width);//等比
     }
 
-    public void setNumber(int number) {
+    public void showNumber(int number) {
+        if (number <= 0) {
+            drawFlag = 0;
+            setText("");
+            return;
+        }
         drawFlag = 2;
         if (number > 99) setText("99+");
         else setText(number + "");
     }
 
-    public void showRedPoint() {
-        drawFlag = 1;
-        setText("");
-        invalidate();
+    public void showRedPoint(boolean show) {
+        if (show) {
+            drawFlag = 1;
+            setText("");
+            invalidate();
+        } else dismiss();
     }
 
-    public void dismiss() {
+    private void dismiss() {
         drawFlag = 0;
         setText("");
     }
