@@ -215,7 +215,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             tvAlbumDelete.setBackground(new ColorDrawable(0));
             toggleEditMode(true);
             bottomMenuContainer.setVisibility(View.VISIBLE);
-            deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size()>0);
+            deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size() > 0);
         } else {
             //cancel
             tvAlbumDelete.setText("");
@@ -376,7 +376,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         }
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-        if (albumModeSelectPop != null) {
+        if (albumModeSelectPop != null && report) {
             albumModeSelectPop.setMode(mode);
         }
 
