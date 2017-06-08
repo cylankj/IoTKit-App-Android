@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <resources>
-    <string name="app_name">Doby</string>
-    <string name="Slogan">美好生活 智能家居</string>
+  <string name="Slogan">美好生活 智能家居</string>
+  <string name="Tap1_Shared_Description">我用720°全景摄像机拍摄了一段内容，快来看看吧</string>
+  <string name="app_name">Doby</string>
 </resources>
