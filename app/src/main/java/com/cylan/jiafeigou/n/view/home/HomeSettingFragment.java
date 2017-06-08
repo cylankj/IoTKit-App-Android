@@ -1,10 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -17,27 +13,30 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.ResolveInfoEx;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.SafeSwitchButton;
-import com.cylan.jiafeigou.widget.ShareGridView;
+import com.cylan.jiafeigou.widget.SettingItemView0;
+import com.cylan.jiafeigou.widget.SettingItemView1;
+import com.cylan.jiafeigou.widget.dialog.ShareToListDialog;
+import com.tencent.mm.opensdk.modelbiz.JumpToBizProfile;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,41 +45,35 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeSettingFragment extends Fragment implements HomeSettingContract.View, CompoundButton.OnCheckedChangeListener {
-
-    @BindView(R.id.rl_home_setting_about)
-    RelativeLayout rlHomeSettingAbout;
-    @BindView(R.id.rl_home_setting_clear)
-    RelativeLayout rlHomeSettingClear;
-    @BindView(R.id.progressbar_load_cache_size)
-    ProgressBar progressbarLoadCacheSize;
-    @BindView(R.id.tv_cache_size)
-    TextView tvCacheSize;
-    @BindView(R.id.btn_item_switch_accessMes)
-    SafeSwitchButton btnItemSwitchAccessMes;
-    @BindView(R.id.btn_item_switch_voide)
-    SafeSwitchButton btnItemSwitchVoide;
-    @BindView(R.id.btn_item_switch_shake)
-    SafeSwitchButton btnItemSwitchShake;
-    @BindView(R.id.rl_sound_container)
-    RelativeLayout rlSoundContainer;
-    @BindView(R.id.rl_vibrate_container)
-    RelativeLayout rlVibrateContainer;
-    @BindView(R.id.rl_home_setting_recommend)
-    RelativeLayout rlHomeSettingRecommend;
+public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Presenter> implements HomeSettingContract.View {
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.sv_home_setting_accessMes)
+    SettingItemView1 svHomeSettingAccessMes;
+    @BindView(R.id.sv_sound_container)
+    SettingItemView1 svSoundContainer;
+    @BindView(R.id.sv_vibrate_container)
+    SettingItemView1 svVibrateContainer;
+    @BindView(R.id.sv_home_setting_wechat)
+    SettingItemView1 svHomeSettingWechat;
+    @BindView(R.id.sv_home_setting_clear)
+    SettingItemView0 svHomeSettingClear;
+    @BindView(R.id.sv_home_setting_recommend)
+    SettingItemView1 svHomeSettingRecommend;
+    @BindView(R.id.sv_home_setting_about)
+    SettingItemView1 svHomeSettingAbout;
 
-    private HomeSettingContract.Presenter presenter;
+    private List<ResolveInfoEx> finalList;
     private AboutFragment aboutFragment;
-    private Dialog mShareDlg;
-    private AppAdapter appAdater;
 
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
@@ -98,24 +91,24 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         View view = inflater.inflate(R.layout.fragment_home_mine_setting, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        presenter.calculateCacheSize();
+        basePresenter.calculateCacheSize();
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rlHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
+        svHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
         customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
     }
 
     private void initPresenter() {
-        presenter = new HomeSettingPresenterImp(this);
+        basePresenter = new HomeSettingPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(HomeSettingContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(HomeSettingContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
     @Override
@@ -123,41 +116,64 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         return null;
     }
 
-    @OnClick({R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
+    @OnClick({R.id.sv_home_setting_about,
+            R.id.sv_home_setting_clear,
+            R.id.sv_home_setting_recommend})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rl_home_setting_about:
+            case R.id.sv_home_setting_about:
                 ViewUtils.deBounceClick(view);
-                AppLogger.e("rl_home_setting_about");
+                AppLogger.e("sv_home_setting_about");
                 ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                         aboutFragment, android.R.id.content);
                 break;
-
-            case R.id.rl_home_setting_clear:
-                if ("0.0M".equals(tvCacheSize.getText())) return;
-                presenter.clearCache();
+            case R.id.sv_home_setting_clear:
+                if ("0.0M".equals(svHomeSettingClear.getSubTitle())) return;
+                basePresenter.clearCache();
                 break;
-
-            case R.id.rl_home_setting_recommend:
+            case R.id.sv_home_setting_recommend:
                 //推荐给亲友
-                share();
+                Observable.just("loadList")
+                        .subscribeOn(Schedulers.newThread())
+                        .map(s -> {
+                            if (!ListUtils.isEmpty(finalList)) return finalList;
+                            final Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("text/plain");
+                            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
+                            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
+                            List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
+                            finalList = new LinkedList<>();
+                            for (ResolveInfo info : list) {
+                                final String name = info.activityInfo.packageName;
+                                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
+                                    if (addFirst(name))
+                                        finalList.add(0, new ResolveInfoEx().setInfo(info));
+                                    else finalList.add(new ResolveInfoEx().setInfo(info));
+                                }
+                            }
+                            return finalList;
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(ret -> {
+                            ShareToListDialog dialog = new ShareToListDialog();
+                            dialog.updateDataList(ret);
+                            dialog.show(getActivity().getSupportFragmentManager(), "share");
+                        }, AppLogger::e);
                 break;
         }
     }
 
     @Override
     public void showLoadCacheSizeProgress() {
-        progressbarLoadCacheSize.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadCacheSizeProgress() {
-        progressbarLoadCacheSize.setVisibility(View.GONE);
     }
 
     @Override
     public void setCacheSize(String size) {
-        tvCacheSize.setText(size);
+        svHomeSettingClear.setTvSubTitle(size);
     }
 
     @Override
@@ -174,7 +190,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void clearFinish() {
         if (isDetached()) return;
-        tvCacheSize.setText("0.0M");
         ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }
 
@@ -185,46 +200,77 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public boolean switchAcceptMesg() {
-        return presenter.getNegation();
+        return basePresenter.getNegation();
     }
 
     @Override
     public void initSwitchState(final RxEvent.AccountArrived accountArrived) {
-        btnItemSwitchAccessMes.setChecked(accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled(), false);
-        btnItemSwitchVoide.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
-        btnItemSwitchShake.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
-        if (!btnItemSwitchAccessMes.isChecked()) {
-            rlSoundContainer.setVisibility(View.GONE);
-            rlVibrateContainer.setVisibility(View.GONE);
+        boolean enable = accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+        //过滤
+//        if (svHomeSettingAccessMes.isChecked() == enable) return;
+        svHomeSettingAccessMes.setChecked(enable, false);
+        if (!accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+            svSoundContainer.setVisibility(View.GONE);
+            svVibrateContainer.setVisibility(View.GONE);
+            return;
         }
+        svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
+        svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
-        if (mShareDlg != null) {
-            mShareDlg.dismiss();
-            mShareDlg = null;
-        }
-        if (appAdater != null) {
-            appAdater = null;
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
         initSwitchBtnListener();
+//        basePresenter.refreshWechat();
     }
 
     private void initSwitchBtnListener() {
-        btnItemSwitchAccessMes.setOnCheckedChangeListener(this);
-        btnItemSwitchVoide.setOnCheckedChangeListener(this);
-        btnItemSwitchShake.setOnCheckedChangeListener(this);
+        svHomeSettingAccessMes.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            boolean notificationsEnabled = NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+            if (!notificationsEnabled && isChecked) {
+                svHomeSettingAccessMes.setChecked(false, false);
+                AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+                builder.setMessage(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG, getString(R.string.SYSTEM)))
+                        .setPositiveButton(R.string.WELL_OK, (dialog, which) -> openSetting())
+                        .setTitle(R.string.PUSH_MSG);
+                AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), getActivity(), builder);
+            } else {
+                basePresenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                if (!isChecked) {
+                    svSoundContainer.setVisibility(View.GONE);
+                    svVibrateContainer.setVisibility(View.GONE);
+                } else {
+                    svSoundContainer.setVisibility(View.VISIBLE);
+                    svVibrateContainer.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        svSoundContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            basePresenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
+        });
+        svVibrateContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            basePresenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
+        });
+        svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            //跳转微信公众号
+            String appId = "jfg_2014";//开发者平台ID
+            IWXAPI api = WXAPIFactory.createWXAPI(getActivity(), appId, false);
+            if (api.isWXAppInstalled()) {
+                JumpToBizProfile.Req req = new JumpToBizProfile.Req();
+                req.toUserName = "gh_b0394a4ee894"; // 公众号原始ID
+                req.extMsg = "";
+                req.profileType = JumpToBizProfile.JUMP_TO_NORMAL_BIZ_PROFILE; // 普通公众号
+                api.sendReq(req);
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -242,148 +288,31 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         startActivity(localIntent);
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.btn_item_switch_accessMes:
-                boolean notificationsEnabled = NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
-                if (!notificationsEnabled && isChecked) {
-                    btnItemSwitchAccessMes.setChecked(false);
-                    AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
-                    builder.setMessage(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG, getString(R.string.SYSTEM)))
-                            .setPositiveButton(R.string.WELL_OK, (dialog, which) -> openSetting())
-                            .setTitle(R.string.PUSH_MSG);
-                    AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), getActivity(), builder);
-                } else {
-                    presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
-                    if (!isChecked) {
-                        rlSoundContainer.setVisibility(View.GONE);
-                        rlVibrateContainer.setVisibility(View.GONE);
-                    } else {
-                        rlSoundContainer.setVisibility(View.VISIBLE);
-                        rlVibrateContainer.setVisibility(View.VISIBLE);
-                    }
-                }
-                break;
 
-            case R.id.btn_item_switch_voide:
-                presenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
-                break;
-
-            case R.id.btn_item_switch_shake:
-                presenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
-                break;
-        }
-    }
-
-    private static final String tencent = "tencent";
-    private static final String facebook = "facebook";
-    private static final String twitter = "twitter";
-    private static final String sina = "sina";
+    private static final String QQ = "com.qq.mobileqq";
+    private static final String WECHAT = "com.qq.mm";
+    private static final String FACEBOOK = "com.facebook.katana";
+    private static final String FACEBOOK1 = "com.facebook.Mentions";
+    private static final String TWITTER = "com.twitter.android";
+    private static final String SINA = "com.sina.weibo";
+    private static final String SINA1 = "com.weico.international";
 
     private boolean addFirst(final String name) {
         if (TextUtils.isEmpty(name)) {
             return false;
         }
-        return name.contains(tencent)
-                || name.contains(facebook)
-                || name.contains(twitter)
-                || name.contains(sina);
-    }
-
-    //*************
-    public void share() {
-        if (mShareDlg == null) {
-            mShareDlg = new Dialog(getActivity(), R.style.func_dialog);
-            View content = View.inflate(getContext(), R.layout.dialog_app_share, null);
-            TextView cancel = (TextView) content.findViewById(R.id.btn_cancle);
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mShareDlg.dismiss();
-                }
-            });
-            ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
-            final Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
-            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
-            List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
-            if (appAdater == null)
-                appAdater = new AppAdapter(getContext());
-            LinkedList<ResolveInfoEx> finalList = new LinkedList<>();
-            for (ResolveInfo info : list) {
-                final String name = info.activityInfo.packageName;
-                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
-                    if (addFirst(name)) finalList.add(0, new ResolveInfoEx().setInfo(info));
-                    else finalList.add(new ResolveInfoEx().setInfo(info));
-                }
-            }
-            appAdater.addAll(finalList);
-            gridView.setOnItemClickListener((parent, view, position, id) -> {
-                ResolveInfo info = appAdater.getItem(position).getInfo();
-                intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
-                startActivity(intent);
-            });
-            gridView.setAdapter(appAdater);
-            mShareDlg.setContentView(content);
-            mShareDlg.setCanceledOnTouchOutside(true);
-        }
-        try {
-            if (mShareDlg.isShowing()) return;
-            mShareDlg.show();
-        } catch (Exception e) {
-            AppLogger.e(e.toString());
-        }
+        return TextUtils.equals(name, QQ) ||
+                TextUtils.equals(name, FACEBOOK) ||
+                TextUtils.equals(name, SINA1) ||
+                TextUtils.equals(name, FACEBOOK1) ||
+                TextUtils.equals(name, WECHAT) ||
+                TextUtils.equals(name, TWITTER) ||
+                TextUtils.equals(name, SINA);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    }
-
-    class ViewHolder {
-        ImageView icon;
-        TextView name;
-    }
-
-    private static class ResolveInfoEx {
-        private ResolveInfo info;
-
-        public ResolveInfoEx setInfo(ResolveInfo info) {
-            this.info = info;
-            return this;
-        }
-
-        public ResolveInfo getInfo() {
-            return info;
-        }
-    }
-
-    private class AppAdapter extends ArrayAdapter<ResolveInfoEx> {
-
-        public AppAdapter(Context context) {
-            super(context, 0);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder vh;
-            if (null == convertView) {
-                convertView = View.inflate(getContext(), R.layout.item_app_share, null);
-                vh = new ViewHolder();
-                vh.icon = (ImageView) convertView.findViewById(R.id.icon);
-                vh.name = (TextView) convertView.findViewById(R.id.name);
-                convertView.setTag(vh);
-            } else {
-                vh = (ViewHolder) convertView.getTag();
-            }
-            ResolveInfo info = getItem(position).getInfo();
-            PackageManager pm = getContext().getPackageManager();
-            vh.name.setText(info.loadLabel(pm));
-            vh.icon.setImageDrawable(info.loadIcon(pm));
-            return convertView;
-        }
     }
 
 }

@@ -85,6 +85,9 @@ public interface HomeMineContract {
          */
         void getUnReadMesg();
 
+
+        void makeFriendsListReq();
+
 //        /**
 //         * 未读消息的回调
 //         *

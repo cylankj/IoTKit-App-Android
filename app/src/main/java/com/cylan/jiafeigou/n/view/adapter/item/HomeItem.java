@@ -175,7 +175,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
         holder.setImageResource(R.id.img_device_icon, iconRes);
-        handleMsgCountTime(holder, uuid, mDevice);
+        handleMsgCountAndTime(holder, uuid, mDevice);
         //右下角状态
         if (JFGRules.isPan720(mDevice.pid)) {
             handlePan720RightIcon(holder);
@@ -232,7 +232,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
     }
 
-    private void handleMsgCountTime(ViewHolder holder, String uuid, Device mDevice) {
+    private void handleMsgCountAndTime(ViewHolder holder, String uuid, Device mDevice) {
         //被分享用户,不显示 消息数
         Context context = holder.tvDeviceAlias.getContext();
         DPEntity entity = handleUnreadCount(mDevice);
@@ -241,14 +241,14 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         boolean show = needShowUnread(mDevice, isPrimaryDevice);
         //消息数,狗日的门铃的分享设备需要显示.
         if (JFGRules.isPan720(mDevice.pid)) {
-            holder.setText(R.id.tv_device_msg_count, !show ? "" : getPanOnlineMode(mDevice.uuid));
+            holder.setText(R.id.tv_device_msg_count, getPanOnlineMode(mDevice.uuid));
         } else {
             final String warnContent = getLastWarnContent(entity, mDevice.pid, uuid);
             holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
+            //时间
+            holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
+            ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
         }
-        //时间
-        holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
     }
 
     /**

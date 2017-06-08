@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_share_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y48">
+
+    <ImageView
+        android:layout_marginStart="@dimen/y25"
+        android:id="@+id/imv_share_info"
+        android:layout_width="@dimen/x24"
+        android:layout_height="@dimen/x24"
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icon_friend" />
+
+    <TextView
+        android:id="@+id/tv_share_info"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/x20"
+        android:layout_marginStart="@dimen/x20"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:text="@string/Tap2_Share_Moments" />
+
+
+</LinearLayout>
+

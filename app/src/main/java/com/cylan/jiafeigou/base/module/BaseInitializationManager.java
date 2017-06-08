@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
@@ -137,10 +138,15 @@ public final class BaseInitializationManager {
 
     private void initUmengSdk() {
         Config.DEBUG = true;
-        PlatformConfig.setWeixin("wx3081bcdae8a842cf", "");
-        PlatformConfig.setQQZone("1103156296", "lfQJHRh8dDCJtwHu");
-        PlatformConfig.setSinaWeibo("1315129656", "5feab23e093b43f220bccf7fbab8f6c5", "https://api.weibo.com/oauth2/default.html");
-        PlatformConfig.setTwitter("kCEeFDWzz5xHi8Ej9Wx6FWqRL", "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5");
+        PlatformConfig.setWeixin(PackageUtils.getMetaString(ContextUtils.getContext(), "weChatAppId"),
+                PackageUtils.getMetaString(ContextUtils.getContext(), "weChatAppSecret"));
+        PlatformConfig.setQQZone(PackageUtils.getMetaString(ContextUtils.getContext(), "qqAppId"),
+                PackageUtils.getMetaString(ContextUtils.getContext(), "qqAppKey"));
+        PlatformConfig.setSinaWeibo(PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"),
+                PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppSecret"),
+                "https://api.weibo.com/oauth2/default.html");
+        PlatformConfig.setTwitter(PackageUtils.getMetaString(ContextUtils.getContext(), "twitterAppKey"),
+                PackageUtils.getMetaString(ContextUtils.getContext(), "twitterAppSecret"));
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);
         config.isOpenShareEditActivity(true);

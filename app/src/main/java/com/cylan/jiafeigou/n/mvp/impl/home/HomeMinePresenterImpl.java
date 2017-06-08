@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
+import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -38,14 +39,11 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
  */
 public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
-
-    private CompositeSubscription subscription;
 
     private boolean isOpenLogin = false;
     private boolean hasUnRead;
@@ -58,21 +56,14 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void start() {
         super.start();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        subscription = new CompositeSubscription();
-        subscription.add(getAccountBack());
-        subscription.add(unReadMesgBack());
-        subscription.add(loginInMe());
+        addSubscription(getAccountBack());
+        addSubscription(unReadMesgBack());
+        addSubscription(loginInMe());
     }
 
     @Override
     public void stop() {
         super.stop();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
     }
 
     @Override
@@ -168,6 +159,13 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                     }
                 }, AppLogger::e);
 
+    }
+
+    @Override
+    public void makeFriendsListReq() {
+        Observable.just(new FetchFriendsTask())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> ret.call(ret), AppLogger::e);
     }
 
     public Subscription unReadMesgBack() {

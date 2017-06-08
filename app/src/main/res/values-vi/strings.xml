@@ -550,8 +550,8 @@
   <string name="Sharing_Management">Quản lý chia sẻ</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">Vui lòng chuyển sang chế độ ngoài trời để xem nội dung chụp</string>
-  <string name="Switch_Mode_Pop">Vui lòng chuyển đổi nội dung chụp mạng hiện tại sang chế độ ngoài trời</string>
+  <string name="Switch_Mode">Hãy chuyển sang chế độ trực tiếp để xem nội dung chụp</string>
+  <string name="Switch_Mode_Pop">Vui lòng chuyển đổi nội dung chụp mạng hiện tại sang chế độ trực tiếp</string>
   <string name="TAKE_PHOTO">Chụp ảnh</string>
   <string name="TERM_OF_USE">Điều khoản và quyền riêng tư</string>
   <string name="THEME_DELETED">%s đã xoá</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">Fimware mới</string>
   <string name="Tap1_NoMessages">Không có tin nhắn</string>
   <string name="Tap1_Offline">Ngoại tuyến, vui lòng kết nối lại>></string>
-  <string name="Tap1_OutdoorMode">Chế độ ngoài trời</string>
-  <string name="Tap1_OutdoorMode_Opened">Chế độ ngoài trời đã được mở</string>
+  <string name="Tap1_OutdoorMode">Chế độ trực tiếp</string>
+  <string name="Tap1_OutdoorMode_Opened">Chế độ trực tiếp đã được mở</string>
   <string name="Tap1_Refreshed">Đã làm mới</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">Chiếm đóng hoàn toàn</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">Âm thanh phát ra từ thiết bị nhận</string>
   <string name="submiting">Đang gửi&#8230;</string>
   <string name="tencent_app_id">983122162</string>
-  <string name="test_name">Cleverdog|Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">Không có thẻ SD</string>
   <string name="turn_on_gps">Hãy bật \"GPS\" trong phần cài đặt máy điện thoại</string>
   <string name="turn_on_storage">Để sử dụng, hãy cho phép %s truy cập vùng lưu trữ</string>

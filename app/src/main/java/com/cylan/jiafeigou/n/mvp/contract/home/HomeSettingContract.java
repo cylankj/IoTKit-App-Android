@@ -68,6 +68,8 @@ public interface HomeSettingContract {
          */
         Subscription getAccountInfo();
 
+        void refreshWechat();
+
     }
 
 }

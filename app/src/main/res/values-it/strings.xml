@@ -550,8 +550,8 @@
   <string name="Sharing_Management">Condivisione della gestione</string>
   <string name="Slogan">Sicurezza domestica? usa Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">Si prega di passare alla modalità esterna per visualizzare i contenuti di ripresa</string>
-  <string name="Switch_Mode_Pop">Si prega di passare i contenuti di ripresa in rete corrente alla modalità esterna</string>
+  <string name="Switch_Mode">Si prega di passare alla modalità diretta per visualizzare i contenuti di ripresa</string>
+  <string name="Switch_Mode_Pop">Si prega di passare i contenuti di ripresa in rete corrente alla modalità diretta</string>
   <string name="TAKE_PHOTO">Scatta immagine</string>
   <string name="TERM_OF_USE">Area legale e privacy</string>
   <string name="THEME_DELETED">%s è stato cancellato</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">Nuovi firmware</string>
   <string name="Tap1_NoMessages">Nessun messaggio</string>
   <string name="Tap1_Offline">Offline, prega ricollegare>></string>
-  <string name="Tap1_OutdoorMode">modalità Outdoor</string>
-  <string name="Tap1_OutdoorMode_Opened">Modalità esterni è stato aperto</string>
+  <string name="Tap1_OutdoorMode">Modalità diretta</string>
+  <string name="Tap1_OutdoorMode_Opened">La modalità diretta è stata aperta</string>
   <string name="Tap1_Refreshed">Refreshed</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">Pienamente occupato</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">Suono</string>
   <string name="submiting">Invio&#8230;</string>
   <string name="tencent_app_id">1103156297</string>
-  <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">SD card non presente</string>
   <string name="turn_on_gps">Si prega di attivare il \"GPS\" nelle impostazioni di sistema Android</string>
   <string name="turn_on_storage">Per un uso normale, si prega di consentire l\'accesso %s alla memoria nelle impostazioni di sistema</string>

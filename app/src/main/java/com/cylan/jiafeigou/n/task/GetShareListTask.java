@@ -1,0 +1,18 @@
+package com.cylan.jiafeigou.n.task;
+
+import rx.functions.Action1;
+
+/**
+ * 好友列表
+ * Created by hds on 17-6-7.
+ */
+
+public class GetShareListTask implements Action1<Object> {
+
+    @Override
+    public void call(Object o) {
+
+    }
+
+
+}

@@ -97,7 +97,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     }
 
     private void initPresenter() {
-        presenter = new MineDevicesShareManagerPresenterImp(this, hasShareFriendlist);
+        presenter = new MineDevicesShareManagerPresenterImp(this);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
         builder.setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
             dialog.dismiss();
-            presenter.cancleShare(devicebean.uuid, bean);
+            presenter.cancelShare(devicebean.uuid, bean);
         });
         builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> dialog.dismiss());
         builder.show();
@@ -221,7 +221,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
      * @param result
      */
     @Override
-    public void showUnShareResult(RxEvent.UnshareDeviceCallBack result) {
+    public void showUnShareResult(RxEvent.UnShareDeviceCallBack result) {
         if (result.i == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_DeleteSucces));
             deleteItems();

@@ -103,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:maxLength="8"
+                    android:maxLength="16"
                     android:paddingEnd="@dimen/y10"
                     android:paddingStart="@dimen/y10"
                     android:text="@string/Tap2_Index_DemoVideo"

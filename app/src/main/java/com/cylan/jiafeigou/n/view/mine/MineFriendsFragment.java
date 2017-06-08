@@ -60,7 +60,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     private MineFriendsContract.Presenter presenter;
     //    private MineFriendAddFriendsFragment friendsFragment;
     private MineFriendDetailFragment friendDetailFragment;
-    private MineFriendAddReqDetailFragment addReqDetailFragment;
+    private AddFriendReqDetailFragment addReqDetailFragment;
     private AddRelativesAndFriendsAdapter addReqListAdapter;
     private RelativesAndFriendsAdapter friendsListAdapter;
     private MineAddReqBean tempReqBean;
@@ -102,7 +102,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         Bundle bundle = new Bundle();
         bundle.putBoolean("isFrom", true);
         bundle.putSerializable("addRequestItems", bean);
-        addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+        addReqDetailFragment = AddFriendReqDetailFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 addReqDetailFragment, android.R.id.content);
 
@@ -131,7 +131,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", false);
             bundle.putSerializable("addRequestItems", item);
-            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+            AddFriendReqDetailFragment addReqDetailFragment = AddFriendReqDetailFragment.newInstance(bundle);
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                     addReqDetailFragment, android.R.id.content);
             presenter.deleteAddReq(item.account);

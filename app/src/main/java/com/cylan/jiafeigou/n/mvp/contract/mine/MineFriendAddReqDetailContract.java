@@ -82,14 +82,14 @@ public interface MineFriendAddReqDetailContract {
         /**
          * 执行请求数据
          */
-        Subscription excuteGetAddReqlistData();
+        Subscription executeGetAddReqList();
 
         /**
          * 添加好友的回调
          *
          * @return
          */
-        Subscription sendAddFriendReqBack();
+        Subscription sendAddFriendRsp();
 
         /**
          * 同意添加好友的回调
