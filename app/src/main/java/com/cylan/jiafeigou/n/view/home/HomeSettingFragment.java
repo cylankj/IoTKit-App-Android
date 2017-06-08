@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -15,10 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
@@ -79,8 +74,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     private List<ResolveInfoEx> finalList;
     private HomeSettingContract.Presenter presenter;
     private AboutFragment aboutFragment;
-    //    private Dialog mShareDlg;
-    private AppAdapter appAdapter;
 
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
@@ -149,8 +142,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                             final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
                             intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
                             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
-                            if (appAdapter == null)
-                                appAdapter = new AppAdapter(getContext());
                             finalList = new LinkedList<>();
                             for (ResolveInfo info : list) {
                                 final String name = info.activityInfo.packageName;
@@ -233,9 +224,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         if (presenter != null) {
             presenter.stop();
         }
-        if (appAdapter != null) {
-            appAdapter = null;
-        }
     }
 
     @Override
@@ -304,106 +292,30 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
 
-    private static final String tencent = "com.tencent.mobileqq";
-    private static final String wechat = "com.tencent.mm";
-    private static final String facebook = "com.facebook.katana";
-    private static final String facebook1 = "com.facebook.Mentions";
-    private static final String twitter = "com.twitter.android";
-    private static final String sina = "com.sina.weibo";
+    private static final String QQ = "com.qq.mobileqq";
+    private static final String WECHAT = "com.qq.mm";
+    private static final String FACEBOOK = "com.facebook.katana";
+    private static final String FACEBOOK1 = "com.facebook.Mentions";
+    private static final String TWITTER = "com.twitter.android";
+    private static final String SINA = "com.sina.weibo";
+    private static final String SINA1 = "com.weico.international";
 
     private boolean addFirst(final String name) {
         if (TextUtils.isEmpty(name)) {
             return false;
         }
-        return TextUtils.equals(name, tencent) ||
-                TextUtils.equals(name, facebook) ||
-                TextUtils.equals(name, facebook1) ||
-                TextUtils.equals(name, wechat) ||
-                TextUtils.equals(name, twitter) ||
-                TextUtils.equals(name, sina);
+        return TextUtils.equals(name, QQ) ||
+                TextUtils.equals(name, FACEBOOK) ||
+                TextUtils.equals(name, SINA1) ||
+                TextUtils.equals(name, FACEBOOK1) ||
+                TextUtils.equals(name, WECHAT) ||
+                TextUtils.equals(name, TWITTER) ||
+                TextUtils.equals(name, SINA);
     }
-
-//    //*************
-//    public void share() {
-//        if (mShareDlg == null) {
-//            mShareDlg = new Dialog(getActivity(), R.style.func_dialog);
-//            View content = View.inflate(getContext(), R.layout.dialog_app_share, null);
-//            TextView cancel = (TextView) content.findViewById(R.id.btn_cancle);
-//            cancel.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mShareDlg.dismiss();
-//                }
-//            });
-//            ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
-//            final Intent intent = new Intent(Intent.ACTION_SEND);
-//            intent.setType("text/plain");
-//            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
-//            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
-//            List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
-//            if (appAdapter == null)
-//                appAdapter = new AppAdapter(getContext());
-//            LinkedList<ResolveInfoEx> finalList = new LinkedList<>();
-//            for (ResolveInfo info : list) {
-//                final String name = info.activityInfo.packageName;
-//                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
-//                    if (addFirst(name)) finalList.add(0, new ResolveInfoEx().setInfo(info));
-//                    else finalList.add(new ResolveInfoEx().setInfo(info));
-//                }
-//            }
-//            appAdapter.addAll(finalList);
-//            gridView.setOnItemClickListener((parent, view, position, id) -> {
-//                ResolveInfo info = appAdapter.getItem(position).getInfo();
-//                intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
-//                startActivity(intent);
-//            });
-//            gridView.setAdapter(appAdapter);
-//            mShareDlg.setContentView(content);
-//            mShareDlg.setCanceledOnTouchOutside(true);
-//        }
-//        try {
-//            if (mShareDlg.isShowing()) return;
-//            mShareDlg.show();
-//        } catch (Exception e) {
-//            AppLogger.e(e.toString());
-//        }
-//    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    }
-
-    class ViewHolder {
-        ImageView icon;
-        TextView name;
-    }
-
-
-    private class AppAdapter extends ArrayAdapter<ResolveInfoEx> {
-
-        public AppAdapter(Context context) {
-            super(context, 0);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder vh;
-            if (null == convertView) {
-                convertView = View.inflate(getContext(), R.layout.item_app_share, null);
-                vh = new ViewHolder();
-                vh.icon = (ImageView) convertView.findViewById(R.id.icon);
-                vh.name = (TextView) convertView.findViewById(R.id.name);
-                convertView.setTag(vh);
-            } else {
-                vh = (ViewHolder) convertView.getTag();
-            }
-            ResolveInfo info = getItem(position).getInfo();
-            PackageManager pm = getContext().getPackageManager();
-            vh.name.setText(info.loadLabel(pm));
-            vh.icon.setImageDrawable(info.loadIcon(pm));
-            return convertView;
-        }
     }
 
 }
