@@ -16,14 +16,12 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.google.gson.Gson;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -41,6 +39,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     private boolean isCheck;
     private JFGAccount userInfo;
+//    private UMAuthListener listener;
 
     public HomeSettingPresenterImp(HomeSettingContract.View view) {
         super(view);
@@ -322,37 +321,11 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
     @Override
-    public void refreshWechat() {
-        getOpenID();
-    }
-
-    private boolean access;
-
-    private void getOpenID() {
+    public void refreshWechat(UMAuthListener listener) {
         if (access) return;
         access = true;
         UMShareAPI.get(mView.getContext())
-                .getPlatformInfo((Activity) mView.getContext(), SHARE_MEDIA.WEIXIN, new UMAuthListener() {
-                    @Override
-                    public void onStart(SHARE_MEDIA share_media) {
-                        Log.d("getOpenID", "onStart: ");
-                    }
-
-                    @Override
-                    public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
-                        Log.d("getOpenID", "getOpenID: " + new Gson().toJson(map));
-                    }
-
-                    @Override
-                    public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
-                        Log.d("getOpenID", "onError: " + throwable);
-                    }
-
-                    @Override
-                    public void onCancel(SHARE_MEDIA share_media, int i) {
-                        Log.d("getOpenID", "onCancel: ");
-                    }
-                });
+                .getPlatformInfo((Activity) mView.getContext(), SHARE_MEDIA.WEIXIN, listener);
 //        // 通过WXAPIFactory工厂，获取IWXAPI的实例
 //        IWXAPI api = WXAPIFactory.createWXAPI(ContextUtils.getContext(), "wx3081bcdae8a842cf", true);
 //        api.handleIntent(getIntent(), this);
@@ -377,4 +350,6 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 //        } catch (IOException e) {
 //        }
     }
+
+    private boolean access;
 }
