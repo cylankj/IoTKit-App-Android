@@ -40,7 +40,7 @@ public abstract class BaseListDialog<T> extends DialogFragment {
     private static final float MIN_HEIGHT = 0.17F;
     private static final float MAX_HEIGHT = 0.475F;
     private ValueAnimator layoutHeightAnimation;
-    private SuperAdapter<T> baseAdapter;
+    protected SuperAdapter<T> baseAdapter;
 
     private List<T> finalList;
 

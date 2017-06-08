@@ -987,4 +987,9 @@
     <string name="web">http://www.jfgou.com</string>
     <string name="wifi_authentication">正在验证%s连接</string>
     <string name="wifi_hasnot">未找到此WiFi网络</string>
+    <string name="IP_Address">ip地址</string>
+    <string name="WiredMode">有线模式</string>
+    <string name="EnableAP">开启AP</string>
+    <string name="CloseTips">开启AP</string>
+    <string name="CmdSend">指令已经发送</string>
 </resources>
