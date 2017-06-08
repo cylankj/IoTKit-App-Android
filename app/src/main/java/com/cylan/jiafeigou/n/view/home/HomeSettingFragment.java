@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -34,6 +35,9 @@ import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.ShareToListDialog;
 import com.google.gson.Gson;
+import com.tencent.mm.opensdk.modelbiz.JumpToBizProfile;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -326,6 +330,22 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
         Log.d("getOpenID", "getOpenID: " + new Gson().toJson(map));
+//        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+//        account.
+        // {"unionid":"opmVqv7ftlm_34oAF2Q231o8zaRM","screen_name":"test","city":"","accessToken":"1oY6MJhWyiCpeqfxQht8FX8PcO1iG1N0q3ijat4Xp0fAzUhY8YX5pPukTUGJ4v9WRuI4DUhDlQJJaBOrEx3uLZjZlYcPiGGRqXLemmTui1U","refreshToken":"Bewb12Zh-kL6S5knI54clzIib2nYUw-JX_xXyGvPEq2N_32CuIwQgJ-VvD_hqWwXlT2b_xzkT0a8rQb_oxtybtdjXXsUavCMiTyzKY1SnnI","gender":"0","province":"","openid":"ol0PtwnLAXeret_wLZNxGihc546I","profile_image_url":"http://wx.qlogo.cn/mmopen/iatA0oGrrscZV14ibGqUDlKEJ82XxVEhYefw0vepGricPDWEJw1aWdwNMVgKft1jwiaKzhuicOicABxXvDkMLiaOwOflwYicQIicsiaZax/0","country":"中国","access_token":"1oY6MJhWyiCpeqfxQht8FX8PcO1iG1N0q3ijat4Xp0fAzUhY8YX5pPukTUGJ4v9WRuI4DUhDlQJJaBOrEx3uLZjZlYcPiGGRqXLemmTui1U","iconurl":"http://wx.qlogo.cn/mmopen/iatA0oGrrscZV14ibGqUDlKEJ82XxVEhYefw0vepGricPDWEJw1aWdwNMVgKft1jwiaKzhuicOicABxXvDkMLiaOwOflwYicQIicsiaZax/0","name":"test","uid":"opmVqv7ftlm_34oAF2Q231o8zaRM","expiration":"1496930699855","language":"zh_CN","expires_in":"1496930699855"}
+        ToastUtil.showToast("成功了." + map.get("openid"));
+        //            //跳转微信公众号
+        String appId = "wx70338a9ca5e4122e";//开发者平台ID
+        IWXAPI api = WXAPIFactory.createWXAPI(getActivity(), appId, false);
+        if (api.isWXAppInstalled()) {
+            JumpToBizProfile.Req req = new JumpToBizProfile.Req();
+            req.toUserName = "gh_b0394a4ee894"; // 公众号原始ID
+            req.extMsg = "";
+            req.profileType = JumpToBizProfile.JUMP_TO_NORMAL_BIZ_PROFILE; // 普通公众号
+            api.sendReq(req);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
+        }
         if (!isAdded()) return;
         LoadingDialog.dismissLoading(getFragmentManager());
     }
