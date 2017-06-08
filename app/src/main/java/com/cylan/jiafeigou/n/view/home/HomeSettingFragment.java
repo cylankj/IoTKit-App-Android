@@ -304,19 +304,23 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
 
-    private static final String tencent = "tencent";
-    private static final String facebook = "facebook";
-    private static final String twitter = "twitter";
-    private static final String sina = "sina";
+    private static final String tencent = "com.tencent.mobileqq";
+    private static final String wechat = "com.tencent.mm";
+    private static final String facebook = "com.facebook.katana";
+    private static final String facebook1 = "com.facebook.Mentions";
+    private static final String twitter = "com.twitter.android";
+    private static final String sina = "com.sina.weibo";
 
     private boolean addFirst(final String name) {
         if (TextUtils.isEmpty(name)) {
             return false;
         }
-        return name.contains(tencent)
-                || name.contains(facebook)
-                || name.contains(twitter)
-                || name.contains(sina);
+        return TextUtils.equals(name, tencent) ||
+                TextUtils.equals(name, facebook) ||
+                TextUtils.equals(name, facebook1) ||
+                TextUtils.equals(name, wechat) ||
+                TextUtils.equals(name, twitter) ||
+                TextUtils.equals(name, sina);
     }
 
 //    //*************
