@@ -550,8 +550,8 @@
   <string name="Sharing_Management">совместное управление</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">переключитесь в режим открытого для просмотра содержимого съемки</string>
-  <string name="Switch_Mode_Pop">переключите текущее содержание сети съемки в режиме открытой</string>
+  <string name="Switch_Mode">Перейдите в режим прямого просмотра для просмотра</string>
+  <string name="Switch_Mode_Pop">Переключите текущий сетевой видеоконтент на прямой режим</string>
   <string name="TAKE_PHOTO">Сделать фото</string>
   <string name="TERM_OF_USE">Условия и конфиденциальность</string>
   <string name="THEME_DELETED">Местоположение %s удалено</string>
@@ -720,8 +720,8 @@
   <string name="Tap1_NewFirmware">Новая прошивка</string>
   <string name="Tap1_NoMessages">Нет сообщений</string>
   <string name="Tap1_Offline">Автономно, повторите попытку>></string>
-  <string name="Tap1_OutdoorMode">Наружный режим</string>
-  <string name="Tap1_OutdoorMode_Opened">Открытый режим был открыт</string>
+  <string name="Tap1_OutdoorMode">Прямой режим</string>
+  <string name="Tap1_OutdoorMode_Opened">Открыт прямой режим</string>
   <string name="Tap1_Refreshed">Refreshed</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">Полностью занятый</string>
@@ -977,7 +977,6 @@
   <string name="sound_auth">Звук</string>
   <string name="submiting">Отправка&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">Отсутствует карта памяти microSD</string>
   <string name="turn_on_gps">Включите в настройках Android системы \"GPS\" доступ</string>
   <string name="turn_on_storage">Для нормального использования, пожалуйста, позвольте %s, чтобы получить доступ к памяти</string>

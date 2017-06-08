@@ -68,7 +68,7 @@
     <string name="CREATING">正在创建，请稍候&#8230;</string>
     <string name="CURRENT_PWD">请输入当前密码</string>
     <string name="CancelingTips">正在取消&#8230;</string>
-    <string name="Cellular_Data_Method">移动数据网络</string>
+    <string name="Cellular_Data_Method">移动数据网络：</string>
     <string name="Cellular_Data_Set_Up">在设备的【设置>移动网络】中启用移动数据网络。</string>
     <string name="ChargingLight">充电灯</string>
     <string name="ChargingLight_BlueFlashing">蓝色闪烁：正在充电</string>
@@ -175,7 +175,7 @@
     <string name="EFAMILY_NO_CONTENTS">快乐分享，快乐生活~</string>
     <string name="EFAMILY_NO_DOOR">暂无设备</string>
     <string name="EFAMILY_PUSH_TO_LEAVE_MSG">按住说话</string>
-    <string name="EFAMILY_QRCODE_BOTTOM_TEXT">请将取景框对准设备背面二维码，\n即可自动扫描</string>
+    <string name="EFAMILY_QRCODE_BOTTOM_TEXT">请将取景框对准设备二维码，\n即可自动扫描</string>
     <string name="EFAMILY_READ_ALREADY">已读</string>
     <string name="EFAMILY_RELEVANCE_ALARE">若取消\“%1$s\”，\“%2$s\”将不会收到呼叫消息</string>
     <string name="EFAMILY_RELEVANCE_DOOR">关联门铃</string>
@@ -550,8 +550,8 @@
     <string name="Sharing_Management">分享管理</string>
     <string name="Slogan">想家，就用加菲狗</string>
     <string name="Slogan_Zhongxing">美好生活 智能家居</string>
-    <string name="Switch_Mode">拍摄内容请切换至户外模式查看</string>
-    <string name="Switch_Mode_Pop">当前网络拍摄内容请切换至户外模式查看</string>
+    <string name="Switch_Mode">拍摄内容请切换至直连模式查看</string>
+    <string name="Switch_Mode_Pop">当前网络拍摄内容请切换至直连模式查看</string>
     <string name="TAKE_PHOTO">拍一张</string>
     <string name="TERM_OF_USE">用户使用协议</string>
     <string name="THEME_DELETED">位置\“%s\”已删除</string>
@@ -721,7 +721,7 @@
     <string name="Tap1_NoMessages">无消息</string>
     <string name="Tap1_Offline">设备离线，请重新配置连接>></string>
     <string name="Tap1_OutdoorMode">直连模式</string>
-    <string name="Tap1_OutdoorMode_Opened">户外模式已开启</string>
+    <string name="Tap1_OutdoorMode_Opened">直连模式已开启</string>
     <string name="Tap1_Refreshed">刷新成功</string>
     <string name="Tap1_RefreshedFailed">刷新失败</string>
     <string name="Tap1_SDCardFullyTips">SD卡存储空间已满</string>
@@ -977,7 +977,6 @@
     <string name="sound_auth">录音</string>
     <string name="submiting">正在发送&#8230;</string>
     <string name="tencent_app_id">1103156296</string>
-    <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
     <string name="the_memory_card_is_not_present">内存卡不存在</string>
     <string name="turn_on_gps">请在Android系统设置中开启“位置”访问权限，可以更准确的查找设备</string>
     <string name="turn_on_storage">请在系统设置中开启%s“存储空间”访问权限，以方便您的正常使用</string>
@@ -988,9 +987,4 @@
     <string name="web">http://www.jfgou.com</string>
     <string name="wifi_authentication">正在验证%s连接</string>
     <string name="wifi_hasnot">未找到此WiFi网络</string>
-    <string name="IP_Address">IP地址</string>
-    <string name="WiredMode">有线模式</string>
-    <string name="EnableAP">开启热点</string>
-    <string name="CmdSend">指令已经发送,请等待设备蓝灯闪烁</string>
-    <string name="CloseTips">关闭可能会使设备断开连接，确定关闭？</string>
 </resources>
