@@ -220,7 +220,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage:" + arrayList.size());
+        AppLogger.d("OnGetFriendRequestListRsp:" + arrayList.size());
         RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList(i, arrayList));
     }
 
@@ -245,13 +245,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnUnShareDeviceRsp :" + i + "," + s + "," + s1);
-        RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i, s, s1));
+        RxBus.getCacheInstance().post(new RxEvent.UnShareDeviceCallBack(i, s, s1));
     }
 
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :" + i);
-        RxBus.getCacheInstance().post(new RxEvent.GetShareListCallBack(i, arrayList));
         BaseApplication.getAppComponent().getSourceManager().cacheShareList(arrayList);
     }
 
@@ -281,16 +280,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
-        Object o = RxBus.getCacheInstance().getStickyEvent(RxEvent.GetFeedBackRsp.class);
-        ArrayList<JFGFeedbackInfo> array = new ArrayList<>();
-        if (o != null) {
-            //先加载之前的.
-            RxEvent.GetFeedBackRsp rsp = (RxEvent.GetFeedBackRsp) o;
-            if (ListUtils.getSize(rsp.arrayList) > 0) array.addAll(rsp.arrayList);
-        }
-        if (ListUtils.getSize(arrayList) > 0) array.addAll(arrayList);
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp(i, array));
-        BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
+        if (ListUtils.isEmpty(arrayList)) return;
+        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
     }
 
 

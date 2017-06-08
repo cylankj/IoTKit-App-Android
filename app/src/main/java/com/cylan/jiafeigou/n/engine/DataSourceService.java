@@ -466,7 +466,7 @@
 //    @Override
 //    public void OnUnShareDeviceRsp(int i, String s, String s1) {
 //        AppLogger.d("OnUnShareDeviceRsp :");
-//        RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i, s, s1));
+//        RxBus.getCacheInstance().post(new RxEvent.UnShareDeviceCallBack(i, s, s1));
 //    }
 //
 //    @Override

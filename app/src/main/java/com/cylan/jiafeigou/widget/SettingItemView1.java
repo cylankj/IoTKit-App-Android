@@ -73,6 +73,10 @@ public class SettingItemView1 extends FrameLayout {
         switchButton.setChecked(checked, toggle);
     }
 
+    public boolean isChecked() {
+        return switchButton.isChecked();
+    }
+
     @Override
     public void setAlpha(float alpha) {
         super.setAlpha(alpha);

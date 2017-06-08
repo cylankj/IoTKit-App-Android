@@ -12,7 +12,7 @@ import rx.Subscription;
  * 创建者     谢坤
  * 创建时间   2016/8/22 10:56
  */
-public interface HomeMineHelpSuggestionContract {
+public interface FeedBackContract {
 
     interface View extends BaseView<Presenter> {
         /**

@@ -214,7 +214,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", isFrom);
             bundle.putSerializable("addRequestItems", bean);
-            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+            AddFriendReqDetailFragment addReqDetailFragment = AddFriendReqDetailFragment.newInstance(bundle);
             getActivity().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)

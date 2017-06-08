@@ -235,13 +235,6 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".n.view.activity.MagLiveActivity"
-            android:configChanges="locale|orientation|keyboardHidden"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/CamActivityTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
             android:name=".n.view.bell.DoorBellHomeActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:launchMode="singleTask"
@@ -256,13 +249,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".n.view.activity.CloudLiveActivity"
-            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/CamActivityTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+
 
         <!-- &lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt; -->
         <!-- <service -->
