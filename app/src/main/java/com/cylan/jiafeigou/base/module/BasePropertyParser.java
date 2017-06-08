@@ -83,6 +83,9 @@ public class BasePropertyParser implements IPropertyParser {
      */
     private void init() {
 
+        properties.put(226, new DPProperty(int.class, PROPERTY, CAMERA));
+        properties.put(225, new DPProperty(int.class, PROPERTY, CAMERA));
+
         properties.put(ID_1005_BELL_UNREAD_COUNT_V2, new DPProperty(int.class, PROPERTY, DOORBELL));
         properties.put(ID_1004_BELL_UNREAD_COUNT, new DPProperty(int.class, PROPERTY, DOORBELL));
 
