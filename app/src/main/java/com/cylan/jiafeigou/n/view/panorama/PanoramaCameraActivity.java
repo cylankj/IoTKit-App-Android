@@ -150,7 +150,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private AlertDialog mobileAlert;
     private boolean hasResolution = false;
     private ConnectionDescriptionFragment fragment;
-    private boolean justForTest = true;
+    private boolean justForTest = false;
 
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
