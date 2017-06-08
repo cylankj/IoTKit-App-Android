@@ -385,7 +385,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Account getAccount() {
-        return account;
+        return account == null ? new Account() : account;
     }
 
     @Override

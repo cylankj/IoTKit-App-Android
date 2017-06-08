@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/camera720_icon_photograph_disabled" />
+    <item
+        android:drawable="@drawable/camera720_loading"
+        android:gravity="center" />
+</layer-list>

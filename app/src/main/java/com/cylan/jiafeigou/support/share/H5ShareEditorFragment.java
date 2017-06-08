@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.support.share;
 
+import android.content.DialogInterface;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.os.Bundle;
@@ -17,11 +18,14 @@ import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
+
+import java.io.File;
 
 import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH;
 import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM;
@@ -123,39 +127,31 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         }
     }
 
-    private UMShareListener listener = new UMShareListener() {
-        @Override
-        public void onStart(SHARE_MEDIA share_media) {
-            AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+    private String getDescription() {
+        if (TextUtils.isEmpty(description.get())) {
+            return getString(R.string.share_default_description);
+        } else {
+            return description.get();
         }
-
-        @Override
-        public void onResult(SHARE_MEDIA share_media) {
-            AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
-            getActivity().finish();
-        }
-
-        @Override
-        public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-            AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
-            getActivity().finish();
-        }
-
-        @Override
-        public void onCancel(SHARE_MEDIA share_media) {
-            AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
-            getActivity().finish();
-        }
-    };
+    }
 
     private void shareWithH5ByType(int shareType, String h5) {
+        if (!LoadingDialog.isShowing(getActivity().getSupportFragmentManager())) {
+            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
+        }
+        Bundle arguments = getArguments();
+        String thumbPath = arguments.getString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH);
         UMWeb umWeb = new UMWeb(h5);
-        umWeb.setTitle("这是我通过友盟分享");
-        umWeb.setDescription(description.get());
-        umWeb.setThumb(new UMImage(getContext(), R.drawable.default_diagram_mask));
+        umWeb.setTitle(getString(R.string.share_default_title));
+        umWeb.setDescription(getDescription());
+        if (!TextUtils.isEmpty(thumbPath)) {
+            umWeb.setThumb(new UMImage(getContext(), new File(thumbPath)));
+        }
         ShareAction shareAction = new ShareAction(getActivity());
         shareAction.withMedia(umWeb);
-        shareAction.setCallback(listener);
+        if (getActivity() != null && getActivity() instanceof UMShareListener) {
+            shareAction.setCallback((UMShareListener) getActivity());
+        }
         switch (shareType) {
             case SHARE_PLATFORM_TYPE_TIME_LINE://
                 shareAction.setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE);
@@ -180,6 +176,10 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
                 break;
         }
         shareAction.share();
+    }
+
+    private void cancelLoading(DialogInterface dialogInterface) {
+
     }
 
     public void cancelShare(View view) {

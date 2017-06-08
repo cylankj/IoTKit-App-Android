@@ -11,4 +11,6 @@
     <bool name="show_share_btn">true</bool>
     <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
     <string name="share_to_friends_link">http://sj.qq.com/myapp/detail.htm?apkName=%s</string>
+    <string name="share_default_description">@string/Tap1_Shared_Description_zhongxing</string>
+    <string name="share_default_title">@string/Tap1_Shared_Title_zhognxing</string>
 </resources>

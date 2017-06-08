@@ -27,6 +27,7 @@ public class RoundRectPopup extends RelativePopupWindow {
 
     private long dismissTime = -1;
     private int checkedIndex = -1;
+    private int mode;
 
     public RoundRectPopup(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_panorama_album_pop_menu, null);
@@ -49,6 +50,13 @@ public class RoundRectPopup extends RelativePopupWindow {
 
     public void setCheckIndex(int index) {
         this.checkedIndex = index;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+        menuItemAlbumPopPhoto.setEnabled(mode == 0 || mode == 2);
+        menuItemAlbumPopBoth.setEnabled(mode == 2);
+        menuItemAlbumPopPanorama.setEnabled(mode == 1 || mode == 2);
     }
 
     @Override

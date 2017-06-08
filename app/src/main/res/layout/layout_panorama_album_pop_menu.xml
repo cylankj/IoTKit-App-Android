@@ -26,7 +26,7 @@
                 android:layout_weight="1"
                 android:button="@drawable/icon_panorama_album_menu_photo_phone"
                 android:padding="@dimen/y13"
-                android:text="相册+手机相册"
+                android:text="@string/Tap1_File_CameraNPhone"
                 android:textColor="@color/color_panorama_album_menu_photo_mode"
                 android:textSize="@dimen/sp16" />
 
@@ -38,7 +38,7 @@
                 android:button="@drawable/icon_panorama_album_menu_panorama"
                 android:padding="@dimen/y13"
                 android:paddingStart="@dimen/y14"
-                android:text="全景相册"
+                android:text="@string/Tap1_File_Camera"
                 android:textColor="@color/color_panorama_album_menu_photo_mode"
                 android:textSize="@dimen/sp16" />
 
@@ -50,7 +50,7 @@
                 android:button="@drawable/icon_panorama_album_menu_photo"
                 android:padding="@dimen/y13"
                 android:paddingStart="@dimen/y14"
-                android:text="手机相册"
+                android:text="@string/Tap1_File_Phone"
                 android:textColor="@color/color_panorama_album_menu_photo_mode"
                 android:textSize="@dimen/sp16" />
         </RadioGroup>

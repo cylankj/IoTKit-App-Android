@@ -18,6 +18,9 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
+        if (!sourceManager.isOnline()) {
+            return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
+        }
         return dpHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                 .map(dpEntity -> new BaseDPTaskResult().setResultCode(0).setResultResponse(dpEntity));
     }

@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.AbstractBindingViewHolder;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
@@ -66,6 +67,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     protected void initViewAndListener() {
         super.initViewAndListener();
         shareContentBinding.setBackAction(this::onBackAction);
+        shareContentBinding.toolbar.setRightEnable(false);
         shareContentBinding.setRightAction(this::onEditShareContent);
         shareContentBinding.setEditMode(editMode);
         shareContentBinding.setSelectNumber(selectNumber);
@@ -86,6 +88,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         shareContentBinding.sharedContentList.setAdapter(adapter);
         shareContentBinding.tvMsgFullSelect.setOnClickListener(this::reverseSelection);
         shareContentBinding.tvMsgDelete.setOnClickListener(this::deleteSelection);
+        shareContentBinding.sharedRefresh.setColorSchemeResources(R.color.color_36BDFF);
     }
 
 
@@ -158,7 +161,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     protected boolean onBackPressed() {
         if (editMode.get()) {
             editMode.set(false);
-            return false;
+            return true;
         } else {
             return super.onBackPressed();
         }
@@ -180,6 +183,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
             adapter.add(shareContentItems);
         }
         shareContentBinding.sharedRefresh.setRefreshing(false);
+        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
     }
 
     @Override
@@ -187,7 +191,11 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         if (resultCode == 0) {
             adapter.getFastAdapter().select(selection);
             adapter.getFastAdapter().deleteAllSelectedItems();
+        } else {
+            adapter.getFastAdapter().deselect();
+            ToastUtil.showNegativeToast(getString(R.string.Tips_DeleteFail));
         }
+        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
     }
 
     @Override

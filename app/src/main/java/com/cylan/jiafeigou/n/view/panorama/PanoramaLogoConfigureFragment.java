@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -39,9 +38,13 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     FrameLayout logoContentContainer;
     @BindView(R.id.fragment_panorama_logo_toolbar)
     FrameLayout logoToobarContainer;
-    private List<LogoItem> builtInLogo = Arrays.asList(new LogoItem(LOGO_TYPE.LOGO_TYPE_NONE), new LogoItem(LOGO_TYPE.LOGO_TYPE_WHITE), new LogoItem(LOGO_TYPE.LOGO_TYPE_BLACK), new LogoItem(LOGO_TYPE.LOGO_TYPE_CLOVE_DOG));
+    private List<LogoItem> builtInLogo = Arrays.asList(
+            new LogoItem(R.drawable.logo_no_watermark),
+            new LogoItem(R.drawable.logo_white),
+            new LogoItem(R.drawable.logo_black),
+            new LogoItem(R.drawable.logo_clever_dog)
+    );
     private LogoListAdapter logoListAdapter;
-    @LOGO_TYPE
     private int currentLogoType = 0;
     private PanoramicView720_Ext panoramicView720Ext;
 
@@ -112,7 +115,7 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     @Override
     public void onChangeLogoTypeSuccess(int logtype) {
         currentLogoType = logtype;
-        logoListAdapter.notifyItemChanged(currentLogoType);
+        logoListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -123,47 +126,14 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     private class LogoListAdapter extends SuperAdapter<LogoItem> {
 
         public LogoListAdapter(Context context, List<LogoItem> items) {
-            super(context, items, null);
+            super(context, items, R.layout.item_panorama_logo);
         }
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, LogoItem item) {
-            switch (item.type) {
-                case LOGO_TYPE.LOGO_TYPE_WHITE:
-                    holder.setImageResource(R.id.item_panorama_logo_img, R.drawable.logo_white);
-                    break;
-                case LOGO_TYPE.LOGO_TYPE_BLACK:
-                    holder.setImageResource(R.id.item_panorama_logo_img, R.drawable.logo_black);
-                    break;
-                case LOGO_TYPE.LOGO_TYPE_CLOVE_DOG:
-                    holder.setImageResource(R.id.item_panorama_logo_img, R.drawable.logo_clever_dog);
-                    break;
-            }
-            if (layoutPosition == currentLogoType) {
-                holder.itemView.setBackgroundResource(R.drawable.logo_selected);
-            } else {
-                holder.itemView.setBackgroundResource(android.R.color.transparent);
-            }
-        }
-
-        @Override
-        protected IMulItemViewType<LogoItem> offerMultiItemViewType() {
-            return new IMulItemViewType<LogoItem>() {
-                @Override
-                public int getViewTypeCount() {
-                    return 2;
-                }
-
-                @Override
-                public int getItemViewType(int position, LogoItem logoItem) {
-                    return logoItem.type != 0 ? 1 : 0;
-                }
-
-                @Override
-                public int getLayoutId(int viewType) {
-                    return viewType == 0 ? R.layout.item_panorama_logo_empty : R.layout.item_panorama_logo;
-                }
-            };
+            holder.setBackgroundResource(R.id.item_panorama_logo_background, currentLogoType == layoutPosition ? R.drawable.logo_selected : android.R.color.transparent);
+            holder.setBackgroundResource(R.id.item_panorama_logo_picture, item.logoResId);
+            holder.setVisibility(R.id.item_panorama_logo_text, item.logoResId == R.drawable.logo_no_watermark ? View.VISIBLE : View.GONE);
         }
     }
 

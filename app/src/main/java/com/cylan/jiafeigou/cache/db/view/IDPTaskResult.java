@@ -13,4 +13,10 @@ public interface IDPTaskResult {
     <T extends IDPTaskResult> T setResultResponse(Object response);
 
     <R> R getResultResponse();
+
+    <T extends IDPTaskResult> T setMessage(String response);
+
+    String getMessage();
+
+
 }

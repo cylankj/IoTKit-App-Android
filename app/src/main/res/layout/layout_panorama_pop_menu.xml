@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/y15"
+        android:paddingEnd="@dimen/y15">
+
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_quick_menu_item1_mic"
+            android:layout_width="@dimen/y42"
+            android:layout_height="@dimen/y42"
+            android:src="@drawable/camera720_icon_no_talk_selector"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_quick_menu_item2_voice"
+            android:layout_width="@dimen/y42"
+            android:layout_height="@dimen/y42"
+            android:layout_marginTop="@dimen/y15"
+            android:src="@drawable/camera720_icon_no_voice_selector"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/act_panorama_camera_quick_menu_item1_mic" />
+
+        <View
+            android:id="@+id/speed_background"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y42"
+            android:layout_marginTop="@dimen/y15"
+            android:background="@drawable/panorama_camera_quick_menu_item3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/act_panorama_camera_quick_menu_item2_voice" />
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_quick_menu_item3_left"
+            android:layout_width="@dimen/y24"
+            android:layout_height="@dimen/y24"
+            android:layout_marginStart="@dimen/y9"
+            android:src="@drawable/btn_leftkey_selector"
+            app:layout_constraintBottom_toBottomOf="@id/speed_background"
+            app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_quick_menu_item3_content"
+            app:layout_constraintStart_toStartOf="@id/speed_background"
+            app:layout_constraintTop_toTopOf="@+id/speed_background" />
+
+        <TextView
+            android:id="@+id/act_panorama_camera_quick_menu_item3_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="速率:高清"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/sp15"
+            app:layout_constraintBottom_toBottomOf="@id/speed_background"
+            app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_quick_menu_item3_right"
+            app:layout_constraintStart_toEndOf="@id/act_panorama_camera_quick_menu_item3_left"
+            app:layout_constraintTop_toTopOf="@id/speed_background" />
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_quick_menu_item3_right"
+            android:layout_width="@dimen/y24"
+            android:layout_height="@dimen/y24"
+            android:layout_marginEnd="@dimen/y9"
+            android:src="@drawable/btn_rightkey_selector"
+            app:layout_constraintBottom_toBottomOf="@id/speed_background"
+            app:layout_constraintEnd_toEndOf="@id/speed_background"
+            app:layout_constraintStart_toEndOf="@id/act_panorama_camera_quick_menu_item3_content"
+            app:layout_constraintTop_toTopOf="@id/speed_background" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

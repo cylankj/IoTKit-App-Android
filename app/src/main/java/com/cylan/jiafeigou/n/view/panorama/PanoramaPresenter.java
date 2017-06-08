@@ -80,6 +80,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshConnectionMode(1);
                     } else if (event.wifi != null && event.wifi.isConnected()) {
                         mView.onRefreshConnectionMode(0);
+                    } else {
+                        mView.onRefreshConnectionMode(-1);
                     }
                 }, e -> {
                 });
@@ -112,12 +114,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         });
         version.startCheck();
         return subscription;
-    }
-
-    @Override
-    public void startViewer() {
-        super.startViewer();
-        checkAndInitRecord();
     }
 
     private Subscription getReportMsgSub() {
@@ -166,6 +162,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshControllerView(false);
                     } else {
                         mView.onRefreshControllerView(true);
+                        checkAndInitRecord();
                     }
                 }, AppLogger::e);
     }

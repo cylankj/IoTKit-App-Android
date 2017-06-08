@@ -55,6 +55,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
     }
 
     private String getRemoteFilePath(String fileName) {
+        if (sourceManager.getAccount().getAccount() == null) return "";
         return "/long/" + Security.getVId() + "/" + sourceManager.getAccount().getAccount() + "/wonder/" + uuid + "/" + fileName;
     }
 

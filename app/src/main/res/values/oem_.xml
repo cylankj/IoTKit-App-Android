@@ -11,4 +11,8 @@
     <bool name="show_share_btn">true</bool>
     <string name="qrcode_prefix">http://a.app.qq.com/o/simple.jsp?pkgname=%1$s&amp;id=%2$s</string>
     <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s</string>
+    <item name="share_default_description" format="reference" type="string">
+        @string/Tap1_Shared_Description
+    </item>
+    <string name="share_default_title">@string/Tap1_Shared_Title</string>
 </resources>

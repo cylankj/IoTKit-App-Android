@@ -19,6 +19,9 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
         AppLogger.d("执行删除:");
+        if (!sourceManager.isOnline()) {
+            return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
+        }
         return Observable.from(multiEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

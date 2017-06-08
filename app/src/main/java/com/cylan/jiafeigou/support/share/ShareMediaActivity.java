@@ -39,9 +39,10 @@ import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_PLATFORM_TYP
  * Created by yanzhendong on 2017/6/1.
  */
 
-public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter> implements ShareMediaContact.View, ShareOptionMenuDialog.ShareOptionClickListener {
+public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter> implements ShareMediaContact.View, ShareOptionMenuDialog.ShareOptionClickListener, UMShareListener {
     private int shareStyle = SHARE_CONTENT_PICTURE;
     private ShareOptionMenuDialog shareOptionMenuDialog;
+    private boolean shareStarted = false;
 
     @Override
     protected void setActivityComponent(ActivityComponent activityComponent) {
@@ -54,6 +55,11 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
         Intent intent = getIntent();
         shareStyle = intent.getIntExtra(SHARE_CONTENT, SHARE_CONTENT_NONE);
         setTitle(null);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 
@@ -61,8 +67,14 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
         AppLogger.e("onEnterAnimationComplete");
-        showShareOptionMenu();
+        if (shareStarted) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
+            finish();
+        } else {
+            showShareOptionMenu();
+        }
     }
+
 
     private void showShareOptionMenu() {
         if (!NetUtils.isNetworkAvailable(this)) {
@@ -78,35 +90,9 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
         }
     }
 
-    private DialogInterface.OnCancelListener cancelListener = dialog -> finish();
-
-    private UMShareListener listener = new UMShareListener() {
-        @Override
-        public void onStart(SHARE_MEDIA share_media) {
-            AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
-        }
-
-        @Override
-        public void onResult(SHARE_MEDIA share_media) {
-            AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
-            ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-            finish();
-        }
-
-        @Override
-        public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-            AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
-
-            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
-            finish();
-        }
-
-        @Override
-        public void onCancel(SHARE_MEDIA share_media) {
-            AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
-            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
-            finish();
-        }
+    private DialogInterface.OnCancelListener cancelListener = dialog -> {
+        finish();
+        overridePendingTransition(0, 0);
     };
 
     @Override
@@ -164,7 +150,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 shareAction.setPlatform(platform);
                 shareAction.withMedia(image);
                 shareAction.withExtra(image);
-                shareAction.setCallback(listener);
+                shareAction.setCallback(this);
                 shareAction.share();
                 break;
             case SHARE_CONTENT_WEB_URL:
@@ -181,7 +167,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 shareAction = new ShareAction(this);
                 shareAction.setPlatform(getPlatform(shareItemType));
                 shareAction.withMedia(web);
-                shareAction.setCallback(listener);
+                shareAction.setCallback(this);
                 shareAction.share();
                 break;
             case SHARE_CONTENT_H5_WITH_UPLOAD:
@@ -190,14 +176,35 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 bundle.putInt(SHARE_PLATFORM_TYPE, shareItemType);
                 H5ShareEditorFragment fragment = new H5ShareEditorFragment();
                 fragment.setArguments(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
+                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content, true);
                 break;
         }
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(0, 0);
+    public void onStart(SHARE_MEDIA share_media) {
+        AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+        shareStarted = true;
+    }
+
+    @Override
+    public void onResult(SHARE_MEDIA share_media) {
+        AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
+        ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
+        finish();
+    }
+
+    @Override
+    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+        AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
+        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
+        finish();
+    }
+
+    @Override
+    public void onCancel(SHARE_MEDIA share_media) {
+        AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
+        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
+        finish();
     }
 }
