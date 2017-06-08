@@ -125,18 +125,37 @@
         <meta-data
             android:name="vKey"
             android:value="${VKEY}" />
+
         <meta-data
+            android:name="qqAppId"
+            android:value="${qqAppId}" />
+         <meta-data
             android:name="qqAppKey"
             android:value="${qqAppKey}" />
+
         <meta-data
             android:name="mtaAppKey"
             android:value="${mtaAppKey}" />
         <meta-data
-            android:name="weChatAppKey"
-            android:value="${weChatAppKey}" />
+            android:name="weChatAppId"
+            android:value="${weChatAppId}" />
+
+        <meta-data
+            android:name="twitterAppKey"
+            android:value="${twitterAppKey}" />
+        <meta-data
+            android:name="twitterAppSecret"
+            android:value="${twitterAppSecret}" />
+
+        <meta-data
+            android:name="weChatAppSecret"
+            android:value="${weChatAppSecret}" />
         <meta-data
             android:name="sinaAppKey"
             android:value="${sinaAppKey}" />
+        <meta-data
+            android:name="sinaAppSecret"
+            android:value="${sinaAppSecret}" />
         <meta-data
             android:name="server"
             android:value="${SERVER}" />
@@ -249,7 +268,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
 
         <!-- &lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt; -->
         <!-- <service -->
@@ -642,7 +660,6 @@
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/CamActivityTheme" />
-
         <activity
             android:name=".n.view.mine.FeedbackActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -660,10 +677,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme" />
 
-
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="592fa9b6f5ade446c7001a9c"></meta-data>
+            android:value="592fa9b6f5ade446c7001a9c" />
 
         <activity
             android:name="com.umeng.socialize.editorpage.ShareActivity"
@@ -682,6 +698,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -706,6 +723,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
     </application>
 
 </manifest>

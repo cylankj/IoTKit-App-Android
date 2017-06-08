@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.ResolveInfoEx;
@@ -53,7 +54,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeSettingFragment extends Fragment implements HomeSettingContract.View {
+public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Presenter> implements HomeSettingContract.View {
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.sv_home_setting_accessMes)
@@ -72,7 +73,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     SettingItemView1 svHomeSettingAbout;
 
     private List<ResolveInfoEx> finalList;
-    private HomeSettingContract.Presenter presenter;
     private AboutFragment aboutFragment;
 
     public static HomeSettingFragment newInstance() {
@@ -91,7 +91,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         View view = inflater.inflate(R.layout.fragment_home_mine_setting, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        presenter.calculateCacheSize();
+        basePresenter.calculateCacheSize();
         return view;
     }
 
@@ -103,12 +103,12 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
     private void initPresenter() {
-        presenter = new HomeSettingPresenterImp(this);
+        basePresenter = new HomeSettingPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(HomeSettingContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(HomeSettingContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
     @Override
@@ -129,7 +129,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 break;
             case R.id.sv_home_setting_clear:
                 if ("0.0M".equals(svHomeSettingClear.getSubTitle())) return;
-                presenter.clearCache();
+                basePresenter.clearCache();
                 break;
             case R.id.sv_home_setting_recommend:
                 //推荐给亲友
@@ -200,7 +200,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public boolean switchAcceptMesg() {
-        return presenter.getNegation();
+        return basePresenter.getNegation();
     }
 
     @Override
@@ -221,16 +221,13 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
         initSwitchBtnListener();
+        basePresenter.refreshWechat();
     }
 
     private void initSwitchBtnListener() {
@@ -244,7 +241,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                         .setTitle(R.string.PUSH_MSG);
                 AlertDialogManager.getInstance().showDialog(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG), getActivity(), builder);
             } else {
-                presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                basePresenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
                 if (!isChecked) {
                     svSoundContainer.setVisibility(View.GONE);
                     svVibrateContainer.setVisibility(View.GONE);
@@ -255,10 +252,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             }
         });
         svSoundContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            presenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
+            basePresenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
         });
         svVibrateContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            presenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
+            basePresenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
         });
         svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             //跳转微信公众号
