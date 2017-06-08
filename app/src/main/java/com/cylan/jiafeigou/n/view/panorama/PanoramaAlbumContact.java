@@ -43,7 +43,7 @@ public interface PanoramaAlbumContact {
 
         List<PanoramaItem> getList();
 
-        void onViewModeChanged(int mode);
+        void onViewModeChanged(int mode, boolean report);
 
         void onSDCardCheckResult(int has_sdcard);
     }

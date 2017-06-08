@@ -80,6 +80,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshConnectionMode(1);
                     } else if (event.wifi != null && event.wifi.isConnected()) {
                         mView.onRefreshConnectionMode(0);
+                    } else {
+                        mView.onRefreshConnectionMode(-1);
                     }
                 }, e -> {
                 });

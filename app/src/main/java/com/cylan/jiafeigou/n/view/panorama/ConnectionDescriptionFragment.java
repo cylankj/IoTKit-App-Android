@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentConnectionDescriptionBinding;
 
@@ -43,5 +45,14 @@ public class ConnectionDescriptionFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected boolean onBackPressed() {
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            BaseActivity activity = (BaseActivity) getActivity();
+            activity.onViewAction(JFGView.VIEW_ACTION_OK, null, null);
+        }
+        return super.onBackPressed();
     }
 }

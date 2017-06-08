@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
@@ -24,6 +23,7 @@ import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
@@ -118,10 +118,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             String routerMac = NetUtils.getRouterMacAddress(getApplication());
             if (TextUtils.equals(mac, routerMac)) {
                 albumViewMode = 2;
-                toolbarAlbumViewMode.setEnabled(true);
+//                toolbarAlbumViewMode.setEnabled(true);
             } else {
                 albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
-                toolbarAlbumViewMode.setEnabled(false);
+//                toolbarAlbumViewMode.setEnabled(false);
             }
         }
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
@@ -169,8 +169,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             presenter.fetch(0, albumViewMode);
         });
         albumModeSelectPop.setCheckIndex(modeToResId(albumViewMode, false));
+        albumModeSelectPop.setMode(albumViewMode);
         albumModeSelectPop.showOnAnchor(toolbarAlbumViewMode, RelativePopupWindow.VerticalPosition.ALIGN_TOP, RelativePopupWindow.HorizontalPosition.ALIGN_LEFT);
-        albumModeSelectPop.setMode(BasePanoramaApiHelper.getInstance().getDeviceIp() == null ? 0 : 2);
     }
 
     private int modeToResId(@ALBUM_VIEW_MODE int mode, boolean isPop) {
@@ -362,10 +362,13 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onViewModeChanged(int mode) {
+    public void onViewModeChanged(int mode, boolean report) {
+        if (report && mode != albumViewMode) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));
+        }
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-//        toolbarAlbumViewMode.setEnabled(mode != 0);
+
     }
 
     @Override
@@ -376,7 +379,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             new AlertDialog.Builder(this)
                     .setMessage(R.string.MSG_SD_OFF)
                     .setCancelable(false)
-                    .setPositiveButton(R.string.OK, (dialog, which) -> onViewModeChanged(0))
+                    .setPositiveButton(R.string.OK, (dialog, which) -> onViewModeChanged(0, false))
                     .show();
         }
     }

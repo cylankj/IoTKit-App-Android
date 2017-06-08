@@ -151,7 +151,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private boolean hasResolution = false;
     private ConnectionDescriptionFragment fragment;
     private boolean justForTest = false;
-
+    private boolean hasNetSetting = false;
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
 
@@ -178,6 +178,21 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         liveFlowSpeedText.setText("0K/s");
         loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
         onHideBadNetWorkBanner();
+    }
+
+    @Override
+    public void onViewAction(int action, String handler, Object extra) {
+        super.onViewAction(action, handler, extra);
+        if (action == VIEW_ACTION_OK) {
+            hasNetSetting = false;
+            int netType = NetUtils.getNetType(this);
+            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+            if (!hasNetSetting) {
+                presenter.startViewer();
+            }
+            onRefreshConnectionMode(alertMobile ? 1 : -1);
+            onRefreshViewModeUI(panoramaViewMode, false);
+        }
     }
 
     @Override
@@ -405,12 +420,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         hasResolution = false;
         setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         int netType = NetUtils.getNetType(this);
-        if (netType == ConnectivityManager.TYPE_MOBILE) {
-            onRefreshConnectionMode(1);
-        } else {
+        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+        if (!hasNetSetting) {
             presenter.startViewer();
-            onRefreshConnectionMode(-1);
         }
+        onRefreshConnectionMode(alertMobile ? 1 : -1);
         onRefreshViewModeUI(panoramaViewMode, false);
     }
 
@@ -585,6 +599,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (fragment == null) {
             fragment = ConnectionDescriptionFragment.newInstance();
         }
+        hasNetSetting = true;
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
     }
 
@@ -754,6 +769,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bannerConnectionIcon.setImageResource(apMode ? R.drawable.camera720_icon_ap : R.drawable.camera720_icon_wifi);
         bannerConnectionIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.GONE);
         bannerConnectionText.setText(apMode ? R.string.Tap1_OutdoorMode : isOnline ? R.string.DEVICE_WIFI_ONLINE : R.string.NOT_ONLINE);
+        bannerChargeText.setVisibility((apMode || isOnline) ? View.VISIBLE : View.INVISIBLE);
+        bannerChargeIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.INVISIBLE);
         if (NetUtils.getNetType(this) == -1) {//真没网了
             if (bannerSwitcher.getDisplayedChild() == 0) {
                 bannerSwitcher.showNext();
