@@ -227,7 +227,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     public void onStart() {
         super.onStart();
         initSwitchBtnListener();
-        basePresenter.refreshWechat();
+//        basePresenter.refreshWechat();
     }
 
     private void initSwitchBtnListener() {

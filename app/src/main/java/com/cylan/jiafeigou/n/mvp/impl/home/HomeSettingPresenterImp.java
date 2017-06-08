@@ -326,10 +326,13 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         getOpenID();
     }
 
+    private boolean access;
 
     private void getOpenID() {
+        if (access) return;
+        access = true;
         UMShareAPI.get(mView.getContext())
-                .getPlatformInfo((Activity) mView.getContext(), SHARE_MEDIA.QQ, new UMAuthListener() {
+                .getPlatformInfo((Activity) mView.getContext(), SHARE_MEDIA.WEIXIN, new UMAuthListener() {
                     @Override
                     public void onStart(SHARE_MEDIA share_media) {
                         Log.d("getOpenID", "onStart: ");
