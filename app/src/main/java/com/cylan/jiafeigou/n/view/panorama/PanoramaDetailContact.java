@@ -12,6 +12,8 @@ public interface PanoramaDetailContact {
     interface View extends JFGView {
 
         void onDeleteResult(int code);
+
+        void onReportDeviceError(int i, boolean b);
     }
 
     interface Presenter extends JFGPresenter<View> {

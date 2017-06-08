@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.support.share;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
@@ -172,11 +174,26 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 break;
             case SHARE_CONTENT_H5_WITH_UPLOAD:
                 AppLogger.e("H5分享模式,在指定的 fragment 里分享");
-                Bundle bundle = getIntent().getExtras();
-                bundle.putInt(SHARE_PLATFORM_TYPE, shareItemType);
-                H5ShareEditorFragment fragment = new H5ShareEditorFragment();
-                fragment.setArguments(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content, true);
+                if (NetUtils.getNetType(this) != ConnectivityManager.TYPE_WIFI) {
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.Tap1_Firmware_DataTips)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.CARRY_ON, (dialog, which) -> {
+                                Bundle bundle = getIntent().getExtras();
+                                bundle.putInt(SHARE_PLATFORM_TYPE, shareItemType);
+                                H5ShareEditorFragment fragment = new H5ShareEditorFragment();
+                                fragment.setArguments(bundle);
+                                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content, true);
+                            })
+                            .setNegativeButton(R.string.CANCEL, null)
+                            .show();
+                } else {
+                    Bundle bundle = getIntent().getExtras();
+                    bundle.putInt(SHARE_PLATFORM_TYPE, shareItemType);
+                    H5ShareEditorFragment fragment = new H5ShareEditorFragment();
+                    fragment.setArguments(bundle);
+                    ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content, true);
+                }
                 break;
         }
     }

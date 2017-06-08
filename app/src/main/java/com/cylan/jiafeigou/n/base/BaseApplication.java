@@ -104,9 +104,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
             registerActivityLifecycleCallbacks(this);
 //            startService(new Intent(this, DataSourceService.class));
             GlobalResetPwdSource.getInstance().register();
-            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
             PerformanceUtils.stopTrace("appStart");
         }
+        Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
     }
 
     @Override

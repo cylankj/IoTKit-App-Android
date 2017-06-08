@@ -187,7 +187,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }
-                tvWifiPwdSubmit.viewZoomSmall();
+                tvWifiPwdSubmit.viewZoomSmall(null);
                 //判断当前
                 if (getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
                     if (basePresenter != null)

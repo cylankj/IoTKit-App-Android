@@ -95,6 +95,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         }
         if (fetchLocation == 0) {
             fetchSubscription = loadFromLocal(time)
+                    .delay(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
                         mView.onAppend(items, time == 0, true);
@@ -104,6 +105,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     });
         } else if (fetchLocation == 1) {
             fetchSubscription = loadFromServer(time)
+                    .delay(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
                         mView.onAppend(items, time == 0, true);
@@ -134,6 +136,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
                         return result.subList(0, result.size() > 20 ? 20 : result.size());
                     }))
+                    .delay(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
                         mView.onAppend(items, time == 0, true);

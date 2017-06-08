@@ -142,6 +142,7 @@ public class JConstant {
     public static final java.lang.String PANORAMA_THUMB_PICTURE = "panorama_thumb_picture";
     public static final java.lang.String SWITCH_MODE_POP = "switch_mode_pop";
     public static final String ALERT_MOBILE = "alert_mobile";
+    public static final java.lang.String SHOW_VR_MODE_TIPS = "show_vr_mode_tips";
 
 
     /**

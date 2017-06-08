@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.databinding.LayoutBottomFooterBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -71,6 +72,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     private boolean loading;
     private boolean isEditMode = false;
     private RoundRectPopup albumModeSelectPop;
+    private LayoutBottomFooterBinding footerBinding;
 
 
     @Override
@@ -81,34 +83,22 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         panoramaAdapter.setOnItemLongClickListener(this);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        footerBinding = LayoutBottomFooterBinding.inflate(getLayoutInflater(), recyclerView, false);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            public int currentPage;
-            public int previousTotal;
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = recyclerView.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-                if (loading) {
-
-                    if (totalItemCount > previousTotal) {
-                        //说明数据已经加载结束
-                        previousTotal = totalItemCount;
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int visibleItemCount = recyclerView.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                    //这里需要好好理解
+                    if (!loading && totalItemCount - visibleItemCount <= firstVisibleItem && panoramaAdapter.getCount() > 0) {
+                        footerBinding.footerProgressBar.setVisibility(View.VISIBLE);
+                        footerBinding.footerContentText.setText(R.string.LOADING);
+                        //延时一点点,好显示 footerView
+                        onLoadMore();
                     }
-                }
-                //这里需要好好理解
-                if (!loading && totalItemCount - visibleItemCount <= firstVisibleItem) {
-                    currentPage++;
-                    onLoadMore();
-                    loading = true;
                 }
             }
         });
@@ -268,6 +258,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
+        if (position == panoramaAdapter.getItemCount() - 1) {
+            return;
+        }
         PanoramaAlbumContact.PanoramaItem item = panoramaAdapter.getItem(position);
         if (panoramaAdapter.isInEditMode()) {
             panoramaAdapter.reverseItemSelectedState(position);
@@ -326,12 +319,21 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         }
         if (resultList != null && resultList.size() > 0) {
             panoramaAdapter.addAll(resultList);
+            if (!panoramaAdapter.hasFooterView()) {
+                panoramaAdapter.addFooterView(footerBinding.getRoot());
+            }
             if (isRefresh) {
                 PreferencesUtils.putString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid, resultList.get(0).fileName);
             }
         }
+        boolean hasMore = resultList != null && resultList.size() == 20;
+        footerBinding.footerProgressBar.setVisibility(hasMore ? View.VISIBLE : View.GONE);
+        footerBinding.footerContentText.setText(hasMore ? R.string.LOADING : R.string.Loaded);
         //setEmptyView
         emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+        if (panoramaAdapter.getCount() == 0) {
+            panoramaAdapter.removeFooterView();
+        }
         swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.post(() -> {
             swipeRefreshLayout.setRefreshing(false);

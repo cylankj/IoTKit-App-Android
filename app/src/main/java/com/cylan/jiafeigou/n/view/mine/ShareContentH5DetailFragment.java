@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -53,6 +55,8 @@ public class ShareContentH5DetailFragment extends BaseFragment {
         h5DetailBinding.headerMenuBack.setOnClickListener(v -> getActivity().onBackPressed());
         h5DetailBinding.headerMenuShare.setOnClickListener(this::share);
         h5DetailBinding.headerMenuDelete.setOnClickListener(this::delete);
+        h5DetailBinding.headerMenuShare.setEnabled(false);
+        h5DetailBinding.headerMenuDelete.setEnabled(false);
     }
 
     private void delete(View view) {
@@ -76,6 +80,14 @@ public class ShareContentH5DetailFragment extends BaseFragment {
         super.onEnterAnimationFinished();
         WebSettings settings = h5DetailBinding.shareH5WebView.getSettings();
         settings.setJavaScriptEnabled(true);
+        h5DetailBinding.shareH5WebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                h5DetailBinding.headerMenuDelete.setEnabled(true);
+                h5DetailBinding.headerMenuShare.setEnabled(true);
+            }
+        });
         Bundle arguments = getArguments();
         if (arguments != null) {
             shareItem = arguments.getParcelable("shareItem");
@@ -88,12 +100,12 @@ public class ShareContentH5DetailFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        ViewUtils.setViewPaddingStatusBar(h5DetailBinding.headerToolbar);
+        ViewUtils.setViewPaddingStatusBar(h5DetailBinding.headerToolbarContainer);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ViewUtils.clearViewPaddingStatusBar(h5DetailBinding.headerToolbar);
+        ViewUtils.clearViewPaddingStatusBar(h5DetailBinding.headerToolbarContainer);
     }
 }

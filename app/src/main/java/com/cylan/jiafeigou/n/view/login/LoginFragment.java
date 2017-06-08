@@ -522,15 +522,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
             return;
         }
-        if (basePresenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
-            String account = ViewUtils.getTextViewContent(etLoginUsername);
-            String password = ViewUtils.getTextViewContent(etLoginPwd);
-            basePresenter.performLogin(account, password);
-        }
+
         IMEUtils.hide(getActivity());
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
         AnimatorUtils.viewTranslationY(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? rLayoutLoginThirdParty : rLayoutLoginThirdPartyAbroad, false, 100, 0, 800, 500);
-        lbLogin.viewZoomSmall();
+        lbLogin.viewZoomSmall(() -> {
+            if (basePresenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+                String account = ViewUtils.getTextViewContent(etLoginUsername);
+                String password = ViewUtils.getTextViewContent(etLoginPwd);
+                basePresenter.performLogin(account, password);
+            }
+        });
         enableEditTextCursor(false);
         enableOtherBtn(false);
     }

@@ -268,7 +268,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
                     liveStreamAction.hasResolution = false;
                     liveStreamAction.hasLiveError = true;
-                    mView.onVideoDisconnect(dis.code);
+                    if (dis.code != STOP_VIERER_BY_SYSTEM) {
+                        mView.onVideoDisconnect(dis.code);
+                    }
                     return true;
                 });
     }

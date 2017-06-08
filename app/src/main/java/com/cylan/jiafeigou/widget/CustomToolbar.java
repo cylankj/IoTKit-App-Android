@@ -8,6 +8,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         int iconResIdRight = at.getResourceId(R.styleable.CustomToolbar_ct_icon_right, -1);
         boolean showShadow = at.getBoolean(R.styleable.CustomToolbar_ct_enable_shadow, false);
         boolean enableTheme = at.getBoolean(R.styleable.CustomToolbar_ct_enable_theme, false);
+        int leftTextSize = at.getDimensionPixelSize(R.styleable.CustomToolbar_ct_left_title_size, -1);
 
         fitSystemWindow = at.getBoolean(R.styleable.CustomToolbar_ct_fit_system_window, true);
         at.recycle();
@@ -93,6 +95,9 @@ public class CustomToolbar extends LinearLayout implements ITheme {
                 tvToolbarTitle.setTextColor(titleColor);
             if (iconResIdLeft != -1) {
                 ViewUtils.setDrawablePadding(tvToolbarIcon, iconResIdLeft, 0);
+            }
+            if (leftTextSize != -1) {
+                tvToolbarIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, leftTextSize);
             }
             if (!TextUtils.isEmpty(rightTitle)) {
                 tvToolbarRight.setVisibility(VISIBLE);
@@ -269,5 +274,9 @@ public class CustomToolbar extends LinearLayout implements ITheme {
             return tvToolbarRight;
         }
         return null;
+    }
+
+    public void setLeftTextSize(int textSize) {
+        tvToolbarIcon.setTextSize(textSize);
     }
 }
