@@ -646,7 +646,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         bottomPictureMenuGyroscope.setEnabled(enable);
         bottomVideoMenuGyroscope.setEnabled(enable);
         panoramaPanelSeekBar.setEnabled(enable);
-        bottomVideoMenuPlayTime.setEnabled(false);
-
+        bottomVideoMenuPlayTime.setEnabled(enable);
     }
 }

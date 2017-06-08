@@ -215,6 +215,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             tvAlbumDelete.setBackground(new ColorDrawable(0));
             toggleEditMode(true);
             bottomMenuContainer.setVisibility(View.VISIBLE);
+            deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size()>0);
         } else {
             //cancel
             tvAlbumDelete.setText("");
@@ -351,6 +352,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         //setEmptyView
         emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         tvAlbumDelete.setEnabled(panoramaAdapter.getCount() > 0);
+        if (panoramaAdapter.getCount() == 0) {
+            panoramaAdapter.removeFooterView();
+        }
     }
 
     @Override

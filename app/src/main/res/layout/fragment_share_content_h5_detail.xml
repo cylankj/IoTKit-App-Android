@@ -48,7 +48,7 @@
                 android:maxLines="1"
                 android:text="@string/share_default_title"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/sp22"
+                android:textSize="@dimen/sp16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/headerMenuBack"
                 app:layout_constraintRight_toLeftOf="@+id/headerMenuShare"
@@ -62,7 +62,7 @@
                 android:background="@android:color/transparent"
                 android:paddingEnd="@dimen/y7"
                 android:paddingStart="@dimen/y7"
-                android:src="@drawable/details_icon_share"
+                android:src="@drawable/detail_icon_share_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/headerMenuDelete"
                 app:layout_constraintTop_toTopOf="parent" />
