@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -75,7 +74,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @BindView(R.id.tv_home_mine_msg_count)
     MsgBoxView tvHomeMineMsgCount;
     @BindView(R.id.rLayout_home_mine_top)
-    ConstraintLayout rLayoutHomeMineTop;
+    ImageView rLayoutHomeMineTop;
     @BindView(R.id.home_mine_item_friend)
     HomeMineItemView homeMineItemFriend;
     @BindView(R.id.home_mine_item_share)
@@ -312,11 +311,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {
         private final WeakReference<ImageView> image;
         private final WeakReference<HomeMineContract.Presenter> basePresenter;
-        private final WeakReference<ViewGroup> mFrameLayout;
+        private final WeakReference<ImageView> mFrameLayout;
         private final WeakReference<Drawable> mDrawable;
         private String url;
 
-        public MySimpleTarget(ImageView view, Drawable drawable, ViewGroup frameLayout, String url, HomeMineContract.Presenter presenter) {
+        public MySimpleTarget(ImageView view, Drawable drawable, ImageView frameLayout, String url, HomeMineContract.Presenter presenter) {
             image = new WeakReference<>(view);
             mFrameLayout = new WeakReference<>(frameLayout);
             basePresenter = new WeakReference<>(presenter);

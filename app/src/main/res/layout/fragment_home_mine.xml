@@ -6,60 +6,55 @@
     android:clickable="true"
     android:focusable="true">
 
-    <android.support.constraint.ConstraintLayout
+
+    <ImageView
         android:id="@+id/rLayout_home_mine_top"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/y238"
         android:background="@drawable/me_bg_top_image"
+        android:scaleType="fitXY"
+        android:src="#40000000"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.cylan.jiafeigou.widget.wave.ShadowLayout
+        android:id="@+id/shadow_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/tv_home_mine_nick"
+        app:layout_constraintEnd_toEndOf="@+id/rLayout_home_mine_top"
+        app:layout_constraintStart_toStartOf="@+id/rLayout_home_mine_top"
+        app:layout_constraintTop_toTopOf="@+id/rLayout_home_mine_top"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:sl_cornerRadius="@dimen/x56"
+        app:sl_dx="0dp"
+        app:sl_dy="@dimen/y2"
+        app:sl_shadowColor="#88000000"
+        app:sl_shadowRadius="@dimen/x2">
+
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+            android:id="@+id/iv_home_mine_portrait"
+            android:layout_width="@dimen/x76"
+            android:layout_height="@dimen/y76"
+            android:src="@drawable/pic_head_normal240px"
+            app:riv_oval="true" />
+    </com.cylan.jiafeigou.widget.wave.ShadowLayout>
+
+    <TextView
+        android:id="@+id/tv_home_mine_nick"
+        style="@style/text_base_singleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/y13"
+        android:ellipsize="end"
+        android:maxLength="12"
+        android:text="@string/Tap3_LogIn"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp19"
+        app:layout_constraintBottom_toBottomOf="@+id/rLayout_home_mine_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#40000000" />
-
-        <com.cylan.jiafeigou.widget.wave.ShadowLayout
-            android:id="@+id/shadow_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/tv_home_mine_nick"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:sl_cornerRadius="@dimen/x56"
-            app:sl_dx="0dp"
-            app:sl_dy="@dimen/y2"
-            app:sl_shadowColor="#88000000"
-            app:sl_shadowRadius="@dimen/x2">
-
-            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-                android:id="@+id/iv_home_mine_portrait"
-                android:layout_width="@dimen/x76"
-                android:layout_height="@dimen/y76"
-                android:src="@drawable/pic_head_normal240px"
-                app:riv_oval="true" />
-        </com.cylan.jiafeigou.widget.wave.ShadowLayout>
-
-        <TextView
-            android:id="@+id/tv_home_mine_nick"
-            style="@style/text_base_singleLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/y13"
-            android:ellipsize="end"
-            android:maxLength="12"
-            android:text="@string/Tap3_LogIn"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp19"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shadow_layout" />
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/shadow_layout" />
 
     <com.cylan.jiafeigou.widget.MsgBoxView
         android:id="@+id/tv_home_mine_msg_count"
@@ -123,5 +118,6 @@
         app:text="@string/Tap3_Feedback"
         app:textColor="@color/color_333333"
         app:textSize="@dimen/sp16" />
+
 
 </android.support.constraint.ConstraintLayout>
