@@ -157,7 +157,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
                 });
-
+        mShare.setVisibility(getResources().getBoolean(R.bool.show_share_btn) ? View.VISIBLE : View.GONE);
     }
 
 
