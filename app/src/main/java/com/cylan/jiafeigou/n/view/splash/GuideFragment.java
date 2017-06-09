@@ -48,7 +48,6 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_welcome_guide_view, container, false);
         ButterKnife.bind(this, view);
-        PreferencesUtils.putBoolean(JConstant.KEY_FRESH, false);
         return view;
     }
 
@@ -60,6 +59,7 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 
     @Override
     public void onViewDisappear(View view, int index) {
+        PreferencesUtils.putBoolean(JConstant.KEY_FRESH, false);
         if (PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN, false) && index == 3) {
             AppLogger.d("updata_login");
             resultSub = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultUpdateLogin.class)
