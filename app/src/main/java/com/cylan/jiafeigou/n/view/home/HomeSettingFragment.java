@@ -6,10 +6,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +34,17 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.ShareToListDialog;
+import com.google.gson.Gson;
 import com.tencent.mm.opensdk.modelbiz.JumpToBizProfile;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,7 +58,8 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Presenter> implements HomeSettingContract.View {
+public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Presenter> implements
+        HomeSettingContract.View, UMAuthListener {
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.sv_home_setting_accessMes)
@@ -227,7 +232,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     public void onStart() {
         super.onStart();
         initSwitchBtnListener();
-//        basePresenter.refreshWechat();
+
     }
 
     private void initSwitchBtnListener() {
@@ -258,18 +263,20 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             basePresenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
         });
         svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            //跳转微信公众号
-            String appId = "jfg_2014";//开发者平台ID
-            IWXAPI api = WXAPIFactory.createWXAPI(getActivity(), appId, false);
-            if (api.isWXAppInstalled()) {
-                JumpToBizProfile.Req req = new JumpToBizProfile.Req();
-                req.toUserName = "gh_b0394a4ee894"; // 公众号原始ID
-                req.extMsg = "";
-                req.profileType = JumpToBizProfile.JUMP_TO_NORMAL_BIZ_PROFILE; // 普通公众号
-                api.sendReq(req);
-            } else {
-                Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
-            }
+            basePresenter.refreshWechat(this);
+            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+//            //跳转微信公众号
+//            String appId = "jfg_2014";//开发者平台ID
+//            IWXAPI api = WXAPIFactory.createWXAPI(getActivity(), appId, false);
+//            if (api.isWXAppInstalled()) {
+//                JumpToBizProfile.Req req = new JumpToBizProfile.Req();
+//                req.toUserName = "gh_b0394a4ee894"; // 公众号原始ID
+//                req.extMsg = "";
+//                req.profileType = JumpToBizProfile.JUMP_TO_NORMAL_BIZ_PROFILE; // 普通公众号
+//                api.sendReq(req);
+//            } else {
+//                Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
+//            }
         });
 
     }
@@ -315,4 +322,45 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         super.onDestroyView();
     }
 
+    @Override
+    public void onStart(SHARE_MEDIA share_media) {
+        Log.d("getOpenID", "onStart: ");
+    }
+
+    @Override
+    public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
+        Log.d("getOpenID", "getOpenID: " + new Gson().toJson(map));
+//        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+//        account.
+        // {"unionid":"opmVqv7ftlm_34oAF2Q231o8zaRM","screen_name":"test","city":"","accessToken":"1oY6MJhWyiCpeqfxQht8FX8PcO1iG1N0q3ijat4Xp0fAzUhY8YX5pPukTUGJ4v9WRuI4DUhDlQJJaBOrEx3uLZjZlYcPiGGRqXLemmTui1U","refreshToken":"Bewb12Zh-kL6S5knI54clzIib2nYUw-JX_xXyGvPEq2N_32CuIwQgJ-VvD_hqWwXlT2b_xzkT0a8rQb_oxtybtdjXXsUavCMiTyzKY1SnnI","gender":"0","province":"","openid":"ol0PtwnLAXeret_wLZNxGihc546I","profile_image_url":"http://wx.qlogo.cn/mmopen/iatA0oGrrscZV14ibGqUDlKEJ82XxVEhYefw0vepGricPDWEJw1aWdwNMVgKft1jwiaKzhuicOicABxXvDkMLiaOwOflwYicQIicsiaZax/0","country":"中国","access_token":"1oY6MJhWyiCpeqfxQht8FX8PcO1iG1N0q3ijat4Xp0fAzUhY8YX5pPukTUGJ4v9WRuI4DUhDlQJJaBOrEx3uLZjZlYcPiGGRqXLemmTui1U","iconurl":"http://wx.qlogo.cn/mmopen/iatA0oGrrscZV14ibGqUDlKEJ82XxVEhYefw0vepGricPDWEJw1aWdwNMVgKft1jwiaKzhuicOicABxXvDkMLiaOwOflwYicQIicsiaZax/0","name":"test","uid":"opmVqv7ftlm_34oAF2Q231o8zaRM","expiration":"1496930699855","language":"zh_CN","expires_in":"1496930699855"}
+        ToastUtil.showToast("成功了." + map.get("openid"));
+        //            //跳转微信公众号
+        String appId = "wx70338a9ca5e4122e";//开发者平台ID
+        IWXAPI api = WXAPIFactory.createWXAPI(getActivity(), appId, false);
+        if (api.isWXAppInstalled()) {
+            JumpToBizProfile.Req req = new JumpToBizProfile.Req();
+            req.toUserName = "gh_b0394a4ee894"; // 公众号原始ID
+            req.extMsg = "";
+            req.profileType = JumpToBizProfile.JUMP_TO_NORMAL_BIZ_PROFILE; // 普通公众号
+            api.sendReq(req);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
+        }
+        if (!isAdded()) return;
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
+    public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
+        Log.d("getOpenID", "onError: " + throwable);
+        if (!isAdded()) return;
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
+    public void onCancel(SHARE_MEDIA share_media, int i) {
+        Log.d("getOpenID", "onCancel: ");
+        if (!isAdded()) return;
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
 }

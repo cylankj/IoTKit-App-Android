@@ -301,7 +301,7 @@
             而给用户视觉效果就在当前界面。
         -->
         <activity
-            android:name=".wxapi.WXEntryActivity"
+            android:name="${ApplicationId}.wxapi.WXEntryActivity"
             android:exported="true"
             android:theme="@style/wechat_share" />
         <activity
