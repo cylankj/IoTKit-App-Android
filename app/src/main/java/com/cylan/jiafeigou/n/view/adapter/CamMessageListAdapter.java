@@ -254,7 +254,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
 
     private int getLayoutHeight(int count) {
-        float static_height = getDimens(R.dimen.x79);
+        float static_height = getDimens(R.dimen.x88);
         return (int) (static_height + (count == 1 ? getDimens(R.dimen.y120)
                 : (count == 2 ? getDimens(R.dimen.x153)
                 : getDimens(R.dimen.x100))));

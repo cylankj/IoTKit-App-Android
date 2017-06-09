@@ -182,6 +182,7 @@
                 app:sw_textColor="@color/color_FFAAAAAA" />
 
             <LinearLayout
+                android:visibility="invisible"
                 android:id="@+id/tv_cam_live_land_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

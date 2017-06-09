@@ -397,12 +397,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
             }
+            Log.d("wahat", "portHideRunnable");
         }
     };
     private Runnable portShowRunnable = new Runnable() {
         @Override
         public void run() {
             layoutD.setVisibility(VISIBLE);
+            YoYo.with(Techniques.FadeIn)
+                    .duration(200)
+                    .playOn(layoutD);
             showHistoryWheel(true);
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
@@ -655,8 +659,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutF.setVisibility(isLand ? INVISIBLE : VISIBLE);
         //历史录像显示
         boolean showFlip = !presenter.isShareDevice();
-        findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
-        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
+        findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : GONE);
+//        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
         //直播
         findViewById(R.id.tv_live).setEnabled(playType == TYPE_HISTORY);
@@ -689,7 +693,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutG.setVisibility(GONE);
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
-        findViewById(R.id.v_divider).setVisibility(isLand ? VISIBLE : INVISIBLE);
         findViewById(R.id.layout_e).setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }
@@ -706,10 +709,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(landShowRunnable);
             postDelayed(landHideRunnable, 3000);//3s后隐藏
         } else {
+            layoutD.setVisibility(VISIBLE);
             removeCallbacks(portHideRunnable);
             removeCallbacks(landHideRunnable);
             removeCallbacks(landShowRunnable);
-            postDelayed(portHideRunnable, 3000);
+            post(portShowRunnable);
+//            postDelayed(portHideRunnable, 3000);
         }
     }
 
@@ -820,6 +825,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 prepareLayoutDAnimation(state == STATE_FINISH);
             });
         });
+        findViewById(R.id.tv_cam_live_land_bottom).setVisibility(VISIBLE);
     }
 
     private void reInitHistoryHandler(CamLiveContract.Presenter presenter) {
