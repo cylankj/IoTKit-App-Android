@@ -32,10 +32,12 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
     private List<PanoramaAlbumContact.PanoramaItem> mRemovedList = new ArrayList<>();
     private String uuid;
 
+
     public PanoramaAdapter(String uuid, Context context, List<PanoramaAlbumContact.PanoramaItem> items) {
         super(context, items, R.layout.layout_panorama_album_item_image);
         this.uuid = uuid;
     }
+
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PanoramaAlbumContact.PanoramaItem item) {

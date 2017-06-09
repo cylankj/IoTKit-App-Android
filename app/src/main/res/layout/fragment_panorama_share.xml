@@ -46,6 +46,7 @@
             app:ct_fit_system_window="true"
             app:ct_left_title="@string/CANCEL"
             app:ct_left_title_color="@color/color_white"
+            app:ct_left_title_size="@dimen/sp14"
             app:ct_right_title="@string/Tap3_ShareDevice_Button"
             app:ct_right_title_color="@color/normal_btn_color_selector"
             app:ct_title_color="@color/color_white"
@@ -115,7 +116,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="top"
-            android:hint="请输入照片/视频的描述..."
+            android:hint="@string/Tap1_Album_Share_Description"
             android:maxLength="128"
             android:text="@={description}"
             android:textColor="@color/color_666666"
@@ -142,9 +143,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/y15"
             android:layout_marginTop="@dimen/y15"
-            android:text="分享内容将在服务器保存7天"
+            android:text="@string/Tap1_Album_Share_To_Daily_Great"
             android:textColor="@color/color_888888"
             android:textSize="@dimen/sp13"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shareContentBackGround" />
 

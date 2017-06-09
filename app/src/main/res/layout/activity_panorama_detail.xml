@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#4C000000"
+        android:clickable="true"
+        android:focusable="true"
         android:minHeight="@dimen/y48">
 
         <Button
@@ -24,7 +26,6 @@
             android:drawableStart="@drawable/nav_tab_back_selector"
             android:paddingEnd="@dimen/y15"
             android:paddingStart="@dimen/y15"
-            android:text="720全景相机"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp18" />
 
@@ -35,7 +36,7 @@
             android:layout_toStartOf="@+id/act_panorama_detail_toolbar_more"
             android:background="@android:color/transparent"
             android:padding="@dimen/y14"
-            android:src="@drawable/details_icon_share" />
+            android:src="@drawable/detail_icon_share_selector" />
 
         <ImageButton
             android:id="@+id/act_panorama_detail_toolbar_more"
@@ -44,7 +45,7 @@
             android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
             android:padding="@dimen/y14"
-            android:src="@drawable/details_icon_more" />
+            android:src="@drawable/details_icon_more_selector" />
 
     </RelativeLayout>
 
@@ -54,7 +55,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/panorama_detail_panel_height"
         android:layout_alignParentBottom="true"
-        android:background="#4C000000">
+        android:background="#4C000000"
+        android:clickable="true"
+        android:focusable="true">
 
         <RelativeLayout
             android:id="@+id/act_panorama_detail_bottom_video_menu"
@@ -86,7 +89,7 @@
                     android:layout_marginEnd="@dimen/y15"
                     android:layout_marginStart="@dimen/y16"
                     android:background="@null"
-                    android:src="@drawable/icon_play" />
+                    android:src="@drawable/icon_play_selector" />
 
                 <TextView
                     android:id="@+id/act_panorama_detail_bottom_video_menu_time_title"
@@ -104,7 +107,7 @@
                     android:layout_height="@dimen/y25"
                     android:layout_marginEnd="@dimen/panorama_detail_panel_video_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/video_icon_camera" />
+                    android:src="@drawable/video_icon_camera_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_vr"
@@ -112,7 +115,7 @@
                     android:layout_height="@dimen/y25"
                     android:layout_marginEnd="@dimen/panorama_detail_panel_video_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/video_icon_vr" />
+                    android:src="@drawable/video_icon_vr_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_panorama"
@@ -120,7 +123,7 @@
                     android:layout_height="@dimen/y25"
                     android:layout_marginEnd="@dimen/panorama_detail_panel_video_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/video_icon_panorama" />
+                    android:src="@drawable/video_icon_panorama_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_gyroscope"
@@ -128,7 +131,7 @@
                     android:layout_height="@dimen/y25"
                     android:layout_marginEnd="@dimen/panorama_detail_panel_video_menu_last_margin"
                     android:background="@null"
-                    android:src="@drawable/video_icon_gyroscope" />
+                    android:src="@drawable/video_icon_gyroscope_selector" />
 
             </LinearLayout>
 
@@ -151,7 +154,7 @@
                     android:layout_height="@dimen/y38"
                     android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_margin_slide"
                     android:background="@null"
-                    android:src="@drawable/photos_icon_camera" />
+                    android:src="@drawable/photos_icon_camera_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_picture_menu_vr"
@@ -159,7 +162,7 @@
                     android:layout_height="@dimen/y38"
                     android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/photos_icon_vr" />
+                    android:src="@drawable/photos_icon_vr_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_picture_menu_panorama"
@@ -167,7 +170,7 @@
                     android:layout_height="@dimen/y38"
                     android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/photos_icon_panorama" />
+                    android:src="@drawable/photos_icon_panorama_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"
@@ -176,7 +179,7 @@
                     android:layout_marginEnd="@dimen/panorama_detail_panel_picture_menu_margin_slide"
                     android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/photos_icon_gyroscope" />
+                    android:src="@drawable/photos_icon_gyroscope_selector" />
             </LinearLayout>
 
 
@@ -189,12 +192,12 @@
         android:id="@+id/act_panorama_detail_pop_picture_vr_tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="#99000000"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="invisible"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:visibility="invisible">
 
         <ImageView
 
@@ -221,7 +224,7 @@
             android:layout_below="@+id/act_panorama_detail_pop_picture"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/y15"
-            android:text="请将手机放入VR眼镜"
+            android:text="@string/Tap1_Album_PutInVR"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/sp16" />
 

@@ -111,7 +111,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
                             ? etInputBox.getHint() : etInputBox.getText().toString().trim();
                     basePresenter.setupAlias(alias.toString());
                 }
-                btnBindDone.viewZoomSmall();
+                btnBindDone.viewZoomSmall(null);
                 IMEUtils.hide(getActivity());
                 break;
         }

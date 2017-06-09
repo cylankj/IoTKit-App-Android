@@ -12,63 +12,75 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/color_white"
         android:clickable="true"
         android:focusable="true">
 
-        <FrameLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/headerToolbarContainer"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@{themeRules.timeRule==0?@color/color_0ba8cf:@color/color_23344e}"
-            android:minHeight="@dimen/y48">
+            android:background="@{themeRules.timeRule==0?@color/color_0ba8cf : @color/color_23344e}"
+            android:minHeight="@dimen/y48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
-                android:id="@+id/headerToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/headerMenuBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/y15"
+                android:src="@drawable/nav_tab_back_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                <ImageView
-                    android:id="@+id/headerMenuBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/y48"
-                    android:padding="@dimen/y15"
-                    android:src="@drawable/nav_tab_back_selector" />
 
-                <TextView
-                    android:id="@+id/headerMenuTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/y10"
-                    android:layout_marginStart="@dimen/y10"
-                    android:layout_toEndOf="@+id/headerMenuBack"
-                    android:layout_toStartOf="@+id/headerMenuShare"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:text="@string/share_default_title"
-                    android:textColor="@color/color_444444"
-                    android:textSize="@dimen/sp22" />
+            <TextView
+                android:id="@+id/headerMenuTitle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/y10"
+                android:layout_marginStart="@dimen/y10"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/share_default_title"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/headerMenuBack"
+                app:layout_constraintRight_toLeftOf="@+id/headerMenuShare"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/headerMenuShare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/y48"
-                    android:layout_marginEnd="@dimen/y14"
-                    android:layout_toStartOf="@+id/headerMenuDelete"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/details_icon_share" />
+            <ImageButton
+                android:id="@+id/headerMenuShare"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/headerMenuDelete"
+                android:background="@android:color/transparent"
+                android:paddingEnd="@dimen/y7"
+                android:paddingStart="@dimen/y7"
+                android:src="@drawable/detail_icon_share_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/headerMenuDelete"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/headerMenuDelete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/y48"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/y14"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/album_delete_selector" />
-            </RelativeLayout>
-        </FrameLayout>
+            <ImageButton
+                android:id="@+id/headerMenuDelete"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/y48"
+                android:layout_marginEnd="@dimen/y7"
+                android:background="@android:color/transparent"
+                android:paddingEnd="@dimen/y7"
+                android:paddingStart="@dimen/y7"
+                android:src="@drawable/album_delete_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
 
         <WebView
             android:id="@+id/shareH5WebView"

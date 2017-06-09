@@ -200,7 +200,7 @@ public class LoginButton extends AppCompatTextView {
                 paint);
     }
 
-    public void viewZoomSmall() {
+    public void viewZoomSmall(Runnable runnable) {
         try {
             if (viewW < viewH) {
                 return;
@@ -227,6 +227,7 @@ public class LoginButton extends AppCompatTextView {
                     super.onAnimationEnd(animation);
                     setText("");
                     viewRotate();
+                    runnable.run();
                 }
             });
             valueAnimator.setDuration(600);

@@ -37,12 +37,15 @@
     </FrameLayout>
 
 
-    <View
+    <ImageView
         android:id="@+id/v_circle"
-        android:layout_width="@dimen/y16"
-        android:layout_height="@dimen/y16"
-        android:layout_marginTop="@dimen/y20"
-        android:background="@drawable/border_solid_circle" />
+        android:layout_width="@dimen/y14"
+        android:layout_height="@dimen/y14"
+        android:layout_marginStart="@dimen/y2"
+        android:layout_marginTop="@dimen/y23"
+        android:background="@drawable/circle"
+        android:padding="@dimen/y3"
+        android:src="@drawable/border_solid_circle" />
 
 
     <TextView

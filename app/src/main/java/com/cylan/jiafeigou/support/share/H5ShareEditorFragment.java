@@ -1,14 +1,17 @@
 package com.cylan.jiafeigou.support.share;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
@@ -18,6 +21,8 @@ import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
@@ -88,8 +93,13 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         shareBinding.setShareClick(this::share);
         shareBinding.shareContextEditor.requestFocus();
         shareBinding.shareRetry.setOnClickListener(v -> presenter.upload(shareItem.fileName, filePath));
+        InputMethodManager imm = (InputMethodManager) getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(shareBinding.shareContextEditor, 0);
+        }
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
         presenter.upload(shareItem.fileName, filePath);
+
     }
 
     private String getNameByType(int shareType) {
@@ -183,10 +193,22 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     public void cancelShare(View view) {
-        onBackPressed();
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.Tap3_ShareDevice_UnshareTips)
+                .setCancelable(false)
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    onBackPressed();
+                })
+                .setNegativeButton(R.string.CANCEL, null)
+                .show();
+
     }
 
     public void share(View view) {
-        presenter.share(shareItem, description.get() == null ? "" : description.get(), thumbPath);
+        if (NetUtils.getNetType(getContext()) == -1) {
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+        } else {
+            presenter.share(shareItem, getDescription(), thumbPath);
+        }
     }
 }
