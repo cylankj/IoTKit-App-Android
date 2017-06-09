@@ -78,8 +78,8 @@ public class SmartcallActivity extends NeedLoginActivity
             presenter.selectNext(showSplash);
         }
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-        Log.d("test","test: "
-        +getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name))); // 正文)
+        Log.d("test", "test: "
+                + getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name))); // 正文)
     }
 
 
@@ -182,7 +182,8 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     private boolean isFirstUseApp() {
-        return PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true);
+        return getResources().getBoolean(R.bool.show_guide)
+                && PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true);
     }
 
     @Override

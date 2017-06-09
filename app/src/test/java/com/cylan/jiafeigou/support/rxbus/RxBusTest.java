@@ -510,6 +510,12 @@ public class RxBusTest {
         RxBus.getCacheInstance().post("000erter");
         RxBus.getCacheInstance().post("000erte11r");
         Thread.sleep(1000);
+
+        String text = "私は720°パノラマカムで何か涼しいものを作った、来て＆それを参照してください！";
+
+        for (int i = 0; i < text.length(); i++)
+            System.out.println(text.charAt(i));
+
     }
 
     public static final class TT {
