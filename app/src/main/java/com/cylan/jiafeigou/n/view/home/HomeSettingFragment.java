@@ -41,7 +41,6 @@ import com.cylan.jiafeigou.widget.ShareGridView;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -297,17 +296,14 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             mShareDlg = new Dialog(getActivity(), R.style.func_dialog);
             View content = View.inflate(getContext(), R.layout.dialog_app_share, null);
             TextView cancel = (TextView) content.findViewById(R.id.btn_cancle);
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mShareDlg.dismiss();
-                }
-            });
+            cancel.setOnClickListener(v -> mShareDlg.dismiss());
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
-            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
+            final String app = getString(R.string.Tap1_share_tips,
+                    getString(R.string.share_to_friends_link, getContext().getPackageName()),
+                    getContext().getString(R.string.app_name));
+            intent.putExtra(Intent.EXTRA_TEXT, app);
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
                 appAdater = new AppAdapter(getContext());

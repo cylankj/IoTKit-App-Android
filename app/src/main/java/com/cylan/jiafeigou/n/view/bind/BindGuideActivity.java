@@ -51,8 +51,11 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
-                getString(R.string.DOG_CAMERA_NAME))) {
+        final String defaultAlias = getIntent().getStringExtra(KEY_BIND_DEVICE);
+        if (TextUtils.equals(defaultAlias, getString(R.string.RuiShi_Name))) {
+            //rs cam
+            tvGuideMainContent.setText(getString(R.string.WIFI_SET_RS));
+        } else if (TextUtils.equals(defaultAlias, getString(R.string.DOG_CAMERA_NAME))) {
             //is cam
             tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
         } else {

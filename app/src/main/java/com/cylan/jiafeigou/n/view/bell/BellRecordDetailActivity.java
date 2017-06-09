@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -82,7 +83,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @BindView(R.id.act_bell_picture_opt_collection)
     ImageView mCollect;
     @BindView(R.id.act_bell_pic_option)
-    FrameLayout mBellContainer;
+    LinearLayout mBellContainer;
     @BindView(R.id.activity_bell_record_detail)
     FrameLayout mBellDetail;
     @BindView(R.id.act_bell_header_container)
