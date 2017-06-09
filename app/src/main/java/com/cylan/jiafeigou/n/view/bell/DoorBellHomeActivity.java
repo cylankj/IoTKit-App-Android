@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.databinding.LayoutVerticalFooterBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -104,6 +105,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private long mLastEnterTime;
     private boolean mHasLoadInitFinished = false;
     private Subscription pageSub;
+    private View footer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -186,7 +188,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 null, R.layout.layout_bell_call_list_item, this);
         bellCallRecordListAdapter.setOnItemClickListener(this);
         bellCallRecordListAdapter.setOnItemLongClickListener(this);
-        rvBellList.setAdapter(bellCallRecordListAdapter);
+
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getAppContext(), LinearLayoutManager.HORIZONTAL, false) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -197,18 +199,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 }
             }
         };
+        rvBellList.setAdapter(bellCallRecordListAdapter);
         rvBellList.setLayoutManager(linearLayoutManager);
-        rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
+        rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, ViewUtils.dp2px(15))));
         rvBellList.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        footer = LayoutVerticalFooterBinding.inflate(getLayoutInflater(), rvBellList, false).getRoot();
         rvBellList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int pastVisibleItems, visibleItemCount, totalItemCount;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                visibleItemCount = linearLayoutManager.getChildCount();
+                totalItemCount = linearLayoutManager.getItemCount();
+                pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
                 if (dx > 0) { //check for scroll down
-                    visibleItemCount = linearLayoutManager.getChildCount();
-                    totalItemCount = linearLayoutManager.getItemCount();
-                    pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
                     if (!endlessLoading && mIsLastLoadFinish) {
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             List<BellCallRecordBean> list = bellCallRecordListAdapter.getList();
@@ -216,14 +220,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                             startLoadData(false, bean.version);
                         }
                     }
+                } else if (dx < 0) {
+//                    if (mIsLastLoadFinish && pastVisibleItems == 0) {
+//                        startLoadData(false, 0);//刷新以后再做
+//                    }
                 }
             }
         });
     }
 
     private void startLoadData(boolean asc, long version) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
         mIsLastLoadFinish = false;
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
+        footer.findViewById(R.id.vertical_footer_text).setVisibility(View.GONE);
+        footer.findViewById(R.id.vertical_footer_progress_bar).setVisibility(View.VISIBLE);
         presenter.fetchBellRecordsList(asc, version);
     }
 
@@ -321,6 +331,13 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         mIsLastLoadFinish = true;
         boolean isEmpty = bellCallRecordListAdapter.getList().size() == 0;
         mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        if (isEmpty) {
+            bellCallRecordListAdapter.removeFooterView();
+        } else if (!bellCallRecordListAdapter.hasFooterView()) {
+            bellCallRecordListAdapter.addFooterView(footer);
+        }
+        footer.findViewById(R.id.vertical_footer_progress_bar).setVisibility(endlessLoading ? View.GONE : View.VISIBLE);
+        footer.findViewById(R.id.vertical_footer_text).setVisibility(endlessLoading ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -340,6 +357,13 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         }
         boolean isEmpty = bellCallRecordListAdapter.getList().size() == 0;
         mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        if (isEmpty && bellCallRecordListAdapter.hasFooterView()) {
+            bellCallRecordListAdapter.removeFooterView();
+        }
+        if (!bellCallRecordListAdapter.hasFooterView() && !isEmpty) {
+            bellCallRecordListAdapter.addFooterView(footer);
+        }
+        footer.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -351,6 +375,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBellRecordCleared() {
         bellCallRecordListAdapter.clear();
         mEmptyView.setVisibility(View.VISIBLE);
+        footer.setVisibility(View.GONE);
     }
 
     @Override
@@ -546,6 +571,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 }
             }
         }
+
     }
 
     public boolean isNetworkConnected(Context context) {

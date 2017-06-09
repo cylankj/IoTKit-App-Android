@@ -129,7 +129,7 @@
         <meta-data
             android:name="qqAppId"
             android:value="${qqAppId}" />
-         <meta-data
+        <meta-data
             android:name="qqAppKey"
             android:value="${qqAppKey}" />
 
@@ -718,11 +718,9 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name="com.umeng.socialize.handler.TwitterWebActivity"
-            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/CamActivityTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
     </application>
 

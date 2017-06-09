@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareConstant;
@@ -411,6 +412,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
         } else if (downloadInfo.getState() == DownloadManager.DOWNLOADING) {
             ToastUtil.showNegativeToast(getString(R.string.Downloading));
+        } else if (ApFilter.isAPMode(uuid)) {
+            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         } else {
             if (player != 0) {
                 JFGPlayer.Stop(player);

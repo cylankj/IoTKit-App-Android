@@ -1,125 +1,127 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/rLayout_home_mine_top"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/y238"
-        android:background="@drawable/me_bg_top_image">
+        android:background="@drawable/me_bg_top_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#40000000" />
 
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.wave.ShadowLayout
+            android:id="@+id/shadow_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/tv_home_mine_nick"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:sl_cornerRadius="@dimen/x56"
+            app:sl_dx="0dp"
+            app:sl_dy="@dimen/y2"
+            app:sl_shadowColor="#88000000"
+            app:sl_shadowRadius="@dimen/x2">
+
+            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                android:id="@+id/iv_home_mine_portrait"
+                android:layout_width="@dimen/x76"
+                android:layout_height="@dimen/y76"
+                android:src="@drawable/pic_head_normal240px"
+                app:riv_oval="true" />
+        </com.cylan.jiafeigou.widget.wave.ShadowLayout>
+
+        <TextView
+            android:id="@+id/tv_home_mine_nick"
+            style="@style/text_base_singleLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/y13"
+            android:ellipsize="end"
+            android:maxLength="12"
+            android:text="@string/Tap3_LogIn"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp19"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shadow_layout" />
+    </android.support.constraint.ConstraintLayout>
 
-            <com.cylan.jiafeigou.widget.wave.ShadowLayout
-                android:id="@+id/shadow_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y16"
-                app:sl_cornerRadius="@dimen/x56"
-                app:sl_dx="0dp"
-                app:sl_dy="@dimen/y2"
-                app:sl_shadowColor="#88000000"
-                app:sl_shadowRadius="@dimen/x2">
-
-                <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-                    android:id="@+id/iv_home_mine_portrait"
-                    android:layout_width="@dimen/x76"
-                    android:layout_height="@dimen/y76"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/pic_head_normal240px"
-                    app:riv_oval="true" />
-            </com.cylan.jiafeigou.widget.wave.ShadowLayout>
-
-            <TextView
-                android:id="@+id/tv_home_mine_nick"
-                style="@style/text_base_singleLine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/y13"
-                android:ellipsize="end"
-                android:maxLength="12"
-                android:text="@string/Tap3_LogIn"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp19"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
-
-        <com.cylan.jiafeigou.widget.MsgBoxView
-            android:id="@+id/tv_home_mine_msg_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:layout_marginEnd="@dimen/x13"
-            android:layout_marginTop="@dimen/y17"
-            android:clickable="true"
-            android:padding="@dimen/x5"
-            android:src="@drawable/me_icon_massage"
-            app:mb_circleColor="@color/color_red_dot_f43531"
-            app:mb_textColor="@color/color_white"
-            app:mb_textSize="@dimen/sp10" />
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.cylan.jiafeigou.widget.MsgBoxView
+        android:id="@+id/tv_home_mine_msg_count"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rLayout_home_mine_top"
-        android:orientation="vertical">
+        android:layout_marginEnd="@dimen/x13"
+        android:layout_marginTop="@dimen/y17"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/y5"
+        android:src="@drawable/me_icon_massage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mb_circleColor="@color/color_red_dot_f43531"
+        app:mb_textColor="@color/color_white"
+        app:mb_textSize="@dimen/sp10" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/home_mine_item_friend"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y60"
-            android:clickable="true"
-            app:leftDrawable="@drawable/me_icon_friend"
-            app:rightDrawable="@drawable/icon_list_next"
-            app:text="@string/Tap3_Friends"
-            app:textColor="@color/color_333333"
-            app:textSize="@dimen/sp16" />
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/home_mine_item_friend"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y60"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@+id/rLayout_home_mine_top"
+        app:leftDrawable="@drawable/me_icon_friend"
+        app:rightDrawable="@drawable/icon_list_next"
+        app:text="@string/Tap3_Friends"
+        app:textColor="@color/color_333333"
+        app:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/home_mine_item_share"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y60"
-            app:leftDrawable="@drawable/me_icon_share"
-            app:rightDrawable="@drawable/icon_list_next"
-            app:text="@string/Sharing_Management"
-            app:textColor="@color/color_333333"
-            app:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/home_mine_item_help"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y60"
-            app:leftDrawable="@drawable/me_icon_hlep"
-            app:rightDrawable="@drawable/icon_list_next"
-            app:text="@string/Tap3_Feedback"
-            app:textColor="@color/color_333333"
-            app:textSize="@dimen/sp16" />
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/home_mine_item_share"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y60"
+        app:layout_constraintTop_toBottomOf="@+id/home_mine_item_friend"
+        app:leftDrawable="@drawable/me_icon_share"
+        app:rightDrawable="@drawable/icon_list_next"
+        app:text="@string/Sharing_Management"
+        app:textColor="@color/color_333333"
+        app:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/home_mine_item_settings"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y60"
-            app:leftDrawable="@drawable/me_icon_setting"
-            app:rightDrawable="@drawable/icon_list_next"
-            app:text="@string/SETTINGS"
-            app:textColor="@color/color_333333"
-            app:textSize="@dimen/sp16" />
-    </LinearLayout>
-</RelativeLayout>
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/home_mine_item_settings"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y60"
+        app:layout_constraintTop_toBottomOf="@+id/home_mine_item_share"
+        app:leftDrawable="@drawable/me_icon_setting"
+        app:rightDrawable="@drawable/icon_list_next"
+        app:text="@string/SETTINGS"
+        app:textColor="@color/color_333333"
+        app:textSize="@dimen/sp16" />
+
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/home_mine_item_help"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y60"
+        app:layout_constraintTop_toBottomOf="@+id/home_mine_item_settings"
+        app:leftDrawable="@drawable/me_icon_hlep"
+        app:rightDrawable="@drawable/icon_list_next"
+        app:text="@string/Tap3_Feedback"
+        app:textColor="@color/color_333333"
+        app:textSize="@dimen/sp16" />
+
+</android.support.constraint.ConstraintLayout>

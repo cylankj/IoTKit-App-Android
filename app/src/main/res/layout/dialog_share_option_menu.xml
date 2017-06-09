@@ -115,7 +115,7 @@
                 android:paddingEnd="@dimen/y20"
                 android:paddingStart="@dimen/y20"
                 android:tag="5"
-                android:text="twitter" />
+                android:text="Twitter" />
 
             <TextView
                 android:id="@+id/tv_share_to_facebook_friends"
@@ -130,7 +130,7 @@
                 android:paddingEnd="@dimen/x20"
                 android:paddingStart="@dimen/x20"
                 android:tag="6"
-                android:text="facebook" />
+                android:text="Facebook" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </layout>

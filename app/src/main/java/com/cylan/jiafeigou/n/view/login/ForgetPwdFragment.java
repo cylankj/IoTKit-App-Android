@@ -211,7 +211,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         etForgetUsername.setEnabled(true);
         ViewUtils.setChineseExclude(etNewPwdInput, JConstant.PWD_LEN_MAX);
         if (acceptType == 1) {
-            etForgetUsername.setHint(getString(R.string.EMAIL_2));
+            etForgetUsername.setHint(getString(R.string.EMAIL_1));
         }
         Bundle bundle = getArguments();
         if (bundle != null && !TextUtils.isEmpty(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT))) {

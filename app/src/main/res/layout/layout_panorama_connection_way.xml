@@ -47,8 +47,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/pic_home_model"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="@dimen/y34"
+                    android:layout_marginStart="@dimen/y34"
                     android:layout_marginTop="@dimen/y25"
                     android:autoLink="all"
+                    android:gravity="center"
                     android:text="@string/Tap1_Camera_TCPconnected"
                     android:textColor="#666666"
                     android:textSize="@dimen/sp14" />
@@ -92,10 +95,13 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/pic_ap_model"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="@dimen/y34"
+                    android:layout_marginStart="@dimen/y34"
                     android:layout_marginTop="@dimen/y21"
                     android:autoLink="all"
-                    android:textColor="#666666"
+                    android:gravity="center"
                     android:text="@string/Tap1_Camera_UDPconnected"
+                    android:textColor="#666666"
                     android:textSize="@dimen/sp14" />
             </RelativeLayout>
         </RelativeLayout>

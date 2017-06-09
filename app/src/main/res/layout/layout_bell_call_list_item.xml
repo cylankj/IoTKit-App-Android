@@ -21,7 +21,6 @@
             android:layout_height="@dimen/y18"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y22"
-            android:text="几天"
             android:textColor="@color/color_65CAE4"
             android:textSize="@dimen/sp15" />
 
@@ -31,7 +30,6 @@
             android:layout_height="@dimen/y18"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y6"
-            android:text="06:30 am"
             android:textColor="@color/color_6C7A92"
             android:textSize="@dimen/sp15" />
 
@@ -65,8 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/y24"
-            android:drawableLeft="@drawable/doorbell_icon_connect"
             android:drawablePadding="@dimen/y10"
+            android:drawableStart="@drawable/doorbell_icon_connect"
             android:text="@string/DOOR_CALL"
             android:textColor="@color/color_CBCFD0"
             android:textSize="@dimen/sp13" />

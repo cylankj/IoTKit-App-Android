@@ -62,7 +62,6 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_LEN
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_SHOW_EDIT;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -137,7 +136,7 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     @NeedsPermission(ACCESS_FINE_LOCATION)
     public void onGrantedLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
+            if (!MiscUtils.checkGpsAvailable(getActivity().getApplication())) {
                 if (locationGrantedDialog == null) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(getString(R.string.GetWifiList_FaiTips))
