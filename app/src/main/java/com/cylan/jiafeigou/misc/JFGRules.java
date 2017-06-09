@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.Locale;
@@ -101,6 +103,30 @@ public class JFGRules {
                 return i;
         }
         return LANGUAGE_TYPE_ENGLISH;
+    }
+
+    public static boolean showIpAddress(int pid) {
+        return pid == 38 || pid == 39;
+    }
+
+    /**
+     * 有限模式
+     *
+     * @param pid
+     * @return
+     */
+    public static boolean showWiredMode(int pid) {
+        return pid == 38 || pid == 39;
+    }
+
+    /**
+     * 软AP
+     *
+     * @param pid
+     * @return
+     */
+    public static boolean showSoftAp(int pid) {
+        return pid == 38 || pid == 39;
     }
 
     public static boolean isWifiCam(int pid) {
@@ -449,5 +475,15 @@ public class JFGRules {
         int minute = Math.abs(rawOffset) - Math.abs(hour) * 1000 * 60 * 60 > 0 ? 30 : 0;
         String factor = rawOffset > 0 ? "+" : "-";
         return String.format(Locale.getDefault(), "GMT%s%02d:%02d", factor, hour, minute);
+    }
+
+    public static boolean isAPDirect(String uuid, String mac) {
+        if (!TextUtils.isEmpty(uuid) && !TextUtils.isEmpty(mac)) {
+            //做一个缓存,这个putString是内存操作,可以再UI现在直接调用
+            PreferencesUtils.putString(JConstant.KEY_DEVICE_MAC + uuid, mac);
+        }
+        if (TextUtils.isEmpty(mac))
+            mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+        return MiscUtils.isAPDirect(mac);
     }
 }

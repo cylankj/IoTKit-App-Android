@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -99,6 +100,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     CustomToolbar customToolbar;
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
+    @BindView(R.id.sv_setting_device_wired_mode)
+    SettingItemView1 svSettingDeviceWiredMode;
+    @BindView(R.id.sv_setting_device_soft_ap)
+    SettingItemView0 svSettingDeviceSoftAp;
     private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -494,6 +499,48 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSettingSight.setVisibility(View.GONE);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
+
+        //有线模式
+        svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
+        boolean wiredModeEnable = device.$(225, 0) == 1;
+        svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
+        svSettingDeviceWiredMode.setChecked(device.$(226, 0) == 1);
+        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (NetUtils.getJfgNetType() == 0) {
+                ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                return;
+            }
+            if (!isChecked) {
+                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", "关闭可能会使设备离线，确定关闭？",
+                        getString(R.string.OK), (dialog, which) -> {
+                            svSettingDeviceWiredMode.setChecked(false);
+                            svSettingDeviceWifi.setEnabled(true);
+                            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
+                        }, getString(R.string.CANCEL), (dialog, which) -> {
+                            svSettingDeviceWiredMode.setChecked(false);
+                        }, false);
+                return;
+            }
+            //wifi配置开启,,关闭
+            svSettingDeviceWifi.setEnabled(false);
+        });
+        svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid) ? View.VISIBLE : View.GONE);
+        //总的条件:相同的ssid名字
+        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            //在线,判断客户端和设备端的ssid
+            //没有连接公网.//必须是连接状态
+            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
+        } else svSettingDeviceSoftAp.setEnabled(false);
+        svSettingDeviceSoftAp.setOnClickListener(v -> {
+            if (NetUtils.getJfgNetType() == 0) {
+                ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                return;
+            }
+            getAlertDialogManager().showDialog(this, "开启Ap", "开启热点可能会使设备离线，开启后，请等待设备蓝灯闪烁", getString(R.string.OK), (dialog, which) -> {
+                ToastUtil.showToast("指令已发送");
+            }, getString(R.string.CANCEL), null, false);
+        });
     }
 
     @Override

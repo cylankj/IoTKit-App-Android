@@ -94,6 +94,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceCid;
     @BindView(R.id.tv_device_software_version)
     SettingItemView0 tvDeviceSoftwareVersion;
+    @BindView(R.id.tv_device_ip)
+    SettingItemView0 tvDeviceIp;
 
     private String uuid;
     private EditFragmentDialog editDialogFragment;
@@ -131,6 +133,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
         boolean showFirmware = JFGRules.needShowFirmware(device != null ? device.pid : 0);
         rlHardwareUpdate.setVisibility(showFirmware ? View.VISIBLE : View.GONE);
+        //ip地址显示
+        tvDeviceIp.setVisibility(JFGRules.showIpAddress(device.pid) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -195,6 +199,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceWifiState.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         String softWare = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvDeviceSoftwareVersion.setTvSubTitle(softWare);
+        //ip地址
+        tvDeviceIp.setTvSubTitle(device.$(227, ""));
     }
 
     private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {
@@ -453,5 +459,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
         }
         updateDetails();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

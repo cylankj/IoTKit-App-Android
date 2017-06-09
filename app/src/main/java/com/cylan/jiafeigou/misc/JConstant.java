@@ -111,6 +111,7 @@ public class JConstant {
     public static final String VIEW_CALL_WAY_TIME = "VIEW_CALL_WAY_TIME";
     public static final String KEY_SIMPLE_STRING_ITEM = "KEY_SIMPLE_STRING_ITEM";
 
+
     public static final String KEY_CAM_SIGHT_SETTING = "cam_sight_setting";
     public static final java.lang.String LAST_ENTER_TIME = "LAST_ENTER_TIME";
     public static final String KEY_BIND_DEVICE_ALIAS = "KEY_BIND_DEVICE_ALIAS";
@@ -340,6 +341,8 @@ public class JConstant {
     public static final String IS_FIRST_PAGE_VIS = "is_first_page_vis";
     public static final String KEY_JUMP_TO_MESSAGE = "jump_to_message";
     public static final String KEY_CLIENT_CHECK_VERSION_ID = "client_id";
+
+    public static final String KEY_DEVICE_MAC = "KEY_MAC";
 
     private static final String VERSION_URL = "http://yun.app8h.com/app?act=check_version&id=%s&platform=androidPhone&appid=%s";
 
