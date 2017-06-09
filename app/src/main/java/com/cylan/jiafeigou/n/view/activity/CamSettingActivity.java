@@ -594,17 +594,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void triggerStandby(DpMsgDefine.DPStandby dpStandby) {
         boolean open = dpStandby.standby;
         svSettingSafeProtection.setEnabled(!open);
-        svSettingSafeProtection.setAlpha(open ? 0.6f : 1.0f);
         svSettingSafeProtection.setTvSubTitle(open ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
 
         svSettingDeviceAutoRecord.setEnabled(!open);
-        svSettingDeviceAutoRecord.setAlpha(open ? 0.6f : 1.0f);
         svSettingDeviceAutoRecord.setTvSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
 
         boolean led = !open && dpStandby.led;
         svSettingDeviceLedIndicator.setEnabled(!open);
         svSettingDeviceLedIndicator.setChecked(!open && led);
-        svSettingDeviceLedIndicator.setAlpha(open ? 0.6f : 1.0f);
     }
 
     @Override
@@ -625,22 +622,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         DpMsgDefine.DPStandby dpStandby = basePresenter.getDevice().$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby && connected);
         svSettingDeviceDelayCapture.setEnabled(connected);
-
-        if (!connected) {
-            svSettingDeviceMobileNetwork.setAlpha(0.6f);
-            svSettingDeviceDelayCapture.setAlpha(0.6f);
-
-        } else {
-            svSettingDeviceMobileNetwork.setAlpha(1.0f);
-            svSettingDeviceDelayCapture.setAlpha(1.0f);
-        }
         DpMsgDefine.DPNet net = basePresenter.getDevice().$(201, new DpMsgDefine.DPNet());
         enableStandby(connected && JFGRules.isDeviceOnline(net));
     }
 
     private void enableStandby(boolean enable) {
         svSettingDeviceStandbyMode.setEnabled(enable);
-        svSettingDeviceStandbyMode.setAlpha(!enable ? 0.6f : 1.0f);
     }
 
     @Override
