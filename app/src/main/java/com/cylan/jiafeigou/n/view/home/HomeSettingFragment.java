@@ -41,6 +41,7 @@ import com.cylan.jiafeigou.widget.ShareGridView;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -300,10 +301,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            final String app = getString(R.string.Tap1_share_tips,
-                    getString(R.string.share_to_friends_link, getContext().getPackageName()),
-                    getContext().getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_TEXT, app);
+            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
+            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
                 appAdater = new AppAdapter(getContext());
