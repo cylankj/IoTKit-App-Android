@@ -349,10 +349,10 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="kCEeFDWzz5xHi8Ej9Wx6FWqRL" />
+            android:value="${TWITTER_APP_KEY}" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="fb1866682200216878" />
+            android:value="${FACEBOOK_APP_KEY}" />
 
         <activity
             android:name=".n.view.activity.SightSettingActivity"

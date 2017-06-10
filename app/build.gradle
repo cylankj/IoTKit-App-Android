@@ -169,7 +169,9 @@ android {
                                     "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
                                     "BUGLY_APPID"        : "2e94bf542f",
                                     "BUGLY_APP_VERSION"  : versionName,
-                                    "BUGLY_APP_CHANNEL"  : "cylan"
+                                    "BUGLY_APP_CHANNEL"  : "cylan",
+                                    "TWITTER_APP_KEY"    : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
+                                    "FACEBOOK_APP_KEY"   : "fb1866682200216878"
             ]
         }
         _doby {
@@ -192,7 +194,9 @@ android {
                                     "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
                                     "BUGLY_APPID"        : "2e94bf542f",
                                     "BUGLY_APP_VERSION"  : versionName,
-                                    "BUGLY_APP_CHANNEL"  : "doby"
+                                    "BUGLY_APP_CHANNEL"  : "doby",
+                                    "TWITTER_APP_KEY"    : "gSbX9IzCQ4w4xaE1igwAqrX6M",
+                                    "FACEBOOK_APP_KEY"   : "fb1770285686596084"
             ]
         }
         _cell_c {
@@ -215,7 +219,9 @@ android {
                                     "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
                                     "BUGLY_APPID"        : "2e94bf542f",
                                     "BUGLY_APP_VERSION"  : versionName,
-                                    "BUGLY_APP_CHANNEL"  : "cell_c"
+                                    "BUGLY_APP_CHANNEL"  : "cell_c",
+                                    "TWITTER_APP_KEY"    : "",
+                                    "FACEBOOK_APP_KEY"   : ""
             ]
         }
     }
