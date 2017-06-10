@@ -106,8 +106,8 @@
             android:value="${BUGLY_APPID}" />
         <!-- 配置APP版本号 -->
         <!--<meta-data-->
-            <!--android:name="BUGLY_APP_VERSION"-->
-            <!--android:value="${BUGLY_APP_VERSION}" />-->
+        <!--android:name="BUGLY_APP_VERSION"-->
+        <!--android:value="${BUGLY_APP_VERSION}" />-->
         <!-- 配置APP渠道号 -->
         <meta-data
             android:name="BUGLY_APP_CHANNEL"
@@ -350,6 +350,13 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${TWITTER_APP_KEY}" />
+        <meta-data
+            android:name="TWITTER_APP_KEY"
+            android:value="${TWITTER_APP_KEY}" />
+        <meta-data
+            android:name="TWITTER_APP_SECRET"
+            android:value="${TWITTER_APP_SECRET}" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="${FACEBOOK_APP_KEY}" />
