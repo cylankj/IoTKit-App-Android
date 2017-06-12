@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.twitter.TwitterInstance;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
@@ -62,8 +63,6 @@ import rx.schedulers.Schedulers;
 public class OpenLoginHelper {
 
     private static OpenLoginHelper instance;
-    private static final String TWITTER_KEY = "kCEeFDWzz5xHi8Ej9Wx6FWqRL";
-    private static final String TWITTER_SECRET = "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5";
     private Activity activity;
 
     public OpenLoginHelper(Activity activity) {
@@ -278,7 +277,9 @@ public class OpenLoginHelper {
         HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
-                TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                final String appKey = PackageUtils.getMetaString(ContextUtils.getContext(), "TWITTER_APP_KEY");
+                final String appSecret = PackageUtils.getMetaString(ContextUtils.getContext(), "TWITTER_APP_SECRET");
+                TwitterAuthConfig authConfig = new TwitterAuthConfig(appKey, appSecret);
                 Fabric.with(activity.getApplicationContext(), new TwitterCore(authConfig), new TweetComposer());
 
                 //获取授权
