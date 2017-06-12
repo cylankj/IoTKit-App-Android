@@ -231,28 +231,28 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="153dp">
 
-            <RadioGroup
-                android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <!--<RadioGroup-->
+                <!--android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="horizontal">-->
 
-                <RadioButton
-                    android:id="@+id/act_panorama_camera_bottom_panel_picture"
-                    android:layout_width="@dimen/y26"
-                    android:layout_height="@dimen/y26"
-                    android:button="@drawable/camera720_icon_camera_selector"
-                    android:checked="true" />
+                <!--<RadioButton-->
+                    <!--android:id="@+id/act_panorama_camera_bottom_panel_picture"-->
+                    <!--android:layout_width="@dimen/y26"-->
+                    <!--android:layout_height="@dimen/y26"-->
+                    <!--android:button="@drawable/camera720_icon_camera_selector"-->
+                    <!--android:checked="true" />-->
 
-                <RadioButton
-                    android:id="@+id/act_panorama_camera_bottom_panel_video"
-                    android:layout_width="@dimen/y26"
-                    android:layout_height="@dimen/y26"
-                    android:layout_marginLeft="@dimen/y19"
-                    android:layout_marginStart="@dimen/y19"
-                    android:button="@drawable/camera720_icon_video_selector" />
-            </RadioGroup>
+                <!--<RadioButton-->
+                    <!--android:id="@+id/act_panorama_camera_bottom_panel_video"-->
+                    <!--android:layout_width="@dimen/y26"-->
+                    <!--android:layout_height="@dimen/y26"-->
+                    <!--android:layout_marginLeft="@dimen/y19"-->
+                    <!--android:layout_marginStart="@dimen/y19"-->
+                    <!--android:button="@drawable/camera720_icon_video_selector" />-->
+            <!--</RadioGroup>-->
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
@@ -264,14 +264,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:text="00:08:07"
+                    android:text="7"
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp16"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="153dp" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"

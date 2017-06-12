@@ -859,6 +859,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 if (bottomCountDownLine.getVisibility() != View.VISIBLE) {
                     bottomCountDownLine.setVisibility(View.VISIBLE);
                 }
+                if (bottomPanelSwitcherItem2DotIndicator.getVisibility() == View.VISIBLE) {
+                    bottomPanelSwitcherItem2DotIndicator.setVisibility(View.INVISIBLE);
+                }
                 int countDown = 8 - second;
                 bottomPanelSwitcherItem2TimeText.setText(countDown + "S");
                 bottomCountDownLine.animate().scaleX(countDown * 1.0F / 8).start();
