@@ -94,6 +94,7 @@ public class SmartcallActivity extends NeedLoginActivity
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
             presenter.selectNext(showSplash);
         }
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     @Override
@@ -199,7 +200,8 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     private boolean isFirstUseApp() {
-        return PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true);
+        return getResources().getBoolean(R.bool.show_guide)
+                && PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true);
     }
 
     @Override

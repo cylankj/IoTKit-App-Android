@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -358,13 +357,14 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
         @Override
         public Fragment getItem(int position) {
+            boolean isPan = device != null && JFGRules.isNeedPanoramicView(device.pid);
             Bundle bundle = new Bundle();
             bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, dpAlarm);
-            bundle.putInt(KEY_INDEX, position);
+            bundle.putInt(KEY_INDEX, isPan ? getIntent().getIntExtra(KEY_INDEX, 0) : position);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             bundle.putInt("totalCount", MiscUtils.getCount(dpAlarm.fileIndex));
             IBaseFragment fragment = null;
-            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
+            if (isPan) {
                 fragment = PanoramicViewFragment.newInstance(bundle);
             } else {
                 fragment = NormalMediaFragment.newInstance(bundle);

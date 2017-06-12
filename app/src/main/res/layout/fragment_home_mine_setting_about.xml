@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_marginStart="@dimen/x15"
-            hunt:sv_sub_title="www.jfgou.com"
+            hunt:sv_sub_title="@string/show_web"
             hunt:sv_title="@string/WEB"
             hunt:sv_v_divider="true" />
 

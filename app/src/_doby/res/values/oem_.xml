@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <bool name="show_guide">true</bool>
     <bool name="show_copyright">false</bool>
     <bool name="show_agreement">true</bool>
     <bool name="show_about">true</bool>
@@ -10,7 +11,7 @@
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>
     <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
-    <string name="share_to_friends_link">http://sj.qq.com/myapp/detail.htm?apkName=%s</string>
     <string name="share_default_description">@string/Tap1_Shared_Description_zhongxing</string>
     <string name="share_default_title">@string/Tap1_Shared_Title_zhognxing</string>
+    <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s&amp;g_f=991653</string>
 </resources>

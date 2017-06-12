@@ -33,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
+import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +90,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (getUserVisibleHint()) {//当前页面才显示
-            loadBitmap(getArguments().getInt("key_index", 0));
+            loadBitmap(getArguments().getInt(KEY_INDEX, 0));
         }
     }
 

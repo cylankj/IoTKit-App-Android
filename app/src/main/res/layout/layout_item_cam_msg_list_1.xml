@@ -2,7 +2,7 @@
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lLayout_cam_msg_container"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/y225"
+    android:layout_height="@dimen/y234"
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="horizontal"

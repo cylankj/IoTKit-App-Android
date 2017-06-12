@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.misc;
 
+import android.app.Activity;
+
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 //import android.app.Activity;
 //import android.os.Bundle;
 //import android.text.TextUtils;

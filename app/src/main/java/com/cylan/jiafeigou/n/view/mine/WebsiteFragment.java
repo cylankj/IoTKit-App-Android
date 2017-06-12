@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -59,6 +60,10 @@ public class WebsiteFragment extends Fragment {
     private void enterWeb() {
         wvWebsite.setVisibility(View.VISIBLE);
         String agreementUrl = getString(R.string.show_web);
+        if (!agreementUrl.startsWith("http://")) {
+            agreementUrl = "http://" + agreementUrl;
+        }
+        AppLogger.d("官网:" + agreementUrl);
         WebSettings settings = wvWebsite.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
