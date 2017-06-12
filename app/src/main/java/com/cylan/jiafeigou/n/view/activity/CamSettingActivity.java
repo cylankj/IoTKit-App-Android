@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -532,12 +533,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         });
         svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid) ? View.VISIBLE : View.GONE);
         //总的条件:相同的ssid名字
-//        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-//            //在线,判断客户端和设备端的ssid
-//            //没有连接公网.//必须是连接状态
-//            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-//            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
-//        } else svSettingDeviceSoftAp.setEnabled(false);
+        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            //在线,判断客户端和设备端的ssid
+            //没有连接公网.//必须是连接状态
+            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
+        } else svSettingDeviceSoftAp.setEnabled(false);
         svSettingDeviceSoftAp.setOnClickListener(v -> {
             if (NetUtils.getJfgNetType() == 0) {
                 ToastUtil.showToast(getString(R.string.NoNetworkTips));
