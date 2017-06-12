@@ -758,13 +758,7 @@ public class RxEvent {
 //
 //    }
 
-    public static class StorageTypeUpdate {
-        public int type;
 
-        public StorageTypeUpdate(int type) {
-            this.type = type;
-        }
-    }
 
     public static class CheckVersionRsp implements Parcelable {
         public long seq;

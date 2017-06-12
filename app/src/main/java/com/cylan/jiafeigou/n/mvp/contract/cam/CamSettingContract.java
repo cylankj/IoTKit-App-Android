@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscription;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -60,7 +61,9 @@ public interface CamSettingContract {
 
         void unbindDevice();
 
-        Observable<Boolean> enableAp();
+        Observable<Boolean> switchApModel(int model);
+
+        void addSub(Subscription subscription, String tag);
     }
 }
 

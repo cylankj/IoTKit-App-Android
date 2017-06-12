@@ -41,7 +41,6 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -266,42 +265,56 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public Observable<Boolean> enableAp() {
+    public Observable<Boolean> switchApModel(int model) {
         final String mac = device.$(202, "");
         if (TextUtils.isEmpty(mac)) {
             AppLogger.d("mac为空");
             return Observable.just(false);
         }
-        return Observable.just("enableAp")
+        return Observable.just(model)
                 .subscribeOn(Schedulers.newThread())
-                .timeout(2, TimeUnit.SECONDS)
                 .flatMap(s -> {
                     try {
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 0; i < 3; i++) {
+                            JfgUdpMsg.UdpSetApReq req = new JfgUdpMsg.UdpSetApReq(uuid, mac);
+                            req.model = s;
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                    UdpConstant.PORT, new JfgUdpMsg.UdpSetApReq(uuid, mac).toBytes());
+                                    UdpConstant.PORT, req.toBytes());
+                        }
+                        AppLogger.d("send UdpSetApReq :" + uuid + "," + mac);
                     } catch (JfgException e) {
-                        e.printStackTrace();
                     }
                     return Observable.just(s);
                 })
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class))
-                .flatMap(new Func1<RxEvent.LocalUdpMsg, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(RxEvent.LocalUdpMsg localUdpMsg) {
-                        try {
-                            JfgUdpMsg.UdpHeader header = DpUtils.unpackData(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
-                            if (header != null && TextUtils.equals(header.cmd, "set_ap_rsp")) {
-                                UdpConstant.SetApRsp rsp = DpUtils.unpackData(header.toBytes(), UdpConstant.SetApRsp.class);
-                                if (rsp != null && TextUtils.equals(rsp.cid, uuid)) {
-                                    //got it
-                                    return Observable.just(true);
-                                }
-                            }
-                        } catch (Exception e) {
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .timeout(10, TimeUnit.SECONDS))//原型说10s
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(localUdpMsg -> {
+                    try {
+                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
+                        if (header != null && TextUtils.equals(header.cmd, "set_ap_rsp")) {
+                            return Observable.just(localUdpMsg.data);
                         }
-                        return Observable.just(false);
+                    } catch (Exception e) {
                     }
-                });
+                    return Observable.just(null);
+                })
+                .filter(ret -> ret != null)
+                .filter(ret -> {
+                    try {
+                        UdpConstant.SetApRsp rsp = DpUtils.unpackData(ret, UdpConstant.SetApRsp.class);
+                        return (rsp != null && TextUtils.equals(rsp.cid, uuid));
+                    } catch (IOException e) {
+                        return false;
+                    }
+                }).take(1)
+                .flatMap(bytes -> Observable.just(true));
     }
+
+    @Override
+    public void addSub(Subscription subscription, String tag) {
+        addSubscription(subscription, tag);
+    }
+
 }

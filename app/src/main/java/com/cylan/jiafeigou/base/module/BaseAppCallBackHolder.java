@@ -58,10 +58,10 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.d("OnReportJfgDevices" + gson.toJson(jfgDevices));
-        for(JFGDevice device:jfgDevices){
-            if(device.uuid.contains("46267"))
-                device.pid=38;
-        }
+//        for(JFGDevice device:jfgDevices){
+//            if(device.uuid.contains("46267"))
+//                device.pid=38;
+//        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
     }
 
@@ -310,9 +310,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnNotifyStorageType(int i) {
         AppLogger.d("OnNotifyStorageType:" + i);
         //此event是全局使用,不需要删除.因为在DataSourceManager需要用到.
-        RxBus.getCacheInstance().postSticky(new RxEvent.StorageTypeUpdate(i));
         BaseApplication.getAppComponent().getSourceManager().setStorageType(i);
-        BaseApplication.getAppComponent().getCmd().getAccount();
     }
 
     @Override

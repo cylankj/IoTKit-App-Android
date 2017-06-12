@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -61,6 +60,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
@@ -532,24 +532,30 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         });
         svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid) ? View.VISIBLE : View.GONE);
         //总的条件:相同的ssid名字
-        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-            //在线,判断客户端和设备端的ssid
-            //没有连接公网.//必须是连接状态
-            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
-        } else svSettingDeviceSoftAp.setEnabled(false);
+//        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+//            //在线,判断客户端和设备端的ssid
+//            //没有连接公网.//必须是连接状态
+//            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+//            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
+//        } else svSettingDeviceSoftAp.setEnabled(false);
         svSettingDeviceSoftAp.setOnClickListener(v -> {
             if (NetUtils.getJfgNetType() == 0) {
                 ToastUtil.showToast(getString(R.string.NoNetworkTips));
                 return;
             }
             getAlertDialogManager()
-                    .showDialog(this, "开启Ap", "开启热点可能会使设备离线，开启后，请等待设备蓝灯闪烁", getString(R.string.OK), (dialog, which) -> {
-                        basePresenter.enableAp()
+                    .showDialog(this, "开启Ap", getString(R.string.setwifi_check, net.ssid), getString(R.string.OK), (dialog, which) -> {
+                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
+                        Subscription subscription = basePresenter.switchApModel(1)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(ret -> {
-                                    ToastUtil.showToast(ret ? "指令已经发送" : "指令发送失败");
-                                }, AppLogger::e);
+                                    LoadingDialog.dismissLoading(getSupportFragmentManager());
+                                    ToastUtil.showToast("指令已经发送");
+                                }, throwable -> {
+                                    LoadingDialog.dismissLoading(getSupportFragmentManager());
+                                    ToastUtil.showToast("指令发送失败");
+                                });
+                        basePresenter.addSub(subscription, "enableAp");
                     }, getString(R.string.CANCEL), null, false);
         });
     }

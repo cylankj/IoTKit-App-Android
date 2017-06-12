@@ -8,6 +8,8 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
+import java.util.Arrays;
+
 /**
  * Created by cylan-hunt on 16-11-10.
  */
@@ -164,12 +166,12 @@ public class UdpConstant {
     @Message
     public static final class SetApRsp extends JfgUdpMsg.UdpRecvHeard {
         @Index(2)
-        public int ack;
+        public byte[] ack;
 
         @Override
         public String toString() {
             return "SetApRsp{" +
-                    "ack=" + ack +
+                    "ack=" + Arrays.toString(ack) +
                     '}';
         }
     }
