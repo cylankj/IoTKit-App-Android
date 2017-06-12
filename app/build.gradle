@@ -160,7 +160,6 @@ android {
                                     "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
@@ -170,7 +169,7 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "cylan",
                                     "TWITTER_APP_KEY"    : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
                                     "TWITTER_APP_SECRET" : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
-                                    "FACEBOOK_APP_KEY"   : "fb1866682200216878"
+                                    "FACEBOOK_APP_KEY"   : "1866682200216878"
             ]
         }
         _doby {
@@ -186,7 +185,6 @@ android {
                                     "weChatAppKey"       : "wx382033a16e5cc4a5",
                                     "sinaAppKey"         : "\\ 1821035549",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5721736791425",
@@ -196,7 +194,7 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "doby",
                                     "TWITTER_APP_KEY"    : "gSbX9IzCQ4w4xaE1igwAqrX6M",
                                     "TWITTER_APP_SECRET" : "85wI4lQRuZiLr7WMtfy1brkHtciw0T9648EbuVyr7hfFC9EIk9",
-                                    "FACEBOOK_APP_KEY"   : "fb1770285686596084"
+                                    "FACEBOOK_APP_KEY"   : "1770285686596084"
             ]
         }
         _cell_c {
@@ -212,7 +210,6 @@ android {
                                     "weChatAppKey"       : "wx382033a16e5cc4a5",
                                     "sinaAppKey"         : "\\ 1821035549",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5721736791425",

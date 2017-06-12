@@ -156,21 +156,6 @@
             android:grantUriPermissions="true" />
         <!-- 华为推送 End -->
 
-
-        <!-- server address -->
-        <!-- <meta-data -->
-        <!-- android:name="ServerAddress" -->
-        <!-- android:packValue="${NICELY_VALUE}" /> -->
-
-
-        <!-- &lt;!&ndash; your vid getString must "\ " &ndash;&gt; -->
-        <!-- <meta-data -->
-        <!-- android:name="vid" -->
-        <!-- android:packValue="${VID}" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="vkey" -->
-        <!-- android:packValue="${VKEY}" /> -->
-
         <activity
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"
@@ -356,10 +341,10 @@
         <meta-data
             android:name="TWITTER_APP_SECRET"
             android:value="${TWITTER_APP_SECRET}" />
-
+        <!--注意fb前缀-->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="${FACEBOOK_APP_KEY}" />
+            android:value="fb${FACEBOOK_APP_KEY}" />
 
         <activity
             android:name=".n.view.activity.SightSettingActivity"
@@ -506,7 +491,7 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
+            android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_KEY}"
             android:exported="true" />
 
         <receiver
