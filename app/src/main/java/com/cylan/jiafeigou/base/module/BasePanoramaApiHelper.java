@@ -13,6 +13,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -52,10 +54,11 @@ public class BasePanoramaApiHelper {
                     if (fetchEvent.success) {
                         deviceInformation = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
                         if (deviceInformation != null && deviceInformation.ip != null) {
+                            Gson gson = new GsonBuilder().setLenient().create();//忽略 json 无效格式错误
                             Retrofit retrofit = new Retrofit.Builder().client(BaseApplication.getAppComponent().getOkHttpClient())
                                     .baseUrl("http://" + deviceInformation.ip)
                                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .addConverterFactory(GsonConverterFactory.create(gson))
                                     .build();
                             httpApi = retrofit.create(IHttpApi.class);
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);

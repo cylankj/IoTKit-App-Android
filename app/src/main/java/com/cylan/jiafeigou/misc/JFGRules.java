@@ -279,6 +279,10 @@ public class JFGRules {
                 "softVersion");
     }
 
+    public static boolean showTimeZone(int pid) {
+        return !JFGRules.isPanoramicCam(pid);
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

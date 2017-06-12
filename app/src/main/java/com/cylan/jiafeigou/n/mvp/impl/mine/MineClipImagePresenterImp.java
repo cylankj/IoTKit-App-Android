@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
@@ -42,7 +41,6 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
     private CompositeSubscription subscription;
     public JFGAccount jfgAccount;
     private Network network;
-    private long req;
 
     public MineClipImagePresenterImp(MineClipImageContract.View view) {
         super(view);
@@ -57,78 +55,46 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
     @Override
     public void upLoadUserHeadImag(String path) {
         rx.Observable.just(path)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(path1 -> {
+                .subscribeOn(Schedulers.io())
+                .map(path1 -> {
+                    long req = -1;
                     try {
-
                         req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path1);
                         AppLogger.d("upLoadUserHeadImag:" + req + ",:" + path1);
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        AppLogger.e(e.getMessage());
                     }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 接收上传头像的回调
-     */
-    @Override
-    public Subscription getUpLoadResult() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map((Object o) -> {
-                            Log.d("CYLAN_TAG", "upLoadUserHeadImag timeout: ");
-                            if (getView() != null) getView().upLoadTimeOut();
-                            return null;
-                        }))
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<JFGMsgHttpResult>() {
-                    @Override
-                    public void call(JFGMsgHttpResult getHttpDoneResult) {
+                    return req;
+                })
+                .filter(req -> req != -1)
+                .flatMap(req -> RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).filter(rsp -> rsp.requestId == req))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .first()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(result -> {
+                    if (result != null && result.ret == 200) {
                         getView().hideUpLoadPro();
-                        handlerUploadImage(getHttpDoneResult);
-                        getView().upLoadResultView(getHttpDoneResult.ret);
+                        getView().upLoadResultView(result.ret);
+                        return true;
+                    } else if (result == null) {
+                        getView().upLoadTimeOut();
                     }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 处理上传头像文件后
-     *
-     * @param getHttpDoneResult
-     */
-    private void handlerUploadImage(JFGMsgHttpResult getHttpDoneResult) {
-        if (getHttpDoneResult.requestId == req && getHttpDoneResult.ret == 200) {
-            sendResetUrl();
-        }
-    }
-
-    /**
-     * 更新头像的Url
-     */
-    private void sendResetUrl() {
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        if (jfgAccount != null) {
-                            try {
-                                jfgAccount.resetFlag();
-                                jfgAccount.setPhoto(true);
-                                int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
-                                AppLogger.d("sendResetUrl:" + req);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
+                    return false;
+                })
+                .observeOn(Schedulers.io())
+                .subscribe(result -> {
+                    if (jfgAccount != null) {
+                        try {
+                            jfgAccount.resetFlag();
+                            jfgAccount.setPhoto(true);
+                            int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
+                            AppLogger.d("sendResetUrl:" + req);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendResetUrl" + throwable.getLocalizedMessage());
-                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
                 });
     }
 
@@ -211,7 +177,6 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
         } else {
             subscription = new CompositeSubscription();
             subscription.add(getAccount());
-            subscription.add(getUpLoadResult());
         }
         registerNetworkMonitor();
     }

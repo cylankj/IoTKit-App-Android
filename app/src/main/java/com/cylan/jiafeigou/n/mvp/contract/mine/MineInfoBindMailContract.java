@@ -105,13 +105,6 @@ public interface MineInfoBindMailContract {
         void unregisterNetworkMonitor();
 
         /**
-         * 三方登录回调
-         *
-         * @return
-         */
-        Subscription isOpenLoginBack();
-
-        /**
          * 获取是否三方登录
          *
          * @return

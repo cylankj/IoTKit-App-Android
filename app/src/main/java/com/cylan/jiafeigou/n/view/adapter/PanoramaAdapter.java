@@ -71,6 +71,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                 .into((ImageView) holder.getView(R.id.img_album_content));
         TextView view = holder.getView(R.id.tv_album_download_progress);
         if (item.downloadInfo == null) {
+            AppLogger.e("download is null");
             view.setVisibility(View.INVISIBLE);
             return;
         }

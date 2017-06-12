@@ -64,7 +64,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     TextView deleteSelected;
 
     @ALBUM_VIEW_MODE
-    private int albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
+    private int albumViewMode = ALBUM_VIEW_MODE.MODE_NONE;
     //    private RadioGroup menuContainer;
     private int[] titles = {R.string.Tap1_File_CameraNPhone, R.string.Tap1_File_Camera, R.string.Tap1_File_Phone};
     private PanoramaAdapter panoramaAdapter;
@@ -108,14 +108,13 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (mac != null) {
             String routerMac = NetUtils.getRouterMacAddress(getApplication());
             if (TextUtils.equals(mac, routerMac)) {
-                albumViewMode = 2;
+                toolbarAlbumViewMode.setText(titles[modeToResId(2, false)]);
 //                toolbarAlbumViewMode.setEnabled(true);
             } else {
-                albumViewMode = 0;//非 AP 模式,但此时还不知道是否在同一个局域网内
+                toolbarAlbumViewMode.setText(titles[modeToResId(0, false)]);
 //                toolbarAlbumViewMode.setEnabled(false);
             }
         }
-        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
     }
 
@@ -159,9 +158,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
                 toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
                 presenter.fetch(0, albumViewMode);
             });
+            albumModeSelectPop.setMode(albumViewMode);
         }
         albumModeSelectPop.setCheckIndex(modeToResId(albumViewMode, false));
-        albumModeSelectPop.setMode(albumViewMode);
         albumModeSelectPop.showOnAnchor(toolbarAlbumViewMode, RelativePopupWindow.VerticalPosition.ALIGN_TOP, RelativePopupWindow.HorizontalPosition.ALIGN_LEFT);
     }
 
@@ -313,7 +312,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     @Override
-    public void onAppend(List<PanoramaAlbumContact.PanoramaItem> resultList, boolean isRefresh, boolean loadFinish) {
+    public void onAppend(List<PanoramaAlbumContact.PanoramaItem> resultList, boolean isRefresh, boolean loadFinish, int fetchLocation) {
         loading = !loadFinish;
         if (isRefresh) {
             panoramaAdapter.clear();
@@ -352,6 +351,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         //setEmptyView
         emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         tvAlbumDelete.setEnabled(panoramaAdapter.getCount() > 0);
+        panoramaAdapter.setInEditMode(false);
         if (panoramaAdapter.getCount() == 0) {
             panoramaAdapter.removeFooterView();
         }
@@ -371,7 +371,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
-        if (report && mode != albumViewMode) {
+        if (albumViewMode == mode) return;
+        if (report) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));
         }
         presenter.fetch(0, albumViewMode = mode);
@@ -379,18 +380,18 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (albumModeSelectPop != null && report) {
             albumModeSelectPop.setMode(mode);
         }
-
     }
 
     @Override
     public void onSDCardCheckResult(int has_sdcard) {
         if (has_sdcard == 1) {
-//            presenter.fetch(0, albumViewMode);
         } else {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.MSG_SD_OFF)
                     .setCancelable(false)
-                    .setPositiveButton(R.string.OK, (dialog, which) -> onViewModeChanged(0, false))
+                    .setPositiveButton(R.string.OK, (dialog, which) -> {
+                        onViewModeChanged(0, false);
+                    })
                     .show();
         }
     }

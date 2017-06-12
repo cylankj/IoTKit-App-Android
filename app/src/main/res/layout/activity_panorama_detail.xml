@@ -73,7 +73,7 @@
                 android:progress="40"
                 android:progressDrawable="@drawable/seek_bar_drawable"
                 android:secondaryProgress="70"
-                android:thumb="@drawable/seek_bar_dot_white" />
+                android:thumb="@drawable/panorama_detial_seek_bar_thumb_drawable" />
 
             <LinearLayout
                 android:id="@+id/act_panorama_detail_bottom_video_menu_container"
@@ -98,7 +98,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="00:16"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/color_panorama_detail_text"
                     android:textSize="@dimen/sp11" />
 
                 <ImageButton

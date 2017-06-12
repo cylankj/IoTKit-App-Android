@@ -61,6 +61,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -117,6 +118,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private TextView download;
     private int mode;
     private View deleted;
+    private boolean looper = true;
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -156,12 +158,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onResume() {
         super.onResume();
+        looper = true;
         initPanoramaContent(panoramaItem);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        looper = false;
         if (player != 0) {
             JFGPlayer.StopRender(player);
             JFGPlayer.Stop(player);
@@ -281,6 +285,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     JFGPlayer.Play(player, downloadInfo.getTargetPath());
                 } else {
                     String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
+                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
                     if (deviceIp != null) {
                         if (player == 0) {
                             player = JFGPlayer.InitPlayer(this);
@@ -306,16 +311,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             }
         }
         onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (player != 0) {
-            JFGPlayer.Stop(player);
-            JFGPlayer.Release(player);
-            player = 0;
-        }
     }
 
     @OnClick(R.id.act_panorama_detail_pop_picture_close)
@@ -401,7 +396,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, null)
                     .show();
-        } else if (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING) {
+        } else if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
             //视频还未下载完成
             new AlertDialog.Builder(this)
                     .setMessage(R.string.Download_Then_Share)
@@ -410,7 +405,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     .show();
             AppLogger.d("视频还未下载完成");
 
-        } else if (downloadInfo.getState() == DownloadManager.DOWNLOADING) {
+        } else if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
             ToastUtil.showNegativeToast(getString(R.string.Downloading));
         } else if (ApFilter.isAPMode(uuid)) {
             ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
@@ -550,13 +545,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void OnPlayerReady(long l, int i, int i1, int i2) {
         AppLogger.d("播放器初始化成功了" + i + "," + i1 + "," + i2);
         JFGPlayer.StartRender(player, panoramicView720Ext);
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
         refreshControllerView(true);
     }
 
     @Override
     public void OnPlayerFailed(long l) {
         AppLogger.d("播放器初始化失败了");
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
     }
 
     @Override
@@ -564,16 +560,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("播放完成了");
         if (player != 0) {
             LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
-            if (downloadInfo != null && downloadInfo.getState() == 4) {
+            if (downloadInfo != null && downloadInfo.getState() == 4 && looper) {
                 player = JFGPlayer.InitPlayer(this);
                 JFGPlayer.Play(player, downloadInfo.getTargetPath());
-            } else {
+            } else if (looper) {
                 String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                 if (deviceIp != null) {
                     player = JFGPlayer.InitPlayer(this);
                     JFGPlayer.Play(player, deviceIp + "/images/" + panoramaItem.fileName);
                 }
             }
+        } else if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            AndroidSchedulers.mainThread().createWorker().schedule(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
         }
     }
 

@@ -31,7 +31,6 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -123,7 +122,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu)
     ViewSwitcher bottomPanelSwitcher;
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information)
-    RelativeLayout bottomPanelSwitcherItem2Information;
+    ConstraintLayout bottomPanelSwitcherItem2Information;
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information_record_time)
     TextView bottomPanelSwitcherItem2TimeText;
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information_red_dot)
@@ -257,8 +256,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         onRefreshControllerView(false);
                         presenter.stopVideoRecord(PANORAMA_RECORD_MODE.MODE_SHORT);
                         bottomPanelLoading.setVisibility(View.VISIBLE);
+                        bottomPanelPhotoGraphItem.setEnabled(false);
                     }
-
                     break;
                 }
             }
@@ -472,7 +471,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             presenter.startVideoRecord(PANORAMA_RECORD_MODE.MODE_SHORT);
         }
         hideVideoModePop();
-        return true;
+        return false;
     }
 
     @OnClick(R.id.act_panorama_bottom_panel_camera_photograph)
@@ -485,7 +484,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             presenter.startVideoRecord(panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LONG);
             bottomPanelLoading.setVisibility(View.VISIBLE);
         } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LONG) {
-            showLoading("视频处理中,请稍后");
             presenter.stopVideoRecord(panoramaRecordMode);
             bottomPanelLoading.setVisibility(View.VISIBLE);
         }
@@ -733,7 +731,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomCountDownLine.setVisibility(View.GONE);
         bottomPanelLoading.setVisibility(View.GONE);
         bottomPanelPhotoGraphItem.setImageResource(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.drawable.camera720_icon_photograph_selector : R.drawable.camera720_icon_short_video_selector);
-        bottomPanelPhotoGraphItem.setSelected(false);
         bottomPanelSwitcherItem1ViewMode.check(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.id.act_panorama_camera_bottom_panel_picture : R.id.act_panorama_camera_bottom_panel_video);
         if (bottomPanelSwitcher.getDisplayedChild() == 1) {
             bottomPanelSwitcher.showPrevious();
@@ -747,8 +744,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelSwitcher.setEnabled((hasResolution && enable) || justForTest);
         bottomPanelPictureMode.setEnabled((hasResolution && enable) || justForTest);
         bottomPanelVideoMode.setEnabled((hasResolution && enable) || justForTest);
-        bottomPanelPhotoGraphItem.setEnabled((hasResolution && enable) || justForTest);
-        bottomPanelMoreItem.setEnabled((hasResolution && enable) || justForTest);
+        if (!bottomPanelPhotoGraphItem.isPressed()) {//这里是为了让长按事件能收到 actionUp事件
+            bottomPanelPhotoGraphItem.setEnabled((hasResolution && enable) || justForTest);
+        }
+        if (!bottomPanelMoreItem.isPressed()) {
+            bottomPanelMoreItem.setEnabled((hasResolution && enable) || justForTest);
+        }
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled((hasResolution && enable) || justForTest);
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled((hasResolution && enable) || justForTest);
         setting.setEnabled(!hasResolution || enable);
@@ -831,6 +832,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onRefreshVideoRecordUI(int second, @PANORAMA_RECORD_MODE int type) {
+        panoramaRecordMode = type;
         if (!hasResolution) return;
         if (bottomPanelSwitcher.getDisplayedChild() == 0) {
             bottomPanelSwitcher.showNext();
@@ -841,7 +843,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (bottomPanelMoreItem.getVisibility() == View.VISIBLE) {
             bottomPanelMoreItem.setVisibility(View.GONE);
         }
-        if ((panoramaRecordMode = type) != PANORAMA_RECORD_MODE.MODE_SHORT && !bottomPanelPhotoGraphItem.isEnabled()) {
+        if (panoramaRecordMode != PANORAMA_RECORD_MODE.MODE_SHORT && !bottomPanelPhotoGraphItem.isEnabled()) {
             bottomPanelPhotoGraphItem.setEnabled(true);
         }
         if (bottomPanelLoading.getVisibility() != View.GONE) {
@@ -851,7 +853,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case PANORAMA_RECORD_MODE.MODE_LONG:
                 bottomPanelSwitcherItem2TimeText.setText(TimeUtils.getHHMMSS(second * 1000L));
                 int visibility = bottomPanelSwitcherItem2DotIndicator.getVisibility();
-                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
+                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
                 break;
             case PANORAMA_RECORD_MODE.MODE_SHORT:
                 if (bottomCountDownLine.getVisibility() != View.VISIBLE) {

@@ -21,7 +21,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -254,14 +253,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 //访客状态
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
                 basePresenter.portraitBlur(bm);
-//                setAliasName(getString(R.string.Tap3_LogIn));
             }
             lazyLoad();
-            JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-            if (jfgAccount != null) {
-                setUserImageHeadByUrl(jfgAccount.getPhotoUrl());
-                setAliasName(TextUtils.isEmpty(jfgAccount.getAlias()) ? jfgAccount.getAccount() : jfgAccount.getAlias());
-            }
             //查询好友列表.
             basePresenter.makeFriendsListReq();
             Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair = BaseApplication.getAppComponent().getSourceManager().getPairFriends();
@@ -288,6 +281,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setAliasName(String name) {
+        AppLogger.e("用户昵称:" + name + "add:" + isVisible());
         tvHomeMineNick.setText(name);
     }
 

@@ -208,29 +208,32 @@ public class LoginButton extends AppCompatTextView {
 
             if (valueAnimator == null) {
                 valueAnimator = ValueAnimator.ofInt(viewW, viewH);
-            }
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int currW = (int) animation.getAnimatedValue();
-                    if (currW < viewH) {
-                        currW = viewH;
+
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int currW = (int) animation.getAnimatedValue();
+                        if (currW < viewH) {
+                            currW = viewH;
+                        }
+                        ViewGroup.LayoutParams params = getLayoutParams();
+                        params.width = currW;
+                        setLayoutParams(params);
                     }
-                    ViewGroup.LayoutParams params = getLayoutParams();
-                    params.width = currW;
-                    setLayoutParams(params);
-                }
-            });
-            valueAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    setText("");
-                    viewRotate();
-                    runnable.run();
-                }
-            });
-            valueAnimator.setDuration(600);
+                });
+                valueAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        setText("");
+                        viewRotate();
+                        if (runnable != null) {
+                            runnable.run();
+                        }
+                    }
+                });
+                valueAnimator.setDuration(600);
+            }
             if (!valueAnimator.isRunning() && !hasRotate) {
                 valueAnimator.start();
             }

@@ -39,7 +39,6 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
     private Network network;
-    private boolean isOpenLogin;
     private boolean isSetAcc;
 
     public MineInfoBineMailPresenterImp(MineInfoBindMailContract.View view) {
@@ -182,23 +181,9 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
         }
     }
 
-    /**
-     * 是否三方登录
-     *
-     * @return
-     */
-    @Override
-    public Subscription isOpenLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(thirdLoginTab -> {
-                    isOpenLogin = thirdLoginTab.isThird;
-                }, e -> AppLogger.d(e.getMessage()));
-    }
-
     @Override
     public boolean isOpenLogin() {
-        return isOpenLogin;
+        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
     }
 
     @Override
@@ -257,7 +242,6 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(isOpenLoginBack());
             compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(getCheckAccountCallBack());
             compositeSubscription.add(changeAccountBack());

@@ -40,7 +40,6 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.View> implements MineInfoContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
-    private boolean isOpenLogin;
 
     public MineInfoPresenterImpl(MineInfoContract.View view, Context context) {
         super(view);
@@ -61,7 +60,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     AutoSignIn.getInstance().autoSave(retAccount.getAccount(), 1, "");
                     //emit failed event.
                     //是三方登录获取绑定的手机或者邮箱用于登录页回显
-                    if (isOpenLogin) {
+                    if (checkOpenLogin()) {
                         PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(retAccount.getPhone()) ? (TextUtils.isEmpty(retAccount.getEmail()) ? "" : retAccount.getEmail()) : retAccount.getPhone());
                     }
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
@@ -184,7 +183,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(isOpenLoginBack());
             compositeSubscription.add(getAccount());
         }
     }
@@ -196,22 +194,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public boolean checkOpenLogin() {
-        return isOpenLogin;
-    }
-
-    /**
-     * 三方登录的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription isOpenLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(thirdLoginTab -> {
-                    isOpenLogin = thirdLoginTab.isThird;
-                    getView().showSetPwd(thirdLoginTab.isThird);
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
     }
 
     @Override

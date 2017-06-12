@@ -140,6 +140,7 @@ public class CommonModule {
                         //文件下载,由于文件较大,直接返回了
                         return chain.proceed(request);
                     }
+                    AppLogger.e("http请求为:" + request.toString());
                     Response proceed = chain.proceed(request);
                     String string = proceed.body().string();
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));

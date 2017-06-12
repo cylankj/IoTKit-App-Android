@@ -1,5 +1,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
@@ -9,12 +10,15 @@
 
     <ImageView
         android:id="@+id/rLayout_home_mine_top"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/y238"
         android:background="@drawable/me_bg_top_image"
         android:scaleType="fitXY"
         android:src="#40000000"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="8dp" />
 
     <com.cylan.jiafeigou.widget.wave.ShadowLayout
         android:id="@+id/shadow_layout"
@@ -29,7 +33,8 @@
         app:sl_dx="0dp"
         app:sl_dy="@dimen/y2"
         app:sl_shadowColor="#88000000"
-        app:sl_shadowRadius="@dimen/x2">
+        app:sl_shadowRadius="@dimen/x2"
+        tools:layout_editor_absoluteX="162dp">
 
         <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:id="@+id/iv_home_mine_portrait"
@@ -41,27 +46,30 @@
 
     <TextView
         android:id="@+id/tv_home_mine_nick"
-        style="@style/text_base_singleLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/y13"
         android:ellipsize="end"
+        android:gravity="center"
         android:maxLength="12"
+        android:maxLines="1"
+        android:singleLine="true"
         android:text="@string/Tap3_LogIn"
         android:textColor="@color/color_white"
         android:textSize="@dimen/sp19"
         app:layout_constraintBottom_toBottomOf="@+id/rLayout_home_mine_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shadow_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/shadow_layout"
+        tools:layout_editor_absoluteX="178dp" />
 
     <com.cylan.jiafeigou.widget.MsgBoxView
         android:id="@+id/tv_home_mine_msg_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/x13"
-        android:layout_marginTop="@dimen/y17"
+        android:layout_marginEnd="@dimen/y3"
+        android:layout_marginTop="@dimen/y7"
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/y5"
@@ -74,22 +82,27 @@
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:id="@+id/home_mine_item_friend"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y60"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/y70"
         android:clickable="true"
         android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rLayout_home_mine_top"
         app:leftDrawable="@drawable/me_icon_friend"
         app:rightDrawable="@drawable/icon_list_next"
         app:text="@string/Tap3_Friends"
         app:textColor="@color/color_333333"
-        app:textSize="@dimen/sp16" />
+        app:textSize="@dimen/sp16"
+        tools:layout_editor_absoluteX="8dp" />
 
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:id="@+id/home_mine_item_share"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y60"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/y70"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_mine_item_friend"
         app:leftDrawable="@drawable/me_icon_share"
         app:rightDrawable="@drawable/icon_list_next"
@@ -99,8 +112,10 @@
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:id="@+id/home_mine_item_settings"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y60"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_mine_item_share"
         app:leftDrawable="@drawable/me_icon_setting"
         app:rightDrawable="@drawable/icon_list_next"
@@ -110,8 +125,10 @@
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:id="@+id/home_mine_item_help"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y60"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_mine_item_settings"
         app:leftDrawable="@drawable/me_icon_hlep"
         app:rightDrawable="@drawable/icon_list_next"

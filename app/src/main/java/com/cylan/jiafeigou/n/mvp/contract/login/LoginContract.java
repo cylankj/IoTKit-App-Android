@@ -97,12 +97,6 @@ public interface LoginContract {
          */
         void checkAccountIsReg(String account);
 
-
-        /**
-         * 登录计时
-         */
-        void loginCountTime();
-
         /**
          * 账号回显
          *

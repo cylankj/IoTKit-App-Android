@@ -42,7 +42,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
     private Network network;
-    private boolean isOpenLogin;
     private boolean sendReq;
 
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
@@ -254,7 +253,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(openLoginBack());
             compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(getCheckPhoneCallback());
             compositeSubscription.add(checkVerifyCodeCallBack());
@@ -296,19 +294,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
         }
     }
 
-    /**
-     * 三方登录的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription openLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(thirdLoginTab -> {
-                    isOpenLogin = thirdLoginTab.isThird;
-                }, e -> AppLogger.d(e.getMessage()));
-    }
 
     /**
      * 是否三方登录
@@ -317,7 +302,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public boolean isOpenLogin() {
-        return isOpenLogin;
+        return BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
     }
 
     @Override

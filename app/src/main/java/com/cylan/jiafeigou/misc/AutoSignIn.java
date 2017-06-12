@@ -83,10 +83,8 @@ public class AutoSignIn {
                                         throw new IllegalArgumentException("用户名或者密码不能为空");
                                     }
                                     if (signType.type == 1) {
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                         BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd);
                                     } else if (signType.type >= 3) {
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
                                     }
 
@@ -119,6 +117,18 @@ public class AutoSignIn {
                         })
                 )
                 .subscribe(resultLogin -> RxBus.getCacheInstance().post(resultLogin), AppLogger::e);
+    }
+
+    public SignType getSignType() {
+        try {
+            //1.account的aes
+            String string = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+            String decrypt = AESUtil.decrypt(string);
+            return new Gson().fromJson(decrypt, SignType.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void autoSave(String account, int type, String pwd) {

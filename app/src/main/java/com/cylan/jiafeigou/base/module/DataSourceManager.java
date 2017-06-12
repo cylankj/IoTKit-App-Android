@@ -621,9 +621,6 @@ public class DataSourceManager implements JFGSourceManager {
                             RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
                             accountArrived.jfgAccount = event.account;
                             getCacheInstance().postSticky(accountArrived);
-                            getCacheInstance().post(accountArrived);
-
-//                            BaseDPTaskDispatcher.getInstance().perform();
                             return "";
                         }))
                 .retry((i, e) -> true)
