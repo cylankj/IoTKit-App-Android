@@ -231,28 +231,28 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="153dp">
 
-            <!--<RadioGroup-->
-                <!--android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:gravity="center"-->
-                <!--android:orientation="horizontal">-->
+            <RadioGroup
+            android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-                <!--<RadioButton-->
-                    <!--android:id="@+id/act_panorama_camera_bottom_panel_picture"-->
-                    <!--android:layout_width="@dimen/y26"-->
-                    <!--android:layout_height="@dimen/y26"-->
-                    <!--android:button="@drawable/camera720_icon_camera_selector"-->
-                    <!--android:checked="true" />-->
+            <RadioButton
+            android:id="@+id/act_panorama_camera_bottom_panel_picture"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:button="@drawable/camera720_icon_camera_selector"
+            android:checked="true" />
 
-                <!--<RadioButton-->
-                    <!--android:id="@+id/act_panorama_camera_bottom_panel_video"-->
-                    <!--android:layout_width="@dimen/y26"-->
-                    <!--android:layout_height="@dimen/y26"-->
-                    <!--android:layout_marginLeft="@dimen/y19"-->
-                    <!--android:layout_marginStart="@dimen/y19"-->
-                    <!--android:button="@drawable/camera720_icon_video_selector" />-->
-            <!--</RadioGroup>-->
+            <RadioButton
+            android:id="@+id/act_panorama_camera_bottom_panel_video"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:layout_marginLeft="@dimen/y19"
+            android:layout_marginStart="@dimen/y19"
+            android:button="@drawable/camera720_icon_video_selector" />
+            </RadioGroup>
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
@@ -276,6 +276,7 @@
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
                     android:layout_width="@dimen/y8"
                     android:layout_height="@dimen/y8"
+                    android:layout_marginEnd="@dimen/y8"
                     android:src="@drawable/panorama_redording_red_dot"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"

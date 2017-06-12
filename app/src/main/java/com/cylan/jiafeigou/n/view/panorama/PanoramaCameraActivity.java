@@ -325,6 +325,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     set.setDuration(200);
                     set.start();
                 })
+                .error(R.drawable.camera720_icon_album_selector)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new ImageViewTarget<GlideDrawable>(bottomPanelAlbumItem) {
                     @Override
@@ -479,16 +480,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
             AppLogger.d("将进行拍照");
             presenter.makePhotograph();
-            bottomPanelLoading.setVisibility(View.VISIBLE);
         } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_NONE) {
             presenter.startVideoRecord(panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LONG);
-            bottomPanelLoading.setVisibility(View.VISIBLE);
         } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LONG) {
             presenter.stopVideoRecord(panoramaRecordMode);
-            bottomPanelLoading.setVisibility(View.VISIBLE);
         }
         hideVideoModePop();
         onRefreshControllerView(false);
+        bottomPanelLoading.setVisibility(View.VISIBLE);
+        bottomPanelPhotoGraphItem.setEnabled(false);
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
@@ -732,6 +732,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelLoading.setVisibility(View.GONE);
         bottomPanelPhotoGraphItem.setImageResource(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.drawable.camera720_icon_photograph_selector : R.drawable.camera720_icon_short_video_selector);
         bottomPanelSwitcherItem1ViewMode.check(viewMode == PANORAMA_VIEW_MODE.MODE_PICTURE ? R.id.act_panorama_camera_bottom_panel_picture : R.id.act_panorama_camera_bottom_panel_video);
+        bottomCountDownLine.setScaleX(1);
         if (bottomPanelSwitcher.getDisplayedChild() == 1) {
             bottomPanelSwitcher.showPrevious();
         }
