@@ -306,6 +306,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             videoLiveContainer.addView(surfaceView);
 
         }
+        menuBinding.actPanoramaCameraQuickMenuItem3Left.setEnabled(true);
+        menuBinding.actPanoramaCameraQuickMenuItem3Right.setEnabled(true);
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         onRefreshViewModeUI(panoramaViewMode, true);
