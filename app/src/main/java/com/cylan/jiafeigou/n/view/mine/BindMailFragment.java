@@ -273,11 +273,13 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (!isAdded()) return;
-        if (state == 0) {
-            hideSendReqHint();
-            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
-        }
+        if (!isAdded() || getView() == null) return;
+        getView().post(() -> {
+            if (state == 0) {
+                hideSendReqHint();
+                ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+            }
+        });
     }
 
     @Override

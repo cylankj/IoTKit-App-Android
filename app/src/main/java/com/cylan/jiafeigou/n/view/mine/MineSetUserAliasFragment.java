@@ -70,6 +70,12 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
         if (basePresenter != null) basePresenter.start();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (callBack != null) callBack.callBack(null);
+    }
+
     @OnTextChanged(R.id.et_mine_personal_information_new_name)
     public void onEditChange(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(getEditName());
@@ -119,10 +125,13 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1) {
-            hideSendHint();
-            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
-        }
+        if (!isAdded() || getView() == null) return;
+        getView().post(() -> {
+            if (state == 0) {
+                hideSendHint();
+                ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+            }
+        });
     }
 
     @Override
@@ -184,6 +193,5 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
     public void onStop() {
         super.onStop();
         hideSendHint();
-        if (basePresenter != null) basePresenter.stop();
     }
 }

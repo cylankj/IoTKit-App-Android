@@ -273,6 +273,9 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     private void jump2SetUserNameFragment() {
         Bundle bundle = new Bundle();
         MineSetUserAliasFragment setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
+        setUserNameFragment.setCallBack(t -> {
+            initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+        });
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), setUserNameFragment,
                 android.R.id.content);
     }
