@@ -50,7 +50,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     CustomToolbar customToolbar;
 
     private MineInfoSetPassWordContract.Presenter presenter;
-    private JFGAccount userinfo;
 
     public static MineInfoSetPassWordFragment newInstance(Bundle bundle) {
         MineInfoSetPassWordFragment fragment = new MineInfoSetPassWordFragment();
@@ -72,8 +71,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
      * 获取传递过来的参数
      */
     private void getArgumentData() {
-        Bundle arguments = getArguments();
-        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
     }
 
     private void initPresenter() {
@@ -177,8 +174,9 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
             return;
         }
-
-        presenter.sendChangePassReq(userinfo.getAccount(), getOldPassword(), getNewPassword());
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (jfgAccount != null)
+            presenter.sendChangePassReq(jfgAccount.getAccount(), getOldPassword(), getNewPassword());
 
     }
 

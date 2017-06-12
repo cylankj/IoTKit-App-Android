@@ -1,12 +1,10 @@
-package com.cylan.jiafeigou.n.view.mine;
-
+package com.cylan.jiafeigou.n.view.activity;
 
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -16,15 +14,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,24 +30,28 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
+import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
+import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
+import com.cylan.jiafeigou.n.view.mine.MineInfoSetPassWordFragment;
+import com.cylan.jiafeigou.n.view.mine.MineSetUserAliasFragment;
+import com.cylan.jiafeigou.n.view.mine.MineUserInfoLookBigHeadFragment;
+import com.cylan.jiafeigou.n.view.mine.MyQRCodeDialog;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
@@ -64,18 +62,16 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
-
-/**
- * 创建者     谢坤
- * 创建时间   2016/8/9 10:02
- * 描述	      ${TODO}
- * <p>
- * 更新者     $Author$
- * 更新时间   $Date$
- * 更新描述   ${TODO}
- */
-public class HomeMineInfoFragment extends Fragment implements MineInfoContract.View {
+@RuntimePermissions
+public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoContract.Presenter>
+        implements MineInfoContract.View {
 
     //拉取出照相机时，产生的状态码
     private static final int REQUEST_CROP_PHOTO = 102;
@@ -84,7 +80,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @BindView(R.id.tv_home_mine_personal_mailbox)
     TextView mTvMailBox;
     @BindView(R.id.RLayout_home_mine_personal_phone)
-    RelativeLayout mRlayout_setPersonPhone;
+    RelativeLayout mPhoneNum;
     @BindView(R.id.user_ImageHead)
     RoundedImageView userImageHead;
     @BindView(R.id.tv_user_name)
@@ -106,36 +102,53 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
 
-    private MineInfoContract.Presenter presenter;
-    private JFGAccount argumentData;
     private Uri outPutUri;
     private File tempFile;
-    //    private PopupWindow popupWindow;
-    private int navigationHeight;
-    private WeakReference<MyQRCodeDialog> myQrcodeDialog;
 
-    public static HomeMineInfoFragment newInstance() {
-        HomeMineInfoFragment fragment = new HomeMineInfoFragment();
-        return fragment;
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_info, container, false);
-        ButterKnife.bind(this, view);
-        initPresenter();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_home_mine_info);
+        ButterKnife.bind(this);
+        basePresenter = new MineInfoPresenterImpl(this, getContext());
         createCameraTempFile(savedInstanceState);
-        getNavigationHeigth();
-        return view;
     }
 
-    /**
-     * 导航栏高度
-     */
-    private void getNavigationHeigth() {
-        int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        navigationHeight = getResources().getDimensionPixelSize(resourceId);
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    public void onCameraPermissionDenied() {
+        onNeverAskAgainCameraPermission();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    public void onNeverAskAgainCameraPermission() {
+        AlertDialogManager.getInstance().showDialog(this,
+                getString(R.string.permission_auth, getString(R.string.CAMERA)),
+                getString(R.string.permission_auth, getString(R.string.CAMERA)),
+                getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                },
+                getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    setPermissionDialog(getString(R.string.CAMERA));
+                });
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    public void onOpenCameraPermissionGrant() {
+        openCamera();
+    }
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    public void showRationaleForCamera(PermissionRequest request) {
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        onNeverAskAgainCameraPermission();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MineInfoActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -148,43 +161,36 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStart() {
         super.onStart();
         initView();
-        if (NetUtils.getNetType(getContext()) == -1) {
-            initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
-        }
+        initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onBackPressed() {
+        finishExt();
     }
 
     /**
      * 判断是否大陆用户显示绑定手机号码一栏
      */
     private void initView() {
-        int way = LocaleUtils.getLanguageType(getActivity());
+        int way = LocaleUtils.getLanguageType(this);
         if (way != JConstant.LOCALE_SIMPLE_CN) {
-            mRlayout_setPersonPhone.setVisibility(View.GONE);
+            mPhoneNum.setVisibility(View.GONE);
         } else {
-            mRlayout_setPersonPhone.setVisibility(View.VISIBLE);
+            mPhoneNum.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) presenter.start();
-    }
-
-    private void initPresenter() {
-        presenter = new MineInfoPresenterImpl(this, getContext());
+        if (basePresenter != null) basePresenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (basePresenter != null) basePresenter.stop();
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.btn_home_mine_personal_information,
@@ -195,7 +201,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         switch (view.getId()) {
             //点击回退到Mine的fragment
             case R.id.tv_toolbar_icon:
-                getActivity().getSupportFragmentManager().popBackStack();
+                onBackPressed();
                 break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
@@ -211,35 +217,33 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 break;
 
             case R.id.RLayout_home_mine_personal_phone:         //跳转到设置手机号界面
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.RLayout_home_mine_personal_phone));
+                ViewUtils.deBounceClick(view);
                 AppLogger.d("RLayout_home_mine_personal_phone");
                 jump2SetPhoneFragment();
                 break;
 
             case R.id.user_ImageHead:                           //点击查看大头像
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.user_ImageHead));
+                ViewUtils.deBounceClick(view);
                 AppLogger.d("user_ImageHead");
                 lookBigImageHead();
                 break;
 
             case R.id.rLayout_home_mine_personal_name:          //更改昵称
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.rLayout_home_mine_personal_name));
+                ViewUtils.deBounceClick(view);
                 AppLogger.d("rLayout_home_mine_personal_name");
                 jump2SetUserNameFragment();
                 break;
 
             case R.id.rl_change_password:                       //修改密码
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_change_password));
+                ViewUtils.deBounceClick(view);
                 AppLogger.d("rl_change_password");
                 jump2ChangePasswordFragment();
                 break;
 
-            case R.id.rl_my_QRCode:                             //我的二维码
-                showMyQrcodeDialog();
+            case R.id.rl_my_QRCode:
+                //我的二维码
+                ViewUtils.deBounceClick(view);
+                showQrCodeDialog();
                 break;
         }
     }
@@ -247,15 +251,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     /**
      * 弹出我的二维码对话框
      */
-    private void showMyQrcodeDialog() {
-        if (myQrcodeDialog == null || myQrcodeDialog.get() == null) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isopenlogin", presenter.checkOpenLogin());
-            bundle.putSerializable("jfgaccount", argumentData);
-            myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
-        }
-        MyQRCodeDialog qRCodeDialog = myQrcodeDialog.get();
-        qRCodeDialog.show(getActivity().getSupportFragmentManager(), "myqrcode");
+    private void showQrCodeDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isopenlogin", basePresenter.checkOpenLogin());
+        MyQRCodeDialog.newInstance(bundle).show(getSupportFragmentManager(), "myqrcode");
     }
 
     /**
@@ -263,14 +262,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void jump2ChangePasswordFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", argumentData);
         MineInfoSetPassWordFragment setPassWordFragment = MineInfoSetPassWordFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, setPassWordFragment, "setPassWordFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                setPassWordFragment, android.R.id.content);
     }
 
     /**
@@ -278,21 +272,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void jump2SetUserNameFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", argumentData);
         MineSetUserAliasFragment setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, setUserNameFragment, "setUserNameFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
-
-        if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
-            setUserNameFragment.setOnSetUsernameListener(name -> {
-                tvUserName.setText(name);
-                argumentData.setAlias(name);
-            });
-        }
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), setUserNameFragment,
+                android.R.id.content);
     }
 
     /**
@@ -300,14 +282,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", isDefaultPhoto(argumentData.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : argumentData.getPhotoUrl());
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (jfgAccount != null)
+            bundle.putString("imageUrl", isDefaultPhoto(jfgAccount.getPhotoUrl()) && basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl());
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, bigHeadFragment, "bigHeadFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                bigHeadFragment, android.R.id.content);
     }
 
 
@@ -320,11 +300,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         MyViewTarget myViewTarget = new MyViewTarget(userImageHead, getContext().getResources());
         String photoUrl;
         if (bean != null) {
-            argumentData = bean;
             //头像的回显
             photoUrl = bean.getPhotoUrl();
             if (isDefaultPhoto(photoUrl)) {
-                if (presenter.checkOpenLogin()) {
+                if (basePresenter.checkOpenLogin()) {
                     photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
                 }
             }
@@ -340,7 +319,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         .into(myViewTarget);
             }
 
-            if (presenter.checkOpenLogin() && TextUtils.isEmpty(argumentData.getAlias())) {
+            if (basePresenter.checkOpenLogin() && TextUtils.isEmpty(bean.getAlias())) {
                 String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
                 tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
             } else {
@@ -358,7 +337,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
-            presenter.loginType(bean.getAccount(), bean.getPhone(), bean.getEmail());
+            basePresenter.loginType(bean.getAccount(), bean.getPhone(), bean.getEmail());
         }
     }
 
@@ -386,22 +365,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void jump2SetEmailFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", argumentData);
-        HomeMineInfoMailBoxFragment mailBoxFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mailBoxFragment, "mailBoxFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
-        if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
-            mailBoxFragment.setListener(content -> mTvMailBox.setText(content));
-        }
+        BindMailFragment mailBoxFragment = BindMailFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                mailBoxFragment, android.R.id.content);
     }
 
     @Override
-    public void showSetPwd(boolean isVisiable) {
-        if (isVisiable) {
+    public void showSetPwd(boolean isVisible) {
+        if (isVisible) {
             rlChangePassword.setVisibility(View.GONE);
         }
     }
@@ -432,101 +403,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         ViewUtils.deBounceClick(v);
         PickImageFragment fragment = PickImageFragment.newInstance(null);
         fragment.setClickListener(vv -> {
-//打开相机
-            if (presenter.checkHasCamera()) {
-
-                if (presenter.checkCameraPermission() && presenter.cameraIsCanUse()) {
-                    openCamera();
-                } else {
-                    //申请权限
-                    HomeMineInfoFragment.this.requestPermissions(
-                            new String[]{Manifest.permission.CAMERA},
-                            1);
-                }
-
-            } else {
-                ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
-            }
+            //打开相机
+            MineInfoActivityPermissionsDispatcher.onOpenCameraPermissionGrantWithCheck(this);
         }, cc -> {
-            if (presenter.checkExternalStorePermission()) {
-                openGallery();
-            } else {
-                //申请权限
-                HomeMineInfoFragment.this.requestPermissions(
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        2);
-            }
+            openGallery();
         });
-        fragment.show(getActivity().getSupportFragmentManager(), "pickImageDialog");
-//        AlertDialogManager.getInstance().showDialog(getActivity(),"pickImageDialog",
-//                R.string.);
-//        if (popupWindow != null && popupWindow.isShowing()) {
-//            return;
-//        }
-//        //设置PopupWindow的View
-//        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_pick_image_popupwindow, null);
-//        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-//                RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        //设置背景
-//        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-//        //设置点击弹窗外隐藏自身
-//        popupWindow.setFocusable(true);
-//        popupWindow.setOutsideTouchable(true);
-//        //设置动画
-//        popupWindow.setAnimationStyle(R.style.PopupWindow);
-//        //设置位置
-//        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
-//        //设置消失监听
-//        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
-//        //设置PopupWindow的View点击事件
-//        setOnPopupViewClick(view);
-//        //设置背景色
-//        setBackgroundAlpha(0.4f);
+        fragment.show(getSupportFragmentManager(), "pickImageDialog");
     }
-
-//    /**
-//     * popupwindow条目点击
-//     *
-//     * @param view
-//     */
-//    private void setOnPopupViewClick(View view) {
-//        TextView tv_pick_phone, tv_pick_zone, tv_cancel;
-//        tv_pick_phone = (TextView) view.findViewById(R.id.tv_pick_gallery);
-//        tv_pick_zone = (TextView) view.findViewById(R.id.tv_pick_camera);
-//        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-//        tv_pick_phone.setOnClickListener(v -> {
-//            if (presenter.checkExternalStorePermission()) {
-//                openGallery();
-//            } else {
-//                //申请权限
-//                HomeMineInfoFragment.this.requestPermissions(
-//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                        2);
-//            }
-//            popupWindow.dismiss();
-//        });
-//
-//        tv_pick_zone.setOnClickListener(v -> {
-//            //打开相机
-//            if (presenter.checkHasCamera()) {
-//
-//                if (presenter.checkCameraPermission() && presenter.cameraIsCanUse()) {
-//                    openCamera();
-//                } else {
-//                    //申请权限
-//                    HomeMineInfoFragment.this.requestPermissions(
-//                            new String[]{Manifest.permission.CAMERA},
-//                            1);
-//                }
-//
-//            } else {
-//                ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
-//            }
-//            popupWindow.dismiss();
-//        });
-//
-//        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
-//    }
 
     /**
      * 打开相册
@@ -551,26 +434,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", argumentData);
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 bindPhoneFragment, android.R.id.content);
         bindPhoneFragment.setOnChangePhoneListener(phone -> tvHomeMinePersonalPhone.setText(phone));
     }
 
-    /**
-     * 跳转到登录页
-     */
-    private void jump2LoginFragment() {
-        //进入登陆页 login page
-        Intent intent = new Intent(getContext(), SmartcallActivity.class);
-        intent.putExtra(JConstant.FROM_LOG_OUT, true);
-        getActivity().startActivity(intent);
-        getActivity().finish();
-    }
 
     @Override
-    public void setPresenter(MineInfoContract.Presenter presenter) {
+    public void setPresenter(MineInfoContract.Presenter basePresenter) {
 
     }
 
@@ -583,79 +455,33 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * 删除亲友对话框
      */
     public void showLogOutDialog(View v) {
-        AlertDialogManager.getInstance().showDialog(getActivity(),
+        AlertDialogManager.getInstance().showDialog(this,
                 "showLogOutDialog", getString(R.string.LOGOUT_INFO),
                 getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
-                    if (getView() != null && argumentData != null) {
-                        presenter.logOut(argumentData.getAccount());
-                        jump2LoginFragment();
-                        if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
-                            ((NewHomeActivity) getActivity()).finishExt();
-                        }
+                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    if (jfgAccount != null) {
+                        basePresenter.logOut(jfgAccount.getAccount());
+                        //进入登陆页 login page
+                        Intent intent = new Intent(getContext(), SmartcallActivity.class);
+                        intent.putExtra(JConstant.FROM_LOG_OUT, true);
+                        startActivity(intent);
+                        finish();
                     }
                 }, getString(R.string.CANCEL), null, false);
-//
-//        if (popupWindow != null && popupWindow.isShowing()) {
-//            return;
-//        }
-//        //设置PopupWindow的View
-//        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_del_friend_popupwindow, null);
-//        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-//                RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        //设置背景
-//        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-//        //设置点击弹窗外隐藏自身
-//        popupWindow.setFocusable(true);
-//        popupWindow.setOutsideTouchable(true);
-//        //设置动画
-//        popupWindow.setAnimationStyle(R.style.PopupWindow);
-//        //设置位置
-//        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
-//        //设置消失监听
-//        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
-//        //设置PopupWindow的View点击事件
-//        setOnLogoutClick(view);
-//        //设置背景色
-//        setBackgroundAlpha(0.4f);
     }
-
-//    private void setOnLogoutClick(View view) {
-//        TextView tv_is_del, tv_pick_zone, tv_cancel;
-//        tv_is_del = (TextView) view.findViewById(R.id.tv_is_del_frined);
-//        tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
-//        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-//
-//        tv_is_del.setTextSize(14);
-//        tv_is_del.setText(getString(R.string.LOGOUT_INFO));
-//
-//        tv_pick_zone.setText(getString(R.string.LOGOUT));
-//
-//        tv_pick_zone.setOnClickListener(v -> {
-//            popupWindow.dismiss();
-//            if (getView() != null && argumentData != null) {
-//                presenter.logOut(argumentData.getAccount());
-//                jump2LoginFragment();
-//                if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
-//                    ((NewHomeActivity) getActivity()).finishExt();
-//                }
-//            }
-//        });
-//
-//        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
-//    }
 
 
     //设置屏幕背景透明效果
     public void setBackgroundAlpha(float alpha) {
-        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = alpha;
-        getActivity().getWindow().setAttributes(lp);
+        getWindow().setAttributes(lp);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != getActivity().RESULT_CANCELED) {
+        if (resultCode != RESULT_CANCELED) {
             if (requestCode == Constants.REQUEST_CODE && data != null) {
                 gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
             } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
@@ -667,7 +493,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 PreferencesUtils.putString("UserImageUrl", cropImagePath);
                 AppLogger.d("upload_succ");
             } else if (requestCode == OPEN_CAMERA) {
-                if (resultCode == getActivity().RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     gotoClipActivity(outPutUri);
                 }
             }
@@ -727,31 +553,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         if (savedInstanceState != null && savedInstanceState.containsKey("tempFile")) {
             tempFile = (File) savedInstanceState.getSerializable("tempFile");
         } else {
-            tempFile = new File(presenter.checkFileExit(Environment.getExternalStorageDirectory().getPath() + "/image/"),
+            tempFile = new File(basePresenter.checkFileExit(Environment.getExternalStorageDirectory().getPath() + "/image/"),
                     System.currentTimeMillis() + ".jpg");
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                setPermissionDialog(getString(R.string.camera_auth));
-            }
-        } else if (requestCode == 2) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            } else {
-                setPermissionDialog(getString(R.string.photo));
-            }
-        }
-    }
-
     public void setPermissionDialog(String permission) {
-        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+        AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(this);
         builder.setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
@@ -759,7 +567,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 });
-        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
+        AlertDialogManager.getInstance().showDialog("setPermissionDialog", this, builder);
     }
 
     private void openSetting() {
@@ -780,4 +588,5 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onDestroy() {
         super.onDestroy();
     }
+
 }

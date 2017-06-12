@@ -249,6 +249,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        addSubscription(Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .delay(30, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .subscribe(ret -> mView.onRefreshFinish(),
+                        throwable -> mView.onRefreshFinish()), "30s_timeout");
     }
 
     @Override

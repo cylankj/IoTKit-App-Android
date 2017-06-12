@@ -77,7 +77,9 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            if (photoView == null) return;
                             ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) return;
                             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
                             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                             photoView.setLayoutParams(lp);
@@ -88,7 +90,9 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                         @Override
                         public void onLoadFailed(Exception e, Drawable errorDrawable) {
                             //破图的位置,属性不一样.
+                            if (photoView == null) return;
                             ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) return;
                             lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                             photoView.setLayoutParams(lp);
@@ -110,7 +114,9 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            if (photoView == null) return;
                             ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) return;
                             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
                             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                             photoView.setLayoutParams(lp);
@@ -120,7 +126,9 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
 
                         @Override
                         public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            if (photoView == null) return;
                             ViewGroup.LayoutParams lp = photoView.getLayoutParams();
+                            if (lp == null) return;
                             lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                             photoView.setLayoutParams(lp);

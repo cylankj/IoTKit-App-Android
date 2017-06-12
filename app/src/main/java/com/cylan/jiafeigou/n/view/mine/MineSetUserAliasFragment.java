@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,8 @@ import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -31,7 +32,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAliasContract.View {
+public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasContract.Presenter> implements MineInfoSetAliasContract.View {
 
     @BindView(R.id.et_mine_personal_information_new_name)
     EditText etMinePersonalInformationNewName;
@@ -41,20 +42,6 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     ImageView ivMinePersonalInformationNewNameClear;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-
-
-    private MineInfoSetAliasContract.Presenter presenter;
-
-    private OnSetUsernameListener listener;
-    private JFGAccount userinfo;
-
-    public interface OnSetUsernameListener {
-        void userNameChange(String name);
-    }
-
-    public void setOnSetUsernameListener(OnSetUsernameListener listener) {
-        this.listener = listener;
-    }
 
     public static MineSetUserAliasFragment newInstance(Bundle bundle) {
         MineSetUserAliasFragment fragment = new MineSetUserAliasFragment();
@@ -68,7 +55,6 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
         View view = inflater.inflate(R.layout.fragment_home_mine__set_name, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        getArgumentData();
         initEditText();
         return view;
     }
@@ -81,15 +67,7 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
-    }
-
-    /**
-     * 获取传递过来的参数
-     */
-    private void getArgumentData() {
-        Bundle arguments = getArguments();
-        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
+        if (basePresenter != null) basePresenter.start();
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_new_name)
@@ -110,11 +88,13 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     }
 
     private void initEditText() {
-        etMinePersonalInformationNewName.setText(userinfo == null || TextUtils.isEmpty(userinfo.getAlias()) ? "" : userinfo.getAlias());
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (jfgAccount != null)
+            etMinePersonalInformationNewName.setText(TextUtils.isEmpty(jfgAccount.getAlias()) ? "" : jfgAccount.getAlias());
     }
 
     private void initPresenter() {
-        presenter = new MineInfoSetNamePresenterImpl(this);
+        basePresenter = new MineInfoSetNamePresenterImpl(this);
     }
 
     @Override
@@ -160,7 +140,7 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     }
 
     @Override
-    public void setPresenter(MineInfoSetAliasContract.Presenter presenter) {
+    public void setPresenter(MineInfoSetAliasContract.Presenter basePresenter) {
 
     }
 
@@ -176,10 +156,10 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_toolbar_right:
-                if (presenter.isEditEmpty(getEditName())) {
+                if (basePresenter.isEditEmpty(getEditName())) {
                     return;
                 } else {
-                    if (presenter != null) presenter.saveName(getEditName());
+                    if (basePresenter != null) basePresenter.saveName(getEditName());
                 }
                 break;
             case R.id.iv_mine_personal_information_new_name_clear:
@@ -204,6 +184,6 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     public void onStop() {
         super.onStop();
         hideSendHint();
-        if (presenter != null) presenter.stop();
+        if (basePresenter != null) basePresenter.stop();
     }
 }

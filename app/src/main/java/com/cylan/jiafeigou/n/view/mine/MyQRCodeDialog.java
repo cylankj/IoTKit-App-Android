@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -48,7 +49,6 @@ public class MyQRCodeDialog extends BaseDialog {
     ImageView ivUserQrcode;
     @BindView(R.id.iv_close_dialog)
     ImageView ivCloseDialog;
-    private JFGAccount jfgaccount;
     private boolean isopenlogin;
 
     public static MyQRCodeDialog newInstance(Bundle bundle) {
@@ -62,7 +62,6 @@ public class MyQRCodeDialog extends BaseDialog {
         super.onCreate(savedInstanceState);
         setCancelable(false);
         Bundle arguments = getArguments();
-        jfgaccount = (JFGAccount) arguments.getSerializable("jfgaccount");
         isopenlogin = (boolean) arguments.getSerializable("isopenlogin");
     }
 
@@ -83,6 +82,7 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
+        JFGAccount jfgaccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return;
         final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName(), jfgaccount.getAccount());
         ivUserQrcode.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
@@ -102,8 +102,9 @@ public class MyQRCodeDialog extends BaseDialog {
                     .into(myViewTarget);
             return;
         }
-        tvUserAlias.setText(jfgaccount.getAlias());
-        Glide.with(getContext()).load(jfgaccount.getPhotoUrl())
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        tvUserAlias.setText(jfgAccount.getAlias());
+        Glide.with(getContext()).load(jfgAccount.getPhotoUrl())
                 .asBitmap()
                 .centerCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)

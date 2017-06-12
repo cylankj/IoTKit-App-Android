@@ -11,7 +11,7 @@ import rx.Subscription;
  * 创建时间：2016/9/12
  * 描述：
  */
-public interface MineInfoBindMailContract {
+public interface BindMailContract {
 
     interface View extends BaseView<Presenter> {
         /**
@@ -68,19 +68,13 @@ public interface MineInfoBindMailContract {
 
         boolean checkEmail(String email);               //检查邮箱的合法性
 
-        void checkEmailIsBinded(String email);       //检验邮箱是否已经绑定过
+        void isEmailBind(String email);       //检验邮箱是否已经绑定过
 
         /**
          * 发送修改用户属性请求
          */
         void sendSetAccountReq(String newEmail);
 
-        /**
-         * 接收到检验邮箱是否已经注册过
-         *
-         * @return
-         */
-        Subscription getCheckAccountCallBack();
 
         /**
          * 修改属性后的回调
@@ -93,16 +87,6 @@ public interface MineInfoBindMailContract {
          * @return
          */
         JFGAccount getUserAccount();
-
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
 
         /**
          * 三方登录回调

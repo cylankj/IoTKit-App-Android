@@ -205,7 +205,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     public void handleResult(final Result rawResult) {
         String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
 
-        if (NetUtils.getNetType(getContext()) == 0) {
+        if (NetUtils.getJfgNetType() == 0) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }

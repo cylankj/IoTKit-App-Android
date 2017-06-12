@@ -30,10 +30,10 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.MineInfoActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
+import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
-import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
-import com.cylan.jiafeigou.n.view.mine.HomeMineInfoMailBoxFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
@@ -437,13 +437,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转个人信息页
      */
     private void jump2UserInfoFrgment() {
-        HomeMineInfoFragment personalInformationFragment = HomeMineInfoFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
+        startActivity(new Intent(getActivity(), MineInfoActivity.class));
     }
 
     /**
@@ -463,15 +457,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void jump2BindMailFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", getAppComponent().getSourceManager().getJFGAccount());
-        HomeMineInfoMailBoxFragment bindMailFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, bindMailFragment, "bindMailFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                BindMailFragment.newInstance(null), android.R.id.content);
     }
 
     @Override

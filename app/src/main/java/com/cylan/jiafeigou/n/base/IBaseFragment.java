@@ -20,7 +20,6 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     protected P basePresenter;
     private final String TAG = getClass().getSimpleName();
 
-
     protected AlertDialogManager getAlertDialogManager() {
         return AlertDialogManager.getInstance();
     }

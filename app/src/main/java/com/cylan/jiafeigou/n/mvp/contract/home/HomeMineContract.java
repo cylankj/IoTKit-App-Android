@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.UiThread;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.n.mvp.BaseActivityView;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 

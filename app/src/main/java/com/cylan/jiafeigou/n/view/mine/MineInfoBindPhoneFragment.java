@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -39,7 +39,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/1
  * 描述：
  */
-public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhoneContract.View {
+public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContract.Presenter> implements MineBindPhoneContract.View {
 
     @BindView(R.id.et_mine_bind_phone)
     EditText etMineBindPhone;
@@ -57,10 +57,14 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     View vertifyCodeLine;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private JFGAccount userinfo;
     private boolean isBindOrChange;
-    private MineBindPhoneContract.Presenter presenter;
     private CountDownTimer countDownTimer;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        basePresenter = new MineBindPhonePresenterImp(this);
+    }
 
     public OnChangePhoneListener changeAccListener;
 
@@ -78,7 +82,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         View view = inflater.inflate(R.layout.fragment_mine_info_bind_phone, container, false);
         ButterKnife.bind(this, view);
         getArgumentData();
-        initPresenter();
         initCountDownTime();
         return view;
     }
@@ -152,16 +155,13 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     }
 
-    private void initPresenter() {
-        presenter = new MineBindPhonePresenterImp(this);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) {
-            presenter.isBindOrChange(userinfo);
-            presenter.start();
+        if (basePresenter != null) {
+            JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            if (jfgAccount != null)
+                basePresenter.isBindOrChange(jfgAccount);
         }
     }
 
@@ -169,8 +169,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      * 获取传递过来的参数
      */
     private void getArgumentData() {
-        Bundle arguments = getArguments();
-        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
     }
 
     public static MineInfoBindPhoneFragment newInstance(Bundle bundle) {
@@ -180,7 +178,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     }
 
     @Override
-    public void setPresenter(MineBindPhoneContract.Presenter presenter) {
+    public void setPresenter(MineBindPhoneContract.Presenter basePresenter) {
 
     }
 
@@ -199,7 +197,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 }
                 //获取验证码点击
                 if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
-                    presenter.checkPhoneIsBind(getInputPhone());
+                    basePresenter.checkPhoneIsBind(getInputPhone());
                 } else {
                     ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
                 }
@@ -222,7 +220,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 if (getInputCheckCode().length() != 6) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
                 } else {
-                    presenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(), getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    basePresenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(), getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                 }
                 break;
         }
@@ -276,7 +274,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
         } else {
             //发送验证码
-            presenter.getCheckCode(getInputPhone());
+            basePresenter.getCheckCode(getInputPhone());
         }
     }
 
@@ -289,7 +287,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void handlerCheckCodeResult(RxEvent.ResultVerifyCode resultVerifyCode) {
         if (resultVerifyCode.code == JError.ErrorOK) {
             showLoadingDialog();
-            presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+            basePresenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
             hideLoadingDialog();
             ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
@@ -306,10 +304,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void handlerResetPhoneResult(int code) {
         hideLoadingDialog();
-        if (!TextUtils.isEmpty(getInputPhone())) {
+        JFGAccount userinfo = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (userinfo != null && !TextUtils.isEmpty(getInputPhone())) {
             if (code == JError.ErrorOK) {
                 if (isBindOrChange) {
-                    if (presenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
+                    if (basePresenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
                         //是三方登录
                         jump2SetPWDFragment(userinfo.getAccount());
                         return;
@@ -377,7 +376,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (basePresenter != null) basePresenter.stop();
     }
 
     @Override

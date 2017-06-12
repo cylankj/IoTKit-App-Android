@@ -35,7 +35,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/12/28
  * 描述：
  */
-public class MineInfoSetNewPwdFragment extends IBaseFragment implements
+public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdContract.Presenter> implements
         MineInfoSetNewPwdContract.View {
 
     @BindView(R.id.et_mine_set_newpwd)
@@ -46,7 +46,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
     CheckBox cbNewPwdShow;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private MineInfoSetNewPwdContract.Presenter presenter;
     private String userAccount;
     private String token;
 
@@ -62,6 +61,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
         Bundle arguments = getArguments();
         userAccount = arguments.getString("useraccount");
         token = arguments.getString("token");
+        this.basePresenter = new MineInfoSetNewPwdPresenterImp(this);
     }
 
     @Nullable
@@ -69,7 +69,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_info_set_pwd, container, false);
         ButterKnife.bind(this, view);
-        initPresenter();
         return view;
     }
 
@@ -82,17 +81,11 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        presenter.stop();
-    }
-
-    private void initPresenter() {
-        presenter = new MineInfoSetNewPwdPresenterImp(this);
     }
 
     @Override
@@ -126,14 +119,13 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
                     return;
                 }
 
-                if (presenter.checkIsOverTime()) {
+                if (basePresenter.checkIsOverTime()) {
                     ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
                     //跳转到个人信息页
                     jump2MineInfoFragment();
                     return;
                 }
-
-                presenter.openLoginRegister(userAccount, getNewPwd(), token);
+                basePresenter.openLoginRegister(userAccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
                 etMineSetNewpwd.setText("");
@@ -205,7 +197,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements
 //        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
 //        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
 //        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");
-//        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
+//        BindMailFragment mailBoxFragment = (BindMailFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
 //
 //        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 //        if (personalInfoFragment != null) {
