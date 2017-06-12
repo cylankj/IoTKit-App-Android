@@ -231,6 +231,7 @@
   <string name="HOME">主頁</string>
   <string name="HOUR">時</string>
   <string name="HOURS">全天提示</string>
+  <string name="HZ_NTSC_PAL">開啟NTSC</string>
   <string name="HZ_VOTE">支援110V電壓</string>
   <string name="HistoricalCard_Failed">歷史錄像卡讀取失敗</string>
   <string name="Historical_Failed">歷史錄像讀取失敗</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">設定</string>
   <string name="Tap1_Update">升級</string>
   <string name="Tap1_UpdateFirmwareTips">即將升級設備固件，請保持客戶端與設備連接於同一網路</string>
+  <string name="Tap1_Update_Electricity">設備電量低於30%，無法更新，請先充足電後重試</string>
+  <string name="Tap1_Update_Precautions">升級大約需要4到5分鐘，升級過程中請勿讓設備斷電斷網</string>
   <string name="Tap1_device_deleted">此設備已被刪除</string>
   <string name="Tap1_iHome_Associate">關聯</string>
   <string name="Tap1_iHome_Associated">已關聯</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">是否取消分享？</string>
   <string name="Tap3_Share_NoBindTips">使用分享設備需要綁定郵箱</string>
   <string name="Tap3_TitleName">我的</string>
+  <string name="Tap3_TitleName_Notice">通知</string>
   <string name="Tap3_Uploading">上傳中&#8230;</string>
   <string name="Tap3_UploadingComplete">上傳成功</string>
   <string name="Tap3_UploadingFailed">上傳失敗</string>

@@ -231,6 +231,7 @@
   <string name="HOME">ホーム</string>
   <string name="HOUR">时</string>
   <string name="HOURS">24時間プロプティング</string>
+  <string name="HZ_NTSC_PAL">オンにしますNTSC</string>
   <string name="HZ_VOTE">110V電源使用可能</string>
   <string name="HistoricalCard_Failed">歴史的なビデオカードの読み取りに失敗しました</string>
   <string name="Historical_Failed">履歴ビデオの読み込みに失敗しました</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">設定へ</string>
   <string name="Tap1_Update">更新</string>
   <string name="Tap1_UpdateFirmwareTips">更新が間もなく開始されます。携帯電話と端末が同じWIFIに接続していることを確認してください</string>
+  <string name="Tap1_Update_Electricity">バッテリ残量が30%以下ですので更新できません。充電してからリトライしてください。</string>
+  <string name="Tap1_Update_Precautions">アップデートの所要時間は約4&#8211;5分です。完了するまでは電源やネットワーク接続を切らないでください。</string>
   <string name="Tap1_device_deleted">デバイスを削除されました。</string>
   <string name="Tap1_iHome_Associate">関連</string>
   <string name="Tap1_iHome_Associated">関連する</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">共有を解除？</string>
   <string name="Tap3_Share_NoBindTips">この関数を使用すると、電子メールを最初にバインドする必要があります。</string>
   <string name="Tap3_TitleName">本人</string>
+  <string name="Tap3_TitleName_Notice">通知</string>
   <string name="Tap3_Uploading">のアップロード&#8230;</string>
   <string name="Tap3_UploadingComplete">アップロードが完了しました</string>
   <string name="Tap3_UploadingFailed">のアップロード失敗</string>

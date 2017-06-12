@@ -231,6 +231,7 @@
   <string name="HOME">Ev</string>
   <string name="HOUR">S</string>
   <string name="HOURS">24 saat</string>
+  <string name="HZ_NTSC_PAL">NTSC\'yi başlat</string>
   <string name="HZ_VOTE">110V elektrik beslemesi</string>
   <string name="HistoricalCard_Failed">Tarihi video kartı okunamadı</string>
   <string name="Historical_Failed">Geçmiş video okunamadı</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Kurulum</string>
   <string name="Tap1_Update">Güncelleştir</string>
   <string name="Tap1_UpdateFirmwareTips">Güncelleştir kısa bir süre içinde başlayacak,lütfen cep telefonunun ve cihazının aynı WIFI ile bağlantı kurduğundan emin olun</string>
+  <string name="Tap1_Update_Electricity">Düşük pil &lt;% 30, yükseltme başarısız, lütfen şarj edin ve tekrar deneyin.</string>
+  <string name="Tap1_Update_Precautions">Yükseltme yaklaşık 4&#8211;5 dakika sürer; yükseltme sırasında İnternet\'i kesmeyin veya cihazı kapatmayın.</string>
   <string name="Tap1_device_deleted">Bu cihaz silindi</string>
   <string name="Tap1_iHome_Associate">Birleştir</string>
   <string name="Tap1_iHome_Associated">Ilişkili</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Bu işlevi kullanmak, önce e&#8211;postayı bağlamak zorundadır.</string>
   <string name="Tap3_TitleName">Beni</string>
+  <string name="Tap3_TitleName_Notice">ihbar</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

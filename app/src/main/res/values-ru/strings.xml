@@ -231,6 +231,7 @@
   <string name="HOME">Главная</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Круглосуточно</string>
+  <string name="HZ_NTSC_PAL">Открыть NTSC</string>
   <string name="HZ_VOTE">Источник питания 110 В</string>
   <string name="HistoricalCard_Failed">Не удалось прочитать историческую видеокарту</string>
   <string name="Historical_Failed">Не удалось прочитать видео</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Установка</string>
   <string name="Tap1_Update">Обновить</string>
   <string name="Tap1_UpdateFirmwareTips">Обновить начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же Wi&#8211;Fi</string>
+  <string name="Tap1_Update_Electricity">Энергия устройства ниже 30%, нельзя обновить, повторите попытку после полной зарядки.</string>
+  <string name="Tap1_Update_Precautions">Обновление требует примерно 4&#8211;5 минут, не отключите питание устройства или доступ в Интернет в это время.</string>
   <string name="Tap1_device_deleted">Это устройство было удалено.</string>
   <string name="Tap1_iHome_Associate">ассоциировать</string>
   <string name="Tap1_iHome_Associated">ассоциированный</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Удалить?</string>
   <string name="Tap3_Share_NoBindTips">С помощью этой функции необходимо связать электронную почту в первую очередь.</string>
   <string name="Tap3_TitleName">Меня</string>
+  <string name="Tap3_TitleName_Notice">Сообщение</string>
   <string name="Tap3_Uploading">Идет загрузка&#8230;</string>
   <string name="Tap3_UploadingComplete">Загрузка полный</string>
   <string name="Tap3_UploadingFailed">Сбой при загрузке</string>

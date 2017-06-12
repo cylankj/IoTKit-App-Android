@@ -231,6 +231,7 @@
   <string name="HOME">Rumah</string>
   <string name="HOUR">Jam</string>
   <string name="HOURS">24 jam</string>
+  <string name="HZ_NTSC_PAL">Mulai NTSC</string>
   <string name="HZ_VOTE">Daya Listrik 110V</string>
   <string name="HistoricalCard_Failed">Kartu video historis gagal dibaca</string>
   <string name="Historical_Failed">Video historis terbaca gagal</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Persiapkan</string>
   <string name="Tap1_Update">Memperbarui</string>
   <string name="Tap1_UpdateFirmwareTips">Memperbarui akan segera memulai,pastikan bahwa ponsel dan perangkat terhubung dengan WIFI yang sama</string>
+  <string name="Tap1_Update_Electricity">Baterai rendah &lt;30%, upgrade gagal, tolong isi ulang dan coba lagi</string>
+  <string name="Tap1_Update_Precautions">Upgrade memakan waktu sekitar 4&#8211;5 menit, jangan memutus Internet atau mematikan perangkat saat meng&#8211;upgrade.</string>
   <string name="Tap1_device_deleted">Perangkat ini sudah dihapus</string>
   <string name="Tap1_iHome_Associate">Tautan</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Batalkan berbagi?</string>
   <string name="Tap3_Share_NoBindTips">Menggunakan fungsi ini perlu untuk mengikat email</string>
   <string name="Tap3_TitleName">Ranjau</string>
+  <string name="Tap3_TitleName_Notice">Melihat</string>
   <string name="Tap3_Uploading">Uploading &#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

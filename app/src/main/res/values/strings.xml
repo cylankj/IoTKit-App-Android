@@ -175,7 +175,7 @@
   <string name="EFAMILY_NO_CONTENTS">No content</string>
   <string name="EFAMILY_NO_DOOR">No Device</string>
   <string name="EFAMILY_PUSH_TO_LEAVE_MSG">Hold to Talk</string>
-  <string name="EFAMILY_QRCODE_BOTTOM_TEXT">Align the QR code within frame at the back of the device to scan</string>
+  <string name="EFAMILY_QRCODE_BOTTOM_TEXT">Align the QR code within frame at the device to scan</string>
   <string name="EFAMILY_READ_ALREADY">read</string>
   <string name="EFAMILY_RELEVANCE_ALARE">If \'%1$s\'been removed, \'%2$s\' will not receive any call messages.</string>
   <string name="EFAMILY_RELEVANCE_DOOR">Associated doorbell</string>
@@ -231,6 +231,7 @@
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 hours</string>
+  <string name="HZ_NTSC_PAL">Start NTSC</string>
   <string name="HZ_VOTE">110V electricity power</string>
   <string name="HistoricalCard_Failed">The historical video card reads failed</string>
   <string name="Historical_Failed">Historical video reads failed</string>
@@ -550,8 +551,8 @@
   <string name="Sharing_Management">sharing management</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
-  <string name="Switch_Mode">please switch to outdoor mode to view shooting content</string>
-  <string name="Switch_Mode_Pop">please switch current network shooting content to outdoor mode</string>
+  <string name="Switch_Mode">please switch to direct mode to view shooting content</string>
+  <string name="Switch_Mode_Pop">please switch current network shooting content to direct mode</string>
   <string name="TAKE_PHOTO">Take a Photo</string>
   <string name="TERM_OF_USE">User agreement</string>
   <string name="THEME_DELETED">%s has been deleted</string>
@@ -720,8 +721,8 @@
   <string name="Tap1_NewFirmware">New firmware</string>
   <string name="Tap1_NoMessages">No messages</string>
   <string name="Tap1_Offline">Offline, please reconnect>></string>
-  <string name="Tap1_OutdoorMode">Outdoor mode</string>
-  <string name="Tap1_OutdoorMode_Opened">Outdoor mode has been opened</string>
+  <string name="Tap1_OutdoorMode">Direct mode</string>
+  <string name="Tap1_OutdoorMode_Opened">Direct mode has been opened</string>
   <string name="Tap1_Refreshed">Refreshed</string>
   <string name="Tap1_RefreshedFailed">Refresh failed</string>
   <string name="Tap1_SDCardFullyTips">Fully occupied</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Set up</string>
   <string name="Tap1_Update">Update</string>
   <string name="Tap1_UpdateFirmwareTips">Update will start shortly,please ensure that cellphone and device are connecting with the same WIFI</string>
+  <string name="Tap1_Update_Electricity">Low battery &lt; 30%, upgrade failed, please charge and retry</string>
+  <string name="Tap1_Update_Precautions">Upgrade takes about 4&#8211;5 mins, don\’t cut off Internet or power off device during upgrade</string>
   <string name="Tap1_device_deleted">This device has been deleted.</string>
   <string name="Tap1_iHome_Associate">Associate</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Using this function needs to bind email first.</string>
   <string name="Tap3_TitleName">Me</string>
+  <string name="Tap3_TitleName_Notice">Notice</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Uploaded</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>
@@ -977,7 +981,6 @@
   <string name="sound_auth">Sound</string>
   <string name="submiting">Sending&#8230;</string>
   <string name="tencent_app_id">1103156296</string>
-  <string name="test_name">加菲狗|Clever Dog|doby|Doby</string>
   <string name="the_memory_card_is_not_present">There is no Micro SD card</string>
   <string name="turn_on_gps">Please turn \"GPS\" access in Android system settings</string>
   <string name="turn_on_storage">For normal use, please allow %s to access your storage</string>

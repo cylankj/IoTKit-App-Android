@@ -231,6 +231,7 @@
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 ore</string>
+  <string name="HZ_NTSC_PAL">Apri NTSC</string>
   <string name="HZ_VOTE">Energia elettrica 110V</string>
   <string name="HistoricalCard_Failed">La scheda video storica non è riuscita</string>
   <string name="Historical_Failed">Le letture video storiche non sono riuscite</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Impostare</string>
   <string name="Tap1_Update">Aggiornare</string>
   <string name="Tap1_UpdateFirmwareTips">Aggiornare inizierà a breve, si prega di accertarsi che il cellulare e il dispositivo si connettono con la stessa WIFI</string>
+  <string name="Tap1_Update_Electricity">La potenza del dispositivo è inferiore al 30%, non riesce a aggiornare, si prega di ricaricare completamente prima e poi riprovare.</string>
+  <string name="Tap1_Update_Precautions">L\'aggiornamento richiede circa 4&#8211;5 minuti, si prega di non spegnere l\'elettricità o la rete durante il processo di aggiornamento.</string>
   <string name="Tap1_device_deleted">Il dispositivo è stato rimosso</string>
   <string name="Tap1_iHome_Associate">Collegato</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Utilizzando questa funzione deve binding e&#8211;mail prima.</string>
   <string name="Tap3_TitleName">Mi</string>
+  <string name="Tap3_TitleName_Notice">Notifiche</string>
   <string name="Tap3_Uploading">Caricamento&#8230;</string>
   <string name="Tap3_UploadingComplete">Caricato</string>
   <string name="Tap3_UploadingFailed">Caricamento fallito</string>

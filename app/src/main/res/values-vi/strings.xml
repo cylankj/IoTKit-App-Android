@@ -231,6 +231,7 @@
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 giờ</string>
+  <string name="HZ_NTSC_PAL">Bắt đầu NTSC</string>
   <string name="HZ_VOTE">Nguồn 110V</string>
   <string name="HistoricalCard_Failed">Thẻ video lịch sử đã đọc thất bại</string>
   <string name="Historical_Failed">Video lịch sử đã đọc thất bại</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Thiết lập</string>
   <string name="Tap1_Update">cập nhật</string>
   <string name="Tap1_UpdateFirmwareTips">Cập nhật sẽ bắt đầu trong thời gian ngắn,hãy đảm bảo rằng điện thoại di động và các thiết bị đang kết nối với WIFI cùng</string>
+  <string name="Tap1_Update_Electricity">Pin yếu &lt;30%, nâng cấp không thành công, hãy sạc lại và thử lại</string>
+  <string name="Tap1_Update_Precautions">Nâng cấp mất khoảng 4&#8211;5 phút, không cắt mạng Internet hoặc tắt thiết bị khi nâng cấp.</string>
   <string name="Tap1_device_deleted">Thiết bị đã bị xoá</string>
   <string name="Tap1_iHome_Associate">Kết hợp</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Không chia sẻ?</string>
   <string name="Tap3_Share_NoBindTips">Sử dụng chức năng này cần để ràng buộc email đầu tiên.</string>
   <string name="Tap3_TitleName">Tôi</string>
+  <string name="Tap3_TitleName_Notice">Để ý</string>
   <string name="Tap3_Uploading">Uploading &#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

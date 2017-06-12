@@ -231,6 +231,7 @@
   <string name="HOME">Accueil</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 heures sur 24</string>
+  <string name="HZ_NTSC_PAL">Activer NTSC</string>
   <string name="HZ_VOTE">Alimentation 110V</string>
   <string name="HistoricalCard_Failed">La carte vidéo historique n\'a pas réussi</string>
   <string name="Historical_Failed">Les lectures vidéo historiques ont échoué</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Instaurer</string>
   <string name="Tap1_Update">Mettre à jour</string>
   <string name="Tap1_UpdateFirmwareTips">Eettre à jour débutera sous peu,veuillez vous assurer que le téléphone portable et le périphérique sont connectés au même WIFI</string>
+  <string name="Tap1_Update_Electricity">La batterie de l\'appareil est inférieure à 30%, la mis à jour ne peut pas démarrer, veuillez réessayer après avoir complètement chargé la batterie</string>
+  <string name="Tap1_Update_Precautions">La mise à jour demande environ 4&#8211;5 minutes, pendant le processus de mise à jour, veuillez ne pas faire éteindre l\'appareil et le mettre déconnecter du réseau.</string>
   <string name="Tap1_device_deleted">Ce dispositif a été supprimé.</string>
   <string name="Tap1_iHome_Associate">Associer</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Cette fonction doit lier email en premier.</string>
   <string name="Tap3_TitleName">Moi</string>
+  <string name="Tap3_TitleName_Notice">Avis</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

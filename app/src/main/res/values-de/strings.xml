@@ -231,6 +231,7 @@
   <string name="HOME">Homepage</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Ganztäglich</string>
+  <string name="HZ_NTSC_PAL">aktivieren NTSC</string>
   <string name="HZ_VOTE">110V Netzteil</string>
   <string name="HistoricalCard_Failed">Die historische Grafikkarte liest nicht</string>
   <string name="Historical_Failed">Historische Video&#8211;Lesevorgänge fehlgeschlagen</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Einrichten</string>
   <string name="Tap1_Update">Aktualisierung</string>
   <string name="Tap1_UpdateFirmwareTips">Aktualisierung wird in Kürze starten,stellen Sie sicher,dass Handy und Gerät mit demselben WIFI verbinden</string>
+  <string name="Tap1_Update_Electricity">Batterie niedriger als 30%, Aktualisierung nicht verfügbar, bitte aufladen und später erneut versuchen.</string>
+  <string name="Tap1_Update_Precautions">Die Aktualisierung bedarf vier bis fünf Minuten.Bitte das Gerät während der Aktualisierung nicht von dem Strom und dem Netzwerk trennen.</string>
   <string name="Tap1_device_deleted">Dieses Gerät wurde gelöscht.</string>
   <string name="Tap1_iHome_Associate">assoziieren</string>
   <string name="Tap1_iHome_Associated">Dazugehörigen</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Mit dieser Funktion muss zuerst die E&#8211;Mail gebunden werden.</string>
   <string name="Tap3_TitleName">Mich</string>
+  <string name="Tap3_TitleName_Notice">Mitteilungen</string>
   <string name="Tap3_Uploading">Hochladen&#8230;</string>
   <string name="Tap3_UploadingComplete">Hochladen abgeschlossen</string>
   <string name="Tap3_UploadingFailed">Hochladen fehlgeschlagen</string>

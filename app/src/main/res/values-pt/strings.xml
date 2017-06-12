@@ -231,6 +231,7 @@
   <string name="HOME">Página inicial</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 horas</string>
+  <string name="HZ_NTSC_PAL">Activar NTSC</string>
   <string name="HZ_VOTE">Voltagem de 110V</string>
   <string name="HistoricalCard_Failed">A placa de vídeo histórica lê falhou</string>
   <string name="Historical_Failed">Histórico de vídeo lido falhou</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Ajustar</string>
   <string name="Tap1_Update">Atualizar</string>
   <string name="Tap1_UpdateFirmwareTips">Update começará em breve,certifique&#8211;se de que o telefone celular e o dispositivo está se conectando com o mesmo WIFI</string>
+  <string name="Tap1_Update_Electricity">A bateria do equipamento é inferior a 30%, não pode ser actualizado, por favor tente novamente depois de completamente carregada.</string>
+  <string name="Tap1_Update_Precautions">A actualização requer cerca de 4 a 5 minutos, durante o processo de actualização não deixe o equipamento estar sem energia e fora de Internet.</string>
   <string name="Tap1_device_deleted">Este dispositivo foi excluído</string>
   <string name="Tap1_iHome_Associate">Associar</string>
   <string name="Tap1_iHome_Associated">Associado</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Usando esta função precisa ligar o email primeiro.</string>
   <string name="Tap3_TitleName">Mim</string>
+  <string name="Tap3_TitleName_Notice">Notícia</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

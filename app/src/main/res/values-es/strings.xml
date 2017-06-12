@@ -231,6 +231,7 @@
   <string name="HOME">Página de inicio</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Notificación de 24h</string>
+  <string name="HZ_NTSC_PAL">Abrir NTSC</string>
   <string name="HZ_VOTE">Voltaje de 110V</string>
   <string name="HistoricalCard_Failed">La tarjeta de video histórica dice que falló</string>
   <string name="Historical_Failed">No se pudo leer el video histórico</string>
@@ -745,6 +746,8 @@
   <string name="Tap1_Tosetup">Instaurar</string>
   <string name="Tap1_Update">Actualizar</string>
   <string name="Tap1_UpdateFirmwareTips">Actualizar comienza en breve,asegúrese de que el teléfono móvil y el dispositivo están conectados con el mismo WIFI</string>
+  <string name="Tap1_Update_Electricity">La energía está inferior al 30%, no se puede actualizar, por favor vuelve a intentar después de cargar completamente.</string>
+  <string name="Tap1_Update_Precautions">La actualización requiere aproximadamente 4&#8211;5 minutos. En el proceso no deja el dispositivo fuera de la red.</string>
   <string name="Tap1_device_deleted">Este dispositivo ha sido eliminado.</string>
   <string name="Tap1_iHome_Associate">Asociar</string>
   <string name="Tap1_iHome_Associated">Asociado</string>
@@ -854,6 +857,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Dejar de compartir?</string>
   <string name="Tap3_Share_NoBindTips">El uso de esta función necesita unirse correo electrónico en primer lugar.</string>
   <string name="Tap3_TitleName">Me</string>
+  <string name="Tap3_TitleName_Notice">Aviso</string>
   <string name="Tap3_Uploading">Subiendo&#8230;</string>
   <string name="Tap3_UploadingComplete">Sube completa</string>
   <string name="Tap3_UploadingFailed">Subida fallida</string>

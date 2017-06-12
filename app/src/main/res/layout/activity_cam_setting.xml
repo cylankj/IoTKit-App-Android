@@ -179,7 +179,7 @@
                 hunt:sv_image_src="@drawable/icon_setting_electricity"
                 hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
                 hunt:sv_switch_visibility="true"
-                hunt:sv_title="@string/HZ_VOTE"
+                hunt:sv_title="@string/HZ_NTSC_PAL"
                 hunt:sv_v_divider="false" />
 
 
