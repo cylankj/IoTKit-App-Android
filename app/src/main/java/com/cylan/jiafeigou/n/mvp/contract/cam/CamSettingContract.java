@@ -12,6 +12,8 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import java.io.IOException;
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -58,7 +60,7 @@ public interface CamSettingContract {
 
         void unbindDevice();
 
-
+        Observable<Boolean> enableAp();
     }
 }
 

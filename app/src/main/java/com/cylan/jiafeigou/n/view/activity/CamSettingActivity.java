@@ -61,6 +61,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
@@ -504,7 +505,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
         boolean wiredModeEnable = device.$(225, 0) == 1;
         svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
-        svSettingDeviceWiredMode.setChecked(device.$(226, 0) == 1);
+        boolean wiredModeOnline = device.$(226, 0) == 1;
+        if (wiredModeOnline) {
+            svSettingDeviceWifi.setEnabled(false);
+            svSettingDeviceWifi.setTvSubTitle("");
+        }
+        svSettingDeviceWiredMode.setChecked(wiredModeEnable);
         svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (NetUtils.getJfgNetType() == 0) {
                 ToastUtil.showToast(getString(R.string.NoNetworkTips));
@@ -537,9 +543,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 ToastUtil.showToast(getString(R.string.NoNetworkTips));
                 return;
             }
-            getAlertDialogManager().showDialog(this, "开启Ap", "开启热点可能会使设备离线，开启后，请等待设备蓝灯闪烁", getString(R.string.OK), (dialog, which) -> {
-                ToastUtil.showToast("指令已发送");
-            }, getString(R.string.CANCEL), null, false);
+            getAlertDialogManager()
+                    .showDialog(this, "开启Ap", "开启热点可能会使设备离线，开启后，请等待设备蓝灯闪烁", getString(R.string.OK), (dialog, which) -> {
+                        basePresenter.enableAp()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(ret -> {
+                                    ToastUtil.showToast(ret ? "指令已经发送" : "指令发送失败");
+                                }, AppLogger::e);
+                    }, getString(R.string.CANCEL), null, false);
         });
     }
 

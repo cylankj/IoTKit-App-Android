@@ -116,7 +116,8 @@ public class JFGRules {
      * @return
      */
     public static boolean showWiredMode(int pid) {
-        return pid == 38 || pid == 39;
+//        return pid == 38 || pid == 39;暂时不做有线的.
+        return false;
     }
 
     /**

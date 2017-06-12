@@ -160,4 +160,17 @@ public class UdpConstant {
                     '}';
         }
     }
+
+    @Message
+    public static final class SetApRsp extends JfgUdpMsg.UdpRecvHeard {
+        @Index(2)
+        public int ack;
+
+        @Override
+        public String toString() {
+            return "SetApRsp{" +
+                    "ack=" + ack +
+                    '}';
+        }
+    }
 }
