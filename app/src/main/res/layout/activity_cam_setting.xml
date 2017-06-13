@@ -87,7 +87,7 @@
                 android:layout_height="@dimen/y72"
                 android:visibility="gone"
                 hunt:sv_image_src="@drawable/setting_icon_ap"
-                hunt:sv_title="@string/WIFI"
+                hunt:sv_title="@string/Start_Hotspot"
                 hunt:sv_v_divider="false" />
 
             <com.cylan.jiafeigou.widget.SettingItemView1

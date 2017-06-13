@@ -56,12 +56,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
@@ -545,6 +547,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     .showDialog(this, getString(R.string.Start_Hotspot), getString(R.string.setwifi_check, net.ssid), getString(R.string.OK), (dialog, which) -> {
                         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
                         Subscription subscription = basePresenter.switchApModel(1)
+                                .subscribeOn(Schedulers.newThread())
+                                .delay(1, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(ret -> {
                                     LoadingDialog.dismissLoading(getSupportFragmentManager());
