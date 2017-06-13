@@ -517,12 +517,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         getString(R.string.OK), (dialog, which) -> {
                             svSettingDeviceWiredMode.setChecked(false);
                             svSettingDeviceWifi.setEnabled(true);
-                            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
+                            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(0), 226);
                         }, getString(R.string.CANCEL), (dialog, which) -> {
                             svSettingDeviceWiredMode.setChecked(false);
                         }, false);
                 return;
             }
+            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
             //wifi配置开启,,关闭
             svSettingDeviceWifi.setEnabled(false);
         });
