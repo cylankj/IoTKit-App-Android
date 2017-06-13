@@ -153,10 +153,10 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
      */
 
     private void handleState(ViewHolder holder) {
-        String uuid = mDevice.uuid;
+        final String uuid = mDevice.uuid;
         DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        String alias = mDevice.alias;
-        String shareAccount = mDevice.shareAccount;
+        final String alias = mDevice.alias;
+        final String shareAccount = mDevice.shareAccount;
         final int onLineState = net != null ? net.net : (mDevice.pid == JConstant.OS_MAGNET ? 1 : 0);
 //        final int deviceType = bean.mDevice.pid;
         Log.d("handleState", "handleState: " + uuid + " " + net);
