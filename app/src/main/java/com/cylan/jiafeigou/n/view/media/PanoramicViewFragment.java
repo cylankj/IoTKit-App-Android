@@ -17,13 +17,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -122,6 +122,8 @@ public class PanoramicViewFragment extends IBaseFragment {
 //        }
     }
 
+    private Target target;
+
     public void loadBitmap(int index, String mode) {
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
@@ -144,8 +146,14 @@ public class PanoramicViewFragment extends IBaseFragment {
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
+        try {
+            if (target != null)
+                Glide.clear(target);
+        } catch (Exception e) {
+
+        }
         //填满
-        Glide.with(ContextUtils.getContext())
+        target = Glide.with(this)
                 .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg"))
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

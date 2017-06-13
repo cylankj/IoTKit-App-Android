@@ -161,14 +161,14 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         } catch (JfgException e1) {
                             e1.printStackTrace();
                         }
-                        if (liveStreamAction.hasStarted) {
-                            if (mView != null) {
-                                mView.onVideoDisconnect(BAD_FRAME_RATE);
-                            }
-                        } else {
-                            if (mView != null) {
-                                mView.onConnectDeviceTimeOut();
-                            }
+//                        if (liveStreamAction.hasStarted) {
+//                            if (mView != null) {
+//                                mView.onVideoDisconnect(BAD_FRAME_RATE);
+//                            }
+//                        } else {
+                        if (mView != null) {
+                            mView.onConnectDeviceTimeOut();
+//                            }
                         }
                     }
                 });

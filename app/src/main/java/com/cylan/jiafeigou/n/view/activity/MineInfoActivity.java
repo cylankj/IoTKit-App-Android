@@ -31,7 +31,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -465,9 +464,10 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                     if (jfgAccount != null) {
                         basePresenter.logOut(jfgAccount.getAccount());
                         //进入登陆页 login page
-                        Intent intent = new Intent(getContext(), SmartcallActivity.class);
-                        intent.putExtra(JConstant.FROM_LOG_OUT, true);
-                        startActivity(intent);
+//                        Intent intent = new Intent(getContext(), SmartcallActivity.class);
+//                        intent.putExtra(JConstant.FROM_LOG_OUT, true);
+//                        startActivity(intent);
+                        setResult(RESULT_OK);
                         finish();
                     }
                 }, getString(R.string.CANCEL), null, false);

@@ -23,9 +23,11 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -54,6 +56,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
 
@@ -437,7 +440,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转个人信息页
      */
     private void jump2UserInfoFrgment() {
-        startActivity(new Intent(getActivity(), MineInfoActivity.class));
+        //注意activity的启动模式.
+        startActivityForResult(new Intent(getActivity(), MineInfoActivity.class), 10000);
     }
 
     /**
@@ -464,8 +468,17 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
-        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
+//        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
+//        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK)
+            switch (requestCode) {
+                case 10000:
+                    Intent intent = new Intent(getContext(), SmartcallActivity.class);
+                    intent.putExtra(JConstant.FROM_LOG_OUT, true);
+                    startActivity(intent);
+                    getActivity().finish();
+                    break;
+            }
     }
 
 
