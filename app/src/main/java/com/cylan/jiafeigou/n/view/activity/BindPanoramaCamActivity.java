@@ -1,6 +1,10 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.content.ComponentName;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
@@ -16,11 +20,9 @@ import com.cylan.jiafeigou.n.view.bind.BindGuideActivity;
 import com.cylan.jiafeigou.n.view.bind.ConfigPanoramaWiFiSuccessFragment;
 import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.nineoldandroids.animation.Animator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,9 +40,9 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
     CustomToolbar customToolbar;
     @BindView(R.id.iv_explain_gray)
     ImageView expainGray;
-    private Animator animator;
     @BindView(R.id.imgv_camera_wifi_light_flash_bg)
     View bg;
+    private AnimatorSet animator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +62,59 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
             setContentView(R.layout.activity_bind_panorama_cam);
             ButterKnife.bind(this);
             customToolbar.setBackAction(v -> finishExt());
-            initAnimation();
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initAnimation();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (animator != null) {
+            animator.cancel();
+            animator = null;
         }
     }
 
     private void initAnimation() {
-        animator = AnimatorUtils.onHandMoveAndFlashPanorama(imgVCameraHand, imgVCameraRedDot, imgVCameraWifiLightFlash, bg);
-        animator.start();
+        if (animator == null) {
+            animator = new AnimatorSet();
+            imgVCameraHand.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            ObjectAnimator hand = ObjectAnimator.ofFloat(imgVCameraHand, "translationX", imgVCameraHand.getMeasuredWidth(), 0);
+            hand.setDuration(600);
+            hand.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    bg.setVisibility(View.VISIBLE);
+                }
+            });
+
+            AnimatorSet flash = new AnimatorSet();
+            ObjectAnimator redDot = ObjectAnimator.ofFloat(imgVCameraRedDot, "alpha", 0f, 1f, 0f);
+            redDot.setRepeatCount(3);
+            redDot.setRepeatMode(ValueAnimator.RESTART);
+            ObjectAnimator lightFlash = ObjectAnimator.ofFloat(imgVCameraWifiLightFlash, "alpha", 0f, 1f, 0f);
+            lightFlash.setRepeatCount(3);
+            lightFlash.setRepeatMode(ValueAnimator.RESTART);
+            flash.playTogether(redDot, lightFlash);
+            flash.setDuration(600);
+            animator.playSequentially(hand, flash);
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    bg.setVisibility(View.INVISIBLE);
+                    animation.start();
+                }
+            });
+            animator.start();
+        }
     }
 
     @OnClick(R.id.tv_bind_camera_tip)
@@ -77,7 +125,7 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         intent.putExtra(JConstant.KEY_BIND_DEVICE_ALIAS, getString(R.string._720PanoramicCamera));
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
-        finish();
+
     }
 
     @OnClick(R.id.iv_explain_gray)
@@ -85,10 +133,5 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         PanoramaExplainFragment fragment = PanoramaExplainFragment.newInstance(null);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 fragment, android.R.id.content);
-    }
-
-    private void cancelAnimation() {
-        if (animator != null && animator.isRunning())
-            animator.cancel();
     }
 }

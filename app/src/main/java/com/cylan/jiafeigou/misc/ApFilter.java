@@ -53,4 +53,19 @@ public class ApFilter {
         }
         return false;
     }
+
+    public static boolean isApNet() {
+        ConnectivityManager manager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+        if (info != null && info.getType() == ConnectivityManager.TYPE_WIFI) {
+            WifiManager service = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = service.getConnectionInfo();
+            String ssid = wifiInfo.getSSID();
+            if (!TextUtils.isEmpty(ssid)) {
+                ssid = ssid.replace("\"", "");
+                return accept(ssid) && !TextUtils.isEmpty(ssid);
+            }
+        }
+        return false;
+    }
 }

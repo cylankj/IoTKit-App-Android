@@ -151,7 +151,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .subscribe(rtcp -> {
                     liveStreamAction.hasStarted = true;
                     liveStreamAction.hasResolution = true;
-                    feedRtcp.feed(rtcp);
+                    if (!liveStreamAction.hasLiveError) {
+                        feedRtcp.feed(rtcp);
+                    }
                     if (mView != null) {
                         mView.onFlowSpeed(rtcp.bitRate);
                     }
@@ -166,15 +168,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         } catch (JfgException e1) {
                             e1.printStackTrace();
                         }
-                        if (liveStreamAction.hasStarted) {
-                            if (mView != null) {
-                                mView.onVideoDisconnect(BAD_FRAME_RATE);
-                            }
-                        } else {
-                            if (mView != null) {
-                                mView.onConnectDeviceTimeOut();
-                            }
+//                        if (liveStreamAction.hasStarted) {
+//                            if (mView != null) {
+//                                mView.onVideoDisconnect(BAD_FRAME_RATE);
+//                            }
+//                        } else {
+                        if (mView != null) {
+                            mView.onConnectDeviceTimeOut();
                         }
+//                        }
                     }
                 });
         registerSubscription(subscribe);
@@ -237,7 +239,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                         .subscribeOn(Schedulers.io())
                         .filter(rsp -> TextUtils.equals(rsp.peer, peer))
-                        .timeout(30, TimeUnit.SECONDS)
                         .map(RxEvent.LiveResponse::new),
                 RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                         .subscribeOn(Schedulers.io())
@@ -255,10 +256,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             liveStreamAction.reset();
                             return new RxEvent.LiveResponse(dis, false);
                         })
-        ).first().map(rsp -> {
-            RxBus.getCacheInstance().post(new RxEvent.CallResponse(true));//发送一条 CallAnswer 消息表明不需要再等待门铃超时了
-            return rsp;
-        });
+        )
+                .first()
+                .timeout(30, TimeUnit.SECONDS)
+                .map(rsp -> {
+                    RxBus.getCacheInstance().post(new RxEvent.CallResponse(true));//发送一条 CallAnswer 消息表明不需要再等待门铃超时了
+                    return rsp;
+                });
     }
 
     protected Observable<JFGMsgVideoDisconn> handlerVideoDisconnect(JFGMsgVideoResolution resolution) {

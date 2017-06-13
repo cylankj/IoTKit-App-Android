@@ -32,6 +32,7 @@ public class JConstant {
     public static final int TYPE_INVALID = -1;
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_EMAIL = 1;
+    public static final int TYPE_EMAIL_VERIFY=2;
     public final static Pattern PHONE_REG = Pattern.compile("^1[3|4|5|7|8]\\d{9}$");
     public final static Pattern EMAIL_REG = Patterns.EMAIL_ADDRESS;
 

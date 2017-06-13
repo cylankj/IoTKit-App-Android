@@ -26,13 +26,13 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
 
 
     @Override
-    public void unShareContent(Iterable<ShareContentItem> item, Iterable<Integer> selection) {
+    public void unShareContent(Iterable<DpMsgDefine.DPShareItem> item, Iterable<Integer> selection) {
         Subscription subscribe = Observable.just(item)
                 .map(items -> {
                     List<DPEntity> result = new ArrayList<>();
                     DPEntity entity;
-                    for (ShareContentItem contentItem : items) {
-                        entity = new DPEntity(null, 606, contentItem.shareItem.version, DBAction.DELETED, null);
+                    for (DpMsgDefine.DPShareItem contentItem : items) {
+                        entity = new DPEntity(null, 606, contentItem.version, DBAction.DELETED, null);
                         result.add(entity);
                     }
                     return result;

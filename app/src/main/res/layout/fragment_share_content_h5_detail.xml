@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:background="@color/color_white"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:visibility="visible">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/headerToolbarContainer"
@@ -22,6 +23,7 @@
             android:layout_height="wrap_content"
             android:background="@{themeRules.timeRule==0?@color/color_0ba8cf : @color/color_23344e}"
             android:minHeight="@dimen/y48"
+            app:layout_constraintBottom_toTopOf="@+id/webViewLoading"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -41,14 +43,14 @@
                 android:id="@+id/headerMenuTitle"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/y10"
-                android:layout_marginStart="@dimen/y10"
+                android:layout_marginEnd="@dimen/y5"
+                android:layout_marginStart="@dimen/y5"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/share_default_title"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/sp16"
+                android:textSize="@dimen/sp18"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/headerMenuBack"
                 app:layout_constraintRight_toLeftOf="@+id/headerMenuShare"
@@ -81,6 +83,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
+        <ProgressBar
+            android:id="@+id/webViewLoading"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y4"
+            android:max="100"
+            android:progressDrawable="@drawable/web_view_progress"
+            app:layout_constraintBottom_toTopOf="@+id/shareH5WebView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headerToolbarContainer" />
 
         <WebView
             android:id="@+id/shareH5WebView"
@@ -89,6 +102,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerToolbarContainer" />
+            app:layout_constraintTop_toBottomOf="@+id/webViewLoading" />
     </android.support.constraint.ConstraintLayout>
 </layout>

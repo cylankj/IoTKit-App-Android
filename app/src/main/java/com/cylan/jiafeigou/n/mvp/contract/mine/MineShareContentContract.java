@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem;
 
 import java.util.List;
@@ -22,6 +23,6 @@ public interface MineShareContentContract {
 
         void loadFromServer(long version, boolean refresh);
 
-        void unShareContent(Iterable<ShareContentItem> items, Iterable<Integer> selection);
+        void unShareContent(Iterable<DpMsgDefine.DPShareItem> items, Iterable<Integer> selection);
     }
 }

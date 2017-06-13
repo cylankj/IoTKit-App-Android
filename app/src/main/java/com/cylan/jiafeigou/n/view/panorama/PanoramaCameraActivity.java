@@ -51,6 +51,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
@@ -169,9 +170,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowProperty(Device device) {
-        int battery = device.$(ID_206_BATTERY, 0);
-        boolean charging = device.$(ID_205_CHARGING, false);
-        onDeviceBatteryChanged(charging ? -1 : battery);
+        boolean apDirect = JFGRules.isAPDirect(uuid, device.$(202, ""));
+        if (!apDirect) {
+            int battery = device.$(ID_206_BATTERY, 0);
+            boolean charging = device.$(ID_205_CHARGING, false);
+            onDeviceBatteryChanged(charging ? -1 : battery);
+        }
         onRefreshConnectionMode(-1);
     }
 
@@ -683,6 +687,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onDeviceBatteryChanged(Integer battery) {
+        bannerChargeText.setVisibility(View.VISIBLE);
+        bannerChargeIcon.setVisibility(View.VISIBLE);
         bannerChargeText.setText(battery == -1 ? getString(R.string.CHARGING) : battery + "%");
         if (battery == -1) {
             bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
@@ -764,7 +770,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         Device device = sourceManager.getDevice(uuid);
         String mac = device.$(ID_202_MAC, "");
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-        boolean apMode = TextUtils.equals(mac, NetUtils.getRouterMacAddress(getApplication()));
+        boolean apMode = JFGRules.isAPDirect(uuid, mac);
         boolean isOnline = net.net > 0;
         boolean online = sourceManager.isOnline();
         bannerConnectionIcon.setImageResource(apMode ? R.drawable.camera720_icon_ap : R.drawable.camera720_icon_wifi);

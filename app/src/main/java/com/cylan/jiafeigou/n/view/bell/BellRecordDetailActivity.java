@@ -7,6 +7,7 @@ import android.media.MediaScannerConnection;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -41,8 +42,8 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.share.ShareConstant;
+import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
@@ -83,7 +84,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @BindView(R.id.act_bell_picture_opt_collection)
     ImageView mCollect;
     @BindView(R.id.act_bell_pic_option)
-    FrameLayout mBellContainer;
+    ViewGroup mBellContainer;
     @BindView(R.id.activity_bell_record_detail)
     FrameLayout mBellDetail;
     @BindView(R.id.act_bell_header_container)

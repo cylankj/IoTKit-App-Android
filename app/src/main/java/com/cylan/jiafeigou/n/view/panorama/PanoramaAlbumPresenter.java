@@ -52,8 +52,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     @Override
-    public void onViewDetached() {
-        super.onViewDetached();
+    public void onStop() {
+        super.onStop();
         DownloadManager.getInstance().stopAllTask();
     }
 
@@ -211,7 +211,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                 DownloadManager.getInstance().addTask(taskKey, request, new PanoramaAdapter.MyDownloadListener());
                             }
                             item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
-                            AppLogger.e("downloadInfo is:" + item.downloadInfo + ",item type:" + item.type);
                         }
                     }
                     return result;

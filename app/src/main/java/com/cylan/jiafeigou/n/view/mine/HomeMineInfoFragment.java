@@ -64,6 +64,7 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.PermissionUtils;
 
 
 /**
@@ -736,7 +737,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && PermissionUtils.hasSelfPermissions(getContext(), Manifest.permission.CAMERA)) {
                 openCamera();
             } else {
                 setPermissionDialog(getString(R.string.camera_auth));

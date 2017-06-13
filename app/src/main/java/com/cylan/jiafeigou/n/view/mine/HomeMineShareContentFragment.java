@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineShareContentBinding;
 import com.cylan.jiafeigou.databinding.ItemShareContentBinding;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.view.adapter.item.AbstractBindingViewHolder;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem;
@@ -31,8 +32,10 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by yanzhendong on 2017/5/26.
@@ -93,13 +96,18 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
 
 
     private void deleteSelection(View view) {
-        unShareWithAlert(adapter.getFastAdapter().getSelectedItems(), adapter.getFastAdapter().getSelections());
+        Set<ShareContentItem> items = adapter.getFastAdapter().getSelectedItems();
+        List<DpMsgDefine.DPShareItem> item = new ArrayList<>();
+        for (ShareContentItem contentItem : items) {
+            item.add(contentItem.shareItem);
+        }
+        unShareWithAlert(item, adapter.getFastAdapter().getSelections());
     }
 
     public class ShareContentItemHook extends ClickEventHook<ShareContentItem> {
         @Override
         public void onClick(View v, int position, FastAdapter<ShareContentItem> fastAdapter, ShareContentItem item) {
-            unShareWithAlert(Collections.singletonList(item), Collections.singleton(position));
+            unShareWithAlert(Collections.singletonList(item.shareItem), Collections.singleton(position));
         }
 
         @Nullable
@@ -111,9 +119,9 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         }
     }
 
-    private void unShareWithAlert(Iterable<ShareContentItem> items, Iterable<Integer> selection) {
+    private void unShareWithAlert(Iterable<DpMsgDefine.DPShareItem> items, Iterable<Integer> selection) {
         new AlertDialog.Builder(getContext())
-                .setMessage("是否取消分享?")
+                .setMessage(getString(R.string.Tap3_ShareDevice_UnshareTips))
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     dialog.dismiss();
                     AppLogger.d("正在取消分享");
@@ -135,7 +143,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private boolean onEnterShareDetail(View view, IAdapter<ShareContentItem> iAdapter, ShareContentItem iItem, int position) {
         if (!editMode.get()) {
             AppLogger.e("将进入分享详情页面");
-            ShareContentH5DetailFragment fragment = ShareContentH5DetailFragment.newInstance(iItem.shareItem);
+            ShareContentH5DetailFragment fragment = ShareContentH5DetailFragment.newInstance(iItem.shareItem, () -> adapter.remove(position));
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
         }
         return !editMode.get();

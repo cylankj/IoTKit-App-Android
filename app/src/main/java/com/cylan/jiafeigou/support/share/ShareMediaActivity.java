@@ -165,6 +165,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 UMWeb web = new UMWeb(shareLinkUrl);
                 web.setThumb(new UMImage(this, new File(shareThumb)));
                 web.setTitle(getString(R.string.share_default_title));
+                web.setDescription(getString(R.string.share_default_description));
                 shareAction = new ShareAction(this);
                 shareAction.setPlatform(getPlatform(shareItemType));
                 shareAction.withMedia(web);

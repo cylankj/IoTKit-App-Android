@@ -30,7 +30,7 @@
         <!--app:progress_swipe_degree="310"  />-->
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/act_bell_pic_option"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y60"
@@ -39,16 +39,19 @@
 
         <ImageView
             android:id="@+id/act_bell_picture_opt_download"
-            style="@style/picture_opt_download" />
+            style="@style/picture_opt_download"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/act_bell_picture_opt_share"
-            style="@style/picture_opt_share" />
+            style="@style/picture_opt_share"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/act_bell_picture_opt_collection"
-            style="@style/picture_opt_collection" />
-    </FrameLayout>
+            style="@style/picture_opt_collection"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 
     <RelativeLayout

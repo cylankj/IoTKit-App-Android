@@ -116,6 +116,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void onLoadMore() {
@@ -371,6 +372,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
+        panoramaAdapter.notifyDataSetChanged();
         if (albumViewMode == mode) return;
         if (report) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));

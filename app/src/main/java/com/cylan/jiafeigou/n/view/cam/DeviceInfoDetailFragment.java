@@ -195,7 +195,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         int u = device.$(ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(JFGRules.isDeviceOnline(net) ? u : 0));
         boolean isMobileNet = net.net > 1;
-        if (apMode) {
+        if (apMode || (JFGRules.isPan720(device.pid) && net.net <= 0)) {//针对离线的720设备以及直连AP模式下，wifi显示：未启用
             tvDeviceWifiState.setTvSubTitle(getString(R.string.OFF));
         } else {
             tvDeviceWifiState.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));

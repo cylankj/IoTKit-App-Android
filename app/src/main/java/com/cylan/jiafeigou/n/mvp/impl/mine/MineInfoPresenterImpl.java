@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 
+import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -135,13 +136,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public boolean checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(getView().getContext(),
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
+        return PermissionUtils.hasSelfPermissions(getView().getContext(), Manifest.permission.CAMERA);//权限检查五花八门,
     }
 
     /**
