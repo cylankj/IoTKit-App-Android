@@ -52,6 +52,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         simulatePercent = new SimulatePercent();
         simulatePercent.setOnAction(this);
         bindResult = BindUtils.BIND_PREPARED;
+        startTick = 0;
     }
 
     @Override
