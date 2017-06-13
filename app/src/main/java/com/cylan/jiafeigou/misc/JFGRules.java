@@ -148,7 +148,7 @@ public class JFGRules {
                 pid == JConstant.PID_CAMERA_PANORAMA_HAISI_1080 ||
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE ||
                 pid == 36 ||
-                pid == 37;
+                pid == 38;
     }
 
     public static boolean show110VLayout(int pid) {

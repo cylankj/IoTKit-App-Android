@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -29,8 +30,14 @@ import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
@@ -48,6 +55,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     private String uuid;
     private PanoramicView360_Ext panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
+    private Subscription subscription;
 
     public PanoramicViewFragment() {
         // Required empty public constructor
@@ -97,6 +105,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        if (subscription != null) subscription.unsubscribe();
         try {
             if (panoramicView != null) {
                 panoramicView.onDestroy();
@@ -123,8 +132,10 @@ public class PanoramicViewFragment extends IBaseFragment {
     }
 
     private Target target;
+    private int lastLoadIndex;
 
     public void loadBitmap(int index, String mode) {
+        lastLoadIndex = index;
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
             panoramicView = new PanoramicView360_Ext(getContext());
@@ -154,8 +165,10 @@ public class PanoramicViewFragment extends IBaseFragment {
         }
         //填满
         target = Glide.with(this)
-                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg"))
+                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg", dpAlarm.time, index + 1))
                 .asBitmap()
+                //解决黑屏问题
+                .signature(new StringSignature(System.currentTimeMillis() + ""))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -180,6 +193,7 @@ public class PanoramicViewFragment extends IBaseFragment {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         AppLogger.e("load failed: " + e.getLocalizedMessage());
+                        loadBitmap(lastLoadIndex);
                         showLoading(false);
                     }
                 });
@@ -188,6 +202,13 @@ public class PanoramicViewFragment extends IBaseFragment {
     public void loadBitmap(int index) {
         String mode = dpAlarm == null ? "0" : dpAlarm.tly;
         Log.d("loadBitmap", "loadBitmap: " + mode);
-        loadBitmap(index, mode);
+        if (subscription != null) subscription.unsubscribe();
+        subscription = Observable.just(mode)
+                .subscribeOn(Schedulers.newThread())
+                .delay(200, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    loadBitmap(index, mode);
+                }, AppLogger::e);
     }
 }
