@@ -53,7 +53,8 @@ public class JFGRules {
     }
 
     public static boolean showSight(int pid) {
-        return pid == 10 || pid == 18 || pid == 36 || pid == 5 || pid == 1091 || pid == 1092;
+        return pid == 10 || pid == 18 || pid == 36 || pid == 5 || pid == 1091 || pid == 1092 ||
+                pid == 47 || pid == 1346;
     }
 
     public static String getDeviceAlias(Device device) {
@@ -161,6 +162,20 @@ public class JFGRules {
         return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
     }
 
+    public static boolean isTestBell(int pid) {
+        return pid == 1344 ||
+                pid == 1345 ||
+                pid == 44 ||
+                pid == 46;
+    }
+
+    public static boolean isTestCam(int pid) {
+        return pid == 1346 ||
+                pid == 1347 ||
+                pid == 47 ||
+                pid == 48;
+    }
+
     public static boolean showSettingBatteryItem(int pid) {
         if (isRS(pid)) return false;//睿思,不显示电量.
         return is3GCam(pid) || isFreeCam(pid)
@@ -215,6 +230,7 @@ public class JFGRules {
 
     public static boolean showLedIndicator(int pid) {
         if (isRS(pid)) return true;
+        if (isTestCam(pid)) return true;
         return pid == 4
                 || pid == 5
                 || pid == 7
@@ -249,6 +265,7 @@ public class JFGRules {
 
     public static boolean isCamera(int pid) {
         if (isRS(pid)) return true;
+        if (isTestCam(pid)) return true;
         switch (pid) {
             case 4:
             case 5:
@@ -277,6 +294,7 @@ public class JFGRules {
     }
 
     public static boolean isBell(int pid) {
+        if (isTestBell(pid)) return true;
         switch (pid) {
             case 6:
             case 25:
@@ -314,6 +332,8 @@ public class JFGRules {
     }
 
     public static boolean needShowFirmware(int pid) {
+        if (isTestBell(pid)) return true;
+        if (isTestCam(pid)) return false;
         switch (pid) {
             case 7:
             case 5:
