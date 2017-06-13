@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.adapter.item;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -186,12 +187,13 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     private void handleMsgCountTime(ViewHolder holder, String uuid, Device mDevice) {
         //被分享用户,不显示 消息数
         Context context = holder.tvDeviceAlias.getContext();
-        DPEntity entity = handleUnreadCount(mDevice);
-        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + entity);
+        Pair<DPEntity, Integer> pair = handleUnreadCount(mDevice);
+        DPEntity entity = pair == null ? null : pair.first;
+        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + pair);
         boolean isPrimaryDevice = isPrimaryAccount(mDevice.shareAccount);
         boolean show = needShowUnread(mDevice, isPrimaryDevice);
         //消息数,狗日的门铃的分享设备需要显示.
-        String warnContent = getLastWarnContent(entity, mDevice.pid, uuid);
+        String warnContent = getLastWarnContent(pair, mDevice.pid, uuid);
         holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
         //时间
         holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
@@ -211,18 +213,22 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         return TextUtils.isEmpty(share);
     }
 
-    private DPEntity handleUnreadCount(Device mDevice) {
+    private Pair<DPEntity, Integer> handleUnreadCount(Device mDevice) {
         if (JFGRules.isCamera(mDevice.pid)) {
-            return MiscUtils.getMaxVersionEntity(mDevice.getProperty(1001), mDevice.getProperty(1002), mDevice.getProperty(1003));
+            return new Pair<>(MiscUtils.getMaxVersionEntity(mDevice.getProperty(1001), mDevice.getProperty(1002), mDevice.getProperty(1003)),
+                    mDevice.$(1001, 0) + mDevice.$(1002, 0) + mDevice.$(1003, 0));
         } else if (JFGRules.isBell(mDevice.pid)) {
-            return MiscUtils.getMaxVersionEntity(mDevice.getProperty(1004), mDevice.getProperty(1005));
+            return new Pair<>(MiscUtils.getMaxVersionEntity(mDevice.getProperty(1004), mDevice.getProperty(1005)),
+                    mDevice.$(1004, 0) + mDevice.$(1005, 0));
         }
         return null;
     }
 
-    private String getLastWarnContent(DPEntity entity, int pid, String uuid) {
+    private String getLastWarnContent(Pair<DPEntity, Integer> pair, int pid, String uuid) {
         try {
-            final int msgCount = entity == null ? 0 : entity.getValue(0);
+            if (pair == null) return "";
+            DPEntity entity = pair.first;
+            final int msgCount = pair.second;
             long msgTime = msgCount == 0 ? 0 : (entity != null ? entity.getVersion() : 0);
             if (msgCount == 0)
                 return mContext.getString(R.string.Tap1_NoMessages);
