@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -41,7 +42,6 @@ import com.cylan.jiafeigou.widget.ShareGridView;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -301,8 +301,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
-            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
+            intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getLinkShareByApp());
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
                 appAdater = new AppAdapter(getContext());

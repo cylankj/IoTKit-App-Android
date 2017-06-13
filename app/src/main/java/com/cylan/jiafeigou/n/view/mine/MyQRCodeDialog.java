@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,9 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -81,13 +80,7 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        JFGAccount jfgaccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return;
-        final String pkgName = ContextUtils.getContext().getPackageName();
-        //狗日乐视,
-        String url = getString(R.string.qrcode_prefix, pkgName.contains("zhongxing")
-                ? "" : pkgName, jfgaccount.getAccount());
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(LinkManager.getQrCodeLink(), ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     private void initView() {

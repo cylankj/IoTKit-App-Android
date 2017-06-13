@@ -64,7 +64,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscription;
 
-import static com.cylan.jiafeigou.base.module.DPConstant.NET;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
@@ -456,7 +455,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(Device device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         if (isNetworkConnected(this)) {
-            DpMsgDefine.DPNet net = device.$(NET, new DpMsgDefine.DPNet());
+            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
             cvBellHomeBackground.setState(net.net);
         } else {
             cvBellHomeBackground.setState(2);
