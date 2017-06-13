@@ -21,8 +21,10 @@ public class LinkManager {
         JFGAccount jfgaccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return "";
         final String pkgName = ContextUtils.getContext().getPackageName();
-        return ContextUtils.getContext().getString(R.string.qrcode_prefix, pkgName.contains("zhongxing")
+        boolean isDoby = pkgName.contains("zhongxing");
+        final String result = ContextUtils.getContext().getString(R.string.qrcode_prefix, isDoby
                 ? "" : pkgName, jfgaccount.getAccount());
+        return isDoby ? result.replace("&", "") : result;
     }
 
     public static String getLinkShareByApp() {
