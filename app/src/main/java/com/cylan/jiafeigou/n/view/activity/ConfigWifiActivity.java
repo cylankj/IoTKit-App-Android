@@ -137,6 +137,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         switch (view.getId()) {
             case R.id.iv_wifi_clear_pwd:
                 etWifiPwd.setText("");
+                LocalWifiInfo.Saver.getSaver().addOrUpdateInfo(new LocalWifiInfo()
+                        .setSsid(tvConfigApName.getText().toString()).setPwd(""));
                 break;
             case R.id.tv_wifi_pwd_submit:
                 int currentNet = NetUtils.getJfgNetType(getApplicationContext());
