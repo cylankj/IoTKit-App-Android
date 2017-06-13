@@ -488,17 +488,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingSafeProtection.showRedHint(settingTip.safe == 1);
         svSettingDeviceDelayCapture.showRedHint(settingTip.timeLapse == 1);
 
-        if (JFGRules.isShareDevice(uuid)) {
-            sbtnSettingSight.setVisibility(View.GONE);
+        sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid) ? View.VISIBLE : View.GONE);
+        try {
+            String dpPrimary = device.$(509, "1");
+            sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+        } catch (Exception e) {
         }
-        if (JFGRules.isPanoramicCam(device.pid)) {
-            sbtnSettingSight.setVisibility(View.VISIBLE);
-            try {
-                String dpPrimary = device.$(509, "1");
-                sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
-            } catch (Exception e) {
-            }
-        } else sbtnSettingSight.setVisibility(View.GONE);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
 

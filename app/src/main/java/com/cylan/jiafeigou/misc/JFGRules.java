@@ -52,6 +52,10 @@ public class JFGRules {
         return string.replaceAll("\\D+", "");
     }
 
+    public static boolean showSight(int pid) {
+        return pid == 10 || pid == 18 || pid == 36 || pid == 5 || pid == 1091 || pid == 1092;
+    }
+
     public static String getDeviceAlias(Device device) {
         if (device == null) return "";
         String alias = device.alias;

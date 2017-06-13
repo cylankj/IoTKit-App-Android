@@ -609,7 +609,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             && getLiveStream().playState == PLAY_STATE_PREPARE) {//前一刻是,历史录像而且是playing
                         AppLogger.d("不需要 停止播放历史视频");
                     } else {
-                        AppLogger.i("stop play history");
+                        AppLogger.i("play history state? " + getLiveStream().playState);
                     }
                 }
                 getHotSeatStateMaintainer().saveRestore();
