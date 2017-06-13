@@ -143,19 +143,24 @@ public class JFGRules {
     }
 
     public static boolean isPanoramicCam(int pid) {
-        return pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
-                pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
-                pid == JConstant.PID_CAMERA_PANORAMA_HAISI_960 ||
-                pid == JConstant.PID_CAMERA_PANORAMA_HAISI_1080 ||
-                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE ||
-                pid == 36 ||
-                pid == 39;
+        return 10 == pid ||
+                18 == pid ||
+                36 == pid || 1092 == pid ||
+                1091 == pid || 39 == pid ||
+                49 == pid || pid == 1348;
     }
 
-    public static boolean show110VLayout(int pid) {
-        return isPanoramicCam(pid) || isWifiCam(pid) ||
-                isRS(pid) ||
-                pid == 21 || pid == 1089;
+    public static boolean showNTSCVLayout(int pid) {
+        return pid == 5 || pid == 7 || 10 == pid ||
+                18 == pid ||
+                36 == pid ||
+                37 == pid ||
+                38 == pid ||
+                39 == pid ||
+                1348 == pid ||
+                1152 == pid ||
+                49 == pid || pid == 1090 || 1092 == pid ||
+                1091 == pid;
     }
 
     public static boolean showHomeBatteryIcon(int pid) {

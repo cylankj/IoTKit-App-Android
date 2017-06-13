@@ -78,7 +78,7 @@
                 android:visibility="gone"
                 hunt:sv_image_src="@drawable/setting_icon_wired"
                 hunt:sv_sub_title="cylan608"
-                hunt:sv_title="@string/WIFI"
+                hunt:sv_title="@string/Start_Hotspot"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0

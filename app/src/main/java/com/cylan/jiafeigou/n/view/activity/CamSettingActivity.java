@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -451,7 +450,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             });
         }
         /////////////////////////////////110v//////////////////////////////////
-        if (JFGRules.show110VLayout(device.pid)) {
+        if (JFGRules.showNTSCVLayout(device.pid)) {
             boolean state = device.$(216, false);
             sbtnSetting110v.setChecked(state);
             sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -513,7 +512,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 return;
             }
             if (!isChecked) {
-                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", "关闭可能会使设备离线，确定关闭？",
+                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", getString(R.string.Cable_Mode_Switch_Cancel),
                         getString(R.string.OK), (dialog, which) -> {
                             svSettingDeviceWiredMode.setChecked(false);
                             svSettingDeviceWifi.setEnabled(true);
@@ -543,16 +542,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 return;
             }
             getAlertDialogManager()
-                    .showDialog(this, "开启Ap", getString(R.string.setwifi_check, net.ssid), getString(R.string.OK), (dialog, which) -> {
+                    .showDialog(this, getString(R.string.Start_Hotspot), getString(R.string.setwifi_check, net.ssid), getString(R.string.OK), (dialog, which) -> {
                         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
                         Subscription subscription = basePresenter.switchApModel(1)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(ret -> {
                                     LoadingDialog.dismissLoading(getSupportFragmentManager());
-                                    ToastUtil.showToast("指令已经发送");
+                                    ToastUtil.showToast(getString(R.string.Instructions_Sent));
                                 }, throwable -> {
                                     LoadingDialog.dismissLoading(getSupportFragmentManager());
-                                    ToastUtil.showToast("指令发送失败");
+                                    ToastUtil.showToast(getString(R.string.Start_Failed));
                                 });
                         basePresenter.addSub(subscription, "enableAp");
                     }, getString(R.string.CANCEL), null, false);
