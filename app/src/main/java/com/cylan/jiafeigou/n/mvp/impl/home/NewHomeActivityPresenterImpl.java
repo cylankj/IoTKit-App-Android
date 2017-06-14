@@ -1,13 +1,20 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,6 +30,11 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
         super(view);
         view.setPresenter(this);
         view.initView();
+    }
+
+    @Override
+    protected Subscription[] register() {
+        return new Subscription[]{updateRsp(), mineTabNewInfoRsp()};
     }
 
     private Subscription updateRsp() {
@@ -47,56 +59,22 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 });
     }
 
-    @Override
-    public void start() {
-        super.start();
-        addSubscription(updateRsp());
+
+    private Subscription mineTabNewInfoRsp() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AllFriendsRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .throttleFirst(200, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineFragment.class.getSimpleName());
+                    boolean show = false;
+                    if (node != null) {
+                        List<TreeNode> childList = node.traversal();
+                        show = !ListUtils.isEmpty(childList);
+                    } else {
+                        show = false;
+                    }
+                    mView.refreshHint(show);
+                }, throwable -> addSubscription(mineTabNewInfoRsp()));
     }
-
-//    public void startUpdate(int force) {
-//        try {
-//            AppLogger.d("开始升级");
-//            String result = PreferencesUtils.getString(JConstant.KEY_CLIENT_UPDATE_DESC);
-//            if (TextUtils.isEmpty(result)) return;
-//            JSONObject jsonObject = new JSONObject(result);
-//            final String url = jsonObject.getString("url");
-//            final String versionName = jsonObject.getString("version");
-//            final String shortVersion = jsonObject.getString("shortversion");
-//            final String desc = jsonObject.getString("desc");
-//            ClientUpdateManager.getInstance().enqueue(url, versionName, shortVersion, new ClientUpdateManager.DownloadListener() {
-//                @Override
-//                public void start(long totalByte) {
-//                    AppLogger.d("开始下载");
-//                }
-//
-//                @Override
-//                public void failed(Throwable throwable) {
-//                    AppLogger.d("下载失败: " + MiscUtils.getErr(throwable));
-//                    PreferencesUtils.remove(JConstant.KEY_LAST_TIME_CHECK_VERSION);
-//                    PreferencesUtils.remove(JConstant.KEY_CLIENT_UPDATE_DESC);
-//                }
-//
-//                @Override
-//                public void finished(File file) {
-//                    AppLogger.d("下载完成");
-//                    Observable.just(file)
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .filter(ret -> mView != null)
-//                            .subscribe(f -> {
-//                                        long time = PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
-//                                        if (force == 1 || (time == -1 || System.currentTimeMillis() - time > 24 * 1000 * 3600))
-//                                            mView.needUpdate(desc, f.getAbsolutePath());
-//                                    },
-//                                    AppLogger::e);
-//                }
-//
-//                @Override
-//                public void process(long currentByte, long totalByte) {
-//                }
-//            });
-//        } catch (Exception e) {
-//            AppLogger.e(MiscUtils.getErr(e));
-//        }
-//    }
-
 }

@@ -24,6 +24,8 @@ public interface NewHomeActivityContract {
         void start();
 
         void needUpdate(@RxEvent.UpdateType int type, String desc, String filePath, int force);
+
+        void refreshHint(boolean show);
     }
 
 

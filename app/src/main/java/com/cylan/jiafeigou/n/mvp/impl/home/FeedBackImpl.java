@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
@@ -234,14 +235,10 @@ public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
      */
     @Override
     public void getSystemAutoReply() {
-        rx.Observable.just(null)
+        //用户反馈
+        Observable.just(new FetchFeedbackTask())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
-                    int req = BaseApplication.getAppComponent().getCmd().getFeedbackList();
-                    AppLogger.d("getSystemAutoReply:" + req);
-                }, throwable -> {
-                    AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
-                });
+                .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
     }
 
     /**

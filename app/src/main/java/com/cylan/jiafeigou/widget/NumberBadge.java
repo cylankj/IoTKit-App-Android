@@ -52,7 +52,6 @@ public class NumberBadge extends AppCompatTextView {
         setMeasuredDimension(r, r);
     }
 
-    private int number;
 
     /**
      * 小于0:隐藏,等于零:红点,大于零:数字
@@ -60,7 +59,6 @@ public class NumberBadge extends AppCompatTextView {
      * @param number{}
      */
     public void showNumber(int number) {
-        this.number = number;
         if (number < 0) {
             drawFlag = 0;
             setText("");
@@ -73,7 +71,7 @@ public class NumberBadge extends AppCompatTextView {
         } else {
             drawFlag = 2;
         }
-        if (number > 99) setText("99+");
+        if (number > 99) setText(" 99+ ");
         else setText(number + "");
     }
 
@@ -83,10 +81,6 @@ public class NumberBadge extends AppCompatTextView {
         int w = this.getWidth();
         int diameter = Math.max(h, w);
         int radius = diameter / 2;
-        if (this.number > 99) {
-            setWidth(getWidth() + 3);
-            setHeight(getHeight() + 3);
-        }
         if (drawFlag != 0)
             canvas.drawCircle(diameter / 2, diameter / 2, radius, bgPaint);
         super.onDraw(canvas);

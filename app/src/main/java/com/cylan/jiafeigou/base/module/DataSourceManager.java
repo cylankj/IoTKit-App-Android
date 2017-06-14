@@ -189,7 +189,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public ArrayList<JFGFeedbackInfo> getNewFeedbackList() {
-        return null;
+        return newFeedBackList;
     }
 
     private void queryForwardInformation() {

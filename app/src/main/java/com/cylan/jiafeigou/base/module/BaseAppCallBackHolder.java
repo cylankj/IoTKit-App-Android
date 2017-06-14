@@ -303,8 +303,15 @@ public class BaseAppCallBackHolder implements AppCallBack {
     }
 
     @Override
-    public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
+    public void OnGetFeedbackRsp(int ret, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
+        arrayList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            JFGFeedbackInfo info = new JFGFeedbackInfo();
+            info.msg = "dfafa" + i;
+            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
+            arrayList.add(info);
+        }
         if (ListUtils.isEmpty(arrayList)) return;
         BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
     }

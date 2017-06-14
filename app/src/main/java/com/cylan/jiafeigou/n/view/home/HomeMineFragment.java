@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
-import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.LogState;
@@ -480,17 +479,20 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 count = ListUtils.getSize((ArrayList) o);
             } catch (Exception e) {
             }
-        }
+        } else count = -1;
         homeMineItemFriend.showNumber(count);//count ==0 dismiss
         node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
-        if (node.getData() != null && node.getData() instanceof Integer) {
+        if (node != null && node.getData() != null && node.getData() instanceof Integer) {
             count = (int) node.getData();
-        }
+        } else count = -1;
         //系统消息未读数
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
-        ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
-        homeMineItemHelp.showNumber(-1);
+        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        if (node != null && node.getData() instanceof ArrayList) {
+            count = ListUtils.getSize((ArrayList) node.getData());
+        } else count = -1;
+        homeMineItemHelp.showNumber(count);
         //分享管理
 
         //设置

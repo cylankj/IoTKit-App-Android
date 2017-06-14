@@ -15,6 +15,7 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -61,6 +62,8 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
+    @BindView(R.id.btn_home_mine)
+    RadioButton btnHomeMine;
     private SharedElementCallBackListener sharedElementCallBackListener;
     private Subscription subscribe;
     private Subscription resetPwdSubscribe;
@@ -180,26 +183,23 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void initBottomMenu() {
-        rgLayoutHomeBottomMenu.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.btn_home_list:
-                        if (vpHomeContent.getCurrentItem() != 0 && vpHomeContent.getCurrentItem() != 0) {
-                            vpHomeContent.setCurrentItem(0);
-                        }
-                        break;
-                    case R.id.btn_home_wonderful:
-                        if (vpHomeContent.getCurrentItem() != 1 && vpHomeContent.getCurrentItem() != 1) {
-                            vpHomeContent.setCurrentItem(1);
-                        }
-                        break;
-                    case R.id.btn_home_mine:
-                        if (vpHomeContent.getCurrentItem() != 2 && vpHomeContent.getCurrentItem() != 2) {
-                            vpHomeContent.setCurrentItem(2);
-                        }
-                        break;
-                }
+        rgLayoutHomeBottomMenu.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.btn_home_list:
+                    if (vpHomeContent.getCurrentItem() != 0 && vpHomeContent.getCurrentItem() != 0) {
+                        vpHomeContent.setCurrentItem(0);
+                    }
+                    break;
+                case R.id.btn_home_wonderful:
+                    if (vpHomeContent.getCurrentItem() != 1 && vpHomeContent.getCurrentItem() != 1) {
+                        vpHomeContent.setCurrentItem(1);
+                    }
+                    break;
+                case R.id.btn_home_mine:
+                    if (vpHomeContent.getCurrentItem() != 2 && vpHomeContent.getCurrentItem() != 2) {
+                        vpHomeContent.setCurrentItem(2);
+                    }
+                    break;
             }
         });
     }
@@ -244,6 +244,11 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
                     startActivity(i);
                 }, force == 1 ? "" : getString(R.string.CANCEL), null, false);
+    }
+
+    @Override
+    public void refreshHint(boolean show) {
+        AppLogger.e("显示? " + show);
     }
 
     @Override
