@@ -4,7 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.FrameLayout;
+import android.view.View;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -22,7 +22,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 
@@ -38,7 +38,7 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact.Presenter> implements PanoramaSettingContact.View {
     @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout toolbarContainer;
+    CustomToolbar toolbarContainer;
     @BindView(R.id.sv_setting_device_detail)
     SettingItemView0 deviceDetail;
 
@@ -46,13 +46,11 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     @Override
     public void onStart() {
         super.onStart();
-        ViewUtils.setViewPaddingStatusBar(toolbarContainer);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ViewUtils.clearViewPaddingStatusBar(toolbarContainer);
     }
 
     @Override
@@ -66,6 +64,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         Device device = sourceManager.getDevice(uuid);
         deviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         deviceDetail.showRedHint(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
+        toolbarContainer.setBackAction(this::exit);
     }
 
     @Override
@@ -73,8 +72,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         return R.layout.fragment_panorama_setting;
     }
 
-    @OnClick(R.id.act_panorama_setting_header_back)
-    public void exit() {
+    public void exit(View view) {
         onBackPressed();
     }
 

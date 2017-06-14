@@ -247,6 +247,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         topLeftMenu.setText(TextUtils.isEmpty(alias) ? getString(R.string._720PanoramicCamera) : alias);
         loadingBar.setAction(loadController);
         bottomPanelPhotoGraphItem.setOnTouchListener(photoGraphTouchListener);
+        panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {

@@ -7,24 +7,35 @@
     android:orientation="vertical">
 
 
-    <FrameLayout
+    <!--<FrameLayout-->
+    <!--android:id="@+id/fLayout_top_bar_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/color_0ba8cf">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/act_panorama_setting_header_back"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="@dimen/y48"-->
+    <!--android:drawablePadding="@dimen/y15"-->
+    <!--android:drawableStart="@drawable/nav_tab_back_selector"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:paddingStart="@dimen/y15"-->
+    <!--android:text="@string/SETTINGS_1"-->
+    <!--android:textColor="@color/color_white"-->
+    <!--android:textSize="@dimen/sp18" />-->
+    <!--</FrameLayout>-->
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/fLayout_top_bar_container"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_0ba8cf">
-
-        <TextView
-            android:id="@+id/act_panorama_setting_header_back"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/y48"
-            android:drawablePadding="@dimen/y15"
-            android:drawableStart="@drawable/nav_tab_back_selector"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/y15"
-            android:text="@string/SETTINGS_1"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp18" />
-    </FrameLayout>
+        hunt:ct_enable_theme="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_tab_back_selector"
+        hunt:ct_left_title="@string/SETTINGS_1"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <LinearLayout
         android:id="@+id/lLayout_setting_container"

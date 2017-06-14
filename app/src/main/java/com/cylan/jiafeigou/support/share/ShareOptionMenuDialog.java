@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.support.share;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -18,10 +19,12 @@ import com.cylan.jiafeigou.databinding.DialogShareOptionMenuBinding;
 public class ShareOptionMenuDialog extends DialogFragment {
     private DialogShareOptionMenuBinding shareBinding;
     private ShareOptionClickListener listener;
+    private DialogInterface.OnCancelListener dismiss;
 
-    public static ShareOptionMenuDialog newInstance(ShareOptionClickListener listener) {
+    public static ShareOptionMenuDialog newInstance(ShareOptionClickListener listener, DialogInterface.OnCancelListener dismiss) {
         ShareOptionMenuDialog dialog = new ShareOptionMenuDialog();
         dialog.listener = listener;
+        dialog.dismiss = dismiss;
         return dialog;
     }
 
@@ -39,6 +42,14 @@ public class ShareOptionMenuDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.l_style_dialog);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (dismiss != null) {
+            dismiss.onCancel(dialog);
+        }
     }
 
     @Override
