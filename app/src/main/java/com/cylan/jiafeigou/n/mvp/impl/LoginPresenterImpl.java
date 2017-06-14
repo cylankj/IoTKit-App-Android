@@ -224,7 +224,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Subscription subscribe = Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .timeout(30, TimeUnit.SECONDS)
-                .delay(1, TimeUnit.SECONDS)
+                .delay(5, TimeUnit.SECONDS)
                 .map(ret -> {
                     try {
                         return BaseApplication.getAppComponent().getCmd().checkAccountRegState(ret);
@@ -236,7 +236,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> getView().checkAccountResult(ret), AppLogger::e);
-        addSubscription(subscribe);
+        addSubscription(subscribe, "checkAccountIsReg");
     }
 
 
