@@ -70,11 +70,11 @@ public class OptionsImpl {
             // com.mcxiaoke.packer.helper.PackerNg
             final String domain = PackerNg.getMarket(ContextUtils.getContext());
             if (!TextUtils.isEmpty(domain)) {
-                Log.d(TAG, "get serverFrom ng: " + domain);
-                return domain;
+                Log.d(TAG, "get serverFrom ng: " + domain.trim());
+                return domain.trim();
             }
 
-            String server = PackageUtils.getMetaString(ContextUtils.getContext(), "server");
+            String server = PackageUtils.getMetaString(ContextUtils.getContext(), "server").trim();
             if (!BuildConfig.DEBUG) {
                 return server;
             }
