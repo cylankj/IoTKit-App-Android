@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -176,10 +177,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         holder.setImageResource(R.id.img_device_icon, iconRes);
         handleMsgCountAndTime(holder, uuid, mDevice);
         //右下角状态
+        setItemState(holder, uuid, net);
         if (JFGRules.isPan720(mDevice.pid)) {
             handlePan720RightIcon(holder);
-        } else {
-            setItemState(holder, uuid, net);
         }
     }
 
@@ -223,6 +223,10 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             holder.setImageResource(R.id.img_device_state_3, android.R.color.transparent);
             holder.setVisibility(R.id.img_device_state_3, GONE);
         }
+        Object state = DataSourceManager.getInstance().getDeviceState(uuid);
+        //有录像状态
+        holder.setImageResource(R.id.img_device_state_5, R.drawable.home_icon_recording);
+        holder.setVisibility(R.id.img_device_state_5, state == null ? GONE : VISIBLE);
     }
 
     private String getAlias(String uuid, String alias) {
@@ -250,6 +254,10 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
             ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
         }
+    }
+
+    private void handleRecordState() {
+
     }
 
     /**

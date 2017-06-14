@@ -47,6 +47,8 @@ public class ShareContentItem extends AbstractItem<ShareContentItem, AbstractBin
         viewDataBinding.ShareContentCheckBox.setChecked(isSelected());
         Glide.with(viewDataBinding.sharedContentIcon.getContext())
                 .load(new WonderGlideURL(shareItem.toWonderItem()))
+                .placeholder(shareItem.msgType == 0 ? R.drawable.bg_default_photo : R.drawable.bg_default_video)
+                .error(shareItem.msgType == 0 ? R.drawable.bg_default_photo : R.drawable.bg_default_video)
                 .into(viewDataBinding.sharedContentIcon);
     }
 }

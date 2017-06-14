@@ -120,7 +120,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     private void monitorDeviceInformationSuggestion() {
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
                 .observeOn(Schedulers.io())
-                .filter(event -> !isFetching && !event.success && deviceInformation != null && !TextUtils.isEmpty(deviceInformation.uuid))
+                .filter(event -> !isFetching && !event.success && deviceInformation != null)
                 .map(event -> {
                     deviceInformation.ip = null;
                     deviceInformation.port = 0;

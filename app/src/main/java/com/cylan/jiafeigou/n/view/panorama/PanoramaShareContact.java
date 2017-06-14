@@ -18,6 +18,8 @@ public interface PanoramaShareContact {
 
     interface Presenter extends JFGPresenter<View> {
 
+        void check(String uuid, int time);
+
         void upload(String fileName, String filePath);
 
         void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath);

@@ -7,7 +7,6 @@ import android.media.MediaScannerConnection;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,8 +42,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
-import com.cylan.jiafeigou.support.share.ShareConstant;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
+import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
@@ -201,10 +199,14 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @OnClick(R.id.act_bell_picture_opt_share)
     public void share() {
         new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg").fetch(localPath -> {
-            Intent intent = new Intent(this, ShareMediaActivity.class);
-            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, localPath);
-            startActivity(intent);
+            ShareManager.byImg(BellRecordDetailActivity.this)
+                    .withImg(localPath)
+                    .share();
+//
+//            Intent intent = new Intent(this, ShareMediaActivity.class);
+//            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
+//            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, localPath);
+//            startActivity(intent);
         });
     }
 

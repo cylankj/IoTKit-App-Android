@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -21,8 +20,7 @@ import com.cylan.jiafeigou.databinding.FragmentShareContentH5DetailBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.share.ShareConstant;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
+import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
@@ -118,11 +116,15 @@ public class ShareContentH5DetailFragment extends BaseFragment {
         AppLogger.e("share");
         new WonderGlideURL(shareItem.toWonderItem())
                 .fetchFile(filePath -> {
-                    Intent intent = new Intent(getContext(), ShareMediaActivity.class);
-                    intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_WEB_URL);
-                    intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL, shareItem.url);
-                    intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH, filePath);
-                    startActivity(intent);
+                    ShareManager.byWeb(getActivity())
+                            .withUrl(shareItem.url)
+                            .withThumb(filePath)
+                            .share();
+//                    Intent intent = new Intent(getContext(), ShareMediaActivity.class);
+//                    intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_WEB_URL);
+//                    intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL, shareItem.url);
+//                    intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH, filePath);
+//                    startActivity(intent);
                 });
     }
 

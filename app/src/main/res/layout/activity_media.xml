@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/x10"
+                android:padding="@dimen/y10"
                 android:src="@drawable/icon_download" />
 
             <ImageView
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/x10"
+                android:padding="@dimen/y10"
                 android:src="@drawable/icon_share" />
 
             <ImageView
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/x10"
+                android:padding="@dimen/y10"
                 android:src="@drawable/wonderful_icon_view_picture_delete" />
         </LinearLayout>
 

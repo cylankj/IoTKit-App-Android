@@ -64,6 +64,7 @@ public interface PanoramaAlbumContact {
         public int location = -1; //0:本地;1:设备;2:本地+设备
 
         public PanoramaItem(String name) {
+            if (TextUtils.isEmpty(name)) return;
             String[] split = name.split("\\.");
             type = TextUtils.equals("mp4", split[1]) ? 1 : 0;
             if (type == 0) {

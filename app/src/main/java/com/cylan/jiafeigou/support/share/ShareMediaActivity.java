@@ -85,7 +85,7 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
             return;
         }
         if (shareOptionMenuDialog == null) {
-            shareOptionMenuDialog = ShareOptionMenuDialog.newInstance(cancelListener);
+//            shareOptionMenuDialog = ShareOptionMenuDialog.newInstance(cancelListener);
         }
         if (!shareOptionMenuDialog.isAdded()) {
             shareOptionMenuDialog.show(getSupportFragmentManager(), ShareOptionMenuDialog.class.getSimpleName());

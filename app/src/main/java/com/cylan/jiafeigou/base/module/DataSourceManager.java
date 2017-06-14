@@ -87,6 +87,7 @@ public class DataSourceManager implements JFGSourceManager {
     private AppCmd appCmd;
     private int storageType;
     private LogState logState;
+    private Map<String, Object> deviceState = new HashMap<>();
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
@@ -190,6 +191,23 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public ArrayList<JFGFeedbackInfo> getNewFeedbackList() {
         return null;
+    }
+
+    @Override
+    public void pushDeviceState(String uuid) {
+        deviceState.put(uuid, true);
+        RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+    }
+
+    @Override
+    public void removeDeviceState(String uuid) {
+        deviceState.remove(uuid);
+        RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+    }
+
+    @Override
+    public Object getDeviceState(String uuid) {
+        return deviceState.get(uuid);
     }
 
     private void queryForwardInformation() {

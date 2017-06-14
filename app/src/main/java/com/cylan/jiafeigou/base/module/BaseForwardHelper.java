@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.text.TextUtils;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCmd;
@@ -9,6 +11,8 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.google.gson.Gson;
+
+import org.msgpack.MessagePack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,17 +31,11 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  */
 @Singleton
 public class BaseForwardHelper {
-
     private AppCmd appCmd = null;
-    private String uuid;
     private static BaseForwardHelper instance;
 
     public static BaseForwardHelper getInstance() {
         return instance;
-    }
-
-    public void init(String uuid) {
-        this.uuid = uuid;
     }
 
     @Inject
@@ -56,7 +54,7 @@ public class BaseForwardHelper {
                 .map(accountArrived -> this);
     }
 
-    public <T> Observable<T> sendForward(int msgId, Object msg, int forwardType) {//forwardType:0 服务器透传;1:本地透传
+    public <T> Observable<T> sendForward(String uuid, int msgId, Object msg, int forwardType) {//forwardType:0 服务器透传;1:本地透传
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .filter(accountArrived -> accountArrived.account.isOnline())
                 .first()
@@ -65,7 +63,7 @@ public class BaseForwardHelper {
                     int seq = RandomUtils.getRandom(Integer.MAX_VALUE);
                     try {
                         PanoramaEvent.MsgForward forward = new PanoramaEvent.MsgForward();
-                        forward.dst = Collections.singletonList(uuid);
+                        forward.dst = Collections.singletonList(TextUtils.isEmpty(uuid) ? "" : uuid);
                         forward.mCaller = "";
                         forward.mCallee = "";
                         forward.mId = 20006;
@@ -94,11 +92,11 @@ public class BaseForwardHelper {
                 .map(this::dispatcherForward);
     }
 
-    public <T> Observable<T> sendForward(int msgId, Object msg) {
-        return sendForward(msgId, msg, 0);
+    public <T> Observable<T> sendForward(String uuid, int msgId, Object msg) {
+        return sendForward(uuid, msgId, msg, 0);
     }
 
-    public <T> Observable<T> sendDataPoint(int msgId) {
+    public <T> Observable<T> sendDataPoint(String uuid, int msgId) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
@@ -123,12 +121,13 @@ public class BaseForwardHelper {
         try {
             AppLogger.d("收到服务器的 dp 消息");
             if (rsp.map.size() == 0) return null;
+            if (rsp.map.get(msgId).size() == 0) return null;
             JFGDPMsg msg = rsp.map.get(msgId).get(0);
             if (msgId == 204) {
-                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                DpMsgDefine.DPSdStatusBoolean status = unpackData(msg.packValue, DpMsgDefine.DPSdStatusBoolean.class);
                 PanoramaEvent.MsgSdInfoRsp infoRsp = new PanoramaEvent.MsgSdInfoRsp();
                 infoRsp.sdcard_recogntion = status.err;
-                infoRsp.sdIsExist = status.hasSdcard;
+                infoRsp.sdIsExist = status.hasSdcard ? 1 : 0;
                 infoRsp.storage = status.total;
                 infoRsp.storage_used = status.used;
                 return (T) infoRsp;
@@ -155,6 +154,8 @@ public class BaseForwardHelper {
 
     public <T> T dispatcherForward(PanoramaEvent.MsgForward forward) {
         try {
+            AppLogger.d("forward:" + new Gson().toJson(forward));
+            AppLogger.d("messagePack:" + new Gson().toJson(new MessagePack().read(forward.msg).toString()));
             switch (forward.type) {
                 case 1:       //TYPE_FILE_DOWNLOAD_REQ          = 1   下载请求
                 case 3:       //TYPE_FILE_DELETE_REQ            = 3   删除请求
@@ -168,13 +169,27 @@ public class BaseForwardHelper {
                     return (T) unpackData(forward.msg, PanoramaEvent.MsgFileRsp.class);
                 case 9:       //TYPE_VIDEO_BEGIN_REQ            = 9   开始录像请求
                 case 10:      //TYPE_VIDEO_BEGIN_RSP            = 10  开始录像响应
-                    return (T) new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
+                    PanoramaEvent.MsgRsp msgRsp = new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
+                    if (msgRsp != null && msgRsp.ret == 0) {
+                        DataSourceManager.getInstance().pushDeviceState(forward.mCaller);
+                    }
+                    return (T) msgRsp;
                 case 11:      //TYPE_VIDEO_END_REQ              = 11  停止录像请求
                 case 12:      //TYPE_VIDEO_END_RSP              = 12  停止录像响应 PanoramaEvent.TP tp = unpackData(forward.msg, PanoramaEvent.TP.class);
-                    return (T) unpackData(forward.msg, PanoramaEvent.MsgFileRsp.class);
+                    PanoramaEvent.MsgFileRsp msgFileRsp = unpackData(forward.msg, PanoramaEvent.MsgFileRsp.class);
+                    if (msgFileRsp != null && msgFileRsp.ret == 0) {
+                        DataSourceManager.getInstance().removeDeviceState(forward.mCaller);
+                    }
+                    return (T) msgFileRsp;
                 case 13:      //TYPE_VIDEO_STATUS_REQ           = 13  查询录像状态请求
                 case 14:      //TYPE_VIDEO_STATUS_RSP           = 14  查询录像状态响应
-                    return (T) unpackData(forward.msg, PanoramaEvent.MsgVideoStatusRsp.class);
+                    PanoramaEvent.MsgVideoStatusRsp msgVideoStatusRsp = unpackData(forward.msg, PanoramaEvent.MsgVideoStatusRsp.class);
+                    if (msgVideoStatusRsp != null && msgVideoStatusRsp.ret == 0) {
+                        DataSourceManager.getInstance().pushDeviceState(forward.mCaller);
+                    } else {
+                        DataSourceManager.getInstance().removeDeviceState(forward.mCaller);
+                    }
+                    return (T) msgVideoStatusRsp;
                 case 15:      //TYPE_FILE_LOGO_REQ              = 15  设置水印请求
                 case 16:      //TYPE_FILE_LOGO_RSP              = 16  设置水印响应
                     return (T) new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
@@ -200,6 +215,9 @@ public class BaseForwardHelper {
                         RxBus.getCacheInstance().post(syncData);
                     }
                     break;
+                }
+                case 62: {
+
                 }
             }
         } catch (Exception e) {

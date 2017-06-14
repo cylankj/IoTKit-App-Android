@@ -171,37 +171,6 @@ public class RxEvent {
         }
     }
 
-
-    public static final class ResultUserLogin {
-        public int code;
-
-        public ResultUserLogin(int code) {
-            this.code = code;
-        }
-
-        @Override
-        public String toString() {
-            return "ResultUserLogin{" +
-                    "code=" + code +
-                    '}';
-        }
-    }
-
-    public static final class ResultUpdateLogin {
-        public int code;
-
-        public ResultUpdateLogin(int code) {
-            this.code = code;
-        }
-
-        @Override
-        public String toString() {
-            return "ResultUserLogin{" +
-                    "code=" + code +
-                    '}';
-        }
-    }
-
     public static final class ResultBind {
         public int code;
 
@@ -720,7 +689,6 @@ public class RxEvent {
 //        public ArrayList<JFGDPMsgRet> arrayList;
 //
 //    }
-
 
 
     public static class CheckVersionRsp implements Parcelable {
@@ -1375,4 +1343,9 @@ public class RxEvent {
      */
     public static class AllFriendsRsp {
     }
+
+    public static class DeviceRecordStateChanged {
+        public static final DeviceRecordStateChanged INSTANCE = new DeviceRecordStateChanged();
+    }
+
 }

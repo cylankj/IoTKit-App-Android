@@ -10,8 +10,12 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.BaseForwardHelper;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -31,13 +35,14 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
  */
 public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListContract.View>
         implements HomePageListContract.Presenter {
-
+    private CompositeSubscription recordSub;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
@@ -54,7 +59,61 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
                 checkNetSub(),
+                deviceRecordStateSub()
         };
+    }
+
+    private void initDeviceRecordState() {
+        List<Device> device = DataSourceManager.getInstance().getAllDevice();
+        String uuid = null;
+        boolean apDirect = false;
+        if (recordSub != null && recordSub.isUnsubscribed()) {
+            recordSub.unsubscribe();
+        }
+        recordSub = new CompositeSubscription();
+        if (device != null) {
+            for (Device device1 : device) {
+                apDirect = JFGRules.isAPDirect(device1.uuid, device1.$(DpMsgMap.ID_202_MAC, ""));
+                if (apDirect) {
+                    uuid = device1.uuid;
+                    break;
+                }
+            }
+            if (apDirect) {
+                BasePanoramaApiHelper.getInstance().init(uuid);
+                Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus().subscribe(ret -> {
+                    if (recordSub != null && recordSub.isUnsubscribed()) {
+                        recordSub.unsubscribe();
+                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
+                recordSub.add(subscribe);
+            } else {
+                for (Device device1 : device) {
+                    if (JFGRules.isPan720(device1.pid)) {
+                        Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
+                            if (recordSub != null && recordSub.isUnsubscribed()) {
+                                recordSub.unsubscribe();
+                            }
+                        }, e -> {
+                            AppLogger.e(e.getMessage());
+                        });
+                        recordSub.add(subscribe);
+                    }
+                }
+            }
+        }
+    }
+
+    private Subscription deviceRecordStateSub() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceRecordStateChanged.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    if (getView() != null) {
+                        getView().onRefreshDeviceList();
+                    }
+                });
     }
 
     private Subscription checkNetSub() {
@@ -104,6 +163,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
     }
+
 
     private Subscription devicesUpdate1() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListRsp.class)
@@ -266,6 +326,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             updateConnectInfo(null);
         } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
             RxBus.getCacheInstance().post(new InternalHelp());
+            initDeviceRecordState();
         }
     }
 

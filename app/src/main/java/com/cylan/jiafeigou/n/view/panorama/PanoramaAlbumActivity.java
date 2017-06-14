@@ -116,7 +116,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
-        swipeRefreshLayout.setRefreshing(true);
+
     }
 
     private void onLoadMore() {
@@ -157,6 +157,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             albumModeSelectPop.setDismissListener((int id) -> {
                 albumViewMode = resIdToMode(id);
                 toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+                swipeRefreshLayout.setRefreshing(true);
                 presenter.fetch(0, albumViewMode);
             });
             albumModeSelectPop.setMode(albumViewMode);
@@ -377,6 +378,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (report) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));
         }
+        swipeRefreshLayout.setRefreshing(true);
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
         if (albumModeSelectPop != null && report) {

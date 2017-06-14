@@ -409,6 +409,65 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static final class DPSdStatusBoolean extends BaseDataPoint implements Parcelable {
+        @Index(0)
+        public long total;
+        @Index(1)
+        public long used;
+        @Index(2)
+        public int err = -1;
+        @Index(3)
+        public boolean hasSdcard;
+
+        public DPSdStatusBoolean() {
+        }
+
+        @Override
+        public String toString() {
+            return "DPSdStatus{" +
+                    "total=" + total +
+                    ", used=" + used +
+                    ", err=" + err +
+                    ", hasSdcard=" + hasSdcard +
+                    '}';
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeLong(this.total);
+            dest.writeLong(this.used);
+            dest.writeInt(this.err);
+            dest.writeInt(this.hasSdcard ? 1 : 0);
+        }
+
+        protected DPSdStatusBoolean(Parcel in) {
+            super(in);
+            this.total = in.readLong();
+            this.used = in.readLong();
+            this.err = in.readInt();
+            this.hasSdcard = in.readInt() == 1;
+        }
+
+        public static final Creator<DPSdStatusBoolean> CREATOR = new Creator<DPSdStatusBoolean>() {
+            @Override
+            public DPSdStatusBoolean createFromParcel(Parcel source) {
+                return new DPSdStatusBoolean(source);
+            }
+
+            @Override
+            public DPSdStatusBoolean[] newArray(int size) {
+                return new DPSdStatusBoolean[size];
+            }
+        };
+    }
+
+    @Message
     public static final class DPAlarmInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;

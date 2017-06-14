@@ -98,7 +98,6 @@ public class BasePanoramaApiHelper {
         this.uuid = uuid;
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);
         BaseDeviceInformationFetcher.getInstance().init(uuid);
-        BaseForwardHelper.getInstance().init(uuid);
     }
 
     public Observable<String> loadPicture(String origin) {
@@ -139,27 +138,44 @@ public class BasePanoramaApiHelper {
      */
 
     public Observable<PanoramaEvent.MsgFileRsp> delete(int deleteType, List<String> files) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.delete(deleteType, files) : forwardHelper.sendForward(3, new PanoramaEvent.MsgFileReq(files, deleteType)));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.delete(deleteType, files) : forwardHelper.sendForward(uuid, 3, new PanoramaEvent.MsgFileReq(files, deleteType)));
     }
 
     public Observable<PanoramaEvent.MsgFileListRsp> getFileList(int beginTime, int endTime, int count) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : forwardHelper.sendForward(5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : forwardHelper.sendForward(uuid, 5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> snapShot() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.snapShot() : forwardHelper.sendForward(7, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.snapShot() : forwardHelper.sendForward(uuid, 7, null));
     }
 
     public Observable<PanoramaEvent.MsgRsp> startRec(int videoType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType) : forwardHelper.sendForward(9, videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType).map(ret -> {
+            if (ret != null && ret.ret == 0) {
+                DataSourceManager.getInstance().pushDeviceState(uuid);
+            }
+            return ret;
+        }) : forwardHelper.sendForward(uuid, 9, videoType));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> stopRec(int videoType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType) : forwardHelper.sendForward(11, videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType).map(ret -> {
+            if (ret != null && ret.ret == 0) {
+                DataSourceManager.getInstance().removeDeviceState(uuid);
+            }
+            return ret;
+        }) : forwardHelper.sendForward(uuid, 11, videoType));
     }
 
     public Observable<PanoramaEvent.MsgVideoStatusRsp> getRecStatus() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus() : forwardHelper.sendForward(13, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus().map(ret -> {
+            if (ret != null && ret.ret == 0) {
+                DataSourceManager.getInstance().pushDeviceState(uuid);
+            } else {
+                DataSourceManager.getInstance().removeDeviceState(uuid);
+            }
+            return ret;
+        }) : forwardHelper.sendForward(uuid, 13, null));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
@@ -184,7 +200,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(204, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(204));
+        }) : forwardHelper.sendDataPoint(uuid, 204));
     }
 
     public Observable<PanoramaEvent.MsgPowerLineRsp> getPowerLine() {
@@ -200,7 +216,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(205, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(205));
+        }) : forwardHelper.sendDataPoint(uuid, 205));
     }
 
     public Observable<PanoramaEvent.MsgBatteryRsp> getBattery() {
@@ -216,22 +232,22 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(206, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(206));
+        }) : forwardHelper.sendDataPoint(uuid, 206));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setLogo(int logType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setLogo(logType) : forwardHelper.sendForward(15, logType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setLogo(logType) : forwardHelper.sendForward(uuid, 15, logType));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setResolution(int videoStandard) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setResolution(videoStandard) : forwardHelper.sendForward(17, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setResolution(videoStandard) : forwardHelper.sendForward(uuid, 17, null));
     }
 
     public Observable<PanoramaEvent.MsgLogoRsp> getLogo() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getLogo() : forwardHelper.sendForward(16, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getLogo() : forwardHelper.sendForward(uuid, 16, null));
     }
 
     public Observable<PanoramaEvent.MsgResolutionRsp> getResolution() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getResolution() : forwardHelper.sendForward(21, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getResolution() : forwardHelper.sendForward(uuid, 21, null));
     }
 }

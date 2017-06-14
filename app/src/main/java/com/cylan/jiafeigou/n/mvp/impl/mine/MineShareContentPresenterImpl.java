@@ -39,6 +39,16 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 })
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
+                .map(ret -> {
+                    List<DPEntity> result = new ArrayList<>();
+                    DPEntity entity;
+                    for (DpMsgDefine.DPShareItem shareItem : item) {
+                        entity = new DPEntity(shareItem.cid, 511, shareItem.time, DBAction.DELETED, null);
+                        result.add(entity);
+                    }
+                    return result;
+                })
+                .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     AppLogger.d("取消分享返回结果为:" + new Gson().toJson(result));

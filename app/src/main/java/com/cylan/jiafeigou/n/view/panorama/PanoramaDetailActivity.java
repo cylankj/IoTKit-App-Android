@@ -31,8 +31,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.share.ShareConstant;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
+import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -427,13 +426,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         } else {
             releasePlayer();
             new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
-                Intent intent = new Intent(this, ShareMediaActivity.class);
-                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD);
-                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, panoramaItem);
-                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, downloadInfo.getTargetPath());
-                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, filePath);
-                startActivity(intent);
+                ShareManager.byH5(PanoramaDetailActivity.this)
+                        .withFile(downloadInfo.getTargetPath())
+                        .withItem(panoramaItem)
+                        .withThumb(filePath)
+                        .share();
+//                Intent intent = new Intent(this, ShareMediaActivity.class);
+//                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD);
+//                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, panoramaItem);
+//                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, downloadInfo.getTargetPath());
+//                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, filePath);
+//                startActivity(intent);
             });
         }
     }

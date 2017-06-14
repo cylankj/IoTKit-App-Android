@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.base.module;
 
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
@@ -55,16 +54,10 @@ public class BaseJFGResultParser {
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
-
+                BaseApplication.getAppComponent().getCmd().getAccount();
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
-                RxBus.getCacheInstance().post(new RxEvent.ResultUserLogin(jfgResult.code));
-                RxBus.getCacheInstance().postSticky(new RxEvent.ResultUpdateLogin(jfgResult.code));
                 PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
                 PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
-                Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-                if (account != null) {
-                    account.setOnline(true);
-                }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
@@ -111,7 +104,6 @@ public class BaseJFGResultParser {
                 break;
         }
         if (login) {
-            AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
             PushPickerIntentService.start();

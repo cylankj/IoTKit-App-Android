@@ -1,8 +1,5 @@
 package com.cylan.jiafeigou.support.share;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -10,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.DialogShareOptionMenuBinding;
 
 
@@ -20,11 +18,10 @@ import com.cylan.jiafeigou.databinding.DialogShareOptionMenuBinding;
 public class ShareOptionMenuDialog extends DialogFragment {
     private DialogShareOptionMenuBinding shareBinding;
     private ShareOptionClickListener listener;
-    private DialogInterface.OnCancelListener cancelListener;
 
-    public static ShareOptionMenuDialog newInstance(DialogInterface.OnCancelListener cancelListener) {
+    public static ShareOptionMenuDialog newInstance(ShareOptionClickListener listener) {
         ShareOptionMenuDialog dialog = new ShareOptionMenuDialog();
-        dialog.cancelListener = cancelListener;
+        dialog.listener = listener;
         return dialog;
     }
 
@@ -39,11 +36,9 @@ public class ShareOptionMenuDialog extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ShareOptionClickListener) {
-            this.listener = (ShareOptionClickListener) context;
-        }
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.l_style_dialog);
     }
 
     @Override
@@ -56,18 +51,6 @@ public class ShareOptionMenuDialog extends DialogFragment {
         listener = null;
     }
 
-    @Override
-    public Dialog getDialog() {
-        return super.getDialog();
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        super.onCancel(dialog);
-        if (cancelListener != null) {
-            cancelListener.onCancel(dialog);
-        }
-    }
 
     public interface ShareOptionClickListener {
         void onShareOptionClick(int shareItemType);

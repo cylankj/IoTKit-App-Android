@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -501,6 +500,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             dialogFragment.setAction(this);
             dialogFragment.show(this.getFragmentManager(), "update");
         }
+    }
+
+    @Override
+    public void onRefreshDeviceList() {
+        mItemAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -40,8 +40,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
-import com.cylan.jiafeigou.support.share.ShareConstant;
+import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -53,6 +52,7 @@ import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
+import com.umeng.socialize.UMShareAPI;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -587,7 +587,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                             mCurrentMediaBean = mMediaList.get(currentItem);
                         }
 //                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
-                            finish();
+                        finish();
 //                        }
                     }
                 }, AppLogger::e);
@@ -663,14 +663,23 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void share() {
         if (NetUtils.isNetworkAvailable(this)) {
             new WonderGlideURL(mCurrentMediaBean).fetchFile(file -> {
-                Intent intent = new Intent(this, ShareMediaActivity.class);
-                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-                intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
-                startActivity(intent);
+                ShareManager.byImg(MediaActivity.this)
+                        .withImg(file)
+                        .share();
+//                Intent intent = new Intent(this, ShareMediaActivity.class);
+//                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
+//                intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, file);
+//                startActivity(intent);
             });
         } else {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 
     @OnClick(R.id.act_media_video_opt_more)

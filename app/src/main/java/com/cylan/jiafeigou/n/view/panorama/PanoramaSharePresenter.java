@@ -4,16 +4,19 @@ import android.support.v4.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +30,50 @@ import rx.schedulers.Schedulers;
  */
 
 public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.View> implements PanoramaShareContact.Presenter {
+    @Override
+    public void check(String uuid, int time) {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                ArrayList<JFGDPMsg> params = new ArrayList<>();
+                JFGDPMsg msg = new JFGDPMsg(511, time);
+                params.add(msg);
+                long seq = appCmd.robotGetDataByTime(uuid, params, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).first(rsp -> rsp.seq == ret))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    if (ret != null && ret.map != null && ret.map.size() > 0 && ret.map.get(511) != null) {
+                        ArrayList<JFGDPMsg> jfgdpMsgs = ret.map.get(511);
+                        if (jfgdpMsgs.size() > 0) {
+                            JFGDPMsg msg = jfgdpMsgs.get(0);
+                            try {
+                                Long version = DpUtils.unpackData(msg.packValue, Long.class);
+                                if (version != null && version > 0) {
+                                    mView.onUploadResult(200);
+                                    return;
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    mView.onUploadResult(-1);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    mView.onUploadResult(-1);
+                });
+        registerSubscription(subscribe);
+    }
+
     @Override
     public void upload(String fileName, String filePath) {
         Subscription subscribe = Observable.just(getRemoteFilePath(fileName))
@@ -104,6 +151,25 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                         .timeout(30, TimeUnit.SECONDS, Observable.just(new Pair<>(null, pair.second))))
                 .map(rsp -> {
                     long result = -1;
+                    try {
+                        int code = rsp.first.rets.get(0).ret;
+                        if (code != 0) throw new BaseDPTaskException(code, "分享失败");
+                        JFGDPMsg msg = new JFGDPMsg(511, item.time);
+                        msg.packValue = DpUtils.pack(rsp.first.rets.get(0).version);
+                        ArrayList<JFGDPMsg> params = new ArrayList<>();
+                        params.add(msg);
+                        result = appCmd.robotSetDataByTime(uuid, params);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return new Pair<>(result, rsp.second);
+                })
+                .flatMap(pair -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                        .first(rsp -> rsp.seq == pair.first)
+                        .map(rsp -> new Pair<>(rsp, pair.second))
+                        .timeout(30, TimeUnit.SECONDS, Observable.just(new Pair<>(null, pair.second))))
+                .map(rsp -> {
+                    long result = -1;
                     int code = rsp.first.rets.get(0).ret;
                     if (code != 0) throw new BaseDPTaskException(code, "分享步骤一失败");
                     AppLogger.d("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
@@ -128,6 +194,8 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     boolean success = result != null && result.first.ret == 200 && result.second != null;
                     mView.onShareH5Result(success, success ? result.second : "");
                     AppLogger.d("AAAAA:" + new Gson().toJson(result));
+                }, e -> {
+                    AppLogger.e(e.getMessage());
                 });
         registerSubscription(subscribe);
 

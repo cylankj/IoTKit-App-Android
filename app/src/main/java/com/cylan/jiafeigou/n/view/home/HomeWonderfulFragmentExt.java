@@ -35,8 +35,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.share.ShareMediaActivity;
-import com.cylan.jiafeigou.support.share.ShareConstant;
+import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -405,10 +404,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 //        }
 //        fragment.show(getActivity().getSupportFragmentManager(), "ShareOptionMenuDialog");
         new WonderGlideURL(bean).fetchFile(filePath -> {
-            Intent intent = new Intent(getActivity(), ShareMediaActivity.class);
-            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, filePath);
-            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
-            startActivity(intent);
+            ShareManager.byImg(getActivity())
+                    .withImg(filePath)
+                    .share();
+//            Intent intent = new Intent(getActivity(), ShareMediaActivity.class);
+//            intent.putExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH, filePath);
+//            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_PICTURE);
+//            startActivity(intent);
         });
     }
 

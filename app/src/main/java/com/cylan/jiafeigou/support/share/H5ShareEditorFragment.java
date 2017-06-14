@@ -57,7 +57,19 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     private PanoramaAlbumContact.PanoramaItem shareItem;
     private String filePath;
     private String thumbPath;
+    private UMShareListener listener;
 
+    public static H5ShareEditorFragment newInstance(int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem, UMShareListener listener) {
+        H5ShareEditorFragment fragment = new H5ShareEditorFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, filePath);
+        bundle.putString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, thumbPath);
+        bundle.putParcelable(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, shareItem);
+        bundle.putInt(ShareConstant.SHARE_PLATFORM_TYPE, shareType);
+        fragment.setArguments(bundle);
+        fragment.listener = listener;
+        return fragment;
+    }
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {
@@ -69,13 +81,6 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         shareBinding = FragmentPanoramaShareBinding.inflate(inflater);
         return shareBinding.getRoot();
-    }
-
-    @Override
-    protected boolean onBackPressed() {
-        getActivity().finish();
-        return true;
-
     }
 
     @Override
@@ -98,8 +103,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             imm.showSoftInput(shareBinding.shareContextEditor, 0);
         }
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
-        presenter.upload(shareItem.fileName, filePath);
-
+        presenter.check(mUUID, shareItem.time);
     }
 
     private String getNameByType(int shareType) {
@@ -124,9 +128,12 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
 
     @Override
     public void onUploadResult(int code) {
-        uploadSuccess.set(code == 200);
+        if (code != -1) uploadSuccess.set(code == 200);
         shareBinding.shareRetry.setVisibility(uploadSuccess.get() ? View.GONE : View.VISIBLE);
         AppLogger.d("上传到服务器返回的结果为:" + code);
+        if (code == -1) {
+            presenter.upload(shareItem.fileName, filePath);
+        }
     }
 
     @Override
@@ -146,9 +153,6 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     private void shareWithH5ByType(int shareType, String h5) {
-        if (!LoadingDialog.isShowing(getActivity().getSupportFragmentManager())) {
-            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
-        }
         Bundle arguments = getArguments();
         String thumbPath = arguments.getString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH);
         UMWeb umWeb = new UMWeb(h5);
@@ -159,8 +163,8 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         }
         ShareAction shareAction = new ShareAction(getActivity());
         shareAction.withMedia(umWeb);
-        if (getActivity() != null && getActivity() instanceof UMShareListener) {
-            shareAction.setCallback((UMShareListener) getActivity());
+        if (listener != null) {
+            shareAction.setCallback(listener);
         }
         switch (shareType) {
             case SHARE_PLATFORM_TYPE_TIME_LINE://
@@ -208,6 +212,9 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         if (NetUtils.getNetType(getContext()) == -1) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         } else {
+            if (!LoadingDialog.isShowing(getActivity().getSupportFragmentManager())) {
+                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
+            }
             presenter.share(shareItem, getDescription(), thumbPath);
         }
     }

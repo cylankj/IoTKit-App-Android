@@ -56,6 +56,8 @@ public interface HomePageListContract {
         void autoLoginTip(int code);
 
         void clientUpdateDialog(String apkPath);
+
+        void onRefreshDeviceList();
     }
 
     interface Presenter extends BasePresenter {
