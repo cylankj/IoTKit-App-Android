@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.SysMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.SysMessagePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;

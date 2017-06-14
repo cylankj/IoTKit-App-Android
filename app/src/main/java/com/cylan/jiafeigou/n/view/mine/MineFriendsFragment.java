@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
@@ -110,7 +111,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
         addReqDetailFragment.setOnAcceptAddListener(backbean -> {
             addReqDeleteItem(position, backbean);
-            RelAndFriendBean rBean = new RelAndFriendBean();
+            FriendBean rBean = new FriendBean();
             rBean.account = backbean.account;
             rBean.alias = backbean.alias;
             rBean.iconUrl = backbean.iconUrl;
@@ -194,7 +195,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * @param bean
      */
     @Override
-    public void friendlistAddItem(int position, RelAndFriendBean bean) {
+    public void friendlistAddItem(int position, FriendBean bean) {
         if (friendsListAdapter.getItemCount() == 0) {
             showFriendListTitle();
         }
@@ -279,7 +280,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void initFriendRecyList(ArrayList<RelAndFriendBean> list) {
+    public void initFriendRecyList(ArrayList<FriendBean> list) {
         hideLoadingDialog();
         rvFriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
         friendsListAdapter = new RelativesAndFriendsAdapter(getContext(), list, null);
@@ -353,7 +354,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void jump2FriendDetailFragment(int position, RelAndFriendBean account) {
+    public void jump2FriendDetailFragment(int position, FriendBean account) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
         bundle.putParcelable("frienditembean", account);
@@ -407,7 +408,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
 
             //更新好友列表
-            RelAndFriendBean account = new RelAndFriendBean();
+            FriendBean account = new FriendBean();
             account.account = item.account;
             account.alias = item.alias;
             account.iconUrl = item.iconUrl;

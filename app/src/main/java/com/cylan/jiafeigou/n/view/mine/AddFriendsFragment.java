@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
@@ -116,7 +117,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
     }
 
     @Override
-    public void initContactRecycleView(ArrayList<RelAndFriendBean> list) {
+    public void initContactRecycleView(ArrayList<FriendBean> list) {
         rcyContactList.setVisibility(View.VISIBLE);
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
@@ -238,7 +239,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
     }
 
     @Override
-    public void onAddClick(View view, int position, final RelAndFriendBean item) {
+    public void onAddClick(View view, int position, final FriendBean item) {
         friendAccount = item.account;
         if (getView() != null && basePresenter != null) {
             showLoadingPro();

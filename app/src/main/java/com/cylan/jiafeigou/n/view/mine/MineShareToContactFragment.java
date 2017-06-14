@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.LinkManager;
@@ -66,7 +67,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     private ShareToContactAdapter shareToContactAdapter;
     private DeviceBean deviceinfo;
     private String contractPhone;
-    private ArrayList<RelAndFriendBean> hasSharefriend;
+    private ArrayList<FriendBean> hasSharefriend;
 
     public static MineShareToContactFragment newInstance(Bundle bundle) {
         MineShareToContactFragment fragment = new MineShareToContactFragment();
@@ -155,7 +156,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void initContactReclyView(ArrayList<RelAndFriendBean> list) {
+    public void initContactReclyView(ArrayList<FriendBean> list) {
         rcyMineShareToContactList.setVisibility(View.VISIBLE);
         rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToContactAdapter = new ShareToContactAdapter(getView().getContext(), list, null);
@@ -314,7 +315,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
      * @param item
      */
     @Override
-    public void isShare(RelAndFriendBean item) {
+    public void isShare(FriendBean item) {
         contractPhone = item.account;
         showShareDeviceDialog(item.account);
     }

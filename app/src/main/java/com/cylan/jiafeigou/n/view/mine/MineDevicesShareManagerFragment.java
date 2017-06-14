@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineDevicesShareManagerPresenterImp;
@@ -51,8 +52,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter hasShareAdapter;
     private DeviceBean devicebean;
-    private RelAndFriendBean tempBean;
-    private ArrayList<RelAndFriendBean> hasShareFriendlist;
+    private FriendBean tempBean;
+    private ArrayList<FriendBean> hasShareFriendlist;
     private int unShareSucNum = 0;
     private ArrayList<String> unShareAccount = new ArrayList<>();
 
@@ -143,7 +144,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
      * @param list
      */
     @Override
-    public void initHasShareFriendRecyView(ArrayList<RelAndFriendBean> list) {
+    public void initHasShareFriendRecyView(ArrayList<FriendBean> list) {
         recyclerHadShareRelativesAndFriend.setLayoutManager(new LinearLayoutManager(getContext()));
         hasShareAdapter = new MineHasShareAdapter(getView().getContext(), list, null);
         recyclerHadShareRelativesAndFriend.setAdapter(hasShareAdapter);
@@ -163,7 +164,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     }
 
     @Override
-    public void showCancleShareDialog(final RelAndFriendBean bean) {
+    public void showCancleShareDialog(final FriendBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
         builder.setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
@@ -197,7 +198,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     }
 
     @Override
-    public void onCancleShare(RelAndFriendBean item) {
+    public void onCancleShare(FriendBean item) {
         tempBean = item;
         if (getView() != null) {
             if (NetUtils.getNetType(getContext()) == -1) {

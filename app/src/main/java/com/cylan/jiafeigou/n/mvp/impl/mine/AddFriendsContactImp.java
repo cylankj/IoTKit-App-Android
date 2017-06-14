@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.AddFriendContract;
@@ -44,8 +45,8 @@ import rx.schedulers.Schedulers;
  */
 public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.View> implements AddFriendContract.Presenter {
 
-    private ArrayList<RelAndFriendBean> filterDateList;
-    private ArrayList<RelAndFriendBean> allContactBean = new ArrayList<RelAndFriendBean>();
+    private ArrayList<FriendBean> filterDateList;
+    private ArrayList<FriendBean> allContactBean = new ArrayList<FriendBean>();
     private boolean isCheckAcc;
 
     public AddFriendsContactImp(AddFriendContract.View view) {
@@ -66,7 +67,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      *
      * @param arrayList
      */
-    private void handlerDataResult(ArrayList<RelAndFriendBean> arrayList) {
+    private void handlerDataResult(ArrayList<FriendBean> arrayList) {
         if (arrayList != null) {
             if (arrayList.size() != 0 && getView() != null) {
                 getView().initContactRecycleView(arrayList);
@@ -85,8 +86,8 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      * @return
      */
     @NonNull
-    public ArrayList<RelAndFriendBean> getAllContactList() {
-        ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
+    public ArrayList<FriendBean> getAllContactList() {
+        ArrayList<FriendBean> list = new ArrayList<FriendBean>();
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
@@ -106,7 +107,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
             Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
             String sort_key = cursor.getString(cursor.getColumnIndex(sort));
             while (phone.moveToNext()) {
-                RelAndFriendBean friendBean = new RelAndFriendBean();
+                FriendBean friendBean = new FriendBean();
                 friendBean.alias = contact;
                 String PhoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 PhoneNumber = PhoneNumber.replace("-", "");
@@ -130,7 +131,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
                 emailIndex = emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
             }
             while (emails.moveToNext()) {
-                RelAndFriendBean friendBean = new RelAndFriendBean();
+                FriendBean friendBean = new FriendBean();
                 String email = emails.getString(emailIndex);
                 friendBean.alias = contact;
                 friendBean.account = email;
@@ -154,7 +155,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
                 filterDateList.addAll(allContactBean);
             } else {
                 filterDateList.clear();
-                for (RelAndFriendBean s : allContactBean) {
+                for (FriendBean s : allContactBean) {
                     String phone = s.account;
                     String name = s.alias;
                     if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
@@ -187,9 +188,9 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     @Override
     public Subscription getFriendListDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
+                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<FriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
+                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetFriendList getFriendList) {
                         if (getFriendList != null) {
                             if (getFriendList.arrayList.size() != 0) {
                                 return Observable.just(converData(getFriendList.arrayList));
@@ -290,9 +291,9 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      * @param arrayList
      * @return
      */
-    private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (RelAndFriendBean contract : getAllContactList()) {
+    private ArrayList<FriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
+        ArrayList<FriendBean> list = new ArrayList<>();
+        for (FriendBean contract : getAllContactList()) {
             for (JFGFriendAccount friend : arrayList) {
                 if (friend.account.equals(contract.account)) {
                     contract.isCheckFlag = 1;
@@ -306,10 +307,10 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
         return list;
     }
 
-    public class Comparent implements Comparator<RelAndFriendBean> {
+    public class Comparent implements Comparator<FriendBean> {
         @SuppressWarnings("unchecked")
         @Override
-        public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
+        public int compare(FriendBean lhs, FriendBean rhs) {
             Collator ca = Collator.getInstance(Locale.getDefault());
             int flags = 0;
             if (ca.compare(lhs.sortkey, rhs.sortkey) < 0) {

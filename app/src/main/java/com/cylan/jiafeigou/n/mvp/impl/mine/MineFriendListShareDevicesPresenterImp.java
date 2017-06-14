@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -107,22 +108,19 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      * 发送分享设备给亲友的请求
      */
     @Override
-    public void sendShareToReq(ArrayList<DeviceBean> chooseList, final RelAndFriendBean friendBean) {
+    public void sendShareToReq(ArrayList<DeviceBean> chooseList, final FriendBean friendBean) {
         totalFriend = chooseList.size();
         if (getView() != null) {
             getView().showSendReqProgress();
         }
         rx.Observable.just(chooseList)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<ArrayList<DeviceBean>>() {
-                    @Override
-                    public void call(ArrayList<DeviceBean> deviceBeen) {
-                        for (DeviceBean bean : deviceBeen) {
-                            try {
-                                BaseApplication.getAppComponent().getCmd().shareDevice(bean.uuid, friendBean.account);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
+                .subscribe(deviceBeen -> {
+                    for (DeviceBean bean : deviceBeen) {
+                        try {
+                            BaseApplication.getAppComponent().getCmd().shareDevice(bean.uuid, friendBean.account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
                     }
                 }, AppLogger::e);
