@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;

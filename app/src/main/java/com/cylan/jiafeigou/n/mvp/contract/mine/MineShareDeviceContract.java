@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 
 import java.util.ArrayList;
 
@@ -62,14 +62,14 @@ public interface MineShareDeviceContract {
          *
          * @return
          */
-        ArrayList<RelAndFriendBean> getJFGInfo(int position);
+        ArrayList<FriendBean> getJFGInfo(int position);
 
         /**
          * 获取到已分享的亲友的数据
          *
          * @return
          */
-        ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info);
+        ArrayList<FriendBean> getHasShareRelAndFriendList(JFGShareListInfo info);
 
         /**
          * 获取到设备已分享的亲友数
@@ -100,7 +100,7 @@ public interface MineShareDeviceContract {
         /**
          * 分享成功后列表中添加一条数据
          */
-        void shareSucceedAdd(int key, ArrayList<RelAndFriendBean> list);
+        void shareSucceedAdd(int key, ArrayList<FriendBean> list);
 
         /**
          * fragment销毁时清除临时数据

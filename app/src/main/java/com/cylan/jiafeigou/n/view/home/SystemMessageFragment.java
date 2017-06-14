@@ -13,9 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineMessagePresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
+import com.cylan.jiafeigou.n.mvp.contract.home.SysMessageContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.SysMessagePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -31,7 +30,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeMineMessageFragment extends Fragment implements HomeMineMessageContract.View {
+public class SystemMessageFragment extends Fragment implements SysMessageContract.View {
 
     @BindView(R.id.rcl_home_mine_message_recyclerview)
     RecyclerView rclHomeMineMessageRecyclerview;
@@ -48,10 +47,10 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     private boolean isCheckAll;
 
-    private HomeMineMessageContract.Presenter presenter;
+    private SysMessageContract.Presenter presenter;
     private HomeMineMessageAdapter messageAdapter;
     private boolean hasNewMesg;
-    private ArrayList<MineMessageBean> hasCheckData;
+    private ArrayList<SysMsgBean> hasCheckData;
     private ArrayList<Integer> serviceDelRsp;
 
     private OnClearMsgCountListener listener;
@@ -64,8 +63,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         this.listener = listener;
     }
 
-    public static HomeMineMessageFragment newInstance(Bundle bundle) {
-        HomeMineMessageFragment fragment = new HomeMineMessageFragment();
+    public static SystemMessageFragment newInstance(Bundle bundle) {
+        SystemMessageFragment fragment = new SystemMessageFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -96,7 +95,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     }
 
     private void initPresenter() {
-        presenter = new HomeMineMessagePresenterImp(this, hasNewMesg);
+        presenter = new SysMessagePresenterImp(this, hasNewMesg);
     }
 
     @Override
@@ -120,7 +119,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
      * @param list
      */
     @Override
-    public void initRecycleView(ArrayList<MineMessageBean> list) {
+    public void initRecycleView(ArrayList<SysMsgBean> list) {
         messageAdapter.addAll(list);
     }
 
@@ -144,7 +143,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
 
     @Override
-    public void setPresenter(HomeMineMessageContract.Presenter presenter) {
+    public void setPresenter(SysMessageContract.Presenter presenter) {
 
     }
 
@@ -189,7 +188,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 if (hasCheckData.size() == 0) {
                     return;
                 }
-                for (MineMessageBean bean : hasCheckData) {
+                for (SysMsgBean bean : hasCheckData) {
                     messageAdapter.remove(bean);
                     if (bean.type == 601) {
                         presenter.deleteServiceMsg(bean.type, Long.parseLong(bean.getTime()));
@@ -221,7 +220,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
         messageAdapter.setOnDeleteCheckChangeListener(new HomeMineMessageAdapter.OnDeleteCheckChangeListener() {
             @Override
-            public void deleteCheck(boolean isCheck, MineMessageBean item) {
+            public void deleteCheck(boolean isCheck, SysMsgBean item) {
                 if (isCheck) {
                     if (!hasCheckData.contains(item)) {
                         hasCheckData.add(item);
@@ -242,7 +241,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
         hasCheckData.clear();
         hasCheckData = null;
-        for (MineMessageBean bean : messageAdapter.getList()) {
+        for (SysMsgBean bean : messageAdapter.getList()) {
             bean.isCheck = 0;
         }
         messageAdapter.notifyDataSetHasChanged();

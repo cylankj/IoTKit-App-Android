@@ -446,7 +446,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         }
         Bundle bundle = new Bundle();
         bundle.putBoolean("hasNewMesg", basePresenter.hasUnReadMesg());
-        HomeMineMessageFragment homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
+        SystemMessageFragment homeMineMessageFragment = SystemMessageFragment.newInstance(bundle);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

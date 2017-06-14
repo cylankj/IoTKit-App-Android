@@ -8,15 +8,13 @@ import android.net.wifi.WifiManager;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 
@@ -87,11 +85,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
     @Override
-    public ArrayList<RelAndFriendBean> initRelFriendsData(RxEvent.GetFriendList friendList) {
+    public ArrayList<FriendBean> initRelFriendsData(RxEvent.GetFriendList friendList) {
         clearAll();
-        ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
+        ArrayList<FriendBean> list = new ArrayList<FriendBean>();
         for (JFGFriendAccount account : friendList.arrayList) {
-            RelAndFriendBean emMessage = new RelAndFriendBean();
+            FriendBean emMessage = new FriendBean();
             emMessage.markName = account.markName;
             emMessage.account = account.account;
             emMessage.alias = account.alias;
@@ -138,9 +136,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public Subscription initFriendRecyListData() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
+                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<FriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
+                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetFriendList getFriendList) {
                         if (getFriendList != null) {
                             return Observable.just(initRelFriendsData(getFriendList));
                         } else {
@@ -156,7 +154,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         friendListNull = true;
                         checkAllNull();
                         getView().hideFriendListTitle();
-                        getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
+                        getView().initFriendRecyList(new ArrayList<FriendBean>());
                     }
                 }, AppLogger::e);
     }
@@ -218,7 +216,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(list -> {
                     if (list != null) {
                         if (list.size() > 0) {
-                            ArrayList<RelAndFriendBean> allList = new ArrayList<RelAndFriendBean>();
+                            ArrayList<FriendBean> allList = new ArrayList<FriendBean>();
                             allList.addAll(list);
                             handleInitFriendListDataResult(allList);
                         }
@@ -287,7 +285,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      *
      * @param friendList
      */
-    private void handleInitFriendListDataResult(ArrayList<RelAndFriendBean> friendList) {
+    private void handleInitFriendListDataResult(ArrayList<FriendBean> friendList) {
         if (getView() != null) {
             if (friendList.size() != 0) {
                 getView().showFriendListTitle();
@@ -296,7 +294,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 friendListNull = true;
                 checkAllNull();
                 getView().hideFriendListTitle();
-                getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
+                getView().initFriendRecyList(new ArrayList<FriendBean>());
             }
         }
     }
@@ -354,29 +352,29 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
 
-    public void saveInDb(RelAndFriendBean bean) {
-        try {
-            DataBaseUtil.getInstance(account).dbManager.save(bean);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+    public void saveInDb(FriendBean bean) {
+//        try {
+//            DataBaseUtil.getInstance(account).dbManager.save(bean);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void clearAll() {
-        try {
-            DataBaseUtil.getInstance(account).dbManager.delete(RelAndFriendBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            DataBaseUtil.getInstance(account).dbManager.delete(FriendBean.class);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    public List<RelAndFriendBean> getAllFromDb() {
-        List<RelAndFriendBean> all = null;
-        try {
-            all = DataBaseUtil.getInstance(account).dbManager.findAll(RelAndFriendBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+    public List<FriendBean> getAllFromDb() {
+        List<FriendBean> all = null;
+//        try {
+//            all = DataBaseUtil.getInstance(account).dbManager.findAll(FriendBean.class);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
         return all;
     }
 

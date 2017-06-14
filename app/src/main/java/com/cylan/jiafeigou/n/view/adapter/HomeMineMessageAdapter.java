@@ -7,8 +7,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
+public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
 
     public boolean isShowCheck;
     public boolean checkAll;
@@ -52,19 +52,19 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
     public OnDeleteCheckChangeListener listener;
 
     public interface OnDeleteCheckChangeListener {
-        void deleteCheck(boolean isCheck, MineMessageBean item);
+        void deleteCheck(boolean isCheck, SysMsgBean item);
     }
 
     public void setOnDeleteCheckChangeListener(OnDeleteCheckChangeListener listener) {
         this.listener = listener;
     }
 
-    public HomeMineMessageAdapter(Context context, List<MineMessageBean> items, IMulItemViewType<MineMessageBean> mulItemViewType) {
+    public HomeMineMessageAdapter(Context context, List<SysMsgBean> items, IMulItemViewType<SysMsgBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineMessageBean item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, SysMsgBean item) {
         //处理消息时间
         holder.setText(R.id.item_time, parseTime(item.getTime()));
 
@@ -180,15 +180,15 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
     }
 
     @Override
-    protected IMulItemViewType<MineMessageBean> offerMultiItemViewType() {
-        return new IMulItemViewType<MineMessageBean>() {
+    protected IMulItemViewType<SysMsgBean> offerMultiItemViewType() {
+        return new IMulItemViewType<SysMsgBean>() {
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
 
             @Override
-            public int getItemViewType(int position, MineMessageBean mineMessageBean) {
+            public int getItemViewType(int position, SysMsgBean mineMessageBean) {
                 return 0;
             }
 

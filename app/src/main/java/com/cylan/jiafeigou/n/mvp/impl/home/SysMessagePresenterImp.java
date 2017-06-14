@@ -5,25 +5,21 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.db.DataBaseUtil;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
+import com.cylan.jiafeigou.n.mvp.contract.home.SysMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.db.DbManager;
-import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.db.sqlite.WhereBuilder;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -39,17 +35,16 @@ import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessageContract.View> implements HomeMineMessageContract.Presenter {
+public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract.View> implements SysMessageContract.Presenter {
 
     private boolean hasNewMesg;
-    private DbManager dbManager;
-    private ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+    private BaseDBHelper helper;
+    private ArrayList<SysMsgBean> results = new ArrayList<SysMsgBean>();
 
-    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, boolean hasNewMesg) {
+    public SysMessagePresenterImp(SysMessageContract.View view, boolean hasNewMesg) {
         super(view);
-        view.setPresenter(this);
-//        this.hasNewMesg = hasNewMesg;
         this.hasNewMesg = true;
+        helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
     }
 
     @Override
@@ -76,7 +71,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      *
      * @param list
      */
-    private void handlerDataResult(ArrayList<MineMessageBean> list) {
+    private void handlerDataResult(ArrayList<SysMsgBean> list) {
         if (getView() != null) {
             if (list.size() != 0) {
                 getView().hideNoMesgView();
@@ -100,7 +95,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .subscribe(account -> {
                     if (account != null) {
                         // 加载数据库数据
-                        dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
+//                        dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
                         initMesgData(account.jfgAccount.getAccount());
                         markMesgHasRead();
                     }
@@ -113,18 +108,18 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      * @return
      */
     @Override
-    public ArrayList<MineMessageBean> findAllFromDb() {
-        ArrayList<MineMessageBean> tempList = new ArrayList<>();
-        if (dbManager != null) {
-            try {
-                List<MineMessageBean> allData = dbManager.findAll(MineMessageBean.class);
-                if (allData != null) {
-                    tempList.addAll(allData);
-                }
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-        }
+    public ArrayList<SysMsgBean> findAllFromDb() {
+        ArrayList<SysMsgBean> tempList = new ArrayList<>();
+//        if (dbManager != null) {
+//            try {
+//                List<SysMsgBean> allData = dbManager.findAll(SysMsgBean.class);
+//                if (allData != null) {
+//                    tempList.addAll(allData);
+//                }
+//            } catch (DbException e) {
+//                e.printStackTrace();
+//            }
+//        }
         return sortAddReqList(tempList);
     }
 
@@ -133,11 +128,11 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      */
     @Override
     public void clearRecoard() {
-        try {
-            dbManager.delete(MineMessageBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            dbManager.delete(SysMsgBean.class);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -146,12 +141,12 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      * @param bean
      */
     @Override
-    public void saveIntoDb(MineMessageBean bean) {
-        try {
-            dbManager.save(bean);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+    public void saveIntoDb(SysMsgBean bean) {
+//        try {
+//            dbManager.save(bean);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -240,14 +235,14 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      *
      * @param robotoGetDataRsp
      */
-    private ArrayList<MineMessageBean> convertData(RobotoGetDataRsp robotoGetDataRsp) {
-        MineMessageBean bean;
+    private ArrayList<SysMsgBean> convertData(RobotoGetDataRsp robotoGetDataRsp) {
+        SysMsgBean bean;
         clearRecoard();
-        ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+        ArrayList<SysMsgBean> results = new ArrayList<SysMsgBean>();
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
             for (JFGDPMsg dp : entry.getValue()) {
-                bean = new MineMessageBean();
+                bean = new SysMsgBean();
                 bean.type = entry.getKey();
                 try {
                     if (bean.type == 701) {
@@ -276,10 +271,10 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         return sortAddReqList(results);
     }
 
-    public ArrayList<MineMessageBean> sortAddReqList(ArrayList<MineMessageBean> list) {
-        Comparator<MineMessageBean> comparator = new Comparator<MineMessageBean>() {
+    public ArrayList<SysMsgBean> sortAddReqList(ArrayList<SysMsgBean> list) {
+        Comparator<SysMsgBean> comparator = new Comparator<SysMsgBean>() {
             @Override
-            public int compare(MineMessageBean lhs, MineMessageBean rhs) {
+            public int compare(SysMsgBean lhs, SysMsgBean rhs) {
                 long oldTime = Long.parseLong(rhs.time);
                 long newTime = Long.parseLong(lhs.time);
                 if (oldTime == newTime)
@@ -326,15 +321,15 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     }
 
     @Override
-    public void deleteOneItem(MineMessageBean bean) {
+    public void deleteOneItem(SysMsgBean bean) {
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
-                    try {
-                        dbManager.delete(MineMessageBean.class, WhereBuilder.b("name", "=", bean.name).and("startTime", "=", bean.time));
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        dbManager.delete(SysMsgBean.class, WhereBuilder.b("name", "=", bean.name).and("startTime", "=", bean.time));
+//                    } catch (DbException e) {
+//                        e.printStackTrace();
+//                    }
                 }, AppLogger::e);
     }
 

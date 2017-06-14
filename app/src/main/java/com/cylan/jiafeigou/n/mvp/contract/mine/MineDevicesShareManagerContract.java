@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public interface MineDevicesShareManagerContract {
         /**
          * desc：初始化显示已分享的列表
          */
-        void initHasShareFriendRecyView(ArrayList<RelAndFriendBean> list);
+        void initHasShareFriendRecyView(ArrayList<FriendBean> list);
 
         /**
          * desc：显示空视图
@@ -40,7 +40,7 @@ public interface MineDevicesShareManagerContract {
         /**
          * desc：弹出取消分享的对话框
          */
-        void showCancleShareDialog(RelAndFriendBean bean);
+        void showCancleShareDialog(FriendBean bean);
 
         /**
          * desc：显示取消分享的进度
@@ -94,14 +94,14 @@ public interface MineDevicesShareManagerContract {
         /**
          * desc:初始化显示已分享给的好友的数据
          */
-        void initHasShareListData(ArrayList<RelAndFriendBean> shareDeviceFriendlist);
+        void initHasShareListData(ArrayList<FriendBean> shareDeviceFriendlist);
 
         /**
          * desc：取消分享
          *
          * @param bean
          */
-        void cancelShare(String cid, RelAndFriendBean bean);
+        void cancelShare(String cid, FriendBean bean);
 
         /**
          * 取消分享的回调

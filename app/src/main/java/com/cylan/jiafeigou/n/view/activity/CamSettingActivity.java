@@ -552,13 +552,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             getAlertDialogManager()
                     .showDialog(this, getString(R.string.Start_Hotspot), getString(R.string.Start_Hotspot_Prompt, net.ssid), getString(R.string.OK), (dialog, which) -> {
                         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
+                        ToastUtil.showToast(getString(R.string.Instructions_Sent));
                         Subscription subscription = basePresenter.switchApModel(1)
                                 .subscribeOn(Schedulers.newThread())
                                 .delay(1, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(ret -> {
                                     LoadingDialog.dismissLoading(getSupportFragmentManager());
-                                    ToastUtil.showToast(getString(R.string.Instructions_Sent));
                                     ToastUtil.showToast(getString(R.string.Start_Success));
                                 }, throwable -> {
                                     LoadingDialog.dismissLoading(getSupportFragmentManager());

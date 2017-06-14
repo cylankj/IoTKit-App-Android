@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;

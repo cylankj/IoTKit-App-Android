@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineDevicesShareManagerPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.NetUtils;

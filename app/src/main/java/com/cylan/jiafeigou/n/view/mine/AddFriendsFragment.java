@@ -26,7 +26,6 @@ import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.AddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsContactImp;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;

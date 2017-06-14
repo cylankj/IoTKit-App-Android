@@ -1,9 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 
 import java.util.ArrayList;
 
@@ -22,7 +21,7 @@ public interface AddFriendContract {
          *
          * @param list
          */
-        void initContactRecycleView(ArrayList<RelAndFriendBean> list);
+        void initContactRecycleView(ArrayList<FriendBean> list);
 
         /**
          * 跳转到发送添加请求界面

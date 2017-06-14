@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public interface MineFriendListShareDevicesToContract {
         /**
          * 初始化头部标题显示
          */
-        void initTitleView(RelAndFriendBean bean);
+        void initTitleView(FriendBean bean);
 
         /**
          * 初始化列表的显示
@@ -92,7 +92,7 @@ public interface MineFriendListShareDevicesToContract {
         /**
          * 发送分享设备给的亲友的请求
          */
-        void sendShareToReq(ArrayList<DeviceBean> chooseList, RelAndFriendBean bean);
+        void sendShareToReq(ArrayList<DeviceBean> chooseList, FriendBean bean);
 
         /**
          * 检测是否有选中的

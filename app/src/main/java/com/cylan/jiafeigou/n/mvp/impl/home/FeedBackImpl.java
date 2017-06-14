@@ -49,7 +49,7 @@ import rx.schedulers.Schedulers;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class FeedBackContractImpl extends AbstractPresenter<FeedBackContract.View>
+public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
         implements FeedBackContract.Presenter {
 
     private BaseDBHelper helper;
@@ -59,7 +59,7 @@ public class FeedBackContractImpl extends AbstractPresenter<FeedBackContract.Vie
     private File outFile;
     private boolean isSending = false;
 
-    public FeedBackContractImpl(FeedBackContract.View view) {
+    public FeedBackImpl(FeedBackContract.View view) {
         super(view);
         helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
         view.setPresenter(this);

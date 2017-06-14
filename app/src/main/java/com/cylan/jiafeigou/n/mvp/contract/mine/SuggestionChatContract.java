@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 
 import java.util.ArrayList;
 
@@ -32,18 +32,18 @@ public interface SuggestionChatContract {
     }
 
     interface Presenter extends BasePresenter {
-        ArrayList<MineMessageBean> initChatData();
+        ArrayList<SysMsgBean> initChatData();
 
         //模拟服务器数据
-        MineMessageBean testServerData(long times);
+        SysMsgBean testServerData(long times);
 
-        void addChatItem(MineMessageBean emMessage);
+        void addChatItem(SysMsgBean emMessage);
 
-        MineMessageBean makeEMMessageBean(String content, int type, String time);
+        SysMsgBean makeEMMessageBean(String content, int type, String time);
 
         void showToast();
 
-        void clearChatList(ArrayList<MineMessageBean> list);
+        void clearChatList(ArrayList<SysMsgBean> list);
     }
 
 }

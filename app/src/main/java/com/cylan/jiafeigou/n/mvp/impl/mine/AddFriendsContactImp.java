@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.AddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;

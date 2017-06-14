@@ -1,38 +1,28 @@
-package com.cylan.jiafeigou.n.mvp.model;
+package com.cylan.jiafeigou.cache.db.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.support.db.annotation.Column;
-import com.cylan.jiafeigou.support.db.annotation.Table;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
 
 /**
  * 作者：zsl
  * 创建时间：2016/10/27
  * 描述：
  */
-@Table(name = "RelAndFriendBean")
-public class RelAndFriendBean implements Parcelable {
-    @Column(name = "dpMsgId", isId = true)
+@Entity
+public class FriendBean implements Parcelable {
+    @Id
     public int id;
-
-    @Column(name = "iconUrl")
     public String iconUrl;
-
-    @Column(name = "alias")
     public String alias;
-
-    @Column(name = "account")
     public String account;
-
-    @Column(name = "markName")
     public String markName;
-
-    @Column(name = "isCheckFlag")
     public int isCheckFlag;
-
-    @Column(name = "sort_key")
     public String sortkey;
 
     public String getSortkey() {
@@ -92,7 +82,7 @@ public class RelAndFriendBean implements Parcelable {
         this.isCheckFlag = isCheckFlag;
     }
 
-    public static Creator<RelAndFriendBean> getCREATOR() {
+    public static Creator<FriendBean> getCREATOR() {
         return CREATOR;
     }
 
@@ -101,7 +91,7 @@ public class RelAndFriendBean implements Parcelable {
         return 0;
     }
 
-    public RelAndFriendBean() {
+    public FriendBean() {
     }
 
     @Override
@@ -113,29 +103,41 @@ public class RelAndFriendBean implements Parcelable {
         dest.writeInt(this.isCheckFlag);
     }
 
-    protected RelAndFriendBean(Parcel in) {
+    protected FriendBean(Parcel in) {
         this.iconUrl = in.readString();
         this.alias = in.readString();
         this.account = in.readString();
         this.markName = in.readString();
     }
 
+    @Generated(hash = 1024804871)
+    public FriendBean(int id, String iconUrl, String alias, String account,
+            String markName, int isCheckFlag, String sortkey) {
+        this.id = id;
+        this.iconUrl = iconUrl;
+        this.alias = alias;
+        this.account = account;
+        this.markName = markName;
+        this.isCheckFlag = isCheckFlag;
+        this.sortkey = sortkey;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof RelAndFriendBean)) return false;
-        RelAndFriendBean bean = (RelAndFriendBean) obj;
+        if (!(obj instanceof FriendBean)) return false;
+        FriendBean bean = (FriendBean) obj;
         return TextUtils.equals(bean.account, account);
     }
 
-    public static final Creator<RelAndFriendBean> CREATOR = new Creator<RelAndFriendBean>() {
+    public static final Creator<FriendBean> CREATOR = new Creator<FriendBean>() {
         @Override
-        public RelAndFriendBean createFromParcel(Parcel source) {
-            return new RelAndFriendBean(source);
+        public FriendBean createFromParcel(Parcel source) {
+            return new FriendBean(source);
         }
 
         @Override
-        public RelAndFriendBean[] newArray(int size) {
-            return new RelAndFriendBean[size];
+        public FriendBean[] newArray(int size) {
+            return new FriendBean[size];
         }
     };
 

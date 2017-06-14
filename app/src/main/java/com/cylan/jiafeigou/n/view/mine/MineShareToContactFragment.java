@@ -30,10 +30,8 @@ import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 

@@ -13,10 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -48,7 +48,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
 
     private MineFriendListShareDevicesToContract.Presenter presenter;
-    private RelAndFriendBean shareDeviceBean;
+    private FriendBean shareDeviceBean;
     private ChooseShareDeviceAdapter chooseShareDeviceAdapter;
     private ArrayList<DeviceBean> chooseList = new ArrayList<DeviceBean>();
 
@@ -133,7 +133,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      * @param bean
      */
     @Override
-    public void initTitleView(RelAndFriendBean bean) {
+    public void initTitleView(FriendBean bean) {
         if (TextUtils.isEmpty(bean.markName.trim())) {
             customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), bean.alias)));
         } else {

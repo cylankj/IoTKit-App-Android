@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
+import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import rx.Subscription;
  * 创建时间：2016/9/5
  * 描述：
  */
-public interface HomeMineMessageContract {
+public interface SysMessageContract {
 
     interface View extends BaseView<Presenter> {
 
@@ -24,7 +24,7 @@ public interface HomeMineMessageContract {
          *
          * @param list
          */
-        void initRecycleView(ArrayList<MineMessageBean> list);
+        void initRecycleView(ArrayList<SysMsgBean> list);
 
 
         /**
@@ -57,7 +57,7 @@ public interface HomeMineMessageContract {
          *
          * @return
          */
-        List<MineMessageBean> findAllFromDb();
+        List<SysMsgBean> findAllFromDb();
 
         /**
          * 清空本地消息记录
@@ -69,7 +69,7 @@ public interface HomeMineMessageContract {
          *
          * @param bean
          */
-        void saveIntoDb(MineMessageBean bean);
+        void saveIntoDb(SysMsgBean bean);
 
         /**
          * Dp获取消息记录数据
@@ -87,7 +87,7 @@ public interface HomeMineMessageContract {
 
         Subscription deleteMsgBack();
 
-        void deleteOneItem(MineMessageBean bean);
+        void deleteOneItem(SysMsgBean bean);
 
         void markMesgHasRead();
     }

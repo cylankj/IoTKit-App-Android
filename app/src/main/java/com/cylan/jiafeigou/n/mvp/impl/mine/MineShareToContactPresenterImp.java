@@ -11,11 +11,11 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -43,11 +43,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         implements MineShareToContactContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
-    private ArrayList<RelAndFriendBean> filterDateList;
-    private ArrayList<RelAndFriendBean> allCoverData = new ArrayList<>();
-    private ArrayList<RelAndFriendBean> hasShareFriend;
+    private ArrayList<FriendBean> filterDateList;
+    private ArrayList<FriendBean> allCoverData = new ArrayList<>();
+    private ArrayList<FriendBean> hasShareFriend;
 
-    public MineShareToContactPresenterImp(MineShareToContactContract.View view, ArrayList<RelAndFriendBean> hasShareFiend) {
+    public MineShareToContactPresenterImp(MineShareToContactContract.View view, ArrayList<FriendBean> hasShareFiend) {
         super(view);
         view.setPresenter(this);
         this.hasShareFriend = hasShareFiend;
@@ -56,11 +56,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     @Override
     public void start() {
         if (hasShareFriend != null && hasShareFriend.size() != 0) {
-            ArrayList<RelAndFriendBean> list = converData2(hasShareFriend);
+            ArrayList<FriendBean> list = converData2(hasShareFriend);
             allCoverData.addAll(list);
             handlerContactDataResult(list);
         } else {
-            ArrayList<RelAndFriendBean> list = getAllContactList();
+            ArrayList<FriendBean> list = getAllContactList();
             allCoverData.addAll(list);
             handlerContactDataResult(list);
         }
@@ -89,7 +89,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             filterDateList.addAll(allCoverData);
         } else {
             filterDateList.clear();
-            for (RelAndFriendBean s : allCoverData) {
+            for (FriendBean s : allCoverData) {
                 String phone = s.account;
                 String name = s.alias;
                 if (phone.replace(" ", "").contains(inputContent) || name.contains(inputContent)) {
@@ -156,9 +156,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     @Override
     public Subscription getHasShareContractCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetHasShareFriendCallBack.class)
-                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
+                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<FriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
+                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
                         if (getHasShareFriendCallBack != null) {
 
                             if (getHasShareFriendCallBack.arrayList.size() != 0) {
@@ -172,9 +172,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
+                .subscribe(new Action1<ArrayList<FriendBean>>() {
                     @Override
-                    public void call(ArrayList<RelAndFriendBean> list) {
+                    public void call(ArrayList<FriendBean> list) {
                         allCoverData.addAll(list);
                         handlerContactDataResult(list);
                     }
@@ -225,9 +225,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      * @param arrayList
      * @return
      */
-    private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (RelAndFriendBean contract : getAllContactList()) {
+    private ArrayList<FriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
+        ArrayList<FriendBean> list = new ArrayList<>();
+        for (FriendBean contract : getAllContactList()) {
             for (JFGFriendAccount friend : arrayList) {
                 if (friend.account.equals(contract.account)) {
                     contract.isCheckFlag = 1;
@@ -247,10 +247,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      * @param arrayList
      * @return
      */
-    private ArrayList<RelAndFriendBean> converData2(ArrayList<RelAndFriendBean> arrayList) {
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (RelAndFriendBean contract : getAllContactList()) {
-            for (RelAndFriendBean friend : arrayList) {
+    private ArrayList<FriendBean> converData2(ArrayList<FriendBean> arrayList) {
+        ArrayList<FriendBean> list = new ArrayList<>();
+        for (FriendBean contract : getAllContactList()) {
+            for (FriendBean friend : arrayList) {
                 if (friend.account.equals(contract.account)) {
                     contract.isCheckFlag = 1;
                 } else {
@@ -267,7 +267,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      *
      * @param list
      */
-    private void handlerContactDataResult(ArrayList<RelAndFriendBean> list) {
+    private void handlerContactDataResult(ArrayList<FriendBean> list) {
         if (getView() != null && list != null && list.size() != 0) {
             Collections.sort(list, new Comparent());
             getView().hideNoContactNullView();
@@ -278,8 +278,8 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     }
 
     @NonNull
-    public ArrayList<RelAndFriendBean> getAllContactList() {
-        ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
+    public ArrayList<FriendBean> getAllContactList() {
+        ArrayList<FriendBean> list = new ArrayList<FriendBean>();
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
@@ -301,7 +301,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
             String sort_key = cursor.getString(cursor.getColumnIndex(sort));
             while (phone.moveToNext()) {
-                RelAndFriendBean friendBean = new RelAndFriendBean();
+                FriendBean friendBean = new FriendBean();
                 friendBean.alias = contact;
                 String PhoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 PhoneNumber = PhoneNumber.replace("-", "");
@@ -328,7 +328,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             }
             while (emails.moveToNext()) {
                 String email = emails.getString(emailIndex);
-                RelAndFriendBean friendBean = new RelAndFriendBean();
+                FriendBean friendBean = new FriendBean();
                 friendBean.alias = contact;
                 friendBean.account = email;
                 friendBean.sortkey = sort_key;
@@ -342,10 +342,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         return list;
     }
 
-    public class Comparent implements Comparator<RelAndFriendBean> {
+    public class Comparent implements Comparator<FriendBean> {
         @SuppressWarnings("unchecked")
         @Override
-        public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
+        public int compare(FriendBean lhs, FriendBean rhs) {
             Collator ca = Collator.getInstance(Locale.getDefault());
             int flags = 0;
             if (ca.compare(lhs.sortkey, rhs.sortkey) < 0) {

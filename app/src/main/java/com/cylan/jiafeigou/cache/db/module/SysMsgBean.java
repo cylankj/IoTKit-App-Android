@@ -1,40 +1,34 @@
-package com.cylan.jiafeigou.n.mvp.model;
+package com.cylan.jiafeigou.cache.db.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.cylan.jiafeigou.support.db.annotation.Column;
-import com.cylan.jiafeigou.support.db.annotation.Table;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * 作者：zsl
  * 创建时间：2016/8/30
  * 描述：
  */
-@Table(name = "MineMessageBean")
-public class MineMessageBean implements Parcelable {
+@Entity
+public class SysMsgBean implements Parcelable {
 
-    @Column(name = "msgId", isId = true)
+    @Id
     public int id;
-    @Column(name = "content")
     public String content;
-    @Column(name = "type")
     public int type;
-    @Column(name = "startTime")
     public String time;
-    @Column(name = "name")
     public String name;
-    @Column(name = "isDone")
     public int isDone;
-    @Column(name = "isCheck")
     public int isCheck;
-    @Column(name = "sn")
     public String sn;
 
-    public MineMessageBean() {
+    public SysMsgBean() {
     }
 
-    public MineMessageBean(String content, int type, String time) {
+    public SysMsgBean(String content, int type, String time) {
         this.content = content;
         this.type = type;
         this.time = time;
@@ -121,7 +115,7 @@ public class MineMessageBean implements Parcelable {
         dest.writeInt(this.isDone);
     }
 
-    protected MineMessageBean(Parcel in) {
+    protected SysMsgBean(Parcel in) {
         this.name = in.readString();
         this.time = in.readString();
         this.content = in.readString();
@@ -132,15 +126,28 @@ public class MineMessageBean implements Parcelable {
         this.isDone = in.readByte();
     }
 
-    public static final Creator<MineMessageBean> CREATOR = new Creator<MineMessageBean>() {
+    @Generated(hash = 1877241700)
+    public SysMsgBean(int id, String content, int type, String time, String name,
+                      int isDone, int isCheck, String sn) {
+        this.id = id;
+        this.content = content;
+        this.type = type;
+        this.time = time;
+        this.name = name;
+        this.isDone = isDone;
+        this.isCheck = isCheck;
+        this.sn = sn;
+    }
+
+    public static final Creator<SysMsgBean> CREATOR = new Creator<SysMsgBean>() {
         @Override
-        public MineMessageBean createFromParcel(Parcel source) {
-            return new MineMessageBean(source);
+        public SysMsgBean createFromParcel(Parcel source) {
+            return new SysMsgBean(source);
         }
 
         @Override
-        public MineMessageBean[] newArray(int size) {
-            return new MineMessageBean[size];
+        public SysMsgBean[] newArray(int size) {
+            return new SysMsgBean[size];
         }
     };
 }

@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.badge.Badge;
