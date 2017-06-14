@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.misc.bind.BindTask;
 import com.cylan.jiafeigou.misc.ver.ClientVersionChecker;
 import com.cylan.jiafeigou.misc.ver.IVersion;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
@@ -82,7 +83,8 @@ public class AfterLoginService extends IntentService {
             final String action = intent.getStringExtra(TAG);
             AppLogger.i("AfterLoginService: " + action + ",looper: " + (Looper.myLooper() == Looper.getMainLooper()));
             if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
-//                BaseApplication.getAppComponent().getCmd().getAccount();
+                //登录成功,需要手动获取账号,如果去掉,请说明.
+                BaseApplication.getAppComponent().getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
                 Observable.just("go and do something")
                         .subscribeOn(Schedulers.newThread())
