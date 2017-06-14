@@ -20,6 +20,7 @@ import android.webkit.WebViewClient;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.OptionsImpl;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -38,6 +39,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
+@Badge(parentTag = "HomeMineFragment")
 public class HomeMineHelpFragment extends Fragment {
 
     @BindView(R.id.wv_mine_help)

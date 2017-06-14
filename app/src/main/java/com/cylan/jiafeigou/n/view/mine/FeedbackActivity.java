@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.FeedBackContractImpl;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
@@ -39,6 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+@Badge(parentTag = "HomeMineHelpFragment")
 public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackContract.Presenter>
         implements FeedBackContract.View {
 

@@ -278,7 +278,7 @@ dependencies {
     testCompile rootProject.ext.testRobolectric
     testCompile rootProject.ext.testAssertj
     testCompile rootProject.ext.testJunit4
-    testCompile rootProject.ext.annotation
+//    testCompile rootProject.ext.annotation
     testCompile rootProject.ext.testMockio
     androidTestCompile rootProject.ext.testRules
     androidTestCompile rootProject.ext.testRunner
@@ -364,6 +364,7 @@ dependencies {
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.9'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+    annotationProcessor project(':processor')
 }
 
 //谷歌推送

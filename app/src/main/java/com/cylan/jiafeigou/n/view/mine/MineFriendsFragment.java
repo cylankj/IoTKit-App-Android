@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -42,6 +43,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
+@Badge(parentTag = "HomeMineFragment")
 public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickListener {
 
     @BindView(R.id.recyclerview_request_add)

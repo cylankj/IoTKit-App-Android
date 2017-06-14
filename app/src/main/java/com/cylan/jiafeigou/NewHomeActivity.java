@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -50,6 +51,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@Badge(parentTag = "NewHomeActivity")
 public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.Presenter> implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
@@ -259,6 +261,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         if (onActivityReenterListener != null)
             onActivityReenterListener.onActivityReenter(requestCode, data);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

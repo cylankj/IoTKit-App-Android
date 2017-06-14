@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -38,6 +39,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
  * Use the {@link VideoAutoRecordFragment#newInstance} factory method to
  * fetch an instance of this fragment.
  */
+@Badge(parentTag = "CamSettingActivity")
 public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContract.Presenter>
         implements VideoAutoRecordContract.View {
 

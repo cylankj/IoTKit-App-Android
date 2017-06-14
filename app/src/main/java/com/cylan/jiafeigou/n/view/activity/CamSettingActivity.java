@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -67,6 +68,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
+@Badge(parentTag = "NewHomeActivity")
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
 

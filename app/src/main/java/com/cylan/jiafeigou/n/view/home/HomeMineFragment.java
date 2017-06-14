@@ -42,6 +42,7 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -66,7 +67,7 @@ import rx.schedulers.Schedulers;
 import static android.app.Activity.RESULT_OK;
 import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
-
+@Badge(parentTag = "NewHomeActivity")
 public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
