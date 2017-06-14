@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
@@ -222,7 +223,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
                     .commit();
         } else {
             //已是亲友的跳转到分享
-            RelAndFriendBean friendBean = new RelAndFriendBean();
+            FriendBean friendBean = new FriendBean();
             friendBean.account = bean.account;
             friendBean.alias = bean.alias;
             friendBean.markName = "";

@@ -170,14 +170,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .addToBackStack("mineShareDeviceFragment")
                 .commit();
 
-        shareToRelativeAndFriendFragment.setOnShareSucceedListener(new MineShareToFriendFragment.OnShareSucceedListener() {
-            @Override
-            public void shareSucceed(int num, ArrayList<RelAndFriendBean> list) {
-                if (num == 0) return;
-                adapter.getItem(position).hasShareCount += num;
-                adapter.notifyDataSetChanged();
-                presenter.shareSucceedAdd(position, list);
-            }
+        shareToRelativeAndFriendFragment.setOnShareSucceedListener((num, list) -> {
+            if (num == 0) return;
+            adapter.getItem(position).hasShareCount += num;
+            adapter.notifyDataSetChanged();
+            presenter.shareSucceedAdd(position, list);
         });
     }
 

@@ -272,17 +272,14 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
     }
 
     public ArrayList<SysMsgBean> sortAddReqList(ArrayList<SysMsgBean> list) {
-        Comparator<SysMsgBean> comparator = new Comparator<SysMsgBean>() {
-            @Override
-            public int compare(SysMsgBean lhs, SysMsgBean rhs) {
-                long oldTime = Long.parseLong(rhs.time);
-                long newTime = Long.parseLong(lhs.time);
-                if (oldTime == newTime)
-                    return 0;
-                if (oldTime < newTime)
-                    return -1;
-                return 1;
-            }
+        Comparator<SysMsgBean> comparator = (lhs, rhs) -> {
+            long oldTime = Long.parseLong(rhs.time);
+            long newTime = Long.parseLong(lhs.time);
+            if (oldTime == newTime)
+                return 0;
+            if (oldTime < newTime)
+                return -1;
+            return 1;
         };
         Collections.sort(list, comparator);
         return list;
@@ -292,19 +289,16 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
     public void deleteServiceMsg(long type, long version) {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                            JFGDPMsg msg = new JFGDPMsg(type, version);
-                            list.add(msg);
-                            long req = BaseApplication.getAppComponent().getCmd().robotDelData("", list, 0);
-                            AppLogger.d("deleteServiceMsg:" + req);
-                        } catch (JfgException e) {
-                            AppLogger.e("deleteServiceMsg:" + e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
+                .subscribe(o -> {
+                    try {
+                        ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
+                        JFGDPMsg msg = new JFGDPMsg(type, version);
+                        list.add(msg);
+                        long req = BaseApplication.getAppComponent().getCmd().robotDelData("", list, 0);
+                        AppLogger.d("deleteServiceMsg:" + req);
+                    } catch (JfgException e) {
+                        AppLogger.e("deleteServiceMsg:" + e.getLocalizedMessage());
+                        e.printStackTrace();
                     }
                 }, throwable -> {
                     AppLogger.e("deleteServiceMsg:" + throwable.getLocalizedMessage());
@@ -322,9 +316,11 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
 
     @Override
     public void deleteOneItem(SysMsgBean bean) {
-        Observable.just(null)
+        Observable.just(bean)
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
+//                    SysMsgBean cacheBean  =helper.getDaoSession().getSysMsgBeanDao().load()
+//                    helper.getDaoSession().getSysMsgBeanDao()
 //                    try {
 //                        dbManager.delete(SysMsgBean.class, WhereBuilder.b("name", "=", bean.name).and("startTime", "=", bean.time));
 //                    } catch (DbException e) {
