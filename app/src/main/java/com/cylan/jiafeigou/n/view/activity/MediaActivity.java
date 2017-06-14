@@ -580,12 +580,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 .subscribe(rsp -> {
                     if (rsp.success) {
                         AppLogger.e("删除成功");
-                        if (mAdapter.getCount() > 0) {
-                            mMediaList.remove(rsp.position);
-                            mAdapter.notifyDataSetChanged();
-                            int currentItem = mMediaPager.getCurrentItem();
-                            mCurrentMediaBean = mMediaList.get(currentItem);
-                        }
+//                        if (mAdapter.getCount() > 0) {
+//                            mMediaList.remove(rsp.position);
+//                            mAdapter.notifyDataSetChanged();
+//                            int currentItem = mMediaPager.getCurrentItem();
+//                            mCurrentMediaBean = mMediaList.get(currentItem);
+//                        }
 //                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
                             finish();
 //                        }
