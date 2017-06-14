@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 import com.umeng.socialize.UMAuthListener;
@@ -152,20 +151,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> getView().checkAccountResult(ret), AppLogger::e);
         addSubscription(subscribe, "checkAccountIsReg");
-    }
-
-
-    /**
-     * 登录计时
-     */
-    @Override
-    public void loginCountTime() {
-        addSubscription(Observable.just(null)
-                .delay(30000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null)
-                .subscribe(o -> getView().loginResult(JError.ErrorConnect), AppLogger::e));
     }
 
     @Override
@@ -337,49 +322,46 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             try {
                 if (loginType >= 3) {//第三方登录
                     BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account, password, loginType);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                 } else {//账号密码登录
                     BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
                 }
+                subscriber.onNext("登录开始了");
+                AppLogger.d("登录过程开始了...");
+                subscriber.onCompleted();
             } catch (JfgException e) {
                 e.printStackTrace();
+                subscriber.onError(e);
             }
-            subscriber.onNext("登录流程开始了...");
-            subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                        .timeout(30, TimeUnit.SECONDS, Observable.just(null)))
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class).first())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(result -> {
+                    AppLogger.d("获取到登录结果:" + new Gson().toJson(result));
+                    if (result == null || result.code != 0) {
+                        getView().loginResult(result == null ? JError.ErrorConnect : result.code);
+                        return false;
+                    }
+                    return true;
+                })
+                .flatMap(result -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    AppLogger.d("获取到登录结果:" + new Gson().toJson(result));
-                    if (result != null && result.code == 0) {
-                        AutoSignIn.getInstance().autoSave(account, loginType, password);
-                    }
+                    AppLogger.d("已经获取到账号信息,正在保存用户名密码和登录类型");
+                    AutoSignIn.getInstance().autoSave(account, loginType, password);
+                    result.account.setLoginType(loginType);
                     if (getView() != null) {
-                        getView().loginResult(result == null ? JError.ErrorConnect : result.code);
+                        getView().loginResult(JError.ErrorOK);
                     }
-                    unSubscribe("failedNetCheckSub");
                 }, e -> {
                     AppLogger.e("获取登录结果失败:" + e.getMessage());
                     if (getView() != null) {
                         getView().loginResult(JError.ErrorConnect);
                     }
-                   unSubscribe("failedNetCheckSub");
                 });
         addSubscription(subscribe);
-        Subscription failedNetCheckSub = Observable.just("netCheck")
-                .subscribeOn(Schedulers.newThread())
-                .delay(2, TimeUnit.SECONDS)
-                .map(ret -> {
-                    return NetUtils.isNetworkAvailable();
-                })
-                .filter(ret -> !ret)//网络失败才回调
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> getView() != null)
-                .subscribe(ret -> getView().loginResult(JError.ErrorP2PSocket), AppLogger::e);
-        addSubscription(failedNetCheckSub, "failedNetCheckSub");
     }
 
 }

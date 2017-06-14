@@ -164,8 +164,8 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 String shareThumb = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH);
                 UMWeb web = new UMWeb(shareLinkUrl);
                 web.setThumb(new UMImage(this, new File(shareThumb)));
-                web.setTitle("来自加菲狗的分享");
-                web.setDescription("来自加菲狗的网页分享");
+                web.setTitle(getString(R.string.share_default_title));
+                web.setDescription(getString(R.string.share_default_description));
                 shareAction = new ShareAction(this);
                 shareAction.setPlatform(getPlatform(shareItemType));
                 shareAction.withMedia(web);
@@ -185,7 +185,11 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                                 fragment.setArguments(bundle);
                                 ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content, true);
                             })
-                            .setNegativeButton(R.string.CANCEL, null)
+                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
+                                dialog.dismiss();
+                                finish();
+                                overridePendingTransition(0, 0);
+                            })
                             .show();
                 } else {
                     Bundle bundle = getIntent().getExtras();

@@ -29,13 +29,13 @@ public interface PanoramaAlbumContact {
         @IntDef
         @Retention(RetentionPolicy.SOURCE)
         @interface ALBUM_VIEW_MODE {
-
+            int MODE_NONE = -1;
             int MODE_PHOTO = 0;
             int MODE_PANORAMA = 1;
             int MODE_BOTH = 2;
         }
 
-        void onAppend(List<PanoramaItem> list, boolean isRefresh, boolean loadFinish);
+        void onAppend(List<PanoramaItem> list, boolean isRefresh, boolean loadFinish, int fetchLocation);
 
         void onDelete(List<PanoramaItem> positionList);
 

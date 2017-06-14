@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import
+            alias="parser"
+            type="com.cylan.jiafeigou.utils.MiscUtils" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/vertical_footer_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/y19"
+            android:layout_marginStart="@dimen/y19"
+            android:text="@{parser.verticalString(@string/Loaded)}"
+            android:textColor="@color/color_888888"
+            android:textSize="@dimen/sp12"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/vertical_footer_progress_bar"
+            android:layout_width="@dimen/y22"
+            android:layout_height="@dimen/y22"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/y15"
+            android:layout_marginStart="@dimen/y15"
+            android:indeterminateDrawable="@drawable/camera720_loading" />
+    </FrameLayout>
+</layout>

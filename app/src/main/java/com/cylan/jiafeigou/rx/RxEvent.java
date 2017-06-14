@@ -914,13 +914,13 @@ public class RxEvent {
         }
     }
 
-    public static class ThirdLoginTab {
-        public boolean isThird;
-
-        public ThirdLoginTab(boolean isThird) {
-            this.isThird = isThird;
-        }
-    }
+//    public static class ThirdLoginTab {
+//        public boolean isThird;
+//
+//        public ThirdLoginTab(boolean isThird) {
+//            this.isThird = isThird;
+//        }
+//    }
 
     public static class ShowWonderPageEvent {
     }

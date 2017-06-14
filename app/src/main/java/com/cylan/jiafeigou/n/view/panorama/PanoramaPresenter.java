@@ -350,6 +350,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (shouldRefreshRecord) {
                         if (type == PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT && second >= 8) {
                             shouldRefreshRecord = false;
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
                         }
                         mView.onRefreshVideoRecordUI(second, type);
                     }

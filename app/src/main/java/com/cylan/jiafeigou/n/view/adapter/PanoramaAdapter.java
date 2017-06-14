@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.lzy.okserver.download.DownloadInfo;
+import com.lzy.okserver.download.DownloadManager;
 import com.lzy.okserver.listener.DownloadListener;
 
 import java.util.ArrayList;
@@ -71,6 +72,10 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                 .into((ImageView) holder.getView(R.id.img_album_content));
         TextView view = holder.getView(R.id.tv_album_download_progress);
         if (item.downloadInfo == null) {
+            item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));//确保真的没有 download 信息
+        }
+        if (item.downloadInfo == null) {
+            AppLogger.e("download is null" + "item type:" + item.type + ",file name:" + item.fileName);
             view.setVisibility(View.INVISIBLE);
             return;
         }

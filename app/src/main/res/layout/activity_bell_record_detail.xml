@@ -60,7 +60,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:src="@drawable/icon_collection" />
-    </LinearLayout>
+           </LinearLayout>
 
 
     <RelativeLayout

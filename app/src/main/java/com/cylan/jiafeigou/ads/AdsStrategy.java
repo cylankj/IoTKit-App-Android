@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.BuildConfig;
@@ -273,12 +272,12 @@ public class AdsStrategy {
     private static String getResolutionForAds() {
         int w = Resources.getSystem().getDisplayMetrics().widthPixels;
         int h = Resources.getSystem().getDisplayMetrics().heightPixels;
-        int i = 0;
-        for (i = 0; i < wArray.length; i++) {
-            if (w > wArray[i])
+        int i;
+        for (i = wArray.length - 1; i >= 0; i--) {
+            if (w >= wArray[i])
                 break;
         }
-        AppLogger.d("取到分辨率?" + wArray[i]);
+        AppLogger.d("取到分辨率?" + wArray[i] + ":" + hArray[i]);
         return wArray[i] + "x" + hArray[i];
     }
 }

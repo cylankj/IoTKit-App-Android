@@ -88,12 +88,12 @@ public interface BindMailContract {
          */
         JFGAccount getUserAccount();
 
-        /**
-         * 三方登录回调
-         *
-         * @return
-         */
-        Subscription isOpenLoginBack();
+//        /**
+//         * 三方登录回调
+//         *
+//         * @return
+//         */
+//        Subscription isOpenLoginBack();
 
         /**
          * 获取是否三方登录

@@ -120,19 +120,19 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
                 WifiManager.NETWORK_STATE_CHANGED_ACTION};
     }
 
-    /**
-     * 是否三方登录
-     *
-     * @return
-     */
-    @Override
-    public Subscription isOpenLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(thirdLoginTab -> {
-                    isOpenLogin = thirdLoginTab.isThird;
-                }, e -> AppLogger.d(e.getMessage()));
-    }
+//    /**
+//     * 是否三方登录
+//     *
+//     * @return
+//     */
+//    @Override
+//    public Subscription isOpenLoginBack() {
+//        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(thirdLoginTab -> {
+//                    isOpenLogin = thirdLoginTab.isThird;
+//                }, e -> AppLogger.d(e.getMessage()));
+//    }
 
     @Override
     public boolean isOpenLogin() {
@@ -162,7 +162,6 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                isOpenLoginBack(),
                 getAccountCallBack(),
                 changeAccountBack()
         };

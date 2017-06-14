@@ -63,8 +63,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/y72"
             android:layout_marginTop="@dimen/y70"
+            android:alpha="0"
             android:background="@drawable/add_image_pop"
-            android:visibility="invisible">
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/imgV_camera_wifi_light_flash"
@@ -89,8 +90,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="-20dp"
+                android:alpha="0"
                 android:src="@drawable/add_image_red_dot"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/imgV_camera_hand"

@@ -80,13 +80,6 @@ public interface MineInfoContract {
          */
         boolean checkOpenLogin();
 
-        /**
-         * 三方登录回调
-         *
-         * @return
-         */
-        Subscription isOpenLoginBack();
-
         Subscription loginType(String account, String phone, String email);
     }
 

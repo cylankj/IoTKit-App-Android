@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -67,6 +68,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import permissions.dispatcher.PermissionUtils;
 
 @RuntimePermissions
 public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoContract.Presenter>
@@ -144,11 +146,11 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        MineInfoActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        MineInfoActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -558,6 +560,24 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         } else {
             tempFile = new File(basePresenter.checkFileExit(Environment.getExternalStorageDirectory().getPath() + "/image/"),
                     System.currentTimeMillis() + ".jpg");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && PermissionUtils.hasSelfPermissions(getContext(), Manifest.permission.CAMERA)) {
+                openCamera();
+            } else {
+                setPermissionDialog(getString(R.string.camera_auth));
+            }
+        } else if (requestCode == 2) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                setPermissionDialog(getString(R.string.photo));
+            }
         }
     }
 

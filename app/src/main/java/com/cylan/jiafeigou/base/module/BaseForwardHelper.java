@@ -122,6 +122,7 @@ public class BaseForwardHelper {
     private <T> T parser(int msgId, RobotoGetDataRsp rsp) {
         try {
             AppLogger.d("收到服务器的 dp 消息");
+            if (rsp.map.size() == 0) return null;
             JFGDPMsg msg = rsp.map.get(msgId).get(0);
             if (msgId == 204) {
                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);

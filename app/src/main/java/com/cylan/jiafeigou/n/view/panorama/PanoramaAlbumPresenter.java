@@ -2,13 +2,18 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
@@ -28,6 +33,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
+
 
 /**
  * Created by yanzhendong on 2017/5/10.
@@ -41,24 +48,46 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onViewAttached(PanoramaAlbumContact.View view) {
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
-    }
-
-    @Override
-    public void onViewDetached() {
-        super.onViewDetached();
-        DownloadManager.getInstance().stopAllTask();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         checkSDCardAndInit();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        DownloadManager.getInstance().stopAllTask();
     }
 
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(monitorPanoramaAPI());
+        registerSubscription(monitorSDCardUnMount());
+    }
+
+    private Subscription monitorSDCardUnMount() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter(msg -> TextUtils.equals(msg.uuid, uuid))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    AppLogger.e("收到设备同步消息:" + new Gson().toJson(result));
+                    try {
+                        for (JFGDPMsg msg : result.dpList) {
+                            if (msg.id == 204) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                if (status != null && status.hasSdcard == 0) {//SDCard 不存在
+                                    mView.onSDCardCheckResult(0);
+                                } else if (status != null && status.err != 0) {//SDCard 需要格式化
+                                    mView.onSDCardCheckResult(0);
+                                }
+                                boolean hasSDCard = status != null && status.hasSdcard == 1 && status.err == 0;
+                            }
+                        }
+                    } catch (Exception e) {
+                        AppLogger.e(e.getMessage());
+                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     private Subscription monitorPanoramaAPI() {
@@ -98,7 +127,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     .delay(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
-                        mView.onAppend(items, time == 0, true);
+                        mView.onAppend(items, time == 0, true, fetchLocation);
                     }, e -> {
                         AppLogger.e(e.getMessage());
                         ToastUtil.showNegativeToast("获取设备文件列表超时");
@@ -108,7 +137,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     .delay(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
-                        mView.onAppend(items, time == 0, true);
+                        mView.onAppend(items, time == 0, true, fetchLocation);
                     }, e -> {
                         AppLogger.e(e.getMessage());
                         ToastUtil.showNegativeToast("获取设备文件列表超时");
@@ -139,7 +168,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     .delay(1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
-                        mView.onAppend(items, time == 0, true);
+                        mView.onAppend(items, time == 0, true, fetchLocation);
                     }, e -> {
                         AppLogger.e(e.getMessage());
                     });
@@ -160,6 +189,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             item.location = 1;
                             result.add(item);
                             String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName);
+                            AppLogger.e("item type:" + item.type);
                             //自动下载逻辑
                             item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                             if (item.downloadInfo != null) {
@@ -179,8 +209,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                     DownloadDBManager.INSTANCE.replace(downloadInfo);
                                 }
                                 DownloadManager.getInstance().addTask(taskKey, request, new PanoramaAdapter.MyDownloadListener());
-                                item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                             }
+                            item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                         }
                     }
                     return result;

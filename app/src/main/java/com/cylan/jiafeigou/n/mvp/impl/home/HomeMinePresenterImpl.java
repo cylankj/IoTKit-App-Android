@@ -218,47 +218,57 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public Subscription getAccountBack() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(accountArrived -> {
-                    RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
-                    isOpenLogin = event != null && event.isThird;
+                .observeOn(Schedulers.io())
+                .map(accountArrived -> {
+                    AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
+                    AppLogger.e("监听到用户信息回调!");
+                    isOpenLogin = signType != null && signType.type >= 3;
                     if (isOpenLogin) {
                         String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;
                         if (!TextUtils.isEmpty(photoUrl)) {//设置第三方登录图像
-                            Glide
-                                    .with(getView().getContext()).load(photoUrl)
-                                    .downloadOnly(new SimpleTarget<File>() {
-                                        @Override
-                                        public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                                            try {
-                                                AppLogger.e("正在设置第三方登录图像" + resource.getAbsolutePath());
-                                                BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
-                                            } catch (JfgException e) {
-                                                e.printStackTrace();
+                            AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                                Glide
+                                        .with(getView().getContext()).load(photoUrl)
+                                        .downloadOnly(new SimpleTarget<File>() {
+                                            @Override
+                                            public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                                                Schedulers.io().createWorker().schedule(() -> {
+                                                    try {
+                                                        String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
+                                                        if (TextUtils.isEmpty(alias)) {
+                                                            boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
+                                                            if (isEmail) {
+                                                                String[] split = accountArrived.jfgAccount.getAccount().split("@");
+                                                                alias = split[0];
+                                                            }
+                                                        }
+                                                        BaseApplication.getAppComponent().getCmd().updateAccountPortrait(resource.getAbsolutePath());
+                                                        AppLogger.e("正在设置第三方登录图像" + resource.getAbsolutePath());
+                                                        if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
+                                                            accountArrived.jfgAccount.setAlias(alias);
+                                                            try {
+                                                                AppLogger.e("正在设置第三方登录昵称" + alias);
+                                                                accountArrived.jfgAccount.resetFlag();
+                                                                accountArrived.jfgAccount.setPhoto(true);
+                                                                BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
+                                                            } catch (JfgException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    } catch (JfgException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                });
                                             }
-                                        }
-                                    });
+                                        });
+                            });
                         }
                     }
+                    return accountArrived;
 
-                    String alias = TextUtils.isEmpty(accountArrived.account.getAlias()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS) : accountArrived.account.getAlias();
-                    if (TextUtils.isEmpty(alias)) {
-                        boolean isEmail = JConstant.EMAIL_REG.matcher(accountArrived.jfgAccount.getAccount()).find();
-                        if (isEmail) {
-                            String[] split = accountArrived.jfgAccount.getAccount().split("@");
-                            alias = split[0];
-                        }
-                    }
-                    if (!TextUtils.isEmpty(alias) && TextUtils.isEmpty(accountArrived.account.getAlias())) {//设置第三方登录昵称
-                        accountArrived.jfgAccount.setAlias(alias);
-                        try {
-                            AppLogger.e("正在设置第三方登录昵称" + alias);
-                            BaseApplication.getAppComponent().getCmd().setAccount(accountArrived.jfgAccount);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accountArrived -> {
                     if (getView() != null && !TextUtils.isEmpty(accountArrived.account.getPhotoUrl()))
                         getView().setUserImageHeadByUrl(accountArrived.account.getPhotoUrl());
                     if (getView() != null) {
@@ -266,7 +276,9 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                         String a2 = accountArrived.account.getAccount();
                         getView().setAliasName(TextUtils.isEmpty(al) ? a2 : al);
                     }
-                }, AppLogger::e);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
 

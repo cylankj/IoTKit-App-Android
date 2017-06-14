@@ -666,4 +666,13 @@ public class MiscUtils {
             return 0;
         }
     }
+
+    public static String verticalString(String str) {
+        if (TextUtils.isEmpty(str)) return "\n";
+        StringBuilder builder = new StringBuilder(str.length() * 2);
+        for (char c : str.toCharArray()) {
+            builder.append(c).append("\n");
+        }
+        return builder.toString();
+    }
 }

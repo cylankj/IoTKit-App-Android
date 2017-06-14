@@ -187,14 +187,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     }
 
     private void initTitleBar() {
-        rLayoutForgetPwdToolbar.setBackAction(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
-                    getFragmentManager().popBackStack();
-                } else {
-                    showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_No), getString(R.string.Button_Yes), false);
-                }
+        rLayoutForgetPwdToolbar.setBackAction(v -> {
+            if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
+                getFragmentManager().popBackStack();
+            } else {
+                showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_No), getString(R.string.Button_Yes), false);
             }
         });
     }
@@ -211,7 +208,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         etForgetUsername.setEnabled(true);
         ViewUtils.setChineseExclude(etNewPwdInput, JConstant.PWD_LEN_MAX);
         if (acceptType == 1) {
-            etForgetUsername.setHint(getString(R.string.EMAIL_2));
+            etForgetUsername.setHint(getString(R.string.EMAIL_1));
         }
         Bundle bundle = getArguments();
         if (bundle != null && !TextUtils.isEmpty(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT))) {
@@ -370,6 +367,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.EMAIL);
         else if (ret == JConstant.TYPE_PHONE) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.NEW_PWD);
+        } else if (ret == JConstant.TYPE_EMAIL_VERIFY) {
+            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.Tap0_register_EmailVerification);
         }
     }
 
@@ -387,6 +386,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             return;
         }
 //        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),ViewUtils.getTextViewContent(etForgetUsername));
+        initTitle(JConstant.TYPE_EMAIL_VERIFY);
         final String content = ViewUtils.getTextViewContent(etForgetUsername);
         ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
         View btn = mailView.findViewById(R.id.tv_email_confirm);

@@ -51,11 +51,6 @@ public interface MineClipImageContract {
         void upLoadUserHeadImag(String path);
 
         /**
-         * 接收上传的回调
-         */
-        Subscription getUpLoadResult();
-
-        /**
          * 获取到用户的信息
          */
         Subscription getAccount();

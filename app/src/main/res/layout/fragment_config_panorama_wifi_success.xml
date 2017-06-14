@@ -22,7 +22,7 @@
         android:layout_below="@id/panorama_mode_picture"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y28"
-        android:text="户外模式已开启"
+        android:text="@string/Tap1_OutdoorMode_Opened"
         android:textColor="#888888"
         android:textSize="@dimen/sp17" />
 

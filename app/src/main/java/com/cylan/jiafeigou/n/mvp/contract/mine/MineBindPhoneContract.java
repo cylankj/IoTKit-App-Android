@@ -136,12 +136,6 @@ public interface MineBindPhoneContract {
          */
         void unregisterNetworkMonitor();
 
-        /**
-         * 三方登录的回调
-         *
-         * @return
-         */
-        Subscription openLoginBack();
 
         /**
          * 是否三方登录

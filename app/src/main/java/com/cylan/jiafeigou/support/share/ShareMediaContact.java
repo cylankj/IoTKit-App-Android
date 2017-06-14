@@ -15,4 +15,12 @@ public interface ShareMediaContact {
 
     interface Presenter extends JFGPresenter<View> {
     }
+
+    interface ShareOptionItemView extends JFGView {
+
+    }
+
+    interface ShareOptionItemPresenter extends JFGPresenter<ShareOptionItemView> {
+
+    }
 }

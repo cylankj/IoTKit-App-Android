@@ -13,7 +13,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +21,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -78,7 +76,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @BindView(R.id.tv_home_mine_msg_count)
     MsgBoxView tvHomeMineMsgCount;
     @BindView(R.id.rLayout_home_mine_top)
-    FrameLayout rLayoutHomeMineTop;
+    ImageView rLayoutHomeMineTop;
     @BindView(R.id.home_mine_item_friend)
     HomeMineItemView homeMineItemFriend;
     @BindView(R.id.home_mine_item_share)
@@ -258,14 +256,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 //访客状态
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
                 basePresenter.portraitBlur(bm);
-//                setAliasName(getString(R.string.Tap3_LogIn));
             }
             lazyLoad();
-            JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-            if (jfgAccount != null) {
-                setUserImageHeadByUrl(jfgAccount.getPhotoUrl());
-                setAliasName(TextUtils.isEmpty(jfgAccount.getAlias()) ? jfgAccount.getAccount() : jfgAccount.getAlias());
-            }
             //查询好友列表.
             basePresenter.makeFriendsListReq();
             Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair = BaseApplication.getAppComponent().getSourceManager().getPairFriends();
@@ -292,6 +284,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setAliasName(String name) {
+        AppLogger.e("用户昵称:" + name + "add:" + isVisible());
         tvHomeMineNick.setText(name);
     }
 
@@ -315,11 +308,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {
         private final WeakReference<ImageView> image;
         private final WeakReference<HomeMineContract.Presenter> basePresenter;
-        private final WeakReference<FrameLayout> mFrameLayout;
+        private final WeakReference<ImageView> mFrameLayout;
         private final WeakReference<Drawable> mDrawable;
         private String url;
 
-        public MySimpleTarget(ImageView view, Drawable drawable, FrameLayout frameLayout, String url, HomeMineContract.Presenter presenter) {
+        public MySimpleTarget(ImageView view, Drawable drawable, ImageView frameLayout, String url, HomeMineContract.Presenter presenter) {
             image = new WeakReference<>(view);
             mFrameLayout = new WeakReference<>(frameLayout);
             basePresenter = new WeakReference<>(presenter);

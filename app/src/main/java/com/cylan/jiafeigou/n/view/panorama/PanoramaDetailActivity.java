@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareConstant;
@@ -116,6 +117,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private TextView download;
     private int mode;
     private View deleted;
+    private boolean looper = true;
+
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -155,17 +158,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onResume() {
         super.onResume();
+        looper = true;
         initPanoramaContent(panoramaItem);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (player != 0) {
-            JFGPlayer.StopRender(player);
-            JFGPlayer.Stop(player);
-            player = 0;
-        }
+        looper = false;
+        releasePlayer();
     }
 
     @Override
@@ -249,7 +250,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 }
 
                 if (downloadInfo != null && downloadInfo.getState() == DownloadManager.FINISH) {
-                    panoramicView720Ext.loadImage(downloadInfo.getTargetPath());
+                    Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(downloadInfo.getTargetPath()));
                     refreshControllerView(true);
                 } else {
                     String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
@@ -259,8 +260,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                 .into(new SimpleTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        panoramicView720Ext.loadBitmap(resource);
                                         refreshControllerView(true);
+                                        Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(resource));
                                     }
 
                                 });
@@ -274,17 +275,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 }
                 if (downloadInfo != null && downloadInfo.getState() == 4) {
                     LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
-                    if (player == 0) {
-                        player = JFGPlayer.InitPlayer(this);
-                    }
-                    JFGPlayer.Play(player, downloadInfo.getTargetPath());
+                    initPlayerAndPlay(downloadInfo.getTargetPath());
                 } else {
                     String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
+                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
                     if (deviceIp != null) {
-                        if (player == 0) {
-                            player = JFGPlayer.InitPlayer(this);
-                        }
-                        JFGPlayer.Play(player, deviceIp + "/images/" + panoramaItem.fileName);
+                        initPlayerAndPlay(deviceIp + "/images/" + panoramaItem.fileName);
                     } else {
                         AppLogger.d("当前网络状况下无法播放");
                     }
@@ -297,6 +293,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramaPanelSeekBar.setMax(panoramaItem.duration);
     }
 
+    private void initPlayerAndPlay(String path) {
+        Schedulers.io().createWorker().schedule(() -> {
+            if (player == 0) {
+                player = JFGPlayer.InitPlayer(this);
+            }
+            JFGPlayer.Play(player, path);
+        });
+    }
+
     @OnClick(R.id.tv_top_bar_left)
     public void clickedBack() {
         if (downloadInfo != null) {
@@ -305,16 +310,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             }
         }
         onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (player != 0) {
-            JFGPlayer.Stop(player);
-            JFGPlayer.Release(player);
-            player = 0;
-        }
     }
 
     @OnClick(R.id.act_panorama_detail_pop_picture_close)
@@ -383,9 +378,25 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @OnClick({R.id.act_panorama_detail_bottom_video_menu_photograph, R.id.act_panorama_detail_bottom_picture_menu_photograph})
     public void screenShot() {
         AppLogger.d("clickedPhotograph");
-        if (panoramicView720Ext != null) {
-            panoramicView720Ext.takeSnapshot(true);
-        }
+        Schedulers.io().createWorker().schedule(() -> {
+            if (panoramicView720Ext != null) {
+                panoramicView720Ext.takeSnapshot(true);
+            }
+        });
+    }
+
+    private void releasePlayer() {
+        Schedulers.io().createWorker().schedule(() -> {
+            long p;
+            synchronized (this) {
+                p = player;
+                player = 0;
+            }
+            if (p != 0) {
+                JFGPlayer.Stop(p);
+                JFGPlayer.Release(p);
+            }
+        });
     }
 
     @OnClick(R.id.act_panorama_detail_toolbar_share)
@@ -400,7 +411,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, null)
                     .show();
-        } else if (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING) {
+        } else if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
             //视频还未下载完成
             new AlertDialog.Builder(this)
                     .setMessage(R.string.Download_Then_Share)
@@ -409,14 +420,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     .show();
             AppLogger.d("视频还未下载完成");
 
-        } else if (downloadInfo.getState() == DownloadManager.DOWNLOADING) {
+        } else if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
             ToastUtil.showNegativeToast(getString(R.string.Downloading));
+        } else if (ApFilter.isAPMode(uuid)) {
+            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         } else {
-            if (player != 0) {
-                JFGPlayer.Stop(player);
-                JFGPlayer.Release(player);
-                player = 0;
-            }
+            releasePlayer();
             new PanoramaThumbURL(uuid, panoramaItem.fileName).fetchFile(filePath -> {
                 Intent intent = new Intent(this, ShareMediaActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
@@ -537,6 +546,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName);
             GetRequest request = OkGo.get(deviceIp + "/images/" + panoramaItem.fileName);
             DownloadManager.getInstance().addTask(taskKey, request, listener);
+
             downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
         } else {
             AppLogger.d("非家居模式不能进行下载");
@@ -547,37 +557,41 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void OnPlayerReady(long l, int i, int i1, int i2) {
         AppLogger.d("播放器初始化成功了" + i + "," + i1 + "," + i2);
         JFGPlayer.StartRender(player, panoramicView720Ext);
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
-        refreshControllerView(true);
+        runOnUiThread(() -> {
+            panoramaPanelSeekBar.setMax(i2);
+            refreshControllerView(true);
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        });
     }
 
     @Override
     public void OnPlayerFailed(long l) {
         AppLogger.d("播放器初始化失败了");
+        runOnUiThread(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
     }
 
     @Override
     public void OnPlayerFinish(long l) {
         AppLogger.d("播放完成了");
         if (player != 0) {
-            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
-            if (downloadInfo != null && downloadInfo.getState() == 4) {
-                player = JFGPlayer.InitPlayer(this);
-                JFGPlayer.Play(player, downloadInfo.getTargetPath());
-            } else {
+            runOnUiThread(() -> LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null));
+            if (downloadInfo != null && downloadInfo.getState() == 4 && looper) {
+                initPlayerAndPlay(downloadInfo.getTargetPath());
+            } else if (looper) {
                 String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                 if (deviceIp != null) {
-                    player = JFGPlayer.InitPlayer(this);
-                    JFGPlayer.Play(player, deviceIp + "/images/" + panoramaItem.fileName);
+                    initPlayerAndPlay(deviceIp + "/images/" + panoramaItem.fileName);
                 }
             }
+        } else if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            runOnUiThread(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
         }
     }
 
     @Override
     public void OnUpdateProgress(long l, int i) {
         AppLogger.d("当前播放进度为:" + i + "," + l);
-        panoramaPanelSeekBar.setProgress(i / 1000);
+        runOnUiThread(() -> updateProgress(i, panoramaPanelSeekBar.getMax()));
     }
 
     @Override
@@ -624,6 +638,16 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     }
 
+    private void updateProgress(int progress, int max) {
+        panoramaPanelSeekBar.setProgress(progress);
+        bottomVideoMenuPlayTime.setText(String.format("%s/%s", TimeUtils.getMM_SS(progress), TimeUtils.getMM_SS(max)));
+    }
+
+    @OnClick(R.id.act_panorama_detail_bottom_video_menu_play)
+    public void play() {
+//        if (JFGPlayer.)
+    }
+
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
 
@@ -631,6 +655,13 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        updateProgress(seekBar.getProgress(), seekBar.getMax());
+        Schedulers.io().createWorker().schedule(() -> {
+            AppLogger.e("正在 seek");
+            if (player != 0) {
+                JFGPlayer.Seek(seekBar.getProgress());
+            }
+        });
     }
 
     private void refreshControllerView(boolean enable) {

@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.umeng.socialize.UMShareAPI;
 
 import java.io.File;
 import java.util.List;
@@ -263,7 +262,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

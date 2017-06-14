@@ -59,7 +59,7 @@ public class ConfigPanoramaWiFiSuccessFragment extends IBaseFragment {
     private void initView() {
         modeDone.setText(success ? R.string.FINISHED : R.string.TRY_AGAIN);
         modePicture.setImageResource(TextUtils.equals(mode, "Family") ? R.drawable.pic_home_finish : R.drawable.pic_ap_finish);
-        modeDesc.setText(TextUtils.equals(mode, "Family") ? "家居模式已开启" : "户外模式已开启");
+        modeDesc.setText(TextUtils.equals(mode, "Family") ? R.string.Tap1_HomeMode_Opened : R.string.Tap1_OutdoorMode_Opened);
     }
 
     @OnClick(R.id.panorama_mode_done)

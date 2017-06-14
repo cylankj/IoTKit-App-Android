@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             app:backAction="@{listener}"
             app:ct_background_color="@color/color_0ba8cf"
-            app:ct_enable_shadow="true"
+            app:ct_enable_shadow="false"
             app:ct_enable_theme="true"
             app:ct_fit_system_window="true"
             app:ct_icon="@drawable/nav_icon_back_white"
@@ -49,7 +49,7 @@
             android:onClickListener="@{listener}"
             app:layout_constraintTop_toBottomOf="@id/sharedDevice"
             app:rightDrawable="@drawable/icon_list_next"
-            app:text="已分享内容"
+            app:text="@string/Tap3_ShareDevice_SharedContents"
             app:textColor="@color/color_333333"
             app:textSize="@dimen/sp16" />
     </android.support.constraint.ConstraintLayout>
