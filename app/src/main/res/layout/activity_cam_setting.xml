@@ -176,7 +176,7 @@
                 android:id="@+id/sbtn_setting_110v"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                hunt:sv_image_src="@drawable/icon_setting_electricity"
+                hunt:sv_image_src="@drawable/setting_icon_ntsc"
                 hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
                 hunt:sv_switch_visibility="true"
                 hunt:sv_title="@string/HZ_NTSC_PAL"
