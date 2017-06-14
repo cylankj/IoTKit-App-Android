@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
@@ -144,8 +145,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             if (!ListUtils.isEmpty(finalList)) return finalList;
                             final Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("text/plain");
-                            final String app = getString(R.string.share_content) + getString(R.string.share_to_friends_link, getContext().getPackageName());
-                            intent.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(), app, getContext().getPackageName()));
+                            intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getLinkShareByApp());
                             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
                             finalList = new LinkedList<>();
                             for (ResolveInfo info : list) {
