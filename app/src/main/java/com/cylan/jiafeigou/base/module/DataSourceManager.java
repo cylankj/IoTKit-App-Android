@@ -38,7 +38,7 @@ import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
-import com.cylan.jiafeigou.n.task.FetchSuggestionTask;
+import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.SystemMsgTask;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
@@ -932,7 +932,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .filter(ret -> isOnline())
                 .subscribe(ret -> {
                     try {
-                        Observable.just(new FetchSuggestionTask(), new FetchFriendsTask(), new SystemMsgTask())
+                        Observable.just(new FetchFeedbackTask(), new FetchFriendsTask(), new SystemMsgTask())
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(objectAction1 -> {
                                     objectAction1.call("");

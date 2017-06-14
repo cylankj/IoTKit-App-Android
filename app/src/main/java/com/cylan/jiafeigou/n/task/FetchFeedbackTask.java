@@ -14,11 +14,11 @@ import rx.schedulers.Schedulers;
  * Created by hds on 17-6-7.
  */
 
-public class FetchSuggestionTask implements Action1<Object> {
+public class FetchFeedbackTask implements Action1<Object> {
 
     @Override
     public void call(Object o) {
-        Observable.just("FetchSuggestionTask")
+        Observable.just("FetchFeedbackTask")
                 .subscribeOn(Schedulers.newThread())
                 .flatMap(s -> {
                     int req = BaseApplication.getAppComponent().getCmd().getFeedbackList();
@@ -26,7 +26,7 @@ public class FetchSuggestionTask implements Action1<Object> {
                 })
                 .subscribeOn(Schedulers.io())
                 .subscribe(getFeedBackRsp -> {
-                    AppLogger.d("FetchSuggestionTask rsp");
+                    AppLogger.d("FetchFeedbackTask rsp");
                 }, AppLogger::e);
     }
 

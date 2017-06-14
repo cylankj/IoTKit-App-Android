@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.SysMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.SysMessagePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/5
  * 描述：
  */
+@Badge(parentTag = "HomeMineFragment")
 public class SystemMessageFragment extends Fragment implements SysMessageContract.View {
 
     @BindView(R.id.rcl_home_mine_message_recyclerview)
@@ -50,19 +52,8 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
 
     private SysMessageContract.Presenter presenter;
     private HomeMineMessageAdapter messageAdapter;
-    private boolean hasNewMesg;
     private ArrayList<SysMsgBean> hasCheckData;
     private ArrayList<Integer> serviceDelRsp;
-
-    private OnClearMsgCountListener listener;
-
-    public interface OnClearMsgCountListener {
-        void OnClear();
-    }
-
-    public void setOnClearMsgCountListener(OnClearMsgCountListener listener) {
-        this.listener = listener;
-    }
 
     public static SystemMessageFragment newInstance(Bundle bundle) {
         SystemMessageFragment fragment = new SystemMessageFragment();
@@ -74,7 +65,6 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        hasNewMesg = arguments.getBoolean("hasNewMesg");
     }
 
     @Nullable
@@ -96,7 +86,7 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
     }
 
     private void initPresenter() {
-        presenter = new SysMessagePresenterImp(this, hasNewMesg);
+        presenter = new SysMessagePresenterImp(this);
     }
 
     @Override
@@ -109,9 +99,6 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
-        if (hasNewMesg) {
-            if (listener != null) listener.OnClear();
-        }
     }
 
     /**

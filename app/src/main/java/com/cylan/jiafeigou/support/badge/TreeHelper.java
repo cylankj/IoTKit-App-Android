@@ -1,18 +1,35 @@
 package com.cylan.jiafeigou.support.badge;
 
+import com.cylan.jiafeigou.misc.RawTree;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
 /**
  * Created by hds on 17-6-13.
  */
-
+@Singleton
 public class TreeHelper {
 
     private TreeNode root;
+
+    public TreeHelper() {
+        Iterator<String> iterator = RawTree.treeMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            final String key = iterator.next();
+            final String value = RawTree.treeMap.get(key);
+            TreeNode node = new TreeNode();
+            node.setNodeName(key);
+            node.setParentName(value);
+            treeNodeList.add(node);
+        }
+        initTree(treeNodeList);
+    }
 
     private Map<String, TreeNode> treeNodeMap = new HashMap<>();
 

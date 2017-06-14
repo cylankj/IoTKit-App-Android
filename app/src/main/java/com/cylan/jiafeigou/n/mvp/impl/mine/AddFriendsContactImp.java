@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -34,7 +35,6 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -48,10 +48,12 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     private ArrayList<FriendBean> filterDateList;
     private ArrayList<FriendBean> allContactBean = new ArrayList<FriendBean>();
     private boolean isCheckAcc;
+    private BaseDBHelper helper;
 
     public AddFriendsContactImp(AddFriendContract.View view) {
         super(view);
         view.setPresenter(this);
+        helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
     }
 
     @Override
@@ -240,14 +242,11 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     public Subscription checkFriendAccountCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
-                    @Override
-                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && isCheckAcc) {
-                            getView().hideLoadingPro();
-                            handlerCheckAccountResult(checkAccountCallback);
-                            isCheckAcc = false;
-                        }
+                .subscribe(checkAccountCallback -> {
+                    if (checkAccountCallback != null && isCheckAcc) {
+                        getView().hideLoadingPro();
+                        handlerCheckAccountResult(checkAccountCallback);
+                        isCheckAcc = false;
                     }
                 }, AppLogger::e);
     }
@@ -303,11 +302,11 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
             }
             list.add(contract);
         }
-        Collections.sort(list, new Comparent());
+        Collections.sort(list, new AComparator());
         return list;
     }
 
-    public class Comparent implements Comparator<FriendBean> {
+    public class AComparator implements Comparator<FriendBean> {
         @SuppressWarnings("unchecked")
         @Override
         public int compare(FriendBean lhs, FriendBean rhs) {

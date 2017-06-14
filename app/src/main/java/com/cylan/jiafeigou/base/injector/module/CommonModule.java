@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.toolsfinal.io.Charsets;
 import com.cylan.jiafeigou.utils.PathGetter;
@@ -153,6 +154,12 @@ public class CommonModule {
     @Singleton
     public static IProperty getProductProperty() {
         return new PropertiesLoader();
+    }
+
+    @Provides
+    @Singleton
+    public static TreeHelper getTreeHelper() {
+        return new TreeHelper();
     }
 //    @Provides
 //    @Singleton

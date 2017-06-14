@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
+import com.cylan.jiafeigou.cache.db.module.SysMsgBeanDao;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -16,16 +17,18 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
@@ -37,20 +40,17 @@ import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
  */
 public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract.View> implements SysMessageContract.Presenter {
 
-    private boolean hasNewMesg;
     private BaseDBHelper helper;
     private ArrayList<SysMsgBean> results = new ArrayList<SysMsgBean>();
 
-    public SysMessagePresenterImp(SysMessageContract.View view, boolean hasNewMesg) {
+    public SysMessagePresenterImp(SysMessageContract.View view) {
         super(view);
-        this.hasNewMesg = true;
         helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
     }
 
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-//                getMesgDpDataCallBack(),
                 getAccount()};
     }
 
@@ -59,11 +59,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
      */
     @Override
     public void initMesgData(String account) {
-//        if (hasNewMesg) {
         getMesgDpData(account);
-//        } else {
-//            handlerDataResult(findAllFromDb());
-//        }
     }
 
     /**
@@ -95,7 +91,6 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                 .subscribe(account -> {
                     if (account != null) {
                         // 加载数据库数据
-//                        dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
                         initMesgData(account.jfgAccount.getAccount());
                         markMesgHasRead();
                     }
@@ -109,30 +104,17 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
      */
     @Override
     public ArrayList<SysMsgBean> findAllFromDb() {
-        ArrayList<SysMsgBean> tempList = new ArrayList<>();
-//        if (dbManager != null) {
-//            try {
-//                List<SysMsgBean> allData = dbManager.findAll(SysMsgBean.class);
-//                if (allData != null) {
-//                    tempList.addAll(allData);
-//                }
-//            } catch (DbException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        return sortAddReqList(tempList);
+        List<SysMsgBean> tempList = helper.getDaoSession().getSysMsgBeanDao()
+                .loadAll();
+        return sortAddReqList((ArrayList<SysMsgBean>) tempList);
     }
 
     /**
      * 清空本地消息记录
      */
     @Override
-    public void clearRecoard() {
-//        try {
-//            dbManager.delete(SysMsgBean.class);
-//        } catch (DbException e) {
-//            e.printStackTrace();
-//        }
+    public void deleteAllRecords() {
+        helper.getDaoSession().getSysMsgBeanDao().deleteAll();
     }
 
     /**
@@ -189,7 +171,6 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                     if (results.size() != 0)
                         results.clear();
                     results.addAll(convertData(robotoGetDataRsp));
-//                            markMesgHasRead();
                     return results;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -237,7 +218,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
      */
     private ArrayList<SysMsgBean> convertData(RobotoGetDataRsp robotoGetDataRsp) {
         SysMsgBean bean;
-        clearRecoard();
+        deleteAllRecords();
         ArrayList<SysMsgBean> results = new ArrayList<SysMsgBean>();
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
@@ -300,9 +281,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         AppLogger.e("deleteServiceMsg:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-                }, throwable -> {
-                    AppLogger.e("deleteServiceMsg:" + throwable.getLocalizedMessage());
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -319,13 +298,11 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
         Observable.just(bean)
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
-//                    SysMsgBean cacheBean  =helper.getDaoSession().getSysMsgBeanDao().load()
-//                    helper.getDaoSession().getSysMsgBeanDao()
-//                    try {
-//                        dbManager.delete(SysMsgBean.class, WhereBuilder.b("name", "=", bean.name).and("startTime", "=", bean.time));
-//                    } catch (DbException e) {
-//                        e.printStackTrace();
-//                    }
+                    QueryBuilder<SysMsgBean> cacheBeanBuilder = helper.getDaoSession().getSysMsgBeanDao().queryBuilder();
+                    List<SysMsgBean> beanList = cacheBeanBuilder.where(SysMsgBeanDao.Properties.Name.eq(o.name))
+                            .list();
+                    if (beanList != null)
+                        helper.getDaoSession().getSysMsgBeanDao().deleteInTx(beanList);
                 }, AppLogger::e);
     }
 

@@ -40,14 +40,11 @@ public interface HomeMineContract {
          */
         void setUserImageHeadByUrl(String url);
 
-        /**
-         * 设置新消息的数量
-         */
-        void setMesgNumber(int number);
-
         void jump2SetPhoneFragment();
 
         void jump2BindMailFragment();
+
+        void updateHint();
     }
 
     interface Presenter extends BasePresenter {
@@ -84,24 +81,7 @@ public interface HomeMineContract {
         /**
          * 获取到未读的消息数
          */
-        void getUnReadMesg();
-
-
-        void makeFriendsListReq();
-
-//        /**
-//         * 未读消息的回调
-//         *
-//         * @return
-//         */
-//        Subscription unReadMesgBack();
-
-        /**
-         * 是否有未读消息
-         *
-         * @return
-         */
-        boolean hasUnReadMesg();
+        void fetchNewInfo();
 
         Subscription getAccountBack();
 

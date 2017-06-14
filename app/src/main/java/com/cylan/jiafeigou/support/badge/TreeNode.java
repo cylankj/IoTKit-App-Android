@@ -11,7 +11,7 @@ public class TreeNode {
 
     private String nodeName;
     private String parentName;
-    private int data;
+    private Object data;
     private List<TreeNode> childNodeList;
 
     public List<TreeNode> getChildNodeList() {
@@ -46,7 +46,7 @@ public class TreeNode {
         return parentName;
     }
 
-    public int getData() {
+    public Object getData() {
         return data;
     }
 
@@ -60,7 +60,7 @@ public class TreeNode {
         return this;
     }
 
-    public TreeNode setData(int data) {
+    public TreeNode setData(Object data) {
         this.data = data;
         return this;
     }

@@ -8,8 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.cylan.jiafeigou.R;
@@ -22,12 +20,9 @@ import com.cylan.jiafeigou.R;
 public class NumberBadge extends AppCompatTextView {
 
     private Paint bgPaint;
-    private Paint pointPaint;
-
     private Rect defaultTextBounds = new Rect();
 
     private int drawFlag;
-    private float pointRadius;
     private static final String PLACEHOLDER = "0";
 
     public NumberBadge(Context context) {
@@ -42,60 +37,58 @@ public class NumberBadge extends AppCompatTextView {
         super(context, attrs, defStyleAttr);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.NumberBadgeStyle, defStyleAttr, 0);
         int bgColor = array.getColor(R.styleable.NumberBadgeStyle_bg_color, Color.RED);
-        int pointBgColor = array.getColor(R.styleable.NumberBadgeStyle_point_bg_color, Color.RED);
-        pointRadius = array.getDimension(R.styleable.NumberBadgeStyle_point_radius, 4);
         array.recycle();
         bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bgPaint.setColor(bgColor);
-        pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setColor(pointBgColor);
     }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        //根据字体大小
-        CharSequence content = TextUtils.isEmpty(getText()) ? PLACEHOLDER : getText();
-        TextPaint paint = getPaint();
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        if (paint != null) {
-            getPaint().getTextBounds(content.toString(), 0, content.length(), defaultTextBounds);
-            int w = Math.max(defaultTextBounds.height(), defaultTextBounds.width());
-            //需要取外圆
-            width = 2 * ((int) (w / 2 / Math.cos(Math.PI / 4)));
-        }
-        setMeasuredDimension(width, width);//等比
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int h = this.getMeasuredHeight();
+        int w = this.getMeasuredWidth();
+        int r = Math.max(w, h);
+        setMeasuredDimension(r, r);
     }
 
+    private int number;
+
+    /**
+     * 小于0:隐藏,等于零:红点,大于零:数字
+     *
+     * @param number{}
+     */
     public void showNumber(int number) {
-        if (number <= 0) {
+        this.number = number;
+        if (number < 0) {
             drawFlag = 0;
             setText("");
             return;
+        } else if (number == 0) {
+            //红点
+            drawFlag = 1;
+            setText("");
+            return;
+        } else {
+            drawFlag = 2;
         }
-        drawFlag = 2;
         if (number > 99) setText("99+");
         else setText(number + "");
     }
 
-    public void showRedPoint(boolean show) {
-        if (show) {
-            drawFlag = 1;
-            setText("");
-            invalidate();
-        } else dismiss();
-    }
-
-    private void dismiss() {
-        drawFlag = 0;
-        setText("");
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
-        if (drawFlag == 2)
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, bgPaint);
-        else if (drawFlag == 1)
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, pointRadius, pointPaint);
+        int h = this.getHeight();
+        int w = this.getWidth();
+        int diameter = Math.max(h, w);
+        int radius = diameter / 2;
+        if (this.number > 99) {
+            setWidth(getWidth() + 3);
+            setHeight(getHeight() + 3);
+        }
+        if (drawFlag != 0)
+            canvas.drawCircle(diameter / 2, diameter / 2, radius, bgPaint);
         super.onDraw(canvas);
     }
 }

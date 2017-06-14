@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
-import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.LogState;
@@ -43,6 +40,8 @@ import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -113,7 +112,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     private void lazyLoad() {
         if (isPrepared) {
-            basePresenter.getUnReadMesg();
+            basePresenter.fetchNewInfo();
         }
     }
 
@@ -260,20 +259,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             }
             lazyLoad();
             //查询好友列表.
-            basePresenter.makeFriendsListReq();
-            Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair = BaseApplication.getAppComponent().getSourceManager().getPairFriends();
-            if (pair != null && !ListUtils.isEmpty(pair.second)) {
-                AppLogger.d("好友请求");
-                int count = ListUtils.getSize(pair.second);
-                homeMineItemFriend.showNumber(count);
-            }
-            //意见反馈
-            ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
-            homeMineItemHelp.showRedPoint(ListUtils.getSize(list) > 0);
-            //分享管理
-
-            //设置
-
+            updateHint();
         }
     }
 
@@ -349,15 +335,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         }
     }
 
-
-    /**
-     * 设置新消息的数量
-     */
-    @Override
-    public void setMesgNumber(final int number) {
-        AppLogger.d("ssss" + number);
-        tvHomeMineMsgCount.setText(number == 0 ? null : number > 99 ? "99+" : String.valueOf(number));
-    }
 
     private boolean needStartLoginFragment() {
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
@@ -445,15 +422,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putBoolean("hasNewMesg", basePresenter.hasUnReadMesg());
-        SystemMessageFragment homeMineMessageFragment = SystemMessageFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
-        homeMineMessageFragment.setOnClearMsgCountListener(() -> tvHomeMineMsgCount.setText(""));
+        SystemMessageFragment systemMessageFragment = SystemMessageFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(),
+                systemMessageFragment, android.R.id.content);
+        tvHomeMineMsgCount.setText("");
     }
 
     /**
@@ -495,6 +467,33 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void jump2BindMailFragment() {
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 BindMailFragment.newInstance(null), android.R.id.content);
+    }
+
+    @Override
+    public void updateHint() {
+        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+        Object o = node == null ? null : node.getData();
+        int count = 0;
+        if (o != null && o instanceof ArrayList) {
+            try {
+                count = ListUtils.getSize((ArrayList) o);
+            } catch (Exception e) {
+            }
+        }
+        homeMineItemFriend.showNumber(count);//count ==0 dismiss
+        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
+        if (node.getData() != null && node.getData() instanceof Integer) {
+            count = (int) node.getData();
+        }
+        //系统消息未读数
+        tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
+        //意见反馈
+        ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
+        homeMineItemHelp.showNumber(-1);
+        //分享管理
+
+        //设置
     }
 
     @Override

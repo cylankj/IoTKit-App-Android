@@ -62,7 +62,7 @@ public interface SysMessageContract {
         /**
          * 清空本地消息记录
          */
-        void clearRecoard();
+        void deleteAllRecords();
 
         /**
          * 消息保存到数据库

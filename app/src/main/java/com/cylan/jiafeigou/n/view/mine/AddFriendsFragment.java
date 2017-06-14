@@ -81,7 +81,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
-
+        showLoadingPro();
         return view;
     }
 
@@ -123,6 +123,7 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
         contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
+        hideLoadingPro();
     }
 
     /**
