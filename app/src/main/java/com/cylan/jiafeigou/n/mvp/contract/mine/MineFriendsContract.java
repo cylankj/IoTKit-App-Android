@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -17,7 +18,7 @@ import rx.Subscription;
  */
 public interface MineFriendsContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseFragmentView<Presenter> {
 
         /**
          * desc:初始化好友列表
@@ -153,16 +154,6 @@ public interface MineFriendsContract {
          * 同意添加成功后调用SDK
          */
         void acceptAddSDK(String account);
-
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
 
         /**
          * 删除好友请求

@@ -115,7 +115,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     }
 
     private void jump2AddFromContactFragment() {
-        MineFriendAddFromContactFragment addFromContactFragment = MineFriendAddFromContactFragment.newInstance();
+        AddFriendsFragment addFromContactFragment = AddFriendsFragment.newInstance();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -13,9 +14,9 @@ import rx.Subscription;
  * 创建时间：2016/9/6
  * 描述：
  */
-public interface MineFriendAddFromContactContract {
+public interface AddFriendContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseFragmentView<Presenter> {
         /**
          * 初始化联系人列表
          *
@@ -102,15 +103,6 @@ public interface MineFriendAddFromContactContract {
          */
         boolean checkSmsPermission();
 
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
 
     }
 

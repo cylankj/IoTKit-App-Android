@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,12 +23,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.contract.mine.AddFriendContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsContactImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
-import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -45,7 +43,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
+public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presenter> implements AddFriendContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_friends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -57,25 +55,24 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     LinearLayout llNoContact;
 
 
-    private MineFriendAddFromContactContract.Presenter presenter;
     private FriendAddFromContactAdapter contactListAdapter;
     private String friendAccount;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initPresenter();
     }
 
-    public static MineFriendAddFromContactFragment newInstance() {
-        return new MineFriendAddFromContactFragment();
+    public static AddFriendsFragment newInstance() {
+        return new AddFriendsFragment();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) {
-            presenter.start();
-            presenter.getFriendListData();
+        if (basePresenter != null) {
+            basePresenter.getFriendListData();
         }
     }
 
@@ -84,7 +81,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
-        initPresenter();
+
         return view;
     }
 
@@ -97,17 +94,13 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
 
     @OnTextChanged(R.id.et_add_phone_number)
     public void initEditTextListenter(CharSequence s, int start, int before, int count) {
-        presenter.filterPhoneData(s.toString());
+        basePresenter.filterPhoneData(s.toString());
     }
 
     private void initPresenter() {
-        presenter = new MineFriendAddFromContactPresenterImp(this);
+        basePresenter = new AddFriendsContactImp(this);
     }
 
-    @Override
-    public void setPresenter(MineFriendAddFromContactContract.Presenter presenter) {
-
-    }
 
     @Override
     public String getUuid() {
@@ -137,11 +130,8 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     private void initAdaListener() {
         contactListAdapter.setOnContactItemClickListener(this);
-        contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int viewType, int position) {
-                //跳转到联系人的详情界面去(不用)
-            }
+        contactListAdapter.setOnItemClickListener((itemView, viewType, position) -> {
+            //跳转到联系人的详情界面去(不用)
         });
     }
 
@@ -195,7 +185,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1) {
+        if (state == 0) {
             hideLoadingPro();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
@@ -210,11 +200,11 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
             sendEmail();
             return;
         }
-        if (presenter.checkSmsPermission()) {
+        if (basePresenter.checkSmsPermission()) {
             sendSms();
         } else {
             //申请权限
-            MineFriendAddFromContactFragment.this.requestPermissions(
+            AddFriendsFragment.this.requestPermissions(
                     new String[]{Manifest.permission.SEND_SMS},
                     1);
         }
@@ -243,22 +233,17 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) {
-            presenter.stop();
+        if (basePresenter != null) {
+            basePresenter.stop();
         }
     }
 
     @Override
     public void onAddClick(View view, int position, final RelAndFriendBean item) {
         friendAccount = item.account;
-        if (getView() != null && presenter != null) {
+        if (getView() != null && basePresenter != null) {
             showLoadingPro();
-            getView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    presenter.checkFriendAccount(item.account);
-                }
-            }, 2000);
+            getView().postDelayed(() -> basePresenter.checkFriendAccount(item.account), 2000);
         }
     }
 

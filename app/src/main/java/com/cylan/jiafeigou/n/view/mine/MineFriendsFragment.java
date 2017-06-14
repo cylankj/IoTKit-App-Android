@@ -218,7 +218,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1) {
+        if (state == 0) {
             hideLoadingDialog();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
