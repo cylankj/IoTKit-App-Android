@@ -61,8 +61,10 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     protected void onStart() {
         super.onStart();
         final String defaultAlias = getIntent().getStringExtra(KEY_BIND_DEVICE);
+        int bind_guide_res = R.raw.bind_guide;
         if (TextUtils.equals(defaultAlias, getString(R.string.RuiShi_Name))) {
-            //rs cam
+            //rs cam,在cylan包中,bind_guide_rs是一个空文件.这算是一个渠道包,只有doby才有改入口.
+            bind_guide_res = R.raw.bind_guide_rs;
             tvGuideMainContent.setText(getString(R.string.WIFI_SET_RS));
         } else if (TextUtils.equals(defaultAlias, getString(R.string.DOG_CAMERA_NAME))) {
             //is cam
@@ -74,7 +76,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
-        Glide.with(this).load(R.raw.bind_guide).into(imageViewTarget);
+        Glide.with(this).load(bind_guide_res).into(imageViewTarget);
         customToolbar.setBackAction((View v) -> {
             finishExt();
         });

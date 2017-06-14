@@ -27,6 +27,7 @@
   <string name="AT_HOME">Zurück</string>
   <string name="AUDIBLE_ALERT">Wenn Ungewöhnliches erkannt wird, tönt das Gerät</string>
   <string name="Added_successfully">Binden erfolgreich</string>
+  <string name="Alarm_WeChat">Alarmmeldungen per Wechat erhalten</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">Verbindung abgebrochen, bitte Internet überprüfen</string>
   <string name="CREATING">Einen Moment bitte&#8230;</string>
   <string name="CURRENT_PWD">Bitte aktuelles Passwort eingeben</string>
+  <string name="Cable_Mode">Kabelmodus</string>
+  <string name="Cable_Mode_Start_Hotspot">Bevor Sie sich einschalten, stellen Sie sicher, dass Ihr Telefon und Ihr Gerät mit demselben Router verbunden sind</string>
+  <string name="Cable_Mode_Switch_Cancel">Deaktivieren kann zum Offline des Gerätes führen, möchten Sie deaktivieren?</string>
   <string name="CancelingTips">Abbrechen&#8230;</string>
   <string name="Cellular_Data_Method">Mobile Daten:</string>
   <string name="Cellular_Data_Set_Up">Aktivieren Sie mobile Daten im Gerät, verwenden Sie bitte unten, Einstellungen> Mobile Daten</string>
+  <string name="Change_ID">Wechat&#8211;Konto wechseln</string>
   <string name="ChargingLight">Aufladen licht</string>
   <string name="ChargingLight_BlueFlashing">Blaues Blinken:Aufladen</string>
   <string name="ChargingLight_SteadyBlue">Steady blue: Voll</string>
@@ -231,6 +236,7 @@
   <string name="HOME">Homepage</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Ganztäglich</string>
+  <string name="HZ_NTSC_PAL">aktivieren NTSC</string>
   <string name="HZ_VOTE">110V Netzteil</string>
   <string name="HistoricalCard_Failed">Die historische Grafikkarte liest nicht</string>
   <string name="Historical_Failed">Historische Video&#8211;Lesevorgänge fehlgeschlagen</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">Spamschutzcode ist abgelaufen</string>
   <string name="IN_APP_SOUND">Töne</string>
   <string name="IN_APP_VIBRATE">Vibrieren</string>
+  <string name="IP_Address">IP&#8211;Adresse</string>
   <string name="I_KNOW">Gut</string>
+  <string name="Instructions_Sent">Befehl gegeben</string>
   <string name="Item_ConnectionFail">Netzwerkverbindung fehlgeschlagen</string>
   <string name="Item_LoadFail">nicht geladen</string>
   <string name="Item_NoContents">Kein Inhalt</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">In Einstellung&#8230;</string>
   <string name="SETTINGS">Einstellung</string>
   <string name="SETTINGS_1">Funktionseinstellung</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Nach dem Deaktivieren werden Sie die Wechat&#8211;Benachrichtigung nicht mehr erhalten. Möchten Sie die Verbindung trennen, bitte gehen Sie zu Wechat und das offizielle Konto \"Clever Dog\" nicht mehr folgen.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Bitte konzentriere dich auf das WeChat&#8211;Konto \"Clever Dog WeChat Official Account\" und binden, nach dem Erfolg des alten WeChat&#8211;Kontos wird die Meldung nicht mehr erhalten</string>
   <string name="SETTING_DIRECTION">Richtung des Videos</string>
   <string name="SETTING_FREE">Bewegungserkennung und Alarm vom Einzelgerät einstellen</string>
   <string name="SETTING_RECORD">Automatische Videoaufnahme</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">Teilen Management</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Start_Failed">Start fehlgeschlagen</string>
+  <string name="Start_Hotspot">Hotspot aktivieren</string>
+  <string name="Start_Hotspot_Note">Hotspotaktivieren kann zum Offline des Gerätes führen. Nach dem Aktivieren bitte warten Sie bis die blaue Lampe des Gerätes blinkt.</string>
+  <string name="Start_Hotspot_Prompt">Vergewissern Sie sich, dass das Telefon vor dem Öffnen mit dem \"%s\" WiFi&#8211;Netzwerk verbunden is</string>
+  <string name="Start_Success">Erfolg starten</string>
+  <string name="Start_instructions">Öffnen Sie die Anweisungen</string>
+  <string name="Start_instructions_A">In den WeChat Offiziellen Konten in der verbindlichen Clever Dog E&#8211;Mail können Sie diese Funktion öffnen.</string>
+  <string name="Start_instructions_B">Gehen Sie wie folgt vor:</string>
+  <string name="Start_instructions_C">1. Bitte achten Sie auf WeChat öffentliche Nummer \"Clever Dog WeChat Official Account\"</string>
+  <string name="Start_instructions_D">Methode 1: klicke auf die WeChat in der oberen rechten Ecke des \"+\"> Kontakte hinzufügen> Offizielle Konten, suche \"Clever Dog WeChat Official Account\" und dann besorgt.</string>
+  <string name="Start_instructions_E">Methode 2: Screenshot dieser Seite oder speichern Sie den folgenden zweidimensionalen Code auf das Album, in der WeChat Sweep Sweep Aufmerksamkeit.</string>
+  <string name="Start_instructions_F">2. Bindekonto</string>
+  <string name="Start_instructions_G">Achtung \"Clever Dog WeChat Official Account\" Offizielle Konten, geben Sie die Hauptseite, klicken Sie auf die Menüleiste des Dienstes, wählen Sie das verbindliche Konto.</string>
+  <string name="Start_instructions_H">Bindekonto</string>
+  <string name="Start_instructions_I">Bitte geben Sie die Clever Hund email Konto zu binden, wie vergessen Sie das Passwort bitte gehen Sie an die Clever Hund Client zurück</string>
   <string name="Switch_Mode">Bitte wechseln Sie zum direkten Modus, um den Aufnahmeinhalt anzuzeigen</string>
   <string name="Switch_Mode_Pop">Bitte schalten Sie den aktuellen Netzwerkaufnahmemittel in den Direktmodus</string>
   <string name="TAKE_PHOTO">Foto aufnehmen</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Kamera in Standby, zur Einschaltung der Zeitrafferaufnahme muss der Standby&#8211;Modus ausgeschaltet werden. Möchten Sie ausschalten?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">ausschalten</string>
   <string name="Tap1_CameraFun_Timelapse_document">Zeitrafferaufnahme einschalten um mehr Highlight zu erwerben</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">% Stunde(n)</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s tunde(n)</string>
   <string name="Tap1_CameraFun_UninitializedTips">Mikro&#8211;SD&#8211;Karte lesen gescheitert</string>
   <string name="Tap1_CameraFun_VideoDirection">umgedreht (Bild umdrehen)</string>
   <string name="Tap1_Camera_BackLiveTips">Zurück zu live</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">Einrichten</string>
   <string name="Tap1_Update">Aktualisierung</string>
   <string name="Tap1_UpdateFirmwareTips">Aktualisierung wird in Kürze starten,stellen Sie sicher,dass Handy und Gerät mit demselben WIFI verbinden</string>
+  <string name="Tap1_Update_Electricity">Batterie niedriger als 30%, Aktualisierung nicht verfügbar, bitte aufladen und später erneut versuchen.</string>
+  <string name="Tap1_Update_Precautions">Die Aktualisierung bedarf vier bis fünf Minuten.Bitte das Gerät während der Aktualisierung nicht von dem Strom und dem Netzwerk trennen.</string>
   <string name="Tap1_device_deleted">Dieses Gerät wurde gelöscht.</string>
   <string name="Tap1_iHome_Associate">assoziieren</string>
   <string name="Tap1_iHome_Associated">Dazugehörigen</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Mit dieser Funktion muss zuerst die E&#8211;Mail gebunden werden.</string>
   <string name="Tap3_TitleName">Mich</string>
+  <string name="Tap3_TitleName_Notice">Mitteilungen</string>
   <string name="Tap3_Uploading">Hochladen&#8230;</string>
   <string name="Tap3_UploadingComplete">Hochladen abgeschlossen</string>
   <string name="Tap3_UploadingFailed">Hochladen fehlgeschlagen</string>

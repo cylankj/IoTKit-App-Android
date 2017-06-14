@@ -27,17 +27,19 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.MineInfoActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
+import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
-import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
-import com.cylan.jiafeigou.n.view.mine.HomeMineInfoMailBoxFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
@@ -63,6 +65,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static android.app.Activity.RESULT_OK;
 import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
 
@@ -475,13 +478,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转个人信息页
      */
     private void jump2UserInfoFrgment() {
-        HomeMineInfoFragment personalInformationFragment = HomeMineInfoFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
+        //注意activity的启动模式.
+        startActivityForResult(new Intent(getActivity(), MineInfoActivity.class), 10000);
     }
 
     /**
@@ -501,22 +499,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void jump2BindMailFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", getAppComponent().getSourceManager().getJFGAccount());
-        HomeMineInfoMailBoxFragment bindMailFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, bindMailFragment, "bindMailFragment")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                BindMailFragment.newInstance(null), android.R.id.content);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
-        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
+//        Fragment mineInfoFragment = getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
+//        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK)
+            switch (requestCode) {
+                case 10000:
+                    Intent intent = new Intent(getContext(), SmartcallActivity.class);
+                    intent.putExtra(JConstant.FROM_LOG_OUT, true);
+                    startActivity(intent);
+                    getActivity().finish();
+                    break;
+            }
     }
 
 

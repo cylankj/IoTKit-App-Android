@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
@@ -19,7 +20,6 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -115,8 +115,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void showQrCode(String account) {
-        final String url = getString(R.string.qrcode_prefix, ContextUtils.getContext().getPackageName(), account);
-        ivErweima.setImageBitmap(Qrcode.createQRImage(url, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+        ivErweima.setImageBitmap(Qrcode.createQRImage(LinkManager.getQrCodeLink(), ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     /**
@@ -205,7 +204,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     public void handleResult(final Result rawResult) {
         String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
 
-        if (NetUtils.getNetType(getContext()) == 0) {
+        if (NetUtils.getJfgNetType() == 0) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }

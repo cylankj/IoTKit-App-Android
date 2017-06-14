@@ -61,8 +61,8 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
                         monitorListener.onFrameRate(isBad);
                 }
             }
-            if (frameRateList.size() == MAX_SIZE) {
-                //1.30s内的规则.
+            if (frameRateList.size() >= 10) {
+                //1.10s内的规则. 30s改成10s了  2017-06-13
                 boolean _10_s_rules = isBad(frameRateList, FINAL_LEVEL, 10, TARGET_SIZE);
                 if (System.currentTimeMillis() - showFailedTime > SHOW_FREQUENCY) {
                     //3s内提醒一次

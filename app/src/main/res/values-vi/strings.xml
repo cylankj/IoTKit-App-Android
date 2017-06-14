@@ -27,6 +27,7 @@
   <string name="AT_HOME">At Home</string>
   <string name="AUDIBLE_ALERT">Chọn Báo âm thanh để thực hiện khi phát hiện chuyển động</string>
   <string name="Added_successfully">Hãy cột thành công</string>
+  <string name="Alarm_WeChat">Báo thức qua WeChet</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">Đang kết nối mạng</string>
   <string name="CREATING">Đang thêm vào&#8230;</string>
   <string name="CURRENT_PWD">Mật khẩu hiện tại</string>
+  <string name="Cable_Mode">Chế độ cáp</string>
+  <string name="Cable_Mode_Start_Hotspot">Trước khi bật, đảm bảo điện thoại và thiết bị của bạn được kết nối với cùng một bộ định tuyến</string>
+  <string name="Cable_Mode_Switch_Cancel">Nếu tắt, nó có thể gây ra ngoại tuyến của thiết bị, hãy xác nhận tắt?</string>
   <string name="CancelingTips">Hủy&#8230;</string>
   <string name="Cellular_Data_Method">Dữ liệu di động:</string>
   <string name="Cellular_Data_Set_Up">Bật dữ liệu di động trong thiết bị, vui lòng sử dụng dưới đây, Cài đặt> Dữ liệu di động</string>
+  <string name="Change_ID">Thay đổi ID WeChat</string>
   <string name="ChargingLight">đèn sạc</string>
   <string name="ChargingLight_BlueFlashing">Màu xanh nhấp nháy: Công suất thấp</string>
   <string name="ChargingLight_SteadyBlue">Ổn định màu xanh: Đầy đủ</string>
@@ -231,6 +236,7 @@
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 giờ</string>
+  <string name="HZ_NTSC_PAL">Bắt đầu NTSC</string>
   <string name="HZ_VOTE">Nguồn 110V</string>
   <string name="HistoricalCard_Failed">Thẻ video lịch sử đã đọc thất bại</string>
   <string name="Historical_Failed">Video lịch sử đã đọc thất bại</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">Mã không tồn tại</string>
   <string name="IN_APP_SOUND">In&#8211;APP báo âm thanh</string>
   <string name="IN_APP_VIBRATE">In&#8211;APP báo rung</string>
+  <string name="IP_Address">địa chỉ IP</string>
   <string name="I_KNOW">OK</string>
+  <string name="Instructions_Sent">Đã gửi hướng dẫn</string>
   <string name="Item_ConnectionFail">Lỗi kết nối mạng</string>
   <string name="Item_LoadFail">Lỗi khi tải</string>
   <string name="Item_NoContents">Không có nội dung</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">Đang cài đặt&#8230;</string>
   <string name="SETTINGS">Cài đặt</string>
   <string name="SETTINGS_1">Cài đặt</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Nếu đóng cửa, nó không thể nhận được WeChat đẩy. Hủy bỏ nó bằng cách hủy theo dõi \"Tài khoản Chính thức của Clever Dog WeChat\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Hãy tập trung vào tài khoản WeChat \"Tài khoản Chính thức của Clever Dog WeChat\" và ràng buộc, sau khi thành công của tài khoản WeChat cũ sẽ không còn nhận được thông báo push</string>
   <string name="SETTING_DIRECTION">Hướng video</string>
   <string name="SETTING_FREE">Cài phát hiện chuyển động và báo động của thiết bị</string>
   <string name="SETTING_RECORD">Đang lưu Video</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">Quản lý chia sẻ</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Start_Failed">Bắt đầu không thành công</string>
+  <string name="Start_Hotspot">Bắt đầu điểm phát sóng</string>
+  <string name="Start_Hotspot_Note">Bắt đầu hotspot có thể gây ra ngoại tuyến của thiết bị; Sau khi bật, chờ đèn xanh lam nhấp nháy của thiết bị</string>
+  <string name="Start_Hotspot_Prompt">Đảm bảo điện thoại được kết nối với mạng \"%s\"WiFi trước khi mở</string>
+  <string name="Start_Success">Bắt đầu thành công</string>
+  <string name="Start_instructions">Mở hướng dẫn</string>
+  <string name="Start_instructions_A">Trong tài khoản chính thức của WeChat trong email Clever Dog ràng buộc, bạn có thể mở chức năng này.</string>
+  <string name="Start_instructions_B">Tiến hành như sau:</string>
+  <string name="Start_instructions_C">1. Hãy chú ý đến số WeChat công cộng \"Tài khoản Chính thức của Clever Dog WeChat\"</string>
+  <string name="Start_instructions_D">Phương pháp 1: nhấp vào WeChat ở góc trên bên phải của \"+\"> Thêm địa chỉ liên hệ> Tài khoản chính thức, tìm kiếm \"Tài khoản Chính thức của Clever Dog WeChat\" và sau đó liên quan.</string>
+  <string name="Start_instructions_E">Phương pháp 2: ảnh chụp màn hình của trang này hoặc lưu mã hai chiều sau đây vào album, trong sự chú ý quét của WeChat.</string>
+  <string name="Start_instructions_F">2. Liên kết tài khoản</string>
+  <string name="Start_instructions_G">Chú ý \"Tài khoản Chính thức của Clever Dog WeChat\" Tài khoản chính thức, nhập trang chính, nhấp vào thanh trình đơn của dịch vụ, chọn tài khoản ràng buộc.</string>
+  <string name="Start_instructions_H">Liên kết tài khoản</string>
+  <string name="Start_instructions_I">Vui lòng nhập tài khoản điện tài khoản Clever dog để ràng buộc, chẳng hạn như quên mật khẩu, hãy chuyển đến khách hàng của Clever dog</string>
   <string name="Switch_Mode">Hãy chuyển sang chế độ trực tiếp để xem nội dung chụp</string>
   <string name="Switch_Mode_Pop">Vui lòng chuyển đổi nội dung chụp mạng hiện tại sang chế độ trực tiếp</string>
   <string name="TAKE_PHOTO">Chụp ảnh</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Cần tắt Standby trước khi chụp time&#8211;lapse, bạn chắc không?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Chắc</string>
   <string name="Tap1_CameraFun_Timelapse_document">Ghi giữ thêm khoảnh khắc với tính năng Time&#8211;lapse</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%giờ</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s giờ</string>
   <string name="Tap1_CameraFun_UninitializedTips">Lỗi đọc thẻ nhớ SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Đảo chiều</string>
   <string name="Tap1_Camera_BackLiveTips">Back to live</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">Thiết lập</string>
   <string name="Tap1_Update">cập nhật</string>
   <string name="Tap1_UpdateFirmwareTips">Cập nhật sẽ bắt đầu trong thời gian ngắn,hãy đảm bảo rằng điện thoại di động và các thiết bị đang kết nối với WIFI cùng</string>
+  <string name="Tap1_Update_Electricity">Pin yếu &lt;30%, nâng cấp không thành công, hãy sạc lại và thử lại</string>
+  <string name="Tap1_Update_Precautions">Nâng cấp mất khoảng 4&#8211;5 phút, không cắt mạng Internet hoặc tắt thiết bị khi nâng cấp.</string>
   <string name="Tap1_device_deleted">Thiết bị đã bị xoá</string>
   <string name="Tap1_iHome_Associate">Kết hợp</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Không chia sẻ?</string>
   <string name="Tap3_Share_NoBindTips">Sử dụng chức năng này cần để ràng buộc email đầu tiên.</string>
   <string name="Tap3_TitleName">Tôi</string>
+  <string name="Tap3_TitleName_Notice">Để ý</string>
   <string name="Tap3_Uploading">Uploading &#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

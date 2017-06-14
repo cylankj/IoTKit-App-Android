@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -13,8 +14,10 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SettingTip;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -26,6 +29,7 @@ import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -263,4 +267,58 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 });
         addSubscription(subscribe, "unbindDevice");
     }
+
+    @Override
+    public Observable<Boolean> switchApModel(int model) {
+        final String mac = device.$(202, "");
+        if (TextUtils.isEmpty(mac)) {
+            AppLogger.d("mac为空");
+            return Observable.just(false);
+        }
+        return Observable.just(model)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(s -> {
+                    try {
+                        for (int i = 0; i < 3; i++) {
+                            JfgUdpMsg.UdpSetApReq req = new JfgUdpMsg.UdpSetApReq(uuid, mac);
+                            req.model = s;
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT, req.toBytes());
+                        }
+                        AppLogger.d("send UdpSetApReq :" + uuid + "," + mac);
+                    } catch (JfgException e) {
+                    }
+                    return Observable.just(s);
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .timeout(10, TimeUnit.SECONDS))//原型说10s
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(localUdpMsg -> {
+                    try {
+                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
+                        if (header != null && TextUtils.equals(header.cmd, "set_ap_rsp")) {
+                            return Observable.just(localUdpMsg.data);
+                        }
+                    } catch (Exception e) {
+                    }
+                    return Observable.just(null);
+                })
+                .filter(ret -> ret != null)
+                .filter(ret -> {
+                    try {
+                        UdpConstant.SetApRsp rsp = DpUtils.unpackData(ret, UdpConstant.SetApRsp.class);
+                        return (rsp != null && TextUtils.equals(rsp.cid, uuid));
+                    } catch (IOException e) {
+                        return false;
+                    }
+                }).take(1)
+                .flatMap(bytes -> Observable.just(true));
+    }
+
+    @Override
+    public void addSub(Subscription subscription, String tag) {
+        addSubscription(subscription, tag);
+    }
+
 }

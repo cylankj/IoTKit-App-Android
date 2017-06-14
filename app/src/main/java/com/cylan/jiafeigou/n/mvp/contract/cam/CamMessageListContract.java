@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.base.module.DPConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -31,7 +30,7 @@ public interface CamMessageListContract {
          * 设备信息{在线,sd卡,电量.....所有信息}
          *
          * @param id:消息id
-         * @param o:      {@link DPConstant}
+         * @param o:
          */
         void deviceInfoChanged(int id, JFGDPMsg o) throws IOException;
 

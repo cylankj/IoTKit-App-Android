@@ -24,6 +24,7 @@ import butterknife.OnClick;
  */
 public class MineReSetMailTip extends Fragment {
 
+    public static final String KEY_MAIL = "key_mail";
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.tv_mail_address)
@@ -31,12 +32,12 @@ public class MineReSetMailTip extends Fragment {
     @BindView(R.id.tv_mail_connect_submit)
     TextView tvMailConnectSubmit;
 
-    private String useraccount;
+    private String mailToVerify;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        useraccount = getArguments().getString("useraccount");
+        mailToVerify = getArguments().getString(KEY_MAIL);
     }
 
     public static MineReSetMailTip newInstance(Bundle bundle) {
@@ -57,12 +58,8 @@ public class MineReSetMailTip extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tvMailConnectSubmit.setEnabled(true);
-        tvMailAddress.setText(useraccount);
+        tvMailAddress.setText(mailToVerify);
         tvMailAddress.setTypeface(Typeface.DEFAULT_BOLD);
-        initTopBar();
-    }
-
-    private void initTopBar() {
         customToolbar.setBackAction((View v) -> {
             jump2MineInfoFragment();
         });
@@ -74,41 +71,7 @@ public class MineReSetMailTip extends Fragment {
     }
 
     public void jump2MineInfoFragment() {
-        if (getActivity() != null) {
-            int count = getActivity().getSupportFragmentManager().getBackStackEntryCount();
-            for (int i = 0; i < count; i++) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        }
-//        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
-//        MineReSetMailTip mailTip = (MineReSetMailTip) getActivity().getSupportFragmentManager().findFragmentByTag("MineReSetMailTip");
-//        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
-//        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
-//
-//        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//        if (personalInfoFragment != null) {
-//            AppLogger.d("infoFrag不为空");
-//            if (setNewPwdFragment != null) {
-//                ft.remove(setNewPwdFragment);
-//            }
-//            if (mailBoxFragment != null) {
-//                ft.remove(mailBoxFragment);
-//            }
-//            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                    , R.anim.slide_in_left, R.anim.slide_out_right)
-//                    .show(personalInfoFragment)
-//                    .commit();
-//        } else {
-//            AppLogger.d("infoFrag为空");
-//            HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
-//            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                    , R.anim.slide_in_left, R.anim.slide_out_right)
-//                    .add(android.R.id.content, fragment, "mineReSetMailTip")
-//                    .addToBackStack("personalInformationFragment")
-//                    .commit();
-//        }
-//        if (mailTip != null) {
-//            ft.remove(mailTip);
-//        }
+        if (getActivity() != null && !getActivity().isFinishing())
+            getActivity().finish();
     }
 }

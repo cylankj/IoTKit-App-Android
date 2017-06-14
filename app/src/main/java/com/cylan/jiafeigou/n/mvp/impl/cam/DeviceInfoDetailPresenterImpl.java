@@ -187,8 +187,10 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 })
                 .flatMap(dev -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
                         .filter(setAlias -> setAlias.result.event == JResultEvent.JFG_RESULT_SET_DEVICE_ALIAS
-                                && setAlias.result.code == 0))
+                                && setAlias.result.code == 0)
+                .first())
                 .filter(s -> getView() != null)
+                .first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(setAlias -> getView().setAliasRsp(JError.ErrorOK),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage())));

@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -64,13 +65,17 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .flatMap(result -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
                         .flatMap(setAlias -> Observable.just(setAlias != null
                                 && setAlias.result != null
-                                && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1)))
-                .delay(1, TimeUnit.SECONDS)
+                                && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1))
+                        .first())
+                .first()
+                .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer result) -> {
                     getView().setupAliasDone(result);
                 }, throwable -> {
-                    getView().setupAliasDone(-1);
+                    if (throwable instanceof TimeoutException) {
+                        getView().setupAliasDone(-1);
+                    }
                     AppLogger.e(throwable);
                 });
         addSubscription(subscribe, "setupAlias");

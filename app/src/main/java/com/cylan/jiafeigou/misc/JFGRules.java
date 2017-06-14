@@ -105,6 +105,21 @@ public class JFGRules {
         return LANGUAGE_TYPE_ENGLISH;
     }
 
+    public static boolean showIpAddress(int pid) {
+        return pid == 38 || pid == 39;
+    }
+
+
+    /**
+     * 软AP
+     *
+     * @param pid
+     * @return
+     */
+    public static boolean showSoftAp(int pid) {
+        return pid == 38 || pid == 39;
+    }
+
     public static boolean isWifiCam(int pid) {
         return pid == JConstant.OS_CAMERA_UCOS ||
                 pid == JConstant.OS_CAMERA_UCOS_V2 ||
@@ -113,15 +128,62 @@ public class JFGRules {
     }
 
     public static boolean isPanoramicCam(int pid) {
-        return pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
-                pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
-                pid == JConstant.PID_CAMERA_PANORAMA_HAISI_960 ||
-                pid == JConstant.PID_CAMERA_PANORAMA_HAISI_1080 ||
-                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE ||
-                pid == 36 ||
-                pid == 37;
+        return 10 == pid ||
+                18 == pid ||
+                36 == pid || 1092 == pid ||
+                1091 == pid || 39 == pid ||
+                49 == pid || pid == 1348;
     }
 
+    public static boolean showNTSCVLayout(int pid) {
+        return pid == 5 || pid == 7 || 10 == pid ||
+                18 == pid ||
+                36 == pid ||
+                37 == pid ||
+                38 == pid ||
+                39 == pid ||
+                1348 == pid ||
+                1152 == pid ||
+                49 == pid || pid == 1090 || 1092 == pid ||
+                1091 == pid;
+    }
+
+    public static boolean showHomeBatteryIcon(int pid) {
+        return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
+    }
+
+    public static boolean isTestBell(int pid) {
+        return pid == 1344 ||
+                pid == 1345 ||
+                pid == 44 ||
+                pid == 46;
+    }
+
+    public static boolean isTestCam(int pid) {
+        return pid == 1346 ||
+                pid == 1347 ||
+                pid == 47 ||
+                pid == 48;
+    }
+
+    public static boolean showSettingBatteryItem(int pid) {
+        if (isRS(pid)) return false;//睿思,不显示电量.
+        return is3GCam(pid) || isFreeCam(pid)
+                || pid == 1089
+                || pid == 21
+                || pid == 1088
+                || pid == 26
+                || pid == 1093
+                || pid == 6
+                || pid == 1094
+                || pid == 25
+                || pid == 11
+                || pid == 17
+                || pid == 1158
+                || pid == 1160
+                || pid == 27;
+
+    }
 
     public static boolean isMobileNet(int net) {
         return net >= 2;
@@ -160,6 +222,7 @@ public class JFGRules {
     public static boolean isCamera(int pid) {
         if (isRS(pid)) return true;
         if (isPan720(pid)) return true;
+        if (isTestCam(pid)) return true;
         switch (pid) {
             case 4:
             case 5:
@@ -188,6 +251,7 @@ public class JFGRules {
     }
 
     public static boolean isBell(int pid) {
+        if (isTestBell(pid)) return true;
         switch (pid) {
             case 6:
             case 25:
@@ -218,6 +282,7 @@ public class JFGRules {
     public static boolean isPan720(int pid) {
         return pid == 1089 || pid == 21;
     }
+
 
     public static boolean showSight(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,

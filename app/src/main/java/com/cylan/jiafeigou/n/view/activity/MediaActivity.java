@@ -586,9 +586,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                             int currentItem = mMediaPager.getCurrentItem();
                             mCurrentMediaBean = mMediaList.get(currentItem);
                         }
-                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
+//                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
                             finish();
-                        }
+//                        }
                     }
                 }, AppLogger::e);
     }

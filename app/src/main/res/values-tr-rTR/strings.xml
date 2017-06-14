@@ -27,6 +27,7 @@
   <string name="AT_HOME">Evde</string>
   <string name="AUDIBLE_ALERT">Hareket seçildiğinde çalınacak olan Sesli alarmı seçiniz</string>
   <string name="Added_successfully">Başarıyla bind</string>
+  <string name="Alarm_WeChat">WeChet üzerinden alarm</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">Ağa bağlanıyor</string>
   <string name="CREATING">Ekleniyor&#8230;</string>
   <string name="CURRENT_PWD">Mevcut şifre</string>
+  <string name="Cable_Mode">Kablo modu</string>
+  <string name="Cable_Mode_Start_Hotspot">Açmadan önce, telefonunuzun ve cihazınızın aynı yönlendiriciye bağlı olduğundan emin olun</string>
+  <string name="Cable_Mode_Switch_Cancel">Kapalıysa, cihazın çevrimdışı olmasına neden olabilir, kapalı onaylayın?</string>
   <string name="CancelingTips">İptal&#8230;</string>
   <string name="Cellular_Data_Method">Mobil veri:</string>
   <string name="Cellular_Data_Set_Up">Cihazdaki Mobil verileri etkinleştirin, lütfen aşağıdaki şekilde kullanın; Ayarlar> Mobil veri</string>
+  <string name="Change_ID">WeChat Kimliği Değiştir</string>
   <string name="ChargingLight">Şarj ışığı</string>
   <string name="ChargingLight_BlueFlashing">Mavi yanıp sönüyor: Şarj</string>
   <string name="ChargingLight_SteadyBlue">Sabit mavi: Tam</string>
@@ -231,6 +236,7 @@
   <string name="HOME">Ev</string>
   <string name="HOUR">S</string>
   <string name="HOURS">24 saat</string>
+  <string name="HZ_NTSC_PAL">NTSC\'yi başlat</string>
   <string name="HZ_VOTE">110V elektrik beslemesi</string>
   <string name="HistoricalCard_Failed">Tarihi video kartı okunamadı</string>
   <string name="Historical_Failed">Geçmiş video okunamadı</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">Geçersiz kod</string>
   <string name="IN_APP_SOUND">UYG&#8211;içi Alarm sesi</string>
   <string name="IN_APP_VIBRATE">UYG&#8211;içi Titreşim</string>
+  <string name="IP_Address">IP adresi</string>
   <string name="I_KNOW">TAMAM</string>
+  <string name="Instructions_Sent">Talimatlar gönderildi</string>
   <string name="Item_ConnectionFail">Ağa bağlanma başarısız</string>
   <string name="Item_LoadFail">Yükleme başarısız</string>
   <string name="Item_NoContents">İçerik yok</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">Ayarlanıyor&#8230;</string>
   <string name="SETTINGS">Ayarlamalar</string>
   <string name="SETTINGS_1">Ayarlamalar</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Kapanırsa, WeChat itilmesini kabul edemezsiniz. \"Akıllı Köpek WeChat Resmi Hesabı\" nı takip etmeden kaldırılmasını.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Lütfen eski WeChat hesabının başarısı artık mesajı zorla almazsak WeChat hesabına \"Akıllı Köpek WeChat Resmi Hesabı\" na odaklanın ve bağlayın.</string>
   <string name="SETTING_DIRECTION">Video yönlendirme</string>
   <string name="SETTING_FREE">Kişisel cihazın alarm ve hareket algılamasını ayarlayın</string>
   <string name="SETTING_RECORD">Video kaydetme</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">Paylaşım yönetimi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Start_Failed">Başarısız</string>
+  <string name="Start_Hotspot">Etkin noktayı başlat</string>
+  <string name="Start_Hotspot_Note">Başlangıç ​​hotspot, cihazın çevrimdışı olmasına neden olabilir; Cihaz açıldıktan sonra cihazın mavi ışığının yanıp sönmesini bekleyin</string>
+  <string name="Start_Hotspot_Prompt">Açmadan önce telefonun \"%s\" WiFi şebekesine bağlı olduğundan emin olun</string>
+  <string name="Start_Success">Başarıya başlayın</string>
+  <string name="Start_instructions">Talimatları aç</string>
+  <string name="Start_instructions_A">Clever Dog e&#8211;postasını bağlayan WeChat Resmi Hesaplarında bu işlevi açabilirsiniz.</string>
+  <string name="Start_instructions_B">Aşağıdakileri yapın:</string>
+  <string name="Start_instructions_C">1. Lütfen WeChat genel numarasına \"Akıllı Köpek WeChat Resmi Hesabı\" na dikkat edin.</string>
+  <string name="Start_instructions_D">Yöntem 1: \"+\"> Rehber Ekle> Resmi Hesaplar\'ın sağ üst köşesindeki WeChat\'ı tıklayın, ardından \"Akıllı Köpek WeChat Resmi Hesabı\" arar ve ardından endişe duyar.</string>
+  <string name="Start_instructions_E">Yöntem 2: Bu sayfanın ekran görüntüsü veya aşağıdaki iki boyutlu kodu Albüme kaydetmek için WeChat süpürme dikkatini kullanın.</string>
+  <string name="Start_instructions_F">2. Hesap bağlayın</string>
+  <string name="Start_instructions_G">Dikkat \"Akıllı Köpek WeChat Resmi Hesabı\" Resmi Hesaplar, ana sayfaya girin, hizmetin menü çubuğuna tıklayın, cilt hesabı seçin.</string>
+  <string name="Start_instructions_H">Hesabı bağla</string>
+  <string name="Start_instructions_I">Lütfen şifreyi unuttum gibi bağlamak için Zeki köpek e&#8211;posta hesabını giriniz, lütfen Zeki köpek müşterisine geri dönün.</string>
   <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen doğrudan moda geçin</string>
   <string name="Switch_Mode_Pop">Lütfen geçerli şebeke çekim içeriğini doğrudan moda geçirin</string>
   <string name="TAKE_PHOTO">Fotoğraf çek</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Hızlandırılmış fotoğraflamadan önce beklemedeyi kapatmaya gerek var, emin misiniz?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Emin</string>
   <string name="Tap1_CameraFun_Timelapse_document">Hızlandırılmış fotoğrafçılık ile daha harika anları başlatın</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">% saat</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s aat</string>
   <string name="Tap1_CameraFun_UninitializedTips">Mikro SD kart okuma başarısız</string>
   <string name="Tap1_CameraFun_VideoDirection">Ters</string>
   <string name="Tap1_Camera_BackLiveTips">Back to canlı</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">Kurulum</string>
   <string name="Tap1_Update">Güncelleştir</string>
   <string name="Tap1_UpdateFirmwareTips">Güncelleştir kısa bir süre içinde başlayacak,lütfen cep telefonunun ve cihazının aynı WIFI ile bağlantı kurduğundan emin olun</string>
+  <string name="Tap1_Update_Electricity">Düşük pil &lt;% 30, yükseltme başarısız, lütfen şarj edin ve tekrar deneyin.</string>
+  <string name="Tap1_Update_Precautions">Yükseltme yaklaşık 4&#8211;5 dakika sürer; yükseltme sırasında İnternet\'i kesmeyin veya cihazı kapatmayın.</string>
   <string name="Tap1_device_deleted">Bu cihaz silindi</string>
   <string name="Tap1_iHome_Associate">Birleştir</string>
   <string name="Tap1_iHome_Associated">Ilişkili</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Unshare?</string>
   <string name="Tap3_Share_NoBindTips">Bu işlevi kullanmak, önce e&#8211;postayı bağlamak zorundadır.</string>
   <string name="Tap3_TitleName">Beni</string>
+  <string name="Tap3_TitleName_Notice">ihbar</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>

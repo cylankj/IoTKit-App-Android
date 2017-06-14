@@ -202,6 +202,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         }
         String softWare = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvDeviceSoftwareVersion.setTvSubTitle(softWare);
+        //ip地址
+        tvDeviceIp.setTvSubTitle(JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet())) ? device.$(227, "") : "");
     }
 
     private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {

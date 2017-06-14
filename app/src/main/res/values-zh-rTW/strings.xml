@@ -27,6 +27,7 @@
   <string name="AT_HOME">回家模式</string>
   <string name="AUDIBLE_ALERT">偵測到異常時，設備將播放聲音</string>
   <string name="Added_successfully">綁定成功</string>
+  <string name="Alarm_WeChat">微信接收報警消息</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">返回</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">連接中斷，請檢查設備網路連接</string>
   <string name="CREATING">正在新增，請稍候&#8230;</string>
   <string name="CURRENT_PWD">請輸入原本密碼</string>
+  <string name="Cable_Mode">有線模式</string>
+  <string name="Cable_Mode_Start_Hotspot">開啟前請確定手機和設備已連接到同一路由器</string>
+  <string name="Cable_Mode_Switch_Cancel">關閉可能會使設備離線，確定關閉？</string>
   <string name="CancelingTips">正在取消&#8230;</string>
   <string name="Cellular_Data_Method">移動數據網絡：</string>
   <string name="Cellular_Data_Set_Up">在設備的“設置”>“移動網絡”中啟動移動數據網絡。</string>
+  <string name="Change_ID">更換微信號</string>
   <string name="ChargingLight">充電燈</string>
   <string name="ChargingLight_BlueFlashing">藍色閃爍：低電量</string>
   <string name="ChargingLight_SteadyBlue">藍色長亮：充滿</string>
@@ -231,6 +236,7 @@
   <string name="HOME">主頁</string>
   <string name="HOUR">時</string>
   <string name="HOURS">全天提示</string>
+  <string name="HZ_NTSC_PAL">開啟NTSC</string>
   <string name="HZ_VOTE">支援110V電壓</string>
   <string name="HistoricalCard_Failed">歷史錄像卡讀取失敗</string>
   <string name="Historical_Failed">歷史錄像讀取失敗</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">驗證碼已過期</string>
   <string name="IN_APP_SOUND">警示聲音</string>
   <string name="IN_APP_VIBRATE">振動</string>
+  <string name="IP_Address">IP地址</string>
   <string name="I_KNOW">我知道了</string>
+  <string name="Instructions_Sent">指令已發送</string>
   <string name="Item_ConnectionFail">網絡連線失敗</string>
   <string name="Item_LoadFail">加載失敗</string>
   <string name="Item_NoContents">無內容</string>
@@ -374,7 +382,7 @@
   <string name="PROFILE_PHOTO">檔案照片</string>
   <string name="PULL_TO_LOAD">下拉載入</string>
   <string name="PULL_TO_REFRESH">下拉更新</string>
-  <string name="PUSH_MSG">接收訊息通知</string>
+  <string name="PUSH_MSG">APP接收訊息通知</string>
   <string name="PWD_CHANGED">帳號密碼已修改，請重新登錄</string>
   <string name="PWD_ERR">請輸入確認密碼</string>
   <string name="PWD_ERR_1">前後輸入的密碼不一致</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">正在設定&#8230;</string>
   <string name="SETTINGS">設定</string>
   <string name="SETTINGS_1">功能設置</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">關閉將無法接收微信推送。想取消綁定請前往微信取消關注\“加菲狗官微服務\”公眾號。</string>
+  <string name="SETTINGS_Wechat_Switch_Open">請在新的微信號上關注\"加菲狗官微服務\"並綁定，成功後舊的微信號將不再接收消息推送</string>
   <string name="SETTING_DIRECTION">錄影指向</string>
   <string name="SETTING_FREE">自行設定單個設備的位移偵測及警示</string>
   <string name="SETTING_RECORD">自動錄影</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">分享管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
+  <string name="Start_Failed">開啟失敗</string>
+  <string name="Start_Hotspot">開啟熱點</string>
+  <string name="Start_Hotspot_Note">開啟熱點會使設備離線，開啟後，請等待設備藍燈閃爍</string>
+  <string name="Start_Hotspot_Prompt">開啟前請確定手機已連接到\“%s\”WiFi網絡</string>
+  <string name="Start_Success">開啟成功</string>
+  <string name="Start_instructions">開啟說明</string>
+  <string name="Start_instructions_A">在微信公眾號裡綁定加菲狗電子郵件，即可開啟此功能。</string>
+  <string name="Start_instructions_B">步驟如下：</string>
+  <string name="Start_instructions_C">1. 請先關注微信公眾號\“加菲狗官微服務\”</string>
+  <string name="Start_instructions_D">方法一：點擊微信右上角的\“+\”號 > 添加朋友 > 公眾號，搜索 \“加菲狗官微服務\”然後關注。</string>
+  <string name="Start_instructions_E">方法二：截圖此頁面，在微信 裡掃一掃關注。</string>
+  <string name="Start_instructions_F">2. 綁定賬號</string>
+  <string name="Start_instructions_G">關注\“加菲狗官微服務\”公眾號後，進入主頁面，點擊菜單欄的\“服務\”，選擇\“綁定賬號\”。</string>
+  <string name="Start_instructions_H">綁定賬號</string>
+  <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
   <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
   <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至直連模式查看</string>
   <string name="TAKE_PHOTO">拍照</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">攝影機安全待機中，開啟延時攝影，需關閉安全待機模式，確認是否關閉？</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">確認關閉</string>
   <string name="Tap1_CameraFun_Timelapse_document">啟動延時攝影，更多精彩畫面呈現</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%小時</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s 小時</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SD卡讀寫失敗</string>
   <string name="Tap1_CameraFun_VideoDirection">倒掛（畫面反轉）</string>
   <string name="Tap1_Camera_BackLiveTips">點擊返回直播</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">設定</string>
   <string name="Tap1_Update">升級</string>
   <string name="Tap1_UpdateFirmwareTips">即將升級設備固件，請保持客戶端與設備連接於同一網路</string>
+  <string name="Tap1_Update_Electricity">設備電量低於30%，無法更新，請先充足電後重試</string>
+  <string name="Tap1_Update_Precautions">升級大約需要4到5分鐘，升級過程中請勿讓設備斷電斷網</string>
   <string name="Tap1_device_deleted">此設備已被刪除</string>
   <string name="Tap1_iHome_Associate">關聯</string>
   <string name="Tap1_iHome_Associated">已关联</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">是否取消分享？</string>
   <string name="Tap3_Share_NoBindTips">使用分享設備需要綁定郵箱</string>
   <string name="Tap3_TitleName">我的</string>
+  <string name="Tap3_TitleName_Notice">通知</string>
   <string name="Tap3_Uploading">上傳中&#8230;</string>
   <string name="Tap3_UploadingComplete">上傳成功</string>
   <string name="Tap3_UploadingFailed">上傳失敗</string>

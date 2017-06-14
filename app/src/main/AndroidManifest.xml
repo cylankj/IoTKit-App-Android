@@ -173,21 +173,6 @@
             android:grantUriPermissions="true" />
         <!-- 华为推送 End -->
 
-
-        <!-- server address -->
-        <!-- <meta-data -->
-        <!-- android:name="ServerAddress" -->
-        <!-- android:packValue="${NICELY_VALUE}" /> -->
-
-
-        <!-- &lt;!&ndash; your vid getString must "\ " &ndash;&gt; -->
-        <!-- <meta-data -->
-        <!-- android:name="vid" -->
-        <!-- android:packValue="${VID}" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="vkey" -->
-        <!-- android:packValue="${VKEY}" /> -->
-
         <activity
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"
@@ -332,11 +317,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".n.view.cloud.CloudLiveCallActivity"
-            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity xmlns:tools="http://schemas.android.com/tools"
             android:name="com.facebook.FacebookActivity"
             android:exported="true"
@@ -359,10 +339,10 @@
         <meta-data
             android:name="TWITTER_APP_SECRET"
             android:value="${TWITTER_APP_SECRET}" />
-
+        <!-- 注意fb前缀 -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="${FACEBOOK_APP_KEY}" />
+            android:value="fb${FACEBOOK_APP_KEY}" />
 
         <activity
             android:name=".n.view.activity.SightSettingActivity"
@@ -431,11 +411,6 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="1000">
-
-
-                　
-
-
                 <!-- 监听的动作类型，这里是监听网络连接的状态 -->
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -509,17 +484,8 @@
 
         <provider
             android:name="com.umeng.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
+            android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_KEY}"
             android:exported="true" />
-
-        <receiver
-            android:name=".utils.ShareUtils$MyResultReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_SUCCESS" />
-                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_FAILURE" />
-            </intent-filter>
-        </receiver>
 
         <!-- //谷歌服务 -->
         <!-- [START gcm_receiver] -->
@@ -728,6 +694,11 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
+        <activity
+            android:name=".n.view.activity.MineInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

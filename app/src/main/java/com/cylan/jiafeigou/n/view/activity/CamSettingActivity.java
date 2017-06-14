@@ -38,7 +38,6 @@ import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -53,10 +52,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
@@ -96,10 +99,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     CustomToolbar customToolbar;
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
-    @BindView(R.id.sv_setting_wired)
-    SettingItemView0 svSettingWired;
-    @BindView(R.id.sv_setting_open_ap)
-    SettingItemView0 svSettingOpenAp;
+    @BindView(R.id.sv_setting_device_wired_mode)
+    SettingItemView1 svSettingDeviceWiredMode;
+    @BindView(R.id.sv_setting_device_soft_ap)
+    SettingItemView0 svSettingDeviceSoftAp;
     private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -356,7 +359,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ////////////////////////////////////////////////////////////////////////
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
-        String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard==1, sdStatus.err);
+        String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard == 1, sdStatus.err);
         if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
             svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
         } else
@@ -443,7 +446,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             });
         }
         /////////////////////////////////110v//////////////////////////////////
-        if (JFGRules.show110VLayout(device.pid)) {
+        if (JFGRules.showNTSCVLayout(device.pid)) {
             boolean state = device.$(216, false);
             sbtnSetting110v.setChecked(state);
             sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -480,8 +483,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingSafeProtection.showRedHint(settingTip.safe == 1);
         svSettingDeviceDelayCapture.showRedHint(settingTip.timeLapse == 1);
 
-        if (JFGRules.isShareDevice(uuid)) {
-            sbtnSettingSight.setVisibility(View.GONE);
+        sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid) ? View.VISIBLE : View.GONE);
+        try {
+            String dpPrimary = device.$(509, "1");
+            sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+        } catch (Exception e) {
         }
         if (JFGRules.showSight(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
@@ -493,35 +499,71 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSettingSight.setVisibility(View.GONE);
         AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
+        AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
+        switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
 
-        //有线模式,开启AP
-        svSettingWired.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
-        svSettingWired.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            if (!isChecked) {//关闭
-                AlertDialogManager.getInstance().showDialog(this, "closeWired", getString(R.string.CloseTips),
-                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                            ToastUtil.showToast("what");
-                            svSettingWired.setChecked(true);
-                        }, getString(R.string.CANCEL), null);
-            }
-        });
-        //不可用
-        //1、AP直连的情况下。
-        //2、设备离线，没有连接任何网络。
-        //3、连接公网。
-        svSettingOpenAp.setVisibility(JFGRules.showEnableAp(device.pid) ? View.VISIBLE : View.GONE);
-        boolean apDirect = JFGRules.isAPDirect(device.uuid, device.$(202, ""));
-        boolean online = JFGRules.isDeviceOnline(net);
-        svSettingOpenAp.setEnabled(!apDirect || !online);
-        svSettingOpenAp.setOnClickListener(v -> {
+        //有线模式
+        svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
+        boolean wiredModeEnable = device.$(225, 0) == 1;
+        svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
+        boolean wiredModeOnline = device.$(226, 0) == 1;
+        if (wiredModeOnline) {
+            svSettingDeviceWifi.setEnabled(false);
+            svSettingDeviceWifi.setTvSubTitle("");
+        }
+        svSettingDeviceWiredMode.setChecked(wiredModeEnable);
+        svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (NetUtils.getJfgNetType() == 0) {
                 ToastUtil.showToast(getString(R.string.NoNetworkTips));
                 return;
             }
-            AlertDialogManager.getInstance().showDialog(CamSettingActivity.this, "enableAP",
-                    getString(R.string.CmdSend), getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        basePresenter.enableAp();
-                    });
+            if (!isChecked) {
+                AlertDialogManager.getInstance().showDialog(this, "关闭有线模式", getString(R.string.Cable_Mode_Switch_Cancel),
+                        getString(R.string.OK), (dialog, which) -> {
+                            svSettingDeviceWiredMode.setChecked(false);
+                            svSettingDeviceWifi.setEnabled(true);
+                            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(0), 226);
+                        }, getString(R.string.CANCEL), (dialog, which) -> {
+                            svSettingDeviceWiredMode.setChecked(false);
+                        }, false);
+                return;
+            }
+            basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(1), 226);
+            //wifi配置开启,,关闭
+            svSettingDeviceWifi.setEnabled(false);
+        });
+        svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid) ? View.VISIBLE : View.GONE);
+        //总的条件:相同的ssid名字
+        if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            //待机不可用
+            if (dpStandby.standby) svSettingDeviceSoftAp.setEnabled(false);
+            //在线,判断客户端和设备端的ssid
+            //没有连接公网.//必须是连接状态
+//            WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+//            svSettingDeviceSoftAp.setEnabled(info != null && TextUtils.equals(info.getSSID().replace("\"", ""), net.ssid));
+        } else svSettingDeviceSoftAp.setEnabled(false);
+        svSettingDeviceSoftAp.setOnClickListener(v -> {
+            if (NetUtils.getJfgNetType() == 0) {
+                ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                return;
+            }
+            getAlertDialogManager()
+                    .showDialog(this, getString(R.string.Start_Hotspot), getString(R.string.Start_Hotspot_Prompt, net.ssid), getString(R.string.OK), (dialog, which) -> {
+                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
+                        Subscription subscription = basePresenter.switchApModel(1)
+                                .subscribeOn(Schedulers.newThread())
+                                .delay(1, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(ret -> {
+                                    LoadingDialog.dismissLoading(getSupportFragmentManager());
+                                    ToastUtil.showToast(getString(R.string.Instructions_Sent));
+                                    ToastUtil.showToast(getString(R.string.Start_Success));
+                                }, throwable -> {
+                                    LoadingDialog.dismissLoading(getSupportFragmentManager());
+                                    ToastUtil.showToast(getString(R.string.Start_Failed));
+                                });
+                        basePresenter.addSub(subscription, "enableAp");
+                    }, getString(R.string.CANCEL), null, false);
         });
     }
 
@@ -576,17 +618,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void triggerStandby(DpMsgDefine.DPStandby dpStandby) {
         boolean open = dpStandby.standby;
         svSettingSafeProtection.setEnabled(!open);
-        svSettingSafeProtection.setAlpha(open ? 0.6f : 1.0f);
         svSettingSafeProtection.setTvSubTitle(open ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
 
         svSettingDeviceAutoRecord.setEnabled(!open);
-        svSettingDeviceAutoRecord.setAlpha(open ? 0.6f : 1.0f);
         svSettingDeviceAutoRecord.setTvSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
 
         boolean led = !open && dpStandby.led;
         svSettingDeviceLedIndicator.setEnabled(!open);
         svSettingDeviceLedIndicator.setChecked(!open && led);
-        svSettingDeviceLedIndicator.setAlpha(open ? 0.6f : 1.0f);
     }
 
     @Override
@@ -607,22 +646,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         DpMsgDefine.DPStandby dpStandby = basePresenter.getDevice().$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby && connected);
         svSettingDeviceDelayCapture.setEnabled(connected);
-
-        if (!connected) {
-            svSettingDeviceMobileNetwork.setAlpha(0.6f);
-            svSettingDeviceDelayCapture.setAlpha(0.6f);
-
-        } else {
-            svSettingDeviceMobileNetwork.setAlpha(1.0f);
-            svSettingDeviceDelayCapture.setAlpha(1.0f);
-        }
         DpMsgDefine.DPNet net = basePresenter.getDevice().$(201, new DpMsgDefine.DPNet());
         enableStandby(connected && JFGRules.isDeviceOnline(net));
     }
 
     private void enableStandby(boolean enable) {
         svSettingDeviceStandbyMode.setEnabled(enable);
-        svSettingDeviceStandbyMode.setAlpha(!enable ? 0.6f : 1.0f);
     }
 
     @Override

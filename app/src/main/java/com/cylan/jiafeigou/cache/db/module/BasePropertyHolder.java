@@ -71,7 +71,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     @Override
     public void updateProperty(int msgId, DPEntity entity) {
         if (!propertyParser.accept(pid(), msgId)) return;
-        Log.d("updateProperty", "updateProperty:" + msgId);
+        Log.d("updateProperty", "updateProperty:" + msgId + "," + (entity == null ? "" : entity.getUuid()));
         properties.put(msgId, entity);
     }
 

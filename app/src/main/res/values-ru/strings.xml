@@ -27,6 +27,7 @@
   <string name="AT_HOME">Вернуться</string>
   <string name="AUDIBLE_ALERT">Выберите звуковой сигнал, который будет воспроизводиться при обнаружении движения</string>
   <string name="Added_successfully">Привязать успешно</string>
+  <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">Соединение прервано, пожалуйста, проверьте подключение веб&#8211;камеры</string>
   <string name="CREATING">Загрузка&#8230;</string>
   <string name="CURRENT_PWD">Текущий Пароль</string>
+  <string name="Cable_Mode">Проводной режим</string>
+  <string name="Cable_Mode_Start_Hotspot">Перед включением убедитесь, что ваш телефон и устройство подключены к одному маршрутизатору</string>
+  <string name="Cable_Mode_Switch_Cancel">Закрытие может привести к обрыву связи устройств, закрыть или нет?</string>
   <string name="CancelingTips">Отмена&#8230;</string>
   <string name="Cellular_Data_Method">Мобильные данные:</string>
   <string name="Cellular_Data_Set_Up">Включите мобильные данные в устройстве, используйте нижеуказанные настройки: Настройки> Мобильные данные</string>
+  <string name="Change_ID">Заменить WeChat аккаунт</string>
   <string name="ChargingLight">Зарядка свет</string>
   <string name="ChargingLight_BlueFlashing">Синий мигающий: Зарядка</string>
   <string name="ChargingLight_SteadyBlue">Устойчивый синий: Полный</string>
@@ -231,6 +236,7 @@
   <string name="HOME">Главная</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Круглосуточно</string>
+  <string name="HZ_NTSC_PAL">Открыть NTSC</string>
   <string name="HZ_VOTE">Источник питания 110 В</string>
   <string name="HistoricalCard_Failed">Не удалось прочитать историческую видеокарту</string>
   <string name="Historical_Failed">Не удалось прочитать видео</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">Истек срок проверочного кода</string>
   <string name="IN_APP_SOUND">Звуковой сигнал</string>
   <string name="IN_APP_VIBRATE">Вибрация</string>
+  <string name="IP_Address">IP&#8211;адрес</string>
   <string name="I_KNOW">Я знаю</string>
+  <string name="Instructions_Sent">Команда отправлена</string>
   <string name="Item_ConnectionFail">Неудачное подключение к сети</string>
   <string name="Item_LoadFail">Неудачная загрузка</string>
   <string name="Item_NoContents">Нет содержания</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">Установка&#8230;</string>
   <string name="SETTINGS">Параметры</string>
   <string name="SETTINGS_1">Параметры</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">WeChat сообщения не доставят при закрытии. Перейтите к WeChat и перестаньте следить за официальным аккаунтом \"Clever dog Официальный WeChat Сервис\" если хотите отменить привязку.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Пожалуйста, сосредоточьтесь на учетной записи WeChat \"Clever dog Официальный WeChat Сервис\" и свяжите ее, после того как успех старой учетной записи WeChat больше не получит сообщение push</string>
   <string name="SETTING_DIRECTION">Кадр</string>
   <string name="SETTING_FREE">Установить обнаружение движения и сигнализацию</string>
   <string name="SETTING_RECORD">Запись видео</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">совместное управление</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Start_Failed">Ошибка запуска</string>
+  <string name="Start_Hotspot">Открыть точку доступа</string>
+  <string name="Start_Hotspot_Note">Открытие точки доступа может привести к обрыву связи устройства, откройте и подождите мигания синего света на устройстве</string>
+  <string name="Start_Hotspot_Prompt">Убедитесь, что телефон подключен к сети \"%s\" WiFi перед открытием</string>
+  <string name="Start_Success">Начать успех</string>
+  <string name="Start_instructions">Откройте инструкции</string>
+  <string name="Start_instructions_A">В официальных учетных записях WeChat в обязательной электронной почте Clever Dog вы можете открыть эту функцию.</string>
+  <string name="Start_instructions_B">Действуйте следующим образом:</string>
+  <string name="Start_instructions_C">1. Пожалуйста, обратите внимание на общедоступный номер WeChat \"Clever dog Официальный WeChat Сервис\"</string>
+  <string name="Start_instructions_D">Способ 1: нажмите WeChat в верхнем правом углу \"+\"> \"Добавить контакты\"> \"Официальные счета\", выполните поиск \"Clever dog Официальный WeChat Сервис\", а затем заинтересованы.</string>
+  <string name="Start_instructions_E">Способ 2: снимок экрана с этой страницы или сохранение в альбоме следующего двухмерного кода, в развертке WeChat.</string>
+  <string name="Start_instructions_F">2. Счет привязки</string>
+  <string name="Start_instructions_G">Внимание \"Clever dog Официальный WeChat Сервис\", войдите в основную страницу, щелкните строку меню службы, выберите обязательную учетную запись.</string>
+  <string name="Start_instructions_H">Связать счет</string>
+  <string name="Start_instructions_I">Пожалуйста, введите Умный телефон электронной почты для привязки, например, забудьте пароль, пожалуйста, перейдите к клиенту Clever dog back</string>
   <string name="Switch_Mode">Перейдите в режим прямого просмотра для просмотра</string>
   <string name="Switch_Mode_Pop">Переключите текущий сетевой видеоконтент на прямой режим</string>
   <string name="TAKE_PHOTO">Сделать фото</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Необходимо отключить режим ожидания, прежде чем заданный промежуток времени фотографирования, конечно?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Подтверждаю</string>
   <string name="Tap1_CameraFun_Timelapse_document">Получить больше интересных моментов с цикличной съемкой</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">% часов</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s часов</string>
   <string name="Tap1_CameraFun_UninitializedTips">Неудачная идентификация Micro SD карты</string>
   <string name="Tap1_CameraFun_VideoDirection">Перевёртка (перевернутая картинка)</string>
   <string name="Tap1_Camera_BackLiveTips">Вернуться к Прямая трансляция</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">Установка</string>
   <string name="Tap1_Update">Обновить</string>
   <string name="Tap1_UpdateFirmwareTips">Обновить начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же Wi&#8211;Fi</string>
+  <string name="Tap1_Update_Electricity">Энергия устройства ниже 30%, нельзя обновить, повторите попытку после полной зарядки.</string>
+  <string name="Tap1_Update_Precautions">Обновление требует примерно 4&#8211;5 минут, не отключите питание устройства или доступ в Интернет в это время.</string>
   <string name="Tap1_device_deleted">Это устройство было удалено.</string>
   <string name="Tap1_iHome_Associate">ассоциировать</string>
   <string name="Tap1_iHome_Associated">ассоциированный</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Удалить?</string>
   <string name="Tap3_Share_NoBindTips">С помощью этой функции необходимо связать электронную почту в первую очередь.</string>
   <string name="Tap3_TitleName">Меня</string>
+  <string name="Tap3_TitleName_Notice">Сообщение</string>
   <string name="Tap3_Uploading">Идет загрузка&#8230;</string>
   <string name="Tap3_UploadingComplete">Загрузка полный</string>
   <string name="Tap3_UploadingFailed">Сбой при загрузке</string>

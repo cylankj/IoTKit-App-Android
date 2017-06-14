@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
+import android.util.Log;
+
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -214,16 +216,18 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void checkIsReg(String account) {
-        rx.Observable.just(account)
+        Subscription subscription = rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
+                .delay(2, TimeUnit.SECONDS)
                 .subscribe(s -> {
                     try {
+                        Log.d("checkIsReg", "checkIsReg");
                         BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                 }, AppLogger::e);
-
+        addSubscription(subscription, "subscription");
     }
 
     @Override

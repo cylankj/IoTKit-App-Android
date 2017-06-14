@@ -52,6 +52,7 @@ public class SettingItemView1 extends FrameLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
+        setAlpha(enabled ? 1.0f : 0.6f);
         switchButton.setEnabled(enabled);
     }
 

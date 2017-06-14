@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -32,7 +32,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/20
  * 描述：
  */
-public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSetPassWordContract.View {
+public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWordContract.Presenter> implements MineInfoSetPassWordContract.View {
 
     @BindView(R.id.et_mine_personal_information_old_password)
     EditText etMinePersonalInformationOldPassword;
@@ -49,8 +49,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
-    private MineInfoSetPassWordContract.Presenter presenter;
-    private JFGAccount userinfo;
 
     public static MineInfoSetPassWordFragment newInstance(Bundle bundle) {
         MineInfoSetPassWordFragment fragment = new MineInfoSetPassWordFragment();
@@ -58,12 +56,17 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        basePresenter = new MineInfoSetPassWordPresenterImp(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_info_set_password, container, false);
         ButterKnife.bind(this, view);
-        initPresenter();
         getArgumentData();
         return view;
     }
@@ -72,12 +75,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
      * 获取传递过来的参数
      */
     private void getArgumentData() {
-        Bundle arguments = getArguments();
-        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
-    }
-
-    private void initPresenter() {
-        presenter = new MineInfoSetPassWordPresenterImp(this);
     }
 
     @Override
@@ -90,13 +87,11 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_old_password)
@@ -138,7 +133,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     }
 
     @Override
-    public void setPresenter(MineInfoSetPassWordContract.Presenter presenter) {
+    public void setPresenter(MineInfoSetPassWordContract.Presenter basePresenter) {
 
     }
 
@@ -172,13 +167,13 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
      * desc：保存新密码
      */
     private void saveNewPassword() {
-
-        if (presenter.checkNewPasswordLength(getNewPassword())) {
+        if (basePresenter.checkNewPasswordLength(getNewPassword())) {
             ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
             return;
         }
-
-        presenter.sendChangePassReq(userinfo.getAccount(), getOldPassword(), getNewPassword());
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (jfgAccount != null)
+            basePresenter.sendChangePassReq(jfgAccount.getAccount(), getOldPassword(), getNewPassword());
 
     }
 

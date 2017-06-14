@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -62,6 +63,10 @@ public class DpMsgDefineTest {
 
         System.out.println(unpackData(new byte[]{-110, -83, 65, 115, 105, 97, 47, 83, 104, 97, 110, 103, 104, 97, 105, -51, 112, -128},
                 DpMsgDefine.DPTimeZone.class));
+
+        System.out.println(unpackData(new byte[]{-108, -86, 115, 101, 116, 95, 97, 112, 95, 114, 115, 112, -84, 54, 48, 48, 54, 48, 48, 48, 48, 48, 49, 48, 48, -96, -46, -117, 8, -6, -73},
+                UdpConstant.SetApRsp.class));
+
     }
 
     @Message

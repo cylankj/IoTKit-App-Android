@@ -179,16 +179,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0 && getView() != null))
                 .flatMap(ret -> Observable.from(ret.dpList))
-//                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe(msg -> {
                     try {
-                        if (msg.id == 508 //待机
-                                || msg.id == 201//网络
-                                || msg.id == 501 //安全防护
-                                || msg.id == 223) {//3g
-                            RxBus.getCacheInstance().post(new InternalHelp());
-                        }
+                        //刷新就对了
+                        RxBus.getCacheInstance().post(new InternalHelp());
+                        RxBus.getCacheInstance().post(new InternalHelp());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -199,7 +194,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .map(o -> {
                     subUuidList();
                     AppLogger.d("get list");
@@ -249,6 +244,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        addSubscription(Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .delay(30, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .subscribe(ret -> mView.onRefreshFinish(),
+                        throwable -> mView.onRefreshFinish()), "30s_timeout");
     }
 
     @Override

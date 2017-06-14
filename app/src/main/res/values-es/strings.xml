@@ -27,6 +27,7 @@
   <string name="AT_HOME">Regresar a casa</string>
   <string name="AUDIBLE_ALERT">Emite sonidos el dispositivo al detectar estado anormal</string>
   <string name="Added_successfully">enlazar con éxito</string>
+  <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">Conexión fracasada, confirme la red de la cámara</string>
   <string name="CREATING">Crando, espere por favor&#8230;</string>
   <string name="CURRENT_PWD">Contraseña actual</string>
+  <string name="Cable_Mode">Modo cableado</string>
+  <string name="Cable_Mode_Start_Hotspot">Antes de encender, asegúrese de que su teléfono y dispositivo estén conectados al mismo enrutador</string>
+  <string name="Cable_Mode_Switch_Cancel">Al cerrar podría hacer el dispositivo desconectarse,¿confirmas de cerrar?</string>
   <string name="CancelingTips">Cancelado&#8230;</string>
   <string name="Cellular_Data_Method">Datos móviles:</string>
   <string name="Cellular_Data_Set_Up">Habilitar datos móviles en el dispositivo, utilice a continuación, Configuración> Datos móviles</string>
+  <string name="Change_ID">Cambiar cuenta de WeChat</string>
   <string name="ChargingLight">Luz de carga</string>
   <string name="ChargingLight_BlueFlashing">Parpadeo azul: Carga</string>
   <string name="ChargingLight_SteadyBlue">Azul constante: Completo</string>
@@ -231,6 +236,7 @@
   <string name="HOME">Página de inicio</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Notificación de 24h</string>
+  <string name="HZ_NTSC_PAL">Abrir NTSC</string>
   <string name="HZ_VOTE">Voltaje de 110V</string>
   <string name="HistoricalCard_Failed">La tarjeta de video histórica dice que falló</string>
   <string name="Historical_Failed">No se pudo leer el video histórico</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">Código de prueba inválido</string>
   <string name="IN_APP_SOUND">Sonido</string>
   <string name="IN_APP_VIBRATE">Vibración</string>
+  <string name="IP_Address">Dirección IP</string>
   <string name="I_KNOW">Ya lo sé</string>
+  <string name="Instructions_Sent">Instruccion enviada</string>
   <string name="Item_ConnectionFail">Falló la conexción con la red.</string>
   <string name="Item_LoadFail">Falló la carga.</string>
   <string name="Item_NoContents">No hay contenido.</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">Ajustando&#8230;</string>
   <string name="SETTINGS">Ajustes</string>
   <string name="SETTINGS_1">Ajustes</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Al cerrar no podrá recibir mensajes de WeChat. Para desenlazar va a WeChat para dejar de seguir la cuenta de suscripción de Servicio Oficial de Clever Dog.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Por favor, enfóquese en la cuenta de WeChat \"cuenta oficial de WeChat del perro listo\" y vincule, después del éxito de la antigua cuenta de WeChat ya no recibirá el mensaje push</string>
   <string name="SETTING_DIRECTION">Dirección del vídeo</string>
   <string name="SETTING_FREE">Ajuste de la alarma y la detección del movimiento de cada dispositivo individual como quiera</string>
   <string name="SETTING_RECORD">Grabación automática</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">compartir la gestión</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Start_Failed">Error de inicio</string>
+  <string name="Start_Hotspot">Abrir punto de acceso</string>
+  <string name="Start_Hotspot_Note">Al abrir punto de acceso podría hacer el dispositivo desconectarse, por favor espera que la luz azul del dispositivo parpadea después de abrir.</string>
+  <string name="Start_Hotspot_Prompt">Asegúrese de que el teléfono esté conectado a la red WiFi \"%s\" antes de abrir</string>
+  <string name="Start_Success">Comienza el éxito</string>
+  <string name="Start_instructions">Abra las instrucciones</string>
+  <string name="Start_instructions_A">En las cuentas oficiales de WeChat en el correo electrónico vinculante de Clever Dog, puede abrir esta función.</string>
+  <string name="Start_instructions_B">Proceder de la siguiente:</string>
+  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \""cuenta oficial de WeChat del perro listo\"</string>
+  <string name="Start_instructions_D">Método 1: haga clic en el WeChat en la esquina superior derecha del \"+\"> Añadir contactos> Cuentas oficiales, busque \"cuenta oficial de WeChat del perro listo\" y luego se refiere.</string>
+  <string name="Start_instructions_E">Método 2: captura de pantalla de esta página o guardar el siguiente código bidimensional en el álbum, en el barrido WeChat atención.</string>
+  <string name="Start_instructions_F">2. Cuenta enlazada</string>
+  <string name="Start_instructions_G">Atención \"cuenta oficial de WeChat del perro listo\" Cuentas oficiales, ingrese a la página principal, haga clic en la barra de menús del servicio, seleccione la cuenta de vinculación.</string>
+  <string name="Start_instructions_H">Cuenta enlazada</string>
+  <string name="Start_instructions_I">Por favor ingrese la cuenta de correo electrónico del perro Clever para enlazar, como olvidar la contraseña, por favor vaya al cliente Clever dog back</string>
   <string name="Switch_Mode">Cambie al modo directo para ver el contenido de disparo</string>
   <string name="Switch_Mode_Pop">Cambie el contenido actual de la toma de red al modo directo</string>
   <string name="TAKE_PHOTO">Tomar una foto</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Cerrar el modo en espera antes de iniciar la fotografía a intervalos. ¿Está seguro?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Confirmar el cierre</string>
   <string name="Tap1_CameraFun_Timelapse_document">Los mejores momentos de las fotografias en intervalos</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">% hora</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s hora</string>
   <string name="Tap1_CameraFun_UninitializedTips">Fallo de lectura y escritura en tarjeta Micro SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Al revés (imagen invertida)</string>
   <string name="Tap1_Camera_BackLiveTips">Volver a En directo</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">Instaurar</string>
   <string name="Tap1_Update">Actualizar</string>
   <string name="Tap1_UpdateFirmwareTips">Actualizar comienza en breve,asegúrese de que el teléfono móvil y el dispositivo están conectados con el mismo WIFI</string>
+  <string name="Tap1_Update_Electricity">La energía está inferior al 30%, no se puede actualizar, por favor vuelve a intentar después de cargar completamente.</string>
+  <string name="Tap1_Update_Precautions">La actualización requiere aproximadamente 4&#8211;5 minutos. En el proceso no deja el dispositivo fuera de la red.</string>
   <string name="Tap1_device_deleted">Este dispositivo ha sido eliminado.</string>
   <string name="Tap1_iHome_Associate">Asociar</string>
   <string name="Tap1_iHome_Associated">Asociado</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">Dejar de compartir?</string>
   <string name="Tap3_Share_NoBindTips">El uso de esta función necesita unirse correo electrónico en primer lugar.</string>
   <string name="Tap3_TitleName">Me</string>
+  <string name="Tap3_TitleName_Notice">Aviso</string>
   <string name="Tap3_Uploading">Subiendo&#8230;</string>
   <string name="Tap3_UploadingComplete">Sube completa</string>
   <string name="Tap3_UploadingFailed">Subida fallida</string>

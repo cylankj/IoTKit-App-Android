@@ -4,8 +4,6 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 
-import rx.Subscription;
-
 /**
  * 作者：zsl
  * 创建时间：2016/9/2
@@ -52,22 +50,6 @@ public interface MineInfoSetAliasContract {
 
         boolean isEditEmpty(String string);
 
-        /**
-         * 修改昵称之后的回调
-         *
-         * @return
-         */
-        Subscription saveAliasCallBack();
-
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
     }
 
 }

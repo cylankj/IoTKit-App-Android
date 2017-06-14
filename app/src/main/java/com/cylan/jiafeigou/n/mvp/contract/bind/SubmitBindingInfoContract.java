@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.bind;
 
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 

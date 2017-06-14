@@ -82,12 +82,16 @@ public class BasePropertyParser implements IPropertyParser {
      * set类型不需要指定设备类型。
      */
     private void init() {
+        //ip
+        properties.put(227, new DPProperty(String.class, CAMERA));
+        //客户端配置/设备端查询 设备是否使用有线网络
+        properties.put(226, new DPProperty(boolean.class, CAMERA));
+        //设备端是否存在可用的有线网络。
+        //设备端插入和拔出网线均会上报该消息。
+        properties.put(225, new DPProperty(int.class, CAMERA));
 
-        properties.put(226, new DPProperty(int.class, PROPERTY, CAMERA));
-        properties.put(225, new DPProperty(int.class, PROPERTY, CAMERA));
-
-        properties.put(ID_1005_BELL_UNREAD_COUNT_V2, new DPProperty(int.class, PROPERTY, DOORBELL));
-        properties.put(ID_1004_BELL_UNREAD_COUNT, new DPProperty(int.class, PROPERTY, DOORBELL));
+        properties.put(ID_1005_BELL_UNREAD_COUNT_V2, new DPProperty(int.class, DOORBELL));
+        properties.put(ID_1004_BELL_UNREAD_COUNT, new DPProperty(int.class, DOORBELL));
 
         properties.put(ID_1003_CAM_222_UNREAD_COUNT, new DPProperty(int.class, PROPERTY, CAMERA));
         properties.put(ID_1002_CAM_512UNREAD_COUNT_V2, new DPProperty(int.class, PROPERTY, CAMERA));

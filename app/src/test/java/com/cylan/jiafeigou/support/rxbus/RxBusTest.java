@@ -463,47 +463,7 @@ public class RxBusTest {
                     System.out.println(ret);
                 }, throwable -> System.out.println(throwable));
         Thread.sleep(5000);
-//        ArrayList<Integer> list = new ArrayList<>();
-//        for (int i = 0; i < 100; i++)
-//            list.add(i);
-//
-//        Observable.from(list)
-//                .delay(20, TimeUnit.MILLISECONDS)
-//                .sample(100, TimeUnit.MILLISECONDS)
-//                .subscribe(new Action1<Integer>() {
-//                    @Override
-//                    public void call(Integer aLong) {
-//                        System.out.println("aLong: " + aLong);
-//                    }
-//                });
 
-
-        Subscription subscription = RxBus.getCacheInstance().toObservable(String.class)
-//                .takeLast(1, 100, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        System.out.println("get?" + s);
-                        return s;
-                    }
-                })
-                .takeLast(1)
-                .map(new Func1<String, Object>() {
-                    @Override
-                    public Object call(String s) {
-                        System.out.println("what?" + s);
-                        return null;
-                    }
-                })
-                .doOnCompleted(new Action0() {
-                    @Override
-                    public void call() {
-                        System.out.println("doOnCompleted");
-                    }
-                })
-                .subscribe(ret -> {
-                    System.out.println("ret");
-                });
         RxBus.getCacheInstance().post("finish0");
 //        Thread.sleep(10);
         RxBus.getCacheInstance().post("finish1");
@@ -517,24 +477,30 @@ public class RxBusTest {
         RxBus.getCacheInstance().post("finish5");
         Thread.sleep(10);
         RxBus.getCacheInstance().post("finish6");
-        subscription.unsubscribe();
         Thread.sleep(3000);
     }
 
+    private int count;
+
     @Test
     public void testTimeout1() throws InterruptedException {
-        Subscription subscription = RxBus.getCacheInstance().toObservable(String.class)
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(TT.class)
-                        .map(new Func1<TT, Object>() {
-                            @Override
-                            public Object call(TT tt) {
-                                System.out.println("tt:" + tt.ret);
-                                return "good";
-                            }
-                        }))
-                .subscribe(ret -> {
-                    System.out.println("ret;" + ret);
+        Observable.interval(20, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        System.out.println("..."+aLong);
+                    }
                 });
+//        Observable.just(Observable.interval(20, TimeUnit.MILLISECONDS))
+//                .takeUntil(longObservable -> {
+//                    count++;
+//                    return count > 10;
+//                })
+//                .flatMap((Func1<Observable<Long>, Observable<?>>) longObservable -> {
+//                    System.out.println("good: " + count);
+//                    return longObservable;
+//                })
+//                .subscribe(System.out::println);
         RxBus.getCacheInstance().post("1110000");
         RxBus.getCacheInstance().post("111");
         Thread.sleep(500);
@@ -559,4 +525,6 @@ public class RxBusTest {
             this.ret = ret;
         }
     }
+
+
 }

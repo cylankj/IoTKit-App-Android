@@ -38,7 +38,7 @@ import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
 
 public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoContract.View>
         implements SubmitBindingInfoContract.Presenter, SimulatePercent.OnAction {
-
+    private static final long TIME_OUT = 90 * 1000;
     private SimulatePercent simulatePercent;
     private static int bindResult;
     private static long startTick;
@@ -50,6 +50,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         simulatePercent.setOnAction(this);
         startTick = 0;
         bindResult = BindUtils.BIND_PREPARED;
+        startTick = 0;
     }
 
     @Override
@@ -82,7 +83,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 device.setValue(201, new DpMsgDefine.DPNet());//先清空
             }
         }
-        if (System.currentTimeMillis() - startTick > 60 * 1000) {
+        if (System.currentTimeMillis() - startTick > TIME_OUT) {
             //timeout
             mView.bindState(bindResult = BIND_TIME_OUT);
             return;

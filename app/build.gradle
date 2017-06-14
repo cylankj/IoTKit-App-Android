@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 //apply plugin: 'io.fabric'
@@ -53,13 +53,9 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
-            // 设置支持的SO库架构
+            // 设置支持的CPU架构
             abiFilters 'armeabi-v7a'//, 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
-        jackOptions {
-            enabled true
-        }
-
     }
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
@@ -175,7 +171,6 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "sinaAppSecret"      : "5feab23e093b43f220bccf7fbab8f6c5",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5241757040488",
@@ -185,7 +180,7 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "cylan",
                                     "TWITTER_APP_KEY"    : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
                                     "TWITTER_APP_SECRET" : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
-                                    "FACEBOOK_APP_KEY"   : "fb1866682200216878"
+                                    "FACEBOOK_APP_KEY"   : "1866682200216878"
             ]
         }
         _doby {
@@ -217,7 +212,7 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "doby",
                                     "TWITTER_APP_KEY"    : "gSbX9IzCQ4w4xaE1igwAqrX6M",
                                     "TWITTER_APP_SECRET" : "85wI4lQRuZiLr7WMtfy1brkHtciw0T9648EbuVyr7hfFC9EIk9",
-                                    "FACEBOOK_APP_KEY"   : "fb1770285686596084"
+                                    "FACEBOOK_APP_KEY"   : "1770285686596084"
             ]
         }
         _cell_c {
@@ -345,6 +340,8 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
+    //可以单独使用，不需要依赖下方的扩展包
+    //RxJava扩展支持，根据需要添加
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
@@ -372,11 +369,11 @@ dependencies {
     compile 'com.lzy.net:okgo:2.1.4'
     compile 'com.lzy.net:okrx:0.1.2'
     compile 'com.lzy.net:okserver:1.1.3'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.romandanylyk:pageindicatorview:0.2.0'
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.9'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 }
 
 //谷歌推送

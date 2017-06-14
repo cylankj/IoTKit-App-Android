@@ -54,7 +54,7 @@ public class LocalWifiInfo {
             return saver;
         }
 
-        private static Map<String, LocalWifiInfo> wifiInfoMap;
+        private Map<String, LocalWifiInfo> wifiInfoMap;
 
         public Map<String, LocalWifiInfo> getWifiInfoMap() {
             return wifiInfoMap;
@@ -83,7 +83,7 @@ public class LocalWifiInfo {
                     .flatMap(s -> {
                         if (wifiInfoMap != null)
                             return Observable.just(wifiInfoMap.get(s));
-                        String content = PreferencesUtils.getString(secretKey);
+                        final String content = PreferencesUtils.getString(secretKey);
                         try {
                             final String de = AESUtil.decrypt(content);
                             Saver saver = new Gson().fromJson(de, Saver.class);

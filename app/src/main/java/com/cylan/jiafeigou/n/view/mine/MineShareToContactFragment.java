@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -252,7 +253,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void startSendMesgActivity(String account) {
         Uri smsToUri = Uri.parse("smsto:" + account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name)));
+        mIntent.putExtra("sms_body", LinkManager.getSmsContent());
         startActivity(mIntent);
     }
 
@@ -305,7 +306,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         intent.putExtra(Intent.EXTRA_EMAIL,
                 new String[]{contractPhone});
         intent.putExtra(Intent.EXTRA_CC, contractPhone); // 抄送人
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Tap1_share_tips, getString(R.string.share_to_friends_link, getContext().getPackageName()), getResources().getString(R.string.app_name))); // 正文
+        intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getSmsContent()); // 正文
         startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));
     }
 

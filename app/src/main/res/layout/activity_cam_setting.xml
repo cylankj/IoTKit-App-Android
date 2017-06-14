@@ -71,24 +71,24 @@
                 hunt:sv_title="@string/WIFI"
                 hunt:sv_v_divider="true" />
 
-            <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/sv_setting_wired"
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_setting_device_wired_mode"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                hunt:sv_image_src="@drawable/setting_icon_wifi"
+                android:visibility="gone"
+                hunt:sv_image_src="@drawable/setting_icon_wired"
                 hunt:sv_sub_title="cylan608"
-                hunt:sv_switch_visibility="true"
-                hunt:sv_title="@string/WiredMode"
+                hunt:sv_title="@string/Start_Hotspot"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/sv_setting_open_ap"
+                android:id="@+id/sv_setting_device_soft_ap"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                hunt:sv_image_src="@drawable/setting_icon_wifi"
-                hunt:sv_sub_title="cylan608"
-                hunt:sv_title="@string/EnableAP"
-                hunt:sv_v_divider="true" />
+                android:visibility="gone"
+                hunt:sv_image_src="@drawable/setting_icon_ap"
+                hunt:sv_title="@string/Start_Hotspot"
+                hunt:sv_v_divider="false" />
 
             <com.cylan.jiafeigou.widget.SettingItemView1
                 android:id="@+id/sv_setting_device_mobile_network"
@@ -179,7 +179,7 @@
                 hunt:sv_image_src="@drawable/icon_setting_electricity"
                 hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
                 hunt:sv_switch_visibility="true"
-                hunt:sv_title="@string/HZ_VOTE"
+                hunt:sv_title="@string/HZ_NTSC_PAL"
                 hunt:sv_v_divider="false" />
 
 

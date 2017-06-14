@@ -4,7 +4,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,15 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.contract.mine.BindMailContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.BindMailPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -41,7 +41,7 @@ import butterknife.OnTextChanged;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBindMailContract.View {
+public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> implements BindMailContract.View {
 
     @BindView(R.id.iv_mine_personal_information_mailbox)
     ImageView mIvMailBox;
@@ -53,13 +53,10 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     CustomToolbar customToolbar;
 
     private String mailBox;
-    private MineInfoBindMailContract.Presenter presenter;
-    private OnBindMailBoxListener onBindMailBoxListener;
-    private JFGAccount userinfo;
     private boolean bindOrChange = false;       //绑定或者修改邮箱
 
     @Override
-    public void setPresenter(MineInfoBindMailContract.Presenter presenter) {
+    public void setPresenter(BindMailContract.Presenter basePresenter) {
 
     }
 
@@ -78,11 +75,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showSendReqResult(int code) {
+        if (!isAdded()) return;
         if (!TextUtils.isEmpty(getEditText())) {
             hideSendReqHint();
             if (code == JError.ErrorOK) {
                 //区分第三方登录
-                if (presenter.isOpenLogin()) {
+                if (basePresenter.isOpenLogin()) {
                     JFGAccount userAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     AppLogger.d("bindmail2:" + userAccount.getPhone());
                     if (TextUtils.isEmpty(userAccount.getPhone())) {
@@ -106,8 +104,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      * 拿到账号
      */
     @Override
-    public void getUserAccountData(JFGAccount account) {
-        userinfo = account;
+    public void getUserAccountData(JFGAccount userinfo) {
         if (userinfo != null) {
             if (TextUtils.isEmpty(userinfo.getEmail()) || userinfo.getEmail() == null) {
                 bindOrChange = true;
@@ -118,16 +115,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         }
     }
 
-    public interface OnBindMailBoxListener {
-        void mailBoxChange(String content);
-    }
-
-    public void setListener(OnBindMailBoxListener mListener) {
-        this.onBindMailBoxListener = mListener;
-    }
-
-    public static HomeMineInfoMailBoxFragment newInstance(Bundle bundle) {
-        HomeMineInfoMailBoxFragment fragment = new HomeMineInfoMailBoxFragment();
+    public static BindMailFragment newInstance(Bundle bundle) {
+        BindMailFragment fragment = new BindMailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -140,15 +129,15 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) {
-            presenter.start();
+        if (basePresenter != null) {
+            basePresenter.start();
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (basePresenter != null) basePresenter.stop();
         IMEUtils.hide(getActivity());
     }
 
@@ -178,34 +167,30 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     }
 
     private void initMailEdit() {
-        Bundle arguments = getArguments();
-        JFGAccount jfgAccount = (JFGAccount) arguments.getSerializable("userinfo");
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgAccount != null)
             mETMailBox.setText(jfgAccount.getEmail());
     }
 
     private void initKeyListener() {
-        mETMailBox.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    mailBox = getEditText();
-                    if (TextUtils.isEmpty(mailBox)) {
-                        return false;
-                    } else if (!presenter.checkEmail(mailBox)) {
-                        ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
-                        return false;
-                    } else {
-                        presenter.checkEmailIsBinded(mailBox);
-                    }
+        mETMailBox.setOnKeyListener((v, keyCode, event) -> {
+            if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
+                mailBox = getEditText();
+                if (TextUtils.isEmpty(mailBox)) {
+                    return false;
+                } else if (!basePresenter.checkEmail(mailBox)) {
+                    ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
+                    return false;
+                } else {
+                    basePresenter.isEmailBind(mailBox);
                 }
-                return false;
             }
+            return false;
         });
     }
 
     private void initPresenter() {
-        presenter = new MineInfoBineMailPresenterImp(this);
+        basePresenter = new BindMailPresenterImpl(this);
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_mailbox)
@@ -222,22 +207,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     private void initListener() {
         //设置输入框，不可输入回车
-        mETMailBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                return (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
-            }
-        });
+        mETMailBox.setOnEditorActionListener((v, actionId, event) -> (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER));
 
         /**
          * 当输入有内容的时候，点击右侧xx便吧 editText内容清空
          */
-        mIvMailBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mETMailBox.setText("");
-            }
-        });
+        mIvMailBox.setOnClickListener(v -> mETMailBox.setText(""));
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
@@ -253,11 +228,11 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
                 mailBox = getEditText();
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
-                } else if (!presenter.checkEmail(mailBox)) {
+                } else if (!basePresenter.checkEmail(mailBox)) {
                     ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
                     return;
                 } else {
-                    presenter.checkEmailIsBinded(mailBox);
+                    basePresenter.isEmailBind(mailBox);
                 }
                 break;
         }
@@ -268,7 +243,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showAccountUnReg() {
-        presenter.sendSetAccountReq(getEditText());
+        basePresenter.sendSetAccountReq(getEditText());
     }
 
     @Override
@@ -298,24 +273,23 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1) {
-            hideSendReqHint();
-            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
-        }
+        if (!isAdded() || getView() == null) return;
+        getView().post(() -> {
+            if (state == 0) {
+                hideSendReqHint();
+                ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+            }
+        });
     }
 
     @Override
     public void jump2MailConnectFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("useraccount", getEditText());
+        bundle.putString(MineReSetMailTip.KEY_MAIL, getEditText());
         MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "MineReSetMailTip")
-//                .addToBackStack("personalInformationFragment")
-                .commit();
-
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment, android.R.id.content);
+        IMEUtils.hide(getActivity());
     }
 
     /**
@@ -326,13 +300,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         bundle.putString("useraccount", account);
         bundle.putString("token", "");
         MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "MineInfoSetNewPwdFragment")
-//                .addToBackStack("personalInformationFragment")
-                .commit();
-
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 
 }

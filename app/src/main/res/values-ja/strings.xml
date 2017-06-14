@@ -27,6 +27,7 @@
   <string name="AT_HOME">帰宅モード</string>
   <string name="AUDIBLE_ALERT">異常を検出した場合、サウンドで知らせる</string>
   <string name="Added_successfully">バインドうまく</string>
+  <string name="Alarm_WeChat">警報を微信で受信</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">戻す</string>
@@ -67,9 +68,13 @@
   <string name="CONN_INTERRUPTED">接続中止、カメラのネットワークをチェックしてください</string>
   <string name="CREATING">作成中、しばらくお待ちください&#8230;</string>
   <string name="CURRENT_PWD">現在のパスワードを入力してください</string>
+  <string name="Cable_Mode">ワイヤアクセスモード</string>
+  <string name="Cable_Mode_Start_Hotspot">オンにする前に、携帯電話と端末が同じルータに接続されていることを確認してください</string>
+  <string name="Cable_Mode_Switch_Cancel">オフにするとデバイスがオフライン状態になりますが、オフにしますか。</string>
   <string name="CancelingTips">キャンセル中&#8230;</string>
   <string name="Cellular_Data_Method">モバイルデータネットワーク：</string>
   <string name="Cellular_Data_Set_Up">端末でモバイルデータを有効にするには、以下の方法で[設定]> [モバイルデータ]を使用してください</string>
+  <string name="Change_ID">微信アカウントを変更</string>
   <string name="ChargingLight">充電ライト</string>
   <string name="ChargingLight_BlueFlashing">青色の点滅：充電</string>
   <string name="ChargingLight_SteadyBlue">青色の常時点灯：完全</string>
@@ -231,6 +236,7 @@
   <string name="HOME">ホーム</string>
   <string name="HOUR">时</string>
   <string name="HOURS">24時間プロプティング</string>
+  <string name="HZ_NTSC_PAL">オンにしますNTSC</string>
   <string name="HZ_VOTE">110V電源使用可能</string>
   <string name="HistoricalCard_Failed">歴史的なビデオカードの読み取りに失敗しました</string>
   <string name="Historical_Failed">履歴ビデオの読み込みに失敗しました</string>
@@ -242,7 +248,9 @@
   <string name="INVALID_CODE">検証コードの期限が切れています</string>
   <string name="IN_APP_SOUND">サウンド</string>
   <string name="IN_APP_VIBRATE">バイブレーション</string>
+  <string name="IP_Address">IPアドレス</string>
   <string name="I_KNOW">了解しました</string>
+  <string name="Instructions_Sent">コマンド発行済み</string>
   <string name="Item_ConnectionFail">インターネット接続が失敗しました</string>
   <string name="Item_LoadFail">読み込み失敗</string>
   <string name="Item_NoContents">内容なし</string>
@@ -503,6 +511,8 @@
   <string name="SETTING">設定中&#8230;</string>
   <string name="SETTINGS">設定</string>
   <string name="SETTINGS_1">機能設定</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">オフにすると微信のプッシュ通知を受信できなくなります。バインディングを解除したい場合、微信で「Clever Dog公式微信サービス」のアカウントのフォローを解除してください。</string>
+  <string name="SETTINGS_Wechat_Switch_Open">微信アカウント \"Clever Dog公式微信サービス\"に注目し、古い微信アカウントの成功がメッセージプッシュを受信しなくなったらバインドしてください</string>
   <string name="SETTING_DIRECTION">動画方向</string>
   <string name="SETTING_FREE">デバイスの移動検出および警報を自由にカスタマイズする</string>
   <string name="SETTING_RECORD">自動録画</string>
@@ -550,6 +560,21 @@
   <string name="Sharing_Management">共有管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Start_Failed">オープンに失敗しました</string>
+  <string name="Start_Hotspot">インターネットの共有をオンにします</string>
+  <string name="Start_Hotspot_Note">インターネットの共有をオンにするとデバイスがオフライン状態になる可能性があります。オンにした後、デバイスの青いランプが点滅するまで待ってください。</string>
+  <string name="Start_Hotspot_Prompt">開いている前に電話が \"%s\" WiFiネットワークに接続されていることを確認してください</string>
+  <string name="Start_Success">オープンな成功</string>
+  <string name="Start_instructions">指示を開く</string>
+  <string name="Start_instructions_A">拘束力のあるClever Dog電子メールのWeChat Official Accountsでは、この機能を開くことができます。</string>
+  <string name="Start_instructions_B">次のように進んでください：</string>
+  <string name="Start_instructions_C">1. WeChatの公開番号「Clever Dog公式微信サービス」に注意してください。</string>
+  <string name="Start_instructions_D">方法1： \"+\">連絡先の追加>公式アカウントの右上隅にあるWeChatをクリックし、 \"Clever Dog公式微信サービス\"を検索してください。</string>
+  <string name="Start_instructions_E">方法2：このページのスクリーンショットまたは次の2次元コードをWeChatスイープスイープの注意書きでアルバムに保存します。</string>
+  <string name="Start_instructions_F">2.アカウントをバインドする</string>
+  <string name="Start_instructions_G">注意してください \"巧妙な犬WeChat公式アカウント\"公式アカウントは、メインページを入力し、サービスのメニューバーをクリックして、バインディングアカウントを選択します。</string>
+  <string name="Start_instructions_H">アカウントをバインドする</string>
+  <string name="Start_instructions_I">パスワードを忘れるなど、賢い犬の電話/メールアカウントを入力してください。賢い犬のクライアントに戻ってください。</string>
   <string name="Switch_Mode">撮影内容を見るにはダイレクトモードに切り替えてください</string>
   <string name="Switch_Mode_Pop">現在のネットワークの撮影コンテンツをダイレクトモードに切り替えてください</string>
   <string name="TAKE_PHOTO">一枚写真を撮る</string>
@@ -647,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">閉じる確認し</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">カメラが安全待機中です、遅延撮影を作動するには安全待機モードをオフにする必要があります、すぐオフにしますか。</string>
   <string name="Tap1_CameraFun_Timelapse_document">遅延撮影を作動し、更なる見どころを発見</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">％時間</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%s 時間</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SDカードの読み込みに失敗しました</string>
   <string name="Tap1_CameraFun_VideoDirection">画面回転</string>
   <string name="Tap1_Camera_BackLiveTips">戻る生放送</string>
@@ -745,6 +770,8 @@
   <string name="Tap1_Tosetup">設定へ</string>
   <string name="Tap1_Update">更新</string>
   <string name="Tap1_UpdateFirmwareTips">更新が間もなく開始されます。携帯電話と端末が同じWIFIに接続していることを確認してください</string>
+  <string name="Tap1_Update_Electricity">バッテリ残量が30%以下ですので更新できません。充電してからリトライしてください。</string>
+  <string name="Tap1_Update_Precautions">アップデートの所要時間は約4&#8211;5分です。完了するまでは電源やネットワーク接続を切らないでください。</string>
   <string name="Tap1_device_deleted">デバイスを削除されました。</string>
   <string name="Tap1_iHome_Associate">関連</string>
   <string name="Tap1_iHome_Associated">関連する</string>
@@ -854,6 +881,7 @@
   <string name="Tap3_ShareDevice_UnshareTips">共有を解除？</string>
   <string name="Tap3_Share_NoBindTips">この関数を使用すると、電子メールを最初にバインドする必要があります。</string>
   <string name="Tap3_TitleName">本人</string>
+  <string name="Tap3_TitleName_Notice">通知</string>
   <string name="Tap3_Uploading">のアップロード&#8230;</string>
   <string name="Tap3_UploadingComplete">アップロードが完了しました</string>
   <string name="Tap3_UploadingFailed">のアップロード失敗</string>
