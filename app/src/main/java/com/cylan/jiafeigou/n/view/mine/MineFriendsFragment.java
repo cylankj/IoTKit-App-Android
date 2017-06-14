@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -53,7 +54,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @BindView(R.id.ll_relative_and_friend)
     LinearLayout llRelativeAndFriend;
     @BindView(R.id.ll_relative_and_friend_none)
-    LinearLayout llRelativeAndFriendNone;
+    RelativeLayout llRelativeAndFriendNone;
     @BindView(R.id.tv_add_request_title)
     TextView tvAddRequestTitle;
     @BindView(R.id.tv_friend_list_title)

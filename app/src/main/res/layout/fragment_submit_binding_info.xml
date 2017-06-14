@@ -31,33 +31,46 @@
         android:layout_height="match_parent">
 
 
-        <FrameLayout
-
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="invisible">
+            android:orientation="vertical">
 
-            <com.cylan.jiafeigou.widget.SimpleProgressBar
-                android:id="@+id/progress_loading"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/x10"
-                hunt:progress_point_radius="@dimen/x5"
-                hunt:progress_radius="@dimen/x100"
-                hunt:progress_stroke_color="#bbddfb"
-                hunt:progress_swipe_degree="330" />
+                android:layout_height="wrap_content">
+
+                <com.cylan.jiafeigou.widget.SimpleProgressBar
+                    android:id="@+id/progress_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/x10"
+                    hunt:progress_point_radius="@dimen/x0"
+                    hunt:progress_radius="@dimen/x100"
+                    hunt:progress_stroke_color="#bbddfb"
+                    hunt:progress_swipe_degree="360" />
+
+                <TextView
+                    android:id="@+id/tv_loading_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif-thin"
+                    android:textColor="@color/color_36BDFF"
+                    android:textSize="@dimen/sp47" />
+            </FrameLayout>
 
             <TextView
-                android:id="@+id/tv_loading_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif-thin"
-                android:textColor="@color/color_36BDFF"
-                android:textSize="@dimen/sp57" />
-        </FrameLayout>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y25"
+                android:text="@string/DEVICE_ADDING"
+                android:textColor="@color/color_888888"
+                android:textSize="@dimen/sp17" />
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"

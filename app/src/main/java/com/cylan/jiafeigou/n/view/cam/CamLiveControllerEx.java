@@ -330,7 +330,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //1.sd
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (status.hasSdcard==0 || status.err != 0) {
+        if (status.hasSdcard == 0 || status.err != 0) {
             //隐藏
             layoutE.setVisibility(INVISIBLE);
             return;
@@ -492,8 +492,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PLAYING;
         boolean isPlayHistory = livePlayType == TYPE_HISTORY;
         //左下角直播
-        ((ImageView) layoutE.findViewById(R.id.imgV_cam_live_land_play))
-                .setImageResource(R.drawable.icon_landscape_playing);
+        boolean landPlayBtnEnable = livePlayType == TYPE_HISTORY;
+        ((ImageView) findViewById(R.id.imgV_cam_live_land_play))
+                .setImageResource(landPlayBtnEnable ? R.drawable.icon_landscape_stop :
+                        R.drawable.icon_landscape_stop_disable);
+        findViewById(R.id.imgV_cam_live_land_play).setEnabled(landPlayBtnEnable);
         //|直播| 按钮
         layoutE.findViewById(R.id.tv_live).setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
@@ -504,7 +507,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.onLiveStart();
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         post(portShowRunnable);
-        findViewById(R.id.imgV_cam_live_land_play).setEnabled(livePlayType == TYPE_HISTORY);
     }
 
     private void setLoadingState(String content, String subContent, boolean forceShowOrHide) {
