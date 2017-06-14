@@ -38,64 +38,71 @@
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp16" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imgv_animation"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_sub_title"
-        android:layout_centerInParent="true"
         android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="@dimen/y40">
+        android:layout_marginStart="20dp" />
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/tv_sub_title"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_marginEnd="20dp"-->
+    <!--android:layout_marginStart="20dp"-->
+    <!--android:layout_marginTop="@dimen/y40">-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/add_image_camera_bottom" />
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:src="@drawable/add_image_camera_bottom" />-->
 
-        <FrameLayout
-            android:id="@+id/fLayout_flip_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp">
+    <!--<FrameLayout-->
+    <!--android:id="@+id/fLayout_flip_layout"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_marginTop="20dp">-->
 
-            <FrameLayout
-                android:id="@+id/fLayout_flip_before"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+    <!--<FrameLayout-->
+    <!--android:id="@+id/fLayout_flip_before"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content">-->
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/add_image_cameraruishi_" />
-            </FrameLayout>
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/add_image_cameraruishi_" />-->
+    <!--</FrameLayout>-->
 
-            <FrameLayout
+    <!--<FrameLayout-->
 
-                android:id="@+id/fLayout_flip_after"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/add_image_camera_ruishi"
-                android:visibility="gone">
+    <!--android:id="@+id/fLayout_flip_after"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/add_image_camera_ruishi"-->
+    <!--android:visibility="gone">-->
 
-                <ImageView
-                    android:id="@+id/img_blink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/add_image_camera_shansuo_ruishi" />
-            </FrameLayout>
-        </FrameLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/img_blink"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/add_image_camera_shansuo_ruishi" />-->
+    <!--</FrameLayout>-->
+    <!--</FrameLayout>-->
 
-        <ImageView
-            android:id="@+id/img_needle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y70"
-            android:alpha="0"
-            android:src="@drawable/add_image_needle" />
-    </FrameLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/img_needle"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/y70"-->
+    <!--android:alpha="0"-->
+    <!--android:src="@drawable/add_image_needle" />-->
+    <!--</FrameLayout>-->
 
     <View
         android:layout_width="match_parent"

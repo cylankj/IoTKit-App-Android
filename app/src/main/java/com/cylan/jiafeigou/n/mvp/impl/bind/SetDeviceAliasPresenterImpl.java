@@ -57,7 +57,9 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .flatMap(result -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
                         .flatMap(setAlias -> Observable.just(setAlias != null
                                 && setAlias.result != null
-                                && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1)))
+                                && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1))
+                        .first())
+                .first()
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer result) -> {

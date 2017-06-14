@@ -1,12 +1,14 @@
 package com.cylan.jiafeigou.n.base;
 
 import android.content.Context;
+import android.support.v4.app.AppLaunchChecker;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
@@ -27,6 +29,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        AppLogger.d(this.getClass().getSimpleName());
         Log.d(TAG, TAG + ",onAttach");
     }
 
