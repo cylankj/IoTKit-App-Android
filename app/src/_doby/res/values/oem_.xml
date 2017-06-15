@@ -10,6 +10,7 @@
     <bool name="show_about_logo">true</bool>
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>
+    <bool name="show_wechat_entrance">false</bool>
     <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
     <string name="share_default_description">@string/Tap1_Shared_Description_zhongxing</string>
     <string name="share_default_title">@string/Tap1_Shared_Title_zhognxing</string>

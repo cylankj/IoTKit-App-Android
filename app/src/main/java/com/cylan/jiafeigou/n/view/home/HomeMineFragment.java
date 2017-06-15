@@ -443,7 +443,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", getAppComponent().getSourceManager().getJFGAccount());
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 bindPhoneFragment, android.R.id.content);

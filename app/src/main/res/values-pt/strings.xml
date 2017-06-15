@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">O dispositivo está em suspensão no modo de segurança. Para o modo de fotografia em time&#8211;lapse, é necessário desativar o modo de segurança. Confirma?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Confirmo</string>
   <string name="Tap1_CameraFun_Timelapse_document">Descubra seus momentos com fotografia em time&#8211;lapse.</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s hora(s)</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%hora(s)</string>
   <string name="Tap1_CameraFun_UninitializedTips">Falha na leitura do cartão microSD</string>
   <string name="Tap1_CameraFun_VideoDirection">Invertido (de cabeça pra baixo)</string>
   <string name="Tap1_Camera_BackLiveTips">De volta a Ao vivo</string>

@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Необходимо отключить режим ожидания, прежде чем заданный промежуток времени фотографирования, конечно?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Подтверждаю</string>
   <string name="Tap1_CameraFun_Timelapse_document">Получить больше интересных моментов с цикличной съемкой</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s часов</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% часов</string>
   <string name="Tap1_CameraFun_UninitializedTips">Неудачная идентификация Micro SD карты</string>
   <string name="Tap1_CameraFun_VideoDirection">Перевёртка (перевернутая картинка)</string>
   <string name="Tap1_Camera_BackLiveTips">Вернуться к Прямая трансляция</string>

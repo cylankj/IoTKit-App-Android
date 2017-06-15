@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">閉じる確認し</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">カメラが安全待機中です、遅延撮影を作動するには安全待機モードをオフにする必要があります、すぐオフにしますか。</string>
   <string name="Tap1_CameraFun_Timelapse_document">遅延撮影を作動し、更なる見どころを発見</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s 時間</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">％時間</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SDカードの読み込みに失敗しました</string>
   <string name="Tap1_CameraFun_VideoDirection">画面回転</string>
   <string name="Tap1_Camera_BackLiveTips">戻る生放送</string>

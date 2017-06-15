@@ -65,7 +65,17 @@
                 android:layout_height="@dimen/y54"
                 android:layout_marginEnd="@dimen/x20"
                 android:layout_marginStart="@dimen/x20"
-                hunt:sv_title="微信接收报警消息"
+                hunt:sv_title="@string/Alarm_WeChat"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_setting_wechat_switch"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54"
+                android:layout_marginEnd="@dimen/x20"
+                android:layout_marginStart="@dimen/x20"
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="@string/Change_ID"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0

@@ -512,7 +512,7 @@
   <string name="SETTINGS">设置</string>
   <string name="SETTINGS_1">功能设置</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">关闭将无法接收微信推送。想取消绑定请前往微信取消关注“加菲狗官微服务”公众号。</string>
-  <string name="SETTINGS_Wechat_Switch_Open">请在新的微信号上关注"加菲狗官微服务"并绑定，成功后旧的微信号将不再接收消息推送</string>
+  <string name="SETTINGS_Wechat_Switch_Open">请在新的微信号上关注“加菲狗官微服务”并绑定，成功后旧的微信号将不再接收消息推送</string>
   <string name="SETTING_DIRECTION">视频方向</string>
   <string name="SETTING_FREE">随意设置单个设备的移动侦测及报警</string>
   <string name="SETTING_RECORD">自动录像</string>
@@ -569,7 +569,7 @@
   <string name="Start_instructions_A">在微信公众号里绑定加菲狗手机/邮箱，即可开启此功能。</string>
   <string name="Start_instructions_B">步骤如下：</string>
   <string name="Start_instructions_C">1. 请先关注微信公众号“加菲狗官微服务”</string>
-  <string name="Start_instructions_D">方法一：点击微信右上角的“+”号 > 添加朋友 > 公众号，搜索 “加菲狗官微服务”然后关注。</string>
+  <string name="Start_instructions_D">方法一：点击微信右上角的“+”号 > 添加朋友 > 公众号，搜索“加菲狗官微服务”然后关注。</string>
   <string name="Start_instructions_E">方法二：截图此页面，在微信 里扫一扫关注。</string>
   <string name="Start_instructions_F">2. 绑定账号</string>
   <string name="Start_instructions_G">关注“加菲狗官微服务”公众号后，进入主页面，点击菜单栏的“服务”，选择“绑定账号”。</string>
@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">摄像头安全待机中，开启延时摄影，需关闭安全待机，是否确认关闭？</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">确认关闭</string>
   <string name="Tap1_CameraFun_Timelapse_document">开启延时摄影，更多精彩纷呈</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s小时</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%小时</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SD卡读写失败</string>
   <string name="Tap1_CameraFun_VideoDirection">倒挂（画面翻转）</string>
   <string name="Tap1_Camera_BackLiveTips">点击返回直播</string>
@@ -1015,5 +1015,4 @@
   <string name="web">http://www.jfgou.com</string>
   <string name="wifi_authentication">正在验证%s连接</string>
   <string name="wifi_hasnot">未找到此WiFi网络</string>
->>>>>>> 3.1.1
 </resources>

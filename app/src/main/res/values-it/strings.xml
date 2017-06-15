@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">La videocamera è durante il periodo sicuro di standby sicuro, per accendere al Timelapse serve la disattivazione della modalità di standby sicuro, conferma la disattivazione?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Disattivazione confermata</string>
   <string name="Tap1_CameraFun_Timelapse_document">Usando il Timelapse si cattureranno più momenti meravigliosi</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s ore</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% ore</string>
   <string name="Tap1_CameraFun_UninitializedTips">Errore in lettura SD Card</string>
   <string name="Tap1_CameraFun_VideoDirection">Inverso (Immagine rovesciata)</string>
   <string name="Tap1_Camera_BackLiveTips">Torna In diretta</string>

@@ -153,4 +153,6 @@ public interface JFGSourceManager {
     void removeDeviceState(String uuid);
 
     Object getDeviceState(String uuid);
+
+    int getLoginType();
 }

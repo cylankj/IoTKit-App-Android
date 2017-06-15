@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -104,6 +105,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
     private static DataSourceManager instance;
+    private int loginType;
 
     public static DataSourceManager getInstance() {
         return instance;
@@ -213,6 +215,11 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Object getDeviceState(String uuid) {
         return deviceState.get(uuid);
+    }
+
+    @Override
+    public int getLoginType() {
+        return loginType;
     }
 
     private void queryForwardInformation() {
@@ -708,7 +715,7 @@ public class DataSourceManager implements JFGSourceManager {
                         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
                             device = entry.getValue();
                             parameters = device.getQueryParams();
-                            AppLogger.e("正在查询设备属性:"+new Gson().toJson(parameters));
+                            AppLogger.e("正在查询设备属性:" + new Gson().toJson(parameters));
                             appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
                         }
                         appCmd.getShareList(uuidList);
@@ -956,6 +963,8 @@ public class DataSourceManager implements JFGSourceManager {
                 .filter(ret -> isOnline())
                 .subscribe(ret -> {
                     try {
+                        AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
+                        loginType = signType == null ? 0 : signType.type;
                         Observable.just(new FetchFeedbackTask(), new FetchFriendsTask(), new SystemMsgTask())
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(objectAction1 -> {

@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Kamera in Standby, zur Einschaltung der Zeitrafferaufnahme muss der Standby&#8211;Modus ausgeschaltet werden. Möchten Sie ausschalten?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">ausschalten</string>
   <string name="Tap1_CameraFun_Timelapse_document">Zeitrafferaufnahme einschalten um mehr Highlight zu erwerben</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s tunde(n)</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% Stunde(n)</string>
   <string name="Tap1_CameraFun_UninitializedTips">Mikro&#8211;SD&#8211;Karte lesen gescheitert</string>
   <string name="Tap1_CameraFun_VideoDirection">umgedreht (Bild umdrehen)</string>
   <string name="Tap1_Camera_BackLiveTips">Zurück zu live</string>

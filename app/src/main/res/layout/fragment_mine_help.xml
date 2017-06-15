@@ -30,7 +30,7 @@
             android:id="@+id/wv_mine_help"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"></WebView>
+            android:visibility="visible"/>
 
         <View
             android:layout_width="match_parent"

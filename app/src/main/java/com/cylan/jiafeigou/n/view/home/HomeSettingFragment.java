@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -16,14 +18,18 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.ResolveInfoEx;
+import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
+import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -45,7 +51,6 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -79,6 +84,8 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     SettingItemView1 svHomeSettingRecommend;
     @BindView(R.id.sv_home_setting_about)
     SettingItemView1 svHomeSettingAbout;
+    @BindView(R.id.sv_setting_wechat_switch)
+    SettingItemView1 svSettingWechatSwitch;
 
     private List<ResolveInfoEx> finalList;
     private AboutFragment aboutFragment;
@@ -264,23 +271,61 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         svVibrateContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             basePresenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
         });
-        svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            basePresenter.refreshWechat(this);
-            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
-//            //跳转微信公众号
-//            String appId = "jfg_2014";//开发者平台ID
-//            IWXAPI api = WXAPIFactory.createWXAPI(getActivity(), appId, false);
-//            if (api.isWXAppInstalled()) {
-//                JumpToBizProfile.Req req = new JumpToBizProfile.Req();
-//                req.toUserName = "gh_b0394a4ee894"; // 公众号原始ID
-//                req.extMsg = "";
-//                req.profileType = JumpToBizProfile.JUMP_TO_NORMAL_BIZ_PROFILE; // 普通公众号
-//                api.sendReq(req);
-//            } else {
-//                Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
-//            }
+        boolean BizProfile = false;
+        svHomeSettingWechat.setChecked(BizProfile);
+        svSettingWechatSwitch.setVisibility(BizProfile ? View.VISIBLE : View.GONE);
+        svSettingWechatSwitch.setOnClickListener(v -> {
+            getAlertDialogManager().showDialog(getActivity(), "qiehuan", getString(R.string.SETTINGS_Wechat_Switch_Open),
+                    getString(R.string.I_KNOW), (dialog, which) -> {
+                        dialog.dismiss();
+                    });
         });
+        svHomeSettingWechat.setVisibility(getResources().getBoolean(R.bool.show_wechat_entrance) ? View.VISIBLE : View.GONE);
+        svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            if (isChecked) {
+                //第三方账号需要绑定手机/邮箱
+                if (BaseApplication.getAppComponent().getSourceManager().getLoginType() > 3) {
+                    if (account != null && TextUtils.isEmpty(account.getEmail()) &&
+                            TextUtils.isEmpty(account.getPhone())) {
+                        showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
+                        return;
+                    }
+                }
+                //跳转到
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                        WechatGuideFragment.newInstance(),
+                        android.R.id.content);
+            } else {
+                AlertDialogManager.getInstance().showDialog(getActivity(), "weixin",
+                        getString(R.string.SETTINGS_Wechat_Switch_Cancel), getString(R.string.OK), (dialog, which) -> {
+                            svHomeSettingWechat.setChecked(false);
+                        }, getString(R.string.CANCEL), null);
+            }
+        });
+    }
 
+    /**
+     * 弹出绑定手机或者邮箱的提示框
+     */
+    private void showBindPhoneOrEmailDialog(String title) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("bindphone");
+        if (f == null) {
+            AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
+                    getString(R.string.Tap2_Index_Open_NoDeviceOption),
+                    (DialogInterface dialog, int which) -> {
+                        int i = BaseApplication.getAppComponent().getSourceManager().getLoginType();
+                        if (i == 3 || i == 4) {
+                            Bundle bundle = new Bundle();
+                            MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                                    bindPhoneFragment, android.R.id.content);
+                        } else if (i == 6 || i == 7) {
+                            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                                    BindMailFragment.newInstance(null), android.R.id.content);
+                        }
+                    }, getString(R.string.CANCEL), null, false);
+        }
     }
 
     private void openSetting() {

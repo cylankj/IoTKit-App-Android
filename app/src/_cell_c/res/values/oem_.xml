@@ -10,6 +10,7 @@
     <bool name="show_ruishi_interface">false</bool>
     <bool name="show_third_login">false</bool>
     <bool name="show_share_btn">false</bool>
+    <bool name="show_wechat_entrance">false</bool>
     <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
     <string name="share_to_friends_link">https://play.google.com/store/apps/details?id=%s</string>
 </resources>

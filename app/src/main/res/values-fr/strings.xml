@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Caméra en mode de veille en sécurité pour activer filmer en retard, vous devez désactiver le mode de veille en sécurité,êtes&#8211;vous sûr de déactiver?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Confirmer de déactiver</string>
   <string name="Tap1_CameraFun_Timelapse_document">Activer le filmer en retard,avoir plus de merveilleux</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s Heure</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% Heure</string>
   <string name="Tap1_CameraFun_UninitializedTips">Echouer à lire la carte de Micro SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Suspendre du haut ver le bas(image inversée)</string>
   <string name="Tap1_Camera_BackLiveTips">Retour à En direct</string>

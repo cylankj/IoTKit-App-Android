@@ -568,7 +568,7 @@
   <string name="Start_instructions">Abra las instrucciones</string>
   <string name="Start_instructions_A">En las cuentas oficiales de WeChat en el correo electrónico vinculante de Clever Dog, puede abrir esta función.</string>
   <string name="Start_instructions_B">Proceder de la siguiente:</string>
-  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \""cuenta oficial de WeChat del perro listo\"</string>
+  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \"cuenta oficial de WeChat del perro listo\"</string>
   <string name="Start_instructions_D">Método 1: haga clic en el WeChat en la esquina superior derecha del \"+\"> Añadir contactos> Cuentas oficiales, busque \"cuenta oficial de WeChat del perro listo\" y luego se refiere.</string>
   <string name="Start_instructions_E">Método 2: captura de pantalla de esta página o guardar el siguiente código bidimensional en el álbum, en el barrido WeChat atención.</string>
   <string name="Start_instructions_F">2. Cuenta enlazada</string>
@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Cerrar el modo en espera antes de iniciar la fotografía a intervalos. ¿Está seguro?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Confirmar el cierre</string>
   <string name="Tap1_CameraFun_Timelapse_document">Los mejores momentos de las fotografias en intervalos</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s hora</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% hora</string>
   <string name="Tap1_CameraFun_UninitializedTips">Fallo de lectura y escritura en tarjeta Micro SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Al revés (imagen invertida)</string>
   <string name="Tap1_Camera_BackLiveTips">Volver a En directo</string>

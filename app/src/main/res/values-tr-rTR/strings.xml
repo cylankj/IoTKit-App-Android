@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Hızlandırılmış fotoğraflamadan önce beklemedeyi kapatmaya gerek var, emin misiniz?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Emin</string>
   <string name="Tap1_CameraFun_Timelapse_document">Hızlandırılmış fotoğrafçılık ile daha harika anları başlatın</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s aat</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% saat</string>
   <string name="Tap1_CameraFun_UninitializedTips">Mikro SD kart okuma başarısız</string>
   <string name="Tap1_CameraFun_VideoDirection">Ters</string>
   <string name="Tap1_Camera_BackLiveTips">Back to canlı</string>

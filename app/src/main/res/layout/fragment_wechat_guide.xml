@@ -1,0 +1,110 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.home.WechatGuideFragment">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="false"
+        hunt:ct_enable_theme="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/Start_instructions"
+        hunt:ct_left_title_color="@color/color_white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y12"
+                android:text="@string/Start_instructions_A"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp13" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y19"
+                android:text="@string/Start_instructions_B"
+                android:textColor="@color/color_666666"
+                android:textSize="@dimen/sp15" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/Start_instructions_C"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/Start_instructions_D"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/Start_instructions_E"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y15"
+                android:src="@drawable/pic_erweima" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/Start_instructions_F"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x15"
+                android:layout_marginStart="@dimen/x15"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/Start_instructions_G"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

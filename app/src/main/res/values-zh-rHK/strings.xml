@@ -511,8 +511,8 @@
   <string name="SETTING">正在設定&#8230;</string>
   <string name="SETTINGS">設定</string>
   <string name="SETTINGS_1">功能設置</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">關閉將無法接收微信推送。想取消綁定請前往微信取消關注\“加菲狗官微服務\”公眾號。</string>
-  <string name="SETTINGS_Wechat_Switch_Open">請在新的微信號上關注\"加菲狗官微服務\"並綁定，成功後舊的微信號將不再接收消息推送</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">關閉將無法接收微信推送。想取消綁定請前往微信取消關注“加菲狗官微服務”公眾號。</string>
+  <string name="SETTINGS_Wechat_Switch_Open">請在新的微信號上關注“加菲狗官微服務”並綁定，成功後舊的微信號將不再接收消息推送</string>
   <string name="SETTING_DIRECTION">錄影指向</string>
   <string name="SETTING_FREE">自行設定單個設備的位移偵測及警示</string>
   <string name="SETTING_RECORD">自動錄影</string>
@@ -566,15 +566,15 @@
   <string name="Start_Hotspot_Prompt">開啟前請確定手機已連接到“%s”WiFi網絡</string>
   <string name="Start_Success">開啟成功</string>
   <string name="Start_instructions">開啟說明</string>
-  <string name="Start_instructions_A">在微信公眾號裡綁定加菲狗電子郵件，即可開啟此功能。</string>
+  <string name="Start_instructions_A">在微信公眾號裡綁定加菲狗手機/郵箱，即可開啟此功能。</string>
   <string name="Start_instructions_B">步驟如下：</string>
-  <string name="Start_instructions_C">1. 請先關注微信公眾號\“加菲狗官微服務\”</string>
-  <string name="Start_instructions_D">方法一：點擊微信右上角的\“+\”號 > 添加朋友 > 公眾號，搜索 \“加菲狗官微服務\”然後關注。</string>
+  <string name="Start_instructions_C">1. 請先關注微信公眾號“加菲狗官微服務”</string>
+  <string name="Start_instructions_D">方法一：點擊微信右上角的“+”號 > 添加朋友 > 公眾號，搜索“加菲狗官微服務”然後關注。</string>
   <string name="Start_instructions_E">方法二：截圖此頁面，在微信 裡掃一掃關注。</string>
   <string name="Start_instructions_F">2. 綁定賬號</string>
-  <string name="Start_instructions_G">關注\“加菲狗官微服務\”公眾號後，進入主頁面，點擊菜單欄的\“服務\”，選擇\“綁定賬號\”。</string>
+  <string name="Start_instructions_G">關注“加菲狗官微服務”公眾號後，進入主頁面，點擊菜單欄的“服務”，選擇“綁定賬號”。</string>
   <string name="Start_instructions_H">綁定賬號</string>
-  <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
+  <string name="Start_instructions_I">請輸入加菲狗手機/郵箱賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
   <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
   <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至直連模式查看</string>
   <string name="TAKE_PHOTO">拍照</string>
@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">攝影機安全待機中，開啟延時攝影，需關閉安全待機模式，確認是否關閉？</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">確認關閉</string>
   <string name="Tap1_CameraFun_Timelapse_document">啟動延時攝影，更多精彩畫面呈現</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s小時</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%小時</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SD卡讀寫失敗</string>
   <string name="Tap1_CameraFun_VideoDirection">倒掛（畫面反轉）</string>
   <string name="Tap1_Camera_BackLiveTips">點擊返回直播</string>

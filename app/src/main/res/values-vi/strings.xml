@@ -672,7 +672,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Cần tắt Standby trước khi chụp time&#8211;lapse, bạn chắc không?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Chắc</string>
   <string name="Tap1_CameraFun_Timelapse_document">Ghi giữ thêm khoảnh khắc với tính năng Time&#8211;lapse</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s giờ</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%giờ</string>
   <string name="Tap1_CameraFun_UninitializedTips">Lỗi đọc thẻ nhớ SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Đảo chiều</string>
   <string name="Tap1_Camera_BackLiveTips">Back to live</string>
@@ -795,7 +795,7 @@
   <string name="Tap2_Timelapse_fail">Video time&#8211;lapse không thể tạo được do mất kết nối</string>
   <string name="Tap2_Timelapse_screenshot">Chụp trực tuyến</string>
   <string name="Tap2_Timelapse_title">Ảnh Time&#8211;lapse</string>
-  <string name="Tap2_TitleName">Daily Great</string>
+  <string name="Tap2_TitleName">Enjoy Everyday</string>
   <string name="Tap2_share_sharevideo">Tôi đã chia sẻ một video với bạn</string>
   <string name="Tap2_share_sharevideo_tips">Tôi đã tạo 1 ảnh time&#8211;lapse từ Cleverdog, hãy xem nào!</string>
   <string name="Tap2_share_unabletoshare">Chưa cài Wechat, không thể chia sẻ</string>

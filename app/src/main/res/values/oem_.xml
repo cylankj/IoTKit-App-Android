@@ -10,6 +10,7 @@
     <bool name="show_ruishi_interface">false</bool>
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>
+    <bool name="show_wechat_entrance">true</bool>
     <string name="qrcode_prefix">http://a.app.qq.com/o/simple.jsp?pkgname=%1$s&amp;id=%2$s</string>
     <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s</string>
     <item name="share_default_description" format="reference" type="string">
