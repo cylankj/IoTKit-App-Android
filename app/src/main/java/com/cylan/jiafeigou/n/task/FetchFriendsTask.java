@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class FetchFriendsTask implements Action1<Object> {
                     BaseApplication.getAppComponent().getSourceManager().setPairFriends(new Pair<>(fList, fReqList));
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-                    node.setData(fReqList);
+                    node.setData(ListUtils.getSize(fReqList));
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fReqList));

@@ -43,7 +43,6 @@ import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -53,7 +52,6 @@ import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -166,14 +164,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 return;
             }
         }
-        MineFriendsFragment mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineRelativesandFriendsFragment,
-                        "mineRelativesandFriendsFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
+        MineFriendsFragment mineFriendsFragment = MineFriendsFragment.newInstance();
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), mineFriendsFragment,
+                android.R.id.content);
+        mineFriendsFragment.setCallBack(t -> updateHint());
     }
 
     /**
@@ -197,13 +191,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         HomeSettingFragment homeSettingFragment = HomeSettingFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, homeSettingFragment,
-                        "homeSettingFragment")
-                .addToBackStack("HomeMineFragment")
-                .commitAllowingStateLoss();
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), homeSettingFragment,
+                android.R.id.content);
+        homeSettingFragment.setCallBack(t -> updateHint());
     }
 
     public void shareItem(View view) {
@@ -469,30 +459,27 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateHint();
+    }
+
+    @Override
     public void updateHint() {
         TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
         TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-        Object o = node == null ? null : node.getData();
-        int count = 0;
-        if (o != null && o instanceof ArrayList) {
-            try {
-                count = ListUtils.getSize((ArrayList) o);
-            } catch (Exception e) {
-            }
-        } else count = -1;
-        homeMineItemFriend.showNumber(count);//count ==0 dismiss
-        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
-        if (node != null && node.getData() != null && node.getData() instanceof Integer) {
-            count = (int) node.getData();
-        } else count = -1;
+        int count = node == null ? 0 : node.getData();
+        if (count == 0) homeMineItemFriend.showHint(false);
+        else
+            homeMineItemFriend.showNumber(count);//count ==0 dismiss
         //系统消息未读数
+        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
+        count = node == null ? 0 : node.getData();
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
         node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
-        if (node != null && node.getData() instanceof ArrayList) {
-            count = ListUtils.getSize((ArrayList) node.getData());
-        } else count = -1;
-        homeMineItemHelp.showNumber(count);
+        count = node == null ? 0 : node.getData();
+        homeMineItemHelp.showHint(count > 0);
         //分享管理
 
         //设置

@@ -9,11 +9,9 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -67,13 +65,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineFragment.class.getSimpleName());
-                    boolean show = false;
-                    if (node != null) {
-                        List<TreeNode> childList = node.traversal();
-                        show = !ListUtils.isEmpty(childList);
-                    } else {
-                        show = false;
-                    }
+                    boolean show = node != null && node.getTraversalCount() > 0;
                     mView.refreshHint(show);
                 }, throwable -> addSubscription(mineTabNewInfoRsp()));
     }

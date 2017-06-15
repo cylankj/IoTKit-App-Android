@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.base;
 
 import android.content.Context;
-import android.support.v4.app.AppLaunchChecker;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
@@ -67,13 +66,19 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     public void onDetach() {
         Log.d(TAG, TAG + ",onDetach");
         super.onDetach();
+        if (callBack != null) callBack.callBack(cache);
     }
 
     public void setPresenter(P presenter) {
 
     }
 
+    protected Object cache;
     public CallBack callBack;
+
+    public void setCache(Object cache) {
+        this.cache = cache;
+    }
 
     public void setCallBack(CallBack callBack) {
         this.callBack = callBack;

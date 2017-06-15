@@ -65,8 +65,14 @@ public class SystemMsgTask implements Action1<Object> {
     }
 
     private Observable<Boolean> getSystemUnreadCount() {
-        return Observable.just("Now Get UnReadMsg")
-                .observeOn(Schedulers.io())
+        return Observable.create(subscriber -> {
+            try {
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        }).observeOn(Schedulers.io())
                 .map((Object o) -> {
                     try {
                         ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();

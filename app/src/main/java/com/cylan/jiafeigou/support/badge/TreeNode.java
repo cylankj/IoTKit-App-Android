@@ -11,7 +11,7 @@ public class TreeNode {
 
     private String nodeName;
     private String parentName;
-    private Object data;
+    private int data;
     private List<TreeNode> childNodeList;
 
     public List<TreeNode> getChildNodeList() {
@@ -27,6 +27,16 @@ public class TreeNode {
                 nodeList.addAll(node.traversal());
             }
         return nodeList;
+    }
+
+    public int getTraversalCount() {
+        List<TreeNode> nodeList = traversal();
+        if (nodeList == null) return 0;
+        int count = 0;
+        for (TreeNode node : nodeList) {
+            count += node.getData();
+        }
+        return count;
     }
 
     public void setChildNodeList(List<TreeNode> childNodeList) {
@@ -46,7 +56,7 @@ public class TreeNode {
         return parentName;
     }
 
-    public Object getData() {
+    public int getData() {
         return data;
     }
 
@@ -60,7 +70,7 @@ public class TreeNode {
         return this;
     }
 
-    public TreeNode setData(Object data) {
+    public TreeNode setData(int data) {
         this.data = data;
         return this;
     }

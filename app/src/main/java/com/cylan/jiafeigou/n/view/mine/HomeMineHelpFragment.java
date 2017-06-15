@@ -8,7 +8,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,12 @@ import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -40,7 +43,7 @@ import butterknife.OnClick;
  * 更新描述   ${TODO}
  */
 @Badge(parentTag = "HomeMineFragment")
-public class HomeMineHelpFragment extends Fragment {
+public class HomeMineHelpFragment extends IBaseFragment {
 
     @BindView(R.id.wv_mine_help)
     WebView mWvHelp;
@@ -80,6 +83,14 @@ public class HomeMineHelpFragment extends Fragment {
     public void onStart() {
         super.onStart();
         showWebView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+        TreeNode node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        customToolbar.showToolbarRightHint(node != null && node.getData() > 0);
     }
 
     /**

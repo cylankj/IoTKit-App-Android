@@ -365,13 +365,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        if (callBack != null)
-            callBack.callBack(null);
-    }
-
-    @Override
     public void setPresenter(CamInfoContract.Presenter presenter) {
         basePresenter = presenter;
     }

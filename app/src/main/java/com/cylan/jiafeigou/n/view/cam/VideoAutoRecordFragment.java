@@ -116,8 +116,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (oldOption != a && oldOption != -1) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
-        if (callBack != null)
-            callBack.callBack(null);
     }
 
 

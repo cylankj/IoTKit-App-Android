@@ -197,8 +197,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onDetach() {
         super.onDetach();
-        if (callBack != null)
-            callBack.callBack(null);
         if (subscription != null) subscription.unsubscribe();
     }
 

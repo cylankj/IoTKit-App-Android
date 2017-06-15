@@ -14,9 +14,11 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -69,6 +71,8 @@ public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
     @Override
     public void start() {
         super.start();
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        if (node != null) node.setData(0);
         getSystemAutoReply();
     }
 
@@ -131,7 +135,6 @@ public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
     @Override
     public void onClearAllTalk() {
         helper.getDaoSession().getMineHelpSuggestionBeanDao().deleteAll();
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
         BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(new ArrayList<>());
     }
 
@@ -248,7 +251,7 @@ public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
      */
     @Override
     public Subscription getSystemAutoReplyCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetFeedBackRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFeedBackRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getFeedBackRsp -> {
                     if (getFeedBackRsp != null && getView() != null) {
@@ -260,8 +263,7 @@ public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
                             AppLogger.d("getSystemAuto2:" + System.currentTimeMillis());
                             getView().addSystemAutoReply(info.time, info.msg);
                         }
-                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
-                        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(new ArrayList<>());
+                        BaseApplication.getAppComponent().getSourceManager().clearFeedbackList();
                     }
                 }, AppLogger::e);
     }

@@ -37,8 +37,8 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
+import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.SystemMsgTask;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
@@ -183,8 +183,13 @@ public class DataSourceManager implements JFGSourceManager {
         }
         newFeedBackList.addAll(list);
         newFeedBackList = new ArrayList<>(new HashSet<>(newFeedBackList));
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp());
+        RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp());
         handleSystemNotification(newFeedBackList);
+    }
+
+    @Override
+    public void clearFeedbackList() {
+        this.newFeedBackList = null;
     }
 
     @Override

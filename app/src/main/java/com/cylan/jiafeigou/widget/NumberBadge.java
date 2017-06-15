@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
@@ -20,10 +19,9 @@ import com.cylan.jiafeigou.R;
 public class NumberBadge extends AppCompatTextView {
 
     private Paint bgPaint;
-    private Rect defaultTextBounds = new Rect();
 
     private int drawFlag;
-    private static final String PLACEHOLDER = "0";
+    private float pointRadius;
 
     public NumberBadge(Context context) {
         this(context, null);
@@ -37,6 +35,7 @@ public class NumberBadge extends AppCompatTextView {
         super(context, attrs, defStyleAttr);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.NumberBadgeStyle, defStyleAttr, 0);
         int bgColor = array.getColor(R.styleable.NumberBadgeStyle_bg_color, Color.RED);
+        pointRadius = array.getDimension(R.styleable.NumberBadgeStyle_point_radius, 4);
         array.recycle();
         bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bgPaint.setColor(bgColor);
@@ -59,20 +58,14 @@ public class NumberBadge extends AppCompatTextView {
      * @param number{}
      */
     public void showNumber(int number) {
-        if (number < 0) {
-            drawFlag = 0;
-            setText("");
-            return;
-        } else if (number == 0) {
-            //红点
-            drawFlag = 1;
-            setText("");
-            return;
-        } else {
-            drawFlag = 2;
-        }
+        drawFlag = 2;
         if (number > 99) setText(" 99+ ");
         else setText(number + "");
+    }
+
+    public void showHint(boolean show) {
+        drawFlag = show ? 1 : 0;
+        setText("");
     }
 
     @Override
@@ -81,8 +74,10 @@ public class NumberBadge extends AppCompatTextView {
         int w = this.getWidth();
         int diameter = Math.max(h, w);
         int radius = diameter / 2;
-        if (drawFlag != 0)
-            canvas.drawCircle(diameter / 2, diameter / 2, radius, bgPaint);
+        if (drawFlag == 2)
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, bgPaint);
+        else if (drawFlag == 1)
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, pointRadius, bgPaint);
         super.onDraw(canvas);
     }
 }

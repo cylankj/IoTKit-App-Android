@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/y48">
 
@@ -24,7 +25,7 @@
         android:textColor="@color/color_444444"
         android:textSize="@dimen/sp22" />
 
-    <TextView
+    <com.cylan.jiafeigou.widget.HintTextView
         android:id="@+id/tv_toolbar_right"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -32,7 +33,9 @@
         android:gravity="center"
         android:paddingLeft="@dimen/x15"
         android:paddingRight="@dimen/x15"
+        android:text="nihao"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp14"
-        android:visibility="gone" />
+        app:ht_padding="@dimen/x10"
+        app:ht_radius="@dimen/x4" />
 </FrameLayout>
