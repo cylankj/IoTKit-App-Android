@@ -53,8 +53,8 @@ public class JFGRules {
     }
 
     public static boolean showSight(int pid) {
-        return pid == 10 || pid == 18 || pid == 36 || pid == 5 || pid == 1091 || pid == 1092 ||
-                pid == 47 || pid == 1346;
+        return pid == 10 || pid == 18 || pid == 36 || pid == 1091 || pid == 1092 ||
+                pid == 39 || pid == 49 || pid == 1348 || pid == 1346 || pid == 47;
     }
 
     public static String getDeviceAlias(Device device) {
