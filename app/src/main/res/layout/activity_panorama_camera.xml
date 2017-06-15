@@ -145,16 +145,15 @@
             <TextView
                 android:id="@+id/act_panorama_camera_banner_bad_net_work_configure"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/y15"
-                android:layout_marginStart="@dimen/y15"
+                android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/act_panorama_camera_banner_bad_net_work_caution"
                 android:layout_toLeftOf="@+id/act_panorama_camera_banner_bad_net_work_close"
                 android:layout_toRightOf="@+id/act_panorama_camera_banner_bad_net_work_caution"
                 android:layout_toStartOf="@+id/act_panorama_camera_banner_bad_net_work_close"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="center_vertical|start"
+                android:paddingStart="@dimen/y15"
                 android:text="设备离线,请重新配置连接>>"
                 android:textColor="@color/color_888888"
                 android:textSize="@dimen/sp15" />
@@ -184,6 +183,7 @@
         android:gravity="center"
         android:text="0K/s"
         android:textColor="#FFFFFF"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_banner"
         tools:layout_editor_absoluteX="351dp" />

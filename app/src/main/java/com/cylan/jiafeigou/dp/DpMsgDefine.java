@@ -409,7 +409,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPSdStatusBoolean extends BaseDataPoint implements Parcelable {
+    public static final class DPSdStatusInt extends BaseDataPoint implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -417,9 +417,9 @@ public class DpMsgDefine {
         @Index(2)
         public int err = -1;
         @Index(3)
-        public boolean hasSdcard;
+        public int hasSdcard;
 
-        public DPSdStatusBoolean() {
+        public DPSdStatusInt() {
         }
 
         @Override
@@ -443,26 +443,26 @@ public class DpMsgDefine {
             dest.writeLong(this.total);
             dest.writeLong(this.used);
             dest.writeInt(this.err);
-            dest.writeInt(this.hasSdcard ? 1 : 0);
+            dest.writeInt(this.hasSdcard);
         }
 
-        protected DPSdStatusBoolean(Parcel in) {
+        protected DPSdStatusInt(Parcel in) {
             super(in);
             this.total = in.readLong();
             this.used = in.readLong();
             this.err = in.readInt();
-            this.hasSdcard = in.readInt() == 1;
+            this.hasSdcard = in.readInt() ;
         }
 
-        public static final Creator<DPSdStatusBoolean> CREATOR = new Creator<DPSdStatusBoolean>() {
+        public static final Creator<DPSdStatusInt> CREATOR = new Creator<DPSdStatusInt>() {
             @Override
-            public DPSdStatusBoolean createFromParcel(Parcel source) {
-                return new DPSdStatusBoolean(source);
+            public DPSdStatusInt createFromParcel(Parcel source) {
+                return new DPSdStatusInt(source);
             }
 
             @Override
-            public DPSdStatusBoolean[] newArray(int size) {
-                return new DPSdStatusBoolean[size];
+            public DPSdStatusInt[] newArray(int size) {
+                return new DPSdStatusInt[size];
             }
         };
     }

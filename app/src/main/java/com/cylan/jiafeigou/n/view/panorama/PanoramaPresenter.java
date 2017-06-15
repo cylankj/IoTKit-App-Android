@@ -41,6 +41,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private Subscription subscribe;
     private boolean shouldRefreshRecord = true;
     private int battery;
+    private boolean notifyBatteryLow = true;
 
     @Override
     public void onViewAttached(PanoramaCameraContact.View view) {
@@ -126,7 +127,17 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
-                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                DpMsgDefine.DPSdStatus status = null;
+                                try {
+                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                } catch (Exception e) {
+                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
+                                    status = new DpMsgDefine.DPSdStatus();
+                                    status.total = statusInt.total;
+                                    status.used = statusInt.used;
+                                    status.err = statusInt.err;
+                                    status.hasSdcard = statusInt.hasSdcard == 1;
+                                }
                                 if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
@@ -144,6 +155,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 Integer battery = unpackData(msg.packValue, int.class);
                                 if (battery != null) {
                                     mView.onDeviceBatteryChanged(this.battery = battery);
+                                }
+                                if (this.battery < 20 && notifyBatteryLow) {
+                                    mView.onBellBatteryDrainOut();
+                                    notifyBatteryLow = false;
+                                } else if (this.battery > 20) {
+                                    notifyBatteryLow = true;
                                 }
                             }
                         }
@@ -245,26 +262,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(ret -> {
-                    if (ret != null) {
-                        mView.onDeviceBatteryChanged(this.battery = ret.battery);
-                        if (ret.battery < 20 && isFirst) {//检查电量
-                            isFirst = false;
-                            Device device = sourceManager.getDevice(uuid);
-                            DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
-                            if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
-                                option.lastLowBatteryTime = System.currentTimeMillis();
-                                device.setOption(option);
-                                sourceManager.updateDevice(device);
-                                mView.onBellBatteryDrainOut();
-                            }
-                        }
-                    }
-                    return ret;
-                })
-                .observeOn(Schedulers.io())
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
@@ -273,7 +270,30 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return ret;
                 })
+                .observeOn(Schedulers.io())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery().observeOn(AndroidSchedulers.mainThread())
+                        .map(bat -> {
+                            if (bat != null) {
+                                this.battery = bat.battery;
+                                if (bat.battery < 20 && isFirst) {//检查电量
+                                    isFirst = false;
+                                    Device device = sourceManager.getDevice(uuid);
+                                    DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
+                                    if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
+                                        option.lastLowBatteryTime = System.currentTimeMillis();
+                                        device.setOption(option);
+                                        sourceManager.updateDevice(device);
+                                        mView.onBellBatteryDrainOut();
+                                    }
+                                }
+                                if (ret!=null&&ret.powerline != 1) {
+                                    mView.onDeviceBatteryChanged(this.battery);
+                                }
+                            }
+                            return bat;
+                        })
 
+                )
                 .subscribe(ret -> {
                 }, e -> {
                     AppLogger.e(e.getMessage());
@@ -310,8 +330,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (rsp.ret == 0) {
                         AppLogger.d("开启视频录制成功了");
                         shouldRefreshRecord = true;
-                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
                         refreshVideoRecordUI(0, type);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
                         DataSourceManager.getInstance().pushDeviceState(uuid);
                     } else {
                         shouldRefreshRecord = false;
@@ -348,6 +368,24 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     mView.onReportDeviceError(-1, false);
                     AppLogger.e(e);
+                });
+        registerSubscription(subscribe);
+    }
+
+    @Override
+    public void formatSDCard() {
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().sdFormat()
+                .timeout(30, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    if (ret != null && ret.sdIsExist == 1 && ret.sdcard_recogntion == 0) {
+                        mView.onSDFormatResult(1);
+                    } else {
+                        mView.onSDFormatResult(-1);
+                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    mView.onSDFormatResult(-1);
                 });
         registerSubscription(subscribe);
     }

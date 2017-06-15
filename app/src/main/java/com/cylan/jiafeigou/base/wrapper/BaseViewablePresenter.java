@@ -272,6 +272,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
                     liveStreamAction.hasResolution = false;
                     liveStreamAction.hasLiveError = true;
+                    feedRtcp.stop();
                     if (dis.code != STOP_VIERER_BY_SYSTEM) {
                         mView.onVideoDisconnect(dis.code);
                     }
@@ -450,10 +451,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void onFrameFailed() {
-        liveStreamAction.hasLiveError = true;
-        feedRtcp.stop();
+        JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+        disconn.code = BAD_FRAME_RATE;
+        RxBus.getCacheInstance().post(disconn);
         Schedulers.io().createWorker().schedule(() -> {
-            liveStreamAction.reset();
             if (TextUtils.isEmpty(getViewHandler())) return;
             try {
                 appCmd.stopPlay(getViewHandler());
@@ -461,7 +462,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 AppLogger.e(e.getMessage());
             }
         });
-        mView.onVideoDisconnect(BAD_FRAME_RATE);
     }
 
     @Override

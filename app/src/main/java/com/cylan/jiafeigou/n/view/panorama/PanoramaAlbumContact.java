@@ -26,6 +26,10 @@ public interface PanoramaAlbumContact {
 
     interface View extends JFGView {
 
+        void onSyncFinish();
+
+        void onDelete(int position);
+
         @IntDef
         @Retention(RetentionPolicy.SOURCE)
         @interface ALBUM_VIEW_MODE {

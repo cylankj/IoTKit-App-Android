@@ -35,6 +35,8 @@ public interface PanoramaCameraContact {
 
         void onDeviceBatteryChanged(Integer battery);
 
+        void onSDFormatResult(int code);
+
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
         @interface SPEED_MODE {
@@ -101,6 +103,8 @@ public interface PanoramaCameraContact {
         void startVideoRecord(int type);
 
         void stopVideoRecord(int type);
+
+        void formatSDCard();
 
         boolean isApiAvailable();
     }

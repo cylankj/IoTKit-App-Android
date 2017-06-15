@@ -168,7 +168,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 status.err = 0;
-                status.used = 0;
+                status.used = 192 * 1024;
                 initSdUseDetailRsp(status);
                 break;
             case 1:
@@ -208,11 +208,11 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     }
 
     private void initDetailData() {
-        if (!basePresenter.getSdcardState()) {
-            AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
-                    getString(R.string.OK), (DialogInterface dialog, int which) -> finishExt());
-            return;
-        }
+//        if (!basePresenter.getSdcardState()) {
+//            AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
+//                    getString(R.string.OK), (DialogInterface dialog, int which) -> finishExt());
+//            return;
+//        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
         //仅3G摄像头显示此栏
         if (device != null && JFGRules.is3GCam(device.pid)) {

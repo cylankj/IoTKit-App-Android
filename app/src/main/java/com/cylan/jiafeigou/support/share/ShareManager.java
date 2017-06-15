@@ -169,6 +169,12 @@ public class ShareManager {
         protected PanoramaAlbumContact.PanoramaItem shareItem;
         protected String filePath;
         protected String thumbPath;
+        protected String uuid;
+
+        public ShareByH5EditorOption withUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
 
         public ShareByH5EditorOption withItem(PanoramaAlbumContact.PanoramaItem shareItem) {
             this.shareItem = shareItem;
@@ -189,27 +195,28 @@ public class ShareManager {
             super(activity);
         }
 
+
         @Override
         public void onShareOptionClick(int shareItemType) {
-            super.onShareOptionClick(shareItemType);
             AppLogger.e("H5分享模式,在指定的 fragment 里分享");
+            if (dialog != null) dialog.dismiss();
+            dialog = null;
             if (activity != null) {
                 if (NetUtils.getNetType(activity) != ConnectivityManager.TYPE_WIFI) {
                     new AlertDialog.Builder(activity)
                             .setMessage(R.string.Tap1_Firmware_DataTips)
                             .setCancelable(false)
                             .setPositiveButton(R.string.CARRY_ON, (dialog, which) -> {
-                                H5ShareEditorFragment fragment = H5ShareEditorFragment.newInstance(shareItemType, filePath, thumbPath, shareItem, ShareByH5EditorOption.this);
-                                ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment, android.R.id.content, true);
+                                H5ShareEditorFragment fragment = H5ShareEditorFragment.newInstance(uuid, shareItemType, filePath, thumbPath, shareItem, ShareByH5EditorOption.this);
+                                ActivityUtils.addFragmentToActivity(activity.getSupportFragmentManager(), fragment, android.R.id.content);
                             })
                             .setNegativeButton(R.string.CANCEL, null)
                             .show();
                 } else {
                     Bundle bundle = new Bundle();
                     bundle.putInt(ShareConstant.SHARE_PLATFORM_TYPE, shareItemType);
-                    H5ShareEditorFragment fragment = new H5ShareEditorFragment();
-                    fragment.setArguments(bundle);
-                    ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment, android.R.id.content, true);
+                    H5ShareEditorFragment fragment = H5ShareEditorFragment.newInstance(uuid, shareItemType, filePath, thumbPath, shareItem, ShareByH5EditorOption.this);
+                    ActivityUtils.addFragmentToActivity(activity.getSupportFragmentManager(), fragment, android.R.id.content);
                 }
             }
         }

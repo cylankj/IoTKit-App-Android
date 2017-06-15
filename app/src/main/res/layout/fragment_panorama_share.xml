@@ -81,17 +81,6 @@
             app:layout_constraintStart_toStartOf="@id/sharePreview"
             app:layout_constraintTop_toTopOf="@id/sharePreview" />
 
-        <ImageView
-            android:id="@+id/shareRetry"
-            android:layout_width="@dimen/y24"
-            android:layout_height="@dimen/y24"
-            android:src="@drawable/btn_video_retry"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/sharePreview"
-            app:layout_constraintEnd_toEndOf="@id/sharePreview"
-            app:layout_constraintStart_toStartOf="@id/sharePreview"
-            app:layout_constraintTop_toTopOf="@id/sharePreview" />
-
         <TextView
             android:id="@+id/sharePercent"
             android:layout_width="wrap_content"
@@ -104,6 +93,19 @@
             app:layout_constraintEnd_toEndOf="@id/sharePreview"
             app:layout_constraintStart_toStartOf="@id/sharePreview"
             app:layout_constraintTop_toTopOf="@id/sharePreview" />
+
+
+        <ImageView
+            android:id="@+id/shareRetry"
+            android:layout_width="@dimen/y24"
+            android:layout_height="@dimen/y24"
+            android:src="@drawable/btn_video_retry"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/sharePreview"
+            app:layout_constraintEnd_toEndOf="@id/sharePreview"
+            app:layout_constraintStart_toStartOf="@id/sharePreview"
+            app:layout_constraintTop_toTopOf="@id/sharePreview" />
+
 
         <EditText
             android:id="@+id/shareContextEditor"

@@ -24,10 +24,11 @@ import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +63,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     TextView selectAll;
     @BindView(R.id.tv_msg_delete)
     TextView deleteSelected;
+    @BindView(R.id.act_panorama_refresh_header)
+    TextView refreshHeader;
 
     @ALBUM_VIEW_MODE
     private int albumViewMode = ALBUM_VIEW_MODE.MODE_NONE;
@@ -88,7 +91,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !swipeRefreshLayout.isRefreshing()) {
                     int visibleItemCount = recyclerView.getChildCount();
                     int totalItemCount = layoutManager.getItemCount();
                     int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
@@ -268,7 +271,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             panoramaAdapter.reverseItemSelectedState(position);
             deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size() > 0);
         } else {
-            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item, albumViewMode);
+            Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item, albumViewMode, position);
             startActivity(intent);
         }
     }
@@ -311,6 +314,16 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     public void onRefresh() {
         presenter.fetch(0, albumViewMode);
+    }
+
+    @Override
+    public void onSyncFinish() {
+        YoYo.with(Techniques.SlideOutUp).duration(500).playOn(refreshHeader);
+    }
+
+    @Override
+    public void onDelete(int position) {
+        panoramaAdapter.notifyItemRemoved(position);
     }
 
     @Override
@@ -375,9 +388,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     public void onViewModeChanged(int mode, boolean report) {
         panoramaAdapter.notifyDataSetChanged();
         if (albumViewMode == mode) return;
-        if (report) {
-            ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));
-        }
+//        if (report) {
+//            ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));
+//        }
         swipeRefreshLayout.setRefreshing(true);
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);

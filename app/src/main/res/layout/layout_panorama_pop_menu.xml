@@ -28,47 +28,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/act_panorama_camera_quick_menu_item1_mic" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y42"
+        <Button
+            android:id="@+id/act_panorama_camera_quick_menu_item3_resolution"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/y70"
+            android:layout_height="@dimen/y44"
             android:layout_marginTop="@dimen/y15"
+            android:alpha="0.4"
             android:background="@drawable/panorama_camera_quick_menu_item3"
+            android:drawableStart="@drawable/btn_leftkey_selector"
+            android:gravity="center_vertical|start"
+            android:paddingEnd="0dp"
+            android:paddingStart="@dimen/y5"
+            android:text="高清"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/sp15"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/act_panorama_camera_quick_menu_item2_voice">
-
-            <ImageView
-                android:id="@+id/act_panorama_camera_quick_menu_item3_left"
-                android:layout_width="@dimen/y24"
-                android:layout_height="@dimen/y24"
-                android:layout_centerVertical="true"
-
-                android:src="@drawable/btn_leftkey_selector" />
-
-            <TextView
-                android:id="@+id/act_panorama_camera_quick_menu_item3_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_toEndOf="@id/act_panorama_camera_quick_menu_item3_left"
-                android:text="高清"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/sp15" />
-
-            <ImageView
-                android:id="@+id/act_panorama_camera_quick_menu_item3_right"
-                android:layout_width="@dimen/y24"
-                android:layout_height="@dimen/y24"
-                android:layout_centerVertical="true"
-
-                android:layout_toEndOf="@id/act_panorama_camera_quick_menu_item3_content"
-                android:src="@drawable/btn_rightkey_selector"
-                android:visibility="invisible" />
-
-        </RelativeLayout>
-
-
+            app:layout_constraintTop_toBottomOf="@id/act_panorama_camera_quick_menu_item2_voice" />
     </android.support.constraint.ConstraintLayout>
 
 </layout>

@@ -76,7 +76,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void upload(String fileName, String filePath) {
-        Subscription subscribe = Observable.just(getRemoteFilePath(fileName))
+        Subscription subscribe = Observable.just(getRemoteFilePath(fileName, true))
                 .observeOn(Schedulers.io())
                 .map(remote -> {
                     int result = -1;
@@ -101,16 +101,16 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
         registerSubscription(subscribe);
     }
 
-    private String getRemoteFilePath(String fileName) {
+    private String getRemoteFilePath(String fileName, boolean hasPrefix) {
         if (sourceManager.getAccount().getAccount() == null) return "";
-        return "/long/" + Security.getVId() + "/" + sourceManager.getAccount().getAccount() + "/wonder/" + uuid + "/" + fileName;
+        return (hasPrefix ? "/" : "") + "long/" + Security.getVId() + "/" + sourceManager.getAccount().getAccount() + "/wonder/" + uuid + "/" + fileName;
     }
 
     @Override
     public void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath) {
         Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                long seq = appCmd.getVideoShareUrl(getRemoteFilePath(item.fileName), desc, 0, item.type);
+                long seq = appCmd.getVideoShareUrl(getRemoteFilePath(item.fileName, false), desc, 0, item.type);
                 AppLogger.e("获取 H5返回码为:" + seq);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
@@ -174,7 +174,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     if (code != 0) throw new BaseDPTaskException(code, "分享步骤一失败");
                     AppLogger.d("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
                     try {
-                        String remotePath = getRemoteFilePath(item.fileName);
+                        String remotePath = getRemoteFilePath(item.fileName, true);
                         result = appCmd.putFileToCloud(remotePath, thumbPath);
 
                     } catch (Exception e) {
@@ -195,6 +195,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     mView.onShareH5Result(success, success ? result.second : "");
                     AppLogger.d("AAAAA:" + new Gson().toJson(result));
                 }, e -> {
+                    mView.onShareH5Result(false, "");
                     AppLogger.e(e.getMessage());
                 });
         registerSubscription(subscribe);

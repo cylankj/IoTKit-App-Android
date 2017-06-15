@@ -122,7 +122,7 @@
                     android:layout_height="@dimen/y25"
                     android:layout_marginEnd="@dimen/panorama_detail_panel_video_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/video_icon_panorama_selector" />
+                    android:src="@drawable/video_icon_fisheye_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_gyroscope"
@@ -169,7 +169,7 @@
                     android:layout_height="@dimen/y38"
                     android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
                     android:background="@null"
-                    android:src="@drawable/photos_icon_panorama_selector" />
+                    android:src="@drawable/photos_icon_fisheye_selector" />
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"

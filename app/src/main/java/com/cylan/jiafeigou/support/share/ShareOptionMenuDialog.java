@@ -47,6 +47,12 @@ public class ShareOptionMenuDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
+
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
         if (dismiss != null) {
             dismiss.onCancel(dialog);
         }

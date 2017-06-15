@@ -22,7 +22,7 @@ public class PanoramaThumbURL extends GlideUrl {
     private String uuid;
 
     public PanoramaThumbURL(String uuid, String url) {
-        super(url);
+        super("http://www.cylan.com.cn");
         this.uuid = uuid;
         this.fileName = url;
     }
@@ -38,7 +38,7 @@ public class PanoramaThumbURL extends GlideUrl {
         if (information != null && !TextUtils.isEmpty(information.ip)) {
             return new URL("http://" + information.ip + "/thumb/" + fileName.split("\\.")[0] + ".thumb");
         }
-        return null;
+        return new URL("http://www.cylan.com.cn");
     }
 
     public void fetchFile(WonderGlideURL.FileInterface fileInterface) {

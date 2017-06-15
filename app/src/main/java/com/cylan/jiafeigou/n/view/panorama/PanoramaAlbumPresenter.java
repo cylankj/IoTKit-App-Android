@@ -19,6 +19,7 @@ import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
 import com.lzy.okserver.download.db.DownloadDBManager;
+import com.lzy.okserver.listener.DownloadListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +49,34 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onViewAttached(PanoramaAlbumContact.View view) {
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
+        DownloadManager.getInstance().getHandler().setGlobalDownloadListener(new DownloadListener() {
+            @Override
+            public void onProgress(DownloadInfo downloadInfo) {
+
+            }
+
+            @Override
+            public void onFinish(DownloadInfo downloadInfo) {
+                List<DownloadInfo> allTask = DownloadManager.getInstance().getAllTask();
+                boolean finish = true;
+                if (allTask != null) {
+                    for (DownloadInfo info : allTask) {
+                        if (info.getState() == DownloadManager.DOWNLOADING || info.getState() == DownloadManager.WAITING) {
+                            finish = false;
+                            break;
+                        }
+                    }
+                    if (finish) {
+//                        mView.onSyncFinish();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(DownloadInfo downloadInfo, String s, Exception e) {
+
+            }
+        });
         checkSDCardAndInit();
     }
 
@@ -62,6 +91,15 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         super.onRegisterSubscription();
         registerSubscription(monitorPanoramaAPI());
         registerSubscription(monitorSDCardUnMount());
+        registerSubscription(monitorDeleteUpdateSub());
+    }
+
+    private Subscription monitorDeleteUpdateSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeletePanoramaItem.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> mView.onDelete(ret.position), e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     private Subscription monitorSDCardUnMount() {
@@ -74,12 +112,12 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
                                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                if (status != null && !status.hasSdcard ) {//SDCard 不存在
+                                if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onSDCardCheckResult(0);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
                                     mView.onSDCardCheckResult(0);
                                 }
-                                boolean hasSDCard = status != null && status.hasSdcard  && status.err == 0;
+                                boolean hasSDCard = status != null && status.hasSdcard && status.err == 0;
                             }
                         }
                     } catch (Exception e) {
@@ -185,6 +223,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                         PanoramaAlbumContact.PanoramaItem item;
                         for (String file : files.files) {
+                            if (TextUtils.isEmpty(file)) continue;
                             item = new PanoramaAlbumContact.PanoramaItem(file);
                             item.location = 1;
                             result.add(item);

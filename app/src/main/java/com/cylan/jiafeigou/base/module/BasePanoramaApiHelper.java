@@ -179,7 +179,10 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.sdFormat() : forwardHelper.empty());
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.sdFormat().map(ret -> {
+
+            return ret;
+        }) : forwardHelper.setDataPoint(uuid, 218));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> getSdInfo() {

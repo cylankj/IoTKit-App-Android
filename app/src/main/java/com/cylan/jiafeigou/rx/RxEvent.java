@@ -668,6 +668,10 @@ public class RxEvent {
         public int position;
     }
 
+    public static class DeletePanoramaItem {
+        public int position;
+    }
+
     public static class DeleteWonderRsp {
         public boolean success;
         public int position;

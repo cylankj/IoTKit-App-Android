@@ -30,6 +30,8 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.BitmapUtils;
@@ -119,11 +121,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private boolean looper = true;
 
 
-    public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode) {
+    public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode, int position) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         intent.putExtra("panorama_item", item);
         intent.putExtra("panorama_mode", mode);
+        intent.putExtra("panorama_position", position);
         return intent;
     }
 
@@ -237,7 +240,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramicView720Ext.setLayoutParams(params);
         panoramaContentContainer.addView(panoramicView720Ext);
         panoramicView720Ext.setEventListener(this);
-        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
+        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
+        bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
+        bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
     }
 
     private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
@@ -288,7 +293,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             }
         }
         panoramicView720Ext.enableGyro(true);
-        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
+        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
         panoramaPanelSeekBar.setMax(panoramaItem.duration);
     }
 
@@ -323,6 +328,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableVRMode(!panoramicView720Ext.isVREnabled());
             boolean vrEnabled = panoramicView720Ext.isVREnabled();
+            if (!vrEnabled) panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);//默认双鱼眼
             panoramicView720Ext.enableGyro(vrEnabled || panoramicView720Ext.isGyroEnabled());
             bottomPictureMenuVR.setImageResource(vrEnabled ? R.drawable.photos_icon_vr_hl : R.drawable.photos_icon_vr_selector);
             bottomVideoMenuVR.setImageResource(vrEnabled ? R.drawable.video_icon_vr_hl : R.drawable.video_icon_vr_selector);
@@ -348,17 +354,17 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (panoramicView720Ext != null) {
             int displayMode = panoramicView720Ext.getDisplayMode();
             if (displayMode == Panoramic720View.DM_Normal) {
-                panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
-                bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
-                bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
-            } else if (displayMode == Panoramic720View.DM_Fisheye) {
                 bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_asteroid_selector);
                 bottomVideoMenuMode.setImageResource(R.drawable.video_icon_asteroid_selector);
                 panoramicView720Ext.setDisplayMode(Panoramic720View.DM_LittlePlanet);
-            } else if (displayMode == Panoramic720View.DM_LittlePlanet) {
+            } else if (displayMode == Panoramic720View.DM_Fisheye) {
                 bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_panorama_selector);
                 bottomVideoMenuMode.setImageResource(R.drawable.video_icon_panorama_selector);
                 panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Normal);
+            } else if (displayMode == Panoramic720View.DM_LittlePlanet) {
+                panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
+                bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
+                bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
             }
         }
     }
@@ -430,6 +436,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                         .withFile(downloadInfo.getTargetPath())
                         .withItem(panoramaItem)
                         .withThumb(filePath)
+                        .withUuid(uuid)
                         .share();
 //                Intent intent = new Intent(this, ShareMediaActivity.class);
 //                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
@@ -608,7 +615,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 //        } else if (code == -1) {
 //            ToastUtil.showNegativeToast("本地已删除,设备端删除失败");
 //        }
-        finish();
+        if (code == 0) {
+            RxEvent.DeletePanoramaItem deletePanoramaItem = new RxEvent.DeletePanoramaItem();
+            deletePanoramaItem.position = getIntent().getIntExtra("panorama_position", 0);
+            RxBus.getCacheInstance().post(deletePanoramaItem);
+            finish();
+        }
     }
 
     @Override

@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -48,7 +49,7 @@ import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_PLATFORM_TYP
  * Created by yanzhendong on 2017/5/27.
  */
 
-public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Presenter> implements PanoramaShareContact.View {
+public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Presenter> implements PanoramaShareContact.View, UMShareListener {
 
     private FragmentPanoramaShareBinding shareBinding;
     private ObservableField<String> description = new ObservableField<>();
@@ -59,13 +60,14 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     private String thumbPath;
     private UMShareListener listener;
 
-    public static H5ShareEditorFragment newInstance(int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem, UMShareListener listener) {
+    public static H5ShareEditorFragment newInstance(String uuid, int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem, UMShareListener listener) {
         H5ShareEditorFragment fragment = new H5ShareEditorFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, filePath);
         bundle.putString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, thumbPath);
         bundle.putParcelable(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, shareItem);
         bundle.putInt(ShareConstant.SHARE_PLATFORM_TYPE, shareType);
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         fragment.listener = listener;
         return fragment;
@@ -190,18 +192,21 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
                 break;
         }
         shareAction.share();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void cancelLoading(DialogInterface dialogInterface) {
 
     }
 
+
+
     public void cancelShare(View view) {
         new AlertDialog.Builder(getContext())
                 .setMessage(R.string.Tap3_ShareDevice_UnshareTips)
                 .setCancelable(false)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
-                    onBackPressed();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 })
                 .setNegativeButton(R.string.CANCEL, null)
                 .show();
@@ -217,5 +222,29 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             }
             presenter.share(shareItem, getDescription(), thumbPath);
         }
+    }
+
+    @Override
+    public void onStart(SHARE_MEDIA share_media) {
+        AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+    }
+
+    @Override
+    public void onResult(SHARE_MEDIA share_media) {
+        AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
+        ToastUtil.showPositiveToast(getActivity().getString(R.string.Tap3_ShareDevice_SuccessTips));
+    }
+
+    @Override
+    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+        AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
+        ToastUtil.showNegativeToast(getActivity().getString(R.string.Tap3_ShareDevice_FailTips));
+    }
+
+    @Override
+    public void onCancel(SHARE_MEDIA share_media) {
+        AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
+        ToastUtil.showNegativeToast(getActivity().getString(R.string.Tap3_ShareDevice_CanceldeTips));
     }
 }

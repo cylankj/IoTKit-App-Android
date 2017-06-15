@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.module;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -96,6 +97,43 @@ public class BaseForwardHelper {
         return sendForward(uuid, msgId, msg, 0);
     }
 
+    public <T> Observable<T> setDataPoint(String uuid, int msgId) {
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                ArrayList<JFGDPMsg> params = new ArrayList<>();
+                JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
+                params.add(dpMsg);
+                Long seq = appCmd.robotSetData(uuid, params);
+                AppLogger.d("正在向服务器发送 dp消息:" + msgId);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> rsp.seq == seq))
+                .first()
+                .map(rsp -> parserSet(msgId, rsp));
+    }
+
+    private <R> R parserSet(int msgId, RxEvent.SetDataRsp rsp) {
+        try {
+            AppLogger.d("收到服务器的 dp 消息");
+            if (rsp.rets.size() == 0) return null;
+            JFGDPMsgRet msg = rsp.rets.get(0);
+            if (msgId == 218) {
+                DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
+                status.hasSdcard = msg.ret == 0;
+                return (R) status;
+            }
+        } catch (Exception e) {
+            AppLogger.e(e.getMessage());
+        }
+        return null;
+    }
+
     public <T> Observable<T> sendDataPoint(String uuid, int msgId) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
@@ -114,10 +152,10 @@ public class BaseForwardHelper {
                 .observeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq))
                 .first()
-                .map(rsp -> parser(msgId, rsp));
+                .map(rsp -> parserGet(msgId, rsp));
     }
 
-    private <T> T parser(int msgId, RobotoGetDataRsp rsp) {
+    private <T> T parserGet(int msgId, RobotoGetDataRsp rsp) {
         try {
             AppLogger.d("收到服务器的 dp 消息");
             if (rsp.map.size() == 0) return null;
@@ -132,6 +170,7 @@ public class BaseForwardHelper {
                 infoRsp.storage_used = status.used;
                 return (T) infoRsp;
             } else if (msgId == 205) {
+                AppLogger.e("当前是否有电源线:" + new MessagePack().read(msg.packValue).toString());
                 Boolean aBoolean = unpackData(msg.packValue, boolean.class);
                 PanoramaEvent.MsgPowerLineRsp powerLineRsp = new PanoramaEvent.MsgPowerLineRsp();
                 powerLineRsp.powerline = aBoolean != null && aBoolean ? 1 : 0;
@@ -141,6 +180,7 @@ public class BaseForwardHelper {
                 PanoramaEvent.MsgBatteryRsp batteryRsp = new PanoramaEvent.MsgBatteryRsp();
                 batteryRsp.battery = battery;
                 return (T) batteryRsp;
+            } else if (msgId == 218) {
             }
         } catch (Exception e) {
             AppLogger.e(e.getMessage());
