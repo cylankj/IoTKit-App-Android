@@ -69,47 +69,42 @@
                 android:scrollbars="vertical" />
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/ll_relative_and_friend_none"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y120"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_no_friends" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y16"
+                android:layout_marginTop="@dimen/y120"
+                android:drawablePadding="@dimen/y16"
+                android:drawableTop="@drawable/icon_no_friends"
+                android:gravity="center_horizontal"
                 android:text="@string/Tap3_ShareDevice_NoneFriends"
                 android:textColor="#aaaaaa"
                 android:textSize="@dimen/sp15" />
 
-            <com.cylan.jiafeigou.widget.LoginButton
+            <TextView
                 android:id="@+id/btn_to_add"
-                android:layout_width="@dimen/x173"
-                android:layout_height="@dimen/y50"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y38"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y42"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/y28"
+                android:layout_marginEnd="@dimen/x30"
+                android:layout_marginStart="@dimen/x30"
+                android:background="@drawable/long_btn_bg_shape_4b9fd5"
+                android:clickable="true"
                 android:gravity="center"
                 android:text="@string/Tap3_FriendsAdd"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp17"
-                hunt:lb_stroke_color="@color/color_d8d8d8" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp17" />
+        </RelativeLayout>
 
     </FrameLayout>
 

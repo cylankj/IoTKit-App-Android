@@ -144,6 +144,8 @@ public interface JFGSourceManager {
 
     void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list);
 
+    void clearFeedbackList();
+
     ArrayList<JFGFeedbackInfo> getNewFeedbackList();
 
     void pushDeviceState(String uuid);

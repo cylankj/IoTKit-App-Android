@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
@@ -17,12 +17,12 @@ import rx.Subscription;
  */
 public interface MineFriendsContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseFragmentView<Presenter> {
 
         /**
          * desc:初始化好友列表
          */
-        void initFriendRecyList(ArrayList<RelAndFriendBean> list);
+        void initFriendRecyList(ArrayList<FriendBean> list);
 
 
         void initAddReqRecyList(ArrayList<MineAddReqBean> list);
@@ -47,7 +47,7 @@ public interface MineFriendsContract {
          */
         void hideAddReqListTitle();
 
-        void jump2FriendDetailFragment(int position, RelAndFriendBean account);
+        void jump2FriendDetailFragment(int position, FriendBean account);
 
         void showLongClickDialog(int position, MineAddReqBean bean);
 
@@ -78,7 +78,7 @@ public interface MineFriendsContract {
          * @param position
          * @param bean
          */
-        void friendlistAddItem(int position, RelAndFriendBean bean);
+        void friendlistAddItem(int position, FriendBean bean);
 
         /**
          * 显示加载进度
@@ -113,7 +113,7 @@ public interface MineFriendsContract {
          * @param friendList
          * @return
          */
-        ArrayList<RelAndFriendBean> initRelFriendsData(RxEvent.GetFriendList friendList);
+        ArrayList<FriendBean> initRelFriendsData(RxEvent.GetFriendList friendList);
 
         boolean checkAddRequestOutTime(MineAddReqBean bean);        //检测添加请求是否超时
 
@@ -153,16 +153,6 @@ public interface MineFriendsContract {
          * 同意添加成功后调用SDK
          */
         void acceptAddSDK(String account);
-
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
 
         /**
          * 删除好友请求

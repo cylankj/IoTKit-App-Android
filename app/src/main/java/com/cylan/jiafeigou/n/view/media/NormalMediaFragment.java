@@ -97,7 +97,10 @@ public class NormalMediaFragment extends IBaseFragment {
             loadBitmap(bitmap);
         }
         imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
-            if (callBack != null) callBack.callBack(null);
+            if (callBack != null) {
+                callBack.callBack(null);
+                callBack = null;
+            }
         });
     }
 

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
-import com.cylan.entity.jniCall.JFGFeedbackInfo;
-import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.LogState;
@@ -42,9 +38,11 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -54,7 +52,6 @@ import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +63,7 @@ import rx.schedulers.Schedulers;
 import static android.app.Activity.RESULT_OK;
 import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
-
+@Badge(parentTag = "NewHomeActivity")
 public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
@@ -112,7 +109,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     private void lazyLoad() {
         if (isPrepared) {
-            basePresenter.getUnReadMesg();
+            basePresenter.fetchNewInfo();
         }
     }
 
@@ -167,14 +164,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 return;
             }
         }
-        MineFriendsFragment mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineRelativesandFriendsFragment,
-                        "mineRelativesandFriendsFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
+        MineFriendsFragment mineFriendsFragment = MineFriendsFragment.newInstance();
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), mineFriendsFragment,
+                android.R.id.content);
+        mineFriendsFragment.setCallBack(t -> updateHint());
     }
 
     /**
@@ -198,13 +191,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         HomeSettingFragment homeSettingFragment = HomeSettingFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, homeSettingFragment,
-                        "homeSettingFragment")
-                .addToBackStack("HomeMineFragment")
-                .commitAllowingStateLoss();
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), homeSettingFragment,
+                android.R.id.content);
+        homeSettingFragment.setCallBack(t -> updateHint());
     }
 
     public void shareItem(View view) {
@@ -259,20 +248,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             }
             lazyLoad();
             //查询好友列表.
-            basePresenter.makeFriendsListReq();
-            Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair = BaseApplication.getAppComponent().getSourceManager().getPairFriends();
-            if (pair != null && !ListUtils.isEmpty(pair.second)) {
-                AppLogger.d("好友请求");
-                int count = ListUtils.getSize(pair.second);
-                homeMineItemFriend.showNumber(count);
-            }
-            //意见反馈
-            ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
-            homeMineItemHelp.showRedPoint(ListUtils.getSize(list) > 0);
-            //分享管理
-
-            //设置
-
+            updateHint();
         }
     }
 
@@ -348,15 +324,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         }
     }
 
-
-    /**
-     * 设置新消息的数量
-     */
-    @Override
-    public void setMesgNumber(final int number) {
-        AppLogger.d("ssss" + number);
-        tvHomeMineMsgCount.setText(number == 0 ? null : number > 99 ? "99+" : String.valueOf(number));
-    }
 
     private boolean needStartLoginFragment() {
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
@@ -444,15 +411,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putBoolean("hasNewMesg", basePresenter.hasUnReadMesg());
-        HomeMineMessageFragment homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
-        homeMineMessageFragment.setOnClearMsgCountListener(() -> tvHomeMineMsgCount.setText(""));
+        SystemMessageFragment systemMessageFragment = SystemMessageFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(),
+                systemMessageFragment, android.R.id.content);
+        tvHomeMineMsgCount.setText("");
     }
 
     /**
@@ -494,6 +456,33 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void jump2BindMailFragment() {
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 BindMailFragment.newInstance(null), android.R.id.content);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateHint();
+    }
+
+    @Override
+    public void updateHint() {
+        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+        int count = node == null ? 0 : node.getData();
+        if (count == 0) homeMineItemFriend.showHint(false);
+        else
+            homeMineItemFriend.showNumber(count);//count ==0 dismiss
+        //系统消息未读数
+        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
+        count = node == null ? 0 : node.getData();
+        tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
+        //意见反馈
+        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        count = node == null ? 0 : node.getData();
+        homeMineItemHelp.showHint(count > 0);
+        //分享管理
+
+        //设置
     }
 
     @Override

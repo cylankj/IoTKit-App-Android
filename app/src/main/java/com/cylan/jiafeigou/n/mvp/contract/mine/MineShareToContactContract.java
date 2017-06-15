@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactReclyView(ArrayList<RelAndFriendBean> list);
+        void initContactReclyView(ArrayList<FriendBean> list);
 
         void showNoContactNullView();
 

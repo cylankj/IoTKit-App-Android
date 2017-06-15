@@ -9,17 +9,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
+import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
+import com.cylan.jiafeigou.n.task.SystemMsgTask;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -31,8 +30,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -46,7 +43,6 @@ import rx.schedulers.Schedulers;
 public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
     private boolean isOpenLogin = false;
-    private boolean hasUnRead;
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -57,7 +53,6 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     public void start() {
         super.start();
         addSubscription(getAccountBack());
-        addSubscription(unReadMesgBack());
         addSubscription(loginInMe());
     }
 
@@ -110,7 +105,6 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         if ((a == c) || (b == c)) {
             c /= 2;
         }
-
         String result = firtPart[a] + firtPart[b] + firtPart[c]
                 + randNum1 + randNum2 + randNum3;
         return result;
@@ -140,74 +134,15 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
      * 获取到未读消息数
      */
     @Override
-    public void getUnReadMesg() {
-        Observable.just("Now Get UnReadMsg")
-                .observeOn(Schedulers.io())
-                .subscribe((Object o) -> {
-                    try {
-                        ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
-                        JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
-                        JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
-                        list.add(msg1);
-                        list.add(msg2);
-                        list.add(msg3);
-                        BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
-                        AppLogger.d("getUnReadMesg:");
-                    } catch (JfgException e) {
-                        AppLogger.e("getUnReadMesg" + e.getLocalizedMessage());
-                    }
-                }, AppLogger::e);
-
-    }
-
-    @Override
-    public void makeFriendsListReq() {
-        Observable.just(new FetchFriendsTask())
+    public void fetchNewInfo() {
+        //未读数
+        //亲友列表
+        //用户反馈
+        Observable.just(new FetchFeedbackTask(),
+                new FetchFriendsTask(),
+                new SystemMsgTask())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(ret -> ret.call(ret), AppLogger::e);
-    }
-
-    public Subscription unReadMesgBack() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .onBackpressureBuffer()
-                .filter(rsp -> rsp.map != null)
-                .observeOn(Schedulers.io())
-                .subscribe(rsp -> {
-                    int count = -1;
-                    if (rsp != null && rsp.map != null && rsp.map.size() != 0) {
-                        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
-                            try {
-                                if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
-                                    count = 0;
-                                    ArrayList<JFGDPMsg> value = entry.getValue();
-                                    if (value.size() != 0) {
-                                        JFGDPMsg jfgdpMsg = value.get(0);
-                                        Integer unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, Integer.class);
-                                        if (unReadCount == null) unReadCount = 0;
-                                        AppLogger.d("unReadCount:" + unReadCount);
-                                        count += unReadCount;
-                                    }
-                                }
-                            } catch (Exception e) {
-                                AppLogger.e("getUnreadBack:" + e.getLocalizedMessage());
-                            }
-                        }
-                        if (count >= 0) {
-                            AppLogger.d("unrecount:" + count);
-                            hasUnRead = count != 0;
-                            int finalCount = count;
-                            AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                                if (getView() != null) getView().setMesgNumber(finalCount);
-                            });
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-    @Override
-    public boolean hasUnReadMesg() {
-        return hasUnRead;
+                .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
     }
 
 

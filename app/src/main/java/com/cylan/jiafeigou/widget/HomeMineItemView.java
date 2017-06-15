@@ -69,8 +69,7 @@ public class HomeMineItemView extends RelativeLayout {
         badge.showNumber(number);
     }
 
-    public void showRedPoint(boolean show) {
-        badge.showRedPoint(show);
+    public void showHint(boolean show) {
+        badge.showHint(show);
     }
-
 }

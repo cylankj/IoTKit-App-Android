@@ -19,11 +19,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -68,7 +68,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     private MineFriendDetailContract.Presenter presenter;
     public OnDeleteClickLisenter lisenter;
-    private RelAndFriendBean frienditembean;
+    private FriendBean frienditembean;
 
     public interface OnDeleteClickLisenter {
         void onDelete(int position);
@@ -237,7 +237,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      *
      * @param bean
      */
-    public void showDelFriendDialog(RelAndFriendBean bean) {
+    public void showDelFriendDialog(FriendBean bean) {
         Bundle bundle = new Bundle();
         bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_Friends_DeleteFriends));
         bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));

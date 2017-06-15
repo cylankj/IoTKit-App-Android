@@ -28,7 +28,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
 
     private TextView tvToolbarIcon;
     private TextView tvToolbarTitle;
-    private TextView tvToolbarRight;
+    private HintTextView tvToolbarRight;
     private ViewGroup viewGroup;
     @LayoutRes
     private int customContentLayoutId = -1;
@@ -87,7 +87,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
             tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
-            tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
+            tvToolbarRight = (HintTextView) view.findViewById(R.id.tv_toolbar_right);
             if (rightTitleColor != null) tvToolbarRight.setTextColor(rightTitleColor);
             tvToolbarTitle.setVisibility(VISIBLE);
             tvToolbarTitle.setText(title);
@@ -239,6 +239,12 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
             tvToolbarRight.setText(resId);
+        }
+    }
+
+    public void showToolbarRightHint(boolean show) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.showRedHint(show);
         }
     }
 

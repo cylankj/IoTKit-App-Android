@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
@@ -23,7 +23,7 @@ public interface MineShareToFriendContract {
          *
          * @param list
          */
-        void initRecycleView(ArrayList<RelAndFriendBean> list);
+        void initRecycleView(ArrayList<FriendBean> list);
 
         /**
          * 显示没有亲友的null视图
@@ -79,7 +79,7 @@ public interface MineShareToFriendContract {
         /**
          * 点击确定发送分享请求给服务器
          */
-        void sendShareToFriendReq(String cid, ArrayList<RelAndFriendBean> list);
+        void sendShareToFriendReq(String cid, ArrayList<FriendBean> list);
 
         /**
          * 检测是否有网络

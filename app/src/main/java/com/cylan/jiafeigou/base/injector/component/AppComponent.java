@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 import javax.inject.Named;
@@ -62,4 +63,6 @@ public interface AppComponent {
 
     @Named("LogPath")
     String getLogPath();
+
+    TreeHelper getTreeHelper();
 }

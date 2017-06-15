@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -171,14 +170,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .addToBackStack("mineShareDeviceFragment")
                 .commit();
 
-        shareToRelativeAndFriendFragment.setOnShareSucceedListener(new MineShareToFriendFragment.OnShareSucceedListener() {
-            @Override
-            public void shareSucceed(int num, ArrayList<RelAndFriendBean> list) {
-                if (num == 0) return;
-                adapter.getItem(position).hasShareCount += num;
-                adapter.notifyDataSetChanged();
-                presenter.shareSucceedAdd(position, list);
-            }
+        shareToRelativeAndFriendFragment.setOnShareSucceedListener((num, list) -> {
+            if (num == 0) return;
+            adapter.getItem(position).hasShareCount += num;
+            adapter.notifyDataSetChanged();
+            presenter.shareSucceedAdd(position, list);
         });
     }
 

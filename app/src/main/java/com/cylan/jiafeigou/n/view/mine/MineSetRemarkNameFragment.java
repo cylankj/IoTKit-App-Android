@@ -12,10 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -46,7 +46,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     private MineSetRemarkNameContract.Presenter presenter;
 
     private OnSetRemarkNameListener listener;
-    private RelAndFriendBean friendBean;
+    private FriendBean friendBean;
 
     public interface OnSetRemarkNameListener {
         void remarkNameChange(String name);

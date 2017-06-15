@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.RandomUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -219,15 +220,33 @@ public class BaseAppCallBackHolder implements AppCallBack {
     }
 
     @Override
-    public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
+    public void OnGetFriendListRsp(int ret, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnLocalMessage :" + arrayList.size());
-        RxBus.getCacheInstance().post(new RxEvent.GetFriendList(i, arrayList));
+//        arrayList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            JFGFriendAccount req = new JFGFriendAccount();
+//            req.account = "333" + i + "_hunt";
+//            req.alias = "wth? " + i;
+//            req.markName = "zi lai?";
+//            arrayList.add(req);
+//        }
+        RxBus.getCacheInstance().post(new RxEvent.GetFriendList(ret, arrayList));
     }
 
     @Override
-    public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
+    public void OnGetFriendRequestListRsp(int ret, ArrayList<JFGFriendRequest> arrayList) {
         AppLogger.d("OnGetFriendRequestListRsp:" + arrayList.size());
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList(i, arrayList));
+//        AppLogger.d("测试专用");
+//        arrayList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            JFGFriendRequest req = new JFGFriendRequest();
+//            req.account = "333" + i + "_hunt";
+//            req.alias = "wth? " + i;
+//            req.sayHi = " you son of...";
+//            req.time = System.currentTimeMillis() - RandomUtils.getRandom(30) * 3600 * 1000;
+//            arrayList.add(req);
+//        }
+        RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList(ret, arrayList));
     }
 
     @Override
@@ -284,8 +303,15 @@ public class BaseAppCallBackHolder implements AppCallBack {
     }
 
     @Override
-    public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
+    public void OnGetFeedbackRsp(int ret, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
+//        arrayList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            JFGFeedbackInfo info = new JFGFeedbackInfo();
+//            info.msg = "dfafa" + i;
+//            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
+//            arrayList.add(info);
+//        }
         if (ListUtils.isEmpty(arrayList)) return;
         BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
     }

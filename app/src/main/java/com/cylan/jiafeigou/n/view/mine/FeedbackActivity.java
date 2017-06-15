@@ -19,8 +19,9 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.FeedBackContractImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.FeedBackImpl;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
@@ -39,6 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+@Badge(parentTag = "HomeMineHelpFragment")
 public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackContract.Presenter>
         implements FeedBackContract.View {
 
@@ -69,7 +71,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_mine_help_suggestion);
         ButterKnife.bind(this);
-        basePresenter = new FeedBackContractImpl(this);
+        basePresenter = new FeedBackImpl(this);
         initKeyBoard();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRvMineSuggestion.setLayoutManager(layoutManager);

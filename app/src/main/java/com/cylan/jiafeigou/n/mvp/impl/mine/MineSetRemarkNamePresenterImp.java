@@ -9,10 +9,10 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -73,25 +73,17 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
      * @param friendBean
      */
     @Override
-    public void sendSetmarkNameReq(final String newName, final RelAndFriendBean friendBean) {
+    public void sendSetmarkNameReq(final String newName, final FriendBean friendBean) {
         getView().showSendReqPro();
         rx.Observable.just(friendBean)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<RelAndFriendBean>() {
-                    @Override
-                    public void call(RelAndFriendBean bean) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().setFriendMarkName(friendBean.account, newName);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(bean -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().setFriendMarkName(friendBean.account, newName);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendSetmarkNameReq: " + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     /**

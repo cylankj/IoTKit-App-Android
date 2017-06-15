@@ -9,10 +9,10 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -71,9 +70,9 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     @Override
     public Subscription getHasShareListCallback() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
-                .flatMap(new Func1<RxEvent.GetShareListRsp, Observable<ArrayList<RelAndFriendBean>>>() {
+                .flatMap(new Func1<RxEvent.GetShareListRsp, Observable<ArrayList<FriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetShareListRsp getShareListCallBack) {
+                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetShareListRsp getShareListCallBack) {
                         ArrayList<JFGShareListInfo> list =
                                 BaseApplication.getAppComponent().getSourceManager().getShareList();
                         if (ListUtils.isEmpty(list)) return Observable.just(null);
@@ -93,12 +92,12 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     /**
      * 将数据装换
      */
-    private ArrayList<RelAndFriendBean> convertData(ArrayList<JFGShareListInfo> friendList) {
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
+    private ArrayList<FriendBean> convertData(ArrayList<JFGShareListInfo> friendList) {
+        ArrayList<FriendBean> list = new ArrayList<>();
         if (ListUtils.isEmpty(friendList)) return list;
         for (JFGShareListInfo info : friendList) {
             for (JFGFriendAccount friendBean : info.friends) {
-                RelAndFriendBean tempBean = new RelAndFriendBean();
+                FriendBean tempBean = new FriendBean();
                 tempBean.account = friendBean.account;
                 tempBean.alias = friendBean.alias;
                 tempBean.markName = friendBean.markName;
@@ -109,7 +108,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     }
 
     @Override
-    public void initHasShareListData(ArrayList<RelAndFriendBean> shareDeviceFriendlist) {
+    public void initHasShareListData(ArrayList<FriendBean> shareDeviceFriendlist) {
         if (getView() != null && shareDeviceFriendlist != null && shareDeviceFriendlist.size() != 0) {
             getView().showHasShareListTitle();
             getView().initHasShareFriendRecyView(shareDeviceFriendlist);
@@ -126,7 +125,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
      * @param bean
      */
     @Override
-    public void cancelShare(final String cid, final RelAndFriendBean bean) {
+    public void cancelShare(final String cid, final FriendBean bean) {
         if (getView() != null) {
             getView().showCancleShareProgress();
         }
@@ -151,14 +150,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     public Subscription cancelShareCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.UnShareDeviceCallBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.UnShareDeviceCallBack>() {
-                    @Override
-                    public void call(RxEvent.UnShareDeviceCallBack unshareDeviceCallBack) {
-                        if (unshareDeviceCallBack != null && unshareDeviceCallBack instanceof RxEvent.UnShareDeviceCallBack) {
-                            handlerUnShareCallback(unshareDeviceCallBack);
-                        }
-                    }
-                }, AppLogger::e);
+                .subscribe(this::handlerUnShareCallback, AppLogger::e);
     }
 
     /**

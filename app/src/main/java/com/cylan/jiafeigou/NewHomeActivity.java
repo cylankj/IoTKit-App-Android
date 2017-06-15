@@ -15,6 +15,7 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -32,15 +33,16 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@Badge(parentTag = "NewHomeActivity")
 public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.Presenter> implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
@@ -59,10 +62,17 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
+
+    @BindView(R.id.btn_home_list)
+    RadioButton btnHomeList;
+    @BindView(R.id.btn_home_wonderful)
+    RadioButton btnHomeWonderful;
+    @BindView(R.id.btn_home_mine)
+    HintRadioButton btnHomeMine;
+
     private SharedElementCallBackListener sharedElementCallBackListener;
+
     private Subscription subscribe;
-    private Subscription resetPwdSubscribe;
-//    private WeakReference<AlertDialog> upgradeVersionDialogRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,28 +188,32 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void initBottomMenu() {
-        rgLayoutHomeBottomMenu.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.btn_home_list:
-                        if (vpHomeContent.getCurrentItem() != 0 && vpHomeContent.getCurrentItem() != 0) {
-                            vpHomeContent.setCurrentItem(0);
-                        }
-                        break;
-                    case R.id.btn_home_wonderful:
-                        if (vpHomeContent.getCurrentItem() != 1 && vpHomeContent.getCurrentItem() != 1) {
-                            vpHomeContent.setCurrentItem(1);
-                        }
-                        break;
-                    case R.id.btn_home_mine:
-                        if (vpHomeContent.getCurrentItem() != 2 && vpHomeContent.getCurrentItem() != 2) {
-                            vpHomeContent.setCurrentItem(2);
-                        }
-                        break;
-                }
+        rgLayoutHomeBottomMenu.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.btn_home_list:
+                    if (vpHomeContent.getCurrentItem() != 0) {
+                        vpHomeContent.setCurrentItem(0);
+                    }
+                    break;
+                case R.id.btn_home_wonderful:
+                    if (vpHomeContent.getCurrentItem() != 1) {
+                        vpHomeContent.setCurrentItem(1);
+                    }
+                    break;
+                case R.id.btn_home_mine:
+                    if (vpHomeContent.getCurrentItem() != 2) {
+                        vpHomeContent.setCurrentItem(2);
+                    }
+                    break;
             }
         });
+        //自定义的RadioButton,放在RadioGroup中不能被选中
+        findViewById(R.id.btn_home_mine)
+                .setOnClickListener(v -> {
+                    if (vpHomeContent.getCurrentItem() != 2) {
+                        vpHomeContent.setCurrentItem(2);
+                    }
+                });
     }
 
     @UiThread
@@ -207,23 +221,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     public void initView() {
     }
 
-    @Override
-    public void updateProcess(long currentByte, long totalByte) {
-    }
-
-    @Override
-    public void failed(Throwable throwable) {
-        ToastUtil.showNegativeToast(getString(R.string.Tap1_DownloadFirmwareFai));
-    }
-
-    @Override
-    public void finished(File file) {
-    }
-
-    @Override
-    public void start() {
-
-    }
 
     @Override
     public void needUpdate(@RxEvent.UpdateType int type, String desc, String filePath, int force) {
@@ -245,6 +242,13 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     @Override
+    public void refreshHint(boolean show) {
+        AppLogger.e("显示? " + show);
+        ((HintRadioButton) findViewById(R.id.btn_home_mine))
+                .showRedHint(show);
+    }
+
+    @Override
     public void setPresenter(NewHomeActivityContract.Presenter presenter) {
     }
 
@@ -259,6 +263,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         if (onActivityReenterListener != null)
             onActivityReenterListener.onActivityReenter(requestCode, data);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

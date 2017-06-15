@@ -1,29 +1,21 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.network.ConnectivityStatus;
-import com.cylan.jiafeigou.support.network.ReactiveNetwork;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
@@ -35,10 +27,8 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -47,10 +37,8 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContract.View> implements MineFriendsContract.Presenter {
 
-    private CompositeSubscription compositeSubscription;
     private boolean addReqNull;
     private boolean friendListNull;
-    private Network network;
     private String account;
 
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
@@ -59,32 +47,25 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
     }
 
+
     @Override
-    public void start() {
-        super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getAddRequest());
-            compositeSubscription.add(getFriendList());
-            compositeSubscription.add(initAddReqRecyListData());
-            compositeSubscription.add(initFriendRecyListData());
-            compositeSubscription.add(deleteAddReqBack());
-        }
+    protected Subscription[] register() {
+        return new Subscription[]{
+                getAddRequest(),
+                getFriendList(),
+                initAddReqRecyListData(),
+                initFriendRecyListData(),
+                deleteAddReqBack()};
     }
 
     @Override
     public void stop() {
         super.stop();
-        unSubscribe(compositeSubscription);
     }
 
     @Override
     public ArrayList<MineAddReqBean> initAddRequestData(RxEvent.GetAddReqList addReqList) {
-
         ArrayList<MineAddReqBean> list = new ArrayList<MineAddReqBean>();
-
         for (JFGFriendRequest jfgFriendRequest : addReqList.arrayList) {
             MineAddReqBean emMessage = new MineAddReqBean();
             emMessage.alias = jfgFriendRequest.alias;
@@ -104,11 +85,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
     @Override
-    public ArrayList<RelAndFriendBean> initRelFriendsData(RxEvent.GetFriendList friendList) {
+    public ArrayList<FriendBean> initRelFriendsData(RxEvent.GetFriendList friendList) {
         clearAll();
-        ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
+        ArrayList<FriendBean> list = new ArrayList<FriendBean>();
         for (JFGFriendAccount account : friendList.arrayList) {
-            RelAndFriendBean emMessage = new RelAndFriendBean();
+            FriendBean emMessage = new FriendBean();
             emMessage.markName = account.markName;
             emMessage.account = account.account;
             emMessage.alias = account.alias;
@@ -140,31 +121,10 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @return
      */
     public ArrayList<MineAddReqBean> sortAddReqList(ArrayList<MineAddReqBean> list) {
-        Comparator<MineAddReqBean> comparator = new Comparator<MineAddReqBean>() {
-            @Override
-            public int compare(MineAddReqBean lhs, MineAddReqBean rhs) {
-                long oldTime = Long.parseLong(rhs.time + "");
-                long newTime = Long.parseLong(lhs.time + "");
-                return (int) (newTime - oldTime);
-            }
-        };
-        Collections.sort(list, comparator);
-        return list;
-    }
-
-    /**
-     * desc：好友列表的排序
-     *
-     * @param list
-     * @return
-     */
-    public ArrayList<RelAndFriendBean> sortFriendList(ArrayList<RelAndFriendBean> list) {
-
-        Comparator<RelAndFriendBean> comparator = new Comparator<RelAndFriendBean>() {
-            @Override
-            public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
-                return 0;
-            }
+        Comparator<MineAddReqBean> comparator = (lhs, rhs) -> {
+            long oldTime = Long.parseLong(rhs.time + "");
+            long newTime = Long.parseLong(lhs.time + "");
+            return (int) (newTime - oldTime);
         };
         Collections.sort(list, comparator);
         return list;
@@ -176,9 +136,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public Subscription initFriendRecyListData() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
+                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<FriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
+                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetFriendList getFriendList) {
                         if (getFriendList != null) {
                             return Observable.just(initRelFriendsData(getFriendList));
                         } else {
@@ -187,17 +147,14 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
-                    @Override
-                    public void call(ArrayList<RelAndFriendBean> list) {
-                        if (list != null && list.size() != 0) {
-                            handleInitFriendListDataResult(list);
-                        } else {
-                            friendListNull = true;
-                            checkAllNull();
-                            getView().hideFriendListTitle();
-                            getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
-                        }
+                .subscribe(list -> {
+                    if (list != null && list.size() != 0) {
+                        handleInitFriendListDataResult(list);
+                    } else {
+                        friendListNull = true;
+                        checkAllNull();
+                        getView().hideFriendListTitle();
+                        getView().initFriendRecyList(new ArrayList<FriendBean>());
                     }
                 }, AppLogger::e);
     }
@@ -209,14 +166,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public Subscription initAddReqRecyListData() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetAddReqList>() {
-                    @Override
-                    public void call(RxEvent.GetAddReqList o) {
-                        if (o != null) {
-                            handleInitAddReqListDataResult(o);
-                        }
-                    }
-                }, AppLogger::e);
+                .subscribe(this::handleInitAddReqListDataResult, AppLogger::e);
     }
 
     @Override
@@ -254,22 +204,19 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public Subscription getFriendList() {
         return Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Object, List<RelAndFriendBean>>() {
-                    @Override
-                    public List<RelAndFriendBean> call(Object o) {
-                        if (NetUtils.getNetType(getView().getContext()) == -1) {
-                            return getAllFromDb();
-                        } else {
-                            BaseApplication.getAppComponent().getCmd().getFriendList();
-                            return null;
-                        }
+                .map(o -> {
+                    if (NetUtils.getNetType(getView().getContext()) == -1) {
+                        return getAllFromDb();
+                    } else {
+                        BaseApplication.getAppComponent().getCmd().getFriendList();
+                        return null;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     if (list != null) {
                         if (list.size() > 0) {
-                            ArrayList<RelAndFriendBean> allList = new ArrayList<RelAndFriendBean>();
+                            ArrayList<FriendBean> allList = new ArrayList<FriendBean>();
                             allList.addAll(list);
                             handleInitFriendListDataResult(allList);
                         }
@@ -286,14 +233,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public void sendAddReq(final String account) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().addFriend(account, "");
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(o -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().addFriend(account, "");
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 }, throwable -> {
                     AppLogger.e("sendAddReq: " + throwable.getLocalizedMessage());
@@ -307,14 +251,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public void acceptAddSDK(String account) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String account) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().consentAddFriend(account);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(account1 -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().consentAddFriend(account1);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 }, throwable -> {
                     AppLogger.e("acceptAddSDK: " + throwable.getLocalizedMessage());
@@ -344,7 +285,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      *
      * @param friendList
      */
-    private void handleInitFriendListDataResult(ArrayList<RelAndFriendBean> friendList) {
+    private void handleInitFriendListDataResult(ArrayList<FriendBean> friendList) {
         if (getView() != null) {
             if (friendList.size() != 0) {
                 getView().showFriendListTitle();
@@ -353,32 +294,17 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 friendListNull = true;
                 checkAllNull();
                 getView().hideFriendListTitle();
-                getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
+                getView().initFriendRecyList(new ArrayList<FriendBean>());
             }
         }
     }
 
     @Override
-    public void registerNetworkMonitor() {
-        try {
-            if (network == null) {
-                network = new Network();
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-                filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                ContextUtils.getContext().registerReceiver(network, filter);
-            }
-        } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
-        }
-    }
-
-    @Override
-    public void unregisterNetworkMonitor() {
-        if (network != null) {
-            ContextUtils.getContext().unregisterReceiver(network);
-            network = null;
-        }
+    protected String[] registerNetworkAction() {
+        return new String[]{
+                ConnectivityManager.CONNECTIVITY_ACTION,
+                WifiManager.NETWORK_STATE_CHANGED_ACTION
+        };
     }
 
     /**
@@ -390,14 +316,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public void deleteAddReq(String account) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().delAddFriendMsg(account);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().delAddFriendMsg(account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 }, throwable -> {
                     AppLogger.e("deleteAddReq" + throwable.getLocalizedMessage());
@@ -413,74 +336,45 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public Subscription deleteAddReqBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeleteAddReqBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.DeleteAddReqBack>() {
-                    @Override
-                    public void call(RxEvent.DeleteAddReqBack deleteAddReqBack) {
-                        if (deleteAddReqBack != null) {
-                            getView().longClickDeleteItem(deleteAddReqBack.jfgResult.code);
-                        }
-                    }
+                .subscribe(deleteAddReqBack -> {
+                    getView().longClickDeleteItem(deleteAddReqBack.jfgResult.code);
                 }, AppLogger::e);
     }
 
 
-    /**
-     * 监听网络状态
-     */
-    private class Network extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
-                updateConnectivityStatus(status.state);
-            }
-        }
-    }
-
-    /**
-     * 连接状态变化
-     */
-    private void updateConnectivityStatus(int network) {
-        Observable.just(network)
-                .filter(new Func1<Integer, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer) {
-                        return getView() != null;
-                    }
-                })
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        if (mView == null || !mView.isAdded()) return;
+        Observable.just(NetUtils.getJfgNetType())
+                .filter(integer -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        getView().onNetStateChanged(integer);
-                    }
-                }, AppLogger::e);
+                .subscribe(integer -> getView().onNetStateChanged(integer), AppLogger::e);
     }
 
-    public void saveInDb(RelAndFriendBean bean) {
-        try {
-            DataBaseUtil.getInstance(account).dbManager.save(bean);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+
+    public void saveInDb(FriendBean bean) {
+//        try {
+//            DataBaseUtil.getInstance(account).dbManager.save(bean);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void clearAll() {
-        try {
-            DataBaseUtil.getInstance(account).dbManager.delete(RelAndFriendBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            DataBaseUtil.getInstance(account).dbManager.delete(FriendBean.class);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    public List<RelAndFriendBean> getAllFromDb() {
-        List<RelAndFriendBean> all = null;
-        try {
-            all = DataBaseUtil.getInstance(account).dbManager.findAll(RelAndFriendBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+    public List<FriendBean> getAllFromDb() {
+        List<FriendBean> all = null;
+//        try {
+//            all = DataBaseUtil.getInstance(account).dbManager.findAll(FriendBean.class);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
         return all;
     }
 

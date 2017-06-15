@@ -70,11 +70,6 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
         if (basePresenter != null) basePresenter.start();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (callBack != null) callBack.callBack(null);
-    }
 
     @OnTextChanged(R.id.et_mine_personal_information_new_name)
     public void onEditChange(CharSequence s, int start, int before, int count) {

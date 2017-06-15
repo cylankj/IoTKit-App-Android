@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToFriendPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -51,16 +51,16 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private int hasShareNum;
     private int hasCheckNum;
     private int shareSucceedNum;
-    private ArrayList<RelAndFriendBean> shareSucceedFriend = new ArrayList<>();
+    private ArrayList<FriendBean> shareSucceedFriend = new ArrayList<>();
 
-    private ArrayList<RelAndFriendBean> isChooseToShareList = new ArrayList<>();
+    private ArrayList<FriendBean> isChooseToShareList = new ArrayList<>();
     private DeviceBean deviceinfo;
-    private ArrayList<RelAndFriendBean> hasSharefriend;
+    private ArrayList<FriendBean> hasSharefriend;
 
     private OnShareSucceedListener listener;
 
     public interface OnShareSucceedListener {
-        void shareSucceed(int num, ArrayList<RelAndFriendBean> list);
+        void shareSucceed(int num, ArrayList<FriendBean> list);
     }
 
     public void setOnShareSucceedListener(OnShareSucceedListener listener) {
@@ -149,7 +149,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     }
 
     @Override
-    public void initRecycleView(ArrayList<RelAndFriendBean> list) {
+    public void initRecycleView(ArrayList<FriendBean> list) {
         rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
         rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
@@ -225,7 +225,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         int totalFriend = isChooseToShareList.size();
         Iterator iterators = isChooseToShareList.iterator();
         while (iterators.hasNext()) {
-            RelAndFriendBean friendBean = (RelAndFriendBean) iterators.next();
+            FriendBean friendBean = (FriendBean) iterators.next();
             for (RxEvent.ShareDeviceCallBack callBack : callbackList) {
                 if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
                     iterators.remove();
@@ -279,7 +279,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private void initAdaListener() {
         shareToFriendsAdapter.setOnShareCheckListener(new ShareToFriendsAdapter.OnShareCheckListener() {
             @Override
-            public void onCheck(boolean isCheckFlag, SuperViewHolder holder, RelAndFriendBean item) {
+            public void onCheck(boolean isCheckFlag, SuperViewHolder holder, FriendBean item) {
                 if (isCheckFlag && hasShareNum >= 5) {
                     showNumIsOverDialog(holder);
                     item.isCheckFlag = 2;
@@ -289,7 +289,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 isChooseToShareList.clear();
                 hasShareNum = hasSharefriend.size();
                 hasCheckNum = 0;
-                for (RelAndFriendBean bean : shareToFriendsAdapter.getList()) {
+                for (FriendBean bean : shareToFriendsAdapter.getList()) {
                     if (bean.isCheckFlag == 1) {
                         hasCheckNum++;
                         numIsChange = true;

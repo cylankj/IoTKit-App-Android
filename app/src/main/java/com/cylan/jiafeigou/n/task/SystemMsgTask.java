@@ -1,15 +1,21 @@
 package com.cylan.jiafeigou.n.task;
 
-import android.util.Log;
-
-import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.home.SystemMessageFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
+import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -21,15 +27,68 @@ import rx.schedulers.Schedulers;
 public class SystemMsgTask implements Action1<Object> {
     @Override
     public void call(Object o) {
-        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
-                .add(DBAction.SIMPLE_MULTI_QUERY, "", 1101L, 0, true)
-                .add(DBAction.SIMPLE_MULTI_QUERY, "", 1103L, 0, true)
-                .add(DBAction.SIMPLE_MULTI_QUERY, "", 1104L, 0, true)
-                .build();
-        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+        getSystemUnreadCount()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                        .onBackpressureBuffer()
+                        .filter(result -> result.map != null)
+                        .observeOn(Schedulers.newThread())
+                        .flatMap(rsp -> {
+                            int count = -1;
+                            if (rsp != null && rsp.map != null && rsp.map.size() != 0) {
+                                for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
+                                    try {
+                                        if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
+                                            count = 0;
+                                            ArrayList<JFGDPMsg> value = entry.getValue();
+                                            if (value.size() != 0) {
+                                                JFGDPMsg jfgdpMsg = value.get(0);
+                                                Integer unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, Integer.class);
+                                                if (unReadCount == null) unReadCount = 0;
+                                                AppLogger.d("unReadCount:" + unReadCount);
+                                                count += unReadCount;
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        AppLogger.e("getUnreadBack:" + e.getLocalizedMessage());
+                                    }
+                                }
+                            }
+                            return Observable.just(count);
+                        }))
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(baseDPTaskResult -> {
-                    Log.d("SystemMsgTask", "SystemMsgTask" + baseDPTaskResult);
+                .subscribe(integer -> {
+                    TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+                    TreeNode node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
+                    node.setData(integer);
+                    RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
                 }, AppLogger::e);
     }
+
+    private Observable<Boolean> getSystemUnreadCount() {
+        return Observable.create(subscriber -> {
+            try {
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        }).observeOn(Schedulers.io())
+                .map((Object o) -> {
+                    try {
+                        ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
+                        JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
+                        JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
+                        JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
+                        list.add(msg1);
+                        list.add(msg2);
+                        list.add(msg3);
+                        BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
+                        AppLogger.d("fetchNewInfo:");
+                    } catch (JfgException e) {
+                        AppLogger.e("fetchNewInfo" + e.getLocalizedMessage());
+                    }
+                    return null;
+                });
+    }
+
 }

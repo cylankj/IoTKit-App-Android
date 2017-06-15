@@ -160,8 +160,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                         } catch (Exception e) {
                             AppLogger.e("err: " + e.getLocalizedMessage());
                         }
-                        if (callBack != null)
-                            callBack.callBack(timeZone);
+                        setCache(timeZone);
                         getActivity().onBackPressed();
                         //没必要设置
                     });

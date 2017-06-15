@@ -106,14 +106,13 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        if (callBack != null) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-            DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
-            callBack.callBack(notificationInfo);
-        }
+    public void onDestroy() {
+        super.onDestroy();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
+        setCache(notificationInfo);
     }
+
 
     @Override
     public void setPresenter(CamWarnContract.Presenter presenter) {

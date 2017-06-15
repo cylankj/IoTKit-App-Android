@@ -8,11 +8,11 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -42,8 +42,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private ArrayList<JFGShareListInfo> hasShareFriendList = new ArrayList<>();
     private CompositeSubscription subscription;
     private ArrayList<DeviceBean> allDevice = new ArrayList<>();
-    private ArrayList<RelAndFriendBean> hasShareFriendData = new ArrayList<>();
-    private HashMap<Integer, ArrayList<RelAndFriendBean>> map = new HashMap<>();
+    private ArrayList<FriendBean> hasShareFriendData = new ArrayList<>();
+    private HashMap<Integer, ArrayList<FriendBean>> map = new HashMap<>();
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -117,16 +117,16 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     }
 
     @Override
-    public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
-        ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
+    public ArrayList<FriendBean> getJFGInfo(int position) {
+        ArrayList<FriendBean> shareSuccList = map.get(position);
         hasShareFriendData.clear();
         if (shareSuccList != null && shareSuccList.size() > 0) {
             hasShareFriendData.addAll(shareSuccList);
         }
-        ArrayList<RelAndFriendBean> result = new ArrayList<>();
+        ArrayList<FriendBean> result = new ArrayList<>();
         if (this.hasShareFriendList != null && this.hasShareFriendList.size() != 0) {
             for (JFGFriendAccount info : this.hasShareFriendList.get(position).friends) {
-                RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
+                FriendBean relAndFriendBean = new FriendBean();
                 relAndFriendBean.account = info.account;
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
@@ -181,12 +181,12 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
 
     @Override
-    public ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info) {
+    public ArrayList<FriendBean> getHasShareRelAndFriendList(JFGShareListInfo info) {
 
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
+        ArrayList<FriendBean> list = new ArrayList<>();
 
         for (JFGFriendAccount account : info.friends) {
-            RelAndFriendBean bean = new RelAndFriendBean();
+            FriendBean bean = new FriendBean();
             bean.account = account.account;
             bean.alias = account.alias;
             //TODO 具体赋值
@@ -276,10 +276,10 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
         }
         friends.removeAll(remove);
-        ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
-        List<RelAndFriendBean> del = new ArrayList<>();
+        ArrayList<FriendBean> shareSuccList = map.get(position);
+        List<FriendBean> del = new ArrayList<>();
         if (shareSuccList != null && shareSuccList.size() > 0) {
-            for (RelAndFriendBean friend : shareSuccList) {
+            for (FriendBean friend : shareSuccList) {
                 for (String str : arrayList) {
                     if (friend.account.equals(str)) {
                         del.add(friend);
@@ -292,8 +292,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     }
 
     @Override
-    public void shareSucceedAdd(int key, ArrayList<RelAndFriendBean> list) {
-        ArrayList<RelAndFriendBean> shareSuccList = map.get(key);
+    public void shareSucceedAdd(int key, ArrayList<FriendBean> list) {
+        ArrayList<FriendBean> shareSuccList = map.get(key);
         if (shareSuccList == null) {
             shareSuccList = new ArrayList<>();
         }

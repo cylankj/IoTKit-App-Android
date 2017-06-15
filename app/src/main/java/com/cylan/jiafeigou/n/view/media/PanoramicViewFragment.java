@@ -142,7 +142,10 @@ public class PanoramicViewFragment extends IBaseFragment {
             panoramicView.setInterActListener(new VideoViewFactory.InterActListener() {
                 @Override
                 public boolean onSingleTap(float x, float y) {
-                    if (callBack != null) callBack.callBack(null);
+                    if (callBack != null) {
+                        callBack.callBack(null);
+                        callBack = null;
+                    }
                     return true;
                 }
 

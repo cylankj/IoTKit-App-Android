@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -62,6 +63,7 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TOUCH_OUT
  * 创建时间   2016/7/12 17:53
  * 用来控制摄像头模块下的设备信息，点击设备名称和设备时区时进行切换
  */
+@Badge(parentTag = "CamSettingActivity")
 public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Presenter>
         implements CamInfoContract.View {
 
@@ -360,13 +362,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 }
             }
         });
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (callBack != null)
-            callBack.callBack(null);
     }
 
     @Override

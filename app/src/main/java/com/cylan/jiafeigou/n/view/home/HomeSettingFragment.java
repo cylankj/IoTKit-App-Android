@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.ResolveInfoEx;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -59,6 +60,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/5
  * 描述：
  */
+@Badge(parentTag = "HomeMineFragment")
 public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Presenter> implements
         HomeSettingContract.View, UMAuthListener {
     @BindView(R.id.custom_toolbar)

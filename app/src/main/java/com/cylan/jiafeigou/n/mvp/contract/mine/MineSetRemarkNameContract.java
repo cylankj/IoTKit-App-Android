@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Subscription;
@@ -52,7 +52,7 @@ public interface MineSetRemarkNameContract {
          *
          * @param friendBean
          */
-        void sendSetmarkNameReq(String newName, RelAndFriendBean friendBean);
+        void sendSetmarkNameReq(String newName, FriendBean friendBean);
 
         /**
          * 设置好友备注名回调

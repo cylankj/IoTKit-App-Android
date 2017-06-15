@@ -135,6 +135,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void checkAccountIsReg(String account) {
+        mView.showLoading();
         Subscription subscribe = Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .timeout(30, TimeUnit.SECONDS)
@@ -149,7 +150,10 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         .toObservable(RxEvent.CheckRegisterBack.class).first())
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> getView().checkAccountResult(ret), AppLogger::e);
+                .subscribe(ret -> {
+                    getView().checkAccountResult(ret);
+                    mView.hideLoading();
+                }, throwable -> mView.hideLoading());
         addSubscription(subscribe, "checkAccountIsReg");
     }
 

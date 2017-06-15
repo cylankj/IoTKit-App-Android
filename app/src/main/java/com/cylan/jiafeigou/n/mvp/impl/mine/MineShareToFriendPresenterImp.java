@@ -2,10 +2,10 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -68,17 +68,17 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      * 发送分享给亲友请求
      */
     @Override
-    public void sendShareToFriendReq(final String cid, ArrayList<RelAndFriendBean> list) {
+    public void sendShareToFriendReq(final String cid, ArrayList<FriendBean> list) {
         if (getView() != null) {
             getView().showSendProgress();
         }
         ShareTotalFriend = list.size();
         rx.Observable.just(list)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
+                .subscribe(new Action1<ArrayList<FriendBean>>() {
                     @Override
-                    public void call(ArrayList<RelAndFriendBean> list) {
-                        for (RelAndFriendBean bean : list) {
+                    public void call(ArrayList<FriendBean> list) {
+                        for (FriendBean bean : list) {
                             try {
                                 BaseApplication.getAppComponent().getCmd().shareDevice(cid, bean.account);
                             } catch (JfgException e) {
@@ -151,9 +151,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
     @Override
     public Subscription getAllShareFriendCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetHasShareFriendCallBack.class)
-                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
+                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<FriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getFriendList) {
+                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetHasShareFriendCallBack getFriendList) {
                         if (getFriendList != null) {
                             if (getFriendList.i == 0 && getFriendList.arrayList.size() != 0) {
                                 return Observable.just(converData(getFriendList.arrayList));
@@ -166,9 +166,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
+                .subscribe(new Action1<ArrayList<FriendBean>>() {
                     @Override
-                    public void call(ArrayList<RelAndFriendBean> list) {
+                    public void call(ArrayList<FriendBean> list) {
                         if (list != null) {
                             handlerDataResult(list);
                         } else {
@@ -209,10 +209,10 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      * @param friendList
      * @return
      */
-    private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> friendList) {
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
+    private ArrayList<FriendBean> converData(ArrayList<JFGFriendAccount> friendList) {
+        ArrayList<FriendBean> list = new ArrayList<>();
         for (JFGFriendAccount friendAccount : friendList) {
-            RelAndFriendBean bean = new RelAndFriendBean();
+            FriendBean bean = new FriendBean();
             bean.account = friendAccount.account;
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
@@ -232,7 +232,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      *
      * @param relAndFriendBeen
      */
-    private void handlerDataResult(ArrayList<RelAndFriendBean> relAndFriendBeen) {
+    private void handlerDataResult(ArrayList<FriendBean> relAndFriendBeen) {
         if (relAndFriendBeen != null) {
             if (getView() != null && relAndFriendBeen.size() != 0) {
                 getView().initRecycleView(relAndFriendBeen);
