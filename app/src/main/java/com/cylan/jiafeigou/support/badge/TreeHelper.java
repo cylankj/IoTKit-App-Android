@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.support.badge;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.misc.RawTree;
 
 import java.util.HashMap;
@@ -18,6 +20,12 @@ public class TreeHelper {
 
     private TreeNode root;
 
+
+    public void markKeyAsRead(String key) {
+
+    }
+
+
     public TreeHelper() {
         Iterator<String> iterator = RawTree.treeMap.keySet().iterator();
         while (iterator.hasNext()) {
@@ -25,6 +33,13 @@ public class TreeHelper {
             final String value = RawTree.treeMap.get(key);
             TreeNode node = new TreeNode();
             node.setNodeName(key);
+            if (TextUtils.equals(key, "VideoAutoRecordFragment")) {
+                //
+            } else if (TextUtils.equals(key, "SafeProtectionFragment")) {
+
+            } else if (TextUtils.equals(key, "FirmwareUpdateActivity")) {
+
+            }
             node.setParentName(value);
             treeNodeList.add(node);
         }

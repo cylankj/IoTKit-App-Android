@@ -68,7 +68,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
-@Badge(parentTag = "NewHomeActivity")
+@Badge(parentTag = "CameraLiveActivity")
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
 
@@ -361,7 +361,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ////////////////////////////////////////////////////////////////////////
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
-        String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard , sdStatus.err);
+        String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
         if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
             svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
         } else

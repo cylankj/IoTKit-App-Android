@@ -40,7 +40,7 @@ import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
-
+@Badge(parentTag = "NewHomeActivity")
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @BindView(R.id.vp_camera_live)
