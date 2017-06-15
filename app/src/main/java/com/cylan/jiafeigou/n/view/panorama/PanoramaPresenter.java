@@ -170,12 +170,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void makePhotograph() {
+        mView.onRefreshControllerViewVisible(false);
         Subscription subscribe = BasePanoramaApiHelper.getInstance().snapShot()
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE, true);
+                        mView.onRefreshControllerViewVisible(true);
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
                             if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
                                 mView.onShowPreviewPicture(msgFileRsp.files.get(0));
@@ -332,6 +334,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+                        mView.onRefreshControllerViewVisible(true);
                         if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
                             mView.onShowPreviewPicture(ret.files.get(0));
                             DataSourceManager.getInstance().removeDeviceState(uuid);

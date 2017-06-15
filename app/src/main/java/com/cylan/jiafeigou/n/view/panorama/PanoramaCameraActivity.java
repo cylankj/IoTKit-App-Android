@@ -751,15 +751,24 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         popOption.dismiss();
     }
 
+    public void onRefreshControllerViewVisible(boolean visible) {
+        bottomPanelSwitcher.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        bottomPanelPictureMode.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        bottomPanelVideoMode.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        bottomPanelMoreItem.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        bottomPanelAlbumItem.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
     public void onRefreshControllerView(boolean enable) {
-        bottomPanelSwitcher.setEnabled((hasResolution && enable) || justForTest);
-        bottomPanelPictureMode.setEnabled((hasResolution && enable) || justForTest);
-        bottomPanelVideoMode.setEnabled((hasResolution && enable) || justForTest);
+        boolean finalEnable = (hasResolution && enable) || justForTest;
+        bottomPanelSwitcher.setEnabled(finalEnable);
+        bottomPanelPictureMode.setEnabled(finalEnable);
+        bottomPanelVideoMode.setEnabled(finalEnable);
+        bottomPanelMoreItem.setEnabled(finalEnable);
+
+
         if (!bottomPanelPhotoGraphItem.isPressed()) {//这里是为了让长按事件能收到 actionUp事件
             bottomPanelPhotoGraphItem.setEnabled((hasResolution && enable) || justForTest);
-        }
-        if (!bottomPanelMoreItem.isPressed()) {
-            bottomPanelMoreItem.setEnabled((hasResolution && enable) || justForTest);
         }
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled((hasResolution && enable) || justForTest);
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled((hasResolution && enable) || justForTest);
@@ -888,7 +897,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onReportDeviceError(int err, boolean useAlert) {
         onRefreshViewModeUI(panoramaViewMode, true);
-
+        onRefreshControllerViewVisible(true);
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");

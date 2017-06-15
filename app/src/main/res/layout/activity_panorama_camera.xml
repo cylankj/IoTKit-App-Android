@@ -323,8 +323,8 @@
 
         <ProgressBar
             android:id="@+id/act_panorama_bottom_panel_loading"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/y22"
+            android:layout_height="@dimen/y22"
             android:indeterminateDrawable="@drawable/camera720_loading"
             app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintEnd_toEndOf="@id/act_panorama_bottom_panel_camera_photograph"

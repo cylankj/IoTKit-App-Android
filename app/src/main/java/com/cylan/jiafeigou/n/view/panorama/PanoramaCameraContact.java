@@ -15,6 +15,7 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.CON
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LONG;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_NONE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT;
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_HIDE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.AUTO;
@@ -51,11 +52,12 @@ public interface PanoramaCameraContact {
             int BAD_NETWORK = 2;
         }
 
-        @IntDef({MODE_PICTURE, MODE_VIDEO})
+        @IntDef({MODE_PICTURE, MODE_VIDEO, MODE_HIDE})
         @Retention(RetentionPolicy.SOURCE)
         @interface PANORAMA_VIEW_MODE {
             int MODE_PICTURE = 0;
             int MODE_VIDEO = 1;
+            int MODE_HIDE = 2;
         }
 
         @IntDef({MODE_NONE, MODE_SHORT, MODE_LONG})
@@ -84,6 +86,8 @@ public interface PanoramaCameraContact {
          * @param connectionType -1:根据设备网络和真实网络情况决定是否显示 banner
          */
         void onRefreshConnectionMode(int connectionType);
+
+        void onRefreshControllerViewVisible(boolean visible);
     }
 
     interface Presenter extends ViewablePresenter<View> {
