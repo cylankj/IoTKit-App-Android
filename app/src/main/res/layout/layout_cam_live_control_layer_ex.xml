@@ -178,7 +178,7 @@
                 android:clickable="true"
                 app:sw_lineColor="@color/color_FFDEDEDE"
                 app:sw_markerColor="@color/color_36BDFF"
-                app:sw_maskColor="@color/color_0D2F40"
+                app:sw_maskColor="@color/color_4036BDFF"
                 app:sw_textColor="@color/color_FFAAAAAA" />
 
             <LinearLayout
@@ -290,4 +290,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
     </FrameLayout>
+
+
 </com.cylan.jiafeigou.n.view.cam.CamLiveControllerEx>

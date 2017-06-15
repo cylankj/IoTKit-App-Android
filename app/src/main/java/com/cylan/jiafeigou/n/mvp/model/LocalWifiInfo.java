@@ -96,6 +96,25 @@ public class LocalWifiInfo {
                     });
         }
 
+        public Observable<Map<String, LocalWifiInfo>> getMap() {
+            return Observable.just(null)
+                    .subscribeOn(Schedulers.newThread())
+                    .flatMap(s -> {
+                        if (wifiInfoMap != null)
+                            return Observable.just(wifiInfoMap);
+                        final String content = PreferencesUtils.getString(secretKey);
+                        try {
+                            final String de = AESUtil.decrypt(content);
+                            Saver saver = new Gson().fromJson(de, Saver.class);
+                            wifiInfoMap = saver.getWifiInfoMap();
+                            return Observable.just(wifiInfoMap);
+                        } catch (Exception e) {
+                            PreferencesUtils.remove(secretKey);
+                            return Observable.just(null);
+                        }
+                    });
+        }
+
         @Override
         public String toString() {
             return "Saver{" +

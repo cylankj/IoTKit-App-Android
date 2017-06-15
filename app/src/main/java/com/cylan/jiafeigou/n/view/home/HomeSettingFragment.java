@@ -230,6 +230,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         }
         svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
         svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
+        initSwitchBtnListener();
     }
 
     @Override
@@ -240,9 +241,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onStart() {
         super.onStart();
-        initSwitchBtnListener();
-
-    }
+            }
 
     private void initSwitchBtnListener() {
         svHomeSettingAccessMes.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -276,9 +275,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         //更换微信号
         svSettingWechatSwitch.setVisibility(BizProfile ? View.VISIBLE : View.GONE);
         svSettingWechatSwitch.setOnClickListener(v -> getAlertDialogManager().showDialog(getActivity(), "qiehuan", getString(R.string.SETTINGS_Wechat_Switch_Open),
-                getString(R.string.I_KNOW), (dialog, which) -> {
-                    dialog.dismiss();
-                }));
+                getString(R.string.I_KNOW), (dialog, which) -> dialog.dismiss()));
         //开关 微信推送通知
         svHomeSettingWechat.setVisibility(getResources().getBoolean(R.bool.show_wechat_entrance) ? View.VISIBLE : View.GONE);
         svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {

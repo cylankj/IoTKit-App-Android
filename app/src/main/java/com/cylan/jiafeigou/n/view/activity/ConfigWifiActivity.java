@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,6 +38,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -51,7 +53,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
@@ -285,17 +289,54 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
         Object object = tvConfigApName.getTag();
         if (object == null) {
-            tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
-            tvConfigApName.setText(resultList.get(0).SSID);
-            LocalWifiInfo.Saver.getSaver().getInfo(resultList.get(0).SSID.replace("\"", ""))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(info -> {
-                        if (info != null && !TextUtils.isEmpty(info.getPwd())) {
-                            //填充密码
-                            etWifiPwd.setText(info.getPwd());
-                        } else etWifiPwd.setText("");
-                    }, AppLogger::e);
+            getInterestingSSid(resultList);
+//            tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
+//            tvConfigApName.setText(resultList.get(0).SSID);
+//            LocalWifiInfo.Saver.getSaver().getInfo(resultList.get(0).SSID.replace("\"", ""))
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(info -> {
+//                        if (info != null && !TextUtils.isEmpty(info.getPwd())) {
+//                            //填充密码
+//                            etWifiPwd.setText(info.getPwd());
+//                        } else etWifiPwd.setText("");
+//                    }, AppLogger::e);
         }
+    }
+
+    private void getInterestingSSid(List<ScanResult> resultList) {
+        if (ListUtils.isEmpty(resultList))
+            LocalWifiInfo.Saver.getSaver().getMap()
+                    .subscribeOn(Schedulers.newThread())
+                    .filter(ret -> ret != null)
+                    .flatMap(map -> {
+                        for (ScanResult result : resultList) {
+                            final String ssid = result.SSID.replace("\"", "");
+                            if (!map.containsKey(ssid)) continue;
+                            LocalWifiInfo info = map.get(ssid);
+                            if (info != null && !TextUtils.isDigitsOnly(info.getPwd())) {
+                                return Observable.just(new Pair<>(info, new BeanWifiList(result)));
+                            }
+                        }
+                        if (ListUtils.isEmpty(resultList))
+                            return Observable.just(null);
+                        else
+                            return Observable.just(new Pair<>(new LocalWifiInfo(), new BeanWifiList(resultList.get(0))));
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> {
+
+                        if (ret != null) {
+                            LocalWifiInfo info = ret.first;
+                            if (info != null && !TextUtils.isEmpty(info.getPwd()) && !TextUtils.isEmpty(info.getSsid())) {
+                                tvConfigApName.setText(resultList.get(0).SSID);
+                                etWifiPwd.setText(info.getPwd());
+                            }
+                            if (ret.second != null) {
+                                tvConfigApName.setTag(ret.second);
+                                tvConfigApName.setText(ret.second.result.SSID.replace("\"", ""));
+                            }
+                        }
+                    }, AppLogger::e);
     }
 
     @Override
