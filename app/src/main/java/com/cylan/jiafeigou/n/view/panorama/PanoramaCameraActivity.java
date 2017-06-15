@@ -780,6 +780,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bannerConnectionText.setText(apMode ? R.string.Tap1_OutdoorMode : isOnline ? R.string.DEVICE_WIFI_ONLINE : R.string.NOT_ONLINE);
         bannerChargeText.setVisibility((apMode || isOnline) ? View.VISIBLE : View.INVISIBLE);
         bannerChargeIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.INVISIBLE);
+        if (!apMode && !isOnline) {
+            loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
+        }
         if (NetUtils.getNetType(this) == -1) {//真没网了
             if (bannerSwitcher.getDisplayedChild() == 0) {
                 bannerSwitcher.showNext();

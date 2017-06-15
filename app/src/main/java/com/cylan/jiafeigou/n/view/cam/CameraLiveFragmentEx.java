@@ -54,7 +54,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -175,7 +174,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
                 boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
                 //无卡不需要显示
-                if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard ==1&& dpSdStatus.err == 0) {
+                if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard && dpSdStatus.err == 0) {
                     AlertDialogManager.getInstance().showDialog(getActivity(),
                             getString(R.string.Tap1_Camera_MotionDetection_OffTips),
                             getString(R.string.Tap1_Camera_MotionDetection_OffTips),

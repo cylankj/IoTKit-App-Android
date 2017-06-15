@@ -127,12 +127,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
                                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                if (status != null && status.hasSdcard == 0) {//SDCard 不存在
+                                if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
                                     mView.onReportDeviceError(2022, true);
                                 }
-                                shouldRefreshRecord = status != null && status.hasSdcard == 1 && status.err == 0;
+                                shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
                             } else if (msg.id == 205) {
                                 Integer charge = unpackData(msg.packValue, int.class);
                                 if (charge != null && charge == 1) {

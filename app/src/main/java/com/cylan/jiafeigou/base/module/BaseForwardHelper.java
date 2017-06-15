@@ -124,7 +124,7 @@ public class BaseForwardHelper {
             if (rsp.map.get(msgId).size() == 0) return null;
             JFGDPMsg msg = rsp.map.get(msgId).get(0);
             if (msgId == 204) {
-                DpMsgDefine.DPSdStatusBoolean status = unpackData(msg.packValue, DpMsgDefine.DPSdStatusBoolean.class);
+                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
                 PanoramaEvent.MsgSdInfoRsp infoRsp = new PanoramaEvent.MsgSdInfoRsp();
                 infoRsp.sdcard_recogntion = status.err;
                 infoRsp.sdIsExist = status.hasSdcard ? 1 : 0;

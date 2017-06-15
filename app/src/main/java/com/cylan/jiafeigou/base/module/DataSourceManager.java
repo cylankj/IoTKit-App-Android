@@ -703,6 +703,7 @@ public class DataSourceManager implements JFGSourceManager {
                         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
                             device = entry.getValue();
                             parameters = device.getQueryParams();
+                            AppLogger.e("正在查询设备属性:"+new Gson().toJson(parameters));
                             appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
                         }
                         appCmd.getShareList(uuidList);

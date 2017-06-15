@@ -187,7 +187,7 @@ public class BasePanoramaApiHelper {
             //更新设备属性
             DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
             status.err = ret.sdcard_recogntion;
-            status.hasSdcard = ret.sdIsExist;
+            status.hasSdcard = ret.sdIsExist == 1;
             status.used = ret.storage_used;
             status.total = ret.storage;
             Device device = DataSourceManager.getInstance().getDevice(uuid);

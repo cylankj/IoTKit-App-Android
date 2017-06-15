@@ -98,7 +98,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (status.hasSdcard==0) oldOption = -1;
+        if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
 
         rbMotion.setChecked(oldOption == 0);
@@ -203,6 +203,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private boolean hasSdcard() {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        return status != null && status.hasSdcard ==1&& status.err == 0;
+        return status != null && status.hasSdcard&& status.err == 0;
     }
 }

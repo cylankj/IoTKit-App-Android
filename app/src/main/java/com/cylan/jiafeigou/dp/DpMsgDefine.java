@@ -358,7 +358,7 @@ public class DpMsgDefine {
         @Index(2)
         public int err = -1;
         @Index(3)
-        public int hasSdcard;
+        public boolean hasSdcard;
 
         public DPSdStatus() {
         }
@@ -384,7 +384,7 @@ public class DpMsgDefine {
             dest.writeLong(this.total);
             dest.writeLong(this.used);
             dest.writeInt(this.err);
-            dest.writeInt(this.hasSdcard);
+            dest.writeInt(this.hasSdcard ? 1 : 0);
         }
 
         protected DPSdStatus(Parcel in) {
@@ -392,7 +392,7 @@ public class DpMsgDefine {
             this.total = in.readLong();
             this.used = in.readLong();
             this.err = in.readInt();
-            this.hasSdcard = in.readInt();
+            this.hasSdcard = in.readInt() == 1;
         }
 
         public static final Creator<DPSdStatus> CREATOR = new Creator<DPSdStatus>() {

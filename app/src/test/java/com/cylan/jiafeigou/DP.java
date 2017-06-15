@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
 import org.junit.Test;
+import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
@@ -75,9 +76,9 @@ public class DP {
 
     @Test
     public void ssg() throws IOException {
-        byte[] msg = {-104, -51, 78, 38, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 48, 48, 53, -96, -50, 33, 38, -48, 41, -112, 0, 0, -96};
-        MsgForwardT msgForward = DpUtils.unpackData(msg, MsgForwardT.class);
-        System.out.println(new Gson().toJson(msgForward));
+        byte[] msg = {-108, -49, 0, 0, 0, 3, -82, 48, 0, 0, -49, 0, 0, 0, 2, 20, -114, 0, 0, 0, -61};
+
+        System.out.println(new MessagePack().read(msg).toString());
     }
 
     @Test

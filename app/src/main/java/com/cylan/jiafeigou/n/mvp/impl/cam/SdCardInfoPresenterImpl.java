@@ -58,12 +58,12 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         DpMsgDefine.DPSdStatus sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         //sd卡状态
         if (sdStatus != null) {
-            if (sdStatus.hasSdcard==0 && sdStatus.err != 0) {
+            if (!sdStatus.hasSdcard && sdStatus.err != 0) {
                 //sd初始化失败
                 return false;
             }
         }
-        if (sdStatus != null && sdStatus.hasSdcard==0) {
+        if (sdStatus != null && !sdStatus.hasSdcard) {
             return false;
         }
         return true;
@@ -145,7 +145,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                         for (JFGDPMsg msg : deviceSyncRsp.dpList) {
                             if (msg.id == 204) {
                                 DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
-                                hasSDCard = status != null && status.hasSdcard==1 && status.err == 0;
+                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
                                 break;
                             } else if (msg.id == 222) {
                                 DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);

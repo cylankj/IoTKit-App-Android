@@ -44,7 +44,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
                                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                if (status != null && status.hasSdcard == 0) {//SDCard 不存在
+                                if (status != null && !status.hasSdcard ) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
                                     mView.onReportDeviceError(2022, true);
