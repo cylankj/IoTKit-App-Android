@@ -273,13 +273,13 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         });
         boolean BizProfile = false;
         svHomeSettingWechat.setChecked(BizProfile);
+        //更换微信号
         svSettingWechatSwitch.setVisibility(BizProfile ? View.VISIBLE : View.GONE);
-        svSettingWechatSwitch.setOnClickListener(v -> {
-            getAlertDialogManager().showDialog(getActivity(), "qiehuan", getString(R.string.SETTINGS_Wechat_Switch_Open),
-                    getString(R.string.I_KNOW), (dialog, which) -> {
-                        dialog.dismiss();
-                    });
-        });
+        svSettingWechatSwitch.setOnClickListener(v -> getAlertDialogManager().showDialog(getActivity(), "qiehuan", getString(R.string.SETTINGS_Wechat_Switch_Open),
+                getString(R.string.I_KNOW), (dialog, which) -> {
+                    dialog.dismiss();
+                }));
+        //开关 微信推送通知
         svHomeSettingWechat.setVisibility(getResources().getBoolean(R.bool.show_wechat_entrance) ? View.VISIBLE : View.GONE);
         svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
@@ -292,10 +292,10 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                         return;
                     }
                 }
+                svHomeSettingWechat.setChecked(false);
                 //跳转到
-                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                        WechatGuideFragment.newInstance(),
-                        android.R.id.content);
+                jump2Guide();
+
             } else {
                 AlertDialogManager.getInstance().showDialog(getActivity(), "weixin",
                         getString(R.string.SETTINGS_Wechat_Switch_Cancel), getString(R.string.OK), (dialog, which) -> {
@@ -303,6 +303,15 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                         }, getString(R.string.CANCEL), null);
             }
         });
+    }
+
+    private void jump2Guide() {
+        IBaseFragment fragment = WechatGuideFragment.newInstance();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment,
+                android.R.id.content);
+        //扫描关注了.
+        fragment.setCallBack(t -> initPresenter());
     }
 
     /**
