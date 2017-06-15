@@ -128,28 +128,13 @@ public class JFGRules {
     }
 
     public static boolean isPanoramicCam(int pid) {
-        return 10 == pid ||
-                18 == pid ||
-                36 == pid || 1092 == pid ||
-                1091 == pid || 39 == pid ||
-                49 == pid || pid == 1348;
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "ViewAngle");
     }
 
     public static boolean showNTSCVLayout(int pid) {
-        return pid == 5 || pid == 7 || 10 == pid ||
-                18 == pid ||
-                36 == pid ||
-                37 == pid ||
-                38 == pid ||
-                39 == pid ||
-                1348 == pid ||
-                1152 == pid ||
-                49 == pid || pid == 1090 || 1092 == pid ||
-                1091 == pid;
-    }
-
-    public static boolean showHomeBatteryIcon(int pid) {
-        return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "ntsc");
     }
 
     public static boolean isTestBell(int pid) {
@@ -166,24 +151,6 @@ public class JFGRules {
                 pid == 48;
     }
 
-    public static boolean showSettingBatteryItem(int pid) {
-        if (isRS(pid)) return false;//睿思,不显示电量.
-        return is3GCam(pid) || isFreeCam(pid)
-                || pid == 1089
-                || pid == 21
-                || pid == 1088
-                || pid == 26
-                || pid == 1093
-                || pid == 6
-                || pid == 1094
-                || pid == 25
-                || pid == 11
-                || pid == 17
-                || pid == 1158
-                || pid == 1160
-                || pid == 27;
-
-    }
 
     public static boolean isMobileNet(int net) {
         return net >= 2;
@@ -299,9 +266,10 @@ public class JFGRules {
                 "standby");
     }
 
-    public static boolean show110VLayout(int pid) {
+
+    public static boolean showSdHd(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                "110V");
+                "SD/HD");
     }
 
     public static boolean showBattery(int pid) {
@@ -379,7 +347,7 @@ public class JFGRules {
     }
 
     public static boolean hasSdcard(DpMsgDefine.DPSdStatus sdStatus) {
-        return sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard ;
+        return sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard;
     }
 
     public static boolean isShareDevice(String uuid) {

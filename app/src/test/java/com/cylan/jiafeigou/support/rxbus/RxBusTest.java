@@ -484,11 +484,15 @@ public class RxBusTest {
 
     @Test
     public void testTimeout1() throws InterruptedException {
+        long time = System.currentTimeMillis() / 10000;
+        long ret = System.currentTimeMillis() / time;
+        System.out.println(ret);
+
         Observable.interval(20, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        System.out.println("..."+aLong);
+                        System.out.println("..." + aLong);
                     }
                 });
 //        Observable.just(Observable.interval(20, TimeUnit.MILLISECONDS))

@@ -100,6 +100,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             return 1;
                         })
                         .timeout(120, TimeUnit.SECONDS, Observable.just(2)))
+                .timeout(120, TimeUnit.SECONDS, Observable.just(2))
                 .map(code -> {
                     if (code == 0) {
                         History.getHistory().clearHistoryFile(uuid);
@@ -107,11 +108,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     return code;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(code -> {
-                    mView.clearSdResult(code);
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                });
+                .subscribe(code -> mView.clearSdResult(code), e -> AppLogger.e(e.getMessage()));
         addSubscription(subscribe);
     }
 

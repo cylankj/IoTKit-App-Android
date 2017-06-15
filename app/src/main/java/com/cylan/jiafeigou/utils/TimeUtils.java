@@ -404,4 +404,10 @@ public class TimeUtils {
         return time1 == time2;
     }
 
+    public static long wrapToLong(long time) {
+        if (time == 0) return 0;
+        long ret = System.currentTimeMillis() / time;
+        return ret * time;
+    }
+
 }
