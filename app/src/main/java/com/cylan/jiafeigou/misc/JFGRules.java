@@ -161,11 +161,12 @@ public class JFGRules {
 
 
     public static boolean isRS(int pid) {
-        return pid == 38;
+        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid, "value");
+        return !TextUtils.isEmpty(value) && value.startsWith("rs");
     }
 
     public static boolean isCamera(int pid) {
-        final String value = BaseApplication.getAppComponent().getProductProperty().getValue(pid);
+        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid, "value");
         return !TextUtils.isEmpty(value) && value.contains("cam");
     }
 

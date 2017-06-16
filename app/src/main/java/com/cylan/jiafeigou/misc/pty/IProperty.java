@@ -23,7 +23,4 @@ public interface IProperty {
 
     String property(int pidOrOs, String tag);
 
-    String getValue(int pidOrOs);
-
-    Product getProduct(int pidOrOs);
 }
