@@ -192,13 +192,11 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
                 break;
         }
         shareAction.share();
-        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void cancelLoading(DialogInterface dialogInterface) {
 
     }
-
 
 
     public void cancelShare(View view) {
