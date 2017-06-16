@@ -914,6 +914,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     }
 
     private void handleRegisterByMail() {
+        lLayoutAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.GONE);
         lLayoutAgreement.setVisibility(View.VISIBLE);
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
             tvRegisterWayContent.setText(getString(R.string.PHONE_SIGNUP));
