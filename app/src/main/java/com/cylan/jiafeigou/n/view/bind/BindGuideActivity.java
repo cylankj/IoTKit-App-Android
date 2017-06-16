@@ -29,7 +29,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
-import static com.xiaomi.push.thrift.a.R;
 
 public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.imv_bind_guide)
