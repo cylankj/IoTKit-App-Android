@@ -56,6 +56,14 @@ import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.bell.LBatteryWarnDialog;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.photoselect.CircleImageView;
+import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PanoramaThumbURL;
@@ -68,6 +76,8 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.panorama.CommonPanoramicView;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -427,6 +437,23 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         onRefreshConnectionMode(alertMobile ? 1 : -1);
         onRefreshViewModeUI(panoramaViewMode, false);
+        presenter.checkAndInitRecord();
+        updateHint();
+    }
+
+    private void updateHint() {
+        try {
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            if (JFGRules.isPanoramicCam(device.pid)) return;
+            if (JFGRules.isShareDevice(device)) return;
+            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
+            RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);
+            String currentV = device.$(207, "");
+            boolean result = description.hasNew && BindUtils.versionCompare(description.version, currentV) > 0;
+            setting.setShowDot(result);
+        } catch (Exception e) {
+            return;
+        }
     }
 
 
