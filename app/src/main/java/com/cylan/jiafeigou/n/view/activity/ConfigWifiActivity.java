@@ -304,19 +304,19 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     private void getInterestingSSid(List<ScanResult> resultList) {
-        if (ListUtils.isEmpty(resultList))
+        if (!ListUtils.isEmpty(resultList))
             LocalWifiInfo.Saver.getSaver().getMap()
                     .subscribeOn(Schedulers.newThread())
-                    .filter(ret -> ret != null)
                     .flatMap(map -> {
-                        for (ScanResult result : resultList) {
-                            final String ssid = result.SSID.replace("\"", "");
-                            if (!map.containsKey(ssid)) continue;
-                            LocalWifiInfo info = map.get(ssid);
-                            if (info != null && !TextUtils.isDigitsOnly(info.getPwd())) {
-                                return Observable.just(new Pair<>(info, new BeanWifiList(result)));
+                        if (map != null)
+                            for (ScanResult result : resultList) {
+                                final String ssid = result.SSID.replace("\"", "");
+                                if (!map.containsKey(ssid)) continue;
+                                LocalWifiInfo info = map.get(ssid);
+                                if (info != null && !TextUtils.isDigitsOnly(info.getPwd())) {
+                                    return Observable.just(new Pair<>(info, new BeanWifiList(result)));
+                                }
                             }
-                        }
                         if (ListUtils.isEmpty(resultList))
                             return Observable.just(null);
                         else

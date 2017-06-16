@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
+import static com.xiaomi.push.thrift.a.R;
 
 public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.imv_bind_guide)
@@ -66,23 +67,20 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             //rs cam,在cylan包中,bind_guide_rs是一个空文件.这算是一个渠道包,只有doby才有改入口.
             bind_guide_res = R.raw.bind_guide_rs;
             tvGuideMainContent.setText(getString(R.string.WIFI_SET_RS));
-        } else if (TextUtils.equals(defaultAlias, getString(R.string.DOG_CAMERA_NAME)) || TextUtils.equals(defaultAlias, getString(R.string._720PanoramicCamera))) {
-            String stringExtra = getIntent().getStringExtra(KEY_BIND_DEVICE);
-            if (getIntent() != null && (TextUtils.equals(stringExtra, getString(R.string.DOG_CAMERA_NAME))) || TextUtils.equals(stringExtra, getString(R.string._720PanoramicCamera))) {
-                //is cam
-                tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
-            } else {
-                //default bell
-                tvGuideMainContent.setText(getString(R.string.WIFI_SET_3_1));
-            }
-            tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
-            GlideDrawableImageViewTarget imageViewTarget =
-                    new GlideDrawableImageViewTarget(imvBindGuide);
-            Glide.with(this).load(bind_guide_res).into(imageViewTarget);
-            customToolbar.setBackAction((View v) -> {
-                finishExt();
-            });
+        } else if (TextUtils.equals(defaultAlias, getString(R.string._720PanoramicCamera))) {
+            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
+        } else if (TextUtils.equals(defaultAlias, getString(R.string.DOG_CAMERA_NAME))) {
+            //is cam
+            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
+        } else {
+            //default bell
+            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3_1));
         }
+        tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
+        GlideDrawableImageViewTarget imageViewTarget =
+                new GlideDrawableImageViewTarget(imvBindGuide);
+        Glide.with(this).load(bind_guide_res).into(imageViewTarget);
+        customToolbar.setBackAction((View v) -> finishExt());
     }
 
     @Override

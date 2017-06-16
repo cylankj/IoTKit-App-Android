@@ -57,7 +57,7 @@ public class SimpleProgressBar
         pointRadius = a.getDimension(R.styleable.SimpleProgressStyle_progress_point_radius, 10);
         swipeDegree = a.getInt(R.styleable.SimpleProgressStyle_progress_swipe_degree, 300);
         circleRadius = a.getDimensionPixelSize(R.styleable.SimpleProgressStyle_progress_radius, 5);
-        this.run = a.getBoolean(R.styleable.SimpleProgressStyle_progress_stop, false);
+        this.run = a.getBoolean(R.styleable.SimpleProgressStyle_progress_stop, true);
         a.recycle();
         init();
     }
