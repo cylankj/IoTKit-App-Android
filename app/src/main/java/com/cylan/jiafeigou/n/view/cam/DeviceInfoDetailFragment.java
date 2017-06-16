@@ -163,22 +163,27 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
-        DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
-        if (zone != null)
-            MiscUtils.loadTimeZoneList()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe((List<TimeZoneBean> list) -> {
-                        TimeZoneBean bean = new TimeZoneBean();
-                        bean.setId(zone.timezone);
-                        if (list != null) {
-                            int index = list.indexOf(bean);
-                            if (index >= 0 && index < list.size()) {
-                                tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+        boolean showTimezone = getArguments().getBoolean(JConstant.KEY_SHOW_TIME_ZONE, true);
+        if (showTimezone) {
+            DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
+            if (zone != null)
+                MiscUtils.loadTimeZoneList()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((List<TimeZoneBean> list) -> {
+                            TimeZoneBean bean = new TimeZoneBean();
+                            bean.setId(zone.timezone);
+                            if (list != null) {
+                                int index = list.indexOf(bean);
+                                if (index >= 0 && index < list.size()) {
+                                    tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                }
                             }
-                        }
-                    }, AppLogger::e);
+                        }, AppLogger::e);
+        } else {
+            tvDeviceTimeZone.setVisibility(View.GONE);
+        }
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        String statusContent = getSdcardState(status.hasSdcard , status.err);
+        String statusContent = getSdcardState(status.hasSdcard, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
@@ -250,7 +255,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     return;
                 }
 
-                if (status.hasSdcard )//没有sd卡,不能点击
+                if (status.hasSdcard)//没有sd卡,不能点击
                     jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:

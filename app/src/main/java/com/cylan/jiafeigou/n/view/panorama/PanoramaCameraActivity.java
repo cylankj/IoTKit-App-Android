@@ -761,7 +761,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelVideoMode.setEnabled(finalEnable);
         bottomPanelMoreItem.setEnabled(finalEnable);
 
-
         if (!bottomPanelPhotoGraphItem.isPressed()) {//这里是为了让长按事件能收到 actionUp事件
             bottomPanelPhotoGraphItem.setEnabled((hasResolution && enable) || justForTest);
         }
@@ -903,6 +902,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onReportDeviceError(int err, boolean useAlert) {
         onRefreshViewModeUI(panoramaViewMode, true);
         onRefreshControllerViewVisible(true);
+        bottomPanelPhotoGraphItem.setEnabled(true);//有长按事件,需要特殊对待
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");

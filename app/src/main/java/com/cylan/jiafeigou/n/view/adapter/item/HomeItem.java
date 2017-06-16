@@ -269,12 +269,11 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     private String getPanOnlineMode(final String uuid) {
         boolean serverOnline = BaseApplication.getAppComponent().getSourceManager().isOnline();
         DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        if (serverOnline && net.net == 1) {
+        if (JFGRules.isAPDirect(mDevice.uuid, getDevice().$(202, ""))) {
+            return mContext.getString(R.string.Tap1_OutdoorMode);
+        } else if (serverOnline && net.net == 1) {
             //wifi在线
             return mContext.getString(R.string.DEVICE_WIFI_ONLINE);
-        } else if (JFGRules.isAPDirect(mDevice.uuid, getDevice().$(202, ""))) {
-
-            return mContext.getString(R.string.Tap1_OutdoorMode);
         }
         return mContext.getString(R.string.OFF_LINE);//离线
     }

@@ -145,6 +145,7 @@ public class JConstant {
     public static final java.lang.String SWITCH_MODE_POP = "switch_mode_pop";
     public static final String ALERT_MOBILE = "alert_mobile";
     public static final java.lang.String SHOW_VR_MODE_TIPS = "show_vr_mode_tips";
+    public static final java.lang.String KEY_SHOW_TIME_ZONE = "key_show_time_zone";
 
 
     /**

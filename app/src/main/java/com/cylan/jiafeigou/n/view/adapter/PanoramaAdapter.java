@@ -96,6 +96,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         int percent = (int) (panoramaItem.downloadInfo.getProgress() * 100);
         view.setText(percent + "%");
         view.setVisibility(percent >= 100 ? View.INVISIBLE : View.VISIBLE);
+        holder.setVisibility(R.id.iv_album_icon_720_iphone, percent >= 100 ? View.VISIBLE : View.INVISIBLE);
     }
 
     public static class MyDownloadListener extends DownloadListener {

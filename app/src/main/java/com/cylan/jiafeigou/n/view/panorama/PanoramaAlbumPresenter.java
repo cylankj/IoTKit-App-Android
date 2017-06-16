@@ -7,7 +7,6 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -247,7 +246,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                     downloadInfo.setUrl(request.getBaseUrl());
                                     DownloadDBManager.INSTANCE.replace(downloadInfo);
                                 }
-                                DownloadManager.getInstance().addTask(taskKey, request, new PanoramaAdapter.MyDownloadListener());
+                                DownloadManager.getInstance().addTask(taskKey, request, null);
                             }
                             item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                         }

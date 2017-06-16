@@ -81,6 +81,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         DeviceInfoDetailFragment fragment = DeviceInfoDetailFragment.newInstance(null);
         Bundle bundle = new Bundle();
         bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
+        bundle.putBoolean(JConstant.KEY_SHOW_TIME_ZONE, false);
         fragment.setArguments(bundle);
         loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
     }

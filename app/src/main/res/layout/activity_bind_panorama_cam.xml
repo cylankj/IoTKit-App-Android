@@ -36,6 +36,7 @@
         android:textSize="@dimen/sp26" />
 
     <TextView
+        android:id="@+id/tv_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_main_content"
@@ -55,6 +56,7 @@
     <FrameLayout
         android:layout_width="@dimen/y141"
         android:layout_height="@dimen/y234"
+        android:layout_below="@+id/tv_description"
         android:layout_centerInParent="true"
         android:background="@drawable/add_image_panoramic_camera">
 

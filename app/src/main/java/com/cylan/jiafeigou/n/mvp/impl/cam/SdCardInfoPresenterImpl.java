@@ -87,25 +87,39 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                        .first(rsp -> rsp.seq == seq)
-                        .map(rsp -> {
-                            if (rsp.rets != null) {
-                                for (JFGDPMsgRet msgRet : rsp.rets) {
-                                    if (msgRet.id == 218) {
-                                        return msgRet.ret;
-                                    }
-                                }
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class).first(deviceSyncRsp -> {
+                    if (!TextUtils.equals(deviceSyncRsp.uuid, uuid)) {
+                        return false;
+                    }
+                    if (deviceSyncRsp.dpList != null && deviceSyncRsp.dpList.size() > 0) {
+                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+                            if (msg.id == 204 || msg.id == 222) {
+                                return true;
                             }
-                            return 1;
-                        })
-                        .timeout(120, TimeUnit.SECONDS, Observable.just(2)))
-                .timeout(120, TimeUnit.SECONDS, Observable.just(2))
-                .map(code -> {
-                    if (code == 0) {
+                        }
+                    }
+                    return false;
+                }))
+                .timeout(120, TimeUnit.SECONDS, Observable.just(null))
+                .map(deviceSyncRsp -> {
+                    boolean hasSDCard = false;
+                    if (deviceSyncRsp != null && deviceSyncRsp.dpList != null) {
+                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+                            if (msg.id == 204) {
+                                DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
+                                break;
+                            } else if (msg.id == 222) {
+                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+                                hasSDCard = summary != null && summary.errCode == 0 && summary.hasSdcard;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasSDCard) {
                         History.getHistory().clearHistoryFile(uuid);
                     }
-                    return code;
+                    return hasSDCard ? 0 : deviceSyncRsp == null ? 2 : 1;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(code -> mView.clearSdResult(code), e -> AppLogger.e(e.getMessage()));

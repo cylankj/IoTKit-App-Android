@@ -13,8 +13,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.toolsfinal.io.Charsets;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -22,6 +22,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.internal.http.RealResponseBody;
+import okio.Buffer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -48,19 +54,33 @@ public class BasePanoramaApiHelper {
     @Inject
     public BasePanoramaApiHelper() {
         apiHelper = this;
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    if (deviceInformation != null && deviceInformation.ip != null) {
+                        //动态 host
+                        HttpUrl httpUrl = chain.request().url().newBuilder().host(deviceInformation.ip).build();
+                        request = request.newBuilder().url(httpUrl).build();
+                    }
+                    AppLogger.e("http请求为:" + request.toString());
+                    Response proceed = chain.proceed(request);
+                    String string = proceed.body().string();
+                    AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
+                    return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
+                })
+                .build();
+        this.httpApi = new Retrofit.Builder().client(okHttpClient)
+                .baseUrl("http://192.168.10.2/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build().create(IHttpApi.class);
+
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
                 .observeOn(Schedulers.io())
                 .subscribe(fetchEvent -> {
                     if (fetchEvent.success) {
                         deviceInformation = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
                         if (deviceInformation != null && deviceInformation.ip != null) {
-                            Gson gson = new GsonBuilder().setLenient().create();//忽略 json 无效格式错误
-                            Retrofit retrofit = new Retrofit.Builder().client(BaseApplication.getAppComponent().getOkHttpClient())
-                                    .baseUrl("http://" + deviceInformation.ip)
-                                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                                    .addConverterFactory(GsonConverterFactory.create(gson))
-                                    .build();
-                            httpApi = retrofit.create(IHttpApi.class);
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
                         } else {
                             if (BaseApplication.isOnline()) {
@@ -72,7 +92,6 @@ public class BasePanoramaApiHelper {
                             }
                         }
                     } else {
-                        httpApi = null;
                         deviceInformation = null;
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);//扫描开始了
                     }

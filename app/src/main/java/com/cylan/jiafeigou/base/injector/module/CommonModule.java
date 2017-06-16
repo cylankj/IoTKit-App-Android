@@ -3,9 +3,12 @@ package com.cylan.jiafeigou.base.injector.module;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.BaseAppCallBackHolder;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.DeviceInformation;
+import com.cylan.jiafeigou.base.module.IHttpApi;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -30,11 +33,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.internal.http.RealResponseBody;
 import okio.Buffer;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by yanzhendong on 2017/4/12.
@@ -125,21 +132,17 @@ public class CommonModule {
         return PathGetter.createPath(JConstant.CRASH_PATH);
     }
 
-//    @Provides
-//    @Singleton
-//    public static IHttpApi provideHttpApi(@Named("IHttpApi") Retrofit retrofit) {
-//        return retrofit.fetch(IHttpApi.class);
-//    }
-
     @Provides
     @Singleton
     public static OkHttpClient provideOkHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request request = chain.request();
-                    if (request.url().encodedPath().startsWith("/images/")) {
-                        //文件下载,由于文件较大,直接返回了
-                        return chain.proceed(request);
+                    DeviceInformation information = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
+                    if (information != null && information.ip != null) {
+                        //动态 host
+                        HttpUrl httpUrl = chain.request().url().newBuilder().host("http://" + information.ip).build();
+                        request = request.newBuilder().url(httpUrl).build();
                     }
                     AppLogger.e("http请求为:" + request.toString());
                     Response proceed = chain.proceed(request);
@@ -161,33 +164,14 @@ public class CommonModule {
     public static TreeHelper getTreeHelper() {
         return new TreeHelper();
     }
-//    @Provides
-//    @Singleton
-//    @Named("IHttpApi")
-//    public static Retrofit provideRetrofit(OkHttpClient okHttpClient, @Named("IHttpApiBaseUrl") String baseUrl) {
-//        return new Retrofit.Builder().client(okHttpClient)
-//                .baseUrl(baseUrl)
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.fetch())
-//                .addConverterFactory(GsonConverterFactory.fetch())
-//                .addConverterFactory(DownloadPercentConverterFactory.create())
-//                .build();
-//    }
 
-//    @Provides
-//    @Singleton
-//    @Named("IHttpApiBaseUrl")
-//    public static String provideHttpApiDefaultUrl() {
-//        return "http://192.168.10.2/";
-//    }
-
-//    @Provides
-//    @Singleton
-//    public static RxDownload provideRxDownload(@ContextLife Context appContext) {
-//        return RxDownload.getInstance()
-//                .context(appContext)
-//                .defaultSavePath(JConstant.MEDIA_PATH)
-//                .maxThread(3)                     //设置最大线程
-//                .maxRetryCount(3)                 //设置下载失败重试次数
-//                .maxDownloadNumber(5);
-//    }
+    @Provides
+    @Singleton
+    public static IHttpApi provideRetrofit(OkHttpClient okHttpClient) {
+        return new Retrofit.Builder().client(okHttpClient)
+                .baseUrl("http://192.168.10.2/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build().create(IHttpApi.class);
+    }
 }

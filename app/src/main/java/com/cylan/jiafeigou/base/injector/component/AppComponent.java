@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
+import com.cylan.jiafeigou.base.module.IHttpApi;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -65,4 +66,6 @@ public interface AppComponent {
     String getLogPath();
 
     TreeHelper getTreeHelper();
+
+    IHttpApi getHttpApi();
 }

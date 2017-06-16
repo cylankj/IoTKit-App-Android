@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -30,6 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.ERROR_CODE_HTTP_NOT_AVAILABLE;
+import static com.cylan.jiafeigou.dp.DpUtils.pack;
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /**
@@ -275,9 +277,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         .map(bat -> {
                             if (bat != null) {
                                 this.battery = bat.battery;
+                                Device device = sourceManager.getDevice(uuid);
+                                DPEntity property = device.getProperty(206);
+                                if (property != null) {
+                                    property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
+                                }
                                 if (bat.battery < 20 && isFirst) {//检查电量
                                     isFirst = false;
-                                    Device device = sourceManager.getDevice(uuid);
                                     DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
                                     if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
                                         option.lastLowBatteryTime = System.currentTimeMillis();
@@ -286,9 +292,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                         mView.onBellBatteryDrainOut();
                                     }
                                 }
-                                if (ret!=null&&ret.powerline != 1) {
+                                if (ret != null && ret.powerline != 1) {
                                     mView.onDeviceBatteryChanged(this.battery);
                                 }
+
                             }
                             return bat;
                         })

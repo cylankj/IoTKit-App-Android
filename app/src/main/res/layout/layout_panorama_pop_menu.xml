@@ -34,7 +34,6 @@
             android:layout_width="@dimen/y70"
             android:layout_height="@dimen/y44"
             android:layout_marginTop="@dimen/y15"
-            android:alpha="0.4"
             android:background="@drawable/panorama_camera_quick_menu_item3"
             android:drawableStart="@drawable/btn_leftkey_selector"
             android:gravity="center_vertical|start"

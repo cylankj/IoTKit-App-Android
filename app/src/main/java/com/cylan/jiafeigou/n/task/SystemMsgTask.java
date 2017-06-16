@@ -28,8 +28,7 @@ public class SystemMsgTask implements Action1<Object> {
     @Override
     public void call(Object o) {
         getSystemUnreadCount()
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                        .onBackpressureBuffer()
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).first(rsp->rsp.seq==ret)
                         .filter(result -> result.map != null)
                         .observeOn(Schedulers.newThread())
                         .flatMap(rsp -> {
@@ -64,31 +63,25 @@ public class SystemMsgTask implements Action1<Object> {
                 }, AppLogger::e);
     }
 
-    private Observable<Boolean> getSystemUnreadCount() {
-        return Observable.create(subscriber -> {
+    private Observable<Long> getSystemUnreadCount() {
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                subscriber.onNext(null);
+                ArrayList<JFGDPMsg> list = new ArrayList<>();
+                JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
+                JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
+                JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
+                list.add(msg1);
+                list.add(msg2);
+                list.add(msg3);
+                long seq = BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
+                subscriber.onNext(seq);
                 subscriber.onCompleted();
-            } catch (Exception e) {
+                AppLogger.d("fetchNewInfo:");
+            } catch (JfgException e) {
+                AppLogger.e("fetchNewInfo" + e.getLocalizedMessage());
                 subscriber.onError(e);
             }
-        }).observeOn(Schedulers.io())
-                .map((Object o) -> {
-                    try {
-                        ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
-                        JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
-                        JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
-                        list.add(msg1);
-                        list.add(msg2);
-                        list.add(msg3);
-                        BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
-                        AppLogger.d("fetchNewInfo:");
-                    } catch (JfgException e) {
-                        AppLogger.e("fetchNewInfo" + e.getLocalizedMessage());
-                    }
-                    return null;
-                });
+        }).subscribeOn(Schedulers.io());
     }
 
 }
