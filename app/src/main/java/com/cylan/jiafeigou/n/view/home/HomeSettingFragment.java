@@ -241,7 +241,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onStart() {
         super.onStart();
-            }
+    }
 
     private void initSwitchBtnListener() {
         svHomeSettingAccessMes.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -270,7 +270,9 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         svVibrateContainer.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             basePresenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
         });
-        boolean BizProfile = false;
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        //已经关注公众号
+        boolean BizProfile = jfgAccount != null && jfgAccount.getWxPush() == 1 && !TextUtils.isEmpty(jfgAccount.getWXOpenID());
         svHomeSettingWechat.setChecked(BizProfile);
         //更换微信号
         svSettingWechatSwitch.setVisibility(BizProfile ? View.VISIBLE : View.GONE);
