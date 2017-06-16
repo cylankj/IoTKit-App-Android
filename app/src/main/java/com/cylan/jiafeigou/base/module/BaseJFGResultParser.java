@@ -27,7 +27,8 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
  */
 
 @Singleton
-public class BaseJFGResultParser {
+public class
+BaseJFGResultParser {
 
 
     @Inject
