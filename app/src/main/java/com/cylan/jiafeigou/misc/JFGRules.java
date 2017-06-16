@@ -43,7 +43,7 @@ public class JFGRules {
 
     public static boolean showItem(int pid, String key) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                "key");
+                key);
     }
 
     public static boolean isCylanDevice(String ssid) {
@@ -119,13 +119,6 @@ public class JFGRules {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "AP");
     }
 
-    public static boolean isWifiCam(int pid) {
-        return pid == JConstant.OS_CAMERA_UCOS ||
-                pid == JConstant.OS_CAMERA_UCOS_V2 ||
-                pid == JConstant.PID_CAMERA_WIFI_G1 ||
-                pid == JConstant.OS_CAMERA_UCOS_V3;
-    }
-
     public static boolean isPanoramicCam(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "ViewAngle");
@@ -134,20 +127,6 @@ public class JFGRules {
     public static boolean showNTSCVLayout(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "ntsc");
-    }
-
-    public static boolean isTestBell(int pid) {
-        return pid == 1344 ||
-                pid == 1345 ||
-                pid == 44 ||
-                pid == 46;
-    }
-
-    public static boolean isTestCam(int pid) {
-        return pid == 1346 ||
-                pid == 1347 ||
-                pid == 47 ||
-                pid == 48;
     }
 
 
@@ -186,53 +165,15 @@ public class JFGRules {
     }
 
     public static boolean isCamera(int pid) {
-        if (isRS(pid)) return true;
-        if (isPan720(pid)) return true;
-        if (isTestCam(pid)) return true;
-        switch (pid) {
-            case 4:
-            case 5:
-            case 7:
-            case 10:
-            case 18:
-            case 26:
-            case 17:
-            case 20:
-            case 23:
-            case 19:
-            case 1152:
-            case 1158:
-            case 1088:
-            case 1091:
-            case 1092:
-            case 1071:
-            case 1090:
-//            case 21:
-            case 36:
-            case 37:
-                return true;
-            default:
-                return false;
-        }
+        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid,
+                "value");
+        return !TextUtils.isEmpty(value) && value.contains("cam");
     }
 
     public static boolean isBell(int pid) {
-        if (isTestBell(pid)) return true;
-        switch (pid) {
-            case 6:
-            case 25:
-            case 1093:
-            case 1094:
-            case 1158:
-            case 15:
-            case 1159:
-            case 22://金鑫智慧科技智能猫眼
-            case 24://普顺达门铃
-            case 1160:
-            case 27://乐视猫眼
-                return true;
-        }
-        return false;
+        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid,
+                "value");
+        return !TextUtils.isEmpty(value) && value.contains("bell");
     }
 
     /**
@@ -383,9 +324,8 @@ public class JFGRules {
     }
 
     public static float getDefaultPortHeightRatio(int pid) {
-        if (isWifiCam(pid)) return 0.75f;
-        if (isPanoramicCam(pid)) return 1.0f;
-        return 0.75f;
+        boolean normal = !isPanoramicCam(pid);
+        return normal ? 0.75f : 1.0f;
     }
 
 
