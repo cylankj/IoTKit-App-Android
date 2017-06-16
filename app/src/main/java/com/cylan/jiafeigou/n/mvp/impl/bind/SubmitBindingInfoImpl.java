@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import com.cylan.jiafeigou.misc.bind.SubmitListener;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
-import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 
 /**

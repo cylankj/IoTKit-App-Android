@@ -158,7 +158,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 })
                 .filter(net -> net != null && net.net > 0)
                 .first()
-                .timeout(Math.min(60 * 1000L - (System.currentTimeMillis() - startTick), 60 * 1000L), TimeUnit.MILLISECONDS)
+                .timeout(Math.min(TIME_OUT - (System.currentTimeMillis() - startTick), TIME_OUT), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(net -> {
                     AppLogger.d("绑定成功,网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
