@@ -165,8 +165,7 @@ public class JFGRules {
     }
 
     public static boolean isCamera(int pid) {
-        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid,
-                "value");
+        final String value = BaseApplication.getAppComponent().getProductProperty().getValue(pid);
         return !TextUtils.isEmpty(value) && value.contains("cam");
     }
 

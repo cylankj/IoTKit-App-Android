@@ -14,6 +14,7 @@ public interface IProperty {
 
     /**
      * 这些属性tag 从properties.json中获取
+     *
      * @param pidOrOs
      * @param tag
      * @return
@@ -21,6 +22,8 @@ public interface IProperty {
     boolean hasProperty(int pidOrOs, String tag);
 
     String property(int pidOrOs, String tag);
+
+    String getValue(int pidOrOs);
 
     Product getProduct(int pidOrOs);
 }

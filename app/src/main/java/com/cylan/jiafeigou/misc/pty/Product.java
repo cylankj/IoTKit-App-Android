@@ -22,6 +22,7 @@ public class Product {
     private int pid = 0;
     private String cidModel;
     private String cidPrefix;
+    private String value;
     private int os = 0;
     /**
      * 属性集合
@@ -76,6 +77,14 @@ public class Product {
         return os;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     public HashMap<String, String> getPropertyMap() {
         return propertyMap;
     }
@@ -93,6 +102,7 @@ public class Product {
                 ", pid=" + pid +
                 ", cidModel='" + cidModel + '\'' +
                 ", cidPrefix='" + cidPrefix + '\'' +
+                ", value='" + value + '\'' +
                 ", os=" + os +
                 ", propertyMap=" + propertyMap +
                 '}';

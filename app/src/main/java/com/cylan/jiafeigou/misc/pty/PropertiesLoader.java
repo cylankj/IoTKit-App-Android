@@ -48,6 +48,13 @@ public class PropertiesLoader implements IProperty {
     }
 
     @Override
+    public String getValue(int pidOrOs) {
+        if (propertyFile == null) return null;
+        Product product = getProduct(pidOrOs);
+        return product.getValue();
+    }
+
+    @Override
     public Product getProduct(int pidOrOs) {
         if (propertyFile == null) return null;
         List<Product> list = propertyFile.getpList();
