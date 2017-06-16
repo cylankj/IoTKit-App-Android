@@ -70,6 +70,8 @@ public final class DpMsgMap {
 
     public static final int ID_512_CAMERA_ALARM_MSG_V3 = 512;
 
+    public static final int ID_513_CAM_RESOLUTION = 513;
+
     public static final int ID_401_BELL_CALL_STATE = 401;
 
     public static final int ID_701_SYS_PUSH_FLAG = 701;

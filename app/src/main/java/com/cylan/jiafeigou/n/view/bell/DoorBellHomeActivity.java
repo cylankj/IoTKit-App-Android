@@ -557,7 +557,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
+            if (mobNetInfo != null && !mobNetInfo.isConnected() && wifiNetInfo != null && !wifiNetInfo.isConnected()) {
                 cvBellHomeBackground.setState(2);
                 //改变背景或者 处理网络的全局变量
             } else {

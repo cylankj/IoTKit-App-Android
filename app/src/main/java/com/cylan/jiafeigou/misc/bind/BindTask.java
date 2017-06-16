@@ -18,14 +18,14 @@ public class BindTask implements Action1<Object> {
     @Override
     public void call(Object o) {
         try {
-            String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
+            final String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
             if (TextUtils.isEmpty(content)) return;
             UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
             if (portrait != null) {
                 BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                 //设备上线后,需要设置时区.
             }
-            AppLogger.d("客户端登录,绑定信息:" + portrait);
+            AppLogger.d("bindTag: 客户端登录,绑定信息:" + portrait);
         } catch (Exception e) {
             AppLogger.d("err: " + e.getLocalizedMessage());
         }

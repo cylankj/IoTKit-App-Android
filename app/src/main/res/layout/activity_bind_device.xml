@@ -67,7 +67,7 @@
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/home_icon_720camera_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="720°摄像机"
+            hunt:text="@string/_720PanoramicCamera"
             hunt:textColor="@color/color_383838"
             hunt:textSize="@dimen/sp16" />
 
