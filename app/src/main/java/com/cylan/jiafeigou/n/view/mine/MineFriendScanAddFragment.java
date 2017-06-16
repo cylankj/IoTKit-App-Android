@@ -168,7 +168,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void scanNoResult() {
-        ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
+        ToastUtil.showToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
     }
 
     /**
@@ -210,14 +210,16 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         }
         if (getView() != null) {
             if (presenter != null) {
+                final String tag = "id=";
                 final String result = rawResult.getText();
-                final int start = result.indexOf("&id=");
+                final int start = result.indexOf(tag);
                 if (start < 0 || start > result.length()) {
                     //无效二维码
                     ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
                     return;
                 }
-                final String targetAccount = result.substring(start + 4);
+                final String targetAccount = result.substring(start).replace(tag, "").trim();
+                AppLogger.d("扫描结果: " + targetAccount);
                 if (TextUtils.equals(targetAccount, account)) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
                 } else {
@@ -231,12 +233,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the startTime to figure out.
         if (getView() != null)
-            getView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    zxVScanAddRelativesandfriend.resumeCameraPreview(MineFriendScanAddFragment.this);
-                }
-            }, 2000);
+            getView().postDelayed(() -> zxVScanAddRelativesandfriend.resumeCameraPreview(MineFriendScanAddFragment.this), 2000);
     }
 
     @Override
