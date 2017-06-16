@@ -211,7 +211,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         if (getView() != null) {
             if (presenter != null) {
                 final String result = rawResult.getText();
-                final int start = result.indexOf("&id=");
+                final int start = result.indexOf("id=");
                 if (start < 0 || start > result.length()) {
                     //无效二维码
                     ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
