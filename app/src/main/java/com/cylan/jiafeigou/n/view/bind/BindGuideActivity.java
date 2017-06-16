@@ -68,9 +68,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
         Glide.with(this).load(bind_guide_res).into(imageViewTarget);
-        customToolbar.setBackAction((View v) -> {
-            finishExt();
-        });
+        customToolbar.setBackAction((View v) -> finishExt());
     }
 
     @Override

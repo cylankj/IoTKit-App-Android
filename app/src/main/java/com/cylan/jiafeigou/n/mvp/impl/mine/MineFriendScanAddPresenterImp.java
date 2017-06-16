@@ -80,21 +80,13 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
     public void checkScanAccount(String account) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("checkScanAccount" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("checkScanAccount" + throwable.getLocalizedMessage()));
     }
 
     /**
