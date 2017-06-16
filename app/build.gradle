@@ -145,6 +145,37 @@ android {
 
 
     productFlavors {
+        _efamily{
+            ndk {
+                // 设置支持的CPU架构
+                abiFilters 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            }
+            //vid vkey已经搬到Security.java
+            //官方运营
+            applicationId "com.cylan.jiafeigou"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "HW_APP_ID"          : "\\ 10515998",
+                                    "VID"                : "\\ 0001",
+                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "qqAppKey"           : "\\ 1103156296",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
+                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
+                                    "ApplicationId"      : applicationId,
+                                    "XiaoMiAppId"        : "\\ 5241757040488",
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
+                                    "BUGLY_APPID"        : "2e94bf542f",
+                                    "BUGLY_APP_VERSION"  : versionName,
+                                    "BUGLY_APP_CHANNEL"  : "cylan",
+                                    "TWITTER_APP_KEY"    : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
+                                    "TWITTER_APP_SECRET" : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
+                                    "FACEBOOK_APP_KEY"   : "1866682200216878"
+            ]
+        }
         _yun {
             //vid vkey已经搬到Security.java
             //官方运营
