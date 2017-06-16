@@ -19,6 +19,7 @@ buildscript {
         classpath 'com.google.gms:google-services:3.0.0'
 
         classpath 'com.mcxiaoke.gradle:packer-ng:1.0.9'
+        classpath 'com.github.typ0520:fastdex-gradle:0.1.6'
     }
 }
 
