@@ -25,8 +25,6 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
-import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -114,27 +112,19 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         builder.setView(view);
         AlertDialog alertDialog = builder.create();
-        view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_wechat_friends));
-                AppLogger.e("tv_share_to_friends");
-                alertDialog.dismiss();
-                jump2ShareToFriendFragment(layoutPosition, item);
-                AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
-            }
+        view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(v -> {
+            ViewUtils.deBounceClick(v);
+            AppLogger.e("tv_share_to_friends");
+            alertDialog.dismiss();
+            jump2ShareToFriendFragment(layoutPosition, item);
+            AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
         });
-        view.findViewById(R.id.tv_share_to_contract).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
-                AppLogger.d("tv_share_to_contract");
-                alertDialog.dismiss();
-                MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(MineShareDeviceFragment.this);
-                AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
-            }
+        view.findViewById(R.id.tv_share_to_contract).setOnClickListener(v -> {
+            ViewUtils.deBounceClick(v);
+            AppLogger.d("tv_share_to_contract");
+            alertDialog.dismiss();
+            MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(MineShareDeviceFragment.this);
+            AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
         });
         alertDialog.show();
     }
@@ -191,26 +181,18 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      * 列表适配器的监听的器
      */
     private void initAdaListener() {
-        adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
-            @Override
-            public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-                if (NetUtils.getNetType(getContext()) == -1) {
-                    ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
-                    return;
-                }
-                showShareDialog(layoutPosition, item);
+        adapter.setOnShareClickListener((holder, viewType, layoutPosition, item) -> {
+            if (NetUtils.getNetType(getContext()) == -1) {
+                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                return;
             }
+            showShareDialog(layoutPosition, item);
         });
 
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int viewType, int position) {
-                if (getView() != null) {
-                    ViewUtils.deBounceClick(itemView);
-                    AppLogger.e("tv_share_device_manger");
-                    jump2ShareDeviceMangerFragment(adapter.getList().get(position), position);
-                }
-            }
+        adapter.setOnItemClickListener((itemView, viewType, position1) -> {
+            ViewUtils.deBounceClick(itemView);
+            AppLogger.e("tv_share_device_manger");
+            jump2ShareDeviceMangerFragment(adapter.getList().get(position1), position1);
         });
     }
 

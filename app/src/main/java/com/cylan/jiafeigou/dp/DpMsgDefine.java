@@ -1046,6 +1046,8 @@ public class DpMsgDefine {
         public String account;
         @Index(3)
         public String sn;
+        @Index(4)
+        public int pid;
 
         public DPMineMesg() {
         }

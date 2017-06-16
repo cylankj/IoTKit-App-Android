@@ -61,12 +61,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.d("OnReportJfgDevices" + gson.toJson(jfgDevices));
-        for (JFGDevice device : jfgDevices) {
-            if (device.uuid.contains("46267")) {
-                device.alias = "hunt";
-                device.pid = 39;
-            }
-        }
+//        for (JFGDevice device : jfgDevices) {
+//            if (device.uuid.contains("46267")) {
+//                device.alias = "hunt";
+//                device.pid = 39;
+//            }
+//        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
     }
 
@@ -305,13 +305,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetFeedbackRsp(int ret, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
-//        arrayList = new ArrayList<>();
-//        for (int i = 0; i < 5; i++) {
-//            JFGFeedbackInfo info = new JFGFeedbackInfo();
-//            info.msg = "dfafa" + i;
-//            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
-//            arrayList.add(info);
-//        }
+        arrayList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            JFGFeedbackInfo info = new JFGFeedbackInfo();
+            info.msg = "dfafa" + i;
+            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
+            arrayList.add(info);
+        }
         if (ListUtils.isEmpty(arrayList)) return;
         BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
     }
