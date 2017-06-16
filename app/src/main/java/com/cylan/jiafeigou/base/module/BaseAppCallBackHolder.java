@@ -64,7 +64,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        for (JFGDevice device : jfgDevices) {
 //            if (device.uuid.contains("46267")) {
 //                device.alias = "hunt";
-//                device.pid = 38;
+//                device.pid = 39;
 //            }
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));

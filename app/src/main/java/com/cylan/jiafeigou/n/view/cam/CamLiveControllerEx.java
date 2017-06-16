@@ -247,6 +247,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     } else if (view.getId() == R.id.switch_sd) {
 
                     }
+                    if (MiscUtils.isLand()) {
+                        removeCallbacks(landHideRunnable);
+                        postDelayed(landHideRunnable, 3000);
+                    } else {
+                        removeCallbacks(portHideRunnable);
+                        postDelayed(portHideRunnable, 3000);
+                    }
                 });
         AppLogger.d("需要重置清晰度");
     }

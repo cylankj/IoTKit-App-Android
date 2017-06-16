@@ -73,6 +73,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         recordSub = new CompositeSubscription();
         if (device != null) {
             for (Device device1 : device) {
+                if (device1 == null) continue;//可能
                 apDirect = JFGRules.isAPDirect(device1.uuid, device1.$(DpMsgMap.ID_202_MAC, ""));
                 if (apDirect) {
                     uuid = device1.uuid;
@@ -91,6 +92,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 recordSub.add(subscribe);
             } else {
                 for (Device device1 : device) {
+                    if (device1 == null) continue;//可能
                     if (JFGRules.isPan720(device1.pid)) {
                         Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
                             if (recordSub != null && recordSub.isUnsubscribed()) {

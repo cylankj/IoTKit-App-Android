@@ -233,7 +233,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         bean.content = sysMesg.title.trim();
                         bean.time = dp.version + "";
                         bean.isDone = 0;
-                    } else {
+                    } else if (bean.type == 601) {
                         DpMsgDefine.DPMineMesg mesg = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPMineMesg.class);
                         if (mesg == null) continue;
                         bean.name = mesg.account.trim();
@@ -241,6 +241,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         bean.content = mesg.cid.trim();
                         bean.time = dp.version + "";
                         bean.sn = mesg.sn;
+                        bean.pid = mesg.pid;
                     }
                     results.add(bean);
                     saveIntoDb(bean);

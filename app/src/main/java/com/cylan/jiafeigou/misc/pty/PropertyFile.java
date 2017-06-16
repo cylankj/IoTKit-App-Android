@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.misc.pty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hds on 17-5-28.
@@ -9,22 +10,22 @@ import java.util.List;
 
 public class PropertyFile {
 
-    private List<Product> pList = new ArrayList<>();
+    private List<Map<String, String>> pList = new ArrayList<>();
     private String version;
-
-    public List<Product> getpList() {
-        return pList;
-    }
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public void setpList(List<Map<String, String>> pList) {
+        this.pList = pList;
     }
 
     public String getVersion() {
         return version;
     }
 
-    public void setpList(List<Product> pList) {
-        this.pList = pList;
+    public List<Map<String, String>> getpList() {
+        return pList;
     }
 }

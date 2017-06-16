@@ -74,6 +74,14 @@ public class Switcher extends LinearLayout {
             if (switcherListener != null) switcherListener.switcher(v);
         });
         viewThird.setOnClickListener(v -> {
+            if (!viewFirst.isShown()) {
+                viewFirst.setVisibility(VISIBLE);
+                viewFirst.setAlpha(0.0f);
+            }
+            if (!viewSecond.isShown()) {
+                viewSecond.setVisibility(VISIBLE);
+                viewSecond.setAlpha(0.0f);
+            }
             if (viewFirst.getAlpha() == 1.0) {
                 YoYo.with(Techniques.SlideOutRight)
                         .interpolate(new DecelerateInterpolator())
@@ -105,6 +113,7 @@ public class Switcher extends LinearLayout {
                         .duration(200)
                         .playOn(viewFirst);
             }
+            if (switcherListener != null) switcherListener.switcher(v);
         });
     }
 

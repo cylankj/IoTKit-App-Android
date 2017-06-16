@@ -24,6 +24,7 @@ public class SysMsgBean implements Parcelable {
     public int isDone;
     public int isCheck;
     public String sn;
+    public int pid;
 
     public SysMsgBean() {
     }
@@ -115,6 +116,14 @@ public class SysMsgBean implements Parcelable {
         dest.writeInt(this.isDone);
     }
 
+    public int getPid() {
+        return this.pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+
     protected SysMsgBean(Parcel in) {
         this.name = in.readString();
         this.time = in.readString();
@@ -126,9 +135,9 @@ public class SysMsgBean implements Parcelable {
         this.isDone = in.readByte();
     }
 
-    @Generated(hash = 1877241700)
+    @Generated(hash = 892758521)
     public SysMsgBean(int id, String content, int type, String time, String name,
-                      int isDone, int isCheck, String sn) {
+            int isDone, int isCheck, String sn, int pid) {
         this.id = id;
         this.content = content;
         this.type = type;
@@ -137,6 +146,7 @@ public class SysMsgBean implements Parcelable {
         this.isDone = isDone;
         this.isCheck = isCheck;
         this.sn = sn;
+        this.pid = pid;
     }
 
     public static final Creator<SysMsgBean> CREATOR = new Creator<SysMsgBean>() {

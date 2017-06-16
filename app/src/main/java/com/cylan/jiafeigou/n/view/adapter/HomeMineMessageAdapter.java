@@ -15,39 +15,13 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
 
     public boolean isShowCheck;
     public boolean checkAll;
-
-    private static Map<Integer, Integer> resMap = new HashMap<>();
-
-    static {
-        //bell
-        resMap.put(JConstant.OS_DOOR_BELL, R.drawable.me_icon_head_ring);
-        //camera
-        resMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.me_icon_head_camera);
-        resMap.put(JConstant.PID_CAMERA_ANDROID_3_0, R.drawable.me_icon_head_camera);
-
-        //MAG
-        resMap.put(JConstant.OS_MAGNET, R.drawable.me_icon_head_magnetometer);
-        //E_FAMILY
-        resMap.put(JConstant.OS_EFAML, R.drawable.me_icon_head_album);
-    }
 
     public OnDeleteCheckChangeListener listener;
 
@@ -98,17 +72,8 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
         } else {
             //处理消息显示
             holder.setText(R.id.tv_device_name, item.getContent());
-            char c = item.content.charAt(0);
-            if (c == '5') {
-                int iconRes = resMap.get(6);
-                holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
-            } else if (c == '7') {
-                int iconRes = resMap.get(11);
-                holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
-            } else {
-                int iconRes = resMap.get(4);
-                holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
-            }
+            int resId = JConstant.getOnlineIcon(item.pid);
+            holder.setImageResource(R.id.iv_mesg_icon, resId);
         }
 
         if (item.isDone == 1) {
