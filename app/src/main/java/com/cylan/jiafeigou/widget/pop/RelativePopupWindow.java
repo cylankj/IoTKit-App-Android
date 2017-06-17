@@ -139,7 +139,7 @@ public class RelativePopupWindow extends PopupWindow {
     public void showOnAnchor(@NonNull View anchor, @VerticalPosition int vertPos, @HorizontalPosition int horizPos, int xv, int yv, final boolean fitInScreen) {
         setClippingEnabled(fitInScreen);
         View contentView = getContentView();
-        contentView.post(() -> {
+        anchor.post(() -> {
             int x = xv, y = yv;
             contentView.measure(makeDropDownMeasureSpec(getWidth()), makeDropDownMeasureSpec(getHeight()));
             final int measuredW = contentView.getMeasuredWidth();

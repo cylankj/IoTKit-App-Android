@@ -13,7 +13,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -72,7 +72,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
      * @param bean
      */
     @Override
-    public void checkIsSendAddReqToMe(MineAddReqBean bean) {
+    public void checkIsSendAddReqToMe(FriendsReqBean bean) {
 
     }
 
@@ -128,7 +128,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
         if (checkAccountCallback.i == JError.ErrorOK) {
             //  已注册
             if (getView() != null) {
-                MineAddReqBean addReqBean = new MineAddReqBean();
+                FriendsReqBean addReqBean = new FriendsReqBean();
                 addReqBean.account = checkAccountCallback.s;
                 addReqBean.alias = checkAccountCallback.s1;
                 try {

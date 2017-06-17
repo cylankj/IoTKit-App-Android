@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -23,24 +23,24 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 
-public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> {
+public class AddRelativesAndFriendsAdapter extends SuperAdapter<FriendsReqBean> {
 
     private OnAcceptClickListener listener;
 
     public interface OnAcceptClickListener {
-        void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item);
+        void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, FriendsReqBean item);
     }
 
     public void setOnAcceptClickListener(OnAcceptClickListener listener) {
         this.listener = listener;
     }
 
-    public AddRelativesAndFriendsAdapter(Context context, List<MineAddReqBean> items, IMulItemViewType<MineAddReqBean> mulItemViewType) {
+    public AddRelativesAndFriendsAdapter(Context context, List<FriendsReqBean> items, IMulItemViewType<FriendsReqBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
-    public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final MineAddReqBean item) {
+    public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final FriendsReqBean item) {
         holder.setText(R.id.tv_username, TextUtils.isEmpty(item.alias) ? item.account : item.alias);
         if (TextUtils.isEmpty(item.sayHi)) {
             holder.setText(R.id.tv_add_message, String.format(ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_RequestContents), TextUtils.isEmpty(item.alias) ? item.account : item.alias));
@@ -71,8 +71,8 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
     }
 
     @Override
-    protected IMulItemViewType<MineAddReqBean> offerMultiItemViewType() {
-        return new IMulItemViewType<MineAddReqBean>() {
+    protected IMulItemViewType<FriendsReqBean> offerMultiItemViewType() {
+        return new IMulItemViewType<FriendsReqBean>() {
             @Override
 
             public int getViewTypeCount() {
@@ -80,7 +80,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
             }
 
             @Override
-            public int getItemViewType(int position, MineAddReqBean jfgFriendRequest) {
+            public int getItemViewType(int position, FriendsReqBean jfgFriendRequest) {
                 return 0;
             }
 

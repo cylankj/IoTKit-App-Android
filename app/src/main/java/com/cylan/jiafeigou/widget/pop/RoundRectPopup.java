@@ -40,7 +40,7 @@ public class RoundRectPopup extends RelativePopupWindow {
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);
-        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // Disable default animation for circular reveal
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

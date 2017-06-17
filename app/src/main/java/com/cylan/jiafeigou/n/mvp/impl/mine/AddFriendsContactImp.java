@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.text.Collator;
@@ -35,7 +36,6 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -190,18 +190,12 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     @Override
     public Subscription getFriendListDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<FriendBean>>>() {
-                    @Override
-                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null) {
-                            if (getFriendList.arrayList.size() != 0) {
-                                return Observable.just(converData(getFriendList.arrayList));
-                            } else {
-                                return Observable.just(getAllContactList());
-                            }
-                        } else {
-                            return Observable.just(getAllContactList());
-                        }
+                .flatMap(getFriendList -> {
+                    ArrayList<FriendBean> list = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                    if (ListUtils.getSize(list) != 0) {
+                        return Observable.just(list);
+                    } else {
+                        return Observable.just(getAllContactList());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

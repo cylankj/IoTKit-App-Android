@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 
 import rx.Subscription;
 
@@ -17,7 +17,7 @@ public interface MineFriendAddByNumContract {
 
         String getInputNum();
 
-        void showFindResult(MineAddReqBean bean);
+        void showFindResult(FriendsReqBean bean);
 
         /**
          * 显示查询进度
@@ -45,7 +45,7 @@ public interface MineFriendAddByNumContract {
          * hasSendToMe：是否已向我发送请求过
          * isFriend:是否是亲友
          */
-        void setFindResult(boolean isFrom, MineAddReqBean bean, boolean isFriend);
+        void setFindResult(boolean isFrom, FriendsReqBean bean, boolean isFriend);
 
         /**
          * 网络状态变化
@@ -59,7 +59,7 @@ public interface MineFriendAddByNumContract {
         /**
          * 判断是否已向我发送添加请求
          */
-        void checkIsSendAddReqToMe(MineAddReqBean bean);
+        void checkIsSendAddReqToMe(FriendsReqBean bean);
 
         /**
          * 检测好友账号是否注册过

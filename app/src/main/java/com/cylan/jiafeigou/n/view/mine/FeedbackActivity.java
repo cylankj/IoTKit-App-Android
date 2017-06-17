@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.FeedBackImpl;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
@@ -77,6 +78,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), null, null);
         mRvMineSuggestion.setAdapter(suggestionAdapter);
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(HomeMineHelpFragment.class.getSimpleName());
     }
 
     @Override

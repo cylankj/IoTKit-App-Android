@@ -32,7 +32,7 @@ public class JConstant {
     public static final int TYPE_INVALID = -1;
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_EMAIL = 1;
-    public static final int TYPE_EMAIL_VERIFY=2;
+    public static final int TYPE_EMAIL_VERIFY = 2;
     public final static Pattern PHONE_REG = Pattern.compile("^1[3|4|5|7|8]\\d{9}$");
     public final static Pattern EMAIL_REG = Patterns.EMAIL_ADDRESS;
 
@@ -330,8 +330,6 @@ public class JConstant {
 
     public static final String KEY_UUID_RESOLUTION = "uuid_resolution";
     public static final String KEY_UUID_PREVIEW_THUMBNAIL_TOKEN = "uuid_preview_token";
-    public static final String KEY_DEVICE_SETTING_SHOW_RED = "device_setting_show";
-
 
     public static final String BINDING_DEVICE = "key_need_bind";//
     public static final String KEY_FIRMWARE_CONTENT = "firmware_content";

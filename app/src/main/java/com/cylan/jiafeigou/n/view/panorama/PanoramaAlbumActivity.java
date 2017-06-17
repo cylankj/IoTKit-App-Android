@@ -155,16 +155,16 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @OnClick(R.id.act_panorama_album_toolbar_header_title)
     public void showAlbumViewModePop(View view) {
         ViewUtils.deBounceClick(view);
-        if (albumModeSelectPop == null) {
-            albumModeSelectPop = new RoundRectPopup(this);
-            albumModeSelectPop.setDismissListener((int id) -> {
-                albumViewMode = resIdToMode(id);
-                toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-                swipeRefreshLayout.setRefreshing(true);
-                presenter.fetch(0, albumViewMode);
-            });
-            albumModeSelectPop.setMode(albumViewMode);
-        }
+//        if (albumModeSelectPop == null) {
+        albumModeSelectPop = new RoundRectPopup(this);
+        albumModeSelectPop.setDismissListener((int id) -> {
+            albumViewMode = resIdToMode(id);
+            toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+            swipeRefreshLayout.setRefreshing(true);
+            presenter.fetch(0, albumViewMode);
+        });
+        albumModeSelectPop.setMode(albumViewMode);
+//        }
         albumModeSelectPop.setCheckIndex(modeToResId(albumViewMode, false));
         albumModeSelectPop.showOnAnchor(toolbarAlbumViewMode, RelativePopupWindow.VerticalPosition.ALIGN_TOP, RelativePopupWindow.HorizontalPosition.ALIGN_LEFT);
     }

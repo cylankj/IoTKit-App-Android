@@ -117,7 +117,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/x20"
-                    android:background="@drawable/hardware_update_point" />
+                    android:background="@drawable/hardware_update_point"
+                    android:visibility="invisible" />
             </RelativeLayout>
 
             <TextView

@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.home.SystemMessageFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.CacheObject;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -58,7 +59,7 @@ public class SystemMsgTask implements Action1<Object> {
                 .subscribe(integer -> {
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
-                    node.setData(integer);
+                    node.setCacheData(new CacheObject().setCount(integer).setObject(integer));
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
                 }, AppLogger::e);
     }

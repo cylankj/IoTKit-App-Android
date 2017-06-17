@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.badge.CacheObject;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -72,7 +73,7 @@ public class FeedBackImpl extends AbstractPresenter<FeedBackContract.View>
     public void start() {
         super.start();
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
-        if (node != null) node.setData(0);
+        if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
         getSystemAutoReply();
     }
 

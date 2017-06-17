@@ -230,7 +230,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            req.markName = "zi lai?";
 //            arrayList.add(req);
 //        }
-        RxBus.getCacheInstance().post(new RxEvent.GetFriendList(ret, arrayList));
+        BaseApplication.getAppComponent().getSourceManager().setFriendsList(arrayList);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            req.time = System.currentTimeMillis() - RandomUtils.getRandom(30) * 3600 * 1000;
 //            arrayList.add(req);
 //        }
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList(ret, arrayList));
+        BaseApplication.getAppComponent().getSourceManager().setFriendsReqList(arrayList);
     }
 
     @Override

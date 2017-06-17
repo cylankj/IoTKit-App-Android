@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -38,6 +39,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.SystemMsgTask;
@@ -96,7 +98,9 @@ public class DataSourceManager implements JFGSourceManager {
     private Account account;//账号相关的数据全部保存到这里面
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
-    private Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pairFriends;
+    private ArrayList<FriendBean> friendBeanArrayList;
+    private ArrayList<FriendsReqBean> friendsReqBeanArrayList;
+
     @Deprecated
     private boolean isOnline = true;
     private JFGAccount jfgAccount;
@@ -170,13 +174,52 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> getPairFriends() {
-        return pairFriends;
+    public ArrayList<FriendBean> getFriendsList() {
+        return this.friendBeanArrayList;
     }
 
     @Override
-    public void setPairFriends(Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair) {
-        this.pairFriends = pair;
+    public void setFriendsList(ArrayList<JFGFriendAccount> list) {
+        this.friendBeanArrayList = new ArrayList<>();
+        for (JFGFriendAccount account : list) {
+            FriendBean emMessage = new FriendBean();
+            emMessage.markName = account.markName;
+            emMessage.account = account.account;
+            emMessage.alias = account.alias;
+            try {
+                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            friendBeanArrayList.add(emMessage);
+        }
+        RxBus.getCacheInstance().post(new RxEvent.GetFriendList());
+    }
+
+    @Override
+    public void setFriendsReqList(ArrayList<JFGFriendRequest> list) {
+        friendsReqBeanArrayList = new ArrayList<>();
+        for (JFGFriendRequest jfgFriendRequest : list) {
+            FriendsReqBean emMessage = new FriendsReqBean();
+            emMessage.alias = jfgFriendRequest.alias;
+            emMessage.sayHi = jfgFriendRequest.sayHi;
+            emMessage.account = jfgFriendRequest.account;
+            emMessage.time = jfgFriendRequest.time;
+            try {
+                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
+                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+            friendsReqBeanArrayList.add(emMessage);
+        }
+        RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList());
+    }
+
+    @Override
+    public ArrayList<FriendsReqBean> getFriendsReqList() {
+        return friendsReqBeanArrayList;
     }
 
     @Override
@@ -967,9 +1010,7 @@ public class DataSourceManager implements JFGSourceManager {
                         loginType = signType == null ? 0 : signType.type;
                         Observable.just(new FetchFeedbackTask(), new FetchFriendsTask(), new SystemMsgTask())
                                 .subscribeOn(Schedulers.newThread())
-                                .subscribe(objectAction1 -> {
-                                    objectAction1.call("");
-                                }, AppLogger::e);
+                                .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
                     } catch (Exception e) {
 
                     }

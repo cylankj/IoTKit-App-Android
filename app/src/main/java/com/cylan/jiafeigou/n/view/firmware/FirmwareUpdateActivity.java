@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.FirmwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.FirmwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -156,6 +157,9 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
         tvCurrentVersion.setText(currentVersion);
         tvNewVersionName.setText(newVersion);
+        if (BindUtils.versionCompare(currentVersion, newVersion) < 0) {
+            hardwareUpdatePoint.setVisibility(View.VISIBLE);
+        }
         final int size = binVersion.getList() == null ? 0 : binVersion.getList().size();
         boolean downloading = false;
         int finished = 0;

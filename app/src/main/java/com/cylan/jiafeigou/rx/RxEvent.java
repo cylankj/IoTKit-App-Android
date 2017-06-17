@@ -12,7 +12,6 @@ import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
@@ -226,30 +225,12 @@ public class RxEvent {
      * desc:获取好友列表类
      */
     public static final class GetFriendList {
-
-        public int i;
-        public ArrayList<JFGFriendAccount> arrayList;
-
-        public GetFriendList(int i, ArrayList<JFGFriendAccount> arrayList) {
-            this.i = i;
-            this.arrayList = arrayList;
-        }
     }
 
     /**
      * desc：获取添加请求类
      */
     public static final class GetAddReqList {
-
-        public int i;
-
-        public ArrayList<JFGFriendRequest> arrayList;
-
-        public GetAddReqList(int i, ArrayList<JFGFriendRequest> arrayList) {
-            this.i = i;
-            this.arrayList = arrayList;
-        }
-
     }
 
 

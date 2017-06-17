@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -135,22 +134,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         e.printStackTrace();
                     }
                 }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
-    }
-
-    @Override
-    public void updateSettingTips(SettingTip settingTip) {
-        PreferencesUtils.putString(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, new Gson().toJson(settingTip));
-    }
-
-    @Override
-    public SettingTip getSettingTips() {
-        try {
-            String content = PreferencesUtils.getString(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid);
-            if (TextUtils.isEmpty(content)) return new SettingTip();
-            return new Gson().fromJson(content, SettingTip.class);
-        } catch (Exception e) {
-            return new SettingTip();
-        }
     }
 
     @Override

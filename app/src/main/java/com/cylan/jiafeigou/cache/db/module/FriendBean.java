@@ -16,6 +16,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class FriendBean implements Parcelable {
+
     @Id
     public int id;
     public String iconUrl;

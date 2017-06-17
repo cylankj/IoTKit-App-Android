@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.CacheObject;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -43,8 +44,9 @@ public class FetchFeedbackTask implements Action1<Object> {
                     ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
-                    node.setData(ListUtils.getSize(list));
+                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(list)).setObject(list));
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
+                    throw new RxEvent.HelperBreaker("结束本地调用");
                 }, AppLogger::e);
     }
 
