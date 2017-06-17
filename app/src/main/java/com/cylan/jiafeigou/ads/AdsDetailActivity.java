@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -70,7 +71,9 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
                     .withThumb(description.tagUrl)
                     .withUrl(description.tagUrl)
                     .share();
-
+            if (customToolbar.getTvToolbarRight() != null) {
+                ViewUtils.setDrawablePadding(customToolbar.getTvToolbarRight(), R.drawable.details_icon_share, 0);
+            }
 //            Intent intent = new Intent(getContext(), ShareMediaActivity.class);
 //            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_WEB_URL);
 //            intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH, description.tagUrl);
