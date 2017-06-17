@@ -467,6 +467,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void updateHint() {
         TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
         TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+        //好友
         int count = node == null ? 0 : node.getNodeCount();
         if (count == 0) homeMineItemFriend.showHint(false);
         else

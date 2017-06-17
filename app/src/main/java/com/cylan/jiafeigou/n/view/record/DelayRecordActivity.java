@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
-import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BaseApplication.getAppComponent().getTreeHelper().markKeyAsRead(this.getClass().getSimpleName());
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
     }
 
     @Override

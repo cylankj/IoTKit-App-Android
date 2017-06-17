@@ -22,12 +22,15 @@ public class TreeHelper {
     private TreeNode root;
 
 
-    public void markKeyAsRead(String key) {
+    public void markNodeRead(String key) {
         if (!TextUtils.isEmpty(key) && RawTree.asRefreshTreeSet.contains(key)) {
             TreeNode node = findTreeNodeByName(key);
             if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
             PreferencesUtils.putString(key, key);
+            return;
         }
+        TreeNode node = findTreeNodeByName(key);
+        if (node != null) node.setCacheData(new CacheObject().setObject(null).setCount(0));
     }
 
 

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +15,15 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.badge.Badge;
-import com.cylan.jiafeigou.support.badge.TreeHelper;
-import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -68,7 +66,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     private AddFriendReqDetailFragment addReqDetailFragment;
     private AddRelativesAndFriendsAdapter addReqListAdapter;
     private RelativesAndFriendsAdapter friendsListAdapter;
-    private MineAddReqBean tempReqBean;
+    private FriendsReqBean tempReqBean;
 
     public static MineFriendsFragment newInstance() {
         return new MineFriendsFragment();
@@ -103,8 +101,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         super.onResume();
     }
 
-    @Override
-    public void jump2AddReqDetailFragment(int position, MineAddReqBean bean) {
+    public void jump2AddReqDetailFragment(int position, FriendsReqBean bean) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("isFrom", true);
         bundle.putSerializable("addRequestItems", bean);
@@ -119,7 +116,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             rBean.alias = backbean.alias;
             rBean.iconUrl = backbean.iconUrl;
             rBean.markName = "";
-            friendlistAddItem(position, rBean);
+            friendListAddItem(rBean);
         });
     }
 
@@ -127,7 +124,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
      * desc：点击同意按钮弹出对话框
      */
     @Override
-    public void showReqOutTimeDialog(final MineAddReqBean item) {
+    public void showReqOutTimeDialog(final FriendsReqBean item) {
         //请求过期
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
@@ -146,12 +143,10 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> {
             basePresenter.deleteAddReq(item.account);
             addReqListAdapter.remove(item);
-            addReqListAdapter.notifyDataSetHasChanged();
             dialog.dismiss();
         }).show();
     }
 
-    @Override
     public void showNullView() {
         llRelativeAndFriendNone.setVisibility(View.VISIBLE);
     }
@@ -161,45 +156,94 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
      *
      * @param bean
      */
-    @Override
-    public void addReqDeleteItem(int position, MineAddReqBean bean) {
+    public void addReqDeleteItem(int position, FriendsReqBean bean) {
         if (position < addReqListAdapter.getCount()) {
             addReqListAdapter.remove(position);
-            addReqListAdapter.notifyDataSetHasChanged();
         }
         if (addReqListAdapter.getItemCount() == 0) {
             hideAddReqListTitle();
         }
+        basePresenter.removeCache(bean.account);
     }
 
     /**
      * 长按删除添加请求条目
      */
     @Override
-    public void longClickDeleteItem(int code) {
-        if (code != JError.ErrorOK) {
-            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
-            return;
+    public void deleteItemRsp(final String account, int code) {
+        if (isAdded() && getView() != null) {
+            getView().post(() -> {
+                if (code != JError.ErrorOK) {
+                    ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+                    return;
+                }
+                addReqListAdapter.remove(tempReqBean);
+                if (addReqListAdapter.getItemCount() == 0) {
+                    hideAddReqListTitle();
+                    if (friendsListAdapter.getItemCount() == 0) {
+                        showNullView();
+                    }
+                }
+            });
         }
-        addReqListAdapter.remove(tempReqBean);
-        addReqListAdapter.notifyDataSetHasChanged();
-        if (addReqListAdapter.getItemCount() == 0) {
-            hideAddReqListTitle();
-            if (friendsListAdapter.getItemCount() == 0) {
-                showNullView();
+    }
+
+    @Override
+    public void consentRsp(final String account, int code) {
+        if (isAdded() && getView() != null)
+            getView().post(() -> {
+                hideLoadingDialog();
+                switch (code) {
+                    case -1:
+                        ToastUtil.showToast(getString(R.string.Request_TimeOut));
+                        break;
+                    case JError.ErrorOK:
+                        ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Success));
+                        //更新好友列表
+                        FriendBean bean = getAndRemoveBean(account);
+                        friendListAddItem(bean);
+                        break;
+                    case 240:
+                        ToastUtil.showToast(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST));
+                        break;
+                }
+            });
+    }
+
+    /**
+     * 综合处理
+     *
+     * @param account
+     * @return
+     */
+    private FriendBean getAndRemoveBean(final String account) {
+        ArrayList<FriendsReqBean> list = (ArrayList<FriendsReqBean>) addReqListAdapter.getList();
+        if (list != null) {
+            for (FriendsReqBean bean : list) {
+                if (bean != null && TextUtils.equals(bean.account, account)) {
+                    FriendBean friendBean = new FriendBean();
+                    friendBean.account = bean.account;
+                    friendBean.alias = bean.alias;
+                    friendBean.iconUrl = bean.iconUrl;
+                    friendBean.markName = "";
+                    addReqListAdapter.remove(bean);
+                    return friendBean;
+                }
             }
         }
+        if (addReqListAdapter != null && addReqListAdapter.getItemCount() == 0) {
+            hideAddReqListTitle();
+        }
+        return null;
     }
 
     /**
      * 好友列表添加一个条目
      *
-     * @param position
      * @param bean
      */
-    @Override
-    public void friendlistAddItem(int position, FriendBean bean) {
-        if (friendsListAdapter == null) return;
+    public void friendListAddItem(FriendBean bean) {
+        if (friendsListAdapter == null || bean == null) return;
         if (friendsListAdapter.getItemCount() == 0) {
             showFriendListTitle();
         }
@@ -209,7 +253,6 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     /**
      * 显示加载进度
      */
-    @Override
     public void showLoadingDialog() {
         LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
@@ -230,12 +273,10 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     /**
      * 隐藏加载进度
      */
-    @Override
     public void hideLoadingDialog() {
     }
 
-    @Override
-    public void showLongClickDialog(final int position, final MineAddReqBean bean) {
+    public void showLongClickDialog(final int position, final FriendsReqBean bean) {
         AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setTitle(R.string.Tips_SureDelete)
                 .setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
@@ -283,83 +324,68 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     }
 
     @Override
-    public void initFriendRecyList(ArrayList<FriendBean> list) {
+    public void initFriendList(ArrayList<FriendBean> list) {
         hideLoadingDialog();
         rvFriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
         friendsListAdapter = new RelativesAndFriendsAdapter(getContext(), list, null);
         rvFriendsList.setAdapter(friendsListAdapter);
-        initFriendAdaListener();
-        if (!ListUtils.isEmpty(list)) {
-            llRelativeAndFriendNone.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * desc:设置好友列表的监听
-     */
-    private void initFriendAdaListener() {
         friendsListAdapter.setOnItemClickListener((itemView, viewType, position) -> {
             if (getView() != null) {
                 jump2FriendDetailFragment(position, friendsListAdapter.getList().get(position));
             }
         });
-    }
-
-    @Override
-    public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
-        hideLoadingDialog();
-        rvReqAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        addReqListAdapter = new AddRelativesAndFriendsAdapter(getContext(), list, null);
-        rvReqAdd.setAdapter(addReqListAdapter);
-        initAddReqAdaListener();
+        showFriendListTitle();
+        tvFriendListTitle.setVisibility(ListUtils.isEmpty(list) ? View.GONE : View.VISIBLE);
+        rvFriendsList.setVisibility(ListUtils.isEmpty(list) ? View.GONE : View.VISIBLE);
         if (!ListUtils.isEmpty(list)) {
             llRelativeAndFriendNone.setVisibility(View.GONE);
         }
     }
 
-    /**
-     * desc：设置添加请求列表监听
-     */
-    private void initAddReqAdaListener() {
+    @Override
+    public void initAddReqReqList(ArrayList<FriendsReqBean> list) {
+        hideLoadingDialog();
+        rvReqAdd.setLayoutManager(new LinearLayoutManager(getContext()));
+        addReqListAdapter = new AddRelativesAndFriendsAdapter(getContext(), list, null);
+        rvReqAdd.setAdapter(addReqListAdapter);
         addReqListAdapter.setOnAcceptClickListener(this);
         addReqListAdapter.setOnItemClickListener((itemView, viewType, position) -> {
             if (getView() != null) {
                 jump2AddReqDetailFragment(position, addReqListAdapter.getList().get(position));
             }
         });
-
         addReqListAdapter.setOnItemLongClickListener((itemView, viewType, position) -> {
             if (getView() != null) {
                 showLongClickDialog(position, addReqListAdapter.getList().get(position));
             }
         });
+        if (!ListUtils.isEmpty(list)) {
+            llRelativeAndFriendNone.setVisibility(View.GONE);
+        }
+        tvAddRequestTitle.setVisibility(ListUtils.isEmpty(list) ? View.GONE : View.VISIBLE);
+        rvReqAdd.setVisibility(ListUtils.isEmpty(list) ? View.GONE : View.VISIBLE);
     }
 
-    @Override
     public void showFriendListTitle() {
         tvFriendListTitle.setVisibility(View.VISIBLE);
         rvFriendsList.setVisibility(View.VISIBLE);
     }
 
-    @Override
     public void hideFriendListTitle() {
         tvFriendListTitle.setVisibility(View.GONE);
         rvFriendsList.setVisibility(View.GONE);
     }
 
-    @Override
     public void showAddReqListTitle() {
         tvAddRequestTitle.setVisibility(View.VISIBLE);
         rvReqAdd.setVisibility(View.VISIBLE);
     }
 
-    @Override
     public void hideAddReqListTitle() {
         tvAddRequestTitle.setVisibility(View.GONE);
         rvReqAdd.setVisibility(View.GONE);
     }
 
-    @Override
     public void jump2FriendDetailFragment(int position, FriendBean account) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
@@ -376,7 +402,6 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     private void initFriendDeleteListener() {
         friendDetailFragment.setOnDeleteClickLisenter(position -> {
             friendsListAdapter.remove(position);
-            friendsListAdapter.notifyDataSetHasChanged();
             if (friendsListAdapter != null && friendsListAdapter.getItemCount() == 0) {
                 hideFriendListTitle();
                 if (addReqListAdapter == null || addReqListAdapter.getItemCount() == 0) {
@@ -395,7 +420,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
      * @param item
      */
     @Override
-    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item) {
+    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, FriendsReqBean item) {
         if (basePresenter.checkAddRequestOutTime(item)) {
             showReqOutTimeDialog(item);
 
@@ -406,15 +431,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 return;
             }
             basePresenter.acceptAddSDK(item.account);
-            ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
-            //更新好友列表
-            FriendBean account = new FriendBean();
-            account.account = item.account;
-            account.alias = item.alias;
-            account.iconUrl = item.iconUrl;
-            account.markName = "";
-            friendlistAddItem(layoutPosition, account);
-            addReqDeleteItem(layoutPosition, item);
+            showLoadingDialog();
         }
     }
 

@@ -12,7 +12,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -153,7 +153,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 //            getView().hideLoadingPro();
             if (checkAccountCallback.i == 0) {
                 // 已注册
-                MineAddReqBean resutBean = new MineAddReqBean();
+                FriendsReqBean resutBean = new FriendsReqBean();
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
                 try {

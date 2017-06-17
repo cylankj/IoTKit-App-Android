@@ -26,7 +26,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
-import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -114,7 +113,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
-        BaseApplication.getAppComponent().getTreeHelper().markKeyAsRead(this.getClass().getSimpleName());
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
     }
 
 

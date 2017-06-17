@@ -2,8 +2,9 @@ package com.cylan.jiafeigou.n.task;
 
 import android.util.Pair;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -16,6 +17,7 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -35,19 +37,35 @@ public class FetchFriendsTask implements Action1<Object> {
                 Pair::new)
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
-                .subscribe(pair -> {
-                    ArrayList<JFGFriendAccount> fList = pair.first.arrayList;
-                    ArrayList<JFGFriendRequest> fReqList = pair.second.arrayList;
-                    BaseApplication.getAppComponent().getSourceManager().setPairFriends(new Pair<>(fList, fReqList));
+                .subscribe(ret -> {
+                    ArrayList<FriendBean> fList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                    ArrayList<FriendsReqBean> fReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                    saveToDb(fList, fReqList);
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(pair.second.arrayList))
-                            .setObject(pair.second.arrayList));
+                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(fReqList))
+                            .setObject(fReqList));
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fReqList));
                     throw new RxEvent.HelperBreaker("yes, job done!");
                 }, AppLogger::e);
+    }
+
+    private void saveToDb(ArrayList<FriendBean> fList, List<FriendsReqBean> fReqList) {
+        AppLogger.d("替换数据库");
+        //需要替换数据库
+        try {
+            BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+            helper.getDaoSession().getFriendBeanDao().deleteAll();
+            helper.getDaoSession().getFriendsReqBeanDao().deleteAll();
+            if (fList != null)
+                helper.getDaoSession().getFriendBeanDao().saveInTx(fList);
+            if (fReqList != null)
+                helper.getDaoSession().getFriendsReqBeanDao().saveInTx(fReqList);
+        } catch (Exception e) {
+
+        }
     }
 
     /**

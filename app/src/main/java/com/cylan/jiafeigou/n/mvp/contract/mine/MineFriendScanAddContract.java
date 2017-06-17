@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 
 import rx.Subscription;
 
@@ -22,7 +22,7 @@ public interface MineFriendScanAddContract {
         /**
          * 跳转到添加人详情页
          */
-        void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean, boolean isFriend);
+        void jump2FriendDetailFragment(boolean isFrom, FriendsReqBean bean, boolean isFriend);
 
         /**
          * 已经是好友

@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Subscription;
@@ -63,14 +63,14 @@ public interface MineFriendAddReqDetailContract {
          * @param addRequestItems
          * @return
          */
-        void checkAddReqOutTime(MineAddReqBean addRequestItems);
+        void checkAddReqOutTime(FriendsReqBean addRequestItems);
 
         /**
          * 发送添加请求
          *
          * @param addRequestItems
          */
-        void sendAddReq(MineAddReqBean addRequestItems);
+        void sendAddReq(FriendsReqBean addRequestItems);
 
         /**
          * 获取到好友添加请求的列表，用户判断是否向我发送过添加请求

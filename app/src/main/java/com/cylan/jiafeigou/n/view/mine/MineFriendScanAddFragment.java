@@ -16,7 +16,7 @@ import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
@@ -122,7 +122,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      * 跳转到对方详情页
      */
     @Override
-    public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean, boolean isFriend) {
+    public void jump2FriendDetailFragment(boolean isFrom, FriendsReqBean bean, boolean isFriend) {
         if (!isFriend) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", isFrom);
