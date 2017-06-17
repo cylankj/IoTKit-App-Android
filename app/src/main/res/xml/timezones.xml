@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <timezones>
-
     <timezone
         gmt="GMT+12:00"
         id="Pacific/Majuro">Majuro

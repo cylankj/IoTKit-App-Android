@@ -57,6 +57,7 @@ android {
             // 设置支持的CPU架构
             abiFilters 'armeabi-v7a'//, 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
+        vectorDrawables.useSupportLibrary = true
     }
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
@@ -249,6 +250,7 @@ android {
             ]
         }
     }
+
 
 }
 

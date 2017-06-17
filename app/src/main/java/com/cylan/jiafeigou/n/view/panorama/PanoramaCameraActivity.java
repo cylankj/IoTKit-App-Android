@@ -52,18 +52,13 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.photoselect.CircleImageView;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.view.bell.LBatteryWarnDialog;
+import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PanoramaThumbURL;
@@ -76,7 +71,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-import com.cylan.panorama.CommonPanoramicView;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
@@ -432,7 +426,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         onRefreshConnectionMode(alertMobile ? 1 : -1);
         onRefreshViewModeUI(panoramaViewMode, false);
-        presenter.checkAndInitRecord();
+//        presenter.checkAndInitRecord();
         updateHint();
     }
 

@@ -62,14 +62,14 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
             setContentView(R.layout.activity_bind_panorama_cam);
             ButterKnife.bind(this);
             customToolbar.setBackAction(v -> finishExt());
-
+            initAnimation();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initAnimation();
+
     }
 
     @Override

@@ -87,15 +87,21 @@ public class SimpleBindFlow extends AFullBind {
      */
     private void sendPingFPing() {
         Observable.interval(0, 100, TimeUnit.MILLISECONDS, Schedulers.io())
-                .filter(i -> i < 2)
+                .filter(i -> i < 3)
                 .subscribe(i -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 new JfgUdpMsg.Ping().toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.FPing().toBytes());
                         BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
                                 UdpConstant.PORT,
                                 new JfgUdpMsg.Ping().toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
