@@ -57,8 +57,8 @@ public class FetchFriendsTask implements Action1<Object> {
         //需要替换数据库
         try {
             BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
-            helper.getDaoSession().getFriendBeanDao().deleteAll();
-            helper.getDaoSession().getFriendsReqBeanDao().deleteAll();
+//            helper.getDaoSession().getFriendBeanDao().deleteAll();
+//            helper.getDaoSession().getFriendsReqBeanDao().deleteAll();
             if (fList != null)
                 helper.getDaoSession().getFriendBeanDao().saveInTx(fList);
             if (fReqList != null)

@@ -236,16 +236,16 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetFriendRequestListRsp(int ret, ArrayList<JFGFriendRequest> arrayList) {
         AppLogger.d("OnGetFriendRequestListRsp:" + arrayList.size());
-        AppLogger.d("测试专用");
-        arrayList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            JFGFriendRequest req = new JFGFriendRequest();
-            req.account = "333" + i + "_hunt";
-            req.alias = "wth? " + i;
-            req.sayHi = " you son of...";
-            req.time = System.currentTimeMillis() - RandomUtils.getRandom(30) * 3600 * 1000;
-            arrayList.add(req);
-        }
+//        AppLogger.d("测试专用");
+//        arrayList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            JFGFriendRequest req = new JFGFriendRequest();
+//            req.account = "333" + i + "_hunt";
+//            req.alias = "wth? " + i;
+//            req.sayHi = " you son of...";
+//            req.time = System.currentTimeMillis() - RandomUtils.getRandom(30) * 3600 * 1000;
+//            arrayList.add(req);
+//        }
         BaseApplication.getAppComponent().getSourceManager().setFriendsReqList(arrayList);
     }
 
@@ -305,13 +305,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetFeedbackRsp(int ret, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + ListUtils.getSize(arrayList));
-        arrayList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            JFGFeedbackInfo info = new JFGFeedbackInfo();
-            info.msg = "dfafa" + i;
-            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
-            arrayList.add(info);
-        }
+//        arrayList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            JFGFeedbackInfo info = new JFGFeedbackInfo();
+//            info.msg = "dfafa" + i;
+//            info.time = System.currentTimeMillis() - RandomUtils.getRandom(20) * 3600;
+//            arrayList.add(info);
+//        }
         if (ListUtils.isEmpty(arrayList)) return;
         BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
     }
