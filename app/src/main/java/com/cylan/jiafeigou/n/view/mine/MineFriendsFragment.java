@@ -421,10 +421,10 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
-        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-        if (node != null)
-            node.setData(addReqListAdapter == null ? 0 : addReqListAdapter.getCount());
+//        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+//        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+//        if (node != null)
+//            node.setCacheData(addReqListAdapter == null ? 0 : addReqListAdapter.getCount());
     }
 
     @Override

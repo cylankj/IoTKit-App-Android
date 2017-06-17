@@ -478,11 +478,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         ////////////////////////显示红点//////////////////////////////////////////////
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
-        svSettingDeviceAutoRecord.showRedHint(node != null && node.getData() > 0);
+        svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
         node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
-        svSettingSafeProtection.showRedHint(node != null && node.getData() > 0);
+        svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
         node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(DelayRecordActivity.class.getSimpleName());
-        svSettingDeviceDelayCapture.showRedHint(node != null && node.getData() > 0);
+        svSettingDeviceDelayCapture.showRedHint(node != null && node.getNodeCount() > 0);
 
         sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid) ? View.VISIBLE : View.GONE);
         try {

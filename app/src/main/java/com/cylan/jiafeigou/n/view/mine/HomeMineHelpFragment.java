@@ -90,7 +90,7 @@ public class HomeMineHelpFragment extends IBaseFragment {
         super.onResume();
         TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
         TreeNode node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
-        customToolbar.showToolbarRightHint(node != null && node.getData() > 0);
+        customToolbar.showToolbarRightHint(node != null && node.getNodeCount() > 0);
     }
 
     /**

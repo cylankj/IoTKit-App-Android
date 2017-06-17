@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.CacheObject;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -40,7 +41,8 @@ public class FetchFriendsTask implements Action1<Object> {
                     BaseApplication.getAppComponent().getSourceManager().setPairFriends(new Pair<>(fList, fReqList));
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-                    node.setData(ListUtils.getSize(fReqList));
+                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(pair.second.arrayList))
+                            .setObject(pair.second.arrayList));
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fReqList));

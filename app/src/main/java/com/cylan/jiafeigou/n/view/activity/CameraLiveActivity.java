@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
@@ -25,6 +26,7 @@ import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -33,6 +35,7 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -135,7 +138,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             boolean newNode = node != null && node.getTraversalCount() > 0;
             boolean result = hasNewFirmware();
             //延时摄影，暂时隐藏。
-            imgVCameraTitleTopSetting.setShowDot(result ||newNode);
+            imgVCameraTitleTopSetting.setShowDot(result || newNode);
         }
     }
 
@@ -146,8 +149,15 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      */
     private boolean hasNewFirmware() {
         try {
-            String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            return !TextUtils.isEmpty(content);
+            final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            AbstractVersion.BinVersion version = new Gson().fromJson(content, AbstractVersion.BinVersion.class);
+            final String newVersion = version.getTagVersion();
+            final String currentVersion = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid()).$(207, "");
+            if (BindUtils.versionCompare(currentVersion, newVersion) < 0) {
+                PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             return false;
         }

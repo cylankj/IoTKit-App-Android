@@ -25,7 +25,7 @@ public class TreeHelper {
     public void markKeyAsRead(String key) {
         if (!TextUtils.isEmpty(key) && RawTree.asRefreshTreeSet.contains(key)) {
             TreeNode node = findTreeNodeByName(key);
-            if (node != null) node.setData(0);
+            if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
             PreferencesUtils.putString(key, key);
         }
     }
@@ -42,7 +42,7 @@ public class TreeHelper {
                 final String result = PreferencesUtils.getString(key);
                 if (TextUtils.isEmpty(result)) {
                     //新的页面,需要标记红点.
-                    node.setData(1);
+                    node.setCacheData(new CacheObject().setCount(1).setObject(1));
                 }
             }
             node.setParentName(value);

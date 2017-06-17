@@ -467,23 +467,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void updateHint() {
         TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
         TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-        int count = node == null ? 0 : node.getData();
+        int count = node == null ? 0 : node.getNodeCount();
         if (count == 0) homeMineItemFriend.showHint(false);
         else
             homeMineItemFriend.showNumber(count);//count ==0 dismiss
         //系统消息未读数
         node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
-        count = node == null ? 0 : node.getData();
+        count = node == null ? 0 : node.getNodeCount();
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
         node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
-        count = node == null ? 0 : node.getData();
+        Object o = node == null ? null : node.getCacheData();
+        count = node == null ? 0 : node.getNodeCount();
         homeMineItemHelp.showHint(count > 0);
         //分享管理
 
         //设置
         node = helper.findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
-        homeMineItemSettings.showHint(node != null && node.getTraversalCount() > 0);
+        homeMineItemSettings.showHint(node != null && node.getTraversalCount()>0);
     }
 
     @Override

@@ -257,9 +257,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                }, throwable -> {
-                    AppLogger.e("acceptAddSDK: " + throwable.getLocalizedMessage());
-                });
+                }, AppLogger::e);
     }
 
     /**
