@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
-import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -241,7 +240,7 @@ public final class BaseInitializationManager {
             appCmd.initNativeParam(vid, vkey, serverAddress, JConstant.ROOT_DIR);
             appCmd.enableLog(true, logPath);
         } catch (Exception e) {
-            AppLogger.e("初始化出现错误!!!" + e.getMessage());
+            AppLogger.e("初始化出现错误!!!" + e.getMessage() + "vid:" + vid + ",vkey:" + vkey + ",serverAddress:" + serverAddress + ",logPath:" + logPath);
         }
     }
 

@@ -141,6 +141,12 @@ public interface PanoramaEvent {
         @Index(1)
         public int resolution;
     }
+    @Message
+    class MsgUpgradeStatusRsp {
+        @Index(0)
+        public int resolution;
+    }
+
 
     @Message
     class MsgReq {

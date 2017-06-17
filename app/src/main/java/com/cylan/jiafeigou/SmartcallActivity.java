@@ -19,7 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.ads.AdsActivity;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;

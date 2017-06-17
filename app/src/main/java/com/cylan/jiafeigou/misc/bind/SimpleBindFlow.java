@@ -86,30 +86,20 @@ public class SimpleBindFlow extends AFullBind {
      * 发送,三次
      */
     private void sendPingFPing() {
-        Observable.just(1, 2)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((Integer integer) -> {
+        Observable.interval(0, 100, TimeUnit.MILLISECONDS, Schedulers.io())
+                .filter(i -> i < 2)
+                .subscribe(i -> {
                     try {
-                        for (int i = 0; i < 3; i++)
-                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                    UdpConstant.PORT,
-                                    new JfgUdpMsg.Ping().toBytes());
-                        for (int i = 0; i < 3; i++)
-                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                    UdpConstant.PORT,
-                                    new JfgUdpMsg.FPing().toBytes());
-                        for (int i = 0; i < 3; i++)
-                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                                    UdpConstant.PORT,
-                                    new JfgUdpMsg.Ping().toBytes());
-                        for (int i = 0; i < 3; i++)
-                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                                    UdpConstant.PORT,
-                                    new JfgUdpMsg.FPing().toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.Ping().toBytes());
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.Ping().toBytes());
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
-                    AppLogger.i(BIND_TAG + integer);
+                    AppLogger.i(BIND_TAG + i);
                 }, AppLogger::e);
         AppLogger.i("sendPingFPing");
     }

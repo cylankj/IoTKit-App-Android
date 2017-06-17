@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
+apply plugin: 'com.github.typ0520.fastdex'
 //apply plugin: 'io.fabric'
 
 ////多渠道包没人愿意维护多渠道包，算了，删了吧。
