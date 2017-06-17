@@ -182,6 +182,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshControllerView(false);
                     } else {
                         mView.onRefreshControllerView(true);
+                        mView.onRefreshConnectionMode(-1);
                         checkAndInitRecord();
                     }
                 }, AppLogger::e);
@@ -279,9 +280,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 this.battery = bat.battery;
                                 Device device = sourceManager.getDevice(uuid);
                                 DPEntity property = device.getProperty(206);
-                                if (property != null) {
-                                    property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
+                                if (property == null) {
+                                    device.getEmptyProperry(206);
                                 }
+                                property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
                                 if (bat.battery < 20 && isFirst) {//检查电量
                                     isFirst = false;
                                     DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);

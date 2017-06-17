@@ -43,6 +43,8 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
+import com.cylan.jiafeigou.base.module.DeviceInformation;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.LayoutPanoramaPopMenuBinding;
@@ -173,13 +175,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowProperty(Device device) {
+        onRefreshConnectionMode(-1);
         boolean apDirect = JFGRules.isAPDirect(uuid, device.$(202, ""));
         if (!apDirect) {
-            int battery = device.$(ID_206_BATTERY, 0);
+            int battery = device.$(ID_206_BATTERY, -2);
             boolean charging = device.$(ID_205_CHARGING, false);
             onDeviceBatteryChanged(charging ? -1 : battery);
         }
-        onRefreshConnectionMode(-1);
     }
 
     @Override
@@ -699,6 +701,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onDeviceBatteryChanged(Integer battery) {
+        if (battery == -2) return;
         bannerChargeText.setVisibility(View.VISIBLE);
         bannerChargeIcon.setVisibility(View.VISIBLE);
         bannerChargeText.setText(battery == -1 ? getString(R.string.CHARGING) : battery + "%");
@@ -793,6 +796,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onRefreshControllerView(false);
         Device device = sourceManager.getDevice(uuid);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
+        if (TextUtils.isEmpty(mac)) {
+            DeviceInformation information = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
+            if (information != null && information.mac != null) {
+                mac = information.mac;
+            }
+        }
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         boolean apMode = JFGRules.isAPDirect(uuid, mac);
         boolean isOnline = net.net > 0;
@@ -800,8 +809,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bannerConnectionIcon.setImageResource(apMode ? R.drawable.camera720_icon_ap : R.drawable.camera720_icon_wifi);
         bannerConnectionIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.GONE);
         bannerConnectionText.setText(apMode ? R.string.Tap1_OutdoorMode : isOnline ? R.string.DEVICE_WIFI_ONLINE : R.string.NOT_ONLINE);
-        bannerChargeText.setVisibility((apMode || isOnline) ? View.VISIBLE : View.INVISIBLE);
-        bannerChargeIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.INVISIBLE);
+        if (!apMode && !isOnline) {
+            bannerChargeText.setVisibility(View.INVISIBLE);
+            bannerChargeIcon.setVisibility(View.INVISIBLE);
+        }
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled(!apMode);
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled(!apMode);
         if (apMode) {//ap 模式禁用对讲功能

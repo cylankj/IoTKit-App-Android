@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -195,7 +194,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceMac.setTvSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
         int b = device.$(DpMsgMap.ID_206_BATTERY, 0);
-        boolean apMode = TextUtils.equals(m, NetUtils.getRouterMacAddress(getActivity().getApplication()));
+        boolean apMode = JFGRules.isAPDirect(uuid, m);
         tvDeviceBatteryLevel.setTvSubTitle((JFGRules.isDeviceOnline(net) || apMode) ? (charging ? getString(R.string.CHARGING) + (b + "%") : (b + "%")) : "");
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);

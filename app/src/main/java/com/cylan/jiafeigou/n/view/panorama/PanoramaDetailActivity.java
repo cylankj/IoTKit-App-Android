@@ -63,6 +63,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.schedulers.Schedulers;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by yanzhendong on 2017/3/16.
@@ -119,6 +120,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private int mode;
     private View deleted;
     private boolean looper = true;
+    private boolean isPlay = false;
+    private IjkMediaPlayer player1;
 
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode, int position) {
@@ -438,13 +441,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                         .withThumb(filePath)
                         .withUuid(uuid)
                         .share();
-//                Intent intent = new Intent(this, ShareMediaActivity.class);
-//                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, panoramaItem);
-//                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, downloadInfo.getTargetPath());
-//                intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, filePath);
-//                startActivity(intent);
             });
         }
     }
@@ -568,8 +564,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void OnPlayerReady(long l, int i, int i1, int i2) {
         AppLogger.d("播放器初始化成功了" + i + "," + i1 + "," + i2);
         JFGPlayer.StartRender(player, panoramicView720Ext);
+        isPlay = true;
         runOnUiThread(() -> {
             panoramaPanelSeekBar.setMax(i2);
+            bottomVideoMenuPlay.setImageResource(R.drawable.camera_icon_pause);
             refreshControllerView(true);
             LoadingDialog.dismissLoading(getSupportFragmentManager());
         });
@@ -578,14 +576,21 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     public void OnPlayerFailed(long l) {
         AppLogger.d("播放器初始化失败了");
-        runOnUiThread(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
+        runOnUiThread(() -> {
+            bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        });
     }
 
     @Override
     public void OnPlayerFinish(long l) {
         AppLogger.d("播放完成了");
+        isPlay = false;
         if (player != 0) {
-            runOnUiThread(() -> LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null));
+            runOnUiThread(() -> {
+                bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
+                LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
+            });
             if (downloadInfo != null && downloadInfo.getState() == 4 && looper) {
                 initPlayerAndPlay(downloadInfo.getTargetPath());
             } else if (looper) {
@@ -595,7 +600,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 }
             }
         } else if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            runOnUiThread(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
+            runOnUiThread(() -> {
+                bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
+                LoadingDialog.dismissLoading(getSupportFragmentManager());
+            });
         }
     }
 
@@ -651,7 +659,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+        if (fromUser) {
+            updateProgress(seekBar.getProgress(), seekBar.getMax());
+            Schedulers.io().createWorker().schedule(() -> {
+                AppLogger.e("正在 seek");
+                if (player != 0) {
+                    JFGPlayer.Seek(player, seekBar.getProgress());//单位秒
+                }
+            });
+        }
     }
 
     private void updateProgress(int progress, int max) {
@@ -661,7 +677,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @OnClick(R.id.act_panorama_detail_bottom_video_menu_play)
     public void play() {
-//        if (JFGPlayer.)
+        if (player != 0) {
+            if (isPlay) {
+                JFGPlayer.Pause(player);
+                bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
+                isPlay = false;
+            } else {
+                JFGPlayer.Resume(player);
+                isPlay = true;
+                bottomVideoMenuPlay.setImageResource(R.drawable.camera_icon_pause);
+
+            }
+        }
     }
 
     @Override
@@ -671,13 +698,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        updateProgress(seekBar.getProgress(), seekBar.getMax());
-        Schedulers.io().createWorker().schedule(() -> {
-            AppLogger.e("正在 seek");
-            if (player != 0) {
-                JFGPlayer.Seek(seekBar.getProgress());
-            }
-        });
+
     }
 
     private void refreshControllerView(boolean enable) {
