@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -57,7 +58,7 @@ import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
  * Use the {@link SafeProtectionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-@Badge(parentTag = "CamSettingActivity")
+@Badge(parentTag = "CamSettingActivity", asRefresh = true)
 public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Presenter>
         implements SafeInfoContract.View {
 
@@ -113,6 +114,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
+        BaseApplication.getAppComponent().getTreeHelper().markKeyAsRead(this.getClass().getSimpleName());
     }
 
 

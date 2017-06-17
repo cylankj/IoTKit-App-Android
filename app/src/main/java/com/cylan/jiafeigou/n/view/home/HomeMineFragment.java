@@ -482,6 +482,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         //分享管理
 
         //设置
+        node = helper.findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
+        homeMineItemSettings.showHint(node != null && node.getTraversalCount() > 0);
     }
 
     @Override

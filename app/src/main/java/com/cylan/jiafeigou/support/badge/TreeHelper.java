@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.support.badge;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.RawTree;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,7 +23,11 @@ public class TreeHelper {
 
 
     public void markKeyAsRead(String key) {
-
+        if (!TextUtils.isEmpty(key) && RawTree.asRefreshTreeSet.contains(key)) {
+            TreeNode node = findTreeNodeByName(key);
+            if (node != null) node.setData(0);
+            PreferencesUtils.putString(key, key);
+        }
     }
 
 
@@ -33,12 +38,12 @@ public class TreeHelper {
             final String value = RawTree.treeMap.get(key);
             TreeNode node = new TreeNode();
             node.setNodeName(key);
-            if (TextUtils.equals(key, "VideoAutoRecordFragment")) {
-                //
-            } else if (TextUtils.equals(key, "SafeProtectionFragment")) {
-
-            } else if (TextUtils.equals(key, "FirmwareUpdateActivity")) {
-
+            if (RawTree.asRefreshTreeSet.contains(key)) {
+                final String result = PreferencesUtils.getString(key);
+                if (TextUtils.isEmpty(result)) {
+                    //新的页面,需要标记红点.
+                    node.setData(1);
+                }
             }
             node.setParentName(value);
             treeNodeList.add(node);

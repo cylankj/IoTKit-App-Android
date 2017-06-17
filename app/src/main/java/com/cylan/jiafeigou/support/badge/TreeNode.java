@@ -29,6 +29,10 @@ public class TreeNode {
         return nodeList;
     }
 
+    /**
+     * 遍历所有子节点,合并他们的
+     * @return
+     */
     public int getTraversalCount() {
         List<TreeNode> nodeList = traversal();
         if (nodeList == null) return 0;

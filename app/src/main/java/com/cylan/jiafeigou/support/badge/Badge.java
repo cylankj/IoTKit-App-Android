@@ -19,4 +19,10 @@ public @interface Badge {
      * @return
      */
     String parentTag();
+    /**
+     * 新功能,需要在初始化的时候,标记为红点.
+     *
+     * @return
+     */
+    boolean asRefresh() default false;
 }

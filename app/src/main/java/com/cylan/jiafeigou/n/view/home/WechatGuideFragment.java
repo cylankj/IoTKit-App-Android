@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -21,6 +23,7 @@ import butterknife.Unbinder;
  * Use the {@link WechatGuideFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@Badge(parentTag = "HomeMineFragment", asRefresh = true)
 public class WechatGuideFragment extends IBaseFragment {
 
     @BindView(R.id.custom_toolbar)
@@ -45,6 +48,7 @@ public class WechatGuideFragment extends IBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseApplication.getAppComponent().getTreeHelper().markKeyAsRead(this.getClass().getSimpleName());
     }
 
     @Override

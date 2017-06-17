@@ -39,7 +39,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
  * Use the {@link VideoAutoRecordFragment#newInstance} factory method to
  * fetch an instance of this fragment.
  */
-@Badge(parentTag = "CamSettingActivity")
+@Badge(parentTag = "CamSettingActivity", asRefresh = true)
 public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContract.Presenter>
         implements VideoAutoRecordContract.View {
 
@@ -79,6 +79,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseApplication.getAppComponent().getTreeHelper().markKeyAsRead(this.getClass().getSimpleName());
     }
 
     @Override
@@ -203,6 +204,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private boolean hasSdcard() {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        return status != null && status.hasSdcard&& status.err == 0;
+        return status != null && status.hasSdcard && status.err == 0;
     }
 }
