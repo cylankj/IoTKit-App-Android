@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
@@ -9,114 +10,116 @@
         android:id="@+id/fragment_panorama_explain_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/y15"
         android:layout_marginTop="@dimen/y16"
-        android:src="@drawable/icon_close" />
+        android:src="@drawable/icon_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_big_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y71"
-        android:text="设备指示灯状态说明"
+        android:text="@string/DOOR_WIFI_HINT"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp26" />
+        android:textSize="@dimen/sp26"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/fragment_panorama_explain_iv_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/y35"
-        android:layout_marginTop="@dimen/y165"
-        android:src="@drawable/image_panoramic_wifi" />
-
-    <ImageView
-        android:id="@+id/fragment_panorama_explain_iv_power"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_panorama_explain_iv_wifi"
-        android:layout_marginStart="@dimen/y35"
-        android:layout_marginTop="@dimen/y68"
-        android:src="@drawable/image_panoramic_power" />
-
-    <ImageView
-        android:id="@+id/fragment_panorama_explain_iv_charge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_panorama_explain_iv_power"
-        android:layout_marginStart="@dimen/y35"
-        android:layout_marginTop="@dimen/y64"
-        android:src="@drawable/image_panoramic_charge" />
+        android:src="@drawable/image_panoramic_wifi"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_panorama_explain_red_blue_blink_wifi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_panorama_explain_tv_wifi_title" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_tv_wifi_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_panorama_explain_big_title"
-        android:layout_marginStart="@dimen/y109"
+        android:layout_marginStart="@dimen/y33"
         android:layout_marginTop="@dimen/y48"
         android:drawablePadding="@dimen/y9"
         android:drawableStart="@drawable/icon_wifi"
-        android:text="WiFi灯"
-        android:textSize="@dimen/sp14" />
+        android:text="@string/WIFI_HINT_LAGEL_0"
+        android:textSize="@dimen/sp14"
+        app:layout_constraintStart_toEndOf="@+id/fragment_panorama_explain_iv_wifi"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_big_title" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_blue_blink_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
-        android:layout_below="@id/fragment_panorama_explain_tv_wifi_title"
         android:layout_marginTop="@dimen/y8"
-        android:text="蓝色闪烁: Wi-Fi 配置模式"
+        android:text="@string/WiFiLight_BlueFlashing"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_wifi_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_tv_wifi_title" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_blue_light_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
-        android:layout_below="@id/fragment_panorama_explain_blue_blink_wifi"
         android:layout_marginTop="@dimen/y6"
-        android:text="蓝色长亮: Wi-Fi在线"
+        android:text="@string/WiFiLight_SteadyBlue"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_wifi_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_blink_wifi" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_red_blink_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
-        android:layout_below="@id/fragment_panorama_explain_blue_light_wifi"
         android:layout_marginTop="@dimen/y6"
-        android:text="红色闪烁:连接中"
+        android:text="@string/LIGTH_DOOR_LABEL_1"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_wifi_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_light_wifi" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_red_blue_blink_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
-        android:layout_below="@id/fragment_panorama_explain_red_blink_wifi"
         android:layout_marginTop="@dimen/y6"
-        android:text="红/蓝闪烁:固件升级中"
+        android:text="@string/WiFiLight_RedNBlueFlashing"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_wifi_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_red_blink_wifi" />
+
+
+    <ImageView
+        android:id="@+id/fragment_panorama_explain_iv_power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/y35"
+        android:src="@drawable/image_panoramic_power"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_panorama_explain_red_blue_off_power"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_panorama_explain_tv_power_title" />
+
 
     <TextView
         android:id="@+id/fragment_panorama_explain_tv_power_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_panorama_explain_red_blue_blink_wifi"
-        android:layout_marginStart="@dimen/y109"
+        android:layout_marginStart="@dimen/y33"
         android:layout_marginTop="@dimen/y48"
         android:drawablePadding="@dimen/y9"
         android:drawableStart="@drawable/icon_power"
-        android:text="Power灯"
-        android:textSize="@dimen/sp14" />
+        android:text="@string/WIFI_HINT_LAGEL_2"
+        android:textSize="@dimen/sp14"
+        app:layout_constraintStart_toEndOf="@+id/fragment_panorama_explain_iv_power"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_red_blue_blink_wifi" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_blue_light_power"
@@ -125,20 +128,22 @@
         android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
         android:layout_below="@id/fragment_panorama_explain_tv_power_title"
         android:layout_marginTop="@dimen/y6"
-        android:text="蓝色长亮:开机"
+        android:text="@string/PowerLight_SteadyBlue"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_power_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_tv_power_title" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_blue_blink_power"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
-        android:layout_below="@id/fragment_panorama_explain_blue_light_power"
         android:layout_marginTop="@dimen/y6"
-        android:text="蓝色闪烁:低电量"
+        android:text="@string/PowerLight_BlueFlashing"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_power_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_light_power" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_red_blue_off_power"
@@ -147,32 +152,46 @@
         android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
         android:layout_below="@id/fragment_panorama_explain_blue_blink_power"
         android:layout_marginTop="@dimen/y6"
-        android:text="蓝色灯灭:关机"
+        android:text="@string/PowerLight_BlueOut"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_power_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_blink_power" />
+
+    <ImageView
+        android:id="@+id/fragment_panorama_explain_iv_charge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fragment_panorama_explain_iv_power"
+        android:layout_marginStart="@dimen/y35"
+        android:src="@drawable/image_panoramic_charge"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_panorama_explain_blue_light_charge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_panorama_explain_tv_charge_title" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_tv_charge_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_panorama_explain_red_blue_off_power"
-        android:layout_marginStart="@dimen/y109"
+        android:layout_marginStart="@dimen/y33"
         android:layout_marginTop="@dimen/y48"
         android:drawablePadding="@dimen/y9"
         android:drawableStart="@drawable/icon_charging_lamp"
-        android:text="充电灯"
-        android:textSize="@dimen/sp14" />
+        android:text="@string/ChargingLight"
+        android:textSize="@dimen/sp14"
+        app:layout_constraintStart_toEndOf="@+id/fragment_panorama_explain_iv_charge"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_red_blue_off_power" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_blue_blink_charge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
-        android:layout_below="@id/fragment_panorama_explain_tv_charge_title"
         android:layout_marginTop="@dimen/y6"
-        android:text="蓝色闪烁:正在充电"
+        android:text="@string/ChargingLight_BlueFlashing"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_charge_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_tv_charge_title" />
 
     <TextView
         android:id="@+id/fragment_panorama_explain_blue_light_charge"
@@ -181,7 +200,9 @@
         android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
         android:layout_below="@id/fragment_panorama_explain_blue_blink_charge"
         android:layout_marginTop="@dimen/y6"
-        android:text="蓝色灯灭:关机"
+        android:text="@string/PowerLight_BlueOut"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp15" />
-</RelativeLayout>
+        android:textSize="@dimen/sp15"
+        app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_charge_title"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_blink_charge" />
+</android.support.constraint.ConstraintLayout>
