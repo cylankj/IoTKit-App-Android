@@ -195,6 +195,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), homeSettingFragment,
                 android.R.id.content);
         homeSettingFragment.setCallBack(t -> {
+            BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
             updateHint();
             //更新 home tab mine
             RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());

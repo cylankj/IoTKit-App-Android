@@ -19,6 +19,8 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -36,6 +38,7 @@ import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -114,8 +117,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
-        svHomeSettingWechat.showHint(node != null && node.getNodeCount() > 0);
+        updateHint();
         svHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
         customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
     }
@@ -284,8 +286,12 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         //开关 微信推送通知
         svHomeSettingWechat.setVisibility(getResources().getBoolean(R.bool.show_wechat_entrance) ? View.VISIBLE : View.GONE);
         svHomeSettingWechat.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            final JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
             if (isChecked) {
+                if (NetUtils.getJfgNetType() == 0) {
+                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                    return;
+                }
                 //第三方账号需要绑定手机/邮箱
                 if (BaseApplication.getAppComponent().getSourceManager().getLoginType() > 3) {
                     if (account != null && TextUtils.isEmpty(account.getEmail()) &&
@@ -294,14 +300,30 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                         return;
                     }
                 }
-                svHomeSettingWechat.setChecked(false);
+                //绑定过账号,直接
+                if (account != null && !TextUtils.isEmpty(account.getWXOpenID())) {
+                    try {
+                        account.setWXPush(1);
+                        BaseApplication.getAppComponent().getCmd().setAccount(account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
                 //跳转到
                 jump2Guide();
-
             } else {
+                //先setCheck(false),视角上有效果.
+                svHomeSettingWechat.setChecked(true);
                 AlertDialogManager.getInstance().showDialog(getActivity(), "weixin",
                         getString(R.string.SETTINGS_Wechat_Switch_Cancel), getString(R.string.OK), (dialog, which) -> {
                             svHomeSettingWechat.setChecked(false);
+                            try {
+                                account.setWXPush(0);
+                                BaseApplication.getAppComponent().getCmd().setAccount(account);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         }, getString(R.string.CANCEL), null);
             }
         });
@@ -313,7 +335,16 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 fragment,
                 android.R.id.content);
         //扫描关注了.
-        fragment.setCallBack(t -> initPresenter());
+        fragment.setCallBack(t -> {
+            //刷新账号
+            JfgAppCmd.getInstance().getAccount();
+            updateHint();
+        });
+    }
+
+    private void updateHint() {
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
+        svHomeSettingWechat.showHint(node != null && node.getNodeCount() > 0);
     }
 
     /**
@@ -331,10 +362,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
                             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                                     bindPhoneFragment, android.R.id.content);
-                            bindPhoneFragment.setCallBack(t -> {
-                                TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
-                                svHomeSettingWechat.showHint(node != null && node.getNodeCount() > 0);
-                            });
+                            bindPhoneFragment.setCallBack(t -> updateHint());
                         } else if (i == 6 || i == 7) {
                             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                                     BindMailFragment.newInstance(null), android.R.id.content);
