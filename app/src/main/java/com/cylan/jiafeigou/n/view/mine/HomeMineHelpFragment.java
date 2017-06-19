@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -49,6 +51,8 @@ public class HomeMineHelpFragment extends IBaseFragment {
     WebView mWvHelp;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.v_progress)
+    ProgressBar vProgress;
 
 
     public static HomeMineHelpFragment newInstance(Bundle bundle) {
@@ -105,37 +109,6 @@ public class HomeMineHelpFragment extends IBaseFragment {
             agreementUrl = agreementUrl.replace("–", "-");
         }
         final String url = agreementUrl;
-/*        WebSettings settings = mWvHelp.getSettings();
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-        settings.setLoadWithOverviewMode(true);
-        settings.setJavaScriptEnabled(true);
-        settings.setDefaultTextEncodingName("utf-8");
-        settings.setBlockNetworkImage(false);
-        settings.setSavePassword(false);
-        String cacheDirPath = getContext().getFilesDir().getAbsolutePath()+"/webview";
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        settings.setAppCachePath(cacheDirPath);
-        settings.setDomStorageEnabled(true);
-        settings.setAppCacheEnabled(true);
-        mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
-        mWvHelp.removeJavascriptInterface("accessibilityTraversal");
-        mWvHelp.removeJavascriptInterface("accessibility");
-        WebSettings webseting = mWvHelp.getSettings();
-        webseting.setJavaScriptEnabled(true);
-        mWvHelp.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                handler.proceed();
-            }
-        });
-        AppLogger.d("url:" + agreementUrl);
-        mWvHelp.loadUrl(agreementUrl);*/
         if (getView() != null) getView().post(() -> initWebView(url));
     }
 
@@ -192,6 +165,14 @@ public class HomeMineHelpFragment extends IBaseFragment {
     @SuppressLint("SetJavaScriptEnabled")
     public void onLoad(String url) {
         try {
+            mWvHelp.setWebChromeClient(new WebChromeClient() {
+                @Override
+                public void onProgressChanged(WebView view, int newProgress) {
+                    vProgress.setProgress(newProgress);
+                    if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
+                    if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
+                }
+            });
             mWvHelp.setWebViewClient(new WebViewClient() {
                 @Override
                 public void onLoadResource(WebView view, String url) {

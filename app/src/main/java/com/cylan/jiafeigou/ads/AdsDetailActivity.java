@@ -3,9 +3,11 @@ package com.cylan.jiafeigou.ads;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
@@ -31,6 +33,8 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
     WebView wAdsContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.v_progress)
+    ProgressBar vProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,14 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+        });
+        wAdsContent.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                vProgress.setProgress(newProgress);
+                if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
+                if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
             }
         });
         wAdsContent.loadUrl(description.tagUrl);

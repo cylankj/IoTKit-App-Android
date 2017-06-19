@@ -30,11 +30,15 @@
             android:id="@+id/wv_mine_help"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
-        <View
+        <ProgressBar
+            android:id="@+id/v_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
+            android:layout_height="@dimen/y4"
+            android:progressDrawable="@drawable/progress" />
+
     </FrameLayout>
+
 </LinearLayout>
