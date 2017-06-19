@@ -122,7 +122,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private HistoryWheelHandler historyWheelHandler;
 
     private CamLiveContract.Presenter presenter;
-
+    private Switcher streamSwithcer;
     private int pid;
     /**
      * 设备的时区
@@ -240,21 +240,32 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //是否显示清晰度切换
         findViewById(R.id.sv_switch_stream)
                 .setVisibility(JFGRules.showItem(device.pid, "SD/HD") ? VISIBLE : GONE);
-        ((Switcher) findViewById(R.id.sv_switch_stream))
-                .setSwitcherListener(view -> {
-                    if (view.getId() == R.id.switch_hd) {
-
-                    } else if (view.getId() == R.id.switch_sd) {
-
-                    }
-                    if (MiscUtils.isLand()) {
-                        removeCallbacks(landHideRunnable);
-                        postDelayed(landHideRunnable, 3000);
-                    } else {
-                        removeCallbacks(portHideRunnable);
-                        postDelayed(portHideRunnable, 3000);
-                    }
-                });
+        streamSwithcer = ((Switcher) findViewById(R.id.sv_switch_stream));
+        int mode = device.$(513, 0);
+        streamSwithcer.setMode(getContext().getString(mode == 0 ? R.string.Tap1_Camera_Video_Auto :
+                (mode == 1 ? R.string.Tap1_Camera_Video_SD : R.string.Tap1_Camera_Video_HD)));
+        streamSwithcer.setSwitcherListener(view -> {
+            if (view.getId() == R.id.switch_hd) {
+                presenter.switchStreamMode(2)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(ret -> {
+                        }, AppLogger::e);
+            } else if (view.getId() == R.id.switch_sd) {
+                presenter.switchStreamMode(1)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(ret -> {
+                        }, AppLogger::e);
+            }
+            if (MiscUtils.isLand()) {
+                removeCallbacks(landHideRunnable);
+                postDelayed(landHideRunnable, 3000);
+            } else {
+                removeCallbacks(portHideRunnable);
+                postDelayed(portHideRunnable, 3000);
+            }
+        });
         AppLogger.d("需要重置清晰度");
     }
 

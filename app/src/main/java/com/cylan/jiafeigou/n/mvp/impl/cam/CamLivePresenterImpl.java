@@ -732,6 +732,29 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         getHotSeatStateMaintainer().switchMic();
     }
 
+    /**
+     * 高清,标清,自动模式切换
+     * @param mode
+     * @return
+     */
+    @Override
+    public Observable<Boolean> switchStreamMode(int mode) {
+        return Observable.just(mode)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Integer, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Integer integer) {
+                        DpMsgDefine.DPPrimary<Integer> dpPrimary = new DpMsgDefine.DPPrimary<>(integer);
+                        try {
+                            AppLogger.e("还需要发送局域网消息");
+                            return Observable.just(BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, dpPrimary, 513));
+                        } catch (IllegalAccessException e) {
+                            return Observable.just(false);
+                        }
+                    }
+                });
+    }
+
     //forPopWindow true:手动截图:弹窗,保存每日精彩
     //forPopWindow false:直播断开,退出界面.
     @Override
@@ -771,7 +794,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && TextUtils.isEmpty(device.shareAccount)
-                && sdStatus.hasSdcard  && sdStatus.err == 0
+                && sdStatus.hasSdcard && sdStatus.err == 0
                 && historyDataProvider != null && historyDataProvider.getDataCount() > 0;
         AppLogger.i("show: " + show);
         return show;
@@ -822,6 +845,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, AppLogger::e);
     }
 
+//    private Subscription streamModeUpdate(){
+//
+//        Subscription subscription =
+//    }
     /**
      * robot同步数据
      *
