@@ -38,6 +38,7 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
@@ -193,7 +194,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         HomeSettingFragment homeSettingFragment = HomeSettingFragment.newInstance();
         ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), homeSettingFragment,
                 android.R.id.content);
-        homeSettingFragment.setCallBack(t -> updateHint());
+        homeSettingFragment.setCallBack(t -> {
+            updateHint();
+            //更新 home tab mine
+            RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
+        });
     }
 
     public void shareItem(View view) {
@@ -485,7 +490,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
         //设置
         node = helper.findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
-        homeMineItemSettings.showHint(node != null && node.getTraversalCount()>0);
+        homeMineItemSettings.showHint(node != null && node.getTraversalCount() > 0);
     }
 
     @Override

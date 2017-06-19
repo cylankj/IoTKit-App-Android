@@ -185,7 +185,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                         ArrayList<JFGDPMsg> params = new ArrayList<>();
                         params.add(msg1);
                         params.add(msg4);
-                        seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 100, false, 0);
+                        seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 15, false, 0);
                         Log.d(TAG, "getMesgDpData:" + seq);
                     } catch (Exception e) {
                         AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());

@@ -331,6 +331,10 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
                             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                                     bindPhoneFragment, android.R.id.content);
+                            bindPhoneFragment.setCallBack(t -> {
+                                TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
+                                svHomeSettingWechat.showHint(node != null && node.getNodeCount() > 0);
+                            });
                         } else if (i == 6 || i == 7) {
                             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                                     BindMailFragment.newInstance(null), android.R.id.content);

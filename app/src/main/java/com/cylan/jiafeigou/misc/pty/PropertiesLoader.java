@@ -37,15 +37,19 @@ public class PropertiesLoader implements IProperty {
     public boolean hasProperty(int pidOrOs, String tag) {
         if (propertyFile == null) return false;
         final int count = ListUtils.getSize(propertyFile.getpList());
-        //效率比较低,有待优化
+        //每次遍历,效率比较低,有待优化
         for (int i = 0; i < count; i++) {
             Map<String, String> map = propertyFile.getpList().get(i);
             final String pid = map.get("Pid");
             final String os = map.get("os");
-            if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + ""))
-                return true;
-            if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + ""))
-                return true;
+            if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
+                final String tagValue = map.get(tag);
+                return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+            }
+            if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + "")) {
+                final String tagValue = map.get(tag);
+                return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+            }
         }
         return false;
     }
