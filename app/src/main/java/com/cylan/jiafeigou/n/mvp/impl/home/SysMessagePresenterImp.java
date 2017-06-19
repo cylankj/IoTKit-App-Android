@@ -150,7 +150,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
 
     public <T> T convert(int msgId, byte[] data, Class<T> clazz) {
         try {
-            return DpUtils.unpack(data, clazz);
+            return DpUtils.unpackData(data, clazz);
         } catch (IOException e) {
             return null;
         }

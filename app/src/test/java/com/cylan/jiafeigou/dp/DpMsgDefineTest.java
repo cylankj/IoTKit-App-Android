@@ -28,10 +28,36 @@ import rx.functions.Func1;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DpMsgDefineTest {
 
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a)
+            sb.append(String.format("%02x", b))
+                    .append(",");
+        return sb.toString();
+    }
 
     @Test
     public void testObject() throws IOException {
-        System.out.println(unpackData(new byte[]{53, 48, 48, 48, 48, 48, 48, 48, 49, 50, 57, 56}, TT.class));
+        byte[] array = new byte[]{-108,
+                -84,
+                53,
+                48,
+                48,
+                48,
+                48,
+                48,
+                48,
+                48,
+                49,
+                50,
+                57,
+                56,
+                -62,
+                -96,
+                -96};
+        System.out.println(byteArrayToHex(array));
+        System.out.println(unpackData(array,
+                TT.class));
         System.out.println(unpackData(new byte[]{-108, 0, 0, -9, -62}, DpMsgDefine.DPSdStatus.class));
 //        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
 //        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
@@ -183,7 +209,7 @@ public class DpMsgDefineTest {
     @Message
     public static class TT {
         @Index(0)
-        public T ret;
+        public String ret;
 
         @Override
         public String toString() {
