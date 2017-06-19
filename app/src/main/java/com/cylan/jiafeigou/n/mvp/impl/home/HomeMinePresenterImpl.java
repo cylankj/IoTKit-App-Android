@@ -18,7 +18,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
-import com.cylan.jiafeigou.n.task.SystemMsgTask;
+import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -140,7 +140,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
         //用户反馈
         Observable.just(new FetchFeedbackTask(),
                 new FetchFriendsTask(),
-                new SystemMsgTask())
+                new SysUnreadCountTask())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
     }

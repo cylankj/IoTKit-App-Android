@@ -23,8 +23,22 @@
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 
-    <WebView
-        android:id="@+id/w_ads_content"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/w_ads_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/v_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y4"
+            android:progressDrawable="@drawable/progress" />
+    </FrameLayout>
+
+
 </LinearLayout>

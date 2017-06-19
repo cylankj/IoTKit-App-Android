@@ -3,9 +3,11 @@ package com.cylan.jiafeigou.ads;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
@@ -19,6 +21,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -30,6 +33,8 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
     WebView wAdsContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.v_progress)
+    ProgressBar vProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,14 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
                 return true;
             }
         });
+        wAdsContent.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                vProgress.setProgress(newProgress);
+                if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
+                if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
+            }
+        });
         wAdsContent.loadUrl(description.tagUrl);
         try {
             BaseApplication.getAppComponent().getCmd().countADClick(description.showCount,
@@ -70,7 +83,9 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
                     .withThumb(description.tagUrl)
                     .withUrl(description.tagUrl)
                     .share();
-
+            if (customToolbar.getTvToolbarRight() != null) {
+                ViewUtils.setDrawablePadding(customToolbar.getTvToolbarRight(), R.drawable.details_icon_share, 0);
+            }
 //            Intent intent = new Intent(getContext(), ShareMediaActivity.class);
 //            intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_WEB_URL);
 //            intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH, description.tagUrl);

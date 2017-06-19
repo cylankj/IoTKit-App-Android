@@ -20,18 +20,19 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsReqDetailPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,13 +59,13 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
     RelativeLayout rlAddRequestMesg;
 
     private MineFriendAddReqDetailContract.Presenter presenter;
-    private MineAddReqBean addRequestItems;
+    private FriendsReqBean addRequestItems;
 
     private OnAcceptAddListener addListener;
     private boolean isFrom;
 
     public interface OnAcceptAddListener {
-        void onAccept(MineAddReqBean backBean);
+        void onAccept(FriendsReqBean backBean);
     }
 
     public void setOnAcceptAddListener(OnAcceptAddListener addListener) {
@@ -103,7 +104,7 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
     private void initData() {
         Bundle arguments = getArguments();
         isFrom = arguments.getBoolean("isFrom");
-        addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
+        addRequestItems = (FriendsReqBean) arguments.getSerializable("addRequestItems");
         if (TextUtils.isEmpty(addRequestItems.alias)) {
         } else {
             tvRelativeAndFriendName.setText(addRequestItems.alias);
@@ -270,10 +271,11 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
      */
     @Override
     public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
-        for (JFGFriendRequest bean : getAddReqList.arrayList) {
+        ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+        for (FriendsReqBean bean : arrayList) {
             if (bean.account.equals(addRequestItems.account)) {
                 // 向我发送过请求
-                MineAddReqBean addReqBean = new MineAddReqBean();
+                FriendsReqBean addReqBean = new FriendsReqBean();
                 addReqBean.account = bean.account;
                 addReqBean.time = bean.time;
                 presenter.checkAddReqOutTime(addReqBean);

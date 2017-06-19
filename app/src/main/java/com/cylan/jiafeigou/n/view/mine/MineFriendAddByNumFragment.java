@@ -25,7 +25,7 @@ import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -173,7 +173,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void showFindResult(MineAddReqBean bean) {
+    public void showFindResult(FriendsReqBean bean) {
         if (bean == null) {
             showFindNoResult();
         } else {
@@ -209,7 +209,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom, MineAddReqBean bean, boolean isFriend) {
+    public void setFindResult(boolean isFrom, FriendsReqBean bean, boolean isFriend) {
         if (!isFriend) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", isFrom);

@@ -28,10 +28,36 @@ import rx.functions.Func1;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DpMsgDefineTest {
 
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a)
+            sb.append(String.format("%02x", b))
+                    .append(",");
+        return sb.toString();
+    }
 
     @Test
     public void testObject() throws IOException {
-        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 3, -83, -124, 64, 0, -51, 96, 0, 0, -61}, DpMsgDefine.DPSdStatus.class));
+        byte[] array = new byte[]{-108,
+                -84,
+                53,
+                48,
+                48,
+                48,
+                48,
+                48,
+                48,
+                48,
+                49,
+                50,
+                57,
+                56,
+                -62,
+                -96,
+                -96};
+        System.out.println(byteArrayToHex(array));
+        System.out.println(unpackData(array,
+                TT.class));
         System.out.println(unpackData(new byte[]{-108, 0, 0, -9, -62}, DpMsgDefine.DPSdStatus.class));
 //        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
 //        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
@@ -167,49 +193,41 @@ public class DpMsgDefineTest {
     @Message
     public static final class Mesg {
         @Index(0)
-        public int ret;
+        public byte[] ret;
         @Index(1)
-        public String w;
-        @Index(2)
-        public String wa;
-        @Index(3)
-        public int wa0;
-        @Index(4)
-        public TT wa1;
+        public boolean r;
 
         @Override
         public String toString() {
             return "Mesg{" +
-                    "ret=" + ret +
-                    ", w='" + w + '\'' +
-                    ", wa='" + wa + '\'' +
-                    ", wa0='" + wa0 + '\'' +
-                    ", wa0='" + wa1 + '\'' +
+                    "ret=" + Arrays.toString(ret) +
+                    ", r=" + r +
                     '}';
         }
     }
 
     @Message
-    public static final class TT {
+    public static class TT {
         @Index(0)
-        public String v;
-        @Index(1)
-        public String v0;
-        @Index(2)
-        public String v1;
-        @Index(3)
-        public String v2;
-        @Index(4)
-        public String v3;
+        public String ret;
 
         @Override
         public String toString() {
             return "TT{" +
-                    "v='" + v + '\'' +
-                    ", v0='" + v0 + '\'' +
-                    ", v1='" + v1 + '\'' +
-                    ", v2='" + v2 + '\'' +
-                    ", v2='" + v3 + '\'' +
+                    "ret=" + ret +
+                    '}';
+        }
+    }
+
+    @Message
+    public static class T {
+        @Index(0)
+        public byte[] r;
+
+        @Override
+        public String toString() {
+            return "T{" +
+                    "r=" + r +
                     '}';
         }
     }

@@ -26,7 +26,6 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -37,6 +36,7 @@ import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -212,7 +212,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setCallBack((Object t) -> {
                     deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
                 });
-                basePresenter.updateSettingTips(basePresenter.getSettingTips().setAutoRecord(0));
             }
             break;
             case R.id.sv_setting_safe_protection: {
@@ -224,7 +223,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setCallBack((Object t) -> {
                     deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
                 });
-                basePresenter.updateSettingTips(basePresenter.getSettingTips().setSafe(0));
             }
             break;
             case R.id.sv_setting_device_delay_capture: {
@@ -234,7 +232,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 startActivity(intent,
                         ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                                 R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
-                basePresenter.updateSettingTips(basePresenter.getSettingTips().setAutoRecord(0));
             }
             break;
             case R.id.sv_setting_device_wifi:
@@ -480,10 +477,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 
         ////////////////////////显示红点//////////////////////////////////////////////
-        SettingTip settingTip = basePresenter.getSettingTips();
-        svSettingDeviceAutoRecord.showRedHint(settingTip.autoRecord == 1);
-        svSettingSafeProtection.showRedHint(settingTip.safe == 1);
-        svSettingDeviceDelayCapture.showRedHint(settingTip.timeLapse == 1);
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
+        svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
+        node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
+        svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
+        node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(DelayRecordActivity.class.getSimpleName());
+        svSettingDeviceDelayCapture.showRedHint(node != null && node.getNodeCount() > 0);
 
         sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid) ? View.VISIBLE : View.GONE);
         try {

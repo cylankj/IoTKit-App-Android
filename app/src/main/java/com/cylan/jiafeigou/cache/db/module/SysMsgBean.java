@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.cache.db.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -13,13 +14,13 @@ import org.greenrobot.greendao.annotation.Id;
  * 描述：
  */
 @Entity
-public class SysMsgBean implements Parcelable {
+public class SysMsgBean implements Parcelable, Comparable<SysMsgBean> {
 
     @Id
     public int id;
     public String content;
     public int type;
-    public String time;
+    public long time;
     public String name;
     public int isDone;
     public int isCheck;
@@ -29,9 +30,7 @@ public class SysMsgBean implements Parcelable {
     public SysMsgBean() {
     }
 
-    public SysMsgBean(String content, int type, String time) {
-        this.content = content;
-        this.type = type;
+    public void setTime(long time) {
         this.time = time;
     }
 
@@ -59,9 +58,6 @@ public class SysMsgBean implements Parcelable {
         return type;
     }
 
-    public String getTime() {
-        return time;
-    }
 
     public void setContent(String content) {
         this.content = content;
@@ -71,21 +67,12 @@ public class SysMsgBean implements Parcelable {
         this.type = type;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public int getIsCheck() {
@@ -104,18 +91,6 @@ public class SysMsgBean implements Parcelable {
         this.isDone = isDone;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.time);
-        dest.writeString(this.content);
-        dest.writeString(this.sn);
-        dest.writeInt(this.type);
-        dest.writeInt(this.id);
-        dest.writeInt(this.isCheck);
-        dest.writeInt(this.isDone);
-    }
-
     public int getPid() {
         return this.pid;
     }
@@ -124,19 +99,57 @@ public class SysMsgBean implements Parcelable {
         this.pid = pid;
     }
 
-    protected SysMsgBean(Parcel in) {
-        this.name = in.readString();
-        this.time = in.readString();
-        this.content = in.readString();
-        this.sn = in.readString();
-        this.type = in.readInt();
-        this.id = in.readInt();
-        this.isCheck = in.readByte();
-        this.isDone = in.readByte();
+    public long getTime() {
+        return time;
     }
 
-    @Generated(hash = 892758521)
-    public SysMsgBean(int id, String content, int type, String time, String name,
+    @Override
+    public String toString() {
+        return "SysMsgBean{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", type=" + type +
+                ", time=" + time +
+                ", name='" + name + '\'' +
+                ", isDone=" + isDone +
+                ", isCheck=" + isCheck +
+                ", sn='" + sn + '\'' +
+                ", pid=" + pid +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.content);
+        dest.writeInt(this.type);
+        dest.writeLong(this.time);
+        dest.writeString(this.name);
+        dest.writeInt(this.isDone);
+        dest.writeInt(this.isCheck);
+        dest.writeString(this.sn);
+        dest.writeInt(this.pid);
+    }
+
+    protected SysMsgBean(Parcel in) {
+        this.id = in.readInt();
+        this.content = in.readString();
+        this.type = in.readInt();
+        this.time = in.readLong();
+        this.name = in.readString();
+        this.isDone = in.readInt();
+        this.isCheck = in.readInt();
+        this.sn = in.readString();
+        this.pid = in.readInt();
+    }
+
+    @Generated(hash = 784567696)
+    public SysMsgBean(int id, String content, int type, long time, String name,
             int isDone, int isCheck, String sn, int pid) {
         this.id = id;
         this.content = content;
@@ -160,4 +173,9 @@ public class SysMsgBean implements Parcelable {
             return new SysMsgBean[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull SysMsgBean o) {
+        return (int) (this.time - o.time);
+    }
 }

@@ -11,7 +11,8 @@ public class TreeNode {
 
     private String nodeName;
     private String parentName;
-    private int data;
+    //建议存放json
+    private CacheObject cacheData;
     private List<TreeNode> childNodeList;
 
     public List<TreeNode> getChildNodeList() {
@@ -29,12 +30,23 @@ public class TreeNode {
         return nodeList;
     }
 
+    public int getNodeCount() {
+        return this.cacheData != null ? cacheData.getCount() : 0;
+    }
+
+    /**
+     * 遍历所有子节点,合并他们的
+     *
+     * @return
+     */
     public int getTraversalCount() {
         List<TreeNode> nodeList = traversal();
         if (nodeList == null) return 0;
         int count = 0;
         for (TreeNode node : nodeList) {
-            count += node.getData();
+            CacheObject object = node == null ? null : node.getCacheData();
+            if (object != null)
+                count += object.getCount();
         }
         return count;
     }
@@ -56,8 +68,8 @@ public class TreeNode {
         return parentName;
     }
 
-    public int getData() {
-        return data;
+    public CacheObject getCacheData() {
+        return cacheData;
     }
 
     public TreeNode setNodeName(String nodeName) {
@@ -70,8 +82,8 @@ public class TreeNode {
         return this;
     }
 
-    public TreeNode setData(int data) {
-        this.data = data;
+    public TreeNode setCacheData(CacheObject cacheData) {
+        this.cacheData = cacheData;
         return this;
     }
 
@@ -100,7 +112,7 @@ public class TreeNode {
         return "TreeNode{" +
                 "nodeName='" + nodeName + '\'' +
                 ", parentName='" + parentName + '\'' +
-                ", data=" + data +
+                ", cacheData=" + cacheData +
                 ", childNodeList=" + childNodeList +
                 '}';
     }

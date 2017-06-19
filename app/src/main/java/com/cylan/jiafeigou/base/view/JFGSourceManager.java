@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.base.view;
 
 
-import android.util.Pair;
-
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
@@ -14,8 +12,10 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,9 +138,13 @@ public interface JFGSourceManager {
 
     void handleSystemNotification(ArrayList<JFGFeedbackInfo> list);
 
-    Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> getPairFriends();
+    ArrayList<FriendBean> getFriendsList();
 
-    void setPairFriends(Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair);
+    void setFriendsList(ArrayList<JFGFriendAccount> list);
+
+    void setFriendsReqList(ArrayList<JFGFriendRequest> list);
+
+    ArrayList<FriendsReqBean> getFriendsReqList();
 
     void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list);
 

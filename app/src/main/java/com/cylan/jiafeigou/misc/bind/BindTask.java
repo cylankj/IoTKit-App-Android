@@ -23,7 +23,8 @@ public class BindTask implements Action1<Object> {
             UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
             if (portrait != null) {
                 BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                //设备上线后,需要设置时区.
+                //设备上线后,需要设置时区.设备mac需要持久化,pan摄像头需要用上.
+                PreferencesUtils.putString(JConstant.KEY_DEVICE_MAC + portrait.uuid, portrait.mac);
             }
             AppLogger.d("bindTag: 客户端登录,绑定信息:" + portrait);
         } catch (Exception e) {

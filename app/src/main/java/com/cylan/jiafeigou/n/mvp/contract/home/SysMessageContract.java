@@ -42,10 +42,6 @@ public interface SysMessageContract {
 
     interface Presenter extends BasePresenter {
 
-        /**
-         * 加载消息数据
-         */
-        void initMesgData(String account);
 
         /**
          * 获取到用户的信息拿到数据库操作对象
@@ -53,35 +49,16 @@ public interface SysMessageContract {
         Subscription getAccount();
 
         /**
-         * 获取本地数据库中的所有消息记录
-         *
-         * @return
-         */
-        List<SysMsgBean> findAllFromDb();
-
-        /**
          * 清空本地消息记录
          */
         void deleteAllRecords();
 
-        /**
-         * 消息保存到数据库
-         *
-         * @param bean
-         */
-        void saveIntoDb(SysMsgBean bean);
 
         /**
          * Dp获取消息记录数据
          */
         void getMesgDpData(String account);
 
-        /**
-         * Dp获取消息记录数据回调
-         *
-         * @return
-         */
-        Subscription getMesgDpDataCallBack();
 
         void deleteServiceMsg(long type, long version);
 

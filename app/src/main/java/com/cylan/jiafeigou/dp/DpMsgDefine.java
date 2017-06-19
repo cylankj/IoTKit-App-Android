@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
+import org.msgpack.annotation.Optional;
 
 import java.util.TimeZone;
 
@@ -451,7 +452,7 @@ public class DpMsgDefine {
             this.total = in.readLong();
             this.used = in.readLong();
             this.err = in.readInt();
-            this.hasSdcard = in.readInt() ;
+            this.hasSdcard = in.readInt();
         }
 
         public static final Creator<DPSdStatusInt> CREATOR = new Creator<DPSdStatusInt>() {
@@ -1042,21 +1043,25 @@ public class DpMsgDefine {
         public String cid;
         @Index(1)
         public boolean isDone;
+        @Optional
         @Index(2)
         public String account;
+        @Optional
         @Index(3)
         public String sn;
+        @Optional
         @Index(4)
         public int pid;
 
-        public DPMineMesg() {
-        }
-
-        public DPMineMesg(String cid, boolean isDone, String account, String sn) {
-            this.cid = cid;
-            this.isDone = isDone;
-            this.account = account;
-            this.sn = sn;
+        @Override
+        public String toString() {
+            return "DPMineMesg{" +
+                    "cid='" + cid + '\'' +
+                    ", isDone=" + isDone +
+                    ", account='" + account + '\'' +
+                    ", sn='" + sn + '\'' +
+                    ", pid=" + pid +
+                    '}';
         }
     }
 
@@ -1067,12 +1072,12 @@ public class DpMsgDefine {
         @Index(1)
         public String content;
 
-        public DPSystemMesg() {
-        }
-
-        public DPSystemMesg(String title, String content) {
-            this.title = title;
-            this.content = content;
+        @Override
+        public String toString() {
+            return "DPSystemMesg{" +
+                    "title='" + title + '\'' +
+                    ", content='" + content + '\'' +
+                    '}';
         }
     }
 

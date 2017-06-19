@@ -54,6 +54,7 @@
         android:layout_centerInParent="true" />
 
     <FrameLayout
+        android:layout_marginTop="@dimen/y60"
         android:layout_width="@dimen/y141"
         android:layout_height="@dimen/y234"
         android:layout_below="@+id/tv_description"

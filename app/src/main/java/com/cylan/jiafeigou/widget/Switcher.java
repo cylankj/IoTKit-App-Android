@@ -41,35 +41,12 @@ public class Switcher extends LinearLayout {
         viewSecond = (TextView) getChildAt(1);
         viewThird = (TextView) getChildAt(2);
         viewFirst.setOnClickListener(v -> {
-            YoYo.with(Techniques.SlideOutRight)
-                    .duration(200)
-                    .playOn(viewSecond);
-            YoYo.with(Techniques.FadeOut)
-                    .duration(200)
-                    .playOn(viewSecond);
-
-            YoYo.with(Techniques.SlideOutRight)
-                    .duration(200)
-                    .playOn(viewFirst);
-            YoYo.with(Techniques.FadeOut)
-                    .duration(200)
-                    .playOn(viewFirst);
+            slideOut();
             setMode(getContext().getString(R.string.Tap1_Camera_Video_HD));
             if (switcherListener != null) switcherListener.switcher(v);
         });
         viewSecond.setOnClickListener(v -> {
-            YoYo.with(Techniques.SlideOutRight)
-                    .duration(200)
-                    .playOn(viewSecond);
-            YoYo.with(Techniques.FadeOut)
-                    .duration(200)
-                    .playOn(viewSecond);
-            YoYo.with(Techniques.SlideOutRight)
-                    .duration(200)
-                    .playOn(viewFirst);
-            YoYo.with(Techniques.FadeOut)
-                    .duration(200)
-                    .playOn(viewFirst);
+            slideOut();
             setMode(getContext().getString(R.string.Tap1_Camera_Video_SD));
             if (switcherListener != null) switcherListener.switcher(v);
         });
@@ -82,6 +59,7 @@ public class Switcher extends LinearLayout {
                 viewSecond.setVisibility(VISIBLE);
                 viewSecond.setAlpha(0.0f);
             }
+            removeCallbacks(autoSlideOut);
             if (viewFirst.getAlpha() == 1.0) {
                 YoYo.with(Techniques.SlideOutRight)
                         .interpolate(new DecelerateInterpolator())
@@ -112,9 +90,27 @@ public class Switcher extends LinearLayout {
                 YoYo.with(Techniques.FadeIn)
                         .duration(200)
                         .playOn(viewFirst);
+                postDelayed(autoSlideOut, 3000);
             }
             if (switcherListener != null) switcherListener.switcher(v);
         });
+    }
+
+    private Runnable autoSlideOut = this::slideOut;
+
+    private void slideOut() {
+        YoYo.with(Techniques.SlideOutRight)
+                .duration(200)
+                .playOn(viewSecond);
+        YoYo.with(Techniques.FadeOut)
+                .duration(200)
+                .playOn(viewSecond);
+        YoYo.with(Techniques.SlideOutRight)
+                .duration(200)
+                .playOn(viewFirst);
+        YoYo.with(Techniques.FadeOut)
+                .duration(200)
+                .playOn(viewFirst);
     }
 
     private SwitcherListener switcherListener;

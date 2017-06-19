@@ -101,7 +101,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(boolean.class));//set
         properties.put(606, new DPProperty(DpMsgDefine.DPShareItem.class));
         properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));//set
-        properties.put(ID_601_ACCOUNT_STATE, new DPProperty(String.class));
+        properties.put(ID_601_ACCOUNT_STATE, new DPProperty(DpMsgDefine.DPMineMesg.class));
         properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, CAMERA));//清晰度,分辨率
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set

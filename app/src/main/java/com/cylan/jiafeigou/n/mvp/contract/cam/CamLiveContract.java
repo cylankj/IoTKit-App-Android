@@ -177,6 +177,8 @@ public interface CamLiveContract {
 
         void switchMic();
 
+        Observable<Boolean> switchStreamMode(int mode);
+
         /**
          * 预览专用？
          *

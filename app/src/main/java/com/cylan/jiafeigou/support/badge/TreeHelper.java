@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.support.badge;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.RawTree;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,8 +24,15 @@ public class TreeHelper {
     private TreeNode root;
 
 
-    public void markKeyAsRead(String key) {
-
+    public void markNodeRead(String key) {
+        if (!TextUtils.isEmpty(key) && RawTree.asRefreshTreeSet.contains(key)) {
+            TreeNode node = findTreeNodeByName(key);
+            if (node != null) node.setCacheData(new CacheObject().setCount(0).setObject(null));
+            PreferencesUtils.putString(key, key);
+            return;
+        }
+        TreeNode node = findTreeNodeByName(key);
+        if (node != null) node.setCacheData(new CacheObject().setObject(null).setCount(0));
     }
 
 
@@ -33,17 +43,18 @@ public class TreeHelper {
             final String value = RawTree.treeMap.get(key);
             TreeNode node = new TreeNode();
             node.setNodeName(key);
-            if (TextUtils.equals(key, "VideoAutoRecordFragment")) {
-                //
-            } else if (TextUtils.equals(key, "SafeProtectionFragment")) {
-
-            } else if (TextUtils.equals(key, "FirmwareUpdateActivity")) {
-
+            if (RawTree.asRefreshTreeSet.contains(key)) {
+                final String result = PreferencesUtils.getString(key);
+                if (TextUtils.isEmpty(result)) {
+                    //新的页面,需要标记红点.
+                    node.setCacheData(new CacheObject().setCount(1).setObject(1));
+                }
             }
             node.setParentName(value);
             treeNodeList.add(node);
         }
         initTree(treeNodeList);
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
     }
 
     private Map<String, TreeNode> treeNodeMap = new HashMap<>();

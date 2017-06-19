@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -44,10 +45,10 @@ public class BadgeProcessor extends AbstractProcessor {
         } else {
             return run = true;
         }
-        System.out.println("开始处理rawTree");
         collected(roundEnvironment);
         return true;
     }
+
 
     /**
      * 检查treeNode是否孤立
@@ -95,10 +96,15 @@ public class BadgeProcessor extends AbstractProcessor {
     private void collected(RoundEnvironment roundEnv) {
         Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Badge.class);
         Map<String, String> simpleMap = new HashMap<>();
+        TreeSet<String> asRefreshMap = new TreeSet<>();
         for (Element element : elements) {
             Badge test = element.getAnnotation(Badge.class);
             final String name = element.asType().toString();
             final String s = test.parentTag();
+            if (test.asRefresh()) {
+                asRefreshMap.add(name.substring(name.lastIndexOf(".") + 1));
+                System.out.println("asRefresh?" + name);
+            }
             if (simpleMap.containsKey(name))
                 throw new IllegalArgumentException("相同的key? " + name);
             System.out.println("result>>>" + name);
@@ -121,10 +127,19 @@ public class BadgeProcessor extends AbstractProcessor {
                 .initializer("new $T<>()", HashMap.class)
                 .build();
 
+        FieldSpec fieldSpecSet = FieldSpec.builder(ParameterizedTypeName.get(
+                ClassName.get(TreeSet.class),
+                ClassName.get(String.class)), treeSet)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .initializer("new $T<>()", TreeSet.class)
+                .build();
+
         TypeSpec fieldImpl = TypeSpec.classBuilder("RawTree")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addField(fieldSpec)
+                .addField(fieldSpecSet)
                 .addStaticBlock(getFieldBlock(simpleMap))
+                .addStaticBlock(addAsRefreshTree(asRefreshMap))
                 .build();
         try {
             JavaFile javaFile = JavaFile.builder("com.cylan.jiafeigou.misc", fieldImpl)
@@ -137,6 +152,17 @@ public class BadgeProcessor extends AbstractProcessor {
     }
 
     private static final String treeMap = "treeMap";
+    private static final String treeSet = "asRefreshTreeSet";
+
+
+    private CodeBlock addAsRefreshTree(Set<String> set) {
+        CodeBlock.Builder blockNameId = CodeBlock.builder();
+        Iterator<String> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            blockNameId.addStatement(treeSet + ".add($S)", iterator.next());
+        }
+        return blockNameId.build();
+    }
 
     private CodeBlock getFieldBlock(Map<String, String> nameMap) {
         CodeBlock.Builder blockNameId = CodeBlock.builder();

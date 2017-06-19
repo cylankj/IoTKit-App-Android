@@ -33,7 +33,6 @@ public class AfterLoginService extends IntentService {
      * 保存账号密码，登陆成功后保存。
      */
     public static final String ACTION_SAVE_ACCOUNT = "action_save_account";
-    public static final String ACTION_GET_ACCOUNT = "action_get_account";
     public static final String ACTION_SYN_OFFLINE_REQ = "action_offline_req";
 
     public static final String ACTION_CHECK_VERSION = "action_check_version";
@@ -47,12 +46,6 @@ public class AfterLoginService extends IntentService {
     public static void startSaveAccountAction(Context context) {
         Intent intent = new Intent(context, AfterLoginService.class);
         intent.putExtra(TAG, ACTION_SAVE_ACCOUNT);
-        context.startService(intent);
-    }
-
-    public static void startGetAccountAction(Context context) {
-        Intent intent = new Intent(context, AfterLoginService.class);
-        intent.putExtra(TAG, ACTION_GET_ACCOUNT);
         context.startService(intent);
     }
 
@@ -82,10 +75,7 @@ public class AfterLoginService extends IntentService {
         if (intent != null) {
             final String action = intent.getStringExtra(TAG);
             AppLogger.i("AfterLoginService: " + action + ",looper: " + (Looper.myLooper() == Looper.getMainLooper()));
-            if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
-                //登录成功,需要手动获取账号,如果去掉,请说明.
-                BaseApplication.getAppComponent().getCmd().getAccount();
-            } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
+            if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
                 Observable.just("go and do something")
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(new BindTask(), AppLogger::e);

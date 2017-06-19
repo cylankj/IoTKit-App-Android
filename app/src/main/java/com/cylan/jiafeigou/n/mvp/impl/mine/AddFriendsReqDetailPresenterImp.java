@@ -2,13 +2,16 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
+
+import java.util.ArrayList;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -62,7 +65,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
      * @return
      */
     @Override
-    public void checkAddReqOutTime(MineAddReqBean addRequestItems) {
+    public void checkAddReqOutTime(FriendsReqBean addRequestItems) {
         //true 过期 false未过期
         long oneMount = 30 * 24 * 60 * 60 * 1000L;
         if (oneMount - addRequestItems.time < 0) {
@@ -80,7 +83,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
      * @param addRequestItems
      */
     @Override
-    public void sendAddReq(MineAddReqBean addRequestItems) {
+    public void sendAddReq(FriendsReqBean addRequestItems) {
         rx.Observable.just(addRequestItems)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(mineAddReqBean -> {
@@ -103,15 +106,15 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
         return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getAddReqList -> {
-                    if (getAddReqList != null) {
-                        if (getAddReqList.arrayList.size() == 0) {
-                            // 未向我发送过请求
-                            if (getView() != null) getView().jump2AddReqFragment();
-                        } else {
-                            // 判断是否包含该账号
-                            if (getView() != null) getView().isHasAccountResult(getAddReqList);
-                        }
+                    ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                    if (ListUtils.getSize(arrayList) == 0) {
+                        // 未向我发送过请求
+                        if (getView() != null) getView().jump2AddReqFragment();
+                    } else {
+                        // 判断是否包含该账号
+                        if (getView() != null) getView().isHasAccountResult(getAddReqList);
                     }
+
                 }, AppLogger::e);
     }
 

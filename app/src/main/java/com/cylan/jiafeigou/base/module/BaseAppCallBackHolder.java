@@ -64,7 +64,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        for (JFGDevice device : jfgDevices) {
 //            if (device.uuid.contains("46267")) {
 //                device.alias = "hunt";
-//                device.pid = 39;
+//                device.pid = 1092;
 //            }
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
@@ -230,7 +230,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            req.markName = "zi lai?";
 //            arrayList.add(req);
 //        }
-        RxBus.getCacheInstance().post(new RxEvent.GetFriendList(ret, arrayList));
+        BaseApplication.getAppComponent().getSourceManager().setFriendsList(arrayList);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            req.time = System.currentTimeMillis() - RandomUtils.getRandom(30) * 3600 * 1000;
 //            arrayList.add(req);
 //        }
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList(ret, arrayList));
+        BaseApplication.getAppComponent().getSourceManager().setFriendsReqList(arrayList);
     }
 
     @Override

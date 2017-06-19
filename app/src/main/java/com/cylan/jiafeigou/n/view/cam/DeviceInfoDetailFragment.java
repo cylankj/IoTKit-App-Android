@@ -379,6 +379,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         try {
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
             rlHardwareUpdate.setTvSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
+
             rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
         }

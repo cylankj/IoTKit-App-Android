@@ -5,7 +5,6 @@ import android.content.Context;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -33,11 +32,6 @@ public interface CamSettingContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        void updateSettingTips(SettingTip settingTip);
-
-        SettingTip getSettingTips();
-//        void fetchCamInfo(final String uuid);
 
         String getDetailsSubTitle(Context context, boolean hasSdcard, int err);
 
