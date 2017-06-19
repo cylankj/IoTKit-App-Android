@@ -675,7 +675,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         Schedulers.io().createWorker().schedule(() -> {
             AppLogger.e("正在 seek");
             if (player != 0) {
-                JFGPlayer.Seek(seekBar.getProgress());
+                JFGPlayer.Seek(player, seekBar.getProgress());
             }
         });
     }

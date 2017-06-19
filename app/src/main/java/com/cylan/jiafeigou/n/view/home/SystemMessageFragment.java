@@ -179,7 +179,7 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
                 for (SysMsgBean bean : hasCheckData) {
                     messageAdapter.remove(bean);
                     if (bean.type == 601) {
-                        presenter.deleteServiceMsg(bean.type, Long.parseLong(bean.getTime()));
+                        presenter.deleteServiceMsg(bean.type, bean.getTime());
                     }
                     presenter.deleteOneItem(bean);
                 }

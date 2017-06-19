@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -113,6 +114,8 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
+        svHomeSettingWechat.showHint(node != null && node.getNodeCount() > 0);
         svHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
         customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
     }

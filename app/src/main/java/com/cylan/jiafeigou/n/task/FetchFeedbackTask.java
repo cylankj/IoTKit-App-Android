@@ -45,7 +45,7 @@ public class FetchFeedbackTask implements Action1<Object> {
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
                     node.setCacheData(new CacheObject().setCount(ListUtils.getSize(list)).setObject(list));
-                    RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
+                    RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
                     throw new RxEvent.HelperBreaker("结束本地调用");
                 }, AppLogger::e);
     }

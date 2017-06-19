@@ -46,6 +46,7 @@ public class FetchFriendsTask implements Action1<Object> {
                     node.setCacheData(new CacheObject().setCount(ListUtils.getSize(fReqList))
                             .setObject(fReqList));
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
+                    RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fReqList));
                     throw new RxEvent.HelperBreaker("yes, job done!");

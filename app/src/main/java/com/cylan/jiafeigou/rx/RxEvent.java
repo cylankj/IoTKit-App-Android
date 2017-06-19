@@ -1329,6 +1329,11 @@ public class RxEvent {
     public static class AllFriendsRsp {
     }
 
+    /**
+     * 用户刷新 mine 的红点
+     */
+    public static final class InfoUpdate{}
+
     public static class DeviceRecordStateChanged {
         public static final DeviceRecordStateChanged INSTANCE = new DeviceRecordStateChanged();
     }

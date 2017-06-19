@@ -42,7 +42,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
-import com.cylan.jiafeigou.n.task.SystemMsgTask;
+import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
@@ -758,7 +758,7 @@ public class DataSourceManager implements JFGSourceManager {
                         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
                             device = entry.getValue();
                             parameters = device.getQueryParams();
-                            AppLogger.e("正在查询设备属性:" + new Gson().toJson(parameters));
+                            AppLogger.d("正在查询设备属性:" + new Gson().toJson(parameters));
                             appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
                         }
                         appCmd.getShareList(uuidList);
@@ -1008,7 +1008,7 @@ public class DataSourceManager implements JFGSourceManager {
                     try {
                         AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
                         loginType = signType == null ? 0 : signType.type;
-                        Observable.just(new FetchFeedbackTask(), new FetchFriendsTask(), new SystemMsgTask())
+                        Observable.just(new FetchFeedbackTask(), new FetchFriendsTask(), new SysUnreadCountTask())
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
                     } catch (Exception e) {

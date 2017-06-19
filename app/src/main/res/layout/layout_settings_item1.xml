@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_settings_item_title"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:drawablePadding="@dimen/x10"
         android:gravity="center"
-        android:text="设备信息"
-        android:textColor="@color/color_black"
-        android:textSize="@dimen/sp16" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_settings_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawablePadding="@dimen/x10"
+            android:gravity="center"
+            android:text="设备信息"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp16" />
+
+        <View
+            android:id="@+id/v_hint"
+            android:layout_width="@dimen/x7"
+            android:layout_height="@dimen/y7"
+            android:layout_marginStart="@dimen/x8"
+            android:background="@drawable/hardware_update_point"
+            android:visibility="invisible" />
+    </LinearLayout>
 
     <com.cylan.jiafeigou.widget.SafeSwitchButton
         android:id="@+id/btn_item_switch"
@@ -29,4 +45,4 @@
         android:layout_height="@dimen/y1"
         android:layout_gravity="bottom"
         android:background="@color/color_e8e8e8" />
-</merge>
+</FrameLayout>

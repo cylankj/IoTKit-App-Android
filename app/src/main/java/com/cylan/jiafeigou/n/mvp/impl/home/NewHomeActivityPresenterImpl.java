@@ -59,7 +59,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
 
 
     private Subscription mineTabNewInfoRsp() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AllFriendsRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.InfoUpdate.class)
                 .subscribeOn(Schedulers.newThread())
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())

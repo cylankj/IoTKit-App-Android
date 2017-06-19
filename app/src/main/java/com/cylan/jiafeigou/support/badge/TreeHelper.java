@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.support.badge;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.RawTree;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.HashMap;
@@ -52,6 +54,7 @@ public class TreeHelper {
             treeNodeList.add(node);
         }
         initTree(treeNodeList);
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
     }
 
     private Map<String, TreeNode> treeNodeMap = new HashMap<>();

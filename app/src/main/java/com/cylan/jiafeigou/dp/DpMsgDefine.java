@@ -1049,14 +1049,15 @@ public class DpMsgDefine {
         @Index(4)
         public int pid;
 
-        public DPMineMesg() {
-        }
-
-        public DPMineMesg(String cid, boolean isDone, String account, String sn) {
-            this.cid = cid;
-            this.isDone = isDone;
-            this.account = account;
-            this.sn = sn;
+        @Override
+        public String toString() {
+            return "DPMineMesg{" +
+                    "cid='" + cid + '\'' +
+                    ", isDone=" + isDone +
+                    ", account='" + account + '\'' +
+                    ", sn='" + sn + '\'' +
+                    ", pid=" + pid +
+                    '}';
         }
     }
 
@@ -1067,12 +1068,12 @@ public class DpMsgDefine {
         @Index(1)
         public String content;
 
-        public DPSystemMesg() {
-        }
-
-        public DPSystemMesg(String title, String content) {
-            this.title = title;
-            this.content = content;
+        @Override
+        public String toString() {
+            return "DPSystemMesg{" +
+                    "title='" + title + '\'' +
+                    ", content='" + content + '\'' +
+                    '}';
         }
     }
 

@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers;
  * Created by hds on 17-6-7.
  */
 
-public class SystemMsgTask implements Action1<Object> {
+public class SysUnreadCountTask implements Action1<Object> {
     @Override
     public void call(Object o) {
         getSystemUnreadCount()
@@ -60,7 +60,7 @@ public class SystemMsgTask implements Action1<Object> {
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
                     node.setCacheData(new CacheObject().setCount(integer).setObject(integer));
-                    RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
+                    RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
                 }, AppLogger::e);
     }
 

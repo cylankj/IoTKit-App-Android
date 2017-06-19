@@ -22,6 +22,7 @@ public class SettingItemView1 extends FrameLayout {
      * 主标题
      */
     TextView tvTitle;
+    View viewHint;
     SafeSwitchButton switchButton;
 
     public SettingItemView1(Context context) {
@@ -37,6 +38,8 @@ public class SettingItemView1 extends FrameLayout {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SettingItemViewStyle);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item1, this, true);
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
+        viewHint = view.findViewById(R.id.v_hint);
+        viewHint.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_title_hint, false) ? VISIBLE : INVISIBLE);
         switchButton = (SafeSwitchButton) view.findViewById(R.id.btn_item_switch);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, true)
                 ? VISIBLE : GONE);
@@ -72,6 +75,10 @@ public class SettingItemView1 extends FrameLayout {
 
     public void setChecked(boolean checked, boolean toggle) {
         switchButton.setChecked(checked, toggle);
+    }
+
+    public void showHint(boolean show) {
+        viewHint.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
     public boolean isChecked() {

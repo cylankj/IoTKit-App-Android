@@ -165,10 +165,8 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
         };
     }
 
-    public String parseTime(String times) {
-        long timem = Long.parseLong(times);
-        String wonderTime = TimeUtils.getWonderTime(timem);
-        return wonderTime;
+    public String parseTime(long times) {
+        return TimeUtils.getWonderTime(times);
     }
 
     public boolean compareTime(String preStrTime, String nowStrTime) {
