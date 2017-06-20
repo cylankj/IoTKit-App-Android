@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.support.annotation.IntDef;
 
-import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
 
@@ -29,13 +28,17 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPE
 
 public interface PanoramaCameraContact {
 
-    interface View extends PropertyView, ViewableView {
+    interface View extends ViewableView {
 
         void onBellBatteryDrainOut();
 
         void onDeviceBatteryChanged(Integer battery);
 
         void onSDFormatResult(int code);
+
+        void onCheckDeviceUpgradeResult(boolean b);
+
+        void onDeviceInitFinish();
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
@@ -70,6 +73,7 @@ public interface PanoramaCameraContact {
             int MODE_LONG = 2;
         }
 
+
         void onShowPreviewPicture(String picture);
 
         void onSwitchSpeedMode(@SPEED_MODE int mode);
@@ -82,7 +86,7 @@ public interface PanoramaCameraContact {
 
         void onRefreshViewModeUI(int viewMode, boolean enable);
 
-        void onRefreshControllerView(boolean enable);
+        void onRefreshControllerView(boolean enable, boolean all);
 
         /**
          * @param connectionType -1:根据设备网络和真实网络情况决定是否显示 banner

@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.request.GetRequest;
@@ -48,6 +47,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onViewAttached(PanoramaAlbumContact.View view) {
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
+        BasePanoramaApiHelper.getInstance().init(uuid);
         DownloadManager.getInstance().getHandler().setGlobalDownloadListener(new DownloadListener() {
             @Override
             public void onProgress(DownloadInfo downloadInfo) {
@@ -167,7 +167,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         mView.onAppend(items, time == 0, true, fetchLocation);
                     }, e -> {
                         AppLogger.e(e.getMessage());
-                        ToastUtil.showNegativeToast("获取设备文件列表超时");
+//                        ToastUtil.showNegativeToast("获取设备文件列表超时");
                     });
         } else if (fetchLocation == 1) {
             fetchSubscription = loadFromServer(time)
@@ -177,7 +177,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         mView.onAppend(items, time == 0, true, fetchLocation);
                     }, e -> {
                         AppLogger.e(e.getMessage());
-                        ToastUtil.showNegativeToast("获取设备文件列表超时");
+//                        ToastUtil.showNegativeToast("获取设备文件列表超时");
                     });
         } else if (fetchLocation == 2) {
             fetchSubscription = loadFromLocal(time)

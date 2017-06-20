@@ -2,15 +2,23 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.widget.PopupWindowCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,8 +33,6 @@ import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
-import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
@@ -74,8 +80,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     private LinearLayoutManager layoutManager;
     private boolean loading;
     private boolean isEditMode = false;
-    private RoundRectPopup albumModeSelectPop;
+    private PopupWindow albumModeSelectPop;
     private LayoutBottomFooterBinding footerBinding;
+    private RadioGroup radioGroup;
+    private RadioButton menuItemAlbumPopBoth;
+    private RadioButton menuItemAlbumPopPhoto;
+    private RadioButton menuItemAlbumPopPanorama;
 
 
     @Override
@@ -137,7 +147,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
-
+//        swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -151,22 +161,40 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         activityComponent.inject(this);
     }
 
-
     @OnClick(R.id.act_panorama_album_toolbar_header_title)
     public void showAlbumViewModePop(View view) {
         ViewUtils.deBounceClick(view);
-//        if (albumModeSelectPop == null) {
-        albumModeSelectPop = new RoundRectPopup(this);
-        albumModeSelectPop.setDismissListener((int id) -> {
-            albumViewMode = resIdToMode(id);
-            toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-            swipeRefreshLayout.setRefreshing(true);
-            presenter.fetch(0, albumViewMode);
-        });
-        albumModeSelectPop.setMode(albumViewMode);
-//        }
-        albumModeSelectPop.setCheckIndex(modeToResId(albumViewMode, false));
-        albumModeSelectPop.showOnAnchor(toolbarAlbumViewMode, RelativePopupWindow.VerticalPosition.ALIGN_TOP, RelativePopupWindow.HorizontalPosition.ALIGN_LEFT);
+        if (albumModeSelectPop == null) {
+            View contentView = LayoutInflater.from(this).inflate(R.layout.layout_panorama_album_pop_menu, null);
+            contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            radioGroup = (RadioGroup) contentView.findViewById(R.id.menu_album_pop_container);
+            menuItemAlbumPopBoth = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_both);
+            menuItemAlbumPopPhoto = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_photo);
+            menuItemAlbumPopPanorama = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_panorama);
+            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                ((RadioButton) group.findViewById(checkedId)).setChecked(true);
+                albumViewMode = resIdToMode(checkedId);
+                if (albumModeSelectPop != null) albumModeSelectPop.dismiss();
+                toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+                swipeRefreshLayout.setRefreshing(true);
+                presenter.fetch(0, albumViewMode);
+            });
+            albumModeSelectPop = new PopupWindow(contentView, contentView.getMeasuredWidth(), contentView.getMeasuredHeight());
+            albumModeSelectPop.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            albumModeSelectPop.setOutsideTouchable(true);
+            albumModeSelectPop.setFocusable(true);
+            albumModeSelectPop.setOnDismissListener(() -> setWindowAlpha(1));
+
+        }
+        radioGroup.check(modeToResId(albumViewMode, true));
+        setWindowAlpha(0.4f);
+        PopupWindowCompat.showAsDropDown(albumModeSelectPop, toolbarAlbumViewMode, 0, -toolbarAlbumViewMode.getMeasuredHeight(), Gravity.LEFT | Gravity.BOTTOM);
+    }
+
+    private void setWindowAlpha(float alpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = alpha; //0.0-1.0
+        getWindow().setAttributes(lp);
     }
 
     private int modeToResId(@ALBUM_VIEW_MODE int mode, boolean isPop) {
@@ -386,6 +414,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
+        if (albumModeSelectPop != null) {
+            radioGroup.check(modeToResId(mode, true));
+            menuItemAlbumPopPhoto.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PHOTO || mode == ALBUM_VIEW_MODE.MODE_BOTH);
+            menuItemAlbumPopBoth.setEnabled(mode == ALBUM_VIEW_MODE.MODE_BOTH);
+            menuItemAlbumPopPanorama.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PANORAMA || mode == ALBUM_VIEW_MODE.MODE_BOTH);
+        }
         panoramaAdapter.notifyDataSetChanged();
         if (albumViewMode == mode) return;
 //        if (report) {
@@ -395,7 +429,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         presenter.fetch(0, albumViewMode = mode);
         toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
         if (albumModeSelectPop != null && report) {
-            albumModeSelectPop.setMode(mode);
+
         }
     }
 

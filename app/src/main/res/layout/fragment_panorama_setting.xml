@@ -77,6 +77,7 @@
             android:layout_marginEnd="@dimen/y20"
             android:layout_marginStart="@dimen/y20"
             android:clickable="true"
+            android:visibility="gone"
             hunt:sv_image_src="@drawable/setting_icon_logo"
             hunt:sv_title="LOGO 选择"
             hunt:sv_v_divider="false" />

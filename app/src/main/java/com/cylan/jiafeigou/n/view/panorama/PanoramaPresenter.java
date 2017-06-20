@@ -52,15 +52,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Device device = sourceManager.getDevice(uuid);
-        if (device != null) {
-            mView.onShowProperty(device);
-        }
-    }
-
-    @Override
     public boolean isApiAvailable() {
         RxEvent.PanoramaApiAvailable event = RxBus.getCacheInstance().getStickyEvent(RxEvent.PanoramaApiAvailable.class);
         return event != null && event.ApiType >= 0;
@@ -140,6 +131,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     status.err = statusInt.err;
                                     status.hasSdcard = statusInt.hasSdcard == 1;
                                 }
+                                AppLogger.e("204:" + new Gson().toJson(status));
                                 if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
@@ -153,6 +145,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 } else if (charge != null && charge == 0) {
                                     mView.onDeviceBatteryChanged(battery);
                                 }
+                                AppLogger.e("charge:" + charge);
                             } else if (msg.id == 206) {
                                 Integer battery = unpackData(msg.packValue, int.class);
                                 if (battery != null) {
@@ -164,6 +157,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 } else if (this.battery > 20) {
                                     notifyBatteryLow = true;
                                 }
+                                AppLogger.e("battery:" + battery);
                             }
                         }
                     } catch (Exception e) {
@@ -179,9 +173,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ApiType < 0) {
-                        mView.onRefreshControllerView(false);
+                        mView.onRefreshControllerView(false, false);
                     } else {
-                        mView.onRefreshControllerView(true);
+                        mView.onRefreshControllerView(true, false);
                         checkAndInitRecord();
                     }
                 }, AppLogger::e);
@@ -225,7 +219,17 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
-        subscribe = BasePanoramaApiHelper.getInstance().getRecStatus()
+        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> {
+                    boolean isUpgrade = ret != null && ret.upgradeStatus == 1;
+//                    isUpgrade = true;
+                    mView.onCheckDeviceUpgradeResult(isUpgrade);
+                    return !isUpgrade;
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus())
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
@@ -279,9 +283,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 this.battery = bat.battery;
                                 Device device = sourceManager.getDevice(uuid);
                                 DPEntity property = device.getProperty(206);
-                                if (property != null) {
-                                    property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
+                                if (property == null) {
+                                    device.getEmptyProperry(206);
                                 }
+                                property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
                                 if (bat.battery < 20 && isFirst) {//检查电量
                                     isFirst = false;
                                     DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
@@ -301,7 +306,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         })
 
                 )
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
+                    mView.onDeviceInitFinish();//初始化成功,可以播放视频了
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
@@ -403,12 +410,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .map(count -> (int) (count / 2) + offset)
                 .takeUntil(second -> {
                     if (shouldRefreshRecord) {
+                        mView.onRefreshVideoRecordUI(second, type);
                         if (type == PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT && second >= 8) {
                             shouldRefreshRecord = false;
-                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+//                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
                             DataSourceManager.getInstance().removeDeviceState(uuid);
                         }
-                        mView.onRefreshVideoRecordUI(second, type);
                     }
                     return !shouldRefreshRecord;
                 })
