@@ -913,6 +913,7 @@
   <string name="USE_HELP">使用帮助</string>
   <string name="Unconnect_Network">您的设备未连接移动网络，或Wi&#8211;Fi网络</string>
   <string name="VALID_STORAGE">存储空间</string>
+  <string name="VIDEO_FirmwareUpdating">固件升级中&#8230;</string>
   <string name="VIDEO_REFRESHING">正在加载，请稍后</string>
   <string name="VIDEO_SD_DESC">Micro SD卡需要初始化，才能存储视频</string>
   <string name="WARN_TIME">报警时间段</string>

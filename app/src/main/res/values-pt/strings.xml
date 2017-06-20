@@ -511,8 +511,8 @@
   <string name="SETTING">Salvando ajustes&#8230;</string>
   <string name="SETTINGS">Ajustes</string>
   <string name="SETTINGS_1">Ajustes</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Desligar não vai receber mais mensagens empurradas. Se quiser se desvincular, por favor vá ao Wechat e cancele o seguimento do número público\"serviço do wechat de Clever Dog\".</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Concentre&#8211;se na conta WeChat \"serviço do wechat de Clever Dog\" e vincule, depois que o sucesso da antiga conta WeChat não receberá mais a mensagem push</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Desligar não vai receber mais mensagens empurradas. Se quiser se desvincular, por favor vá ao Wechat e cancele o seguimento do número público\"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Concentre&#8211;se na conta WeChat \"加菲狗官微服务\" e vincule, depois que o sucesso da antiga conta WeChat não receberá mais a mensagem push</string>
   <string name="SETTING_DIRECTION">Direção do vídeo</string>
   <string name="SETTING_FREE">Ajustar sensor de movimento e alertas de cada dispositivo</string>
   <string name="SETTING_RECORD">Gravação automática</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Abra as instruções</string>
   <string name="Start_instructions_A">Nas Contas Oficiais do WeChat no e&#8211;mail vinculativo Clever Dog, você pode abrir esta função.</string>
   <string name="Start_instructions_B">Proceda da seguinte forma:</string>
-  <string name="Start_instructions_C">1. Por favor, preste atenção ao número público do WeChat \"serviço do wechat de Clever Dog\"</string>
-  <string name="Start_instructions_D">Método 1: clique no WeChat no canto superior direito do \"+\"> Adicionar contatos> Contas oficiais, pesquise \"serviço do wechat de Clever Dog\" e depois em questão.</string>
+  <string name="Start_instructions_C">1. Por favor, preste atenção ao número público do WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Método 1: clique no WeChat no canto superior direito do \"+\"> Adicionar contatos> Contas oficiais, pesquise \"加菲狗官微服务\" e depois em questão.</string>
   <string name="Start_instructions_E">Método 2: captura de tela desta página ou salve o seguinte código bidimensional no álbum, na atenção de varredura WeChat varredura.</string>
   <string name="Start_instructions_F">2. Ligue a conta</string>
-  <string name="Start_instructions_G">Atenção \"serviço do wechat de Clever Dog\", entre na página principal, clique na barra de menu do serviço, selecione a conta obrigatória.</string>
+  <string name="Start_instructions_G">Atenção \"加菲狗官微服务\", entre na página principal, clique na barra de menu do serviço, selecione a conta obrigatória.</string>
   <string name="Start_instructions_H">Ligar conta</string>
   <string name="Start_instructions_I">Digite a conta de e&#8211;mail do telefone inteligente para se ligar, como esquecer a senha, vá para o cliente do cão inteligente, de volta</string>
   <string name="Switch_Mode">Mude para o modo direto para ver o conteúdo de filmagem</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Ajuda</string>
   <string name="Unconnect_Network">Seu dispositivo não está conectado a uma rede móvel ou a uma rede Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Armazenamento</string>
+  <string name="VIDEO_FirmwareUpdating">Atualização de Firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Carregando. Por favor aguarde&#8230;</string>
   <string name="VIDEO_SD_DESC">Formatação do cartão microSD é necessária para gravar vídeos</string>
   <string name="WARN_TIME">Período de alarme</string>

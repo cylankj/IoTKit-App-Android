@@ -511,8 +511,8 @@
   <string name="SETTING">In Einstellung&#8230;</string>
   <string name="SETTINGS">Einstellung</string>
   <string name="SETTINGS_1">Funktionseinstellung</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Nach dem Deaktivieren werden Sie die Wechat&#8211;Benachrichtigung nicht mehr erhalten. Möchten Sie die Verbindung trennen, bitte gehen Sie zu Wechat und das offizielle Konto \"Clever Dog\" nicht mehr folgen.</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Bitte konzentriere dich auf das WeChat&#8211;Konto \"Clever Dog WeChat Official Account\" und binden, nach dem Erfolg des alten WeChat&#8211;Kontos wird die Meldung nicht mehr erhalten</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Nach dem Deaktivieren werden Sie die Wechat&#8211;Benachrichtigung nicht mehr erhalten. Möchten Sie die Verbindung trennen, bitte gehen Sie zu Wechat und das offizielle Konto \"加菲狗官微服务\" nicht mehr folgen.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Bitte konzentriere dich auf das WeChat&#8211;Konto \"加菲狗官微服务\" und binden, nach dem Erfolg des alten WeChat&#8211;Kontos wird die Meldung nicht mehr erhalten</string>
   <string name="SETTING_DIRECTION">Richtung des Videos</string>
   <string name="SETTING_FREE">Bewegungserkennung und Alarm vom Einzelgerät einstellen</string>
   <string name="SETTING_RECORD">Automatische Videoaufnahme</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Öffnen Sie die Anweisungen</string>
   <string name="Start_instructions_A">In den WeChat Offiziellen Konten in der verbindlichen Clever Dog E&#8211;Mail können Sie diese Funktion öffnen.</string>
   <string name="Start_instructions_B">Gehen Sie wie folgt vor:</string>
-  <string name="Start_instructions_C">1. Bitte achten Sie auf WeChat öffentliche Nummer \"Clever Dog WeChat Official Account\"</string>
-  <string name="Start_instructions_D">Methode 1: klicke auf die WeChat in der oberen rechten Ecke des \"+\"> Kontakte hinzufügen> Offizielle Konten, suche \"Clever Dog WeChat Official Account\" und dann besorgt.</string>
+  <string name="Start_instructions_C">1. Bitte achten Sie auf WeChat öffentliche Nummer \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Methode 1: klicke auf die WeChat in der oberen rechten Ecke des \"+\"> Kontakte hinzufügen> Offizielle Konten, suche \"加菲狗官微服务\" und dann besorgt.</string>
   <string name="Start_instructions_E">Methode 2: Screenshot dieser Seite oder speichern Sie den folgenden zweidimensionalen Code auf das Album, in der WeChat Sweep Sweep Aufmerksamkeit.</string>
   <string name="Start_instructions_F">2. Bindekonto</string>
-  <string name="Start_instructions_G">Achtung \"Clever Dog WeChat Official Account\" Offizielle Konten, geben Sie die Hauptseite, klicken Sie auf die Menüleiste des Dienstes, wählen Sie das verbindliche Konto.</string>
+  <string name="Start_instructions_G">Achtung \"加菲狗官微服务\" Offizielle Konten, geben Sie die Hauptseite, klicken Sie auf die Menüleiste des Dienstes, wählen Sie das verbindliche Konto.</string>
   <string name="Start_instructions_H">Bindekonto</string>
   <string name="Start_instructions_I">Bitte geben Sie die Clever Hund email Konto zu binden, wie vergessen Sie das Passwort bitte gehen Sie an die Clever Hund Client zurück</string>
   <string name="Switch_Mode">Bitte wechseln Sie zum direkten Modus, um den Aufnahmeinhalt anzuzeigen</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Verwenden der Hilfe</string>
   <string name="Unconnect_Network">Ihr Gerät ist nicht mit einem Mobilfunknetz oder einem Wi&#8211;Fi&#8211;Netzwerk verbunden</string>
   <string name="VALID_STORAGE">Speicher</string>
+  <string name="VIDEO_FirmwareUpdating">Firmware Updating&#8230;</string>
   <string name="VIDEO_REFRESHING">Wird geladen, einen Moment bitte</string>
   <string name="VIDEO_SD_DESC">Micro SD&#8211;Karte nach der Initialisierung verwendbar</string>
   <string name="WARN_TIME">Zeit des Alarms</string>

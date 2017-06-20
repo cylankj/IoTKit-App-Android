@@ -511,8 +511,8 @@
   <string name="SETTING">Đang cài đặt&#8230;</string>
   <string name="SETTINGS">Cài đặt</string>
   <string name="SETTINGS_1">Cài đặt</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Nếu đóng cửa, nó không thể nhận được WeChat đẩy. Hủy bỏ nó bằng cách hủy theo dõi \"Tài khoản Chính thức của Clever Dog WeChat\".</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Hãy tập trung vào tài khoản WeChat \"Tài khoản Chính thức của Clever Dog WeChat\" và ràng buộc, sau khi thành công của tài khoản WeChat cũ sẽ không còn nhận được thông báo push</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Nếu đóng cửa, nó không thể nhận được WeChat đẩy. Hủy bỏ nó bằng cách hủy theo dõi \"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Hãy tập trung vào tài khoản WeChat \"加菲狗官微服务\" và ràng buộc, sau khi thành công của tài khoản WeChat cũ sẽ không còn nhận được thông báo push</string>
   <string name="SETTING_DIRECTION">Hướng video</string>
   <string name="SETTING_FREE">Cài phát hiện chuyển động và báo động của thiết bị</string>
   <string name="SETTING_RECORD">Đang lưu Video</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Mở hướng dẫn</string>
   <string name="Start_instructions_A">Trong tài khoản chính thức của WeChat trong email Clever Dog ràng buộc, bạn có thể mở chức năng này.</string>
   <string name="Start_instructions_B">Tiến hành như sau:</string>
-  <string name="Start_instructions_C">1. Hãy chú ý đến số WeChat công cộng \"Tài khoản Chính thức của Clever Dog WeChat\"</string>
-  <string name="Start_instructions_D">Phương pháp 1: nhấp vào WeChat ở góc trên bên phải của \"+\"> Thêm địa chỉ liên hệ> Tài khoản chính thức, tìm kiếm \"Tài khoản Chính thức của Clever Dog WeChat\" và sau đó liên quan.</string>
+  <string name="Start_instructions_C">1. Hãy chú ý đến số WeChat công cộng \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Phương pháp 1: nhấp vào WeChat ở góc trên bên phải của \"+\"> Thêm địa chỉ liên hệ> Tài khoản chính thức, tìm kiếm \"加菲狗官微服务\" và sau đó liên quan.</string>
   <string name="Start_instructions_E">Phương pháp 2: ảnh chụp màn hình của trang này hoặc lưu mã hai chiều sau đây vào album, trong sự chú ý quét của WeChat.</string>
   <string name="Start_instructions_F">2. Liên kết tài khoản</string>
-  <string name="Start_instructions_G">Chú ý \"Tài khoản Chính thức của Clever Dog WeChat\" Tài khoản chính thức, nhập trang chính, nhấp vào thanh trình đơn của dịch vụ, chọn tài khoản ràng buộc.</string>
+  <string name="Start_instructions_G">Chú ý \"加菲狗官微服务\" Tài khoản chính thức, nhập trang chính, nhấp vào thanh trình đơn của dịch vụ, chọn tài khoản ràng buộc.</string>
   <string name="Start_instructions_H">Liên kết tài khoản</string>
   <string name="Start_instructions_I">Vui lòng nhập tài khoản điện tài khoản Clever dog để ràng buộc, chẳng hạn như quên mật khẩu, hãy chuyển đến khách hàng của Clever dog</string>
   <string name="Switch_Mode">Hãy chuyển sang chế độ trực tiếp để xem nội dung chụp</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Trợ giúp</string>
   <string name="Unconnect_Network">Thiết bị của bạn không được kết nối với mạng di động hoặc mạng Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Có bộ nhớ lưu trữ</string>
+  <string name="VIDEO_FirmwareUpdating">Cập nhật firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">ĐANG TẢI</string>
   <string name="VIDEO_SD_DESC">Cần định dạng thẻ nhớ để có thể lưu hình vào</string>
   <string name="WARN_TIME">Thời gian cảnh báo</string>

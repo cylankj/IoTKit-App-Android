@@ -511,8 +511,8 @@
   <string name="SETTING">Pengaturan&#8230;</string>
   <string name="SETTINGS">Pengaturan</string>
   <string name="SETTINGS_1">Pengaturan</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Jika ditutup, maka tidak bisa menerima dorongan WeChat. Unbinding dengan unfollowing \"Clever Dog WeChat Official Account\".</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Harap fokus pada akun WeChat \"Cler Dog WeChat Official Account\" dan mengikat, setelah kesuksesan akun WeChat lama tidak akan lagi menerima pesan push.</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Jika ditutup, maka tidak bisa menerima dorongan WeChat. Unbinding dengan unfollowing \"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Harap fokus pada akun WeChat \"加菲狗官微服务\" dan mengikat, setelah kesuksesan akun WeChat lama tidak akan lagi menerima pesan push.</string>
   <string name="SETTING_DIRECTION">Arah video</string>
   <string name="SETTING_FREE">Set deteksi gerak dan alarm perangkat</string>
   <string name="SETTING_RECORD">Rekaman video</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Buka instruksinya</string>
   <string name="Start_instructions_A">Dalam Akun Resmi WeChat di email Clever Dog yang mengikat, Anda dapat membuka fungsi ini.</string>
   <string name="Start_instructions_B">Lanjutkan sebagai berikut:</string>
-  <string name="Start_instructions_C">1. Mohon memperhatikan nomor resmi WeChat \"Clever Dog WeChat Official Account\"</string>
-  <string name="Start_instructions_D">Metode 1: klik pada WeChat di sudut kanan atas \"+\"> Tambahkan Kontak> Akun Resmi, cari \"Akun Pejabat WeChat Clever Dog\" dan kemudian prihatin.</string>
+  <string name="Start_instructions_C">1. Mohon memperhatikan nomor resmi WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Metode 1: klik pada WeChat di sudut kanan atas \"+\"> Tambahkan Kontak> Akun Resmi, cari \"加菲狗官微服务\" dan kemudian prihatin.</string>
   <string name="Start_instructions_E">Metode 2: tangkapan layar halaman ini atau simpan kode dua dimensi berikut ke album, di sapaan WeChat menyapu.</string>
   <string name="Start_instructions_F">2. Bind account</string>
-  <string name="Start_instructions_G">Perhatian \"Akun Administratif Akun Khusus Clever Dog WeChat \", masukkan halaman utama, klik bilah menu layanan, pilih akun pengikat.</string>
+  <string name="Start_instructions_G">Perhatian \"加菲狗官微服务\", masukkan halaman utama, klik bilah menu layanan, pilih akun pengikat.</string>
   <string name="Start_instructions_H">Bind account</string>
   <string name="Start_instructions_I">Harap masukkan akun email anjing Pintar untuk mengikat, seperti lupa kata sandi, tolong masuk ke klien anjing Pintar</string>
   <string name="Switch_Mode">Silahkan beralih ke mode langsung untuk melihat konten pemotretan</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Bantuan</string>
   <string name="Unconnect_Network">Perangkat Anda tidak terhubung ke jaringan selular atau jaringan Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Penyimpanan Valid</string>
+  <string name="VIDEO_FirmwareUpdating">Firmware updating&#8230;</string>
   <string name="VIDEO_REFRESHING">Sedang memuat</string>
   <string name="VIDEO_SD_DESC">SD Card diperlukan untuk menyimpan informasi video</string>
   <string name="WARN_TIME">Waktu peringatan</string>

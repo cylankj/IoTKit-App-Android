@@ -512,7 +512,7 @@
   <string name="SETTINGS">Ajustes</string>
   <string name="SETTINGS_1">Ajustes</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Al cerrar no podrá recibir mensajes de WeChat. Para desenlazar va a WeChat para dejar de seguir la cuenta de suscripción de Servicio Oficial de Clever Dog.</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Por favor, enfóquese en la cuenta de WeChat \"cuenta oficial de WeChat del perro listo\" y vincule, después del éxito de la antigua cuenta de WeChat ya no recibirá el mensaje push</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Por favor, enfóquese en la cuenta de WeChat \"加菲狗官微服务\" y vincule, después del éxito de la antigua cuenta de WeChat ya no recibirá el mensaje push</string>
   <string name="SETTING_DIRECTION">Dirección del vídeo</string>
   <string name="SETTING_FREE">Ajuste de la alarma y la detección del movimiento de cada dispositivo individual como quiera</string>
   <string name="SETTING_RECORD">Grabación automática</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Abra las instrucciones</string>
   <string name="Start_instructions_A">En las cuentas oficiales de WeChat en el correo electrónico vinculante de Clever Dog, puede abrir esta función.</string>
   <string name="Start_instructions_B">Proceder de la siguiente:</string>
-  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \"cuenta oficial de WeChat del perro listo\"</string>
-  <string name="Start_instructions_D">Método 1: haga clic en el WeChat en la esquina superior derecha del \"+\"> Añadir contactos> Cuentas oficiales, busque \"cuenta oficial de WeChat del perro listo\" y luego se refiere.</string>
+  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Método 1: haga clic en el WeChat en la esquina superior derecha del \"+\"> Añadir contactos> Cuentas oficiales, busque \"加菲狗官微服务\" y luego se refiere.</string>
   <string name="Start_instructions_E">Método 2: captura de pantalla de esta página o guardar el siguiente código bidimensional en el álbum, en el barrido WeChat atención.</string>
   <string name="Start_instructions_F">2. Cuenta enlazada</string>
-  <string name="Start_instructions_G">Atención \"cuenta oficial de WeChat del perro listo\" Cuentas oficiales, ingrese a la página principal, haga clic en la barra de menús del servicio, seleccione la cuenta de vinculación.</string>
+  <string name="Start_instructions_G">Atención \"加菲狗官微服务\" Cuentas oficiales, ingrese a la página principal, haga clic en la barra de menús del servicio, seleccione la cuenta de vinculación.</string>
   <string name="Start_instructions_H">Cuenta enlazada</string>
   <string name="Start_instructions_I">Por favor ingrese la cuenta de correo electrónico del perro Clever para enlazar, como olvidar la contraseña, por favor vaya al cliente Clever dog back</string>
   <string name="Switch_Mode">Cambie al modo directo para ver el contenido de disparo</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Ayuda</string>
   <string name="Unconnect_Network">Su dispositivo no está conectado a una red móvil oa una red Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Almacenamiento disponible</string>
+  <string name="VIDEO_FirmwareUpdating">Actualización de firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Cargando, espere un momento</string>
   <string name="VIDEO_SD_DESC">Se necesita una inicialización para que vaya bien la función de guardar vídeos en la Tarjeta Micro SD</string>
   <string name="WARN_TIME">Horario de alarma</string>

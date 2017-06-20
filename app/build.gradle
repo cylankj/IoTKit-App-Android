@@ -3,7 +3,6 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 apply plugin: 'com.github.typ0520.fastdex'
-//apply plugin: 'io.fabric'
 
 ////多渠道包没人愿意维护多渠道包，算了，删了吧。
 apply plugin: 'packer'
@@ -289,7 +288,6 @@ android {
 
 
 repositories {
-//    maven { url 'https://maven.fabric.io/public' }
     flatDir {
         dirs 'libs'
     }
@@ -345,18 +343,19 @@ dependencies {
     compile rootProject.ext.switchButton
     //glide
     compile rootProject.ext.glide
-    //进程保活
-    compile(name: 'LibMarsdaemon-release', ext: 'aar')
-    compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
     //渠道包
-    //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
     compile files('libs/mid-sdk-2.3.jar')
     testCompile files('libs/javassist.jar')
-    //    compile 'com.cylan.iot.sdk:sdkLib:213'
     //不需要指定aar名字
+    //进程保活
+//    compile(name: 'LibMarsdaemon-release', ext: 'aar')
+//    compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
     fileTree(dir: 'libs', include: '**/*.aar')
             .each { File file ->
+//        println("aar-libs-"+file.getName())
+//        String compileWay = file.getName().contains("debug") ? "debugCompile" : (
+//                file.getName().contains("release") ? "releaseCompile" : "compile")
         dependencies.add("compile", [
                 name: file.name.lastIndexOf('.').with {
                     it != -1 ? file.name[0..<it] : file.name

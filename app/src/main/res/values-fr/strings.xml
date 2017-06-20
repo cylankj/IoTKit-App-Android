@@ -511,8 +511,8 @@
   <string name="SETTING">Installation&#8230;</string>
   <string name="SETTINGS">Réglages</string>
   <string name="SETTINGS_1">Réglages</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Vous ne pouvez recevoir plus les messages poussés de Wechat si vous le fermez.Si vous voulez annuler la liaison, veuillez annuler tout à bord le compte public du service officiel du Chien Intelligent .</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Concentrez&#8211;vous sur le compte WeChat \"bord le compte public du service officiel du Chien Intelligent\" et liez, après que le succès de l\'ancien compte WeChat ne recevra plus le message push</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Vous ne pouvez recevoir plus les messages poussés de Wechat si vous le fermez.Si vous voulez annuler la liaison, veuillez annuler tout à bord \"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Concentrez&#8211;vous sur le compte WeChat \"加菲狗官微服务\" et liez, après que le succès de l\'ancien compte WeChat ne recevra plus le message push</string>
   <string name="SETTING_DIRECTION">Orientation</string>
   <string name="SETTING_FREE">Activer la détection de mouvement et l\'alarme d\'un appareil</string>
   <string name="SETTING_RECORD">Enregistrement automatique</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Ouvrez les instructions</string>
   <string name="Start_instructions_A">Dans les comptes officiels de WeChat dans le courrier électronique Clever Dog, vous pouvez ouvrir cette fonction.</string>
   <string name="Start_instructions_B">Procédez comme suit:</string>
-  <string name="Start_instructions_C">1. Veuillez prêter attention au numéro public de WeChat \"bord le compte public du service officiel du Chien Intelligent\"</string>
-  <string name="Start_instructions_D">Méthode 1: cliquez sur le bouton WeChat dans le coin supérieur droit du \"+\"> Ajouter des contacts> Comptes officiels, recherchez \"bord le compte public du service officiel du Chien Intelligent\" et ensuite concerné.</string>
+  <string name="Start_instructions_C">1. Veuillez prêter attention au numéro public de WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Méthode 1: cliquez sur le bouton WeChat dans le coin supérieur droit du \"+\"> Ajouter des contacts> Comptes officiels, recherchez \"加菲狗官微服务\" et ensuite concerné.</string>
   <string name="Start_instructions_E">Méthode 2: capture d\'écran de cette page ou enregistrez le code bidimensionnel suivant dans l\'album, dans l\'attention du balayage WeChat.</string>
   <string name="Start_instructions_F">2. Lier le compte</string>
-  <string name="Start_instructions_G">À l\'attention des Comptes officiels \"bord le compte public du service officiel du Chien Intelligent\", entrez la page principale, cliquez sur la barre de menu du service, sélectionnez le compte reliant.</string>
+  <string name="Start_instructions_G">À l\'attention des Comptes officiels \"加菲狗官微服务\", entrez la page principale, cliquez sur la barre de menu du service, sélectionnez le compte reliant.</string>
   <string name="Start_instructions_H">Lier le compte</string>
   <string name="Start_instructions_I">Entrez le compte de courrier électronique intelligent de Chipper pour lier, par exemple, oubliez le mot de passe, allez chez le client de chien intelligent.</string>
   <string name="Switch_Mode">Passez en mode direct pour afficher le contenu de la prise de vue</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Aide</string>
   <string name="Unconnect_Network">Votre appareil n\'est pas connecté à un réseau mobile ou à un réseau Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Stockage disponible</string>
+  <string name="VIDEO_FirmwareUpdating">Mise à jour du firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Chargement</string>
   <string name="VIDEO_SD_DESC">La carte Micro SD doit être initialisée avant de pouvoir stocker de la vidéo</string>
   <string name="WARN_TIME">Période D\'Alarme</string>
