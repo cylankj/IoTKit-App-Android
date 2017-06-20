@@ -274,6 +274,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
      * 隐藏加载进度
      */
     public void hideLoadingDialog() {
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     public void showLongClickDialog(final int position, final FriendsReqBean bean) {
