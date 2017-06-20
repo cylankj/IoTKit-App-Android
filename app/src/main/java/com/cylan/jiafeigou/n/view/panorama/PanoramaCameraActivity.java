@@ -967,6 +967,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         float sec = (float) animation.getAnimatedValue();
                         bottomPanelSwitcherItem2TimeText.setText((int) (8 * sec) + "S");
                         if (sec == 0) {
+                            presenter.shouldRefreshUI(false);
                             onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
                         }
                     });

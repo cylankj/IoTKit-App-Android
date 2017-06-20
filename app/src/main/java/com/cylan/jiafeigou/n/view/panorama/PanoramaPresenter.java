@@ -58,6 +58,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
+    public void shouldRefreshUI(boolean should) {
+        shouldRefreshRecord = should;
+    }
+
+    @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getApiMonitorSub());
