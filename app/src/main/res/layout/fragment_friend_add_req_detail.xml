@@ -19,87 +19,77 @@
         hunt:ct_left_title="@string/Tap3_Friends_Details"
         hunt:ct_left_title_color="@color/color_white" />
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/custom_toolbar">
+        android:layout_below="@id/custom_toolbar"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/iv_detail_user_head"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/y80"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y42"
+            android:src="@drawable/icon_mine_head_normal" />
+
+        <TextView
+            android:id="@+id/tv_relative_and_friend_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y8"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp16" />
+
+        <TextView
+            android:id="@+id/tv_relative_and_friend_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y3"
+            android:text="188888888"
+            android:textColor="@color/color_777777"
+            android:textSize="@dimen/sp14" />
+
+        <RelativeLayout
+            android:id="@+id/rl_add_request_mesg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/iv_detail_user_head"
-                android:layout_width="@dimen/x80"
-                android:layout_height="@dimen/y80"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y42"
-                android:src="@drawable/icon_mine_head_normal" />
+            android:layout_marginTop="@dimen/y60">
 
             <TextView
-                android:id="@+id/tv_relative_and_friend_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y8"
-                android:textColor="@color/color_333333"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_relative_and_friend_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y3"
-                android:text="188888888"
-                android:textColor="@color/color_777777"
-                android:textSize="@dimen/sp14" />
-
-            <RelativeLayout
-                android:id="@+id/rl_add_request_mesg"
+                android:id="@+id/tv_mesg"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginTop="@dimen/y60">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x15"
+                android:gravity="center_vertical"
+                android:text="@string/Tap3_FriendsAdd_Content"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp15" />
 
-                <TextView
-                    android:id="@+id/tv_mesg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:gravity="center_vertical"
-                    android:text="@string/Tap3_FriendsAdd_Content"
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/sp15" />
+            <TextView
+                android:id="@+id/tv_add_request_mesg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_mesg"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginTop="@dimen/y6"
+                android:background="@null"
+                android:clickable="false" />
 
-                <TextView
-                    android:id="@+id/tv_add_request_mesg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_mesg"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:layout_marginTop="@dimen/y6"
-                    android:background="@null"
-                    android:clickable="false" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginRight="@dimen/x15"
+                android:background="@color/color_f2f2f2" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:layout_marginRight="@dimen/x15"
-                    android:background="@color/color_f2f2f2" />
+        </RelativeLayout>
 
-            </RelativeLayout>
+    </LinearLayout>
 
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
-
-    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_add_as_relative_and_friend"

@@ -27,7 +27,7 @@ public class LinkManager {
         }
         final String result = ContextUtils.getContext().getString(R.string.qrcode_prefix, "",
                 jfgaccount.getAccount());
-        return result.replace("&", "").replace(pkgName, "");
+        return result.substring(0, result.lastIndexOf("?") + 1) + "id=" + jfgaccount.getAccount();
     }
 
     public static String getLinkShareByApp() {

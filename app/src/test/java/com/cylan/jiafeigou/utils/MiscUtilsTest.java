@@ -39,14 +39,16 @@ public class MiscUtilsTest {
 //                "wx3081bcdae8a842cf" + "&secret=" + "d93676ab7db1876c06800dee3f33fbc2" +
 //                "&code=" + code + "&grant_type=authorization_code";
 //
-        Request request = new Request.Builder()
-                .url("https://dl-sh-ctc-2.pchome.net/0n/aq/yyb703.apk?key=55855a194d1b8246c59944917c67796c&tmp=1496915726025")
-                .build();
-        try {
-            Response response = new OkHttpClient().newCall(request).execute();
-            long l = response.body().contentLength();
-            System.out.println("what?" + l);
-        } catch (IOException e) {
-        }
+//        Request request = new Request.Builder()
+//                .url("https://dl-sh-ctc-2.pchome.net/0n/aq/yyb703.apk?key=55855a194d1b8246c59944917c67796c&tmp=1496915726025")
+//                .build();
+//        try {
+//            Response response = new OkHttpClient().newCall(request).execute();
+//            long l = response.body().contentLength();
+//            System.out.println("what?" + l);
+//        } catch (IOException e) {
+//        }
+        final String code = "http://a.app.qq.com/o/simple.jsp?pkgname=%1$s&amp;id=%2$s";
+        System.out.println(code.substring(0, code.lastIndexOf("?") + 1));
     }
 }
