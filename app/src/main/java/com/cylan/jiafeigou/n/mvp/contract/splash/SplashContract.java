@@ -23,6 +23,8 @@ public interface SplashContract {
         void selectNext(boolean showSplash);
 
         Observable<AdsStrategy.AdsDescription> showAds();
+
+        void reEnableSmartcallLog();
     }
 
 }
