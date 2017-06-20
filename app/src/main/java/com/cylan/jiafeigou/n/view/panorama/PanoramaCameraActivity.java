@@ -487,7 +487,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             presenter.startVideoRecord(PANORAMA_RECORD_MODE.MODE_SHORT);
         }
         hideVideoModePop();
-        return false;
+        return true;
     }
 
     @OnClick(R.id.act_panorama_bottom_panel_camera_photograph)
