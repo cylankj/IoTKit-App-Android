@@ -2,9 +2,11 @@ package com.cylan.jiafeigou.support.badge;
 
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.RawTree;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.HashMap;
@@ -44,10 +46,16 @@ public class TreeHelper {
             TreeNode node = new TreeNode();
             node.setNodeName(key);
             if (RawTree.asRefreshTreeSet.contains(key)) {
-                final String result = PreferencesUtils.getString(key);
-                if (TextUtils.isEmpty(result)) {
-                    //新的页面,需要标记红点.
-                    node.setCacheData(new CacheObject().setCount(1).setObject(1));
+                boolean needShow = true;
+                if (TextUtils.equals(key, "WechatGuideFragment")) {
+                    needShow = ContextUtils.getContext().getResources().getBoolean(R.bool.show_wechat_entrance);
+                }
+                if (needShow) {
+                    final String result = PreferencesUtils.getString(key);
+                    if (TextUtils.isEmpty(result)) {
+                        //新的页面,需要标记红点.
+                        node.setCacheData(new CacheObject().setCount(1).setObject(1));
+                    }
                 }
             }
             node.setParentName(value);
