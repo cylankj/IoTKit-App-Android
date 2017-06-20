@@ -567,7 +567,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         isPlay = true;
         runOnUiThread(() -> {
             panoramaPanelSeekBar.setMax(i2);
-            bottomVideoMenuPlay.setImageResource(R.drawable.camera_icon_pause);
+            bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend);
             refreshControllerView(true);
             LoadingDialog.dismissLoading(getSupportFragmentManager());
         });

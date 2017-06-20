@@ -129,7 +129,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
-
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void onLoadMore() {
@@ -248,6 +248,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             toggleEditMode(true);
             bottomMenuContainer.setVisibility(View.VISIBLE);
             deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size() > 0);
+            selectAll.setText(R.string.SELECT_ALL);
         } else {
             //cancel
             tvAlbumDelete.setText("");

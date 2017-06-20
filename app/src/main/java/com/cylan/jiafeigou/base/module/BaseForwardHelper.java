@@ -181,6 +181,16 @@ public class BaseForwardHelper {
                 batteryRsp.battery = battery;
                 return (T) batteryRsp;
             } else if (msgId == 218) {
+
+            } else if (msgId == 228) {
+                DpMsgDefine.DPBaseUpgradeStatus upgradeStatus = unpackData(msg.packValue, DpMsgDefine.DPBaseUpgradeStatus.class);
+                int upgrade = 0;
+                if (upgradeStatus != null) {
+                    upgrade = upgradeStatus.upgrade;
+                }
+                PanoramaEvent.MsgUpgradeStatusRsp upgradeStatusRsp = new PanoramaEvent.MsgUpgradeStatusRsp();
+                upgradeStatusRsp.upgradeStatus = upgrade;
+                return (T) upgradeStatusRsp;
             }
         } catch (Exception e) {
             AppLogger.e(e.getMessage());

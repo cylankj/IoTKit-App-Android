@@ -1203,4 +1203,41 @@ public class DpMsgDefine {
             }
         };
     }
+
+    @Message
+    public static class DPBaseUpgradeStatus extends BaseDataPoint {
+        @Index(0)
+        public int upgrade;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(this.upgrade);
+        }
+
+        public DPBaseUpgradeStatus() {
+        }
+
+        protected DPBaseUpgradeStatus(Parcel in) {
+            super(in);
+            this.upgrade = in.readInt();
+        }
+
+        public static final Creator<DPBaseUpgradeStatus> CREATOR = new Creator<DPBaseUpgradeStatus>() {
+            @Override
+            public DPBaseUpgradeStatus createFromParcel(Parcel source) {
+                return new DPBaseUpgradeStatus(source);
+            }
+
+            @Override
+            public DPBaseUpgradeStatus[] newArray(int size) {
+                return new DPBaseUpgradeStatus[size];
+            }
+        };
+    }
 }

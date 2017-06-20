@@ -529,6 +529,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             PreferencesUtils.putBoolean(JConstant.KEY_PANORAMA_POP_HINT, false);
             showVideoModePop();
         }
+        showVideoModePop();
         onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_VIDEO, true);
     }
 
@@ -544,7 +545,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         int xPos = (int) ((videoPopHint.getWidth() - bottomPanelVideoMode.getWidth()) / 2 + getResources().getDimension(R.dimen.y2));
         int yPos = (int) (videoPopHint.getHeight() + getResources().getDimension(R.dimen.y2) + bottomPanelVideoMode.getHeight());
-        videoPopHint.showAsDropDown(bottomPanelVideoMode, -xPos, -yPos);
+        PopupWindowCompat.showAsDropDown(videoPopHint, bottomPanelVideoMode, -xPos, -yPos, Gravity.TOP | Gravity.START);
+//        videoPopHint.showAsDropDown(bottomPanelVideoMode, -xPos, -yPos);
     }
 
     public boolean hideVideoModePop() {
@@ -725,17 +727,24 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             cameraUpgrading.setVisibility(View.VISIBLE);
             setting.setEnabled(false);
             onRefreshControllerView(false, true);
+        } else {
+            int netType = NetUtils.getNetType(this);
+            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+            if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
+                onRefreshConnectionMode(alertMobile ? 1 : -2);
+            }
+            onRefreshViewModeUI(panoramaViewMode, false);
         }
     }
 
     @Override
     public void onDeviceInitFinish() {
-        int netType = NetUtils.getNetType(this);
-        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-            onRefreshConnectionMode(alertMobile ? 1 : -2);
-        }
-        onRefreshViewModeUI(panoramaViewMode, false);
+//        int netType = NetUtils.getNetType(this);
+//        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+//        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
+//            onRefreshConnectionMode(alertMobile ? 1 : -2);
+//        }
+//        onRefreshViewModeUI(panoramaViewMode, false);
     }
 
     public void showConfigConnectionDialog() {

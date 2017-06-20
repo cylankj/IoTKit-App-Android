@@ -120,6 +120,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, PROPERTY, CAMERA));
         properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
+        properties.put(228,new DPProperty(DpMsgDefine.DPSdStatus.class,PROPERTY,CAMERA));
         properties.put(ID_223_MOBILE_NET, new DPProperty(int.class, PROPERTY, CAMERA));//
         properties.put(ID_222_SDCARD_SUMMARY, new DPProperty(DpMsgDefine.DPSdcardSummary.class));//set
         properties.put(ID_220_SDK_VERSION, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));

@@ -17,6 +17,7 @@
             android:layout_width="@dimen/y42"
             android:layout_height="@dimen/y42"
             android:src="@drawable/camera720_icon_no_talk_selector"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
@@ -25,6 +26,7 @@
             android:layout_height="@dimen/y42"
             android:layout_marginTop="@dimen/y15"
             android:src="@drawable/camera720_icon_no_voice_selector"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/act_panorama_camera_quick_menu_item1_mic" />
 
