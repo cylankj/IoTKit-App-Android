@@ -960,7 +960,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     countDownAnimator = ObjectAnimator.ofFloat(bottomCountDownLine, "scaleX", 1, 0);
                 }
                 if (!countDownAnimator.isRunning()) {
-                    countDownAnimator.setDuration(7000);
+                    countDownAnimator.setDuration(8000);
                     countDownAnimator.setCurrentPlayTime(offset * 1000);
                     countDownAnimator.setInterpolator(new LinearInterpolator());
                     countDownAnimator.addUpdateListener(animation -> {
