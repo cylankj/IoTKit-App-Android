@@ -144,7 +144,7 @@ public interface PanoramaEvent {
     @Message
     class MsgUpgradeStatusRsp {
         @Index(0)
-        public int resolution;
+        public int upgradeStatus;
     }
 
 
