@@ -984,11 +984,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case 2003://sd 卡没有容量
                 AppLogger.d("SD 卡内存已满");
                 if (useAlert) {
-                    new AlertDialog.Builder(this).setCancelable(false).
-                            setMessage(R.string.Tap1_SDCardFullyTips)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.OK, null)
-                            .show();
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_SDCardFullyTips),
+                            getString(R.string.Tap1_SDCardFullyTips), getString(R.string.OK), null, false);
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Tap1_SDCardFullyTips));
                 }
@@ -996,11 +993,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
                 if (useAlert) {
-                    new AlertDialog.Builder(this).setCancelable(false).
-                            setMessage(R.string.MSG_SD_OFF)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.OK, null)
-                            .show();
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF),
+                            getString(R.string.MSG_SD_OFF), getString(R.string.OK), null, false);
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
                 }
@@ -1015,14 +1009,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 break;
             case 2022://sd卡识别失败，需要格式化
                 AppLogger.d("SD卡识别失败,需要格式化");
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.Tap1_NeedsInitializedTips)
-                        .setPositiveButton(R.string.SD_INIT, (dialog, which) -> {
-                            presenter.formatSDCard();
-                        })
-                        .setNegativeButton(R.string.CANCEL, null)
-                        .setCancelable(false)
-                        .show();
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_NeedsInitializedTips),
+                        getString(R.string.Tap1_NeedsInitializedTips),
+                        getString(R.string.SD_INIT),
+                        (dialog, which) -> presenter.formatSDCard(),
+                        getString(R.string.CANCEL), null, false);
                 break;
             //小于
             case -1:
@@ -1035,14 +1026,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 if (!pop) return;
                 //松开弹
                 if (useAlert) {
-                    new AlertDialog.Builder(PanoramaCameraActivity.this)
-                            .setMessage(R.string.Switch_Mode_Pop)
-                            .setCancelable(false)
-                            .setNegativeButton(R.string.WELL_OK, null)
-                            .setPositiveButton(R.string.Dont_Show_Again, (dialog, which) -> {
-                                PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false);
-                            })
-                            .show();
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.Switch_Mode_Pop),
+                            getString(R.string.Switch_Mode_Pop),
+                            getString(R.string.Dont_Show_Again),
+                            (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false),
+                            getString(R.string.WELL_OK), null, false);
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));
                 }
