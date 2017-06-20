@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -39,7 +40,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
@@ -244,15 +244,17 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void pushDeviceState(String uuid) {
-        deviceState.put(uuid, true);
+    public void pushDeviceState(String uuid, PanoramaEvent.MsgVideoStatusRsp videoStatusRsp) {
+        deviceState.put(uuid, videoStatusRsp);
         RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
     }
 
     @Override
     public void removeDeviceState(String uuid) {
-        deviceState.remove(uuid);
-        RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+        Object remove = deviceState.remove(uuid);
+        if (remove != null) {
+            RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+        }
     }
 
     @Override

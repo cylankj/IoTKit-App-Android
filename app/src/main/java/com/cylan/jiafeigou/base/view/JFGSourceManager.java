@@ -9,13 +9,14 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,7 +153,7 @@ public interface JFGSourceManager {
 
     ArrayList<JFGFeedbackInfo> getNewFeedbackList();
 
-    void pushDeviceState(String uuid);
+    void pushDeviceState(String uuid, PanoramaEvent.MsgVideoStatusRsp videoStatusRsp);
 
     void removeDeviceState(String uuid);
 

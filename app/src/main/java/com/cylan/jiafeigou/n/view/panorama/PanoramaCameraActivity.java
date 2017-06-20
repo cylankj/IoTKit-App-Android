@@ -6,13 +6,16 @@ import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -228,6 +231,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         popOption.setFocusable(true);
         popOption.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popOption.setOutsideTouchable(true);
+
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled(false);//默认不可点击,只有收到分辨率后才能点击
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled(false);
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setOnClickListener(this::clickedQuickMenuItem2SwitchVoice);
@@ -337,8 +341,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     @Override
                     protected void setResource(GlideDrawable resource) {
                         PreferencesUtils.putString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid, picture);
-                        view.setImageDrawable(resource);
-
+                        Drawable tintIcon = DrawableCompat.wrap(resource);
+//                        DrawableCompat.setTintList(tintIcon, getResources().getColorStateList(R.color.color_panorama_album));
+                        DrawableCompat.setTint(tintIcon,Color.parseColor("#88000000"));
+                        DrawableCompat.setTintMode(tintIcon, PorterDuff.Mode.SRC_ATOP);
+                        view.setImageDrawable(tintIcon);
                     }
                 });
 
@@ -418,6 +425,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
         hasResolution = false;
         setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
+        setting.setEnabled(false);
         onRefreshControllerView(false, true);
         updateHint();
     }
@@ -727,6 +735,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             setting.setEnabled(false);
             onRefreshControllerView(false, true);
         } else {
+            setting.setEnabled(true);
             int netType = NetUtils.getNetType(this);
             boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
             if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
@@ -965,7 +974,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     countDownAnimator.setInterpolator(new LinearInterpolator());
                     countDownAnimator.addUpdateListener(animation -> {
                         float sec = (float) animation.getAnimatedValue();
-                        bottomPanelSwitcherItem2TimeText.setText((int) (8 * sec) + "S");
+
+                        bottomPanelSwitcherItem2TimeText.setText((int) (8.0f * sec + 0.5f) + "S");
                         if (sec == 0) {
                             presenter.shouldRefreshUI(false);
                             onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);

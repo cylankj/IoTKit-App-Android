@@ -220,22 +220,19 @@ public class BaseForwardHelper {
                 case 9:       //TYPE_VIDEO_BEGIN_REQ            = 9   开始录像请求
                 case 10:      //TYPE_VIDEO_BEGIN_RSP            = 10  开始录像响应
                     PanoramaEvent.MsgRsp msgRsp = new PanoramaEvent.MsgRsp(unpackData(forward.msg, int.class));
-                    if (msgRsp != null && msgRsp.ret == 0) {
-                        DataSourceManager.getInstance().pushDeviceState(forward.mCaller);
-                    }
+//                    if (msgRsp != null && msgRsp.ret == 0) {
+//                        DataSourceManager.getInstance().pushDeviceState(forward.mCaller);
+//                    }
                     return (T) msgRsp;
                 case 11:      //TYPE_VIDEO_END_REQ              = 11  停止录像请求
                 case 12:      //TYPE_VIDEO_END_RSP              = 12  停止录像响应 PanoramaEvent.TP tp = unpackData(forward.msg, PanoramaEvent.TP.class);
                     PanoramaEvent.MsgFileRsp msgFileRsp = unpackData(forward.msg, PanoramaEvent.MsgFileRsp.class);
-                    if (msgFileRsp != null && msgFileRsp.ret == 0) {
-                        DataSourceManager.getInstance().removeDeviceState(forward.mCaller);
-                    }
                     return (T) msgFileRsp;
                 case 13:      //TYPE_VIDEO_STATUS_REQ           = 13  查询录像状态请求
                 case 14:      //TYPE_VIDEO_STATUS_RSP           = 14  查询录像状态响应
                     PanoramaEvent.MsgVideoStatusRsp msgVideoStatusRsp = unpackData(forward.msg, PanoramaEvent.MsgVideoStatusRsp.class);
                     if (msgVideoStatusRsp != null && msgVideoStatusRsp.ret == 0) {
-                        DataSourceManager.getInstance().pushDeviceState(forward.mCaller);
+                        DataSourceManager.getInstance().pushDeviceState(forward.mCaller, msgVideoStatusRsp);
                     } else {
                         DataSourceManager.getInstance().removeDeviceState(forward.mCaller);
                     }

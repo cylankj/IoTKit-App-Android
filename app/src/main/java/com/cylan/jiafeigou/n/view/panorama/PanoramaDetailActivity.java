@@ -671,6 +671,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void updateProgress(int progress, int max) {
+        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        }
         panoramaPanelSeekBar.setProgress(progress);
         bottomVideoMenuPlayTime.setText(String.format("%s/%s", TimeUtils.getMM_SS(progress), TimeUtils.getMM_SS(max)));
     }
@@ -685,7 +688,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             } else {
                 JFGPlayer.Resume(player);
                 isPlay = true;
-                bottomVideoMenuPlay.setImageResource(R.drawable.camera_icon_pause);
+                bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend);
 
             }
         }

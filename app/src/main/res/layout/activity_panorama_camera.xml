@@ -244,8 +244,7 @@
             app:layout_constraintBottom_toTopOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="153dp">
+            app:layout_constraintTop_toTopOf="parent">
 
             <RadioGroup
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
@@ -273,14 +272,14 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
 
                 <TextView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:text="7"
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp16"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -294,7 +293,6 @@
                     android:layout_height="@dimen/y8"
                     android:layout_marginEnd="@dimen/y8"
                     android:src="@drawable/panorama_redording_red_dot"
-                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
                     app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
                     app:layout_constraintStart_toStartOf="parent"

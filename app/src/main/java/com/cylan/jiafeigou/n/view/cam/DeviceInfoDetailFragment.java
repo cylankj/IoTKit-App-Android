@@ -191,6 +191,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
         tvDeviceCid.setTvSubTitle(uuid);
         String m = device.$(ID_202_MAC, "");
+        if (TextUtils.isEmpty(m)) {
+            m= PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+        }
         tvDeviceMac.setTvSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
         int b = device.$(DpMsgMap.ID_206_BATTERY, 0);

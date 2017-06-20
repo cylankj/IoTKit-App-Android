@@ -1333,10 +1333,16 @@ public class RxEvent {
     /**
      * 用户刷新 mine 的红点
      */
-    public static final class InfoUpdate{}
+    public static final class InfoUpdate {
+    }
 
     public static class DeviceRecordStateChanged {
         public static final DeviceRecordStateChanged INSTANCE = new DeviceRecordStateChanged();
+    }
+
+    public static class RxNotification {
+        public String which;
+        public Object value;
     }
 
 }
