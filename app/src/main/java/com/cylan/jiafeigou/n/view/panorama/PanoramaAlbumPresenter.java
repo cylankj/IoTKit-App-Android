@@ -47,7 +47,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onViewAttached(PanoramaAlbumContact.View view) {
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
-        BasePanoramaApiHelper.getInstance().init(uuid);
+//        BasePanoramaApiHelper.getInstance().init(uuid);
         DownloadManager.getInstance().getHandler().setGlobalDownloadListener(new DownloadListener() {
             @Override
             public void onProgress(DownloadInfo downloadInfo) {

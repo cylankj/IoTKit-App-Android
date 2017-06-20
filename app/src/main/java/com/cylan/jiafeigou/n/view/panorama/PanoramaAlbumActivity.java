@@ -129,7 +129,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
-        swipeRefreshLayout.setRefreshing(true);
+//        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void onLoadMore() {
