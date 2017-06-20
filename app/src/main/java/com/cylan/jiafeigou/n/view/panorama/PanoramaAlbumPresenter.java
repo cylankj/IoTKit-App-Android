@@ -287,7 +287,11 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
     private int parseTime(String fileName) {
         if (fileName == null) return 0;
-        return Integer.parseInt(fileName.split("\\.")[0].split("_")[0]);
+        try {
+            return Integer.parseInt(fileName.split("\\.")[0].split("_")[0]);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
