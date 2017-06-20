@@ -21,6 +21,10 @@ public class LinkManager {
         JFGAccount jfgaccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (jfgaccount == null || TextUtils.isEmpty(jfgaccount.getAccount())) return "";
         final String pkgName = ContextUtils.getContext().getPackageName();
+        if (TextUtils.equals(pkgName, "com.cylan.jiafeigou")) {
+            return ContextUtils.getContext().getString(R.string.qrcode_prefix, pkgName,
+                    jfgaccount.getAccount());
+        }
         final String result = ContextUtils.getContext().getString(R.string.qrcode_prefix, "",
                 jfgaccount.getAccount());
         return result.replace("&", "").replace(pkgName, "");

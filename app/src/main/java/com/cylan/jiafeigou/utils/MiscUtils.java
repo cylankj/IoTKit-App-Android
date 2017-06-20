@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.XmlResourceParser;
@@ -53,6 +54,7 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.misc.bind.UdpConstant.BIND_TAG;
 import static com.cylan.jiafeigou.utils.ContextUtils.getContext;
 
 /**
@@ -675,4 +677,30 @@ public class MiscUtils {
         }
         return builder.toString();
     }
+
+    /**
+     * 看看是否安装了 doby cell_c
+     */
+    public static void checkJFGLikeApp() {
+        Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                    final PackageManager pm = ContextUtils.getContext().getPackageManager();
+                    //get a list of installed apps.
+                    List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                    for (ApplicationInfo packageInfo : packages) {
+                        final String pname = packageInfo.packageName;
+                        if (!TextUtils.isEmpty(pname) && pname.contains("com.cylan.jiafeigou")) {
+                            AppLogger.e(BIND_TAG + pname);
+                        }
+                    }
+                }, AppLogger::e);
+    }
+
+    public static void checkVPNState() {
+        Observable.just("check")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> AppLogger.d(BIND_TAG + "vpn is on..." + NetUtils.isVPNOn()), AppLogger::e);
+    }
+
 }

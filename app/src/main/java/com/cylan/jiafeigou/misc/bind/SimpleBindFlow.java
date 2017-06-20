@@ -127,6 +127,8 @@ public class SimpleBindFlow extends AFullBind {
                     public UdpConstant.UdpDevicePortrait call(Object o) {
                         iBindResult.pingFPingFailed();
                         AppLogger.i(BIND_TAG + "ping fping flow failed");
+                        MiscUtils.checkJFGLikeApp();
+                        MiscUtils.checkVPNState();
                         return null;
                     }
                 });
