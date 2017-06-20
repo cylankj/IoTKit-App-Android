@@ -152,7 +152,7 @@ android {
 
 
     productFlavors {
-        _efamily{
+        _efamily {
             ndk {
                 // 设置支持的CPU架构
                 abiFilters 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
@@ -354,7 +354,16 @@ dependencies {
     compile files('libs/mid-sdk-2.3.jar')
     testCompile files('libs/javassist.jar')
     //    compile 'com.cylan.iot.sdk:sdkLib:213'
-    compile(name: 'sdkLib-debug-225', ext: 'aar')
+    //不需要指定aar名字
+    fileTree(dir: 'libs', include: '**/*.aar')
+            .each { File file ->
+        dependencies.add("compile", [
+                name: file.name.lastIndexOf('.').with {
+                    it != -1 ? file.name[0..<it] : file.name
+                },
+                ext : 'aar'
+        ])
+    }
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile('com.mikepenz:fastadapter:2.5.2@aar') {
