@@ -80,7 +80,8 @@
                 android:layout_marginLeft="@dimen/y16"
                 android:layout_marginStart="@dimen/y16"
                 android:scaleType="fitXY"
-                android:src="@drawable/camera720_icon_wifi" />
+                android:src="@drawable/camera720_icon_wifi"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/act_panorama_camera_banner_information_connection_text"
@@ -93,7 +94,8 @@
                 android:layout_toRightOf="@+id/act_panorama_camera_banner_information_connection_icon"
                 android:text="@string/WIFI_CONN"
                 android:textColor="#FFFFFF"
-                android:textSize="@dimen/sp12" />
+                android:textSize="@dimen/sp12"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/act_panorama_camera_banner_information_charge_text"
@@ -192,12 +194,25 @@
         android:id="@+id/act_panorama_camera_loading"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/act_panorama_camera_bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_toolbar"
-        tools:layout_editor_absoluteX="0dp" />
+
+        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_toolbar" />
+
+    <TextView
+        android:id="@+id/act_panorama_camera_upgrading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="固件升级中..."
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/sp18"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/act_panorama_camera_bottom_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_toolbar" />
 
     <View
         android:id="@+id/act_panorama_camera_bottom_count_down_line"
@@ -302,7 +317,7 @@
             android:src="@drawable/camera720_icon_album_selector"
             app:civ_border_color="@color/color_white"
             app:civ_border_overlay="true"
-            app:civ_border_width="@dimen/y2"
+            app:civ_border_width="@dimen/y1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintHorizontal_bias="1.0"
@@ -325,6 +340,7 @@
             android:layout_width="@dimen/y22"
             android:layout_height="@dimen/y22"
             android:indeterminateDrawable="@drawable/camera720_loading"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintEnd_toEndOf="@id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintStart_toStartOf="@id/act_panorama_bottom_panel_camera_photograph"

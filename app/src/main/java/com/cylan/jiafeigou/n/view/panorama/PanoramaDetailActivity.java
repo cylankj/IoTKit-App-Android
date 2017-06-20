@@ -698,9 +698,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-<<<<<<< HEAD
-
-=======
         updateProgress(seekBar.getProgress(), seekBar.getMax());
         Schedulers.io().createWorker().schedule(() -> {
             AppLogger.e("正在 seek");
@@ -708,7 +705,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 JFGPlayer.Seek(player, seekBar.getProgress());
             }
         });
->>>>>>> origin/3.2.0
     }
 
     private void refreshControllerView(boolean enable) {

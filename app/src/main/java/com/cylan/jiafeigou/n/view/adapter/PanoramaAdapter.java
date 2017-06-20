@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -66,9 +69,20 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         holder.setVisibility(R.id.iv_album_icon_720_camera, (item.location == 1 || item.location == 2) ? View.VISIBLE : View.GONE);
         Glide.with(getContext())
                 .load(new PanoramaThumbURL(uuid, item.fileName))
-                .error(R.drawable.pic_broken)
+                .error(R.drawable.wonderful_pic_place_holder)
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<PanoramaThumbURL, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, PanoramaThumbURL model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, PanoramaThumbURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        return false;
+                    }
+                })
                 .into((ImageView) holder.getView(R.id.img_album_content));
         TextView view = holder.getView(R.id.tv_album_download_progress);
         if (item.downloadInfo == null) {
