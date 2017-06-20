@@ -155,7 +155,7 @@
         android:layout_height="@dimen/y64"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <View
             android:layout_width="match_parent"

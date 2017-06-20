@@ -340,12 +340,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 .into(new ImageViewTarget<GlideDrawable>(bottomPanelAlbumItem) {
                     @Override
                     protected void setResource(GlideDrawable resource) {
+
                         PreferencesUtils.putString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid, picture);
                         Drawable tintIcon = DrawableCompat.wrap(resource);
-//                        DrawableCompat.setTintList(tintIcon, getResources().getColorStateList(R.color.color_panorama_album));
-                        DrawableCompat.setTint(tintIcon,Color.parseColor("#88000000"));
+                        DrawableCompat.setTint(tintIcon,Color.parseColor("#EE000000"));
                         DrawableCompat.setTintMode(tintIcon, PorterDuff.Mode.SRC_ATOP);
                         view.setImageDrawable(tintIcon);
+                        view.setEnabled(false);
                     }
                 });
 
