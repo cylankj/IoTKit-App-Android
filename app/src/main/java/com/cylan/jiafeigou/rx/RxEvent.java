@@ -144,6 +144,7 @@ public class RxEvent {
         }
     }
 
+
     /**
      * 调用 {@link com.cylan.jfgapp.jni.JfgAppCmd#register(String, String, int, String)}
      */

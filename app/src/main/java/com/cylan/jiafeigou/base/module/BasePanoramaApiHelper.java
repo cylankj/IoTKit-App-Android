@@ -272,4 +272,8 @@ public class BasePanoramaApiHelper {
     public Observable<PanoramaEvent.MsgResolutionRsp> getResolution() {
         return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getResolution() : forwardHelper.sendForward(uuid, 21, null));
     }
+
+    public Observable<PanoramaEvent.MsgUpgradeStatusRsp> getUpgradeStatus() {
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : forwardHelper.empty());
+    }
 }
