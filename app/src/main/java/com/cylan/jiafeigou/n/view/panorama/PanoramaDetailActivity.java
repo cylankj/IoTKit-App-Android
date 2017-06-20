@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -414,18 +415,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (!NetUtils.isNetworkAvailable(this)) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         } else if (panoramaItem.duration > 8) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.Tap1_Share_NoLonger8STips)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.OK, null)
-                    .show();
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Share_NoLonger8STips),
+                    getString(R.string.Tap1_Share_NoLonger8STips), getString(R.string.OK), null, false);
         } else if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
             //视频还未下载完成
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.Download_Then_Share)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.OK, null)
-                    .show();
+            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Download_Then_Share),
+                    getString(R.string.Download_Then_Share), getString(R.string.OK), null, false);
             AppLogger.d("视频还未下载完成");
 
         } else if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
@@ -462,16 +457,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             deleted = contentView.findViewById(R.id.panorama_detail_more_delete);
             download.setOnClickListener(v -> {
                 if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
-                    new AlertDialog.Builder(this)
-                            .setCancelable(false)
-                            .setMessage(R.string.Tap1_Album_CancelDownloadTips)
-                            .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Album_CancelDownloadTips),
+                            getString(R.string.Tap1_Album_CancelDownloadTips), getString(R.string.OK), (dialog, which) -> {
                                 DownloadManager.getInstance().pauseTask(downloadInfo.getTaskKey());
                                 download.setText(R.string.Tap1_Album_Download);
                                 download.setEnabled(true);
-                            })
-                            .setNegativeButton(R.string.CANCEL, null)
-                            .show();
+                            }, getString(R.string.CANCEL), null, false);
                 } else {
                     processDownload();
                 }
@@ -498,16 +489,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void deleteWithAlert() {
-        new AlertDialog.Builder(this)
-                .setMessage(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips)
-                .setNegativeButton(R.string.CANCEL, null)
-                .setPositiveButton(R.string.DELETE, (dialog, which) -> {
+        AlertDialogManager.getInstance().showDialog(this,
+                getString(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips),
+                getString(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips),
+                getString(R.string.DELETE), (dialog, which) -> {
                     if (deleted != null) {
                         deleted.setEnabled(false);
                     }
                     presenter.delete(panoramaItem, mode);
-                })
-                .show();
+                }, getString(R.string.CANCEL), null, false);
         AppLogger.d("将进行删除");
 
     }
@@ -635,11 +625,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void onReportDeviceError(int i, boolean b) {
         if (i == 2004) {
             if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.MSG_SD_OFF)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.OK, (dialog, which) -> finish())
-                        .show();
+                AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
+                        getString(R.string.OK), (dialog, which) -> finish(),
+                        getString(R.string.CANCEL), null, false);
             }
         }
     }
