@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -488,13 +487,10 @@ public class RxBusTest {
         long ret = System.currentTimeMillis() / time;
         System.out.println(ret);
 
-        Observable.interval(20, TimeUnit.MILLISECONDS)
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        System.out.println("..." + aLong);
-                    }
-                });
+        Subscription subscription = Observable.interval(20, TimeUnit.MILLISECONDS)
+                .filter(i -> i > 10)
+                .subscribe(aLong -> System.out.println("..." + aLong));
+        subscription.unsubscribe();
 //        Observable.just(Observable.interval(20, TimeUnit.MILLISECONDS))
 //                .takeUntil(longObservable -> {
 //                    count++;
@@ -513,7 +509,7 @@ public class RxBusTest {
         RxBus.getCacheInstance().post("000dffa");
         RxBus.getCacheInstance().post("000erter");
         RxBus.getCacheInstance().post("000erte11r");
-        Thread.sleep(1000);
+        Thread.sleep(10000000);
 
         String text = "私は720°パノラマカムで何か涼しいものを作った、来て＆それを参照してください！";
 
