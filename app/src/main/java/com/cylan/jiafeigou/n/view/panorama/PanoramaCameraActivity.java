@@ -529,7 +529,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             PreferencesUtils.putBoolean(JConstant.KEY_PANORAMA_POP_HINT, false);
             showVideoModePop();
         }
-        showVideoModePop();
         onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_VIDEO, true);
     }
 
