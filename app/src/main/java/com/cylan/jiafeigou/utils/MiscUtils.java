@@ -332,21 +332,31 @@ public class MiscUtils {
      * @return
      */
     public static String FormatSdCardSize(long fileS) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        String fileSizeString = "";
-        if (fileS == 0) {
-            fileSizeString = "0.0MB";
-        } else if (fileS < 1024) {
-            fileSizeString = df.format((double) fileS) + "B";
-        } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "K";
-        } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "M";
-        } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "G";
-        }
-        return fileSizeString;
+        return FormatSdCardSizeSpec(fileS, "B");
     }
+
+    /**
+     * desc:转换文件的大小
+     *
+     * @param fileS
+     * @return
+     */
+    public static String FormatSdCardSizeSpec(long fileS, String unit) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        switch (unit) {
+            case "B":
+                if (fileS < 1024) return df.format((double) fileS) + "B";
+            case "K":
+                if (fileS < 1048576) return df.format((double) fileS / 1024) + "K";
+            case "M":
+                if (fileS < 1073741824) return df.format((double) fileS / 1048576) + "M";
+            case "G":
+                return df.format((double) fileS / 1073741824) + "G";
+            default:
+                return "";
+        }
+    }
+
 
     public static String getChaosTime(Context context, DpMsgDefine.DPAlarmInfo info, boolean off) {
         if (!off) {

@@ -3,16 +3,28 @@ package com.cylan.jiafeigou.misc;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -201,6 +213,56 @@ public class JFGRules {
                 "hangup");
     }
 
+    public static Observable<Boolean> switchApModel(String mac, String uuid, int model) {
+        if (TextUtils.isEmpty(mac)) {
+            mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+        }
+        if (TextUtils.isEmpty(mac)) {
+            AppLogger.d("mac为空");
+            return Observable.just(false);
+        }
+        String finalMac = mac;
+        return Observable.just(model)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(s -> {
+                    try {
+                        for (int i = 0; i < 3; i++) {
+                            JfgUdpMsg.UdpSetApReq req = new JfgUdpMsg.UdpSetApReq(uuid, finalMac);
+                            req.model = s;
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT, req.toBytes());
+                        }
+                        AppLogger.d("send UdpSetApReq :" + uuid + "," + finalMac);
+                    } catch (JfgException e) {
+                    }
+                    return Observable.just(s);
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .timeout(10, TimeUnit.SECONDS))//原型说10s
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(localUdpMsg -> {
+                    try {
+                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
+                        if (header != null && TextUtils.equals(header.cmd, "set_ap_rsp")) {
+                            return Observable.just(localUdpMsg.data);
+                        }
+                    } catch (Exception e) {
+                    }
+                    return Observable.just(null);
+                })
+                .filter(ret -> ret != null)
+                .filter(ret -> {
+                    try {
+                        UdpConstant.SetApRsp rsp = DpUtils.unpackData(ret, UdpConstant.SetApRsp.class);
+                        return (rsp != null && TextUtils.equals(rsp.cid, uuid));
+                    } catch (IOException e) {
+                        return false;
+                    }
+                }).take(1)
+                .flatMap(bytes -> Observable.just(true));
+    }
+
     public static boolean showStandbyItem(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "standby");
@@ -254,6 +316,14 @@ public class JFGRules {
 
     public static boolean showTimeZone(int pid) {
         return !JFGRules.isPanoramicCam(pid);
+    }
+
+    public static boolean isNeedNormalRadio(int pid) {
+        return isRS(pid) || !JFGRules.isNeedPanoramicView(pid);
+    }
+
+    public static boolean isRuiShiCam(int pid) {
+        return false;
     }
 
     public static class PlayErr {
@@ -350,5 +420,38 @@ public class JFGRules {
         if (TextUtils.isEmpty(mac))
             mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
         return MiscUtils.isAPDirect(mac);
+    }
+
+    public static int getPidByCid(String cid) {
+        int pid = -1;
+        if (TextUtils.isEmpty(cid)) {
+            return pid;
+        }
+        if (cid.startsWith("2000") || cid.startsWith("2200") || cid.startsWith("2100")) {
+            pid = 1090;
+        } else if (cid.startsWith("3000")) {
+            pid = 1071;
+        } else if (cid.startsWith("2801")) {
+            pid = 1092;
+        } else if (cid.startsWith("2800") || cid.startsWith("2802") || cid.startsWith("2803")) {
+            pid = 1091;
+        } else if (cid.startsWith("2900")) {
+            pid = 1089;
+        } else if (cid.startsWith("2600")) {
+            pid = 1088;
+        } else if (cid.startsWith("5000")) {
+            pid = 1093;
+        } else if (cid.startsWith("5100")) {
+            pid = 1094;
+        } else if (cid.startsWith("6000")) {
+            pid = 1152;
+        } else if (cid.startsWith("6500")) {
+            pid = 1158;
+        } else if (cid.startsWith("6900")) {
+            pid = 1159;
+        }else if (cid.startsWith("6901")) {
+            pid = 1160;
+        }
+        return pid;
     }
 }

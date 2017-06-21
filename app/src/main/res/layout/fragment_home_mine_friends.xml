@@ -103,7 +103,8 @@
                 android:gravity="center"
                 android:text="@string/Tap3_FriendsAdd"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/sp17" />
+                android:textSize="@dimen/sp17"
+                android:visibility="gone" />
         </RelativeLayout>
 
     </FrameLayout>

@@ -210,7 +210,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         this.pid = device.pid;
-        isNormalView = !JFGRules.isNeedPanoramicView(device.pid);
+        isNormalView = JFGRules.isNeedNormalRadio(device.pid);
+
         VideoViewFactory.IVideoView videoView = VideoViewFactory.CreateRendererExt(!isNormalView,
                 getContext(), true);
         videoView.setInterActListener(new VideoViewFactory.InterActListener() {
@@ -838,12 +839,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } catch (JfgException e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
-        float ratio = isNormalView ? (float) resolution.height / resolution.width : 1.0f;
-        if (isLand()) {
-            //需要考虑下横屏,match_parent
-            ratio = (float) Resources.getSystem().getDisplayMetrics().heightPixels /
-                    Resources.getSystem().getDisplayMetrics().widthPixels;
-        }
+        float ratio;
+        ratio = isNormalView ? (float) resolution.height / resolution.width :
+                isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
+                        Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
         updateLiveViewRectHeight(ratio);
     }
 

@@ -17,7 +17,6 @@ import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
 import com.lzy.okserver.download.db.DownloadDBManager;
-import com.lzy.okserver.listener.DownloadListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,41 +47,13 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
 //        BasePanoramaApiHelper.getInstance().init(uuid);
-        DownloadManager.getInstance().getHandler().setGlobalDownloadListener(new DownloadListener() {
-            @Override
-            public void onProgress(DownloadInfo downloadInfo) {
-
-            }
-
-            @Override
-            public void onFinish(DownloadInfo downloadInfo) {
-                List<DownloadInfo> allTask = DownloadManager.getInstance().getAllTask();
-                boolean finish = true;
-                if (allTask != null) {
-                    for (DownloadInfo info : allTask) {
-                        if (info.getState() == DownloadManager.DOWNLOADING || info.getState() == DownloadManager.WAITING) {
-                            finish = false;
-                            break;
-                        }
-                    }
-                    if (finish) {
-//                        mView.onSyncFinish();
-                    }
-                }
-            }
-
-            @Override
-            public void onError(DownloadInfo downloadInfo, String s, Exception e) {
-
-            }
-        });
         checkSDCardAndInit();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        DownloadManager.getInstance().stopAllTask();
+//        DownloadManager.getInstance().stopAllTask();//#113300
     }
 
     @Override

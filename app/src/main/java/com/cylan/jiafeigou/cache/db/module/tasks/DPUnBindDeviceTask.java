@@ -46,7 +46,6 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
                 .timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS)
                 .flatMap(rsp -> {
                     if (rsp.code == 0) {//成功
-                        AppLogger.d("删除设备成功");
                         return sourceManager.unBindDevice(entity.getUuid())
                                 .map(device -> new BaseDPTaskResult().setResultCode(rsp.code).setResultResponse(device));
                     } else {

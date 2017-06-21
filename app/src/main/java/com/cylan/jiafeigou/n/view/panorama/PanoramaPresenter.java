@@ -249,7 +249,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
-        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus()
+        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus().onErrorResumeNext(Observable.just(null))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {

@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.Locale;
 
@@ -237,6 +239,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         tab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                RxBus.getCacheInstance().removeStickyEvent(RxEvent.JUST_JUMP.class);
                 pager.setCurrentItem(position);
             }
         });

@@ -41,6 +41,8 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -134,9 +136,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_STOP:
                         CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
                         if (prePlayType.type == TYPE_HISTORY) {
-                            basePresenter.startPlayHistory(prePlayType.time * 1000L);
+                            if (accept()) {
+                                basePresenter.startPlayHistory(prePlayType.time * 1000L);
+                            }
                         } else if (prePlayType.type == TYPE_LIVE) {
-                            basePresenter.startPlay();
+                            if (accept()) {
+                                basePresenter.startPlay();
+                            }
                         }
                         break;
                     case PLAY_STATE_PLAYING:
@@ -205,7 +211,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (type.type == TYPE_HISTORY) {
                 type.type = TYPE_LIVE;
                 basePresenter.updateLiveStream(type);
-                basePresenter.startPlay();
+                if (accept()) {
+                    basePresenter.startPlay();
+                }
             }
         });
     }
@@ -270,13 +278,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private void playAfterCheck() {
         //满足条件才需要播放
         if (!accept()) return;
+        AppLogger.e("playAfterCheck,let go................");
         basePresenter.startPlay();
     }
 
     private boolean accept() {
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
+        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() || RxBus.getCacheInstance().hasStickyEvent(RxEvent.JUST_JUMP.class)) {
             return false;
-        else return true;
+        } else return true;
     }
 
     @Override
@@ -310,7 +319,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         getString(R.string.MSG_SD_OFF),
                         getString(R.string.OK), (DialogInterface d, int which) -> {
                             if (basePresenter.getPlayState() != PLAY_STATE_PLAYING)
-                                basePresenter.startPlay();
+                                if (accept()) {
+                                    basePresenter.startPlay();
+                                }
                         });
                 if (basePresenter.getPlayType() == TYPE_HISTORY) {
                     basePresenter.stopPlayVideo(TYPE_HISTORY).subscribe(ret -> {
@@ -330,9 +341,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     CamLiveContract.LiveStream stream = basePresenter.getLiveStream();
                     //恢复播放
                     if (stream.type == TYPE_HISTORY) {
-                        basePresenter.startPlayHistory(stream.time);
-                    } else
-                        basePresenter.startPlay();
+                        if (accept()) {
+                            basePresenter.startPlayHistory(stream.time);
+                        }
+                    } else {
+                        if (accept()) {
+                            basePresenter.startPlay();
+                        }
+                    }
                 }
             }
             camLiveControlLayer.onDeviceStandByChanged(basePresenter.getDevice(), v -> jump2Setting());
@@ -389,8 +405,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
                 camLiveControlLayer.setLoadingState(PLAY_STATE_STOP, null);
             } else if (prePlayType.type == TYPE_HISTORY) {
-                basePresenter.startPlayHistory(prePlayType.time * 1000L);
-                ((ImageView) v).setImageResource(R.drawable.icon_landscape_playing);
+                if (accept()) {
+                    basePresenter.startPlayHistory(prePlayType.time * 1000L);
+                    ((ImageView) v).setImageResource(R.drawable.icon_landscape_playing);
+                }
             }
         });
     }

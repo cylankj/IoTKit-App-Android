@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.INotify;
@@ -388,6 +389,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Observable<Device> unBindDevice(String uuid) {
+
         return unBindDevices(Collections.singletonList(uuid))
                 .filter(devices -> devices != null && devices.iterator().hasNext())
                 .flatMap(devices -> Observable.just(devices.iterator().next()));
@@ -420,7 +422,16 @@ public class DataSourceManager implements JFGSourceManager {
 
                     for (String uuid : uuids) {
                         AppLogger.d("设备已解绑:" + uuid);
-                        mCachedDeviceMap.remove(uuid);
+                        Device remove = mCachedDeviceMap.remove(uuid);
+                        if (remove != null && JFGRules.isRS(remove.pid)) {
+                            JFGRules.switchApModel(remove.$(DpMsgMap.ID_202_MAC, ""), remove.uuid, 1).subscribe(ret -> {
+                                if (ret) {
+                                    AppLogger.d("睿视删除设备起 AP 成功了!");
+                                }
+                            }, e -> {
+                                AppLogger.e("unBindDevices,Error:" + e.getMessage());
+                            });
+                        }
                         getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid));
                     }
                     return devices;

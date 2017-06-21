@@ -6,16 +6,13 @@ import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -165,6 +162,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private boolean justForTest = false;
     private boolean hasNetSetting = false;
     private boolean upgrading = true;
+    private boolean alertSDFormatError = true;
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
     private ObjectAnimator countDownAnimator;
@@ -249,6 +247,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         loadingBar.setAction(loadController);
         bottomPanelPhotoGraphItem.setOnTouchListener(photoGraphTouchListener);
         panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
+        alertSDFormatError = true;
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -328,11 +327,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         Glide.with(this)
                 .load(new PanoramaThumbURL(uuid, picture))
                 .animate(view -> {
-                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1.0f, 1.2f, 1.0f);
-                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 1.2f, 1.0f);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0.7f, 1.2f, 1.0f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0.7f, 1.2f, 1.0f);
                     AnimatorSet set = new AnimatorSet();
                     set.playTogether(scaleX, scaleY);
-                    set.setDuration(200);
+                    set.setDuration(300);
                     set.start();
                 })
                 .error(R.drawable.camera720_icon_album_selector)
@@ -340,13 +339,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 .into(new ImageViewTarget<GlideDrawable>(bottomPanelAlbumItem) {
                     @Override
                     protected void setResource(GlideDrawable resource) {
-
+//
+//                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(), resource.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+//                        Canvas canvas = new Canvas(bitmap);
+//                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+//                        resource.draw(canvas);
+//                        Drawable tintIcon = DrawableCompat.wrap(new BitmapDrawable(getResources(), bitmap));
+//
+//                        DrawableCompat.setTintList(tintIcon, getResources().getColorStateList(R.color.color_panorama_album));
+//                        DrawableCompat.setTintMode(tintIcon, PorterDuff.Mode.SRC_ATOP);
+                        view.setImageDrawable(resource);
+                        view.setAlpha(view.isEnabled() ? 1 : 0.3f);
                         PreferencesUtils.putString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid, picture);
-                        Drawable tintIcon = DrawableCompat.wrap(resource);
-                        DrawableCompat.setTint(tintIcon,Color.parseColor("#EE000000"));
-                        DrawableCompat.setTintMode(tintIcon, PorterDuff.Mode.SRC_ATOP);
-                        view.setImageDrawable(tintIcon);
-                        view.setEnabled(false);
                     }
                 });
 
@@ -824,6 +828,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             bottomPanelPhotoGraphItem.setEnabled((hasResolution && enable) || justForTest);
         }
         bottomPanelAlbumItem.setEnabled(!all);
+        bottomPanelAlbumItem.setAlpha(bottomPanelAlbumItem.isEnabled() ? 1 : 0.3f);
 //        setting.setEnabled(!hasResolution || enable);
     }
 
@@ -1035,16 +1040,21 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 break;
             case 2022://sd卡识别失败，需要格式化
                 AppLogger.d("SD卡识别失败,需要格式化");
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.Tap1_NeedsInitializedTips)
-                        .setPositiveButton(R.string.SD_INIT, (dialog, which) -> {
-                            presenter.formatSDCard();
-                        })
-                        .setNegativeButton(R.string.CANCEL, null)
-                        .setCancelable(false)
-                        .show();
-                break;
-            //小于
+                if (alertSDFormatError) {//设备会一直推消息,这里过滤掉
+
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.Tap1_NeedsInitializedTips)
+                            .setPositiveButton(R.string.SD_INIT, (dialog, which) -> {
+                                presenter.formatSDCard();
+                            })
+                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
+                                alertSDFormatError = false;
+                            })
+                            .setCancelable(false)
+                            .show();
+                    break;
+                }
+                //小于
             case -1:
                 break;
             case -2:

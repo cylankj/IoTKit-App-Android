@@ -167,8 +167,6 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                 ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-                status.err = 0;
-                status.used = 192 * 1024;
                 initSdUseDetailRsp(status);
                 break;
             case 1:
@@ -188,7 +186,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
             float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
-            sdUseDetail(MiscUtils.FormatSdCardSize(sdcardUsedCapacity) + "/" + MiscUtils.FormatSdCardSize(sdcardTotalCapacity), v);
+            sdUseDetail(MiscUtils.FormatSdCardSizeSpec(sdcardUsedCapacity, "M") + "/" + MiscUtils.FormatSdCardSizeSpec(sdcardTotalCapacity, "M"), v);
         } else {
             showSdPopDialog();
         }

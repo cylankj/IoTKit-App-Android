@@ -18,7 +18,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class FriendBean implements Parcelable {
 
     @Id
-    public int id;
+    public Long id;
     public String iconUrl;
     public String alias;
     public String account;
@@ -35,11 +35,11 @@ public class FriendBean implements Parcelable {
     }
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -111,8 +111,8 @@ public class FriendBean implements Parcelable {
         this.markName = in.readString();
     }
 
-    @Generated(hash = 1024804871)
-    public FriendBean(int id, String iconUrl, String alias, String account,
+    @Generated(hash = 1327211143)
+    public FriendBean(Long id, String iconUrl, String alias, String account,
             String markName, int isCheckFlag, String sortkey) {
         this.id = id;
         this.iconUrl = iconUrl;
@@ -123,12 +123,15 @@ public class FriendBean implements Parcelable {
         this.sortkey = sortkey;
     }
 
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof FriendBean)) return false;
         FriendBean bean = (FriendBean) obj;
         return TextUtils.equals(bean.account, account);
     }
+
+
 
     public static final Creator<FriendBean> CREATOR = new Creator<FriendBean>() {
         @Override

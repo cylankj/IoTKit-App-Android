@@ -244,6 +244,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramaContentContainer.addView(panoramicView720Ext);
         panoramicView720Ext.setEventListener(this);
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
+        panoramicView720Ext.enableGyro(false);
+        bottomPictureMenuGyroscope.setImageResource(R.drawable.photos_icon_manual_selector);
+        bottomVideoMenuGyroscope.setImageResource(R.drawable.video_icon_manual_selector);
         bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
         bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
     }
@@ -466,7 +469,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                             .setCancelable(false)
                             .setMessage(R.string.Tap1_Album_CancelDownloadTips)
                             .setPositiveButton(R.string.OK, (dialog, which) -> {
-                                DownloadManager.getInstance().pauseTask(downloadInfo.getTaskKey());
+                                downloadInfo.setListener(null);
+                                DownloadManager.getInstance().stopTask(downloadInfo.getTaskKey());
                                 download.setText(R.string.Tap1_Album_Download);
                                 download.setEnabled(true);
                             })
@@ -485,7 +489,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             morePopMenu.setBackgroundDrawable(new ColorDrawable(0));
         }
         if (!morePopMenu.isShowing()) {
-            if (downloadInfo == null) {
+            if (downloadInfo == null || downloadInfo.getState() != DownloadManager.FINISH) {
                 download.setText(R.string.Tap1_Album_Download);
             } else if (downloadInfo.getState() == 4) {
                 download.setText(R.string.FINISHED);

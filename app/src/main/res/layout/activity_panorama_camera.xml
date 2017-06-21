@@ -311,7 +311,6 @@
             android:layout_marginLeft="@dimen/y32"
             android:layout_marginRight="@dimen/y62"
             android:layout_marginStart="@dimen/y32"
-            android:background="@android:color/transparent"
             android:src="@drawable/camera720_icon_album_selector"
             app:civ_border_color="@color/color_white"
             app:civ_border_overlay="true"

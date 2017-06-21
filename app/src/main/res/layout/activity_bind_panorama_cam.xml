@@ -56,7 +56,9 @@
     <FrameLayout
         android:layout_width="@dimen/y141"
         android:layout_height="@dimen/y234"
-        android:layout_centerInParent="true"
+        android:layout_above="@+id/bottom_line"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/y141"
         android:background="@drawable/add_image_panoramic_camera">
 
         <FrameLayout
@@ -109,6 +111,7 @@
 
 
     <View
+        android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
         android:layout_alignTop="@+id/tv_bind_camera_tip"

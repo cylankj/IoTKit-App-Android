@@ -374,6 +374,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             } else {
                 enableStandby(true);
             }
+            if (JFGRules.isRS(device.pid)) {
+                svSettingDeviceStandbyMode.setVisibility(View.GONE);
+            }
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 Device device1 = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPNet dpNet = device1.$(201, new DpMsgDefine.DPNet());
