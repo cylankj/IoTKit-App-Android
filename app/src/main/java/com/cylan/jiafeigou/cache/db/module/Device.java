@@ -89,10 +89,19 @@ public class Device extends BasePropertyHolder<Device> {
 
     }
 
-    public DPEntity getEmptyProperry(int msgId) {
+    public DPEntity getEmptyProperty(int msgId) {
         return new DPEntity(null, account, server, uuid, System.currentTimeMillis(), msgId, null, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
     }
 
+    @Override
+    public DPEntity getProperty(int msgId) {
+        DPEntity entity = super.getProperty(msgId);
+        if (entity == null && propertyParser.accept(this.pid, msgId)) {
+            entity = getEmptyProperty(msgId);
+            properties.put(msgId, entity);
+        }
+        return entity;
+    }
 
     public Device setState(String state) {
         this.state = state;
