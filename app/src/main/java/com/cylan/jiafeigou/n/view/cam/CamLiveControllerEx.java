@@ -720,7 +720,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .setText(alias);
             findViewById(R.id.imgV_cam_live_land_play).setVisibility(VISIBLE);
         } else {
-            findViewById(R.id.imgV_cam_live_land_play).setVisibility(INVISIBLE);
+            findViewById(R.id.imgV_cam_live_land_play).setVisibility(GONE);
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(VISIBLE);
