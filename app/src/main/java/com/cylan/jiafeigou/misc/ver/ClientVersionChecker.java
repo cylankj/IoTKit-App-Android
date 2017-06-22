@@ -205,8 +205,8 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
 //                                    2iYjQr
         if (TextUtils.isEmpty(clientCheckVersion.result))
             return;
-        String result = clientCheckVersion.result.replace("http://yun.app8h.com/s?id=", "");
-        String finalUrl = JConstant.assembleUrl(result, ContextUtils.getContext().getPackageName());
+        final String result = clientCheckVersion.result.replace("http://yun.app8h.com/s?id=", "");
+        final String finalUrl = JConstant.assembleUrl(result, ContextUtils.getContext().getPackageName());
         Request.Builder requestBuilder = new Request.Builder().url(finalUrl);
         requestBuilder.method("GET", null);
         OkHttpClient client = new OkHttpClient();
@@ -225,10 +225,13 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 });
     }
 
+    private int writeHelper;
+
     private void dealClient(Response response, RxEvent.ClientCheckVersion clientCheckVersion) {
         //不需要那么频繁地检查.
         try {
-            String result = response.body().string();
+
+            final String result = response.body().string();
             AppLogger.d("check_version result: " + result);
             JSONObject jsonObject = new JSONObject(result);
             if (jsonObject.has("ret") && jsonObject.getInt("ret") != 0) return;
@@ -266,16 +269,19 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                         .setUpdateType(RxEvent.UpdateType._8HOUR));
                 return;
             }
+            writeHelper = 0;
             BaseRequest request = OkGo.get(url);
             DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(url);
             final DownloadListener listener = new DownloadListener() {
                 @Override
                 public void onProgress(DownloadInfo downloadInfo) {
-
+                    writeHelper++;
+                    if (writeHelper % 4 == 0) AppLogger.d("下载进度?" + downloadInfo.getProgress());
                 }
 
                 @Override
                 public void onFinish(DownloadInfo downloadInfo) {
+                    AppLogger.d("下载进度,完成");
                     RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(cVersion.getSaveDir() + File.separator + cVersion.getFileName())
                             .setForceUpdate(forceUpate)
                             .setUpdateType(RxEvent.UpdateType._8HOUR));
@@ -283,7 +289,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
 
                 @Override
                 public void onError(DownloadInfo downloadInfo, String s, Exception e) {
-                    AppLogger.d("失败了");
+                    AppLogger.d("下载进度,失败了");
                 }
             };
             if (info != null) {

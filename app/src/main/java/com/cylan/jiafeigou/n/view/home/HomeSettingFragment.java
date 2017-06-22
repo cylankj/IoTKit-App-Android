@@ -225,16 +225,17 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void initSwitchState(final RxEvent.AccountArrived accountArrived) {
         boolean enable = accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
-        //过滤
-//        if (svHomeSettingAccessMes.isChecked() == enable) return;
         svHomeSettingAccessMes.setChecked(enable, false);
-        if (!accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+        boolean off = !accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+        if (off) {
             svSoundContainer.setVisibility(View.GONE);
             svVibrateContainer.setVisibility(View.GONE);
-            return;
+        } else {
+            svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
+            svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
         }
-        svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
-        svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
+        svSoundContainer.setVisibility(off ? View.GONE : View.VISIBLE);
+        svVibrateContainer.setVisibility(off ? View.GONE : View.VISIBLE);
         initSwitchBtnListener();
     }
 

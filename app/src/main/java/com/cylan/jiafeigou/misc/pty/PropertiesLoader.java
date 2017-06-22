@@ -2,13 +2,13 @@ package com.cylan.jiafeigou.misc.pty;
 
 import android.text.TextUtils;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.google.gson.Gson;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -42,6 +42,7 @@ public class PropertiesLoader implements IProperty {
 
     @Override
     public boolean hasProperty(int pidOrOs, String tag) {
+        tag = tag.toUpperCase();
         if (propertyFile == null) return false;
         final int count = ListUtils.getSize(propertyFile.getpList());
         //每次遍历,效率比较低,有待优化
@@ -63,6 +64,7 @@ public class PropertiesLoader implements IProperty {
 
     @Override
     public String property(int pidOrOs, String tag) {
+        tag = tag.toUpperCase();
         if (propertyFile == null) return "";
         final int count = ListUtils.getSize(propertyFile.getpList());
         //效率比较低,有待优化
@@ -79,5 +81,12 @@ public class PropertiesLoader implements IProperty {
         return "";
     }
 
+    @Override
+    public boolean isSerial(String serial, int pidOrOs) {
+        serial = serial.toUpperCase();
+        Map<String, List<Integer>> map = propertyFile.getSerialMap();
+        List<Integer> list = map == null ? null : map.get(serial);
+        return list != null && list.contains(pidOrOs);
+    }
 
 }

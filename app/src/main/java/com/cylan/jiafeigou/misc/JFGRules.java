@@ -165,15 +165,16 @@ public class JFGRules {
         return !TextUtils.isEmpty(value) && value.startsWith("rs");
     }
 
+    /**
+     * @param pid
+     * @return
+     */
     public static boolean isCamera(int pid) {
-        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid, "value");
-        return !TextUtils.isEmpty(value) && value.contains("cam");
+        return BaseApplication.getAppComponent().getProductProperty().isSerial("cam", pid);
     }
 
     public static boolean isBell(int pid) {
-        final String value = BaseApplication.getAppComponent().getProductProperty().property(pid,
-                "value");
-        return !TextUtils.isEmpty(value) && value.contains("bell");
+        return BaseApplication.getAppComponent().getProductProperty().isSerial("bell", pid);
     }
 
     /**
@@ -227,9 +228,15 @@ public class JFGRules {
                 "led");
     }
 
+    /**
+     * 内部会 自动转成大写
+     *
+     * @param pid
+     * @return
+     */
     public static boolean showIp(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                "ip");
+                "IP");
     }
 
     public static boolean showWiredMode(int pid) {
