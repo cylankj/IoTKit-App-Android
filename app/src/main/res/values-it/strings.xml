@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">Attiva 24 ore di video</string>
   <string name="RECORD_INFO_2">Disabilita registrazione video</string>
   <string name="RECORD_MODE">Quando rilevato un movimento</string>
-  <string name="RECORD_MODE_1">24 ore</string>
+  <string name="RECORD_MODE_1">Tutto il giorno</string>
   <string name="RECORD_MODE_2">Mai</string>
   <string name="RECORD_MODE_CHANGE">Attualmente il tuo stato è \"a casa\", rilevatori di movimento sono disattivati. Se serve, cambiare impostazioni</string>
   <string name="RECORD_NO_FIND">Nessun video nel periodo selezionato</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">Si prega di concentrarsi sull\'account WeChat \"加菲狗官微服务\" e legare, dopo il successo del vecchio account WeChat, non riceverà più il messaggio</string>
   <string name="SETTING_DIRECTION">Direzione video</string>
   <string name="SETTING_FREE">Usare tutti I rilevatori di movimento come default</string>
-  <string name="SETTING_RECORD">Registra video</string>
+  <string name="SETTING_RECORD">Impostazioni video</string>
   <string name="SETTING_SD">Micro SD card</string>
   <string name="SETTING_TIMEZONE">Time zone</string>
   <string name="SET_NEW_PWD">Impostare una nuova password</string>
@@ -674,7 +674,7 @@
   <string name="Tap1_CameraFun_Timelapse_document">Usando il Timelapse si cattureranno più momenti meravigliosi</string>
   <string name="Tap1_CameraFun_Timelapse_hours">% ore</string>
   <string name="Tap1_CameraFun_UninitializedTips">Errore in lettura SD Card</string>
-  <string name="Tap1_CameraFun_VideoDirection">Inverso (Immagine rovesciata)</string>
+  <string name="Tap1_CameraFun_VideoDirection">Immagine rovesciata(Inverso)</string>
   <string name="Tap1_Camera_BackLiveTips">Torna In diretta</string>
   <string name="Tap1_Camera_Front">Davanti</string>
   <string name="Tap1_Camera_FrontTips">La visualizzazione panoramica ha bisogno di un\'ampio angolo di visione davanti alla macchina fotografica</string>

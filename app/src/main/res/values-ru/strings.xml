@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">Запись 24 часа</string>
   <string name="RECORD_INFO_2">Не ведется видеозапись</string>
   <string name="RECORD_MODE">Обнаружение движения</string>
-  <string name="RECORD_MODE_1">24 часа</string>
+  <string name="RECORD_MODE_1">Весь день</string>
   <string name="RECORD_MODE_2">Никогда</string>
   <string name="RECORD_MODE_CHANGE">Сейчас ваше расположение находится \"дома\",обнаружение движения выключено, если вам нужно обнаружение, пожалуйста, продолжайте</string>
   <string name="RECORD_NO_FIND">Записи не найдены</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">Пожалуйста, сосредоточьтесь на учетной записи WeChat \"加菲狗官微服务\" и свяжите ее, после того как успех старой учетной записи WeChat больше не получит сообщение push</string>
   <string name="SETTING_DIRECTION">Кадр</string>
   <string name="SETTING_FREE">Установить обнаружение движения и сигнализацию</string>
-  <string name="SETTING_RECORD">Запись видео</string>
+  <string name="SETTING_RECORD">Настройки видео</string>
   <string name="SETTING_SD">Карта microSD</string>
   <string name="SETTING_TIMEZONE">Часовой пояс</string>
   <string name="SET_NEW_PWD">Установить новый пароль</string>
@@ -674,7 +674,7 @@
   <string name="Tap1_CameraFun_Timelapse_document">Получить больше интересных моментов с цикличной съемкой</string>
   <string name="Tap1_CameraFun_Timelapse_hours">% часов</string>
   <string name="Tap1_CameraFun_UninitializedTips">Неудачная идентификация Micro SD карты</string>
-  <string name="Tap1_CameraFun_VideoDirection">Перевёртка (перевернутая картинка)</string>
+  <string name="Tap1_CameraFun_VideoDirection">перевернутая картинка (Перевёртка)</string>
   <string name="Tap1_Camera_BackLiveTips">Вернуться к Прямая трансляция</string>
   <string name="Tap1_Camera_Front">Фронт</string>
   <string name="Tap1_Camera_FrontTips">Просмотр с горизонтальным углом должен держать широкий видение перед камерой</string>

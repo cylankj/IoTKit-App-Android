@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">24時間録画を起動します</string>
   <string name="RECORD_INFO_2">いかなる時でも録画を起動しません</string>
   <string name="RECORD_MODE">異常を検出した時</string>
-  <string name="RECORD_MODE_1">24時間</string>
+  <string name="RECORD_MODE_1">終日</string>
   <string name="RECORD_MODE_2">録画しない</string>
   <string name="RECORD_MODE_CHANGE">現在の設定が「帰宅モード」のため、移動検出がオフにされています。オンにする場合はモードを変更してください。</string>
   <string name="RECORD_NO_FIND">この時間帯の動画が見つかりません</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">微信アカウント \"加菲狗官微服务\"に注目し、古い微信アカウントの成功がメッセージプッシュを受信しなくなったらバインドしてください</string>
   <string name="SETTING_DIRECTION">動画方向</string>
   <string name="SETTING_FREE">デバイスの移動検出および警報を自由にカスタマイズする</string>
-  <string name="SETTING_RECORD">自動録画</string>
+  <string name="SETTING_RECORD">ビデオ設定</string>
   <string name="SETTING_SD">Micro SDカード</string>
   <string name="SETTING_TIMEZONE">デバイスタイムゾーン</string>
   <string name="SET_NEW_PWD">新しいパスワードを設定する</string>

@@ -407,8 +407,8 @@
     <string name="RECORD_INFO_0">Device will record video when motion deteced and will stop recording when it goes normal.</string>
     <string name="RECORD_INFO_1">Recording video in 24 hours</string>
     <string name="RECORD_INFO_2">Never record video</string>
-    <string name="RECORD_MODE">When Motion detected</string>
-    <string name="RECORD_MODE_1">24 Hours</string>
+    <string name="RECORD_MODE">Motion detection alarm recording</string>
+    <string name="RECORD_MODE_1">All day</string>
     <string name="RECORD_MODE_2">Never</string>
     <string name="RECORD_MODE_CHANGE">The current location is \"at home\" and motion detection closed. If you need it,please change the mode.</string>
     <string name="RECORD_NO_FIND">No video in this time period</string>
@@ -515,7 +515,7 @@
     <string name="SETTINGS_Wechat_Switch_Open">Please focus on the WeChat account \"加菲狗官微服务\" and bind, after the success of the old WeChat account will no longer receive the message push</string>
     <string name="SETTING_DIRECTION">Video direction</string>
     <string name="SETTING_FREE">Set alarm and motion detector of individual device</string>
-    <string name="SETTING_RECORD">Video Recording</string>
+    <string name="SETTING_RECORD">Video settings</string>
     <string name="SETTING_SD">Micro SD card</string>
     <string name="SETTING_TIMEZONE">Time zone</string>
     <string name="SET_NEW_PWD">Set new password</string>
@@ -646,7 +646,7 @@
     <string name="Tap1_Album_Share_To_Daily_Great">The shared content will be saved to\"Daily Great\"</string>
     <string name="Tap1_BigPic_FavoriteTips">Collect pics in\"Daily Great\"</string>
     <string name="Tap1_CameraFun_Standby">Standby</string>
-    <string name="Tap1_CameraFun_Standby_Description">Start standby to hibernate, that will be unable to watch live, check history videos, protect and alert, auto&#8211;recording, time&#8211;lapse photography and etc.</string>
+    <string name="Tap1_CameraFun_Standby_Description">Start standby to hibernate, that will be unable to watch live, check history videos, protect and alert, Video settings, time&#8211;lapse photography and etc.</string>
     <string name="Tap1_CameraFun_Standby_OnTips">Time&#8211;lapse photographing, unable to standby</string>
     <string name="Tap1_CameraFun_Timelapse">Time&#8211;lapse photography</string>
     <string name="Tap1_CameraFun_Timelapse_Countdown">Remaining time</string>
@@ -681,7 +681,7 @@
     <string name="Tap1_Camera_Greetings">Sunrise and sunset, family life and baby\'s growing&#8230;Always have things deserved to be recorde for everyday</string>
     <string name="Tap1_Camera_Messages">Messages</string>
     <string name="Tap1_Camera_Messages_ViewTheVideo">Video</string>
-    <string name="Tap1_Camera_MotionDetection_OffTips">Turn off \"Motion Detection\" will also stop recording \"when abnormalities been detected\"</string>
+    <string name="Tap1_Camera_MotionDetection_OffTips">Turn off \"Motion Detection\" will also stop recording \"Motion detection alarm recording\"</string>
     <string name="Tap1_Camera_NoSDCardTips">No SD card detected</string>
     <string name="Tap1_Camera_Overlook">Overlook</string>
     <string name="Tap1_Camera_OverlookTips">Viewing with overlooking angle needs to place the camera on high</string>

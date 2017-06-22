@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">24 saat videoya izin ver</string>
   <string name="RECORD_INFO_2">Herhangi bir zamandaki videoya izin verme</string>
   <string name="RECORD_MODE">Hareket algılama</string>
-  <string name="RECORD_MODE_1">24 saat</string>
+  <string name="RECORD_MODE_1">Tüm gün</string>
   <string name="RECORD_MODE_2">Hiçbir zaman</string>
   <string name="RECORD_MODE_CHANGE">Şu an için yeriniz \"evde\", hareket algılama kapalı, algılamaya ihtiyacınız varsa lütfen devam edin</string>
   <string name="RECORD_NO_FIND">Bu sefer video yok</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">Lütfen eski WeChat hesabının başarısı artık mesajı zorla almazsak WeChat hesabına \"加菲狗官微服务\" na odaklanın ve bağlayın.</string>
   <string name="SETTING_DIRECTION">Video yönlendirme</string>
   <string name="SETTING_FREE">Kişisel cihazın alarm ve hareket algılamasını ayarlayın</string>
-  <string name="SETTING_RECORD">Video kaydetme</string>
+  <string name="SETTING_RECORD">Video ayarları</string>
   <string name="SETTING_SD">Mikro SD kart</string>
   <string name="SETTING_TIMEZONE">Zaman bölgesi</string>
   <string name="SET_NEW_PWD">Yeni şifre kur</string>

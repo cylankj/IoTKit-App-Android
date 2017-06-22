@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">Mengaktifkan video 24 jam</string>
   <string name="RECORD_INFO_2">Mematikan video kapanpun</string>
   <string name="RECORD_MODE">Deteksi gerakan</string>
-  <string name="RECORD_MODE_1">24 jam</string>
+  <string name="RECORD_MODE_1">Sepanjang hari</string>
   <string name="RECORD_MODE_2">Tidak pernah</string>
   <string name="RECORD_MODE_CHANGE">Untuk sekarang.lokasi anda adalah \"di rumah\",sensor gerakan tertutup, jika anda butuh deteksi,silahkan lanjutkan</string>
   <string name="RECORD_NO_FIND">Tidak ada video saat ini</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">Harap fokus pada akun WeChat \"加菲狗官微服务\" dan mengikat, setelah kesuksesan akun WeChat lama tidak akan lagi menerima pesan push.</string>
   <string name="SETTING_DIRECTION">Arah video</string>
   <string name="SETTING_FREE">Set deteksi gerak dan alarm perangkat</string>
-  <string name="SETTING_RECORD">Rekaman video</string>
+  <string name="SETTING_RECORD">Pengaturan video</string>
   <string name="SETTING_SD">Kartu Micro SD</string>
   <string name="SETTING_TIMEZONE">Zona waktu</string>
   <string name="SET_NEW_PWD">Set Kata sandi baru</string>

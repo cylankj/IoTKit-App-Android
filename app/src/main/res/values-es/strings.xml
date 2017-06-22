@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">Cámara de 24h activada</string>
   <string name="RECORD_INFO_2">Grabación automática desactivada</string>
   <string name="RECORD_MODE">Al detectar movimiento</string>
-  <string name="RECORD_MODE_1">24 horas</string>
+  <string name="RECORD_MODE_1">Todo el dia</string>
   <string name="RECORD_MODE_2">Nunca</string>
   <string name="RECORD_MODE_CHANGE">Modo actual:Regreso a casa, detección de movimiento está desactivada, si la necesita encendida, actívala en Ajustes</string>
   <string name="RECORD_NO_FIND">No hay video de esta duración</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">Por favor, enfóquese en la cuenta de WeChat \"加菲狗官微服务\" y vincule, después del éxito de la antigua cuenta de WeChat ya no recibirá el mensaje push</string>
   <string name="SETTING_DIRECTION">Dirección del vídeo</string>
   <string name="SETTING_FREE">Ajuste de la alarma y la detección del movimiento de cada dispositivo individual como quiera</string>
-  <string name="SETTING_RECORD">Grabación automática</string>
+  <string name="SETTING_RECORD">Ajustes de video</string>
   <string name="SETTING_SD">Tarjeta Micro SD</string>
   <string name="SETTING_TIMEZONE">Zona horaria</string>
   <string name="SET_NEW_PWD">Crear nueva contraseña</string>
@@ -674,7 +674,7 @@
   <string name="Tap1_CameraFun_Timelapse_document">Los mejores momentos de las fotografias en intervalos</string>
   <string name="Tap1_CameraFun_Timelapse_hours">% hora</string>
   <string name="Tap1_CameraFun_UninitializedTips">Fallo de lectura y escritura en tarjeta Micro SD</string>
-  <string name="Tap1_CameraFun_VideoDirection">Al revés (imagen invertida)</string>
+  <string name="Tap1_CameraFun_VideoDirection">imagen invertida(Al revés)</string>
   <string name="Tap1_Camera_BackLiveTips">Volver a En directo</string>
   <string name="Tap1_Camera_Front">Frente</string>
   <string name="Tap1_Camera_FrontTips">La visualización con ángulo horizontal necesita mantener una visión amplia frente a la cámara</string>

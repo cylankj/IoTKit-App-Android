@@ -407,8 +407,8 @@
   <string name="RECORD_INFO_0">位移偵測到異常時啟用錄影，待移動停止時亦停止錄影</string>
   <string name="RECORD_INFO_1">24小時啟動錄影</string>
   <string name="RECORD_INFO_2">任何時候都不啟動錄影</string>
-  <string name="RECORD_MODE">位移偵測到異常時</string>
-  <string name="RECORD_MODE_1">24小時</string>
+  <string name="RECORD_MODE">移動偵測報警錄像</string>
+  <string name="RECORD_MODE_1">全天</string>
   <string name="RECORD_MODE_2">永不</string>
   <string name="RECORD_MODE_CHANGE">當前位置為回家模式，位移偵測已關閉，如需開啟，請修改模式</string>
   <string name="RECORD_NO_FIND">沒有此時段的錄影</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">請在新的微信號上關注“加菲狗官微服務”並綁定，成功後舊的微信號將不再接收消息推送</string>
   <string name="SETTING_DIRECTION">錄影指向</string>
   <string name="SETTING_FREE">自行設定單個設備的位移偵測及警示</string>
-  <string name="SETTING_RECORD">自動錄影</string>
+  <string name="SETTING_RECORD">錄像設置</string>
   <string name="SETTING_SD">Micro SD卡</string>
   <string name="SETTING_TIMEZONE">設備時區</string>
   <string name="SET_NEW_PWD">設定新密碼</string>
@@ -674,14 +674,14 @@
   <string name="Tap1_CameraFun_Timelapse_document">啟動延時攝影，更多精彩畫面呈現</string>
   <string name="Tap1_CameraFun_Timelapse_hours">%小時</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SD卡讀寫失敗</string>
-  <string name="Tap1_CameraFun_VideoDirection">倒掛（畫面反轉）</string>
+  <string name="Tap1_CameraFun_VideoDirection">畫面反轉 (倒掛)</string>
   <string name="Tap1_Camera_BackLiveTips">點擊返回直播</string>
   <string name="Tap1_Camera_Front">平視</string>
   <string name="Tap1_Camera_FrontTips">以平視的視角查看，需要保持攝像頭前方視野開闊</string>
   <string name="Tap1_Camera_Greetings">日出日落、雲彩變換、家庭生活、Baby成長&#8230;每天都有精彩和成長，每一刻都值得被記錄</string>
   <string name="Tap1_Camera_Messages">訊息</string>
   <string name="Tap1_Camera_Messages_ViewTheVideo">查看視頻</string>
-  <string name="Tap1_Camera_MotionDetection_OffTips">關閉“移動偵測”，將停止“偵測到異常時”自動錄像</string>
+  <string name="Tap1_Camera_MotionDetection_OffTips">關閉“移動偵測”，將停止“移動偵測報警錄像”</string>
   <string name="Tap1_Camera_NoSDCardTips">未檢測到SD卡</string>
   <string name="Tap1_Camera_Overlook">俯視</string>
   <string name="Tap1_Camera_OverlookTips">以從上往下的視角查看，需要將攝像頭放置於高處</string>

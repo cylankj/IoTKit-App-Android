@@ -407,8 +407,8 @@
   <string name="RECORD_INFO_0">移动侦测到异常时启用录像，待画面恢复正常时停止</string>
   <string name="RECORD_INFO_1">24小时启用录像</string>
   <string name="RECORD_INFO_2">任何时候都不启用录像</string>
-  <string name="RECORD_MODE">侦测到异常时</string>
-  <string name="RECORD_MODE_1">24小时</string>
+  <string name="RECORD_MODE">移动侦测报警录像</string>
+  <string name="RECORD_MODE_1">全天</string>
   <string name="RECORD_MODE_2">从不</string>
   <string name="RECORD_MODE_CHANGE">当前位置为回家模式，移动侦测已关闭，如需开启，请修改模式</string>
   <string name="RECORD_NO_FIND">没有此时间段的视频</string>
@@ -515,7 +515,7 @@
   <string name="SETTINGS_Wechat_Switch_Open">请在新的微信号上关注“加菲狗官微服务”并绑定，成功后旧的微信号将不再接收消息推送</string>
   <string name="SETTING_DIRECTION">视频方向</string>
   <string name="SETTING_FREE">随意设置单个设备的移动侦测及报警</string>
-  <string name="SETTING_RECORD">自动录像</string>
+  <string name="SETTING_RECORD">录像设置</string>
   <string name="SETTING_SD">Micro SD卡</string>
   <string name="SETTING_TIMEZONE">设备时区</string>
   <string name="SET_NEW_PWD">设置新密码</string>
@@ -570,7 +570,7 @@
   <string name="Start_instructions_B">步骤如下：</string>
   <string name="Start_instructions_C">1. 请先关注微信公众号“加菲狗官微服务”</string>
   <string name="Start_instructions_D">方法一：点击微信右上角的“+”号 > 添加朋友 > 公众号，搜索“加菲狗官微服务”然后关注。</string>
-  <string name="Start_instructions_E">方法二：截图此页面，在微信 里扫一扫关注。</string>
+  <string name="Start_instructions_E">方法二：截图此页面，在微信里扫一扫关注。</string>
   <string name="Start_instructions_F">2. 绑定账号</string>
   <string name="Start_instructions_G">关注“加菲狗官微服务”公众号后，进入主页面，点击菜单栏的“服务”，选择“绑定账号”。</string>
   <string name="Start_instructions_H">绑定账号</string>
@@ -646,7 +646,7 @@
   <string name="Tap1_Album_Share_To_Daily_Great">分享的内容将会保存到“每日精彩”</string>
   <string name="Tap1_BigPic_FavoriteTips">收藏图片将展现在「每日精彩」</string>
   <string name="Tap1_CameraFun_Standby">待机</string>
-  <string name="Tap1_CameraFun_Standby_Description">开启待机，设备将进入休眠状态，查看直播、历史视频、安全防护及报警、自动录像、延时摄影等功能将无法使用</string>
+  <string name="Tap1_CameraFun_Standby_Description">开启待机，设备将进入休眠状态，查看直播、历史视频、安全防护及报警、录像设置、延时摄影等功能将无法使用</string>
   <string name="Tap1_CameraFun_Standby_OnTips">延时摄影拍摄中，无法进入待机。</string>
   <string name="Tap1_CameraFun_Timelapse">延时摄影</string>
   <string name="Tap1_CameraFun_Timelapse_Countdown">剩余时间</string>
@@ -674,14 +674,14 @@
   <string name="Tap1_CameraFun_Timelapse_document">开启延时摄影，更多精彩纷呈</string>
   <string name="Tap1_CameraFun_Timelapse_hours">%小时</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SD卡读写失败</string>
-  <string name="Tap1_CameraFun_VideoDirection">倒挂（画面翻转）</string>
+  <string name="Tap1_CameraFun_VideoDirection">图像翻转 (倒挂)</string>
   <string name="Tap1_Camera_BackLiveTips">点击返回直播</string>
   <string name="Tap1_Camera_Front">平视</string>
   <string name="Tap1_Camera_FrontTips">以平视的视角查看，需要保持摄像头前方视野开阔</string>
   <string name="Tap1_Camera_Greetings">日出日落、云彩变换、家庭生活、Baby成长&#8230;每天都有精彩和成长，每一刻都值得被记录</string>
   <string name="Tap1_Camera_Messages">消息</string>
   <string name="Tap1_Camera_Messages_ViewTheVideo">查看视频</string>
-  <string name="Tap1_Camera_MotionDetection_OffTips">关闭“移动侦测”，将停止“侦测到异常时”自动录像</string>
+  <string name="Tap1_Camera_MotionDetection_OffTips">关闭“移动侦测”，将停止“移动侦测报警录像”</string>
   <string name="Tap1_Camera_NoSDCardTips">未检测到SD卡</string>
   <string name="Tap1_Camera_Overlook">俯视</string>
   <string name="Tap1_Camera_OverlookTips">以从上往下的视角查看，需要将摄像头放置于高处</string>
