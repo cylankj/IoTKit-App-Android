@@ -70,27 +70,16 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
     @Override
     public void onStart() {
         super.onStart();
-<<<<<<< HEAD
         if (expainGray != null)
             ViewUtils.setViewMarginStatusBar(expainGray);
-=======
-        if (expainGray != null) {
-            ViewUtils.setViewMarginStatusBar(expainGray);
-        }
->>>>>>> 3.2.0
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-<<<<<<< HEAD
-        if (expainGray != null)
-            ViewUtils.clearViewMarginStatusBar(expainGray);
-=======
         if (expainGray != null) {
             ViewUtils.clearViewMarginStatusBar(expainGray);
         }
->>>>>>> 3.2.0
     }
 
     @Override

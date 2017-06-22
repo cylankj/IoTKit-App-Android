@@ -149,23 +149,11 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
     private Observable<RxEvent.ClientCheckVersion> checkVersionFrom8Hour() {
         return Observable.just("check_version")
                 .subscribeOn(Schedulers.newThread())
-                .delay(3, TimeUnit.SECONDS)
                 .timeout(10, TimeUnit.SECONDS)
                 .filter(s -> {
                     int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
                     return netType == 1;//wifi
                 })
-                .flatMap(s -> {
-                    int req = -1;
-                    try {
-                        String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
-                        req = BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
-                    } catch (JfgException e) {
-                        AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
-                    }
-                    return Observable.just(req);
-                })
-                .filter(ret -> ret >= 0)
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.ClientCheckVersion.class)
                         .flatMap(clientCheckVersion -> {
                             throw new RxEvent.HelperBreaker(clientCheckVersion);
@@ -203,6 +191,12 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                             checkRsp((RxEvent.ClientCheckVersion) ((RxEvent.HelperBreaker) throwable).object);
                     }
                 });
+        try {
+            String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
+            BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
+        } catch (JfgException e) {
+            AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
+        }
     }
 
     private void checkRsp(final RxEvent.ClientCheckVersion clientCheckVersion) {
