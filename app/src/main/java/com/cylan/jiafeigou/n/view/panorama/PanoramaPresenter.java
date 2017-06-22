@@ -249,7 +249,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
-        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus().onErrorResumeNext(Observable.just(null))
+        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {
@@ -333,6 +333,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         })
 
                 )
+                .onErrorResumeNext(throwable -> {
+                    AppLogger.e(throwable.getMessage());
+                    return Observable.just(null);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onDeviceInitFinish();//初始化成功,可以播放视频了
