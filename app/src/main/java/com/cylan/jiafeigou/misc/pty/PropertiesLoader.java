@@ -48,8 +48,8 @@ public class PropertiesLoader implements IProperty {
         //每次遍历,效率比较低,有待优化
         for (int i = 0; i < count; i++) {
             Map<String, String> map = propertyFile.getpList().get(i);
-            final String pid = map.get("Pid");
-            final String os = map.get("os");
+            final String pid = map.get("PID");
+            final String os = map.get("OS");
             if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
                 final String tagValue = map.get(tag);
                 return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
@@ -70,8 +70,8 @@ public class PropertiesLoader implements IProperty {
         //效率比较低,有待优化
         for (int i = 0; i < count; i++) {
             Map<String, String> map = propertyFile.getpList().get(i);
-            final String pid = map.get("Pid");
-            final String os = map.get("os");
+            final String pid = map.get("PID");
+            final String os = map.get("OS");
             if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
                 return map.get(tag);
             }

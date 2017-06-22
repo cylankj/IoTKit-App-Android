@@ -457,7 +457,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSetting110v.setVisibility(View.GONE);
 
         /////////////////////////旋转/////////////////////////////////////////
-        if (JFGRules.showRotate(device.pid)) {
+        if (!JFGRules.showRotate(device.pid)) {
             svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
             int state = device.$(DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);

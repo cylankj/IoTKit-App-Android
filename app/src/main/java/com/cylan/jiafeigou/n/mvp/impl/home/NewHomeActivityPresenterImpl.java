@@ -41,7 +41,8 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    long time = PreferencesUtils.getLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG);
+                    long time=0;
+//                    long time = PreferencesUtils.getLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG);
                     boolean force = ret.updateType == RxEvent.UpdateType.GOOGLE_PLAY || (ret.forceUpdate == 1);//强制升级
                     if (force || time == 0 || System.currentTimeMillis() - time > 24 * 3600 * 1000) {
                         PreferencesUtils.putLong(JConstant.KEY_CLIENT_NEW_VERSION_DIALOG, System.currentTimeMillis());

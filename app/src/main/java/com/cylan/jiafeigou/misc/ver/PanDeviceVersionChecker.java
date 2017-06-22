@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -41,7 +42,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
 
     @Override
     public void startCheck() {
-        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60* 1000) {
+        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60 * 1000) {
             lastCheckTime = System.currentTimeMillis();
         } else return;
         if (!checkCondition()) return;
@@ -72,9 +73,16 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                     oldVersion = ret.getVersion();
                     oldVersion.setLastShowTime(time);
                     oldVersion.setTotalSize(totalSize(oldVersion));
-                    PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
-                    setBinVersion(oldVersion);
-                    finalShow();
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(portrait.getCid());
+                    final String newVersion = binVersion.getTagVersion();
+                    final String currentVersion = device.$(207, "");
+                    if (BindUtils.versionCompare(newVersion, currentVersion) > 0) {
+                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(oldVersion));
+                        setBinVersion(oldVersion);
+                        finalShow();
+                    } else {
+                        PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, "");
+                    }
                     return Observable.just(ret.getVersion());
                 })
                 .subscribe(ret -> {

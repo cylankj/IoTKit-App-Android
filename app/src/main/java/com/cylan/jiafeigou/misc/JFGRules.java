@@ -194,7 +194,7 @@ public class JFGRules {
 
     public static boolean showSight(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                "sight");
+                "VIEWANGLE");
     }
 
     public static boolean showRotate(int pid) {

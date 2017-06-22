@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.misc.ver;
 
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -10,6 +11,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.CloseUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -17,17 +19,13 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.request.BaseRequest;
-import com.lzy.okserver.download.DownloadInfo;
-import com.lzy.okserver.download.DownloadManager;
-import com.lzy.okserver.download.db.DownloadDBManager;
-import com.lzy.okserver.listener.DownloadListener;
 
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +49,8 @@ import static com.cylan.jiafeigou.misc.ver.ClientVersionChecker.GooglePlayCheckR
  */
 
 public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVersion> {
+
+    private static final String TAG = "ClientVersionChecker";
 
     @Override
     public boolean checkCondition() {
@@ -264,7 +264,8 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
             } catch (Exception e) {
             }
             //2.文件大小
-            File file = new File(JConstant.MISC_PATH, versionName + ".apk");
+            final String filePath = cVersion.getSaveDir() + File.separator + cVersion.getFileName();
+            File file = new File(filePath);
             if (file.exists() && file.length() == response.body().contentLength()) {
                 //文件已经下载好
                 AppLogger.d("文件已经下载好");
@@ -299,35 +300,93 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
         public void call(String url) {
             writeHelper = 0;
             new File(cVersion.getSaveDir()).mkdirs();
-            BaseRequest request = OkGo.get(url);
-            DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(url);
-            final DownloadListener listener = new DownloadListener() {
+            downloadFile(cVersion, new DownloadListener() {
+
                 @Override
-                public void onProgress(DownloadInfo downloadInfo) {
+                public void onProgress(long downloadByte, long totalByte) {
                     writeHelper++;
-                    if (writeHelper % 5 == 0) AppLogger.d("下载进度?" + downloadInfo.getProgress());
+                    if (writeHelper % 20 == 0)
+                        AppLogger.d("下载进度?" + (float) downloadByte / totalByte);
                 }
 
                 @Override
-                public void onFinish(DownloadInfo downloadInfo) {
-                    AppLogger.d("下载进度,完成:" + downloadInfo.getTargetPath());
+                public void onFinish() {
+                    AppLogger.d("下载进度,完成:" + new Gson().toJson(cVersion));
                     RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(cVersion.getSaveDir() + File.separator + cVersion.getFileName())
                             .setForceUpdate(forceUpdate)
                             .setUpdateType(RxEvent.UpdateType._8HOUR));
                 }
 
                 @Override
-                public void onError(DownloadInfo downloadInfo, String s, Exception e) {
+                public void onError(Exception e) {
                     AppLogger.d("下载进度,失败了:" + MiscUtils.getErr(e));
+
                 }
-            };
-            if (info != null) {
-                info.setListener(listener);
-                DownloadDBManager.INSTANCE.delete(url);
-                DownloadManager.getInstance().removeTask(url);
-            }
-            DownloadManager.getInstance().setTargetFolder(JConstant.UPDATE_FILE_PATH);
-            DownloadManager.getInstance().addTask(cVersion.getFileName(), url, request, listener);
+            }, url);
         }
+
+        private void downloadFile(CVersion cVersion, DownloadListener downloadListener, final String url) {
+            try {
+                //创建文件夹
+                new File(cVersion.getSaveDir()).mkdirs();
+                final String filePath = cVersion.getSaveDir() + File.separator + cVersion.getFileName();
+                FileUtils.deleteFileByChar(cVersion.getSaveDir(), "apk");
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build();
+                Request request = new Request.Builder().url(url)
+                        .build();
+                Call call = client.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        if (downloadListener != null) downloadListener.onError(e);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        InputStream is = null;
+                        byte[] buf = new byte[4096];
+                        int len = 0;
+                        FileOutputStream fos = null;
+                        try {
+                            long total = response.body().contentLength();
+                            long current = 0;
+                            is = response.body().byteStream();
+                            fos = new FileOutputStream(filePath);
+                            while ((len = is.read(buf)) != -1) {
+                                current += len;
+                                fos.write(buf, 0, len);
+                                if (downloadListener != null)
+                                    downloadListener.onProgress(current, total);
+                            }
+                            fos.flush();
+                            if (downloadListener != null)
+                                downloadListener.onFinish();
+                        } catch (IOException e) {
+                            Log.e(TAG, e.toString());
+                            if (downloadListener != null)
+                                downloadListener.onError(e);
+                            FileUtils.deleteAbsoluteFile(filePath);
+                        } finally {
+                            CloseUtils.close(is);
+                            CloseUtils.close(fos);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    private interface DownloadListener {
+        void onProgress(long downloadByte, long totalByte);
+
+        void onFinish();
+
+        void onError(Exception e);
     }
 }
