@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">24 saat videoya izin ver</string>
   <string name="RECORD_INFO_2">Herhangi bir zamandaki videoya izin verme</string>
   <string name="RECORD_MODE">Hareket algılama</string>
-  <string name="RECORD_MODE_1">24 saat</string>
+  <string name="RECORD_MODE_1">Tüm gün</string>
   <string name="RECORD_MODE_2">Hiçbir zaman</string>
   <string name="RECORD_MODE_CHANGE">Şu an için yeriniz \"evde\", hareket algılama kapalı, algılamaya ihtiyacınız varsa lütfen devam edin</string>
   <string name="RECORD_NO_FIND">Bu sefer video yok</string>
@@ -511,11 +511,11 @@
   <string name="SETTING">Ayarlanıyor&#8230;</string>
   <string name="SETTINGS">Ayarlamalar</string>
   <string name="SETTINGS_1">Ayarlamalar</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Kapanırsa, WeChat itilmesini kabul edemezsiniz. \"Akıllı Köpek WeChat Resmi Hesabı\" nı takip etmeden kaldırılmasını.</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Lütfen eski WeChat hesabının başarısı artık mesajı zorla almazsak WeChat hesabına \"Akıllı Köpek WeChat Resmi Hesabı\" na odaklanın ve bağlayın.</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Kapanırsa, WeChat itilmesini kabul edemezsiniz. \"加菲狗官微服务\" nı takip etmeden kaldırılmasını.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Lütfen eski WeChat hesabının başarısı artık mesajı zorla almazsak WeChat hesabına \"加菲狗官微服务\" na odaklanın ve bağlayın.</string>
   <string name="SETTING_DIRECTION">Video yönlendirme</string>
   <string name="SETTING_FREE">Kişisel cihazın alarm ve hareket algılamasını ayarlayın</string>
-  <string name="SETTING_RECORD">Video kaydetme</string>
+  <string name="SETTING_RECORD">Video ayarları</string>
   <string name="SETTING_SD">Mikro SD kart</string>
   <string name="SETTING_TIMEZONE">Zaman bölgesi</string>
   <string name="SET_NEW_PWD">Yeni şifre kur</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Talimatları aç</string>
   <string name="Start_instructions_A">Clever Dog e&#8211;postasını bağlayan WeChat Resmi Hesaplarında bu işlevi açabilirsiniz.</string>
   <string name="Start_instructions_B">Aşağıdakileri yapın:</string>
-  <string name="Start_instructions_C">1. Lütfen WeChat genel numarasına \"Akıllı Köpek WeChat Resmi Hesabı\" na dikkat edin.</string>
-  <string name="Start_instructions_D">Yöntem 1: \"+\"> Rehber Ekle> Resmi Hesaplar\'ın sağ üst köşesindeki WeChat\'ı tıklayın, ardından \"Akıllı Köpek WeChat Resmi Hesabı\" arar ve ardından endişe duyar.</string>
+  <string name="Start_instructions_C">1. Lütfen WeChat genel numarasına \"加菲狗官微服务\" na dikkat edin.</string>
+  <string name="Start_instructions_D">Yöntem 1: \"+\"> Rehber Ekle> Resmi Hesaplar\'ın sağ üst köşesindeki WeChat\'ı tıklayın, ardından \"加菲狗官微服务\" arar ve ardından endişe duyar.</string>
   <string name="Start_instructions_E">Yöntem 2: Bu sayfanın ekran görüntüsü veya aşağıdaki iki boyutlu kodu Albüme kaydetmek için WeChat süpürme dikkatini kullanın.</string>
   <string name="Start_instructions_F">2. Hesap bağlayın</string>
-  <string name="Start_instructions_G">Dikkat \"Akıllı Köpek WeChat Resmi Hesabı\" Resmi Hesaplar, ana sayfaya girin, hizmetin menü çubuğuna tıklayın, cilt hesabı seçin.</string>
+  <string name="Start_instructions_G">Dikkat \"加菲狗官微服务\" Resmi Hesaplar, ana sayfaya girin, hizmetin menü çubuğuna tıklayın, cilt hesabı seçin.</string>
   <string name="Start_instructions_H">Hesabı bağla</string>
   <string name="Start_instructions_I">Lütfen şifreyi unuttum gibi bağlamak için Zeki köpek e&#8211;posta hesabını giriniz, lütfen Zeki köpek müşterisine geri dönün.</string>
   <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen doğrudan moda geçin</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Yardım</string>
   <string name="Unconnect_Network">Cihazınız bir mobil şebekeye veya bir Kablosuz ağa bağlı değil</string>
   <string name="VALID_STORAGE">Geçerli depolama</string>
+  <string name="VIDEO_FirmwareUpdating">Firmware güncellemesi&#8230;</string>
   <string name="VIDEO_REFRESHING">YÜKLENİYOR</string>
   <string name="VIDEO_SD_DESC">Video bilgisi depolamak için SD kart başlatma gerekiyor</string>
   <string name="WARN_TIME">Uyarı süresi</string>

@@ -19,7 +19,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 网络工具类
@@ -165,8 +169,6 @@ public class NetUtils {
     public static WifiManager getWifiManager(Context c) {
         return (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
     }
-
-
 
 
     /**
@@ -531,5 +533,23 @@ public class NetUtils {
 
     public static boolean isPublicNetwork() {
         return isNetworkAvailable();
+    }
+
+    /**
+     * 不一定适用 所有手机
+     *
+     * @return
+     */
+    public static boolean isVPNOn() {
+        List<String> networkList = new ArrayList<>();
+        try {
+            for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                if (networkInterface.isUp())
+                    networkList.add(networkInterface.getName());
+            }
+        } catch (Exception ex) {
+            Log.e("", "isVpnUsing Network List didn't received");
+        }
+        return networkList.contains("tun0") || networkList.contains("ppp0");
     }
 }

@@ -78,7 +78,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @BindView(R.id.fLayout_protection_repeat_period)
     SettingItemView0 fLayoutProtectionRepeatPeriod;
     private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
-    private TimePickDialogFragment timePickDialogFragment;
+    //    private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
 
     private Device device;
@@ -267,8 +267,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             break;
             case R.id.fLayout_protection_start_time: {
                 ViewUtils.deBounceClick(view);
-                initTimePickDialogFragment();
-                timePickDialogFragment.setArguments(getBundle(getString(R.string.FROME)));
+                TimePickDialogFragment timePickDialogFragment = TimePickDialogFragment.newInstance(getBundle(getString(R.string.FROME)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -286,8 +285,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             }
             break;
             case R.id.fLayout_protection_end_time: {
-                initTimePickDialogFragment();
-                timePickDialogFragment.setArguments(getBundle(getString(R.string.TO)));
+                TimePickDialogFragment timePickDialogFragment=TimePickDialogFragment.newInstance(getBundle(getString(R.string.TO)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -329,12 +327,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         Bundle bundle = getArguments();
         bundle.putString(KEY_TITLE, title);
         return bundle;
-    }
-
-    private void initTimePickDialogFragment() {
-        if (timePickDialogFragment == null) {
-            timePickDialogFragment = TimePickDialogFragment.newInstance(null);
-        }
     }
 
     private void initWarnEffectFragment() {

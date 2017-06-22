@@ -410,6 +410,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(WechatGuideFragment.class.getSimpleName());
     }
 
     @Override

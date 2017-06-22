@@ -32,19 +32,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     @Override
     public void start() {
         super.start();
-        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class).map(event -> true)
-                .first()
-                .observeOn(Schedulers.io())
-                .subscribe(event -> {
-                    try {
-                        BaseApplication.getAppComponent()
-                                .getCmd().enableLog(true, BaseApplication.getAppComponent().getLogPath());
-                        throw new RxEvent.HelperBreaker("reEnableLog");
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                }, AppLogger::e);
-        addSubscription(subscribe);
     }
 
     public void autoLogin() {
@@ -81,6 +68,25 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     @Override
     public Observable<AdsStrategy.AdsDescription> showAds() {
         return AdsStrategy.getStrategy().needShowAds();
+    }
+
+    @Override
+    public void reEnableSmartcallLog() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class).map(event -> true)
+                .first()
+                .observeOn(Schedulers.io())
+                .subscribe(event -> {
+                    try {
+                        BaseApplication.getAppComponent()
+                                .getCmd().enableLog(false, BaseApplication.getAppComponent().getLogPath());
+                        BaseApplication.getAppComponent()
+                                .getCmd().enableLog(true, BaseApplication.getAppComponent().getLogPath());
+                        throw new RxEvent.HelperBreaker("reEnableLog");
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }, AppLogger::e);
+        addSubscription(subscribe);
     }
 }
 

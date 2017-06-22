@@ -46,7 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by chen on 5/24/16.
  */
 @RuntimePermissions
-public class SmartcallActivity extends NeedLoginActivity
+public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presenter>
         implements SplashContract.View {
 
     @BindView(R.id.fLayout_splash)
@@ -55,8 +55,6 @@ public class SmartcallActivity extends NeedLoginActivity
     TextView tvCopyRight;
     @BindView(R.id.welcome_switcher)
     ViewSwitcher welcomeSwitcher;
-    @Nullable
-    private SplashContract.Presenter presenter;
 
     private boolean showOnceInCircle = true;
 
@@ -88,10 +86,10 @@ public class SmartcallActivity extends NeedLoginActivity
             startActivity(new Intent(this, NewHomeActivity.class), bundle);
             finish();
         }
-        if (presenter != null) {
-            presenter.autoLogin();
+        if (basePresenter != null) {
+            basePresenter.autoLogin();
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
-            presenter.selectNext(showSplash);
+            basePresenter.selectNext(showSplash);
         }
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
@@ -99,7 +97,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (basePresenter != null) basePresenter.stop();
     }
 
     protected int[] getOverridePendingTransition() {
@@ -107,7 +105,7 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     private void initPresenter() {
-        presenter = new SmartCallPresenterImpl(this);
+        basePresenter = new SmartCallPresenterImpl(this);
     }
 
     @Override
@@ -255,9 +253,9 @@ public class SmartcallActivity extends NeedLoginActivity
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
         //检查广告的有效性
-        if (presenter != null && showOnceInCircle) {
+        if (basePresenter != null && showOnceInCircle) {
             showOnceInCircle = false;
-            presenter.showAds()
+            basePresenter.showAds()
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .flatMap(ret -> {
                         goAheadAfterPermissionGranted();
@@ -275,6 +273,8 @@ public class SmartcallActivity extends NeedLoginActivity
                     .subscribe(ret -> {
                     }, AppLogger::e);
         }
+        if (basePresenter != null)
+            basePresenter.reEnableSmartcallLog();
     }
 
     @Override
@@ -301,8 +301,8 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     @Override
-    public void setPresenter(SplashContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(SplashContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
     @Override

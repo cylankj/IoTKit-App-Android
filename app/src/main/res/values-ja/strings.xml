@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">24時間録画を起動します</string>
   <string name="RECORD_INFO_2">いかなる時でも録画を起動しません</string>
   <string name="RECORD_MODE">異常を検出した時</string>
-  <string name="RECORD_MODE_1">24時間</string>
+  <string name="RECORD_MODE_1">終日</string>
   <string name="RECORD_MODE_2">録画しない</string>
   <string name="RECORD_MODE_CHANGE">現在の設定が「帰宅モード」のため、移動検出がオフにされています。オンにする場合はモードを変更してください。</string>
   <string name="RECORD_NO_FIND">この時間帯の動画が見つかりません</string>
@@ -511,11 +511,11 @@
   <string name="SETTING">設定中&#8230;</string>
   <string name="SETTINGS">設定</string>
   <string name="SETTINGS_1">機能設定</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">オフにすると微信のプッシュ通知を受信できなくなります。バインディングを解除したい場合、微信で「Clever Dog公式微信サービス」のアカウントのフォローを解除してください。</string>
-  <string name="SETTINGS_Wechat_Switch_Open">微信アカウント \"Clever Dog公式微信サービス\"に注目し、古い微信アカウントの成功がメッセージプッシュを受信しなくなったらバインドしてください</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">オフにすると微信のプッシュ通知を受信できなくなります。バインディングを解除したい場合、微信で「加菲狗官微服务」のアカウントのフォローを解除してください。</string>
+  <string name="SETTINGS_Wechat_Switch_Open">微信アカウント \"加菲狗官微服务\"に注目し、古い微信アカウントの成功がメッセージプッシュを受信しなくなったらバインドしてください</string>
   <string name="SETTING_DIRECTION">動画方向</string>
   <string name="SETTING_FREE">デバイスの移動検出および警報を自由にカスタマイズする</string>
-  <string name="SETTING_RECORD">自動録画</string>
+  <string name="SETTING_RECORD">ビデオ設定</string>
   <string name="SETTING_SD">Micro SDカード</string>
   <string name="SETTING_TIMEZONE">デバイスタイムゾーン</string>
   <string name="SET_NEW_PWD">新しいパスワードを設定する</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">指示を開く</string>
   <string name="Start_instructions_A">拘束力のあるClever Dog電子メールのWeChat Official Accountsでは、この機能を開くことができます。</string>
   <string name="Start_instructions_B">次のように進んでください：</string>
-  <string name="Start_instructions_C">1. WeChatの公開番号「Clever Dog公式微信サービス」に注意してください。</string>
-  <string name="Start_instructions_D">方法1： \"+\">連絡先の追加>公式アカウントの右上隅にあるWeChatをクリックし、 \"Clever Dog公式微信サービス\"を検索してください。</string>
+  <string name="Start_instructions_C">1. WeChatの公開番号「加菲狗官微服务」に注意してください。</string>
+  <string name="Start_instructions_D">方法1： \"+\">連絡先の追加>公式アカウントの右上隅にあるWeChatをクリックし、 \"加菲狗官微服务\"を検索してください。</string>
   <string name="Start_instructions_E">方法2：このページのスクリーンショットまたは次の2次元コードをWeChatスイープスイープの注意書きでアルバムに保存します。</string>
   <string name="Start_instructions_F">2.アカウントをバインドする</string>
-  <string name="Start_instructions_G">注意してください \"巧妙な犬WeChat公式アカウント\"公式アカウントは、メインページを入力し、サービスのメニューバーをクリックして、バインディングアカウントを選択します。</string>
+  <string name="Start_instructions_G">注意してください \"加菲狗官微服务\"公式アカウントは、メインページを入力し、サービスのメニューバーをクリックして、バインディングアカウントを選択します。</string>
   <string name="Start_instructions_H">アカウントをバインドする</string>
   <string name="Start_instructions_I">パスワードを忘れるなど、賢い犬の電話/メールアカウントを入力してください。賢い犬のクライアントに戻ってください。</string>
   <string name="Switch_Mode">撮影内容を見るにはダイレクトモードに切り替えてください</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">ヘルプ</string>
   <string name="Unconnect_Network">お使いの端末はモバイルネットワークまたはWi&#8211;Fiネットワークに接続されていません</string>
   <string name="VALID_STORAGE">ストレージ容量</string>
+  <string name="VIDEO_FirmwareUpdating">ファームウェアのアップデート&#8230;</string>
   <string name="VIDEO_REFRESHING">アップロード中、お待ちください</string>
   <string name="VIDEO_SD_DESC">Micro SDカードを読み込めません。初期化してください</string>
   <string name="WARN_TIME">警報時間帯</string>

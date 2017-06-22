@@ -408,7 +408,7 @@
   <string name="RECORD_INFO_1">Запись 24 часа</string>
   <string name="RECORD_INFO_2">Не ведется видеозапись</string>
   <string name="RECORD_MODE">Обнаружение движения</string>
-  <string name="RECORD_MODE_1">24 часа</string>
+  <string name="RECORD_MODE_1">Весь день</string>
   <string name="RECORD_MODE_2">Никогда</string>
   <string name="RECORD_MODE_CHANGE">Сейчас ваше расположение находится \"дома\",обнаружение движения выключено, если вам нужно обнаружение, пожалуйста, продолжайте</string>
   <string name="RECORD_NO_FIND">Записи не найдены</string>
@@ -511,11 +511,11 @@
   <string name="SETTING">Установка&#8230;</string>
   <string name="SETTINGS">Параметры</string>
   <string name="SETTINGS_1">Параметры</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">WeChat сообщения не доставят при закрытии. Перейтите к WeChat и перестаньте следить за официальным аккаунтом \"Clever dog Официальный WeChat Сервис\" если хотите отменить привязку.</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Пожалуйста, сосредоточьтесь на учетной записи WeChat \"Clever dog Официальный WeChat Сервис\" и свяжите ее, после того как успех старой учетной записи WeChat больше не получит сообщение push</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">WeChat сообщения не доставят при закрытии. Перейтите к WeChat и перестаньте следить за официальным аккаунтом \"加菲狗官微服务\" если хотите отменить привязку.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Пожалуйста, сосредоточьтесь на учетной записи WeChat \"加菲狗官微服务\" и свяжите ее, после того как успех старой учетной записи WeChat больше не получит сообщение push</string>
   <string name="SETTING_DIRECTION">Кадр</string>
   <string name="SETTING_FREE">Установить обнаружение движения и сигнализацию</string>
-  <string name="SETTING_RECORD">Запись видео</string>
+  <string name="SETTING_RECORD">Настройки видео</string>
   <string name="SETTING_SD">Карта microSD</string>
   <string name="SETTING_TIMEZONE">Часовой пояс</string>
   <string name="SET_NEW_PWD">Установить новый пароль</string>
@@ -568,11 +568,11 @@
   <string name="Start_instructions">Откройте инструкции</string>
   <string name="Start_instructions_A">В официальных учетных записях WeChat в обязательной электронной почте Clever Dog вы можете открыть эту функцию.</string>
   <string name="Start_instructions_B">Действуйте следующим образом:</string>
-  <string name="Start_instructions_C">1. Пожалуйста, обратите внимание на общедоступный номер WeChat \"Clever dog Официальный WeChat Сервис\"</string>
-  <string name="Start_instructions_D">Способ 1: нажмите WeChat в верхнем правом углу \"+\"> \"Добавить контакты\"> \"Официальные счета\", выполните поиск \"Clever dog Официальный WeChat Сервис\", а затем заинтересованы.</string>
+  <string name="Start_instructions_C">1. Пожалуйста, обратите внимание на общедоступный номер WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Способ 1: нажмите WeChat в верхнем правом углу \"+\"> \"Добавить контакты\"> \"Официальные счета\", выполните поиск \"加菲狗官微服务\", а затем заинтересованы.</string>
   <string name="Start_instructions_E">Способ 2: снимок экрана с этой страницы или сохранение в альбоме следующего двухмерного кода, в развертке WeChat.</string>
   <string name="Start_instructions_F">2. Счет привязки</string>
-  <string name="Start_instructions_G">Внимание \"Clever dog Официальный WeChat Сервис\", войдите в основную страницу, щелкните строку меню службы, выберите обязательную учетную запись.</string>
+  <string name="Start_instructions_G">Внимание \"加菲狗官微服务\", войдите в основную страницу, щелкните строку меню службы, выберите обязательную учетную запись.</string>
   <string name="Start_instructions_H">Связать счет</string>
   <string name="Start_instructions_I">Пожалуйста, введите Умный телефон электронной почты для привязки, например, забудьте пароль, пожалуйста, перейдите к клиенту Clever dog back</string>
   <string name="Switch_Mode">Перейдите в режим прямого просмотра для просмотра</string>
@@ -674,7 +674,7 @@
   <string name="Tap1_CameraFun_Timelapse_document">Получить больше интересных моментов с цикличной съемкой</string>
   <string name="Tap1_CameraFun_Timelapse_hours">% часов</string>
   <string name="Tap1_CameraFun_UninitializedTips">Неудачная идентификация Micro SD карты</string>
-  <string name="Tap1_CameraFun_VideoDirection">Перевёртка (перевернутая картинка)</string>
+  <string name="Tap1_CameraFun_VideoDirection">перевернутая картинка (Перевёртка)</string>
   <string name="Tap1_Camera_BackLiveTips">Вернуться к Прямая трансляция</string>
   <string name="Tap1_Camera_Front">Фронт</string>
   <string name="Tap1_Camera_FrontTips">Просмотр с горизонтальным углом должен держать широкий видение перед камерой</string>
@@ -913,6 +913,7 @@
   <string name="USE_HELP">Помощь</string>
   <string name="Unconnect_Network">Ваше устройство не подключено к мобильной сети или сети Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Объём памяти</string>
+  <string name="VIDEO_FirmwareUpdating">Обновление прошивки&#8230;</string>
   <string name="VIDEO_REFRESHING">Идет загрузка, пожалуйста подождите</string>
   <string name="VIDEO_SD_DESC">Необходимо инициализировать карту microSD, после этого будет возможно сохранение видеозаписей</string>
   <string name="WARN_TIME">Время сигнала</string>

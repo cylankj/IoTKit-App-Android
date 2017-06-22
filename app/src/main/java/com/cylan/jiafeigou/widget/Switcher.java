@@ -41,11 +41,15 @@ public class Switcher extends LinearLayout {
         viewSecond = (TextView) getChildAt(1);
         viewThird = (TextView) getChildAt(2);
         viewFirst.setOnClickListener(v -> {
+            final String current = viewThird.getText().toString();
+            viewFirst.setText(current);
             slideOut();
             setMode(getContext().getString(R.string.Tap1_Camera_Video_HD));
             if (switcherListener != null) switcherListener.switcher(v);
         });
         viewSecond.setOnClickListener(v -> {
+            final String current = viewThird.getText().toString();
+            viewSecond.setText(current);
             slideOut();
             setMode(getContext().getString(R.string.Tap1_Camera_Video_SD));
             if (switcherListener != null) switcherListener.switcher(v);

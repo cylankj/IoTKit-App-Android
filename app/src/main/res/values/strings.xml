@@ -407,8 +407,8 @@
     <string name="RECORD_INFO_0">Device will record video when motion deteced and will stop recording when it goes normal.</string>
     <string name="RECORD_INFO_1">Recording video in 24 hours</string>
     <string name="RECORD_INFO_2">Never record video</string>
-    <string name="RECORD_MODE">When Motion detected</string>
-    <string name="RECORD_MODE_1">24 Hours</string>
+    <string name="RECORD_MODE">Motion detection alarm recording</string>
+    <string name="RECORD_MODE_1">All day</string>
     <string name="RECORD_MODE_2">Never</string>
     <string name="RECORD_MODE_CHANGE">The current location is \"at home\" and motion detection closed. If you need it,please change the mode.</string>
     <string name="RECORD_NO_FIND">No video in this time period</string>
@@ -511,11 +511,11 @@
     <string name="SETTING">Setting&#8230;</string>
     <string name="SETTINGS">Settings</string>
     <string name="SETTINGS_1">Settings</string>
-    <string name="SETTINGS_Wechat_Switch_Cancel">If closed, it cannot receive WeChat push. Unbinding it by unfollowing \“Clever Dog WeChat Official Account\”.</string>
-    <string name="SETTINGS_Wechat_Switch_Open">Please focus on the WeChat account \"Clever Dog WeChat Official Account\" and bind, after the success of the old WeChat account will no longer receive the message push</string>
+    <string name="SETTINGS_Wechat_Switch_Cancel">If closed, it cannot receive WeChat push. Unbinding it by unfollowing \“加菲狗官微服务\”.</string>
+    <string name="SETTINGS_Wechat_Switch_Open">Please focus on the WeChat account \"加菲狗官微服务\" and bind, after the success of the old WeChat account will no longer receive the message push</string>
     <string name="SETTING_DIRECTION">Video direction</string>
     <string name="SETTING_FREE">Set alarm and motion detector of individual device</string>
-    <string name="SETTING_RECORD">Video Recording</string>
+    <string name="SETTING_RECORD">Video settings</string>
     <string name="SETTING_SD">Micro SD card</string>
     <string name="SETTING_TIMEZONE">Time zone</string>
     <string name="SET_NEW_PWD">Set new password</string>
@@ -568,11 +568,11 @@
     <string name="Start_instructions">Start instructions</string>
     <string name="Start_instructions_A">In the WeChat Official Accounts in the binding Clever Dog email, you can open this function.</string>
     <string name="Start_instructions_B">Proceed as follows:</string>
-    <string name="Start_instructions_C">1. Please pay attention to WeChat public number \"Clever Dog WeChat Official Account\"</string>
-    <string name="Start_instructions_D">Method 1: click on the WeChat in the upper right corner of the \"+\"> Add Contacts>Official Accounts, search \"Clever Dog WeChat Official Account\" and then concerned.</string>
+    <string name="Start_instructions_C">1. Please pay attention to WeChat public number \"加菲狗官微服务\"</string>
+    <string name="Start_instructions_D">Method 1: click on the WeChat in the upper right corner of the \"+\"> Add Contacts>Official Accounts, search \"加菲狗官微服务\" and then concerned.</string>
     <string name="Start_instructions_E">Method 2: screenshot of this page or save the following two&#8211;dimensional code to the album, in the WeChat sweep sweep attention.</string>
     <string name="Start_instructions_F">2. Bind account</string>
-    <string name="Start_instructions_G">Attention \"Clever Dog WeChat Official Account\" Official Accounts, enter the main page, click the menu bar of the service, select the binding account.</string>
+    <string name="Start_instructions_G">Attention \"加菲狗官微服务\" Official Accounts, enter the main page, click the menu bar of the service, select the binding account.</string>
     <string name="Start_instructions_H">Bind account</string>
     <string name="Start_instructions_I">Please enter the Clever dog email account to bind, such as forget the password please go to the Clever dog client back</string>
     <string name="Switch_Mode">please switch to direct mode to view shooting content</string>
@@ -646,7 +646,7 @@
     <string name="Tap1_Album_Share_To_Daily_Great">The shared content will be saved to\"Daily Great\"</string>
     <string name="Tap1_BigPic_FavoriteTips">Collect pics in\"Daily Great\"</string>
     <string name="Tap1_CameraFun_Standby">Standby</string>
-    <string name="Tap1_CameraFun_Standby_Description">Start standby to hibernate, that will be unable to watch live, check history videos, protect and alert, auto&#8211;recording, time&#8211;lapse photography and etc.</string>
+    <string name="Tap1_CameraFun_Standby_Description">Start standby to hibernate, that will be unable to watch live, check history videos, protect and alert, Video settings, time&#8211;lapse photography and etc.</string>
     <string name="Tap1_CameraFun_Standby_OnTips">Time&#8211;lapse photographing, unable to standby</string>
     <string name="Tap1_CameraFun_Timelapse">Time&#8211;lapse photography</string>
     <string name="Tap1_CameraFun_Timelapse_Countdown">Remaining time</string>
@@ -681,7 +681,7 @@
     <string name="Tap1_Camera_Greetings">Sunrise and sunset, family life and baby\'s growing&#8230;Always have things deserved to be recorde for everyday</string>
     <string name="Tap1_Camera_Messages">Messages</string>
     <string name="Tap1_Camera_Messages_ViewTheVideo">Video</string>
-    <string name="Tap1_Camera_MotionDetection_OffTips">Turn off \"Motion Detection\" will also stop recording \"when abnormalities been detected\"</string>
+    <string name="Tap1_Camera_MotionDetection_OffTips">Turn off \"Motion Detection\" will also stop recording \"Motion detection alarm recording\"</string>
     <string name="Tap1_Camera_NoSDCardTips">No SD card detected</string>
     <string name="Tap1_Camera_Overlook">Overlook</string>
     <string name="Tap1_Camera_OverlookTips">Viewing with overlooking angle needs to place the camera on high</string>
@@ -913,6 +913,7 @@
     <string name="USE_HELP">Help</string>
     <string name="Unconnect_Network">Your device is not connected to a mobile network, or a Wi&#8211;Fi network</string>
     <string name="VALID_STORAGE">Valid storage</string>
+    <string name="VIDEO_FirmwareUpdating">Firmware updating&#8230;</string>
     <string name="VIDEO_REFRESHING">LOADING</string>
     <string name="VIDEO_SD_DESC">The SD card initialization is required to store video</string>
     <string name="WARN_TIME">Warning time</string>
@@ -1015,80 +1016,4 @@
     <string name="web">http://www.cleverdog.com.cn/</string>
     <string name="wifi_authentication">Verify %s WiFi connection</string>
     <string name="wifi_hasnot">Not find this WIFI</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_device_setting">DeviceSetting</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>
