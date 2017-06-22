@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
+import com.lzy.okserver.download.DownloadManager;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -117,6 +119,7 @@ public final class BaseInitializationManager {
 
     public void initialization() {
         hasInitFinished = false;
+        initOKGo();
         enableDebugOptions();
         initSourceManager();
         initDBHelper();
@@ -129,11 +132,17 @@ public final class BaseInitializationManager {
         initDialogManager();
         initPushResult();
         initDeviceInformationFetcher();
-        OkGo.init((Application) appContext);
         this.iProperty.initialize();
         initUmengSdk();
         hasInitFinished = true;
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
+    }
+
+    private void initOKGo() {
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+            OkGo.init((Application) appContext);
+            DownloadManager.getInstance();
+        });
     }
 
     private void initUmengSdk() {

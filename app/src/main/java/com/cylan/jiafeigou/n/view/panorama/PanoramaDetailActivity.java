@@ -298,9 +298,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 break;
             }
         }
-        panoramicView720Ext.enableGyro(true);
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
         panoramaPanelSeekBar.setMax(panoramaItem.duration);
+        panoramicView720Ext.enableGyro(false);
+        bottomPictureMenuGyroscope.setImageResource(R.drawable.photos_icon_manual_selector);
+        bottomVideoMenuGyroscope.setImageResource(R.drawable.video_icon_manual_selector);
     }
 
     private void initPlayerAndPlay(String path) {

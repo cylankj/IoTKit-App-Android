@@ -419,12 +419,15 @@ public class DataSourceManager implements JFGSourceManager {
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
-
                     for (String uuid : uuids) {
                         AppLogger.d("设备已解绑:" + uuid);
                         Device remove = mCachedDeviceMap.remove(uuid);
                         if (remove != null && JFGRules.isRS(remove.pid)) {
-                            JFGRules.switchApModel(remove.$(DpMsgMap.ID_202_MAC, ""), remove.uuid, 1).subscribe(ret -> {
+                            String mac = remove.$(DpMsgMap.ID_202_MAC, "");
+                            if (TextUtils.isEmpty(mac)) {
+                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+                            }
+                            JFGRules.switchApModel(mac, uuid, 1).subscribe(ret -> {
                                 if (ret) {
                                     AppLogger.d("睿视删除设备起 AP 成功了!");
                                 }

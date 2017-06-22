@@ -484,9 +484,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         //好友
         ArrayList<FriendsReqBean> list = DataSourceManager.getInstance().getFriendsReqList();
         int count = 0;
-        for (FriendsReqBean bean : list) {
-            if (bean.time >= aLong / 1000) {
-                count++;
+        if (list != null) {
+            for (FriendsReqBean bean : list) {
+                if (bean.time >= aLong / 1000) {
+                    count++;
+                }
             }
         }
 //        int count = node == null ? 0 : node.getNodeCount();
@@ -494,18 +496,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         else
             homeMineItemFriend.showNumber(count);//count ==0 dismiss
         //系统消息未读数
-        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(SystemMessageFragment.class.
+
+                getSimpleName());
         count = node == null ? 0 : node.getNodeCount();
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
-        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.
+
+                getSimpleName());
         Object o = node == null ? null : node.getCacheData();
         count = node == null ? 0 : node.getNodeCount();
         homeMineItemHelp.showHint(count > 0);
         //分享管理
 
         //设置
-        node = helper.findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(WechatGuideFragment.class.
+
+                getSimpleName());
         homeMineItemSettings.showHint(node != null && node.getTraversalCount() > 0);
     }
 
