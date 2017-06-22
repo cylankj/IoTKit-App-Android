@@ -424,10 +424,10 @@ public class DataSourceManager implements JFGSourceManager {
                     for (Device uuid : devices) {
                         AppLogger.d("设备已解绑:" + uuid);
                         Device remove = mCachedDeviceMap.remove(uuid.uuid);
-                        if (remove != null && JFGRules.isRS(remove.pid)) {
+                        if (remove != null && JFGRules.isRS(uuid.pid)) {
                             String mac = remove.$(DpMsgMap.ID_202_MAC, "");
                             if (TextUtils.isEmpty(mac)) {
-                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid.uuid);
                             }
                             JFGRules.switchApModel(mac, uuid.uuid, 1).subscribe(ret -> {
                                 if (ret) {
