@@ -873,7 +873,7 @@
       "WIFI": "1"
     }
   ],
-  "typePidMap": {
+  "serialMap": {
     "BELL": [
       6,
       15,

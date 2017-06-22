@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by hds on 17-5-28.
@@ -15,10 +14,6 @@ public class PropertyFile {
     private List<Map<String, String>> pList = new ArrayList<>();
     private Map<String, List<Integer>> serialMap = new HashMap<>();
     private String version;
-
-    private List<TreeMap<String, String>> pList;
-    private TreeMap<String, List<Integer>> typePidMap;
-    String version;
 
     public void setSerialMap(Map<String, List<Integer>> serialMap) {
         this.serialMap = serialMap;

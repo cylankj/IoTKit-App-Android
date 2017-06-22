@@ -38,6 +38,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.ver.ClientVersionChecker.GooglePlayCheckResult.NEW_VERSION;
@@ -48,8 +51,6 @@ import static com.cylan.jiafeigou.misc.ver.ClientVersionChecker.GooglePlayCheckR
  */
 
 public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVersion> {
-
-    private CVersion cVersion;
 
     @Override
     public boolean checkCondition() {
@@ -69,10 +70,6 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
 
     @Override
     public void finalShow() {
-        if (cVersion == null) {
-            AppLogger.d("出错了>? cVersion is null");
-            return;
-        }
     }
 
     public static final class CVersion extends IVersion.BaseVersion {
@@ -133,6 +130,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                     AppLogger.d("有没有?" + v + ",gV: " + gVersion);
                     //有新包
                     RxEvent.ClientCheckVersion version = new RxEvent.ClientCheckVersion(0, null, 1);
+                    if (TextUtils.isEmpty(gVersion)) gVersion = "1.0.0";
                     if (BindUtils.versionCompare(gVersion, v) > 0) {
                         version.ret = NEW_VERSION;
                     } else {
@@ -180,23 +178,31 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
             checkVersionFromGooglePlay()
                     .subscribeOn(Schedulers.newThread())
                     .filter(ret -> ret != null)
+                    .doOnError(ret -> checkVersionFrom8Hours())
                     .subscribe(ret -> {
                         AppLogger.d("google play检查版本结果?" + ret);
                         if (ret.ret == NEW_VERSION) {
                             RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload("")
                                     .setUpdateType(RxEvent.UpdateType.GOOGLE_PLAY));
+                        } else {
+                            checkVersionFrom8Hours();
                         }
                     }, AppLogger::e);
         } else {
-            checkVersionFrom8Hour().subscribeOn(Schedulers.newThread())
-                    .subscribe(ret -> {
-                    }, throwable -> {//让整条订阅连结束
-                        if (throwable instanceof RxEvent.HelperBreaker) {
-                            if (((RxEvent.HelperBreaker) throwable).object != null && ((RxEvent.HelperBreaker) throwable).object instanceof RxEvent.ClientCheckVersion)
-                                checkRsp((RxEvent.ClientCheckVersion) ((RxEvent.HelperBreaker) throwable).object);
-                        }
-                    });
+            checkVersionFrom8Hours();
         }
+    }
+
+    private void checkVersionFrom8Hours() {
+        AppLogger.d("走8小时");
+        checkVersionFrom8Hour().subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                }, throwable -> {//让整条订阅连结束
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+                        if (((RxEvent.HelperBreaker) throwable).object != null && ((RxEvent.HelperBreaker) throwable).object instanceof RxEvent.ClientCheckVersion)
+                            checkRsp((RxEvent.ClientCheckVersion) ((RxEvent.HelperBreaker) throwable).object);
+                    }
+                });
     }
 
     private void checkRsp(final RxEvent.ClientCheckVersion clientCheckVersion) {
@@ -225,7 +231,6 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 });
     }
 
-    private int writeHelper;
 
     private void dealClient(Response response, RxEvent.ClientCheckVersion clientCheckVersion) {
         //不需要那么频繁地检查.
@@ -243,7 +248,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
             CVersion cVersion = new CVersion();
             cVersion.setDesc(desc);
             cVersion.setFileName(versionName + ".apk");
-            cVersion.setSaveDir(JConstant.UPDATE_FILE_PATH);
+            cVersion.setSaveDir(JConstant.MISC_PATH);
             cVersion.setUrl(url);
             cVersion.setFileSize(response.body().contentLength());
             cVersion.setVersionCode(Integer.parseInt(shortVersion));
@@ -259,7 +264,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
             } catch (Exception e) {
             }
             //2.文件大小
-            File file = new File(JConstant.UPDATE_FILE_PATH, versionName + ".apk");
+            File file = new File(JConstant.MISC_PATH, versionName + ".apk");
             if (file.exists() && file.length() == response.body().contentLength()) {
                 //文件已经下载好
                 AppLogger.d("文件已经下载好");
@@ -269,38 +274,60 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                         .setUpdateType(RxEvent.UpdateType._8HOUR));
                 return;
             }
+            if (subscription != null) subscription.unsubscribe();
+            subscription = Observable.just(url)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Task(forceUpate, cVersion), AppLogger::e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int writeHelper;
+    private Subscription subscription;
+
+    private class Task implements Action1<String> {
+        private int forceUpdate;
+        private CVersion cVersion;
+
+        public Task(int forceUpdate, CVersion version) {
+            this.forceUpdate = forceUpdate;
+            this.cVersion = version;
+        }
+
+        @Override
+        public void call(String url) {
             writeHelper = 0;
+            new File(cVersion.getSaveDir()).mkdirs();
             BaseRequest request = OkGo.get(url);
             DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(url);
             final DownloadListener listener = new DownloadListener() {
                 @Override
                 public void onProgress(DownloadInfo downloadInfo) {
                     writeHelper++;
-                    if (writeHelper % 4 == 0) AppLogger.d("下载进度?" + downloadInfo.getProgress());
+                    if (writeHelper % 5 == 0) AppLogger.d("下载进度?" + downloadInfo.getProgress());
                 }
 
                 @Override
                 public void onFinish(DownloadInfo downloadInfo) {
-                    AppLogger.d("下载进度,完成");
+                    AppLogger.d("下载进度,完成:" + downloadInfo.getTargetPath());
                     RxBus.getCacheInstance().postSticky(new RxEvent.ApkDownload(cVersion.getSaveDir() + File.separator + cVersion.getFileName())
-                            .setForceUpdate(forceUpate)
+                            .setForceUpdate(forceUpdate)
                             .setUpdateType(RxEvent.UpdateType._8HOUR));
                 }
 
                 @Override
                 public void onError(DownloadInfo downloadInfo, String s, Exception e) {
-                    AppLogger.d("下载进度,失败了");
+                    AppLogger.d("下载进度,失败了:" + MiscUtils.getErr(e));
                 }
             };
             if (info != null) {
                 info.setListener(listener);
-                DownloadDBManager.INSTANCE.replace(info);
+                DownloadDBManager.INSTANCE.delete(url);
+                DownloadManager.getInstance().removeTask(url);
             }
+            DownloadManager.getInstance().setTargetFolder(JConstant.UPDATE_FILE_PATH);
             DownloadManager.getInstance().addTask(url, request, listener);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
-
-
 }
