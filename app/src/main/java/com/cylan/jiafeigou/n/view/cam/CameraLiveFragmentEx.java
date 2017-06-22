@@ -283,7 +283,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private boolean accept() {
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() || RxBus.getCacheInstance().hasStickyEvent(RxEvent.JUST_JUMP.class)) {
+        Intent intent = getActivity().getIntent();
+        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() ||
+                intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
             return false;
         } else return true;
     }
