@@ -316,7 +316,11 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Device getDevice(String uuid) {
         Device device = mCachedDeviceMap.get(uuid);
-        return device == null ? new Device() : device;//给一个默认的 device, 防止出现空指针
+        if (device == null) {
+            device = new Device();
+            device.setPropertyParser(propertyParser);
+        }
+        return device;//给一个默认的 device, 防止出现空指针
     }
 
     @Override

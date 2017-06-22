@@ -324,7 +324,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                                 final String ssid = result.SSID.replace("\"", "");
                                 if (!map.containsKey(ssid)) continue;
                                 LocalWifiInfo info = map.get(ssid);
-                                if (info != null && !TextUtils.isDigitsOnly(info.getPwd())) {
+                                if (info != null && !TextUtils.isEmpty(info.getPwd())) {
                                     return Observable.just(new Pair<>(info, new BeanWifiList(result)));
                                 }
                             }
