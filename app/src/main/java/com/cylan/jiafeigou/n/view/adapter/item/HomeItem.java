@@ -252,7 +252,8 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
             //时间
             holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-            ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
+            boolean is720 = mDevice.pid == 21 || mDevice.pid == 1089;
+            ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(!is720 && show && entity != null && entity.getValue(0) > 0);
         }
     }
 
