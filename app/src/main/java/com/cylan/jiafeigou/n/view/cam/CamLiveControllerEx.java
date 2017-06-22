@@ -438,9 +438,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             layoutD.setVisibility(VISIBLE);
-            YoYo.with(Techniques.FadeIn)
-                    .duration(200)
-                    .playOn(layoutD);
+            if (layoutD.getAlpha() == 0.0f)
+                YoYo.with(Techniques.FadeIn)
+                        .duration(200)
+                        .playOn(layoutD);
             showHistoryWheel(true);
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
@@ -453,6 +454,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             } else if (livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
             }
+            Log.d("wahat", "portShowRunnable");
         }
     };
 
@@ -485,20 +487,18 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             findViewById(R.id.sv_switch_stream)
                     .setVisibility(JFGRules.showItem(pid, "SD/HD") ? VISIBLE : GONE);
-            post(() -> {
-                YoYo.with(Techniques.SlideInDown)
-                        .duration(250)
-                        .playOn(layoutA);
-                if (!layoutD.isShown()) layoutD.setVisibility(VISIBLE);//
-                YoYo.with(Techniques.SlideInUp)
-                        .duration(250)
-                        .playOn(layoutD);
-                if (!layoutE.isShown()) layoutE.setVisibility(VISIBLE);//
-                YoYo.with(Techniques.SlideInUp)
-                        .duration(250)
-                        .playOn(layoutE);
-                postDelayed(landHideRunnable, 3000);
-            });
+            YoYo.with(Techniques.SlideInDown)
+                    .duration(250)
+                    .playOn(layoutA);
+            if (!layoutD.isShown()) layoutD.setVisibility(VISIBLE);//
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(250)
+                    .playOn(layoutD);
+            if (!layoutE.isShown()) layoutE.setVisibility(VISIBLE);//
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(250)
+                    .playOn(layoutE);
+            postDelayed(landHideRunnable, 3000);
         }
     };
 

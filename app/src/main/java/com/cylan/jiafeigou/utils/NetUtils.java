@@ -320,7 +320,7 @@ public class NetUtils {
             "http://www.alibaba.com",
             "http://www.taobao.com",
             "http://www.sina.com.cn",
-            "http://www.weibo.com",
+//            "http://www.weibo.com",
             "http://www.hao123.com",
             "http://www.baidu.com",
             "http://www.bing.com"};
@@ -334,7 +334,9 @@ public class NetUtils {
             urlc.setConnectTimeout(500); // mTimeout is in seconds
             urlc.setReadTimeout(500);
             urlc.connect();
-            return (urlc.getResponseCode() == 200);
+            int result = urlc.getResponseCode();
+            Log.d("isInternetAvailable", "isInternetAvailable: " + result + " ," + host);
+            return (urlc.getResponseCode() != 0);
         } catch (Exception e) {
             Log.e("warning", "Error checking internet connection", e);
             return false;
