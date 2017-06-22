@@ -164,23 +164,36 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 
     @Override
     public void onWheelTimeUpdate(long time, int state) {
+        tmpTime = time;
         switch (state) {
             case STATE_DRAGGING:
                 Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
+                superWheelExt.removeCallbacks(dragRunnable);
+                superWheelExt.postDelayed(dragRunnable, 400);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
                 break;
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
-                presenter.startPlayHistory(time);
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_FINISH);
+                superWheelExt.removeCallbacks(dragRunnable);
+                superWheelExt.postDelayed(dragRunnable, 400);
                 break;
         }
     }
+
+    private long tmpTime;
+    private Runnable dragRunnable = new Runnable() {
+        @Override
+        public void run() {
+            presenter.startPlayHistory(tmpTime);
+            AppLogger.d("拖动停止了:" + tmpTime);
+        }
+    };
 
     public void setDatePickerListener(DatePickerListener datePickerListener) {
         this.datePickerListener = datePickerListener;

@@ -118,8 +118,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Intent intent = getActivity().getIntent();
-        if (intent != null) intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
     }
 
     @Override
@@ -196,6 +194,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         //从通知栏跳进来
         if (getActivity() != null && getActivity().getIntent() != null) {
             if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+                Intent intent = getActivity().getIntent();
+                if (intent != null) intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
                 startRequest(true);
             }
         }

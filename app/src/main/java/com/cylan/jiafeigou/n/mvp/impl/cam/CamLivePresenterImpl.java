@@ -392,13 +392,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         addSubscription(beforePlayObservable(s -> {
             try {
-                int ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
-                if (ret != 0) {
-                    AppLogger.e("play video ret !0:" + ret);
-                    //历史录像切直播
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+                int ret;
+                boolean switchInterface = false;
+                if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PLAYING) {
+                    ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(true, 0);
+                    switchInterface = true;
+                } else {
+                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 }
+                AppLogger.d("play video ret 0:" + ret + "," + switchInterface);
                 getHotSeatStateMaintainer().saveRestore();
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
@@ -641,22 +643,23 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         addSubscription(beforePlayObservable(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
-                if (getLiveStream().playState != PLAY_STATE_IDLE) {
-                    //此处表明拖动历史录像时间轴.
-                    if (getLiveStream().type == TYPE_HISTORY
-                            && getLiveStream().playState == PLAY_STATE_PREPARE) {//前一刻是,历史录像而且是playing
-                        AppLogger.d("不需要 停止播放历史视频");
-                    } else {
-                        AppLogger.i("play history state? " + getLiveStream().playState);
-                    }
-                }
-                getHotSeatStateMaintainer().saveRestore();
-                int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
-                if (ret != 0) {
-                    AppLogger.i("stop play history ret !0:" + ret);
+                //此处表明拖动历史录像时间轴.
+                int ret;
+                boolean switchInterface = false;
+                if (getLiveStream().type == TYPE_HISTORY
+                        && (getLiveStream().playState == PLAY_STATE_PREPARE
+                        || getLiveStream().playState == PLAY_STATE_PLAYING)) {//前一刻是,历史录像而且是playing
+                    AppLogger.d("不需要 停止播放历史视频");
+                    getHotSeatStateMaintainer().saveRestore();
+                    ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(false, time);
+                    switchInterface = true;
+                } else {
+                    AppLogger.i("play history state? " + getLiveStream().playState);
+                    getHotSeatStateMaintainer().saveRestore();
+                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 }
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret);
+                AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
@@ -734,6 +737,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     /**
      * 高清,标清,自动模式切换
+     *
      * @param mode
      * @return
      */
@@ -849,6 +853,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //
 //        Subscription subscription =
 //    }
+
     /**
      * robot同步数据
      *
