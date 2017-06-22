@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -123,7 +124,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(Schedulers.newThread())
                 .map(aLong -> {
                     //优先check online
-                    return BaseApplication.getAppComponent().getSourceManager().isOnline() || ApFilter.isApNet();
+                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
@@ -341,7 +342,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(networkInfo)
                 .subscribeOn(Schedulers.newThread())
                 .map(aLong -> {
-                    return BaseApplication.getAppComponent().getSourceManager().isOnline() || ApFilter.isApNet();
+                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
