@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +59,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
-                checkNetSub(),
+//                checkNetSub(),
                 deviceRecordStateSub()
         };
     }
@@ -118,18 +119,18 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 });
     }
 
-    private Subscription checkNetSub() {
-        return Observable.interval(4, TimeUnit.SECONDS)
-                .observeOn(Schedulers.newThread())
-                .map(aLong -> {
-                    //优先check online
-                    return BaseApplication.getAppComponent().getSourceManager().isOnline() || ApFilter.isApNet();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null)
-                .subscribe(ret ->
-                        mView.onNetworkChanged(ret), AppLogger::e);
-    }
+//    private Subscription checkNetSub() {
+//        return Observable.interval(4, TimeUnit.SECONDS)
+//                .observeOn(Schedulers.newThread())
+//                .map(aLong -> {
+//                    //优先check online
+//                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(ret -> mView != null)
+//                .subscribe(ret ->
+//                        mView.onNetworkChanged(ret), AppLogger::e);
+//    }
 
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
@@ -340,9 +341,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void updateConnectInfo(NetworkInfo networkInfo) {
         Observable.just(networkInfo)
                 .subscribeOn(Schedulers.newThread())
-                .map(aLong -> {
-                    return BaseApplication.getAppComponent().getSourceManager().isOnline() || ApFilter.isApNet();
-                })
+                .map(aLong -> NetUtils.isPublicNetwork())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
                 .subscribe(ret -> getView().onNetworkChanged(ret), AppLogger::e);

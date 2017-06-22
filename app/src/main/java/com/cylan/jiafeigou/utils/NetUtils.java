@@ -315,20 +315,28 @@ public class NetUtils {
         return "";
     }
 
-    public static final String QQ_HOST = "http://www.qq.com";
-    public static final String BAIDU_HOST = "http://www.baidu.com";
-    public static final String BING = "http://www.bing.com";
+    private static final String[] HOST_RANDOM = {"http://www.qq.com",
+            "https://www.ibm.com/us-en",
+            "http://www.alibaba.com",
+            "http://www.taobao.com",
+            "http://www.sina.com.cn",
+//            "http://www.weibo.com",
+            "http://www.hao123.com",
+            "http://www.baidu.com",
+            "http://www.bing.com"};
 
+    //https://deviceatlas.com/blog/list-of-user-agent-strings
     public static boolean isInternetAvailable(String host) {
         try {
             URL url = new URL(host);
             HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-            urlc.setRequestProperty("User-Agent", "test");
-            urlc.setRequestProperty("Connection", "close");
+            urlc.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36");
             urlc.setConnectTimeout(500); // mTimeout is in seconds
             urlc.setReadTimeout(500);
             urlc.connect();
-            return (urlc.getResponseCode() == 200);
+            int result = urlc.getResponseCode();
+            Log.d("isInternetAvailable", "isInternetAvailable: " + result + " ," + host);
+            return (urlc.getResponseCode() != 0);
         } catch (Exception e) {
             Log.e("warning", "Error checking internet connection", e);
             return false;
@@ -518,21 +526,21 @@ public class NetUtils {
     public static String getDomain(String host) {
         try {
 
-            return InetAddress.getByName(host).isReachable(3000) ? "good" : "";
-//            StringBuilder builder = new StringBuilder();
-//            if (machines != null) {
-//                for (InetAddress address : machines) {
-//                    builder.append(address.getHostAddress());
-//                }
-//            }
-//            return (builder.toString());
+            InetAddress[] machines = InetAddress.getAllByName(host);
+            StringBuilder builder = new StringBuilder();
+            if (machines != null) {
+                for (InetAddress address : machines) {
+                    builder.append(address.getHostAddress());
+                }
+            }
+            return (builder.toString());
         } catch (Exception e) {
             return "";
         }
     }
 
     public static boolean isPublicNetwork() {
-        return isNetworkAvailable();
+        return isInternetAvailable(HOST_RANDOM[RandomUtils.getRandom(HOST_RANDOM.length)]);
     }
 
     /**

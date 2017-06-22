@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.ButterKnife;
+import permissions.dispatcher.PermissionUtils;
 
 /**
  * Created by cylan-hunt on 16-10-27.
@@ -39,7 +40,6 @@ public class LoadingDialog extends BaseDialog {
         loadingDialog.listener = listener;
         loadingDialog.show(fragmentManager, "LoadingDialog");
 //        fragmentManager.executePendingTransactions();
-
 
 
     }
