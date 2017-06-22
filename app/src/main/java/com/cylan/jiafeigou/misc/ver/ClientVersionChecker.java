@@ -327,7 +327,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 DownloadManager.getInstance().removeTask(url);
             }
             DownloadManager.getInstance().setTargetFolder(JConstant.UPDATE_FILE_PATH);
-            DownloadManager.getInstance().addTask(url, request, listener);
+            DownloadManager.getInstance().addTask(cVersion.getFileName(), url, request, listener);
         }
     }
 }
