@@ -103,6 +103,13 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusPos(position);
             });
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusTime(getWheelCurrentFocusTime());
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    landDateListContainer.removeCallbacks(containerHide);
+                    landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
+                }
+            });
         }
     }
 
