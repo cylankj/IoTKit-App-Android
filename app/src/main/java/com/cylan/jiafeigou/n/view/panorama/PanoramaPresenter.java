@@ -140,7 +140,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         version.startCheck();
         return subscription;
     }
-
+       
     private Subscription getReportMsgSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
