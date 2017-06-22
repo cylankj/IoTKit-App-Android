@@ -469,7 +469,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 showPopupWindow(bitmap);
 
         } else {
-            ToastUtil.showPositiveToast(getString(R.string.set_failed));
+            ToastUtil.showNegativeToast(getString(R.string.set_failed));
         }
     }
 
