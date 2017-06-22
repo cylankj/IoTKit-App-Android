@@ -357,10 +357,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * @param show
      */
     private void showHistoryWheel(boolean show) {
-        if (!show) {
-            layoutE.setVisibility(INVISIBLE);
-            return;
-        } else layoutE.setVisibility(VISIBLE);
         //处理显示逻辑
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //1.sd
@@ -377,14 +373,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutE.setVisibility(INVISIBLE);
             return;
         }
-        //3.没有历史录像
-        if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
-            //显示
-        } else {
-            //3.2.1
-//            layoutE.setVisibility(INVISIBLE);
-            return;
-        }
         //4.被分享用户不显示
         if (JFGRules.isShareDevice(device)) {
             layoutE.setVisibility(INVISIBLE);
@@ -393,6 +381,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             layoutE.setVisibility(INVISIBLE);
         }
+        //3.没有历史录像
+        if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
+            //显示
+            layoutE.setVisibility(VISIBLE);
+            return;
+        }
+        if (!show) {
+            layoutE.setVisibility(INVISIBLE);
+        } else layoutE.setVisibility(VISIBLE);
     }
 
     @Override
