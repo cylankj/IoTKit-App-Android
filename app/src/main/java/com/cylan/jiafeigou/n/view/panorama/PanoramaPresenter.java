@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -41,20 +42,25 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     private boolean isFirst = true;
     private Subscription subscribe;
-    private boolean shouldRefreshRecord = true;
+    private boolean shouldRefreshRecord = false;
     private int battery;
     private boolean notifyBatteryLow = true;
-
-    @Override
-    public void onViewAttached(PanoramaCameraContact.View view) {
-        super.onViewAttached(view);
-        BasePanoramaApiHelper.getInstance().init(uuid);
-    }
 
     @Override
     public boolean isApiAvailable() {
         RxEvent.PanoramaApiAvailable event = RxBus.getCacheInstance().getStickyEvent(RxEvent.PanoramaApiAvailable.class);
         return event != null && event.ApiType >= 0;
+    }
+
+    @Override
+    public void shouldRefreshUI(boolean should) {
+        shouldRefreshRecord = should;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BasePanoramaApiHelper.getInstance().init(uuid);
     }
 
     @Override
@@ -64,6 +70,30 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         registerSubscription(newVersionRspSub());
         registerSubscription(getReportMsgSub());
         registerSubscription(getNetWorkMonitorSub());
+        registerSubscription(getDeviceRecordStateSub());
+    }
+
+    private Subscription getDeviceRecordStateSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceRecordStateChanged.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    PanoramaEvent.MsgVideoStatusRsp deviceState = (PanoramaEvent.MsgVideoStatusRsp) sourceManager.getDeviceState(uuid);
+                    if (deviceState != null && deviceState.ret == 0) {
+                        if (!shouldRefreshRecord) {
+                            shouldRefreshRecord = true;
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
+                            refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
+                        }
+                    } else if (deviceState == null) {
+                        if (shouldRefreshRecord) {
+                            shouldRefreshRecord = false;
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+                            mView.onRefreshControllerViewVisible(true);
+                        }
+                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     private Subscription getNetWorkMonitorSub() {
@@ -169,7 +199,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     private Subscription getApiMonitorSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.PanoramaApiAvailable.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ApiType < 0) {
@@ -224,7 +254,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {
                     boolean isUpgrade = ret != null && ret.upgradeStatus == 1;
-//                    isUpgrade = true;
                     mView.onCheckDeviceUpgradeResult(isUpgrade);
                     return !isUpgrade;
                 })
@@ -234,13 +263,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp != null && rsp.ret == 0) {//检查录像状态
-                        shouldRefreshRecord = true;
-                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
-                        refreshVideoRecordUI(rsp.seconds, rsp.videoType);
-                        DataSourceManager.getInstance().pushDeviceState(uuid);
-
-                    } else {
-                        DataSourceManager.getInstance().removeDeviceState(uuid);
+                        if (!shouldRefreshRecord) {
+                            shouldRefreshRecord = true;
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
+                            refreshVideoRecordUI(rsp.seconds, rsp.videoType);
+                        }
                     }
                     AppLogger.d("初始化录像状态结果为:" + new Gson().toJson(rsp));
                     return rsp;
@@ -306,6 +333,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         })
 
                 )
+                .onErrorResumeNext(throwable -> {
+                    AppLogger.e(throwable.getMessage());
+                    return Observable.just(null);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onDeviceInitFinish();//初始化成功,可以播放视频了
@@ -343,10 +374,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.d("开启视频录制返回结果为" + new Gson().toJson(rsp));
                     if (rsp.ret == 0) {
                         AppLogger.d("开启视频录制成功了");
-                        shouldRefreshRecord = true;
-                        refreshVideoRecordUI(0, type);
-                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
-                        DataSourceManager.getInstance().pushDeviceState(uuid);
+                        if (!shouldRefreshRecord) {
+                            shouldRefreshRecord = true;
+                            refreshVideoRecordUI(0, type);
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
+                        }
                     } else {
                         shouldRefreshRecord = false;
                         mView.onReportDeviceError(rsp.ret, false);
@@ -361,8 +393,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void stopVideoRecord(int type) {
-        shouldRefreshRecord = false;
         Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(type)
+                .doOnSubscribe(() -> shouldRefreshRecord = false)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -371,10 +403,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshControllerViewVisible(true);
                         if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
                             mView.onShowPreviewPicture(ret.files.get(0));
-                            DataSourceManager.getInstance().removeDeviceState(uuid);
                         } else {
                             mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                         }
+
                     } else {//失败了
                         mView.onReportDeviceError(ret.ret, false);
                     }

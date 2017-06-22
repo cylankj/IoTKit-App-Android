@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -31,6 +32,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.INotify;
@@ -39,7 +41,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
 import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
@@ -244,15 +245,17 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void pushDeviceState(String uuid) {
-        deviceState.put(uuid, true);
+    public void pushDeviceState(String uuid, PanoramaEvent.MsgVideoStatusRsp videoStatusRsp) {
+        deviceState.put(uuid, videoStatusRsp);
         RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
     }
 
     @Override
     public void removeDeviceState(String uuid) {
-        deviceState.remove(uuid);
-        RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+        Object remove = deviceState.remove(uuid);
+        if (remove != null) {
+            RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+        }
     }
 
     @Override
@@ -386,6 +389,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Observable<Device> unBindDevice(String uuid) {
+
         return unBindDevices(Collections.singletonList(uuid))
                 .filter(devices -> devices != null && devices.iterator().hasNext())
                 .flatMap(devices -> Observable.just(devices.iterator().next()));
@@ -415,10 +419,22 @@ public class DataSourceManager implements JFGSourceManager {
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
-
                     for (String uuid : uuids) {
                         AppLogger.d("设备已解绑:" + uuid);
-                        mCachedDeviceMap.remove(uuid);
+                        Device remove = mCachedDeviceMap.remove(uuid);
+                        if (remove != null && JFGRules.isRS(remove.pid)) {
+                            String mac = remove.$(DpMsgMap.ID_202_MAC, "");
+                            if (TextUtils.isEmpty(mac)) {
+                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+                            }
+                            JFGRules.switchApModel(mac, uuid, 1).subscribe(ret -> {
+                                if (ret) {
+                                    AppLogger.d("睿视删除设备起 AP 成功了!");
+                                }
+                            }, e -> {
+                                AppLogger.e("unBindDevices,Error:" + e.getMessage());
+                            });
+                        }
                         getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid));
                     }
                     return devices;

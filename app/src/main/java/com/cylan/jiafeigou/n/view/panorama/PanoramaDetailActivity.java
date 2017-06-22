@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
-import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -245,6 +244,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramaContentContainer.addView(panoramicView720Ext);
         panoramicView720Ext.setEventListener(this);
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
+        panoramicView720Ext.enableGyro(false);
+        bottomPictureMenuGyroscope.setImageResource(R.drawable.photos_icon_manual_selector);
+        bottomVideoMenuGyroscope.setImageResource(R.drawable.video_icon_manual_selector);
         bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
         bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
     }
@@ -296,9 +298,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 break;
             }
         }
-        panoramicView720Ext.enableGyro(true);
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
         panoramaPanelSeekBar.setMax(panoramaItem.duration);
+        panoramicView720Ext.enableGyro(false);
+        bottomPictureMenuGyroscope.setImageResource(R.drawable.photos_icon_manual_selector);
+        bottomVideoMenuGyroscope.setImageResource(R.drawable.video_icon_manual_selector);
     }
 
     private void initPlayerAndPlay(String path) {
@@ -415,12 +419,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (!NetUtils.isNetworkAvailable(this)) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         } else if (panoramaItem.duration > 8) {
-            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Share_NoLonger8STips),
-                    getString(R.string.Tap1_Share_NoLonger8STips), getString(R.string.OK), null, false);
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.Tap1_Share_NoLonger8STips)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.OK, null)
+                    .show();
         } else if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
             //视频还未下载完成
-            AlertDialogManager.getInstance().showDialog(this, getString(R.string.Download_Then_Share),
-                    getString(R.string.Download_Then_Share), getString(R.string.OK), null, false);
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.Download_Then_Share)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.OK, null)
+                    .show();
             AppLogger.d("视频还未下载完成");
 
         } else if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
@@ -457,12 +467,17 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             deleted = contentView.findViewById(R.id.panorama_detail_more_delete);
             download.setOnClickListener(v -> {
                 if (downloadInfo != null && downloadInfo.getState() == DownloadManager.DOWNLOADING) {
-                    AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Album_CancelDownloadTips),
-                            getString(R.string.Tap1_Album_CancelDownloadTips), getString(R.string.OK), (dialog, which) -> {
-                                DownloadManager.getInstance().pauseTask(downloadInfo.getTaskKey());
+                    new AlertDialog.Builder(this)
+                            .setCancelable(false)
+                            .setMessage(R.string.Tap1_Album_CancelDownloadTips)
+                            .setPositiveButton(R.string.OK, (dialog, which) -> {
+                                downloadInfo.setListener(null);
+                                DownloadManager.getInstance().stopTask(downloadInfo.getTaskKey());
                                 download.setText(R.string.Tap1_Album_Download);
                                 download.setEnabled(true);
-                            }, getString(R.string.CANCEL), null, false);
+                            })
+                            .setNegativeButton(R.string.CANCEL, null)
+                            .show();
                 } else {
                     processDownload();
                 }
@@ -476,7 +491,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             morePopMenu.setBackgroundDrawable(new ColorDrawable(0));
         }
         if (!morePopMenu.isShowing()) {
-            if (downloadInfo == null) {
+            if (downloadInfo == null || downloadInfo.getState() != DownloadManager.FINISH) {
                 download.setText(R.string.Tap1_Album_Download);
             } else if (downloadInfo.getState() == 4) {
                 download.setText(R.string.FINISHED);
@@ -489,15 +504,16 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void deleteWithAlert() {
-        AlertDialogManager.getInstance().showDialog(this,
-                getString(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips),
-                getString(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips),
-                getString(R.string.DELETE), (dialog, which) -> {
+        new AlertDialog.Builder(this)
+                .setMessage(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips)
+                .setNegativeButton(R.string.CANCEL, null)
+                .setPositiveButton(R.string.DELETE, (dialog, which) -> {
                     if (deleted != null) {
                         deleted.setEnabled(false);
                     }
                     presenter.delete(panoramaItem, mode);
-                }, getString(R.string.CANCEL), null, false);
+                })
+                .show();
         AppLogger.d("将进行删除");
 
     }
@@ -557,7 +573,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         isPlay = true;
         runOnUiThread(() -> {
             panoramaPanelSeekBar.setMax(i2);
-            bottomVideoMenuPlay.setImageResource(R.drawable.camera_icon_pause);
+            bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend);
             refreshControllerView(true);
             LoadingDialog.dismissLoading(getSupportFragmentManager());
         });
@@ -625,9 +641,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void onReportDeviceError(int i, boolean b) {
         if (i == 2004) {
             if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
-                AlertDialogManager.getInstance().showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
-                        getString(R.string.OK), (dialog, which) -> finish(),
-                        getString(R.string.CANCEL), null, false);
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.MSG_SD_OFF)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.OK, (dialog, which) -> finish())
+                        .show();
             }
         }
     }
@@ -659,6 +677,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void updateProgress(int progress, int max) {
+        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        }
         panoramaPanelSeekBar.setProgress(progress);
         bottomVideoMenuPlayTime.setText(String.format("%s/%s", TimeUtils.getMM_SS(progress), TimeUtils.getMM_SS(max)));
     }
@@ -673,7 +694,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             } else {
                 JFGPlayer.Resume(player);
                 isPlay = true;
-                bottomVideoMenuPlay.setImageResource(R.drawable.camera_icon_pause);
+                bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend);
 
             }
         }

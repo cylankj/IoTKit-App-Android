@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/y12"
-        android:text="长按录制短视频"
+        android:text="@string/Tips_ShortVideo"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/sp13" />
 </RelativeLayout>

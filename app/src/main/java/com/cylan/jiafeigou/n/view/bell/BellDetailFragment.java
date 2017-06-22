@@ -194,11 +194,11 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
                 getFragmentManager().popBackStack();
                 break;
             case R.id.rl_hardware_update:
-                if (checkDevVersion != null) {
-                    Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
-                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-                    getActivity().startActivity(intent);
-                }
+//                if (checkDevVersion != null) {
+                Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+                getActivity().startActivity(intent);
+//                }
                 break;
         }
 

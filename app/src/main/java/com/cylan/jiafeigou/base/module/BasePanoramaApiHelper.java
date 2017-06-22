@@ -169,32 +169,15 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgRsp> startRec(int videoType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType).map(ret -> {
-            if (ret != null && ret.ret == 0) {
-                DataSourceManager.getInstance().pushDeviceState(uuid);
-            }
-            return ret;
-        }) : forwardHelper.sendForward(uuid, 9, videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType) : forwardHelper.sendForward(uuid, 9, videoType));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> stopRec(int videoType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType).map(ret -> {
-            if (ret != null && ret.ret == 0) {
-                DataSourceManager.getInstance().removeDeviceState(uuid);
-            }
-            return ret;
-        }) : forwardHelper.sendForward(uuid, 11, videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType) : forwardHelper.sendForward(uuid, 11, videoType));
     }
 
     public Observable<PanoramaEvent.MsgVideoStatusRsp> getRecStatus() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus().map(ret -> {
-            if (ret != null && ret.ret == 0) {
-                DataSourceManager.getInstance().pushDeviceState(uuid);
-            } else {
-                DataSourceManager.getInstance().removeDeviceState(uuid);
-            }
-            return ret;
-        }) : forwardHelper.sendForward(uuid, 13, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus() : forwardHelper.sendForward(uuid, 13, null));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
@@ -274,6 +257,6 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgUpgradeStatusRsp> getUpgradeStatus() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : forwardHelper.empty());
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : forwardHelper.sendDataPoint(uuid, 228));
     }
 }

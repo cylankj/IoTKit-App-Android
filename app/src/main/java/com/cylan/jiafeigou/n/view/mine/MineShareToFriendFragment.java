@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -41,8 +42,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @BindView(R.id.rcy_mine_share_to_relative_and_friend_list)
     RecyclerView rcyMineShareToRelativeAndFriendList;
-    @BindView(R.id.ll_no_friend)
-    LinearLayout llNoFriend;
+    @BindView(R.id.ll_relative_and_friend_none)
+    RelativeLayout llNoFriend;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
@@ -301,6 +302,17 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             }
         });
 
+    }
+
+    @OnClick(R.id.btn_to_add)
+    public void addNewFriend() {
+        jump2AddReAndFriendFragment();
+    }
+
+    private void jump2AddReAndFriendFragment() {
+        ActivityUtils.addFragmentSlideInFromRight(
+                getActivity().getSupportFragmentManager(),
+                MineFriendAddFriendsFragment.newInstance(), android.R.id.content);
     }
 
     @Override

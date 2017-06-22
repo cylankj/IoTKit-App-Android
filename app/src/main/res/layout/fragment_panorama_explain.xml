@@ -48,6 +48,7 @@
         android:drawablePadding="@dimen/y9"
         android:drawableStart="@drawable/icon_wifi"
         android:text="@string/WIFI_HINT_LAGEL_0"
+        android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp14"
         app:layout_constraintStart_toEndOf="@+id/fragment_panorama_explain_iv_wifi"
         app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_big_title" />
@@ -117,7 +118,9 @@
         android:drawablePadding="@dimen/y9"
         android:drawableStart="@drawable/icon_power"
         android:text="@string/WIFI_HINT_LAGEL_2"
+        android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp14"
+
         app:layout_constraintStart_toEndOf="@+id/fragment_panorama_explain_iv_power"
         app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_red_blue_blink_wifi" />
 
@@ -178,6 +181,7 @@
         android:drawablePadding="@dimen/y9"
         android:drawableStart="@drawable/icon_charging_lamp"
         android:text="@string/ChargingLight"
+        android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp14"
         app:layout_constraintStart_toEndOf="@+id/fragment_panorama_explain_iv_charge"
         app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_red_blue_off_power" />
@@ -205,4 +209,11 @@
         android:textSize="@dimen/sp15"
         app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_charge_title"
         app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_blink_charge" />
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="371dp" />
 </android.support.constraint.ConstraintLayout>

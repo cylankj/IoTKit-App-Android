@@ -142,6 +142,18 @@
             android:padding="@dimen/x10"
             android:textColor="#4B9FD5"
             android:textSize="@dimen/sp16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/y36"
+            android:layout_marginStart="@dimen/y36"
+            android:layout_marginTop="@dimen/y6"
+            android:gravity="center"
+            android:text="@string/Tap1_Update_Precautions"
+            android:textColor="#8C8C8C"
+            android:textSize="@dimen/sp12" />
     </LinearLayout>
 
     <LinearLayout
@@ -150,7 +162,7 @@
         android:layout_height="@dimen/y64"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <View
             android:layout_width="match_parent"

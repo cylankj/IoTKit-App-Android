@@ -130,8 +130,10 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
 
     @Override
     public void onUploadResult(int code) {
-        if (code != -1) uploadSuccess.set(code == 200);
-        shareBinding.shareRetry.setVisibility(uploadSuccess.get() ? View.GONE : View.VISIBLE);
+        if (code != -1) {
+            uploadSuccess.set(code == 200);
+            shareBinding.shareRetry.setVisibility(uploadSuccess.get() ? View.GONE : View.VISIBLE);
+        }
         AppLogger.d("上传到服务器返回的结果为:" + code);
         if (code == -1) {
             presenter.upload(shareItem.fileName, filePath);

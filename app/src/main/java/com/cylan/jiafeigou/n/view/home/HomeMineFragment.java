@@ -22,8 +22,10 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -45,6 +47,7 @@ import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
@@ -53,6 +56,7 @@ import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,10 +169,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 return;
             }
         }
+
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(MineFriendsFragment.class.getSimpleName());
         MineFriendsFragment mineFriendsFragment = MineFriendsFragment.newInstance();
         ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), mineFriendsFragment,
                 android.R.id.content);
-        mineFriendsFragment.setCallBack(t -> updateHint());
+        PreferencesUtils.putLong(JConstant.FRIEND_LAST_VISABLE_TIME, System.currentTimeMillis());
+        updateHint();
     }
 
     /**
@@ -473,24 +480,40 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void updateHint() {
         TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
         TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+        long aLong = PreferencesUtils.getLong(JConstant.FRIEND_LAST_VISABLE_TIME);
         //好友
-        int count = node == null ? 0 : node.getNodeCount();
+        ArrayList<FriendsReqBean> list = DataSourceManager.getInstance().getFriendsReqList();
+        int count = 0;
+        if (list != null) {
+            for (FriendsReqBean bean : list) {
+                if (bean.time >= aLong / 1000) {
+                    count++;
+                }
+            }
+        }
+//        int count = node == null ? 0 : node.getNodeCount();
         if (count == 0) homeMineItemFriend.showHint(false);
         else
             homeMineItemFriend.showNumber(count);//count ==0 dismiss
         //系统消息未读数
-        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(SystemMessageFragment.class.
+
+                getSimpleName());
         count = node == null ? 0 : node.getNodeCount();
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
-        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.
+
+                getSimpleName());
         Object o = node == null ? null : node.getCacheData();
         count = node == null ? 0 : node.getNodeCount();
         homeMineItemHelp.showHint(count > 0);
         //分享管理
 
         //设置
-        node = helper.findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
+        node = helper.findTreeNodeByName(WechatGuideFragment.class.
+
+                getSimpleName());
         homeMineItemSettings.showHint(node != null && node.getTraversalCount() > 0);
     }
 

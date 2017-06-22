@@ -8,7 +8,9 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
+import com.cylan.jiafeigou.cache.db.module.FriendsReqBeanDao;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
@@ -23,6 +25,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -160,6 +163,10 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         AppLogger.d("需要更新缓存");
                         if (viewWeakReference.get() != null)
                             viewWeakReference.get().deleteItemRsp(account, result.code);
+                        BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+                        FriendsReqBeanDao dao = dbHelper.getDaoSession().getFriendsReqBeanDao();
+                        List<FriendsReqBean> list1 = dao.queryBuilder().where(FriendsReqBeanDao.Properties.Account.eq(account)).list();
+                        dao.deleteInTx(list1);
                         throw new RxEvent.HelperBreaker("结束了");
                     }, AppLogger::e);
             try {

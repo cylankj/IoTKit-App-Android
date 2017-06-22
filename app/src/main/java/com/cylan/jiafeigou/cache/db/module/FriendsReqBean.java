@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ public class FriendsReqBean implements Parcelable, Serializable {
 
     private static final long serialVersionUID = 1608319968864588726L;
     @Id
-    public int id;
+    public Long id;
     public String iconUrl;              //头像
     public String account;              //账号
     public String alias;                //昵称
@@ -51,9 +51,9 @@ public class FriendsReqBean implements Parcelable, Serializable {
         this.time = in.readLong();
     }
 
-    @Generated(hash = 1765491470)
-    public FriendsReqBean(int id, String iconUrl, String account, String alias, String sayHi,
-                          long time) {
+    @Generated(hash = 924087945)
+    public FriendsReqBean(Long id, String iconUrl, String account, String alias, String sayHi,
+            long time) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.account = account;
@@ -61,6 +61,7 @@ public class FriendsReqBean implements Parcelable, Serializable {
         this.sayHi = sayHi;
         this.time = time;
     }
+
 
     public static final Creator<FriendsReqBean> CREATOR = new Creator<FriendsReqBean>() {
         @Override
@@ -74,7 +75,7 @@ public class FriendsReqBean implements Parcelable, Serializable {
         }
     };
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -98,7 +99,7 @@ public class FriendsReqBean implements Parcelable, Serializable {
         this.time = time;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -121,4 +122,6 @@ public class FriendsReqBean implements Parcelable, Serializable {
     public long getTime() {
         return time;
     }
+
+
 }

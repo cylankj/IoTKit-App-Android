@@ -98,15 +98,17 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
             return;
         }
         showLoadImageProgress();
-        MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail), getActivity().getSupportFragmentManager());
-        Glide.with(getContext())
-                .load(url)
-                .asBitmap()
-                .fitCenter()
-                .placeholder(R.drawable.icon_mine_head_normal)
-                .error(R.drawable.icon_mine_head_normal)
-                .listener(listener)
-                .into(ivUserinfoBigImage);
+        ivUserinfoBigImage.postDelayed(() -> {
+            MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail), getActivity().getSupportFragmentManager());
+            Glide.with(getContext())
+                    .load(url)
+                    .asBitmap()
+                    .fitCenter()
+                    .placeholder(R.drawable.icon_mine_head_normal)
+                    .error(R.drawable.icon_mine_head_normal)
+                    .listener(listener)
+                    .into(ivUserinfoBigImage);
+        }, 1000);
     }
 
 
@@ -121,8 +123,8 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
         @Override
         public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-            if (managerWeakReference.get() == null) return false;
 
+            if (managerWeakReference.get() == null) return false;
             LoadingDialog.dismissLoading(managerWeakReference.get());
             loadResult = false;
             ToastUtil.showNegativeToast(totas);

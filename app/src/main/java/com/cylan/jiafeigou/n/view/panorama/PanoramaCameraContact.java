@@ -111,5 +111,7 @@ public interface PanoramaCameraContact {
         void formatSDCard();
 
         boolean isApiAvailable();
+
+        void shouldRefreshUI(boolean should);
     }
 }

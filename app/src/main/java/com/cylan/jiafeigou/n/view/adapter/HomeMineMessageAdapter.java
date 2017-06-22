@@ -9,6 +9,7 @@ import android.widget.CompoundButton;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -72,7 +73,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
         } else {
             //处理消息显示
             holder.setText(R.id.tv_device_name, item.getContent());
-            int resId = JConstant.getOnlineIcon(item.pid);
+            int resId = JConstant.getOnlineIcon(JFGRules.getPidByCid(item.content));
             holder.setImageResource(R.id.iv_mesg_icon, resId);
         }
 

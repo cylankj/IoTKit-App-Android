@@ -146,6 +146,7 @@ public class JConstant {
     public static final String ALERT_MOBILE = "alert_mobile";
     public static final java.lang.String SHOW_VR_MODE_TIPS = "show_vr_mode_tips";
     public static final java.lang.String KEY_SHOW_TIME_ZONE = "key_show_time_zone";
+    public static final java.lang.String FRIEND_LAST_VISABLE_TIME = "friend_last_visiable_time";
 
 
     /**
@@ -275,6 +276,36 @@ public class JConstant {
             return R.drawable.icon_home_camera_online;
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
+    }
+
+    public static int getOnlineIconByCid(String cid) {
+        if (TextUtils.isEmpty(cid)) {
+            return R.mipmap.ic_launcher;
+        }
+        if (cid.length() < 4) return R.mipmap.ic_launcher;
+        String substring = cid.substring(0, 4);
+        int parseInt = Integer.parseInt(substring);
+        switch (parseInt) {
+            case 2000:
+            case 2200:
+            case 2100:
+            case 3000:
+            case 2801:
+            case 2800:
+            case 2802:
+            case 2803:
+            case 6000:
+            case 6500:
+            case 2700:
+            case 6002:
+            case 6004:
+            case 6001:
+                return R.drawable.icon_home_camera_online;
+
+        }
+
+        return R.mipmap.ic_launcher;
+
     }
 
     public static int getOfflineIcon(int pid) {

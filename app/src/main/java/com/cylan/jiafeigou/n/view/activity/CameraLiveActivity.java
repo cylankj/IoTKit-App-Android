@@ -23,6 +23,8 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -183,6 +185,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void initAdapter() {
+        Intent intent = getIntent();
+        boolean jumpToMessage = intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
         if (vpCameraLive.getAdapter() == null) {
             SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
             vpCameraLive.setAdapter(simpleAdapterPager);
@@ -199,9 +203,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             } else
                 return true;
         });
-        Intent intent = getIntent();
-        if (intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+
+        if (jumpToMessage) {
             //跳转到
+            RxBus.getCacheInstance().postSticky(RxEvent.JUST_JUMP.INSTANCE);
             if (vpCameraLive.getAdapter().getCount() > 1) {
                 vpCameraLive.setCurrentItem(1);
 
@@ -304,6 +309,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 class SimpleAdapterPager extends FragmentPagerAdapter {
 
     private String uuid;
+    private boolean justJump = false;
 
     public SimpleAdapterPager(FragmentManager fm, String uuid) {
         super(fm);
@@ -336,5 +342,9 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) : ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
+    }
+
+    public void justJump(boolean jumpToMessage) {
+        this.justJump = jumpToMessage;
     }
 }

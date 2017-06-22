@@ -38,6 +38,7 @@ public class LoadingDialog extends BaseDialog {
         loadingDialog.setArguments(bundle);
         loadingDialog.listener = listener;
         loadingDialog.show(fragmentManager, "LoadingDialog");
+//        fragmentManager.executePendingTransactions();
     }
 
     @Override

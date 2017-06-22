@@ -151,7 +151,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     @Override
     public void onCounting(int percent) {
         Log.d("SubmitBindingInfo", "SubmitBindingInfo: " + percent);
-        tvLoadingPercent.setText(percent + "");
+        tvLoadingPercent.setText(percent + "%");//现在需要显示百分比
     }
 
     @OnClick(R.id.btn_bind_failed_repeat)

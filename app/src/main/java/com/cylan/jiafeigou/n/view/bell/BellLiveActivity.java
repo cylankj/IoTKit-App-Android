@@ -632,10 +632,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case BAD_FRAME_RATE:
-                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Clear_Sdcard_tips5));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_DOOR));
                 break;
             default:
-                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Clear_Sdcard_tips5));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_DOOR));
 
         }
         if (mSurfaceView != null) {
@@ -651,7 +651,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onConnectDeviceTimeOut() {
-        ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
+        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
         presenter.dismiss();
     }
 
