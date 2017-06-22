@@ -53,7 +53,6 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     CustomToolbar customToolbar;
 
     private String mailBox;
-    private boolean bindOrChange = false;       //绑定或者修改邮箱
 
     @Override
     public void setPresenter(BindMailContract.Presenter basePresenter) {
@@ -107,9 +106,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     public void getUserAccountData(JFGAccount userinfo) {
         if (userinfo != null) {
             if (TextUtils.isEmpty(userinfo.getEmail()) || userinfo.getEmail() == null) {
-                bindOrChange = true;
             } else {
-                bindOrChange = false;
                 customToolbar.setToolbarLeftTitle(getString(R.string.CHANGE_EMAIL));
             }
         }

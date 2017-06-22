@@ -206,10 +206,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
         if (jumpToMessage) {
             //跳转到
-            RxBus.getCacheInstance().postSticky(RxEvent.JUST_JUMP.INSTANCE);
             if (vpCameraLive.getAdapter().getCount() > 1) {
                 vpCameraLive.setCurrentItem(1);
-
             }
             try {
                 BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003);

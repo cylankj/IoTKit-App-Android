@@ -125,7 +125,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                         ArrayList<JFGDPMsg> req = new ArrayList<>(1);
 
                         JFGDPMsg msg511 = new JFGDPMsg(511, TimeUtils.wrapToLong(wonderItem.time));
-                        msg511.packValue = DpUtils.pack(entity.getVersion());
+                        msg511.packValue = DpUtils.pack(TimeUtils.wrapToLong(entity.getVersion()));
                         req.add(msg511);
                         result = appCmd.robotSetDataByTime(entity.getUuid(), req);
                         AppLogger.d("正在执行分享操作步骤三:设置511 DP消息" + result);
