@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -60,6 +61,7 @@ import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -423,15 +425,15 @@ public class DataSourceManager implements JFGSourceManager {
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
-                    for (String uuid : uuids) {
+                    for (Device uuid : devices) {
                         AppLogger.d("设备已解绑:" + uuid);
-                        Device remove = mCachedDeviceMap.remove(uuid);
-                        if (remove != null && JFGRules.isRS(remove.pid)) {
+                        Device remove = mCachedDeviceMap.remove(uuid.uuid);
+                        if (remove != null && JFGRules.isRS(uuid.pid)) {
                             String mac = remove.$(DpMsgMap.ID_202_MAC, "");
                             if (TextUtils.isEmpty(mac)) {
-                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid.uuid);
                             }
-                            JFGRules.switchApModel(mac, uuid, 1).subscribe(ret -> {
+                            JFGRules.switchApModel(mac, uuid.uuid, 1).subscribe(ret -> {
                                 if (ret) {
                                     AppLogger.d("睿视删除设备起 AP 成功了!");
                                 }
@@ -439,7 +441,8 @@ public class DataSourceManager implements JFGSourceManager {
                                 AppLogger.e("unBindDevices,Error:" + e.getMessage());
                             });
                         }
-                        getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid));
+                        FileUtils.deleteFile(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid.uuid);
+                        getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid.uuid));
                     }
                     return devices;
                 });
