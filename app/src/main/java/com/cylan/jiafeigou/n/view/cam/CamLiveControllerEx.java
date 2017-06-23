@@ -1104,7 +1104,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
         long timeStart = TimeUtils.getSpecificDayStartTime(timeTarget);
-        presenter.assembleTheDay(timeStart / 1000L)
+        presenter.assembleTheDay()
                 .subscribeOn(Schedulers.io())
                 .filter(iData -> iData != null)
                 .observeOn(AndroidSchedulers.mainThread())

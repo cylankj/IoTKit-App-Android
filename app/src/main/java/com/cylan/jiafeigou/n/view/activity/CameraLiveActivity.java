@@ -197,6 +197,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
+            //消息页面,不需要拦截
+            if (vpCameraLive.getCurrentItem() == 1) return true;
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
             if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
                 Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;

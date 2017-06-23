@@ -218,14 +218,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     /**
      * 一天一天地查询
      *
-     * @param timeStartInDay:可以用来查询数据库
+     *param 0:可以用来查询数据库
      */
 
     @Override
-    public Observable<IData> assembleTheDay(long timeStartInDay) {
-        long timeEnd = timeStartInDay + 24 * 3600 - 1;
-        AppLogger.d("historyFile:timeEnd?" + timeStartInDay);
-        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, timeStartInDay, timeEnd)
+    public Observable<IData> assembleTheDay() {
+        long timeEnd = Integer.MAX_VALUE;
+        AppLogger.d("historyFile:timeEnd?" + 0);
+        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, 0, timeEnd)
                 .subscribeOn(Schedulers.io())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
@@ -273,7 +273,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         //全景设备,会有多次回调.
 //        if (historyDataProvider.getDataCount() == 0 || !containsSubscription("hisFlat")) {
-        Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
+        Subscription subscription = assembleTheDay()
                 .subscribeOn(Schedulers.io())
                 .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
