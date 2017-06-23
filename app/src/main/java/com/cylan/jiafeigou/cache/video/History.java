@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
@@ -40,6 +41,7 @@ public class History {
      * uuid+day,Long
      */
     private HashMap<String, Long> dateMap = new HashMap<>();
+    private final Object lock = new Object();
 
     /**
      * 数据集,不实现Lru逻辑
@@ -93,16 +95,18 @@ public class History {
     }
 
     public ArrayList<Long> getDateList(String uuid) {
-        if (TextUtils.isEmpty(uuid)) return null;
-        ArrayList<Long> longs = new ArrayList<>();
-        Iterator<String> key = dateMap.keySet().iterator();
-        while (key.hasNext()) {
-            String next = key.next();
-            if (next.startsWith(uuid)) {
-                longs.add(dateMap.get(next));
+        synchronized (lock) {
+            if (TextUtils.isEmpty(uuid)) return null;
+            ArrayList<Long> longs = new ArrayList<>();
+            Iterator<String> key = dateMap.keySet().iterator();
+            while (key.hasNext()) {
+                String next = key.next();
+                if (next.startsWith(uuid)) {
+                    longs.add(dateMap.get(next));
+                }
             }
+            return longs;
         }
-        return longs;
     }
 
     /**
@@ -190,19 +194,25 @@ public class History {
 
 
     public boolean clearHistoryFile(String uuid) {
-        DataExt.getInstance().clean();
-        Iterator<String> keySet = dateMap.keySet().iterator();
-        while (keySet.hasNext()) {
-            String key = keySet.next();
-            if (key != null && key.startsWith(uuid)) {
+        synchronized (lock) {
+            DataExt.getInstance().clean();
+            Iterator<String> keySet = dateMap.keySet().iterator();
+            List<String> keyList = new ArrayList<>();
+            while (keySet.hasNext()) {
+                String key = keySet.next();
+                if (key != null && key.startsWith(uuid)) {
+                    keyList.add(key);
+                }
+            }
+            for (String key : keyList) {
                 dateMap.remove(key);
             }
-        }
 
-        BaseApplication.getAppComponent().getDBHelper().deleteAllHistoryFile(uuid)
-                .subscribeOn(Schedulers.io())
-                .subscribe(ret -> {
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+            BaseApplication.getAppComponent().getDBHelper().deleteAllHistoryFile(uuid)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(ret -> {
+                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        }
         return true;
     }
 

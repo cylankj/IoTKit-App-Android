@@ -153,7 +153,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
-        PerformanceUtils.stopTrace("appStart0");
+        PerformanceUtils.stopTrace("NewHomeActivityStart");
     }
 
     @Override

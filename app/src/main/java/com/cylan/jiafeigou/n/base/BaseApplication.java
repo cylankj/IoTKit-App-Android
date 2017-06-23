@@ -94,8 +94,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             //设计师不需要这个固定通知栏.20170531
 //            startService(new Intent(this, WakeupService.class));
             PreferencesUtils.init(getApplicationContext());
-            PerformanceUtils.startTrace("appStart");
-            PerformanceUtils.startTrace("FirstActivity");
+            PerformanceUtils.startTrace("appInit");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
 
@@ -105,6 +104,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 //            startService(new Intent(this, DataSourceService.class));
             GlobalResetPwdSource.getInstance().register();
             PerformanceUtils.stopTrace("appStart");
+            PerformanceUtils.startTrace("app2SmartCall");
         }
         Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
     }

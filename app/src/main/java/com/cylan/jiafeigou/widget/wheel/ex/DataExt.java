@@ -259,6 +259,18 @@ public class DataExt implements IData {
     }
 
     @Override
+    public HistoryFile getMinHistoryFileByStartTime(long startTime) {
+        //rawList是降序的
+        startTime = startTime / 1000;
+        final int count = ListUtils.getSize(rawList);
+        for (int i = count - 1; i >= 0; i--) {
+            if (rawList.get(i).getTime() >= startTime)
+                return rawList.get(i);
+        }
+        return null;
+    }
+
+    @Override
     public void clean() {
         dateFormatMap.clear();
         timeWithType.clear();

@@ -136,7 +136,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
 
     @Override
     public void unbindDeviceRsp(int resultCode) {
-        AppLogger.d("unbindDeviceRsp");
+        AppLogger.d("unbindDeviceRsp: " + resultCode);
         if (resultCode == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));

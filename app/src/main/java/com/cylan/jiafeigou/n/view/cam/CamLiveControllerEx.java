@@ -29,7 +29,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -125,6 +124,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Switcher streamSwitcher;
     private int pid;
     private String cVersion;
+    private boolean isRSCam;
     /**
      * 设备的时区
      */
@@ -210,6 +210,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         this.cVersion = device.$(207, "");
+        isRSCam = JFGRules.isRS(device.pid);
         if (device == null) {
             AppLogger.e("device is null");
             return;
@@ -713,7 +714,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (isLand) {
             lp.removeRule(3);//remove below rules
             lp.addRule(2, R.id.v_guide);//set above v_guide
-            liveViewWithThumbnail.updateLayoutParameters(LayoutParams.MATCH_PARENT);
+            liveViewWithThumbnail.updateLayoutParameters(LayoutParams.MATCH_PARENT, getVideoFinalWidth());
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(INVISIBLE);
             layoutD.setBackgroundResource(android.R.color.transparent);
             layoutE.setBackgroundResource(R.color.color_4C000000);
@@ -740,6 +741,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         findViewById(R.id.layout_e).setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
+    }
+
+    private int getVideoFinalWidth() {
+        if (MiscUtils.isLand()) {
+            //横屏需要区分睿视
+            if (isRSCam) {
+                //保持4:3
+                Log.d("isRSCam", "isRSCam....");
+                return (int) (Resources.getSystem().getDisplayMetrics().heightPixels * (float) 4 / 3);
+            }
+            return ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            //竖屏 match
+            return ViewGroup.LayoutParams.MATCH_PARENT;
+        }
     }
 
     private void resetAndPrepareNextAnimation(boolean land) {
@@ -853,7 +869,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * @param ratio
      */
     private void updateLiveViewRectHeight(float ratio) {
-        liveViewWithThumbnail.updateLayoutParameters((int) (Resources.getSystem().getDisplayMetrics().widthPixels * ratio));
+        liveViewWithThumbnail.updateLayoutParameters((int) (Resources.getSystem().getDisplayMetrics().widthPixels * ratio),
+                getVideoFinalWidth());
     }
 
     @Override
@@ -1104,7 +1121,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
         long timeStart = TimeUtils.getSpecificDayStartTime(timeTarget);
-        presenter.assembleTheDay(timeStart / 1000L)
+        //先loading吧.
+        presenter.startPlayHistory(timeTarget);
+        presenter.assembleTheDay()
                 .subscribeOn(Schedulers.io())
                 .filter(iData -> iData != null)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1114,14 +1133,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     AppLogger.d("历史录像导航条空?" + (handler == null));
                     if (handler != null) {
                         handler.setupHistoryData(iData);
-//                        HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
-//                        if (historyFile != null) {
                         handler.setNav2Time(timeTarget);
-                        presenter.startPlayHistory(timeTarget);
                         setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-//                        AppLogger.d("找到历史录像?" + historyFile);
                         AppLogger.d("目标历史录像时间?" + timeTarget);
-//                        }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }

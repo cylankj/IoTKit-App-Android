@@ -262,7 +262,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     time = time * 1000L;//确保是毫秒
                 }
                 camLiveControlLayer.reAssembleHistory(basePresenter, time);
-//
                 return;
             }
             playAfterCheck();

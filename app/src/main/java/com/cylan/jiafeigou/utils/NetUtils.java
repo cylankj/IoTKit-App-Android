@@ -323,7 +323,8 @@ public class NetUtils {
 //            "http://www.weibo.com",
             "http://www.hao123.com",
             "http://www.baidu.com",
-            "http://www.bing.com"};
+//            "http://www.bing.com"
+    };
 
     //https://deviceatlas.com/blog/list-of-user-agent-strings
     public static boolean isInternetAvailable(String host) {
@@ -331,8 +332,8 @@ public class NetUtils {
             URL url = new URL(host);
             HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
             urlc.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36");
-            urlc.setConnectTimeout(500); // mTimeout is in seconds
-            urlc.setReadTimeout(500);
+            urlc.setConnectTimeout(5000); // mTimeout is in seconds
+            urlc.setReadTimeout(5000);
             urlc.connect();
             int result = urlc.getResponseCode();
             Log.d("isInternetAvailable", "isInternetAvailable: " + result + " ," + host);

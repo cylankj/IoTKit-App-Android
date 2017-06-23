@@ -185,7 +185,7 @@ public class SimpleBindFlow extends AFullBind {
                         AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
                         AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
                         try {
-                            for (int i = 0; i < 2; i++) {
+                            for (int i = 0; i < 3; i++) {
                                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                         UdpConstant.PORT,
                                         setServer.toBytes());
@@ -200,7 +200,7 @@ public class SimpleBindFlow extends AFullBind {
                                         setLanguage.toBytes());
                             }
                         } catch (JfgException e) {
-                            e.printStackTrace();
+                            AppLogger.e("err:" + e);
                         }
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());

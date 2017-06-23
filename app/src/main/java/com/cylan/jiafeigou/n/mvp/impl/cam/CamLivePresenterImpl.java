@@ -70,6 +70,7 @@ import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -107,7 +108,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         view.setPresenter(this);
         feedRtcp.setMonitorListener(this);
         if (historyDataProvider != null) historyDataProvider.clean();
-
+        //清了吧.不需要缓存.
+        History.getHistory().clearHistoryFile(uuid);
     }
 
     @Override
@@ -217,21 +219,25 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     /**
      * 一天一天地查询
-     *
-     * @param timeStartInDay:可以用来查询数据库
+     * 可以用来查询数据库
      */
 
     @Override
-    public Observable<IData> assembleTheDay(long timeStartInDay) {
-        long timeEnd = timeStartInDay + 24 * 3600 - 1;
-        AppLogger.d("historyFile:timeEnd?" + timeStartInDay);
-        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, timeStartInDay, timeEnd)
+    public Observable<IData> assembleTheDay() {
+        long timeEnd = Integer.MAX_VALUE;
+        AppLogger.d("historyFile:timeEnd?" + 0);
+        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, 0, timeEnd)
                 .subscribeOn(Schedulers.io())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
-                    if (historyDataProvider == null)
-                        historyDataProvider = DataExt.getInstance();
-                    historyDataProvider.flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
+                    if (!ListUtils.isEmpty(historyFiles)) {
+                        if (historyDataProvider == null)
+                            historyDataProvider = DataExt.getInstance();
+                        historyDataProvider.flattenData(new ArrayList<>(historyFiles), JFGRules.getDeviceTimezone(getDevice()));
+                    }
+                    //本地没有啊,需要从服务器获取.
+                    if (ListUtils.isEmpty(historyFiles))
+                        fetchHistoryDataList();
                     return Observable.just(historyDataProvider);
                 });
     }
@@ -273,7 +279,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         //全景设备,会有多次回调.
 //        if (historyDataProvider.getDataCount() == 0 || !containsSubscription("hisFlat")) {
-        Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
+        Subscription subscription = assembleTheDay()
                 .subscribeOn(Schedulers.io())
                 .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -336,6 +342,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .flatMap(rsp -> makeTimeDelayForList(rsp.historyFiles)))
+                .doOnUnsubscribe(() -> {
+                    removeSubscription("getHistoryList");
+                })
                 .subscribe(ret -> {
                 }, AppLogger::e);
         removeSubscription("getHistoryList");
