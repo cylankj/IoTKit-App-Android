@@ -29,7 +29,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -1104,6 +1103,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
         long timeStart = TimeUtils.getSpecificDayStartTime(timeTarget);
+        //先loading吧.
+        presenter.startPlayHistory(timeTarget);
         presenter.assembleTheDay()
                 .subscribeOn(Schedulers.io())
                 .filter(iData -> iData != null)
@@ -1114,14 +1115,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     AppLogger.d("历史录像导航条空?" + (handler == null));
                     if (handler != null) {
                         handler.setupHistoryData(iData);
-//                        HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
-//                        if (historyFile != null) {
                         handler.setNav2Time(timeTarget);
-                        presenter.startPlayHistory(timeTarget);
                         setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-//                        AppLogger.d("找到历史录像?" + historyFile);
                         AppLogger.d("目标历史录像时间?" + timeTarget);
-//                        }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
