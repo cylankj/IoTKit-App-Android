@@ -192,7 +192,7 @@ public class BasePanoramaApiHelper {
             if (device.available()) {
                 DPEntity property = device.getProperty(204);
                 if (property == null) {
-                    property = device.getEmptyProperry(204);
+                    property = device.getEmptyProperty(204);
                 }
                 property.setValue(status, DpUtils.pack(status), property.getVersion());
                 device.updateProperty(204, property);
