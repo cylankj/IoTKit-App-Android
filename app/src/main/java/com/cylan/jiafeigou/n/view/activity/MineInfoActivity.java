@@ -67,8 +67,8 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import permissions.dispatcher.PermissionUtils;
+import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoContract.Presenter>
@@ -166,8 +166,8 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
     @Override
-    public void onBackPressed() {
-        finishExt();
+    protected boolean theLastActivity() {
+        return false;
     }
 
     /**
@@ -202,7 +202,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         switch (view.getId()) {
             //点击回退到Mine的fragment
             case R.id.tv_toolbar_icon:
-                onBackPressed();
+                finishExt();
                 break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
@@ -341,7 +341,9 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
+
             basePresenter.loginType(bean.getAccount(), bean.getPhone(), bean.getEmail());
+            showSetPwd(!basePresenter.checkOpenLogin());
         }
     }
 
@@ -376,9 +378,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
     @Override
     public void showSetPwd(boolean isVisible) {
-        if (isVisible) {
-            rlChangePassword.setVisibility(View.GONE);
-        }
+        rlChangePassword.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

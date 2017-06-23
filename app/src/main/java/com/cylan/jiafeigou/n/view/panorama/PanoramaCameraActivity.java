@@ -161,7 +161,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private ConnectionDescriptionFragment fragment;
     private boolean justForTest = false;
     private boolean hasNetSetting = false;
-    private boolean upgrading = true;
+    private boolean upgrading = false;
     private boolean alertSDFormatError = true;
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
@@ -361,6 +361,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         liveFlowSpeedText.setText(MiscUtils.getByteFromBitRate(speed));
     }
 
+
     @Override
     public void onConnectDeviceTimeOut() {
         onRefreshConnectionMode(-1);
@@ -378,6 +379,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         finish();
                     })
                     .show();
+        } else if (code == -3) {
+            AppLogger.d("固件升级中....");
+            onDeviceUpgrade();
         } else {
             onRefreshConnectionMode(-1);
         }
@@ -431,8 +435,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         hasResolution = false;
         setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         setting.setEnabled(false);
+        onRefreshViewModeUI(panoramaViewMode, false);
         onRefreshControllerView(false, true);
         updateHint();
+        setting.setEnabled(true);
+        int netType = NetUtils.getNetType(this);
+        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
+            onRefreshConnectionMode(alertMobile ? 1 : -2);
+        }
     }
 
     private void updateHint() {
@@ -730,35 +741,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    public void onCheckDeviceUpgradeResult(boolean isUpgrade) {
-        //设备正在升级中
-//        loadingBar.setState(JConstant.PLAY_STATE_INFO,getString(R.string.UPGRADE));
-//        loadingBar.setState(JConstant.PLAY_STATE_INFO, "固件升级中...");
-        upgrading = isUpgrade;
-        if (isUpgrade) {
-            cameraUpgrading.setVisibility(View.VISIBLE);
-            setting.setEnabled(false);
-            onRefreshControllerView(false, true);
-        } else {
-            setting.setEnabled(true);
-            int netType = NetUtils.getNetType(this);
-            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-            if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-                onRefreshConnectionMode(alertMobile ? 1 : -2);
-            }
-            onRefreshViewModeUI(panoramaViewMode, false);
-        }
+    public void onDeviceInitFinish() {
+
     }
 
-    @Override
-    public void onDeviceInitFinish() {
-//        int netType = NetUtils.getNetType(this);
-//        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-//        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-//            onRefreshConnectionMode(alertMobile ? 1 : -2);
-//        }
-//        onRefreshViewModeUI(panoramaViewMode, false);
+    public void onDeviceUpgrade() {
+        upgrading = true;
+        cameraUpgrading.setVisibility(View.VISIBLE);
+        setting.setEnabled(false);
+        onRefreshControllerView(false, true);
+        bannerSwitcher.setVisibility(View.INVISIBLE);
+        liveFlowSpeedText.setVisibility(View.INVISIBLE);
+        loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
     }
+
 
     public void showConfigConnectionDialog() {
         if (connectionDialog == null) {
@@ -835,6 +831,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onRefreshConnectionMode(int connectionType) {//-1:连接设备超时 ,-2:可以忽略
         if (upgrading) return;//升级中所有选项不可操作
+        bannerSwitcher.setVisibility(View.VISIBLE);
+        cameraUpgrading.setVisibility(View.GONE);
         Device device = sourceManager.getDevice(uuid);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (TextUtils.isEmpty(mac)) {
@@ -882,7 +880,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             bannerWarmingTitle.setText(R.string.Tips_Device_TimeoutRetry);
             loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
             liveFlowSpeedText.setVisibility(View.INVISIBLE);
-        } else {
+        } else if (connectionType < 0) {
             if (bannerSwitcher.getDisplayedChild() == 1) {
                 bannerSwitcher.showPrevious();
             }

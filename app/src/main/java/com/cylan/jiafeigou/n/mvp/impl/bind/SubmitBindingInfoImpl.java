@@ -74,6 +74,9 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
     @Override
     public void start() {
         super.start();
+        if (bindResult == BIND_TIME_OUT) {
+            return;
+        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (startTick == 0) {//可能是覆盖绑定.
             startTick = System.currentTimeMillis();

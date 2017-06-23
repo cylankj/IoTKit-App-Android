@@ -10,9 +10,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
@@ -66,6 +68,26 @@ public class ShareManager {
             return SHARE_MEDIA.GENERIC;
         }
 
+        public String getPlatformString(SHARE_MEDIA media) {
+            switch (media) {
+                case FACEBOOK:
+                    return "Facebook";
+                case TWITTER:
+                    return "Twitter";
+                case SINA:
+                    return ContextUtils.getContext().getString(R.string.Weibo);
+                case QQ:
+                    return "QQ";
+                case WEIXIN:
+                    return ContextUtils.getContext().getString(R.string.WeChat);
+                case WEIXIN_CIRCLE:
+                    return ContextUtils.getContext().getString(R.string.Tap2_Share_Moments);
+                case QZONE:
+                    return ContextUtils.getContext().getString(R.string.Qzone_QQ);
+            }
+            return media.name();
+        }
+
         public void share() {
             if (dialog == null) {
                 dialog = ShareOptionMenuDialog.newInstance(this, this);
@@ -107,7 +129,11 @@ public class ShareManager {
         public void onError(SHARE_MEDIA share_media, Throwable throwable) {
             AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
             if (activity != null) {
-                ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
+                if (!UMShareAPI.get(activity).isInstall(activity, share_media)) {
+                    ToastUtil.showNegativeToast(activity.getString(R.string.Tap1_Album_Share_NotInstalledTips, getPlatformString(share_media)));
+                } else {
+                    ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
+                }
             }
             activity = null;
         }

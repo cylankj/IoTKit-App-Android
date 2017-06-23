@@ -298,7 +298,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .flatMap(task -> taskDispatcher.perform(task))
                 .map(ret -> new DPEntity()
                         .setUuid(uuid)
-                        .setVersion(mCallRecord.timeInLong / 1000L)
+                        .setVersion(mCallRecord.timeInLong)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
                 .flatMap(task -> taskDispatcher.perform(task))
@@ -387,7 +387,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .setMsgId(511)
                 .setUuid(uuid)
                 .setAction(DBAction.QUERY)
-                .setVersion(mCallRecord.timeInLong / 1000L)
+                .setVersion(mCallRecord.timeInLong)
                 .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
                 .flatMap(entity -> taskDispatcher.perform(entity))
                 .map(ret -> {
