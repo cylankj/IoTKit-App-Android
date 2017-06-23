@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -53,10 +54,10 @@ public class JFGRules {
                 ? RULE_NIGHT_TIME : RULE_DAY_TIME;
     }
 
-    public static boolean showItem(int pid, String key) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                key);
-    }
+//    public static boolean showItem(int pid, String key) {
+//        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+//                key);
+//    }
 
     public static boolean isCylanDevice(String ssid) {
         return ApFilter.accept(ssid);
@@ -270,9 +271,10 @@ public class JFGRules {
     }
 
 
-    public static boolean showSdHd(int pid) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                "SD/HD");
+    public static boolean showSdHd(int pid, final String version) {
+        boolean has = BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "SD/HD");
+        final String minVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "MinVersion");
+        return BindUtils.versionCompare(version, minVersion) >= 0 && has;
     }
 
     public static boolean showBattery(int pid) {
@@ -456,7 +458,7 @@ public class JFGRules {
             pid = 1158;
         } else if (cid.startsWith("6900")) {
             pid = 1159;
-        }else if (cid.startsWith("6901")) {
+        } else if (cid.startsWith("6901")) {
             pid = 1160;
         }
         return pid;
