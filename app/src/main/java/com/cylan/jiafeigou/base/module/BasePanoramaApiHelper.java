@@ -182,7 +182,21 @@ public class BasePanoramaApiHelper {
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
         return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.sdFormat().map(ret -> {
-
+            //更新设备属性
+            DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
+            status.err = ret.sdcard_recogntion;
+            status.hasSdcard = ret.sdIsExist == 1;
+            status.used = ret.storage_used;
+            status.total = ret.storage;
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            if (device.available()) {
+                DPEntity property = device.getProperty(204);
+                if (property == null) {
+                    property = device.getEmptyProperry(204);
+                }
+                property.setValue(status, DpUtils.pack(status), property.getVersion());
+                device.updateProperty(204, property);
+            }
             return ret;
         }) : forwardHelper.setDataPoint(uuid, 218));
     }

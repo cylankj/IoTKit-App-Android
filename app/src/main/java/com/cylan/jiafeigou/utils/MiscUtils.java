@@ -344,7 +344,7 @@ public class MiscUtils {
      * @return
      */
     public static String FormatSdCardSizeSpec(long fileS, String unit) {
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#######0.00");
         switch (unit) {
             case "B":
                 if (fileS < 1024) return df.format((double) fileS) + "B";

@@ -2,7 +2,10 @@ package com.cylan.jiafeigou;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.live.IFeedRtcp;
+import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -17,9 +20,11 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by yzd on 17-1-11.
@@ -48,6 +53,37 @@ public class DP {
 
     public static boolean accept(String account, String uuid, String filePath) {
         return filePath.matches("/" + account + "/" + uuid);
+    }
+
+
+    @Test
+    public void testMonitor() throws Exception {
+        LiveFrameRateMonitor monitor = new LiveFrameRateMonitor();
+        IFeedRtcp.MonitorListener listener = new IFeedRtcp.MonitorListener() {
+            @Override
+            public void onFrameFailed() {
+                System.out.println("onFrameFailed");
+            }
+
+            @Override
+            public void onFrameRate(boolean slow) {
+                System.out.println("onFrameRate+" + slow);
+            }
+        };
+        monitor.setMonitorListener(listener);
+
+        Random random = new Random(System.currentTimeMillis());
+        Observable.interval(0, 1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                    JFGMsgVideoRtcp rtcp = new JFGMsgVideoRtcp();
+                    rtcp.frameRate = random.nextInt(10);
+                    System.out.println("Frame:" + rtcp.frameRate);
+                    monitor.feed(rtcp);
+                });
+
+        Thread.sleep(100000000);
     }
 
     @Message

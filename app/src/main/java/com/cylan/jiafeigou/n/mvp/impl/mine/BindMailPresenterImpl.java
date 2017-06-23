@@ -136,7 +136,7 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
 
     @Override
     public boolean isOpenLogin() {
-        return isOpenLogin;
+        return  BaseApplication.getAppComponent().getSourceManager().getAccount().getLoginType() >= 3;
     }
 
     @Override

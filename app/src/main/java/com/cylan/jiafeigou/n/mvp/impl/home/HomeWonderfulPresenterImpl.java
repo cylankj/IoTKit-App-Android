@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,7 +202,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(Schedulers.io())
                 .map(item -> new DPEntity()
                         .setUuid(item.cid)
-                        .setVersion(item.time)
+                        .setVersion(TimeUtils.wrapToLong(item.time))
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
                 .flatMap(this::perform)

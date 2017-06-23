@@ -140,7 +140,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         version.startCheck();
         return subscription;
     }
-       
+
     private Subscription getReportMsgSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
@@ -249,12 +249,16 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
+
         subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {
                     boolean isUpgrade = ret != null && ret.upgradeStatus == 1;
-                    mView.onCheckDeviceUpgradeResult(isUpgrade);
+                    if (isUpgrade) {
+                        cancelViewer();
+                        mView.onVideoDisconnect(-3);
+                    }
                     return !isUpgrade;
                 })
                 .observeOn(Schedulers.io())

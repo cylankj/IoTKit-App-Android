@@ -3,12 +3,10 @@ package com.cylan.jiafeigou;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import org.junit.Test;
+import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -36,6 +34,20 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     }
 
+    public void testMonitor() throws Exception {
+        LiveFrameRateMonitor monitor = new LiveFrameRateMonitor();
+        Random random = new Random(System.currentTimeMillis());
+        Observable.interval(0, 1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                    JFGMsgVideoRtcp rtcp = new JFGMsgVideoRtcp();
+                    rtcp.frameRate = random.nextInt(30);
+                    monitor.feed(rtcp);
+                });
+
+        Thread.sleep(100000000);
+    }
 
     public void testMy() {
 //        JFGDevice jfgDevice = new JFGDevice();

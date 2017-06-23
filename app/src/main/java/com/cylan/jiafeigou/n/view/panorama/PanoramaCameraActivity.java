@@ -147,6 +147,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.act_panorama_camera_upgrading)
     TextView cameraUpgrading;
 
+    private AlertDialog deviceReportDialog;
+
     @SPEED_MODE
     private int speedMode = SPEED_MODE.AUTO;
     @PANORAMA_VIEW_MODE
@@ -161,7 +163,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private ConnectionDescriptionFragment fragment;
     private boolean justForTest = false;
     private boolean hasNetSetting = false;
-    private boolean upgrading = true;
+    private boolean upgrading = false;
     private boolean alertSDFormatError = true;
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
@@ -248,6 +250,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelPhotoGraphItem.setOnTouchListener(photoGraphTouchListener);
         panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
         alertSDFormatError = true;
+        deviceReportDialog = new AlertDialog.Builder(this).setCancelable(false).create();
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -361,6 +364,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         liveFlowSpeedText.setText(MiscUtils.getByteFromBitRate(speed));
     }
 
+
     @Override
     public void onConnectDeviceTimeOut() {
         onRefreshConnectionMode(-1);
@@ -378,6 +382,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                         finish();
                     })
                     .show();
+        } else if (code == -3) {
+            AppLogger.d("固件升级中....");
+            onDeviceUpgrade();
         } else {
             onRefreshConnectionMode(-1);
         }
@@ -431,8 +438,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         hasResolution = false;
         setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         setting.setEnabled(false);
+        onRefreshViewModeUI(panoramaViewMode, false);
         onRefreshControllerView(false, true);
         updateHint();
+        setting.setEnabled(true);
+        int netType = NetUtils.getNetType(this);
+        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
+            onRefreshConnectionMode(alertMobile ? 1 : -2);
+        }
     }
 
     private void updateHint() {
@@ -730,35 +744,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    public void onCheckDeviceUpgradeResult(boolean isUpgrade) {
-        //设备正在升级中
-//        loadingBar.setState(JConstant.PLAY_STATE_INFO,getString(R.string.UPGRADE));
-//        loadingBar.setState(JConstant.PLAY_STATE_INFO, "固件升级中...");
-        upgrading = isUpgrade;
-        if (isUpgrade) {
-            cameraUpgrading.setVisibility(View.VISIBLE);
-            setting.setEnabled(false);
-            onRefreshControllerView(false, true);
-        } else {
-            setting.setEnabled(true);
-            int netType = NetUtils.getNetType(this);
-            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-            if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-                onRefreshConnectionMode(alertMobile ? 1 : -2);
-            }
-            onRefreshViewModeUI(panoramaViewMode, false);
-        }
+    public void onDeviceInitFinish() {
+
     }
 
-    @Override
-    public void onDeviceInitFinish() {
-//        int netType = NetUtils.getNetType(this);
-//        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-//        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-//            onRefreshConnectionMode(alertMobile ? 1 : -2);
-//        }
-//        onRefreshViewModeUI(panoramaViewMode, false);
+    public void onDeviceUpgrade() {
+        upgrading = true;
+        cameraUpgrading.setVisibility(View.VISIBLE);
+        setting.setEnabled(false);
+        onRefreshControllerView(false, true);
+        bannerSwitcher.setVisibility(View.INVISIBLE);
+        liveFlowSpeedText.setVisibility(View.INVISIBLE);
+        loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
     }
+
 
     public void showConfigConnectionDialog() {
         if (connectionDialog == null) {
@@ -835,6 +834,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onRefreshConnectionMode(int connectionType) {//-1:连接设备超时 ,-2:可以忽略
         if (upgrading) return;//升级中所有选项不可操作
+        bannerSwitcher.setVisibility(View.VISIBLE);
+        cameraUpgrading.setVisibility(View.GONE);
         Device device = sourceManager.getDevice(uuid);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (TextUtils.isEmpty(mac)) {
@@ -882,7 +883,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             bannerWarmingTitle.setText(R.string.Tips_Device_TimeoutRetry);
             loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
             liveFlowSpeedText.setVisibility(View.INVISIBLE);
-        } else {
+        } else if (connectionType < 0) {
             if (bannerSwitcher.getDisplayedChild() == 1) {
                 bannerSwitcher.showPrevious();
             }
@@ -1009,11 +1010,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case 2003://sd 卡没有容量
                 AppLogger.d("SD 卡内存已满");
                 if (useAlert) {
-                    new AlertDialog.Builder(this).setCancelable(false).
-                            setMessage(R.string.Tap1_SDCardFullyTips)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.OK, null)
-                            .show();
+                    deviceReportDialog.setMessage(getString(R.string.Tap1_SDCardFullyTips));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Tap1_SDCardFullyTips), (DialogInterface.OnClickListener) null);
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
+                    deviceReportDialog.show();
+//                    new AlertDialog.Builder(this).setCancelable(false).
+//                            setMessage(R.string.Tap1_SDCardFullyTips)
+//                            .setCancelable(false)
+//                            .setPositiveButton(R.string.OK, null)
+//                            .show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Tap1_SDCardFullyTips));
                 }
@@ -1021,11 +1026,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
                 if (useAlert) {
-                    new AlertDialog.Builder(this).setCancelable(false).
-                            setMessage(R.string.MSG_SD_OFF)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.OK, null)
-                            .show();
+                    deviceReportDialog.setMessage(getString(R.string.MSG_SD_OFF));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (DialogInterface.OnClickListener) null);
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
+                    deviceReportDialog.show();
+//                    new AlertDialog.Builder(this).setCancelable(false).
+//                            setMessage(R.string.MSG_SD_OFF)
+//                            .setCancelable(false)
+//                            .setPositiveButton(R.string.OK, null)
+//                            .show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
                 }
@@ -1041,17 +1050,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case 2022://sd卡识别失败，需要格式化
                 AppLogger.d("SD卡识别失败,需要格式化");
                 if (alertSDFormatError) {//设备会一直推消息,这里过滤掉
-
-                    new AlertDialog.Builder(this)
-                            .setMessage(R.string.Tap1_NeedsInitializedTips)
-                            .setPositiveButton(R.string.SD_INIT, (dialog, which) -> {
-                                presenter.formatSDCard();
-                            })
-                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
-                                alertSDFormatError = false;
-                            })
-                            .setCancelable(false)
-                            .show();
+                    deviceReportDialog.setMessage(getString(R.string.Tap1_NeedsInitializedTips));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SD_INIT), (dialog, which) -> presenter.formatSDCard());
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (dialog, which) -> alertSDFormatError = false);
+                    deviceReportDialog.show();
+//                    AlertDialog show = new AlertDialog.Builder(this)
+//                            .setMessage(R.string.Tap1_NeedsInitializedTips)
+//                            .setPositiveButton(R.string.SD_INIT, (dialog, which) -> {
+//                                presenter.formatSDCard();
+//                            })
+//                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
+//                                alertSDFormatError = false;
+//                            })
+//                            .setCancelable(false)
+//                            .show();
                     break;
                 }
                 //小于
@@ -1065,14 +1077,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 if (!pop) return;
                 //松开弹
                 if (useAlert) {
-                    new AlertDialog.Builder(PanoramaCameraActivity.this)
-                            .setMessage(R.string.Switch_Mode_Pop)
-                            .setCancelable(false)
-                            .setNegativeButton(R.string.WELL_OK, null)
-                            .setPositiveButton(R.string.Dont_Show_Again, (dialog, which) -> {
-                                PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false);
-                            })
-                            .show();
+                    deviceReportDialog.setMessage(getString(R.string.Switch_Mode_Pop));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (DialogInterface.OnClickListener) null);
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false));
+                    deviceReportDialog.show();
+//
+//                    new AlertDialog.Builder(PanoramaCameraActivity.this)
+//                            .setMessage(R.string.Switch_Mode_Pop)
+//                            .setCancelable(false)
+//                            .setNegativeButton(R.string.WELL_OK, null)
+//                            .setPositiveButton(R.string.Dont_Show_Again, (dialog, which) -> {
+//                                PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false);
+//                            })
+//                            .show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));
                 }

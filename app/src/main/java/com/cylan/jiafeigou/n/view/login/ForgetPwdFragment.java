@@ -217,7 +217,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         }
         if (TextUtils.isEmpty(etForgetUsername.getText())) {
             final int type = LocaleUtils.getLanguageType(getActivity());
-            etForgetUsername.setHint(type == JConstant.LOCALE_SIMPLE_CN ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL_2));
+            etForgetUsername.setHint(type == JConstant.LOCALE_SIMPLE_CN ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL_1));
         }
     }
 

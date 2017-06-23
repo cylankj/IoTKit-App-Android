@@ -174,12 +174,11 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getAccount());
         }
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(getAccount());
     }
 
     /**

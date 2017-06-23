@@ -252,14 +252,11 @@ public class BaseForwardHelper {
                 case 52: {
                     PanoramaEvent.ReportMsgList reportMsgList = unpackData(forward.msg, PanoramaEvent.ReportMsgList.class);
                     if (reportMsgList != null) {
-                        ArrayList<Long> idList = new ArrayList<>();
                         ArrayList<JFGDPMsg> msgList = new ArrayList<>();
                         for (PanoramaEvent.DpMsgForward msg : reportMsgList.msgForwards) {
-                            idList.add(msg.id);
                             msgList.add(msg.msg());
                         }
-                        RxEvent.DeviceSyncRsp syncData = new RxEvent.DeviceSyncRsp().setUuid(forward.mCaller, idList, msgList);
-                        RxBus.getCacheInstance().post(syncData);
+                        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(true, forward.mCaller, msgList));//这里会直接写入数据库 中
                     }
                     break;
                 }

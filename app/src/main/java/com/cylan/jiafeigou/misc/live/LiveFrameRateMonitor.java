@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.misc.live;
 
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,10 +17,16 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     private static final int MAX_SIZE = 30;//现在统一30秒 loading
     private static final int TARGET_SIZE = 8;
     private static final int FINAL_LEVEL = 2;
-    private static final int SHOW_FREQUENCY = 4000;
+    private static final int FAILED_WINDOW = 10;//判断失败的窗口期
+    private static final int LOADING_WINDOW = 3;
+    private static final int FAILED_TARGET = 10;
+    private static final int LOADING_TARGET = 3;
+    private static final int BAD_LEVEL = 0;
     private boolean preStatus;
     private final ReentrantLock lock = new ReentrantLock();
-    private long showFailedTime;
+    private long lastNotifyTime;
+    private static final int NOTIFY_WINDOW = 4000;
+    private volatile int badFrameCount = 0;
     /**
      * 10内的规则.
      */
@@ -29,19 +34,36 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
 
     @Override
     public void feed(JFGMsgVideoRtcp rtcp) {
-        synchronized (lock) {
-            if (frameRateList.size() > MAX_SIZE - 1) {
-                frameRateList.remove(0);
-            }
-            //默认加到末端
-            frameRateList.add(rtcp);
-            startAnalyze();
+        AppLogger.d("rtcp:" + rtcp.frameRate);
+        badFrameCount = rtcp.frameRate == 0 ? ++badFrameCount : 0;
+        if (monitorListener == null) return;
+        boolean isFrameFailed = badFrameCount >= FAILED_TARGET;
+        boolean isFrameLoading = badFrameCount >= LOADING_TARGET;
+        AppLogger.d("视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badFrameCount);
+
+        if (isFrameLoading && isFrameFailed && System.currentTimeMillis() - lastNotifyTime > NOTIFY_WINDOW) {//加载失败了,4秒通知
+            lastNotifyTime = System.currentTimeMillis();
+            monitorListener.onFrameFailed();
+            AppLogger.d("onFrameFailed");
+        } else if (preStatus != isFrameLoading) {
+            preStatus = isFrameLoading;
+            monitorListener.onFrameRate(isFrameLoading);
+            AppLogger.d("onFrameRate" + isFrameLoading);
         }
+//
+//        synchronized (lock) {
+//            if (frameRateList.size() > MAX_SIZE - 1) {
+//                frameRateList.remove(frameRateList.size() - 1);
+//            }
+//            //默认加到末端
+//            frameRateList.add(0, rtcp);
+//            startAnalyze();
+//        }
     }
 
     @Override
     public void stop() {
-        frameRateList.clear();
+//        frameRateList.clear();
         preStatus = false;
     }
 
@@ -49,30 +71,33 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
      * 非常粗糙的设计
      */
     private void startAnalyze() {
-
+        if (monitorListener == null) return;
+        boolean isFrameLoading = false;
+        boolean isFrameFailed;
+        int badCount = 0;
         synchronized (lock) {
-            boolean isBad = false;
-            //显示loading规则.
-            if (frameRateList.size() >= 5) {
-                isBad = isBad(frameRateList, 1, 5, 3) && last3Bit(1);
-                if (preStatus != isBad) {//相反状态才需要通知
-                    preStatus = isBad;
-                    if (frameRateList != null)
-                        monitorListener.onFrameRate(isBad);
+            for (int i = 0; i < frameRateList.size() && i < FAILED_WINDOW; i++) {
+                JFGMsgVideoRtcp rtcp = frameRateList.get(i);
+                if (rtcp.frameRate <= BAD_LEVEL) {
+                    badCount++;
+                }
+                if (i < LOADING_WINDOW && badCount == LOADING_TARGET) {
+                    isFrameLoading = true;
                 }
             }
-            if (frameRateList.size() >= 10) {
-                //1.10s内的规则. 30s改成10s了  2017-06-13
-                boolean _10_s_rules = isBad(frameRateList, FINAL_LEVEL, 10, TARGET_SIZE);
-                if (System.currentTimeMillis() - showFailedTime > SHOW_FREQUENCY) {
-                    //3s内提醒一次
-                    showFailedTime = System.currentTimeMillis();
-                    if (monitorListener != null && isBad && _10_s_rules) {
-                        monitorListener.onFrameFailed();
-                        AppLogger.d("失败了?" + new Gson().toJson(frameRateList));
-                    }
-                }
-            }
+        }
+        isFrameFailed = badCount >= FAILED_TARGET;
+        AppLogger.d("视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badCount);
+//        System.out.println("视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badCount);
+
+        if (isFrameLoading && isFrameFailed && System.currentTimeMillis() - lastNotifyTime > NOTIFY_WINDOW) {//加载失败了,4秒通知
+            lastNotifyTime = System.currentTimeMillis();
+            monitorListener.onFrameFailed();
+            AppLogger.d("onFrameFailed");
+        } else if (preStatus != isFrameLoading) {
+            preStatus = isFrameLoading;
+            monitorListener.onFrameRate(isFrameLoading);
+            AppLogger.d("onFrameRate" + isFrameLoading);
         }
     }
 

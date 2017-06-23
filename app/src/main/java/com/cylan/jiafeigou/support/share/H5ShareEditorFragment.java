@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
@@ -239,7 +240,11 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     @Override
     public void onError(SHARE_MEDIA share_media, Throwable throwable) {
         AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
-        ToastUtil.showNegativeToast(getActivity().getString(R.string.Tap3_ShareDevice_FailTips));
+        if (!UMShareAPI.get(getContext()).isInstall(getActivity(), share_media)) {
+            ToastUtil.showNegativeToast(getContext().getString(R.string.Tap1_Album_Share_NotInstalledTips, share_media.toString()));
+        } else {
+            ToastUtil.showNegativeToast(getContext().getString(R.string.Tap3_ShareDevice_FailTips));
+        }
     }
 
     @Override

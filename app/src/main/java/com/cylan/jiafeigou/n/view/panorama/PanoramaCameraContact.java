@@ -36,9 +36,8 @@ public interface PanoramaCameraContact {
 
         void onSDFormatResult(int code);
 
-        void onCheckDeviceUpgradeResult(boolean b);
-
         void onDeviceInitFinish();
+
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
