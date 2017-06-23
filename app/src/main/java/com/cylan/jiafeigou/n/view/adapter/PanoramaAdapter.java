@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,8 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -59,9 +59,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
             holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.time * 1000L));
         }
-        holder.setVisibility(R.id.fl_check_option, isInEditMode ? View.VISIBLE : View.GONE);
         holder.setVisibility(R.id.dv_time_line, isInEditMode ? View.INVISIBLE : View.VISIBLE);
         holder.setChecked(R.id.rb_item_check, item.selected);
+        holder.setVisibility(R.id.rb_item_check, isInEditMode ? View.VISIBLE : View.GONE);
         holder.setVisibility(R.id.iv_album_video_duration_text, item.type == 1 ? View.VISIBLE : View.GONE);
         holder.setText(R.id.iv_album_video_duration_text, TimeUtils.getMM_SS(item.duration * 1000L));
         holder.setVisibility(R.id.iv_album_icon_720_iphone, (item.location == 0 || item.location == 2) ? View.VISIBLE : View.GONE);
@@ -69,21 +69,23 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         holder.setVisibility(R.id.iv_album_icon_720_camera, (item.location == 1 || item.location == 2) ? View.VISIBLE : View.GONE);
         Glide.with(getContext())
                 .load(new PanoramaThumbURL(uuid, item.fileName))
-                .error(R.drawable.wonderful_pic_place_holder)
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(new RequestListener<PanoramaThumbURL, GlideDrawable>() {
+                .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
                     @Override
-                    public boolean onException(Exception e, PanoramaThumbURL model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        return false;
+                    protected void setResource(GlideDrawable resource) {
+                        view.setImageDrawable(resource);
+                        view.setScaleType(ImageView.ScaleType.FIT_XY);
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, PanoramaThumbURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        return false;
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        view.setBackgroundResource(R.drawable.wonderful_pic_place_holder);
+                        view.setImageResource(R.drawable.pic_broken);
+                        view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
                     }
-                })
-                .into((ImageView) holder.getView(R.id.img_album_content));
+                });
         TextView view = holder.getView(R.id.tv_album_download_progress);
         if (item.downloadInfo == null) {
             item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));//确保真的没有 download 信息
