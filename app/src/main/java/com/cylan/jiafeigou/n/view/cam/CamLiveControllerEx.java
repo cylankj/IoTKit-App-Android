@@ -193,7 +193,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void initLiveViewRect(float ratio, Rect rect) {
         updateLiveViewRectHeight(ratio);
-        liveViewWithThumbnail.post(() -> liveViewWithThumbnail.getLocalVisibleRect(rect));
+        liveViewWithThumbnail.post(() -> {
+            liveViewWithThumbnail.getLocalVisibleRect(rect);
+            AppLogger.d("rect: " + rect);
+        });
     }
 
     @Override
@@ -245,17 +248,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .setVisibility(JFGRules.showSdHd(device.pid, cVersion) ? VISIBLE : GONE);
         streamSwitcher = ((Switcher) findViewById(R.id.sv_switch_stream));
         int mode = device.$(513, 0);
-        streamSwitcher.setMode(getContext().getString(mode == 0 ? R.string.Tap1_Camera_Video_Auto :
-                (mode == 1 ? R.string.Tap1_Camera_Video_SD : R.string.Tap1_Camera_Video_HD)));
-        streamSwitcher.setSwitcherListener(view -> {
+        streamSwitcher.setMode(mode);
+        streamSwitcher.setSwitcherListener((view, index) -> {
             if (view.getId() == R.id.switch_hd) {
-                presenter.switchStreamMode(2)
+                presenter.switchStreamMode(index)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
                         }, AppLogger::e);
             } else if (view.getId() == R.id.switch_sd) {
-                presenter.switchStreamMode(1)
+                presenter.switchStreamMode(index)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
@@ -1112,14 +1114,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     AppLogger.d("历史录像导航条空?" + (handler == null));
                     if (handler != null) {
                         handler.setupHistoryData(iData);
-                        HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
-                        if (historyFile != null) {
-                            handler.setNav2Time(timeTarget);
-                            presenter.startPlayHistory(timeTarget);
-                            setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-                            AppLogger.d("找到历史录像?" + historyFile);
-                            AppLogger.d("目标历史录像时间?" + timeTarget);
-                        }
+//                        HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
+//                        if (historyFile != null) {
+                        handler.setNav2Time(timeTarget);
+                        presenter.startPlayHistory(timeTarget);
+                        setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
+//                        AppLogger.d("找到历史录像?" + historyFile);
+                        AppLogger.d("目标历史录像时间?" + timeTarget);
+//                        }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }

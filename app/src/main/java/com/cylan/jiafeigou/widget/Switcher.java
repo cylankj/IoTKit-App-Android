@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -11,6 +12,10 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by hds on 17-6-15.
@@ -41,18 +46,18 @@ public class Switcher extends LinearLayout {
         viewSecond = (TextView) getChildAt(1);
         viewThird = (TextView) getChildAt(2);
         viewFirst.setOnClickListener(v -> {
-            final String current = viewThird.getText().toString();
-            viewFirst.setText(current);
             slideOut();
-            setMode(getContext().getString(R.string.Tap1_Camera_Video_HD));
-            if (switcherListener != null) switcherListener.switcher(v);
+            int index = content2Index(viewFirst.getText().toString());
+            viewFirst.setText(viewThird.getText());
+            viewThird.setText(index2Content(index));
+            if (switcherListener != null) switcherListener.switcher(v, index);
         });
         viewSecond.setOnClickListener(v -> {
-            final String current = viewThird.getText().toString();
-            viewSecond.setText(current);
             slideOut();
-            setMode(getContext().getString(R.string.Tap1_Camera_Video_SD));
-            if (switcherListener != null) switcherListener.switcher(v);
+            int index = content2Index(viewSecond.getText().toString());
+            viewSecond.setText(viewThird.getText());
+            viewThird.setText(index2Content(index));
+            if (switcherListener != null) switcherListener.switcher(v, index);
         });
         viewThird.setOnClickListener(v -> {
             if (!viewFirst.isShown()) {
@@ -96,7 +101,8 @@ public class Switcher extends LinearLayout {
                         .playOn(viewFirst);
                 postDelayed(autoSlideOut, 3000);
             }
-            if (switcherListener != null) switcherListener.switcher(v);
+            if (switcherListener != null)
+                switcherListener.switcher(v, content2Index(viewThird.getText()));
         });
     }
 
@@ -124,10 +130,30 @@ public class Switcher extends LinearLayout {
     }
 
     public interface SwitcherListener {
-        void switcher(View view);
+        void switcher(View view, int mode);
     }
 
-    public void setMode(String mode) {
-        viewThird.setText(mode);
+    private static final Integer[] sId = {R.string.Tap1_Camera_Video_Auto,
+            R.string.Tap1_Camera_Video_SD,
+            R.string.Tap1_Camera_Video_HD};
+
+    private int content2Index(CharSequence content) {
+        if (TextUtils.equals(getResources().getString(R.string.Tap1_Camera_Video_Auto), content))
+            return 0;
+        if (TextUtils.equals(getResources().getString(R.string.Tap1_Camera_Video_SD), content))
+            return 1;
+        return 2;
+    }
+
+    private String index2Content(int mode) {
+        return getResources().getString(sId[mode]);
+    }
+
+    public void setMode(int mode) {
+        List<Integer> list = new ArrayList<>(Arrays.asList(sId));
+        list.remove(mode);
+        viewThird.setText(getResources().getString(sId[mode]));
+        viewFirst.setText(getResources().getString(list.get(0)));
+        viewSecond.setText(getResources().getString(list.get(1)));
     }
 }

@@ -86,7 +86,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
 
     @Override
     public void unCollect(int index, long v) {//1492151447 1492151447
-        long finalVersion = v / 1000 + index + 1;
+        long finalVersion = v + index + 1;
         Log.d("finalVersion", "unCollect finalVersion:" + finalVersion + ",index:" + index);
         check(finalVersion)
                 .filter(v602 -> {
@@ -192,7 +192,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
 
     @Override
     public void checkCollection(long time, int index) {
-        long finalVersion = time / 1000 + index + 1;
+        long finalVersion = time + index + 1;
         Log.d("finalVersion", "check finalVersion:" + finalVersion + ",index:" + index);
         Subscription subscription = Observable.just(new DPEntity()
                 .setMsgId(511)
@@ -208,7 +208,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                 .subscribe(idpTaskResult -> {
                     DpMsgDefine.DPPrimary<Long> version = idpTaskResult.getResultResponse();
                     if (version != null && version.value != null) {
-                        int delta = (int) Math.abs(time / 1000 - version.version);
+                        int delta = (int) Math.abs(time - version.version);
                         mView.onItemCollectionCheckRsp(delta - 1 == index);
                         AppLogger.d("当前index:" + delta);
                     } else {

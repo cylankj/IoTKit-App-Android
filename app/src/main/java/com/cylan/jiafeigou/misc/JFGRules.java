@@ -273,7 +273,8 @@ public class JFGRules {
 
     public static boolean showSdHd(int pid, final String version) {
         boolean has = BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "SD/HD");
-        final String minVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "MinVersion");
+        String minVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "MinVersion");
+        if (TextUtils.isEmpty(minVersion)) minVersion = "1.0.0.0";
         return BindUtils.versionCompare(version, minVersion) >= 0 && has;
     }
 
