@@ -1,129 +1,126 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lLayout_cam_msg_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="@dimen/y15"
     android:paddingStart="@dimen/y15">
 
     <com.cylan.jiafeigou.widget.DividerView
         android:id="@+id/dv_time_line"
         android:layout_width="@dimen/y16"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/img_album_content"
-        android:layout_alignParentTop="true"
+        android:layout_height="0dp"
         app:dv_color="@color/color_e8e8e8"
         app:dv_dashGap="@dimen/y2"
         app:dv_dashLength="@dimen/y3"
         app:dv_dashThickness="@dimen/y2"
-        app:dv_orientation="vertical" />
+        app:dv_orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/fl_check_option"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/img_album_content"
-        android:layout_alignTop="@id/img_album_content">
-
-        <RadioButton
-            android:id="@+id/rb_item_check"
-            android:layout_width="@dimen/y16"
-            android:layout_height="@dimen/y16"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/custom_rtbn_style1"
-            android:button="@null"
-            android:clickable="false"
-            android:visibility="visible" />
-    </FrameLayout>
+    <RadioButton
+        android:id="@+id/rb_item_check"
+        android:layout_width="@dimen/y16"
+        android:layout_height="@dimen/y16"
+        android:background="@drawable/custom_rtbn_style1"
+        android:button="@null"
+        android:clickable="false"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
+        app:layout_constraintTop_toTopOf="@+id/img_album_content" />
 
 
     <ImageView
         android:id="@+id/v_circle"
         android:layout_width="@dimen/y14"
         android:layout_height="@dimen/y14"
-        android:layout_marginStart="@dimen/y2"
-        android:layout_marginTop="@dimen/y23"
         android:background="@drawable/circle"
         android:padding="@dimen/y3"
-        android:src="@drawable/border_solid_circle" />
+        android:src="@drawable/border_solid_circle"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_cam_message_item_date"
+        app:layout_constraintEnd_toEndOf="@+id/dv_time_line"
+        app:layout_constraintStart_toStartOf="@+id/dv_time_line"
+        app:layout_constraintTop_toTopOf="@+id/tv_cam_message_item_date" />
 
 
     <TextView
         android:id="@+id/tv_cam_message_item_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@id/img_album_content"
         android:layout_marginBottom="@dimen/y14"
         android:layout_marginTop="@dimen/y22"
         android:gravity="center"
         android:text="12:30"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/sp12"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/img_album_content"
+        app:layout_constraintStart_toStartOf="@+id/img_album_content"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.cylan.jiafeigou.widget.AspectRatioImageView
+    <ImageView
         android:id="@+id/img_album_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_cam_message_item_date"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/y4"
         android:layout_marginStart="@dimen/y4"
-        android:layout_toEndOf="@+id/dv_time_line"
-        android:paddingBottom="@dimen/y4"
         android:scaleType="fitXY"
         android:src="@drawable/wonderful_pic_place_holder"
-        app:as_ratio="3" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="w,1:3"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_vertical_line"
+        app:layout_constraintStart_toEndOf="@+id/dv_time_line" />
 
     <TextView
         android:id="@+id/tv_album_download_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/img_album_content"
-        android:layout_alignTop="@+id/img_album_content"
         android:layout_marginEnd="@dimen/y5"
         android:layout_marginTop="@dimen/y5"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/sp11"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/img_album_content"
+        app:layout_constraintTop_toTopOf="@+id/img_album_content" />
 
 
     <TextView
         android:id="@+id/iv_album_video_duration_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/img_album_content"
-        android:layout_alignStart="@+id/img_album_content"
         android:layout_marginBottom="@dimen/y9"
         android:layout_marginStart="@dimen/y5"
         android:text="00:08"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/sp11"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
+        app:layout_constraintStart_toStartOf="@+id/img_album_content" />
 
-
-    <LinearLayout
+    <ImageView
+        android:id="@+id/iv_album_icon_720_iphone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/img_album_content"
-        android:layout_alignEnd="@+id/img_album_content"
-        android:orientation="horizontal">
+        android:layout_marginEnd="@dimen/y11"
+        android:src="@drawable/album_icon_iphone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_album_icon_720_camera"
+        app:layout_constraintEnd_toStartOf="@+id/iv_album_icon_720_camera" />
 
-        <ImageView
-            android:id="@+id/iv_album_icon_720_iphone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/y9"
-            android:layout_marginEnd="@dimen/y11"
-            android:src="@drawable/album_icon_iphone" />
+    <ImageView
+        android:id="@+id/iv_album_icon_720_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/y9"
+        android:layout_marginEnd="@dimen/y6"
+        android:src="@drawable/album_icon_720camera"
+        app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
+        app:layout_constraintEnd_toEndOf="@+id/img_album_content" />
 
-        <ImageView
-            android:id="@+id/iv_album_icon_720_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/y9"
-            android:layout_marginEnd="@dimen/y6"
-            android:src="@drawable/album_icon_720camera" />
+    <android.support.constraint.Guideline
+        android:id="@+id/bottom_vertical_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/y15" />
 
-    </LinearLayout>
-
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

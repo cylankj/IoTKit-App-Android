@@ -246,7 +246,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     try {
                         //刷新就对了
                         RxBus.getCacheInstance().post(new InternalHelp());
-                        RxBus.getCacheInstance().post(new InternalHelp());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

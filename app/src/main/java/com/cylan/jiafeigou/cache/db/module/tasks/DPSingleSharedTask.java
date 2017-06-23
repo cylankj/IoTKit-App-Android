@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -124,8 +123,8 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                     try {
                         ArrayList<JFGDPMsg> req = new ArrayList<>(1);
 
-                        JFGDPMsg msg511 = new JFGDPMsg(511, TimeUtils.wrapToLong(wonderItem.time));
-                        msg511.packValue = DpUtils.pack(TimeUtils.wrapToLong(entity.getVersion()));
+                        JFGDPMsg msg511 = new JFGDPMsg(511, wonderItem.time);
+                        msg511.packValue = DpUtils.pack(entity.getVersion());
                         req.add(msg511);
                         result = appCmd.robotSetDataByTime(entity.getUuid(), req);
                         AppLogger.d("正在执行分享操作步骤三:设置511 DP消息" + result);
