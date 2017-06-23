@@ -124,6 +124,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Switcher streamSwitcher;
     private int pid;
     private String cVersion;
+    private boolean isRSCam;
     /**
      * 设备的时区
      */
@@ -209,6 +210,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         this.cVersion = device.$(207, "");
+        isRSCam = JFGRules.isRS(device.pid);
         if (device == null) {
             AppLogger.e("device is null");
             return;
@@ -712,7 +714,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (isLand) {
             lp.removeRule(3);//remove below rules
             lp.addRule(2, R.id.v_guide);//set above v_guide
-            liveViewWithThumbnail.updateLayoutParameters(LayoutParams.MATCH_PARENT);
+            liveViewWithThumbnail.updateLayoutParameters(LayoutParams.MATCH_PARENT, getVideoFinalWidth());
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(INVISIBLE);
             layoutD.setBackgroundResource(android.R.color.transparent);
             layoutE.setBackgroundResource(R.color.color_4C000000);
@@ -739,6 +741,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         findViewById(R.id.layout_e).setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
+    }
+
+    private int getVideoFinalWidth() {
+        if (MiscUtils.isLand()) {
+            //横屏需要区分睿视
+            if (isRSCam) {
+                //保持4:3
+                Log.d("isRSCam", "isRSCam....");
+                return (int) (Resources.getSystem().getDisplayMetrics().heightPixels * (float) 4 / 3);
+            }
+            return ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            //竖屏 match
+            return ViewGroup.LayoutParams.MATCH_PARENT;
+        }
     }
 
     private void resetAndPrepareNextAnimation(boolean land) {
@@ -852,7 +869,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * @param ratio
      */
     private void updateLiveViewRectHeight(float ratio) {
-        liveViewWithThumbnail.updateLayoutParameters((int) (Resources.getSystem().getDisplayMetrics().widthPixels * ratio));
+        liveViewWithThumbnail.updateLayoutParameters((int) (Resources.getSystem().getDisplayMetrics().widthPixels * ratio),
+                getVideoFinalWidth());
     }
 
     @Override

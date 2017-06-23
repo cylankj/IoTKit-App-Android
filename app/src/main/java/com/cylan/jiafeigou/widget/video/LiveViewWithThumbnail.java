@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private TextView tvLiveFlow;//流量
     private Subscription subscription;
     private boolean isNormalView;
-    private Glide glide;
+//    private Glide glide;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -154,12 +155,13 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
         this.videoView = iVideoView;
         ((View) videoView).setId("videoView".hashCode());
-        ViewGroup.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.gravity = Gravity.CENTER_HORIZONTAL;
         addView((View) videoView, 0, lp);
     }
 
     @Override
-    public void updateLayoutParameters(int height) {
+    public void updateLayoutParameters(int height, int width) {
         if (videoView == null) {
             return;
         }
@@ -169,6 +171,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         setLayoutParams(parentLp);
         ViewGroup.LayoutParams lp = ((View) videoView).getLayoutParams();
         lp.height = height;
+        lp.width = width;
         ((View) videoView).setLayoutParams(lp);
     }
 

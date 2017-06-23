@@ -267,7 +267,7 @@ public class AdsStrategy {
     }
 
     private static final int[] wArray = new int[]{480, 768, 1080, 1440};
-    private static final int[] hArray = new int[]{800, 1280, 1920, 2500};
+    private static final int[] hArray = new int[]{800, 1280, 1920, 2550};
 
     private static String getResolutionForAds() {
         int w = Resources.getSystem().getDisplayMetrics().widthPixels;

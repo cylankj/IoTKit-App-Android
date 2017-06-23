@@ -175,7 +175,7 @@ public class JFGRules {
 
     public static boolean isRS(int pid) {
         final String value = BaseApplication.getAppComponent().getProductProperty().property(pid, "value");
-        return !TextUtils.isEmpty(value) && value.contains("rs_");
+        return !TextUtils.isEmpty(value) && value.contains("RS_");
     }
 
     /**
