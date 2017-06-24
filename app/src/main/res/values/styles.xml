@@ -501,4 +501,13 @@
     <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="colorAccent">@color/color_4b9fd5</item>
     </style>
+
+    <style name="CustomAlertDialogTheme" parent="@style/Theme.AppCompat.Dialog.Alert">
+        <item name="android:buttonBarButtonStyle">@style/CustomAlertStyle</item>
+
+    </style>
+
+    <style name="CustomAlertStyle">
+
+    </style>
 </resources>
