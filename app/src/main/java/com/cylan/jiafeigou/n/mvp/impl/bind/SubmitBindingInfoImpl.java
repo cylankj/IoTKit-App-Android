@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SimulatePercent;
@@ -200,9 +201,18 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         //303,501
                         AppLogger.d("设置睿视属性");
                         try {
+                            ArrayList<JFGDPMsg> list = new ArrayList<>();
+                            JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
+                            _303.packValue = DpUtils.pack(2);
+                            JFGDPMsg _505 = new JFGDPMsg(501, System.currentTimeMillis());
+                            _505.packValue = DpUtils.pack(false);
+                            list.add(_303);
+                            list.add(_303);
+                            list.add(_505);
+                            BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
                             BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(2), 303);
                             BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(false), 501);
-                        } catch (IllegalAccessException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
