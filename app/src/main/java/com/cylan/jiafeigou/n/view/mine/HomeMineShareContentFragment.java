@@ -47,6 +47,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private LinearLayoutManager manager;
     private ObservableBoolean editMode = new ObservableBoolean(false);
     private ObservableInt selectNumber = new ObservableInt(0);
+    private ObservableBoolean empty = new ObservableBoolean(false);
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {
@@ -75,6 +76,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         shareContentBinding.setEditMode(editMode);
         shareContentBinding.setSelectNumber(selectNumber);
         shareContentBinding.sharedRefresh.setOnRefreshListener(this);
+
         manager = new LinearLayoutManager(getContext());
         adapter = new ItemAdapter<>();
         FastAdapter<ShareContentItem> fastAdapter = new FastAdapter<>();
@@ -85,7 +87,9 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         fastAdapter.withSelectWithItemUpdate(true);
         fastAdapter.withItemEvent(new ShareContentItemHook());
         fastAdapter.withSelectionListener((item, selected) -> selectNumber.set(adapter.getFastAdapter().getSelectedItems().size()));
+
         adapter.wrap(fastAdapter);
+
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         shareContentBinding.sharedContentList.setLayoutManager(manager);
         shareContentBinding.sharedContentList.setAdapter(adapter);

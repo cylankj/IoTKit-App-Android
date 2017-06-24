@@ -168,9 +168,9 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         }
         ShareAction shareAction = new ShareAction(getActivity());
         shareAction.withMedia(umWeb);
-        if (listener != null) {
-            shareAction.setCallback(listener);
-        }
+//        if (listener != null) {
+        shareAction.setCallback(this);
+//        }
         switch (shareType) {
             case SHARE_PLATFORM_TYPE_TIME_LINE://
                 shareAction.setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE);
@@ -235,6 +235,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     public void onResult(SHARE_MEDIA share_media) {
         AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
         ToastUtil.showPositiveToast(getActivity().getString(R.string.Tap3_ShareDevice_SuccessTips));
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
     @Override

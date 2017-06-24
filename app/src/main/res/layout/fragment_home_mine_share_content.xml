@@ -21,6 +21,10 @@
         <variable
             name="selectNumber"
             type="android.databinding.ObservableInt" />
+
+        <variable
+            name="isEmpty"
+            type="android.databinding.ObservableBoolean" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -47,6 +51,31 @@
             app:rightAction="@{rightAction}"
             app:toolbarRightTitle="@{editMode?@string/CANCEL:@string/EDIT_THEME}" />
 
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y180"
+            android:orientation="vertical"
+            android:visibility="@{isEmpty?View.VISIBLE:View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <ImageView
+                android:id="@+id/empty_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pic_no_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Tap3_ShareDevice_NoShare" />
+
+        </LinearLayout>
+
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/sharedRefresh"
             android:layout_width="0dp"
@@ -55,6 +84,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/sharedContentList"

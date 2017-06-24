@@ -37,6 +37,7 @@
             android:id="@+id/ll_relative_and_friend_none"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:orientation="vertical">
 
 

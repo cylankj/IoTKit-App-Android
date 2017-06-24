@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineDevicesShareManagerPresenterImp;
@@ -107,7 +108,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public String getUuid() {
-        return null;
+        return getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
     }
 
     @OnClick(R.id.tv_toolbar_icon)

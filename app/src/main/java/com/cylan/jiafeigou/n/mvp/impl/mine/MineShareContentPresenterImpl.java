@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -78,6 +79,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                     }
                     return contentItems;
                 })
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     mView.onShareContentResponse(result, refresh);
