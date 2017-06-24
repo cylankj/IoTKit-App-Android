@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Hareket seçildiğinde çalınacak olan Sesli alarmı seçiniz</string>
   <string name="Added_successfully">Başarıyla bind</string>
   <string name="Alarm_WeChat">WeChet üzerinden alarm</string>
+  <string name="Alarm_WeChat_NoBindTips">Bu işlevi kullanmak, önce e&#8211;postayı bağlamak zorundadır.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Canlı ekran görüntüleri</string>
   <string name="Tap2_Timelapse_title">Hızlandırılmış fotoğrafçılık</string>
   <string name="Tap2_TitleName">Günlük Mükemmel</string>
+  <string name="Tap2_TitleName_Sentence">Günlük Mükemmel</string>
   <string name="Tap2_share_sharevideo">Seninle bir video paylaştım</string>
   <string name="Tap2_share_sharevideo_tips">Clever Dog Akıllı Kamera ile hızlandırılmış bir fotoğraf yaptım, kontrol et!</string>
   <string name="Tap2_share_unabletoshare">Kurulu Wechat yok, paylaşım yapılamıyor</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Cihaz yok.</string>
   <string name="Tap3_ShareDevice_NoShare">paylaşıldı değil</string>
   <string name="Tap3_ShareDevice_NoneFriends">Hiçbiri</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Hiçbiri</string>
   <string name="Tap3_ShareDevice_NotYourself">Kendiniz için paylaşmayınız</string>
   <string name="Tap3_ShareDevice_Shared">Paylaşılan</string>
   <string name="Tap3_ShareDevice_SharedContents">Paylaşılan içerik</string>

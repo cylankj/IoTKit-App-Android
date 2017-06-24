@@ -70,7 +70,6 @@ import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -277,11 +276,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         if (historyDataProvider == null) {
             historyDataProvider = DataExt.getInstance();
         }
-        //全景设备,会有多次回调.
-//        if (historyDataProvider.getDataCount() == 0 || !containsSubscription("hisFlat")) {
         Subscription subscription = assembleTheDay()
                 .subscribeOn(Schedulers.io())
-                .delay(2, TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onHistoryDataRsp(historyDataProvider);
@@ -342,9 +339,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .flatMap(rsp -> makeTimeDelayForList(rsp.historyFiles)))
-                .doOnUnsubscribe(() -> {
-                    removeSubscription("getHistoryList");
-                })
+                .doOnUnsubscribe(() -> removeSubscription("getHistoryList"))
                 .subscribe(ret -> {
                 }, AppLogger::e);
         removeSubscription("getHistoryList");
@@ -359,16 +354,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private Observable<Boolean> makeTimeDelayForList(ArrayList<HistoryFile> rsp) {
         return Observable.just(rsp)
                 .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<ArrayList<HistoryFile>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(ArrayList<HistoryFile> list) {
-                        assembleTheDay(list);
-                        //更新日历
-                        ArrayList<Long> dateList = BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
-//                        mView.onHistoryDateListUpdate(dateList);
-                        AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-                        return Observable.just(true);
-                    }
+                .flatMap(list -> {
+                    assembleTheDay(list);
+                    //更新日历
+                    ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
+                    AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
+                    return Observable.just(true);
                 });
     }
 

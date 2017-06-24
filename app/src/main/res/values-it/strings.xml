@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Scegli l\'avviso audio da riprodurre quando viene rilevato un movimento</string>
   <string name="Added_successfully">Aggiunto con successo</string>
   <string name="Alarm_WeChat">Ricevi il messaggio di allarme con Wechat</string>
+  <string name="Alarm_WeChat_NoBindTips">Utilizzando questa funzione deve binding e&#8211;mail prima.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Screenshot della diretta</string>
   <string name="Tap2_Timelapse_title">Timelapse</string>
   <string name="Tap2_TitleName">Splendida della giornata</string>
+  <string name="Tap2_TitleName_Sentence">Splendida della giornata</string>
   <string name="Tap2_share_sharevideo">Condividere un video con te</string>
   <string name="Tap2_share_sharevideo_tips">Ho fatto un video Timelapse con la videocamera intelligente, controllare</string>
   <string name="Tap2_share_unabletoshare">No wechat installato, in grado di condividere.</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Dispositivo non trovato.</string>
   <string name="Tap3_ShareDevice_NoShare">Non è stato condiviso</string>
   <string name="Tap3_ShareDevice_NoneFriends">Nessuna</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Nessuna</string>
   <string name="Tap3_ShareDevice_NotYourself">Non condividere</string>
   <string name="Tap3_ShareDevice_Shared">Condivisa</string>
   <string name="Tap3_ShareDevice_SharedContents">contenuti condivisi</string>

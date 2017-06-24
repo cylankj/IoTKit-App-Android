@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">侦测到异常时，设备将播放声音</string>
   <string name="Added_successfully">绑定成功</string>
   <string name="Alarm_WeChat">微信接收报警消息</string>
+  <string name="Alarm_WeChat_NoBindTips">使用此功能需要绑定手机/邮箱</string>
   <string name="Apr">4月</string>
   <string name="Aug">8月</string>
   <string name="BACK">返回</string>
@@ -407,7 +408,7 @@
   <string name="RECORD_INFO_0">移动侦测到异常时启用录像，待画面恢复正常时停止</string>
   <string name="RECORD_INFO_1">24小时启用录像</string>
   <string name="RECORD_INFO_2">任何时候都不启用录像</string>
-  <string name="RECORD_MODE">移动侦测报警录像</string>
+  <string name="RECORD_MODE">侦测报警录像</string>
   <string name="RECORD_MODE_1">全天</string>
   <string name="RECORD_MODE_2">从不</string>
   <string name="RECORD_MODE_CHANGE">当前位置为回家模式，移动侦测已关闭，如需开启，请修改模式</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">直播截图</string>
   <string name="Tap2_Timelapse_title">延时摄影</string>
   <string name="Tap2_TitleName">每日精彩</string>
+  <string name="Tap2_TitleName_Sentence">每日精彩</string>
   <string name="Tap2_share_sharevideo">分享了一段影片给你</string>
   <string name="Tap2_share_sharevideo_tips">我用看家王智能摄像机拍摄了一段延时摄影，快来看看吧</string>
   <string name="Tap2_share_unabletoshare">手机没有安装微信，无法分享</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">还没有设备哦</string>
   <string name="Tap3_ShareDevice_NoShare">暂未分享</string>
   <string name="Tap3_ShareDevice_NoneFriends">暂未添加亲友</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">暂无可分享亲友</string>
   <string name="Tap3_ShareDevice_NotYourself">无法分享设备给自己</string>
   <string name="Tap3_ShareDevice_Shared">已分享</string>
   <string name="Tap3_ShareDevice_SharedContents">已分享内容</string>

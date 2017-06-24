@@ -50,4 +50,27 @@ public class MiscUtilsTest {
         InetAddress ipv6Address2 = InetAddress.getByName("www.neu6.edu.cn");
         System.out.println("ipv6Address2:" + ipv6Address2.getHostAddress());
     }
+
+    @Test
+    public void testHAN() {
+        System.out.println(containsHanScript("xxx已下架xxx"));
+        for (int i = Character.MIN_VALUE; i <= Character.MAX_VALUE; ++i) {
+            System.out.println(i + "    " + (char) i);
+        }
+    }
+
+    public static boolean containsHanScript(String s) {
+        for (int i = 0; i < s.length(); ) {
+            int codepoint = s.codePointAt(i);
+            i += Character.charCount(codepoint);
+//            if (Character.UnicodeScript.of(codepoint) == Character.UnicodeScript.HAN) {
+//                return true;
+//            }//
+            if (Character.isIdeographic(codepoint)) {
+                return true;
+            }
+
+        }
+        return false;
+    }
 }

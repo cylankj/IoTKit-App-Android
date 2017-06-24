@@ -299,7 +299,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
                 @Override
                 public void onProgress(long downloadByte, long totalByte) {
                     writeHelper++;
-                    if (writeHelper % 20 == 0)
+                    if (writeHelper % 100 == 0)
                         AppLogger.d("下载进度?" + (float) downloadByte / totalByte);
                 }
 

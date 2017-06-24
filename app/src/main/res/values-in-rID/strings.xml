@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Pilih sebuah sinyal Audio untuk diputar ketika sensor gerakan terdeteksi</string>
   <string name="Added_successfully">Bind berhasil</string>
   <string name="Alarm_WeChat">Alarm via WeChet</string>
+  <string name="Alarm_WeChat_NoBindTips">Menggunakan fungsi ini perlu untuk mengikat email</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -795,7 +796,8 @@
   <string name="Tap2_Timelapse_fail">File video tidak dapat dihasilkan untuk pemutusan ketika fotografi selang waktu</string>
   <string name="Tap2_Timelapse_screenshot">Tangkap layar Live</string>
   <string name="Tap2_Timelapse_title">Fotografi selang waktu</string>
-  <string name="Tap2_TitleName">Enjoy Everyday</string>
+  <string name="Tap2_TitleName">Daily Great</string>
+  <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
   <string name="Tap2_share_sharevideo">Saya share video ke kamu</string>
   <string name="Tap2_share_sharevideo_tips">Saya sudah membuat fotografi selang waktu dengan Cleverdog Smart Camera, Lihat!</string>
   <string name="Tap2_share_unabletoshare">Tidak ada Wechat terpasang , tidak bisa bagikan</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Belum ada perangkat</string>
   <string name="Tap3_ShareDevice_NoShare">Belum membagikan</string>
   <string name="Tap3_ShareDevice_NoneFriends">None</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">None</string>
   <string name="Tap3_ShareDevice_NotYourself">Tidak membagi untuk anda sendiri</string>
   <string name="Tap3_ShareDevice_Shared">Shared</string>
   <string name="Tap3_ShareDevice_SharedContents">Dibagikan isi</string>

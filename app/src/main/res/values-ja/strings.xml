@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">異常を検出した場合、サウンドで知らせる</string>
   <string name="Added_successfully">バインドうまく</string>
   <string name="Alarm_WeChat">警報を微信で受信</string>
+  <string name="Alarm_WeChat_NoBindTips">この関数を使用すると、電子メールを最初にバインドする必要があります。</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">戻す</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">生放送の画像切り取り</string>
   <string name="Tap2_Timelapse_title">遅延撮影</string>
   <string name="Tap2_TitleName">毎日の見どころ</string>
+  <string name="Tap2_TitleName_Sentence">毎日の見どころ</string>
   <string name="Tap2_share_sharevideo">一つのビデオを共有していただきました。</string>
   <string name="Tap2_share_sharevideo_tips">見家王を使ってビデオを撮りました。さあ、見てみませんか。</string>
   <string name="Tap2_share_unabletoshare">携帯端末でWeChatアプリをインストールされてませんので、共有できません。</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">デバイスは連動されていません</string>
   <string name="Tap3_ShareDevice_NoShare">共有されていません</string>
   <string name="Tap3_ShareDevice_NoneFriends">なし</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">なし</string>
   <string name="Tap3_ShareDevice_NotYourself">自分にシェアできません</string>
   <string name="Tap3_ShareDevice_Shared">シェアード</string>
   <string name="Tap3_ShareDevice_SharedContents">共有コンテンツ</string>

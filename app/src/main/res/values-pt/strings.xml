@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Ao detectar anormalidade, o dispositivo irá soar</string>
   <string name="Added_successfully">Bind com sucesso</string>
   <string name="Alarm_WeChat">O Wechat pode receber a notícia de alarme.</string>
+  <string name="Alarm_WeChat_NoBindTips">Usando esta função precisa ligar o email primeiro.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Captura de tela ao vivo</string>
   <string name="Tap2_Timelapse_title">Fotografia em time&#8211;lapse</string>
   <string name="Tap2_TitleName">Show Diário</string>
+  <string name="Tap2_TitleName_Sentence">Show Diário</string>
   <string name="Tap2_share_sharevideo">Eu compartilhei um vídeo com você</string>
   <string name="Tap2_share_sharevideo_tips">Fiz umas fotos em time&#8211;lapse usando a câmera Clever Dog. Dá uma olhada!</string>
   <string name="Tap2_share_unabletoshare">WeChat não instalado. Impossível compartilhar</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Nenhum dispositivo ainda</string>
   <string name="Tap3_ShareDevice_NoShare">Not sido compartilhadas</string>
   <string name="Tap3_ShareDevice_NoneFriends">Nenhum</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Nenhum</string>
   <string name="Tap3_ShareDevice_NotYourself">Impossível compartilhar consigo próprio</string>
   <string name="Tap3_ShareDevice_Shared">Compartilhado</string>
   <string name="Tap3_ShareDevice_SharedContents">Conteúdo compartilhados</string>

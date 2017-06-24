@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Choisir l\'alerte sonore à jouer lorsqu\'un mouvement est détecté</string>
   <string name="Added_successfully">Liez réussi</string>
   <string name="Alarm_WeChat">Wechat va recevoir le message d\'avertissement</string>
+  <string name="Alarm_WeChat_NoBindTips">Cette fonction doit lier email en premier.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Capture d\'écran en direct</string>
   <string name="Tap2_Timelapse_title">Filmer en retard</string>
   <string name="Tap2_TitleName">Merveilleux de la journée</string>
+  <string name="Tap2_TitleName_Sentence">Merveilleux de la journée</string>
   <string name="Tap2_share_sharevideo">Je partageais une vidéo avec vous</string>
   <string name="Tap2_share_sharevideo_tips">Je me suis fait un time&#8211;lapse photographie de Clever Dog Caméra intelligente, check it out!</string>
   <string name="Tap2_share_unabletoshare">Non WeChat installé, incapable de partager.</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Il n\'y a pas encore le dispositif</string>
   <string name="Tap3_ShareDevice_NoShare">Non être partagée</string>
   <string name="Tap3_ShareDevice_NoneFriends">Personne</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Personne</string>
   <string name="Tap3_ShareDevice_NotYourself">Vous ne pouvez pas partager avec vous&#8211;même</string>
   <string name="Tap3_ShareDevice_Shared">Partagé</string>
   <string name="Tap3_ShareDevice_SharedContents">Contenu partagés</string>

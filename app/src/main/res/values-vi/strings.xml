@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Chọn Báo âm thanh để thực hiện khi phát hiện chuyển động</string>
   <string name="Added_successfully">Hãy cột thành công</string>
   <string name="Alarm_WeChat">Báo thức qua WeChet</string>
+  <string name="Alarm_WeChat_NoBindTips">Sử dụng chức năng này cần để ràng buộc email đầu tiên.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -795,7 +796,8 @@
   <string name="Tap2_Timelapse_fail">Video time&#8211;lapse không thể tạo được do mất kết nối</string>
   <string name="Tap2_Timelapse_screenshot">Chụp trực tuyến</string>
   <string name="Tap2_Timelapse_title">Ảnh Time&#8211;lapse</string>
-  <string name="Tap2_TitleName">Enjoy Everyday</string>
+  <string name="Tap2_TitleName">Daily Great</string>
+  <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
   <string name="Tap2_share_sharevideo">Tôi đã chia sẻ một video với bạn</string>
   <string name="Tap2_share_sharevideo_tips">Tôi đã tạo 1 ảnh time&#8211;lapse từ Cleverdog, hãy xem nào!</string>
   <string name="Tap2_share_unabletoshare">Chưa cài Wechat, không thể chia sẻ</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Không có thiết bị</string>
   <string name="Tap3_ShareDevice_NoShare">Không được chia sẻ</string>
   <string name="Tap3_ShareDevice_NoneFriends">không ai</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">không ai</string>
   <string name="Tap3_ShareDevice_NotYourself">Không chia sẻ cho bạn</string>
   <string name="Tap3_ShareDevice_Shared">Thuê chung</string>
   <string name="Tap3_ShareDevice_SharedContents">Nội dung chia sẻ</string>
