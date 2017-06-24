@@ -172,6 +172,7 @@ public class SimpleBindFlow extends AFullBind {
                         JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
                                 udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
                         try {
+                            final boolean isRs = false;
                             for (int i = 0; i < 2; i++) {
                                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                         UdpConstant.PORT, code.toBytes());
@@ -257,6 +258,7 @@ public class SimpleBindFlow extends AFullBind {
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
         Observable.just(1)
                 .subscribeOn(Schedulers.newThread())
+                .delay(500, TimeUnit.MILLISECONDS)
                 .filter(ret -> devicePortrait != null)
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);

@@ -7,6 +7,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -177,6 +178,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     bindResult = BIND_SUC;
                     endCounting();
                     sendTimeZone(uuid);
+                    finalSetSome();
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mView.bindState(bindResult = BIND_TIME_OUT);
@@ -184,6 +186,27 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     }
                     AppLogger.d("擦,出错了:" + e.getMessage());
                 });
+    }
+
+    /**
+     * 绑定成功需要设置一些信息
+     */
+    private void finalSetSome() {
+        Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s -> {
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                    if (JFGRules.isRS(device.pid)) {
+                        //303,501
+                        AppLogger.d("设置睿视属性");
+                        try {
+                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(2), 303);
+                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(false), 501);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, AppLogger::e);
     }
 
     @Override
