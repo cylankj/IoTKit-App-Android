@@ -175,6 +175,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         adapter = new MineShareDeviceAdapter(getView().getContext(), list, null);
         recycleShareDeviceList.setAdapter(adapter);
         initAdaListener();
+        if (list == null || list.size() == 0) {
+            showNoDeviceView();
+        } else {
+            llNoDevice.setVisibility(View.GONE);
+        }
     }
 
     /**
