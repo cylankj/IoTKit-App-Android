@@ -99,7 +99,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         }
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+        boolean isRs = JFGRules.isRS(device.pid);
+        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);

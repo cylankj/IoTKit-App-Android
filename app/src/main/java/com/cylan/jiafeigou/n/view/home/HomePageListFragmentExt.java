@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -52,7 +53,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
 import com.cylan.jiafeigou.widget.ImageViewTip;
-import com.cylan.jiafeigou.widget.WrapContentLinearLayoutManager;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
@@ -197,7 +197,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void initListAdapter() {
-        rVDevicesList.setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
+        rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                    rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
+                }
+            }
+        });
         mItemAdapter = new ItemAdapter<>();
         FastAdapter<HomeItem> itemFastAdapter = new FastAdapter<>();
         itemFastAdapter.withOnClickListener(this);

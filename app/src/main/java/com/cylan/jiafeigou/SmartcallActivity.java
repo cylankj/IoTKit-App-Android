@@ -90,11 +90,12 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             finish();
         }
         if (basePresenter != null) {
-            basePresenter.autoLogin();
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
+            if (showSplash)//退出登录,不需要再去执行登录.
+                basePresenter.autoLogin();
             basePresenter.selectNext(showSplash);
         }
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+//        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     @Override
@@ -256,7 +257,8 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
         //检查广告的有效性
-        if (basePresenter != null && showOnceInCircle) {
+        boolean fromLogout = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
+        if (basePresenter != null && showOnceInCircle && !fromLogout) {
             showOnceInCircle = false;
             basePresenter.showAds()
                     .subscribeOn(AndroidSchedulers.mainThread())

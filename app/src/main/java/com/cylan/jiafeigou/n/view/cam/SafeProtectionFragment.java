@@ -124,7 +124,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             getActivity().getSupportFragmentManager().popBackStack();
         });
         updateDetails();
-        boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        boolean isRs = JFGRules.isRS(device.pid);
+        boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, isRs ? false : false);
         showDetail(f);
         //移动侦测
         swMotionDetection.setChecked(f);
@@ -285,7 +286,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             }
             break;
             case R.id.fLayout_protection_end_time: {
-                TimePickDialogFragment timePickDialogFragment=TimePickDialogFragment.newInstance(getBundle(getString(R.string.TO)));
+                TimePickDialogFragment timePickDialogFragment = TimePickDialogFragment.newInstance(getBundle(getString(R.string.TO)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
