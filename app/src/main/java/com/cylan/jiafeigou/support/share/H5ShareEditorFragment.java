@@ -60,6 +60,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     private String filePath;
     private String thumbPath;
     private UMShareListener listener;
+    private boolean success = false;
 
     public static H5ShareEditorFragment newInstance(String uuid, int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem, UMShareListener listener) {
         H5ShareEditorFragment fragment = new H5ShareEditorFragment();
@@ -72,6 +73,14 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         fragment.setArguments(bundle);
         fragment.listener = listener;
         return fragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (success) {
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
     }
 
     @Override
@@ -234,8 +243,9 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     @Override
     public void onResult(SHARE_MEDIA share_media) {
         AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
+        success = true;
         ToastUtil.showPositiveToast(getActivity().getString(R.string.Tap3_ShareDevice_SuccessTips));
-        getActivity().getSupportFragmentManager().popBackStack();
+
     }
 
     @Override
