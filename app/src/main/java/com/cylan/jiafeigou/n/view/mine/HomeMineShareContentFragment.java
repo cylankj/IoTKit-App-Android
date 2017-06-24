@@ -75,8 +75,8 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         shareContentBinding.setRightAction(this::onEditShareContent);
         shareContentBinding.setEditMode(editMode);
         shareContentBinding.setSelectNumber(selectNumber);
+        shareContentBinding.setIsEmpty(empty);
         shareContentBinding.sharedRefresh.setOnRefreshListener(this);
-
         manager = new LinearLayoutManager(getContext());
         adapter = new ItemAdapter<>();
         FastAdapter<ShareContentItem> fastAdapter = new FastAdapter<>();
@@ -195,7 +195,8 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
             adapter.add(shareContentItems);
         }
         shareContentBinding.sharedRefresh.setRefreshing(false);
-        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
+        empty.set(adapter.getItemCount() == 0);
+//        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
     }
 
     @Override
@@ -207,7 +208,9 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
             adapter.getFastAdapter().deselect();
             ToastUtil.showNegativeToast(getString(R.string.Tips_DeleteFail));
         }
-        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
+        empty.set(adapter.getItemCount() == 0);
+//        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
+
     }
 
     @Override

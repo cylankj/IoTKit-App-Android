@@ -235,7 +235,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     public void onResult(SHARE_MEDIA share_media) {
         AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
         ToastUtil.showPositiveToast(getActivity().getString(R.string.Tap3_ShareDevice_SuccessTips));
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override
