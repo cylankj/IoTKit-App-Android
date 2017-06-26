@@ -56,8 +56,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     private Subscription getSDCardStateMonitor() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(msg -> TextUtils.equals(msg.uuid, uuid))
-                .observeOn(Schedulers.io())
-                .map(deviceSyncRsp -> {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deviceSyncRsp -> {
                     boolean hasSDCard = false;
                     AppLogger.e("收到设备同步消息:" + new Gson().toJson(deviceSyncRsp));
                     if (deviceSyncRsp != null && deviceSyncRsp.dpList != null) {
@@ -84,23 +84,23 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                                     status.total = statusInt.total;
                                 }
                                 hasSDCard = status != null && status.hasSdcard && status.err == 0;
+                                if (!hasSDCard) {
+                                    mView.showSdPopDialog();
+                                }
                                 break;
                             } else if (msg.id == 222) {
                                 DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
                                 hasSDCard = summary != null && summary.errCode == 0 && summary.hasSdcard;
+                                if (!hasSDCard) {
+                                    mView.showSdPopDialog();
+                                }
                                 break;
                             }
                         }
                     }
-                    return hasSDCard ? 0 : deviceSyncRsp == null ? 2 : 1;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.just(null))
-                .subscribe(code -> {
-                    if (code == 1) {
-                        mView.showSdPopDialog();
-                    }
-                }, e -> AppLogger.e(e.getMessage()));
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     /**
