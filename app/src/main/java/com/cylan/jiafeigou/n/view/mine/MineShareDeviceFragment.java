@@ -175,6 +175,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         adapter = new MineShareDeviceAdapter(getView().getContext(), list, null);
         recycleShareDeviceList.setAdapter(adapter);
         initAdaListener();
+        if (list == null || list.size() == 0) {
+            showNoDeviceView();
+        } else {
+            llNoDevice.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -206,6 +211,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         Bundle bundle = new Bundle();
         bundle.putParcelable("devicebean", bean);
         bundle.putParcelableArrayList("friendlist", presenter.getJFGInfo(position));
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, bean.uuid);
         mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance(bundle);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

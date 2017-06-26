@@ -1,6 +1,10 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Holo.Light" />
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+        <item name="colorAccent">@color/color_4b9fd5</item>
+        <item name="colorControlNormal">@color/color_4b9fd5</item>
+        <item name="colorControlActivated">@color/color_4b9fd5</item>
+    </style>
 
     <style name="CamActivityTheme" parent="AppTheme" />
 </resources>

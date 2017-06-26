@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -45,6 +44,13 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     @Override
     protected Subscription[] register() {
         return new Subscription[]{cancelShareCallBack()};
+    }
+
+
+    @Override
+    public void start() {
+        super.start();
+        getHasShareList(uuid);
     }
 
     /**
@@ -70,14 +76,11 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     @Override
     public Subscription getHasShareListCallback() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
-                .flatMap(new Func1<RxEvent.GetShareListRsp, Observable<ArrayList<FriendBean>>>() {
-                    @Override
-                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetShareListRsp getShareListCallBack) {
-                        ArrayList<JFGShareListInfo> list =
-                                BaseApplication.getAppComponent().getSourceManager().getShareList();
-                        if (ListUtils.isEmpty(list)) return Observable.just(null);
-                        return Observable.just(convertData(list));
-                    }
+                .flatMap(getShareListCallBack -> {
+                    ArrayList<JFGShareListInfo> list =
+                            BaseApplication.getAppComponent().getSourceManager().getShareList();
+                    if (ListUtils.isEmpty(list)) return Observable.just(null);
+                    return Observable.just(convertData(list));
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {

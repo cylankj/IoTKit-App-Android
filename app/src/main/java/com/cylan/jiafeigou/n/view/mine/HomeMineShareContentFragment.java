@@ -47,6 +47,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private LinearLayoutManager manager;
     private ObservableBoolean editMode = new ObservableBoolean(false);
     private ObservableInt selectNumber = new ObservableInt(0);
+    private ObservableBoolean empty = new ObservableBoolean(false);
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {
@@ -74,6 +75,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         shareContentBinding.setRightAction(this::onEditShareContent);
         shareContentBinding.setEditMode(editMode);
         shareContentBinding.setSelectNumber(selectNumber);
+        shareContentBinding.setIsEmpty(empty);
         shareContentBinding.sharedRefresh.setOnRefreshListener(this);
         manager = new LinearLayoutManager(getContext());
         adapter = new ItemAdapter<>();
@@ -85,7 +87,9 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         fastAdapter.withSelectWithItemUpdate(true);
         fastAdapter.withItemEvent(new ShareContentItemHook());
         fastAdapter.withSelectionListener((item, selected) -> selectNumber.set(adapter.getFastAdapter().getSelectedItems().size()));
+
         adapter.wrap(fastAdapter);
+
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         shareContentBinding.sharedContentList.setLayoutManager(manager);
         shareContentBinding.sharedContentList.setAdapter(adapter);
@@ -191,7 +195,8 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
             adapter.add(shareContentItems);
         }
         shareContentBinding.sharedRefresh.setRefreshing(false);
-        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
+        empty.set(adapter.getItemCount() == 0);
+//        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
     }
 
     @Override
@@ -203,7 +208,9 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
             adapter.getFastAdapter().deselect();
             ToastUtil.showNegativeToast(getString(R.string.Tips_DeleteFail));
         }
-        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
+        empty.set(adapter.getItemCount() == 0);
+//        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
+
     }
 
     @Override

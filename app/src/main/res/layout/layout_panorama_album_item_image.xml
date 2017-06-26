@@ -3,7 +3,7 @@
     android:id="@+id/lLayout_cam_msg_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/y15">
+    android:paddingEnd="@dimen/y15">
 
     <com.cylan.jiafeigou.widget.DividerView
         android:id="@+id/dv_time_line"
@@ -15,18 +15,22 @@
         app:dv_dashThickness="@dimen/y2"
         app:dv_orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/img_album_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioButton
         android:id="@+id/rb_item_check"
-        android:layout_width="@dimen/y16"
-        android:layout_height="@dimen/y16"
+        android:layout_width="@dimen/y21"
+        android:layout_height="@dimen/y21"
+        android:layout_marginEnd="@dimen/y15"
         android:background="@drawable/custom_rtbn_style1"
         android:button="@null"
         android:clickable="false"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
+        app:layout_constraintEnd_toStartOf="@id/img_album_content"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/img_album_content" />
 
 
@@ -58,18 +62,19 @@
         app:layout_constraintStart_toStartOf="@+id/img_album_content"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ImageView
         android:id="@+id/img_album_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/y4"
-        android:layout_marginStart="@dimen/y4"
+        android:layout_marginStart="@dimen/y35"
         android:scaleType="fitXY"
         android:src="@drawable/wonderful_pic_place_holder"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="w,1:3"
-        app:layout_constraintEnd_toStartOf="@+id/bottom_vertical_line"
-        app:layout_constraintStart_toEndOf="@+id/dv_time_line" />
+        app:layout_constraintDimensionRatio="h,3:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_album_download_progress"
@@ -116,11 +121,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
         app:layout_constraintEnd_toEndOf="@+id/img_album_content" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/bottom_vertical_line"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/y15" />
 
 </android.support.constraint.ConstraintLayout>

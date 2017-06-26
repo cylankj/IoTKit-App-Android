@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,6 +60,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
             holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
             holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.time * 1000L));
         }
+        ViewGroup container = holder.getView(R.id.lLayout_cam_msg_container);
+        int dimension = container.getResources().getDimensionPixelOffset(R.dimen.y15);
+        container.setPadding(isInEditMode ? dimension : 0, 0, isInEditMode ? 0 : dimension, 0);
         holder.setVisibility(R.id.dv_time_line, isInEditMode ? View.INVISIBLE : View.VISIBLE);
         holder.setChecked(R.id.rb_item_check, item.selected);
         holder.setVisibility(R.id.rb_item_check, isInEditMode ? View.VISIBLE : View.GONE);

@@ -12,6 +12,10 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorAccent">@color/color_4b9fd5</item>
+        <item name="colorControlNormal">@color/color_4b9fd5</item>
+        <item name="colorControlActivated">@color/color_4b9fd5</item>
+
     </style>
 
     <style name="ripple_background">

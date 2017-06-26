@@ -7,6 +7,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="isEmpty"
+            type="android.databinding.ObservableBoolean" />
+
+        <variable
             name="backAction"
             type="android.view.View.OnClickListener" />
 
@@ -21,6 +25,8 @@
         <variable
             name="selectNumber"
             type="android.databinding.ObservableInt" />
+
+
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -45,7 +51,34 @@
             app:ct_left_title_color="@color/color_white"
             app:ct_right_title_color="@color/color_white"
             app:rightAction="@{rightAction}"
+            app:rightEnable="@{isEmpty?false:true}"
             app:toolbarRightTitle="@{editMode?@string/CANCEL:@string/EDIT_THEME}" />
+
+
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y180"
+            android:orientation="vertical"
+            android:visibility="@{isEmpty?View.VISIBLE:View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <ImageView
+                android:id="@+id/empty_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pic_no_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Tap3_ShareDevice_NoShare" />
+
+        </LinearLayout>
+
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/sharedRefresh"
@@ -55,6 +88,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/sharedContentList"

@@ -155,6 +155,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
         rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
         initAdaListener();
+        llNoFriend.setVisibility(list != null && list.size() > 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override
