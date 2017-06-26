@@ -27,3 +27,4 @@
 /compiler/build/
 /compiler/build/classes/
 /gradle.properties
+/fastdex.properties
