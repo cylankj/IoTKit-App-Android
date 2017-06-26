@@ -203,6 +203,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
+                    AppLogger.e("IndexOutOfBoundsException");
                     rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
                 }
             }
