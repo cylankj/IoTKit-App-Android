@@ -63,5 +63,13 @@ public interface IData {
 
     HistoryFile getMinHistoryFile();
 
+    /**
+     * 凌晨时间戳
+     *
+     * @param startTime
+     * @return
+     */
+    HistoryFile getMinHistoryFileByStartTime(long startTime);
+
     public void clean();
 }

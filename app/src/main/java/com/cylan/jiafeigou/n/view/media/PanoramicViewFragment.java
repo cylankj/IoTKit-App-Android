@@ -144,7 +144,7 @@ public class PanoramicViewFragment extends IBaseFragment {
                 public boolean onSingleTap(float x, float y) {
                     if (callBack != null) {
                         callBack.callBack(null);
-                        callBack = null;
+//                        callBack = null;
                     }
                     return true;
                 }

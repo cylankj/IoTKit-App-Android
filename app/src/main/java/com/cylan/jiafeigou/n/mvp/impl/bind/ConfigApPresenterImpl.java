@@ -95,9 +95,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo(ssid, pwd, type);
                     }
-                }, throwable -> {
-                    AppLogger.e("err: " + throwable.getLocalizedMessage());
-                });
+                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         aFullBind.startPingFPing(shortCid);
         addSubscription(subscription, "startPingFPing");
     }

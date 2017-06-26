@@ -36,6 +36,8 @@ import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -192,6 +194,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         //从通知栏跳进来
         if (getActivity() != null && getActivity().getIntent() != null) {
             if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+                Intent intent = getActivity().getIntent();
+                if (intent != null) intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
                 startRequest(true);
             }
         }

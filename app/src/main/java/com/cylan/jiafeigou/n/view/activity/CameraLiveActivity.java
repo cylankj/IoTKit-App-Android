@@ -23,8 +23,6 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -70,8 +68,16 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             AppLogger.e("what the hell uuid is null");
             finishExt();
         }
-        initToolbar();
         initAdapter();
+        initToolbar();
+        Intent intent = getIntent();
+        boolean jumpToMessage = intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
+        if (jumpToMessage) {
+            //跳转到
+            if (vpCameraLive.getAdapter().getCount() > 1) {
+                vpCameraLive.setCurrentItem(1);
+            }
+        }
         JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
@@ -124,8 +130,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             AppLogger.e("what the hell uuid is null");
             finishExt();
         }
-        initToolbar();
         initAdapter();
+        initToolbar();
     }
 
     @Override
@@ -185,14 +191,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void initAdapter() {
-        Intent intent = getIntent();
-        boolean jumpToMessage = intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
         if (vpCameraLive.getAdapter() == null) {
             SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
             vpCameraLive.setAdapter(simpleAdapterPager);
         }
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
+            //消息页面,不需要拦截
+            if (vpCameraLive.getCurrentItem() == 1) return true;
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
             if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
                 Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
@@ -203,31 +209,15 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             } else
                 return true;
         });
-
-        if (jumpToMessage) {
-            //跳转到
-            RxBus.getCacheInstance().postSticky(RxEvent.JUST_JUMP.INSTANCE);
-            if (vpCameraLive.getAdapter().getCount() > 1) {
-                vpCameraLive.setCurrentItem(1);
-
-            }
-            try {
-                BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void initToolbar() {
-        customToolbar.post(() -> {
-            vIndicator = (PagerSlidingTabStrip) customToolbar.findViewById(R.id.v_indicator);
-            vIndicator.setViewPager(vpCameraLive);
-            vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
-            imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
-            updateRedHint();
-            customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> onNavBack());
-        });
+        vIndicator = (PagerSlidingTabStrip) customToolbar.findViewById(R.id.v_indicator);
+        vIndicator.setViewPager(vpCameraLive);
+        vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
+        imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
+        customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> onNavBack());
+        updateRedHint();
     }
 
 

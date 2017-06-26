@@ -35,7 +35,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.RandomUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -64,7 +63,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        for (JFGDevice device : jfgDevices) {
 //            if (device.uuid.contains("46267")) {
 //                device.alias = "hunt";
-//                device.pid = 1092;
+//                device.pid = 38;
 //            }
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));

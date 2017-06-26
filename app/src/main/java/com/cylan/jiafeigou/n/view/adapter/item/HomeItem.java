@@ -247,6 +247,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         //消息数,狗日的门铃的分享设备需要显示.
         if (JFGRules.isPan720(mDevice.pid)) {
             holder.setText(R.id.tv_device_msg_count, getPanOnlineMode(mDevice.uuid));
+            ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(false);
         } else {
             String warnContent = getLastWarnContent(pair, mDevice.pid, uuid);
             holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);

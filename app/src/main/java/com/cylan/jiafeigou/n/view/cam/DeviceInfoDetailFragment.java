@@ -132,7 +132,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         //全景不显示固件升级 显示软件版本
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
         boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0);
-        rlHardwareUpdate.setVisibility(showFU ? View.VISIBLE : View.GONE);
+        //固件升级,分享设备不显示
+        rlHardwareUpdate.setVisibility(!JFGRules.isShareDevice(device) && showFU ? View.VISIBLE : View.GONE);
         tvDeviceIp.setVisibility(JFGRules.showIp(device.pid) ? View.VISIBLE : View.GONE);
     }
 
@@ -192,7 +193,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceCid.setTvSubTitle(uuid);
         String m = device.$(ID_202_MAC, "");
         if (TextUtils.isEmpty(m)) {
-            m= PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+            m = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
         }
         tvDeviceMac.setTvSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);

@@ -88,24 +88,26 @@ public class SimpleBindFlow extends AFullBind {
     private void sendPingFPing() {
         Observable.just(1)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(i -> {
+                .subscribe(ret -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.Ping().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.FPing().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.Ping().toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.FPing().toBytes());
+                        for (int i = 0; i < 2; i++) {
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    new JfgUdpMsg.Ping().toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    new JfgUdpMsg.FPing().toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                    UdpConstant.PORT,
+                                    new JfgUdpMsg.Ping().toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                    UdpConstant.PORT,
+                                    new JfgUdpMsg.FPing().toBytes());
+                        }
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
-                    AppLogger.i(BIND_TAG + i);
+                    AppLogger.i(BIND_TAG + ret);
                 }, AppLogger::e);
         AppLogger.i("sendPingFPing");
     }
@@ -140,64 +142,70 @@ public class SimpleBindFlow extends AFullBind {
      * @param udpDevicePortrait
      */
     public void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-        try {
-            AppLogger.i(BIND_TAG + udpDevicePortrait);
-            //
-            String serverAddress = OptionsImpl.getServer();
-            int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1));
-            serverAddress = serverAddress.split(":")[0];
-            if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
-                throw new IllegalArgumentException("server address is empty");
-            //设置语言
-            JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
-                    udpDevicePortrait.uuid,
-                    udpDevicePortrait.mac,
-                    JFGRules.getLanguageType(ContextUtils.getContext()));
+        Observable.just(1)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(ret -> {
+                    try {
+                        AppLogger.i(BIND_TAG + udpDevicePortrait);
+                        //
+                        String serverAddress = OptionsImpl.getServer();
+                        int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1));
+                        serverAddress = serverAddress.split(":")[0];
+                        if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
+                            throw new IllegalArgumentException("server address is empty");
+                        //设置语言
+                        JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
+                                udpDevicePortrait.uuid,
+                                udpDevicePortrait.mac,
+                                JFGRules.getLanguageType(ContextUtils.getContext()));
 
-//            JfgUdpMsg.SetTimeZone setTimeZone = new JfgUdpMsg.SetTimeZone(udpDevicePortrait.uuid,
-//                    udpDevicePortrait.mac, TimeZone.getDefault().getRawOffset() / 1000);
-            //设置服务器
-            JfgUdpMsg.SetServer setServer = new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
-                    udpDevicePortrait.mac,
-                    serverAddress,
-                    port,
-                    80);
-            //增加绑定随机数.
-            bindCode = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount() + System.currentTimeMillis();
-            bindCode = MD5Util.lowerCaseMD5(bindCode);//cast to md5
-            devicePortrait.bindCode = bindCode;
-            JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
-                    udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
-            try {
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                        UdpConstant.PORT, code.toBytes());
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                        UdpConstant.PORT, code.toBytes());
-            } catch (JfgException e) {
-                AppLogger.e("e: " + e.getLocalizedMessage());
-            }
-            AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
-            AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
-            AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
-            try {
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                        UdpConstant.PORT,
-                        setServer.toBytes());
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                        UdpConstant.PORT,
-                        setLanguage.toBytes());
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                        UdpConstant.PORT,
-                        setServer.toBytes());
-                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                        UdpConstant.PORT,
-                        setLanguage.toBytes());
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            AppLogger.e("err: " + e.getLocalizedMessage());
-        }
+                        //设置服务器
+                        JfgUdpMsg.SetServer setServer = new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
+                                udpDevicePortrait.mac,
+                                serverAddress,
+                                port,
+                                80);
+                        //增加绑定随机数.
+                        bindCode = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount() + System.currentTimeMillis();
+                        bindCode = MD5Util.lowerCaseMD5(bindCode);//cast to md5
+                        devicePortrait.bindCode = bindCode;
+                        JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
+                                udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
+                        try {
+                            for (int i = 0; i < 2; i++) {
+                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                        UdpConstant.PORT, code.toBytes());
+                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                        UdpConstant.PORT, code.toBytes());
+                            }
+                        } catch (JfgException e) {
+                            AppLogger.e("e: " + e.getLocalizedMessage());
+                        }
+                        AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
+                        AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
+                        AppLogger.i(BIND_TAG + "setCode: " + new Gson().toJson(code));
+                        try {
+                            for (int i = 0; i < 3; i++) {
+                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                        UdpConstant.PORT,
+                                        setServer.toBytes());
+                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                        UdpConstant.PORT,
+                                        setLanguage.toBytes());
+                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                        UdpConstant.PORT,
+                                        setServer.toBytes());
+                                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                        UdpConstant.PORT,
+                                        setLanguage.toBytes());
+                            }
+                        } catch (JfgException e) {
+                            AppLogger.e("err:" + e);
+                        }
+                    } catch (Exception e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    }
+                }, AppLogger::e);
     }
 
     /**
@@ -259,12 +267,14 @@ public class SimpleBindFlow extends AFullBind {
                     setWifi.security = type;
                     //发送wifi配置
                     try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
+                        for (int i = 0; i < 2; i++) {
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    setWifi.toBytes());
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
+                                    UdpConstant.PORT,
+                                    setWifi.toBytes());
+                        }
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
                         e.printStackTrace();

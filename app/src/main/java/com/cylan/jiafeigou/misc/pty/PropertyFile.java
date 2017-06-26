@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc.pty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,16 @@ import java.util.Map;
 public class PropertyFile {
 
     private List<Map<String, String>> pList = new ArrayList<>();
+    private Map<String, List<Integer>> serialMap = new HashMap<>();
     private String version;
+
+    public void setSerialMap(Map<String, List<Integer>> serialMap) {
+        this.serialMap = serialMap;
+    }
+
+    public Map<String, List<Integer>> getSerialMap() {
+        return serialMap;
+    }
 
     public void setVersion(String version) {
         this.version = version;

@@ -22,7 +22,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 ;
 
@@ -33,7 +32,6 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
         implements ForgetPwdContract.Presenter {
 
     private Subscription subscription;
-    private CompositeSubscription compositeSubscription;
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);
@@ -44,31 +42,23 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     public void submitAccount(final String account) {
         subscription = Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
-                        if (isPhoneNum) {
-                            try {
-                                BaseApplication.getAppComponent().getCmd()
-                                        .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            try {
-                                BaseApplication.getAppComponent().getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), account);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
+                .subscribe(s -> {
+                    final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
+                    if (isPhoneNum) {
+                        try {
+                            BaseApplication.getAppComponent().getCmd()
+                                    .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            BaseApplication.getAppComponent().getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-
-                    }
-                });
+                }, AppLogger::e);
     }
 
     //计数10分钟3次
@@ -106,16 +96,13 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     public void submitPhoneNumAndCode(final String account, final String code) {
         subscription = Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT, account);
-                            PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE, code);
-                            BaseApplication.getAppComponent().getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT, account);
+                        PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE, code);
+                        BaseApplication.getAppComponent().getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 }, AppLogger::e);
     }
@@ -123,15 +110,14 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(checkIsRegBack());
-            compositeSubscription.add(getForgetPwdByMailSub());
-            compositeSubscription.add(checkSmsCodeBack());
-            compositeSubscription.add(resetPwdBack());
-        }
+    }
+
+    @Override
+    protected Subscription[] register() {
+        return new Subscription[]{
+                getForgetPwdByMailSub(),
+                checkSmsCodeBack(),
+                resetPwdBack()};
     }
 
     private Subscription getForgetPwdByMailSub() {
@@ -157,14 +143,8 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     public Subscription checkSmsCodeBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
-                    @Override
-                    public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (resultVerifyCode != null) {
-                            getView().checkSmsCodeResult(resultVerifyCode.code);
-                        }
-                    }
-                }, AppLogger::e);
+                .filter(ret -> mView != null && mView.isAdded())
+                .subscribe(resultVerifyCode -> getView().checkSmsCodeResult(resultVerifyCode.code), AppLogger::e);
     }
 
     /**
@@ -176,23 +156,14 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     public void resetPassword(String newPassword) {
         rx.Observable.just(newPassword)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
-                        String code = PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE);
-                        try {
-                            BaseApplication.getAppComponent().getCmd().resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
+                    try {
+                        BaseApplication.getAppComponent().getCmd().resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("resetPassword" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -204,14 +175,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     public Subscription resetPwdBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResetPwdBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResetPwdBack>() {
-                    @Override
-                    public void call(RxEvent.ResetPwdBack resetPwdBack) {
-                        if (resetPwdBack != null) {
-                            getView().resetPwdResult(resetPwdBack.jfgResult.code);
-                        }
-                    }
-                }, AppLogger::e);
+                .subscribe(resetPwdBack -> getView().resetPwdResult(resetPwdBack.jfgResult.code), AppLogger::e);
     }
 
     @Override
@@ -219,33 +183,27 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
         Subscription subscription = rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .delay(2, TimeUnit.SECONDS)
-                .subscribe(s -> {
+                .flatMap(s -> {
                     try {
-                        Log.d("checkIsReg", "checkIsReg");
-                        BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                        long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                        Log.d("checkIsReg", "checkIsReg: " + req);
+                        return Observable.just(req);
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        return Observable.just(-1);
                     }
-                }, AppLogger::e);
-        addSubscription(subscription, "subscription");
-    }
-
-    @Override
-    public Subscription checkIsRegBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
-                .subscribeOn(Schedulers.newThread())
-                .delay(100, TimeUnit.MILLISECONDS)
+                })
+                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .delay(100, TimeUnit.MILLISECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(checkRegsiterBack -> {
-                    if (checkRegsiterBack != null && getView() != null)
-                        getView().checkIsRegReuslt(checkRegsiterBack.jfgResult.code);
-                }, AppLogger::e);
+                .filter(ret -> mView != null && mView.isAdded())
+                .subscribe(s -> getView().checkIsRegReuslt(s.jfgResult.code), AppLogger::e);
+        addSubscription(subscription, "subscription");
     }
 
     @Override
     public void stop() {
         super.stop();
-        unSubscribe(compositeSubscription);
         unSubscribe(subscription);
     }
 }

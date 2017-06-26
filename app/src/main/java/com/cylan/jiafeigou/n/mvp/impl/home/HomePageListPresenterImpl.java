@@ -59,7 +59,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
-                checkNetSub(),
+//                checkNetSub(),
                 deviceRecordStateSub()
         };
     }
@@ -119,18 +119,18 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 });
     }
 
-    private Subscription checkNetSub() {
-        return Observable.interval(4, TimeUnit.SECONDS)
-                .observeOn(Schedulers.newThread())
-                .map(aLong -> {
-                    //优先check online
-                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null)
-                .subscribe(ret ->
-                        mView.onNetworkChanged(ret), AppLogger::e);
-    }
+//    private Subscription checkNetSub() {
+//        return Observable.interval(4, TimeUnit.SECONDS)
+//                .observeOn(Schedulers.newThread())
+//                .map(aLong -> {
+//                    //优先check online
+//                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(ret -> mView != null)
+//                .subscribe(ret ->
+//                        mView.onNetworkChanged(ret), AppLogger::e);
+//    }
 
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
@@ -340,9 +340,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void updateConnectInfo(NetworkInfo networkInfo) {
         Observable.just(networkInfo)
                 .subscribeOn(Schedulers.newThread())
-                .map(aLong -> {
-                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
-                })
+                .map(aLong -> NetUtils.isPublicNetwork())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
                 .subscribe(ret -> getView().onNetworkChanged(ret), AppLogger::e);

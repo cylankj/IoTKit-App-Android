@@ -28,6 +28,7 @@
     <string name="AUDIBLE_ALERT">Choose the Audio alert to be played when motion is detected</string>
     <string name="Added_successfully">Bind successfully</string>
     <string name="Alarm_WeChat">Alarm via WeChat</string>
+    <string name="Alarm_WeChat_NoBindTips">Using this function needs to bind email first.</string>
     <string name="Apr">Apr.</string>
     <string name="Aug">Aug.</string>
     <string name="BACK">Back</string>
@@ -186,7 +187,7 @@
     <string name="EFAMILY_RELEVANCE_DOOR">Associated doorbell</string>
     <string name="EFAMILY_VIDEOCALLING1">Calling&#8230;</string>
     <string name="EMAIL">E&#8211;mail</string>
-    <string name="EMAIL_1">E&#8211;mail adress</string>
+    <string name="EMAIL_1">E&#8211;mail address</string>
     <string name="EMAIL_2">Invalid E&#8211;mail</string>
     <string name="EMAIL_RESET_PWD">Already emailed to %s, please click the link in the email to reset password</string>
     <string name="EMAIL_SIGNUP">E&#8211;mail</string>
@@ -407,7 +408,7 @@
     <string name="RECORD_INFO_0">Device will record video when motion deteced and will stop recording when it goes normal.</string>
     <string name="RECORD_INFO_1">Recording video in 24 hours</string>
     <string name="RECORD_INFO_2">Never record video</string>
-    <string name="RECORD_MODE">Motion detection alarm recording</string>
+    <string name="RECORD_MODE">Detect alarm video</string>
     <string name="RECORD_MODE_1">All day</string>
     <string name="RECORD_MODE_2">Never</string>
     <string name="RECORD_MODE_CHANGE">The current location is \"at home\" and motion detection closed. If you need it,please change the mode.</string>
@@ -557,7 +558,7 @@
     <string name="Sep">Sep.</string>
     <string name="ShareTo">Share to %s</string>
     <string name="SharedTo">Share to</string>
-    <string name="Sharing_Management">sharing management</string>
+    <string name="Sharing_Management">Sharing Management</string>
     <string name="Slogan">Homesick, Use Clever Dog</string>
     <string name="Slogan_Zhongxing">Smart Home, for better life</string>
     <string name="Start_Failed">Start failed</string>
@@ -795,7 +796,8 @@
     <string name="Tap2_Timelapse_fail">Video file can not be generated for disconnection when time&#8211;lapse photographying</string>
     <string name="Tap2_Timelapse_screenshot">Live screenshot</string>
     <string name="Tap2_Timelapse_title">Time&#8211;lapse photography</string>
-    <string name="Tap2_TitleName">Enjoy Everyday</string>
+    <string name="Tap2_TitleName">Daily Great</string>
+    <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
     <string name="Tap2_share_sharevideo">I shared a video with you</string>
     <string name="Tap2_share_sharevideo_tips">I\'ve made a time&#8211;lapse photography by Clever Dog Smart Camera, check it out!</string>
     <string name="Tap2_share_unabletoshare">No Wechat installed, unable to share.</string>
@@ -871,6 +873,7 @@
     <string name="Tap3_ShareDevice_NoDevice">No device yet</string>
     <string name="Tap3_ShareDevice_NoShare">Not been shared</string>
     <string name="Tap3_ShareDevice_NoneFriends">None</string>
+    <string name="Tap3_ShareDevice_NoneShareFriends">No friends can be shared</string>
     <string name="Tap3_ShareDevice_NotYourself">Can\'t share with yourself</string>
     <string name="Tap3_ShareDevice_Shared">Shared</string>
     <string name="Tap3_ShareDevice_SharedContents">Shared contents</string>

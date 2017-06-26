@@ -71,10 +71,10 @@ public class BindUtils {
         return SECURITY_NONE;
     }
 
-    private static final int SECURITY_NONE = 0;
-    private static final int SECURITY_WEP = 1;
-    private static final int SECURITY_PSK = 2;
-    private static final int SECURITY_EAP = 3;
+    public static final int SECURITY_NONE = 0;
+    public static final int SECURITY_WEP = 1;
+    public static final int SECURITY_PSK = 2;
+    public static final int SECURITY_EAP = 3;
 
     /**
      * cid不全是数字.

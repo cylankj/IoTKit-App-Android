@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Wenn Ungewöhnliches erkannt wird, tönt das Gerät</string>
   <string name="Added_successfully">Binden erfolgreich</string>
   <string name="Alarm_WeChat">Alarmmeldungen per Wechat erhalten</string>
+  <string name="Alarm_WeChat_NoBindTips">Mit dieser Funktion muss zuerst die E&#8211;Mail gebunden werden.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Live&#8211;Screenshot</string>
   <string name="Tap2_Timelapse_title">Zeitrafferaufnahme</string>
   <string name="Tap2_TitleName">Tageshighlight</string>
+  <string name="Tap2_TitleName_Sentence">Tageshighlight</string>
   <string name="Tap2_share_sharevideo">Ich teilte ein Video mit dort</string>
   <string name="Tap2_share_sharevideo_tips">IV Tirade DEA Zeitrafferaufnahmen von kluger Hund Smart&#8211;Kamera, check it out!</string>
   <string name="Tap2_share_unabletoshare">Kein WeChat installiert ist, nicht in der Lage zu teilen</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Kein Gerät vorhanden</string>
   <string name="Tap3_ShareDevice_NoShare">Nicht geteilt</string>
   <string name="Tap3_ShareDevice_NoneFriends">Keiner</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Keiner</string>
   <string name="Tap3_ShareDevice_NotYourself">Sie können nicht mit Ihnen selbst teilen</string>
   <string name="Tap3_ShareDevice_Shared">Gemeinsam genutzt</string>
   <string name="Tap3_ShareDevice_SharedContents">Geteilte Inhalt</string>

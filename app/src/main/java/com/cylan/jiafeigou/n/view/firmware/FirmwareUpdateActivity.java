@@ -547,7 +547,19 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             Log.d("downloading", "downloading onError");
             activityWeakReference.get().tvDownloadSoftFile.setEnabled(true);
             activityWeakReference.get().tvDownloadSoftFile.setText(activityWeakReference.get().getString(R.string.Tap1_Album_DownloadFailed));
-            AppLogger.d("下载失败啊?percent huge");
+            AppLogger.d("下载失败啊?" + MiscUtils.getErr(e) + "," + s);
+            if (downloadInfo != null)
+                handleErr(downloadInfo.getUrl(), downloadInfo.getTargetPath());
+        }
+    }
+
+    private static void handleErr(final String url, final String filePath) {
+        try {
+            FileUtils.deleteAbsoluteFile(filePath);
+            DownloadDBManager.INSTANCE.delete(url);
+            DownloadManager.getInstance().removeTask(url);
+        } catch (Exception e) {
+
         }
     }
 }

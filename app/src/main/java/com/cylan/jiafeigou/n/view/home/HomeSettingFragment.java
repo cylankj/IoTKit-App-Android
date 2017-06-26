@@ -24,6 +24,7 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -37,6 +38,7 @@ import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -63,6 +65,8 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE;
 
 /**
  * 作者：zsl
@@ -225,16 +229,17 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void initSwitchState(final RxEvent.AccountArrived accountArrived) {
         boolean enable = accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
-        //过滤
-//        if (svHomeSettingAccessMes.isChecked() == enable) return;
         svHomeSettingAccessMes.setChecked(enable, false);
-        if (!accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+        boolean off = !accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+        if (off) {
             svSoundContainer.setVisibility(View.GONE);
             svVibrateContainer.setVisibility(View.GONE);
-            return;
+        } else {
+            svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
+            svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
         }
-        svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
-        svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
+        svSoundContainer.setVisibility(off ? View.GONE : View.VISIBLE);
+        svVibrateContainer.setVisibility(off ? View.GONE : View.VISIBLE);
         initSwitchBtnListener();
     }
 
@@ -358,11 +363,20 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                     (DialogInterface dialog, int which) -> {
                         int i = BaseApplication.getAppComponent().getSourceManager().getLoginType();
                         if (i == 3 || i == 4) {
-                            Bundle bundle = new Bundle();
-                            MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
-                            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                                    bindPhoneFragment, android.R.id.content);
-                            bindPhoneFragment.setCallBack(t -> updateHint());
+                            int language = JFGRules.getLanguageType(ContextUtils.getContext());
+                            if (language == LANGUAGE_TYPE_SIMPLE_CHINESE) {
+                                Bundle bundle = new Bundle();
+                                MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                                        bindPhoneFragment, android.R.id.content);
+                                bindPhoneFragment.setCallBack(t -> updateHint());
+                            } else {
+                                Bundle bundle = new Bundle();
+                                BindMailFragment bindMailFragment = BindMailFragment.newInstance(bundle);
+                                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                                        bindMailFragment, android.R.id.content);
+                                bindMailFragment.setCallBack(t -> updateHint());
+                            }
                         } else if (i == 6 || i == 7) {
                             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                                     BindMailFragment.newInstance(null), android.R.id.content);

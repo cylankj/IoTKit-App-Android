@@ -192,7 +192,7 @@ public class BasePanoramaApiHelper {
             if (device.available()) {
                 DPEntity property = device.getProperty(204);
                 if (property == null) {
-                    property = device.getEmptyProperry(204);
+                    property = device.getEmptyProperty(204);
                 }
                 property.setValue(status, DpUtils.pack(status), property.getVersion());
                 device.updateProperty(204, property);
@@ -213,7 +213,7 @@ public class BasePanoramaApiHelper {
             if (device.available()) {
                 DPEntity property = device.getProperty(204);
                 if (property == null) {
-                    property = device.getEmptyProperry(204);
+                    property = device.getEmptyProperty(204);
                 }
                 property.setValue(status, DpUtils.pack(status), property.getVersion());
                 device.updateProperty(204, property);
@@ -229,7 +229,7 @@ public class BasePanoramaApiHelper {
             if (device.available()) {
                 DPEntity property = device.getProperty(205);
                 if (property == null) {
-                    property = device.getEmptyProperry(205);
+                    property = device.getEmptyProperty(205);
                 }
                 property.setValue(new DpMsgDefine.DPPrimary<>(ret.powerline == 1), DpUtils.pack(ret.powerline == 1), property.getVersion());
                 device.updateProperty(205, property);
@@ -245,7 +245,7 @@ public class BasePanoramaApiHelper {
             if (device.available()) {
                 DPEntity property = device.getProperty(206);
                 if (property == null) {
-                    property = device.getEmptyProperry(206);
+                    property = device.getEmptyProperty(206);
                 }
                 property.setValue(new DpMsgDefine.DPPrimary<>(ret.battery), DpUtils.pack(ret.battery), property.getVersion());
                 device.updateProperty(206, property);

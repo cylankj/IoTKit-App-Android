@@ -315,7 +315,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 Device device = sourceManager.getDevice(uuid);
                                 DPEntity property = device.getProperty(206);
                                 if (property == null) {
-                                    device.getEmptyProperry(206);
+                                    device.getEmptyProperty(206);
                                 }
                                 property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
                                 if (bat.battery < 20 && isFirst) {//检查电量

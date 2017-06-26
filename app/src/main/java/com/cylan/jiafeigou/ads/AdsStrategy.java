@@ -167,11 +167,11 @@ public class AdsStrategy {
                 .map(s -> {
                     //1.广告页仅在加菲狗版本、中国大陆地区(简体中文)版本显示，其余版本屏蔽。
                     //2.在广告投放时间期限内，每个用户看到的广告展示次数最多为三次，广告展示次数满三次后不再显示。
-                    int l = JFGRules.getLanguageType(ContextUtils.getContext());
-                    if (l != JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
-                        //非简体中文
-                        return null;
-                    }
+//                    int l = JFGRules.getLanguageType(ContextUtils.getContext());
+//                    if (l != JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE) {
+//                        //非简体中文
+//                        return null;
+//                    }
                     String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
                     if (TextUtils.isEmpty(content)) {
                         AdsStrategy.getStrategy().fetchAds();
@@ -267,7 +267,7 @@ public class AdsStrategy {
     }
 
     private static final int[] wArray = new int[]{480, 768, 1080, 1440};
-    private static final int[] hArray = new int[]{800, 1280, 1920, 2500};
+    private static final int[] hArray = new int[]{800, 1280, 1920, 2550};
 
     private static String getResolutionForAds() {
         int w = Resources.getSystem().getDisplayMetrics().widthPixels;

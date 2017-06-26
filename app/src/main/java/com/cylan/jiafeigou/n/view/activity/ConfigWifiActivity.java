@@ -59,6 +59,8 @@ import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
+import static com.cylan.jiafeigou.utils.BindUtils.SECURITY_NONE;
+import static com.cylan.jiafeigou.utils.BindUtils.SECURITY_WEP;
 
 public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presenter>
         implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
@@ -189,9 +191,18 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 if (o != null && o instanceof BeanWifiList) {
                     type = BindUtils.getSecurity(((BeanWifiList) o).result);
                 }
-                if (type != 0 && pwd.length() < 8) {
-                    ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
-                    return;
+                if (type == SECURITY_NONE) {
+
+                } else if (type == SECURITY_WEP) {
+                    if (pwd.length() < 5) {
+                        ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
+                        return;
+                    }
+                } else {
+                    if (pwd.length() < 8) {
+                        ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
+                        return;
+                    }
                 }
                 tvWifiPwdSubmit.viewZoomSmall(null);
                 //判断当前
@@ -313,7 +324,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                                 final String ssid = result.SSID.replace("\"", "");
                                 if (!map.containsKey(ssid)) continue;
                                 LocalWifiInfo info = map.get(ssid);
-                                if (info != null && !TextUtils.isDigitsOnly(info.getPwd())) {
+                                if (info != null && !TextUtils.isEmpty(info.getPwd())) {
                                     return Observable.just(new Pair<>(info, new BeanWifiList(result)));
                                 }
                             }

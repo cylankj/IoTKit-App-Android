@@ -216,13 +216,7 @@ public interface CamLiveContract {
         <T extends DataPoint> void updateInfoReq(T value, long id);
 
 
-        /**
-         * 某一天的凌晨时间戳
-         *
-         * @param timeStartInSecond
-         * @return
-         */
-        Observable<IData> assembleTheDay(long timeStartInSecond);
+        Observable<IData> assembleTheDay();
 
         LiveStream getLiveStream();
 

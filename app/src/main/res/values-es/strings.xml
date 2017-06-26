@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Emite sonidos el dispositivo al detectar estado anormal</string>
   <string name="Added_successfully">enlazar con éxito</string>
   <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
+  <string name="Alarm_WeChat_NoBindTips">El uso de esta función necesita unirse correo electrónico en primer lugar.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Captura de pantalla en directo</string>
   <string name="Tap2_Timelapse_title">Fotografía a intervalos</string>
   <string name="Tap2_TitleName">Gran día</string>
+  <string name="Tap2_TitleName_Sentence">Gran día</string>
   <string name="Tap2_share_sharevideo">He compartido con ustedes un video</string>
   <string name="Tap2_share_sharevideo_tips">He hecho una fotografía a intervalos por Clever doméstico elegante de la cámara, mira eso!</string>
   <string name="Tap2_share_unabletoshare">Sin WeChat instalado, no puede compartir.</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Aún no hay dispositivo.</string>
   <string name="Tap3_ShareDevice_NoShare">No ha sido compartida</string>
   <string name="Tap3_ShareDevice_NoneFriends">Nada</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Nada</string>
   <string name="Tap3_ShareDevice_NotYourself">No puede compartir consigo</string>
   <string name="Tap3_ShareDevice_Shared">Compartido</string>
   <string name="Tap3_ShareDevice_SharedContents">Contenido compartidos</string>

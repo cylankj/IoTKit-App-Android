@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -31,6 +30,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragmentV3_2;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -66,6 +66,8 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
         initPresenter();
+        PerformanceUtils.stopTrace("app2SmartCall");
+        PerformanceUtils.startTrace("smartCall2LogResult");
     }
 
     @Override
@@ -84,14 +86,16 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         if (state == LogState.STATE_ACCOUNT_ON) {
             Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
             startActivity(new Intent(this, NewHomeActivity.class), bundle);
+            PerformanceUtils.stopTrace("smartCall2LogResult");
             finish();
         }
         if (basePresenter != null) {
-            basePresenter.autoLogin();
             boolean showSplash = !getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
+            if (showSplash)//退出登录,不需要再去执行登录.
+                basePresenter.autoLogin();
             basePresenter.selectNext(showSplash);
         }
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+//        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     @Override
@@ -253,7 +257,8 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
         //检查广告的有效性
-        if (basePresenter != null && showOnceInCircle) {
+        boolean fromLogout = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
+        if (basePresenter != null && showOnceInCircle && !fromLogout) {
             showOnceInCircle = false;
             basePresenter.showAds()
                     .subscribeOn(AndroidSchedulers.mainThread())
@@ -284,6 +289,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
             case JConstant.CODE_AD_FINISH:
                 if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_ON) {
                     Intent intent = new Intent(this, NewHomeActivity.class);
+                    PerformanceUtils.stopTrace("smartCall2LogResult");
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else {
@@ -314,6 +320,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     public void loginSuccess() {
         Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
         startActivity(new Intent(this, NewHomeActivity.class), bundle);
+        PerformanceUtils.stopTrace("smartCall2LogResult");
         finish();
     }
 

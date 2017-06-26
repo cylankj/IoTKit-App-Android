@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Выберите звуковой сигнал, который будет воспроизводиться при обнаружении движения</string>
   <string name="Added_successfully">Привязать успешно</string>
   <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
+  <string name="Alarm_WeChat_NoBindTips">С помощью этой функции необходимо связать электронную почту в первую очередь.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -796,6 +797,7 @@
   <string name="Tap2_Timelapse_screenshot">Скриншот прямой трансляции</string>
   <string name="Tap2_Timelapse_title">Цикличная фотография</string>
   <string name="Tap2_TitleName">Ежедневное чудо</string>
+  <string name="Tap2_TitleName_Sentence">Ежедневное чудо</string>
   <string name="Tap2_share_sharevideo">Я поделился с вами видео</string>
   <string name="Tap2_share_sharevideo_tips">Я сделал замедленной киносъемки ловкими Dog Smart Camera, проверить это!</string>
   <string name="Tap2_share_unabletoshare">Ни один WeChat не установлен, не могу разделить.</string>
@@ -871,6 +873,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Устройство не добавлено</string>
   <string name="Tap3_ShareDevice_NoShare">Не было общим</string>
   <string name="Tap3_ShareDevice_NoneFriends">Никто</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Никто</string>
   <string name="Tap3_ShareDevice_NotYourself">Невозможно поделиться себе</string>
   <string name="Tap3_ShareDevice_Shared">Общий</string>
   <string name="Tap3_ShareDevice_SharedContents">Общие cодержание</string>

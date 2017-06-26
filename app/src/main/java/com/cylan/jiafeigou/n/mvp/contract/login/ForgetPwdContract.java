@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
+import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
@@ -12,7 +13,7 @@ import rx.Subscription;
 public interface ForgetPwdContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseFragmentView<Presenter> {
 
         /**
          * 登陆结果
@@ -83,12 +84,6 @@ public interface ForgetPwdContract {
          */
         void checkIsReg(String account);
 
-        /**
-         * 检测是否已注册回调
-         *
-         * @return
-         */
-        Subscription checkIsRegBack();
 
         /**
          * 十分钟是否超过3次获取

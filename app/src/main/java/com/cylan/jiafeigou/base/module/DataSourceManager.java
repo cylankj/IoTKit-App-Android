@@ -318,7 +318,11 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Device getDevice(String uuid) {
         Device device = mCachedDeviceMap.get(uuid);
-        return device == null ? new Device() : device;//给一个默认的 device, 防止出现空指针
+        if (device == null) {
+            device = new Device();
+            device.setPropertyParser(propertyParser);
+        }
+        return device;//给一个默认的 device, 防止出现空指针
     }
 
     @Override
@@ -423,20 +427,18 @@ public class DataSourceManager implements JFGSourceManager {
                 .map(devices -> {
                     for (Device uuid : devices) {
                         AppLogger.d("设备已解绑:" + uuid);
-                        Device remove = mCachedDeviceMap.remove(uuid.uuid);
-                        if (remove != null && JFGRules.isRS(uuid.pid)) {
-                            String mac = remove.$(DpMsgMap.ID_202_MAC, "");
-                            if (TextUtils.isEmpty(mac)) {
-                                mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid.uuid);
-                            }
-                            JFGRules.switchApModel(mac, uuid.uuid, 1).subscribe(ret -> {
-                                if (ret) {
-                                    AppLogger.d("睿视删除设备起 AP 成功了!");
-                                }
-                            }, e -> {
-                                AppLogger.e("unBindDevices,Error:" + e.getMessage());
-                            });
+                        mCachedDeviceMap.remove(uuid.uuid);
+                        String mac = uuid.$(DpMsgMap.ID_202_MAC, "");
+                        if (TextUtils.isEmpty(mac)) {
+                            mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid.uuid);
                         }
+                        JFGRules.switchApModel(mac, uuid.uuid, 1).subscribe(ret -> {
+                            if (ret) {
+                                AppLogger.d("睿视删除设备起 AP 成功了!");
+                            }
+                        }, e -> {
+                            AppLogger.e("unBindDevices,Error:" + e.getMessage());
+                        });
                         FileUtils.deleteFile(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid.uuid);
                         getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid.uuid));
                     }

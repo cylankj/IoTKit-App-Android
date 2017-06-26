@@ -103,6 +103,13 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusPos(position);
             });
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusTime(getWheelCurrentFocusTime());
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    landDateListContainer.removeCallbacks(containerHide);
+                    landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
+                }
+            });
         }
     }
 
@@ -117,7 +124,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                     AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
                     if (datePickerListener != null)
                         datePickerListener.onPickDate((Long) value, STATE_FINISH);
-                    loadSelectedDay(TimeUtils.getSpecificDayStartTime((Long) value));
+                    loadSelectedDay((Long) value);
                 }
             });
         }
@@ -131,18 +138,19 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         return superWheelExt.getCurrentFocusTime();
     }
 
+    /**
+     * 选择一天,load所有的数据,但是需要移动的这一天的开始位置.
+     */
     private void loadSelectedDay(long timeStart) {
-        timeStart = TimeUtils.getSpecificDayStartTime(timeStart);
-        presenter.assembleTheDay(timeStart / 1000L)
+        final long start = TimeUtils.getSpecificDayStartTime(timeStart);
+        presenter.assembleTheDay()
                 .subscribeOn(Schedulers.io())
                 .filter(iData -> iData != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> {
-                    AppLogger.d("reLoad hisData: good");
-                })
+                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
                 .subscribe(iData -> {
                     setupHistoryData(iData);
-                    HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
+                    HistoryFile historyFile = iData.getMinHistoryFileByStartTime(start);//最小时间.
                     if (historyFile != null) {
                         setNav2Time(historyFile.time * 1000L);
                         presenter.startPlayHistory(historyFile.time * 1000L);
@@ -164,23 +172,36 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 
     @Override
     public void onWheelTimeUpdate(long time, int state) {
+        tmpTime = time;
         switch (state) {
             case STATE_DRAGGING:
                 Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
+                superWheelExt.removeCallbacks(dragRunnable);
+                superWheelExt.postDelayed(dragRunnable, 400);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
                 break;
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
-                presenter.startPlayHistory(time);
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_FINISH);
+                superWheelExt.removeCallbacks(dragRunnable);
+                superWheelExt.postDelayed(dragRunnable, 400);
                 break;
         }
     }
+
+    private long tmpTime;
+    private Runnable dragRunnable = new Runnable() {
+        @Override
+        public void run() {
+            presenter.startPlayHistory(tmpTime);
+            AppLogger.d("拖动停止了:" + tmpTime);
+        }
+    };
 
     public void setDatePickerListener(DatePickerListener datePickerListener) {
         this.datePickerListener = datePickerListener;

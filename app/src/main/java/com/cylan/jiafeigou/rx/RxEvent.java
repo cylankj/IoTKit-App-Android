@@ -1345,7 +1345,4 @@ public class RxEvent {
         public Object value;
     }
 
-    public static class JUST_JUMP {
-        public static final JUST_JUMP INSTANCE = new JUST_JUMP();
-    }
 }

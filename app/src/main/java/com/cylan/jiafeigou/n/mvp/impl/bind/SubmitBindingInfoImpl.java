@@ -81,7 +81,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         if (startTick == 0) {//可能是覆盖绑定.
             startTick = System.currentTimeMillis();
             //1.可能是覆盖绑定,或者设备列表中已经有了该设备,并且在线状态.
-            if (device != null) {
+            if (device.available()) {
                 //2.清空net状态
                 device.setValue(201, new DpMsgDefine.DPNet());//先清空
             }

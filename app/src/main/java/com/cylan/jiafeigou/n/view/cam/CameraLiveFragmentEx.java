@@ -262,7 +262,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     time = time * 1000L;//确保是毫秒
                 }
                 camLiveControlLayer.reAssembleHistory(basePresenter, time);
-//
                 return;
             }
             playAfterCheck();
@@ -283,7 +282,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     private boolean accept() {
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() || RxBus.getCacheInstance().hasStickyEvent(RxEvent.JUST_JUMP.class)) {
+        Intent intent = getActivity().getIntent();
+        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() ||
+                intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
             return false;
         } else return true;
     }
@@ -481,7 +482,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
             return;
         }
-        if (MiscUtils.isLand()) return;//横屏 不需要弹窗.
+        if (MiscUtils.isLand()) {
+            ToastUtil.showNegativeToast(getString(R.string.SAVED_PHOTOS));
+            return;//横屏 不需要弹窗.
+        }
         PerformanceUtils.startTrace("takeSnapShot_pre");
         camLiveControlLayer.post(() -> camLiveControlLayer.onCaptureRsp(getActivity(), bitmap));
         PerformanceUtils.stopTrace("takeSnapShot_pre");

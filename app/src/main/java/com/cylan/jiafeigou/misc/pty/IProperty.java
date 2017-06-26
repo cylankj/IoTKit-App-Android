@@ -23,4 +23,11 @@ public interface IProperty {
 
     String property(int pidOrOs, String tag);
 
+    /**
+     * cam or bell
+     *
+     * @param serial
+     * @return
+     */
+    boolean isSerial(final String serial, final int pidOrOs);
 }
