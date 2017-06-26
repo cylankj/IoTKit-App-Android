@@ -47,6 +47,7 @@ public class Switcher extends LinearLayout {
         viewThird = (TextView) getChildAt(2);
         viewFirst.setOnClickListener(v -> {
             slideOut();
+            removeCallbacks(autoSlideOut);
             int index = content2Index(viewFirst.getText().toString());
             viewFirst.setText(viewThird.getText());
             viewThird.setText(index2Content(index));
@@ -54,6 +55,7 @@ public class Switcher extends LinearLayout {
         });
         viewSecond.setOnClickListener(v -> {
             slideOut();
+            removeCallbacks(autoSlideOut);
             int index = content2Index(viewSecond.getText().toString());
             viewSecond.setText(viewThird.getText());
             viewThird.setText(index2Content(index));

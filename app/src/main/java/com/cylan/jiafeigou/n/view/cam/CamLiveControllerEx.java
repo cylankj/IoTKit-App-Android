@@ -245,8 +245,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         //是否显示清晰度切换
-        findViewById(R.id.sv_switch_stream)
-                .setVisibility(JFGRules.showSdHd(device.pid, cVersion) ? VISIBLE : GONE);
+//        findViewById(R.id.sv_switch_stream)
+//                .setVisibility(JFGRules.showSdHd(device.pid, cVersion) ? VISIBLE : GONE);
         streamSwitcher = ((Switcher) findViewById(R.id.sv_switch_stream));
         int mode = device.$(513, 0);
         streamSwitcher.setMode(mode);
@@ -432,7 +432,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutD.setVisibility(INVISIBLE);
             showHistoryWheel(false);
             setLoadingState(null, null);
-            findViewById(R.id.sv_switch_stream).setVisibility(GONE);
+            streamSwitcher.setVisibility(GONE);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
             }
@@ -451,8 +451,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
-            findViewById(R.id.sv_switch_stream)
-                    .setVisibility(JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
+            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
             //应该直接getPlayType.
             if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
@@ -470,7 +469,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
             }
-            findViewById(R.id.sv_switch_stream).setVisibility(GONE);
+            streamSwitcher.setVisibility(GONE);
             YoYo.with(Techniques.SlideOutUp)
                     .duration(200)
                     .playOn(layoutA);
@@ -490,8 +489,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
-            findViewById(R.id.sv_switch_stream)
-                    .setVisibility(JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
+            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING &&
+                    JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);
