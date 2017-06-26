@@ -203,6 +203,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
+                    AppLogger.e("IndexOutOfBoundsException");
                     rVDevicesList.postDelayed(() -> mItemAdapter.notifyDataSetChanged(), 500);
                 }
             }
@@ -338,36 +339,38 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void enableNestedScroll() {
-        boolean enable = mItemAdapter.getItemCount() > 4;
-        if (appbar.getLayoutParams() != null) {
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
-            if (enable) {
-                CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
-                if (!(behavior instanceof AppBarLayout.Behavior)) {
-                    layoutParams.setBehavior(new AppBarLayout.Behavior());
+        if (getView() != null) getView().post(() -> {
+//            boolean enable = mItemAdapter.getItemCount() > 4;
+            if (appbar.getLayoutParams() != null) {
+                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+                if (mItemAdapter != null && mItemAdapter.getItemCount() > 4) {
+                    CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
+                    if (!(behavior instanceof AppBarLayout.Behavior)) {
+                        layoutParams.setBehavior(new AppBarLayout.Behavior());
+                    } else {
+                        ((AppBarLayout.Behavior) behavior).setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+                            @Override
+                            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                                return !srLayoutMainContentHolder.isRefreshing();
+                            }
+                        });
+                    }
                 } else {
-                    ((AppBarLayout.Behavior) behavior).setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-                        @Override
-                        public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                            return !srLayoutMainContentHolder.isRefreshing();
-                        }
-                    });
-                }
-            } else {
-                if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior)) {
-                    layoutParams.setBehavior(new DisableAppBarLayoutBehavior());
+                    if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior)) {
+                        layoutParams.setBehavior(new DisableAppBarLayoutBehavior());
+                    }
                 }
             }
-        }
-        if (srLayoutMainContentHolder.getLayoutParams() != null) {
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) srLayoutMainContentHolder.getLayoutParams();
-            CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
-            if (behavior != null && behavior instanceof DisableAppBarLayoutBehavior) {
-                ((DisableAppBarLayoutBehavior) behavior).setCanDragChecker(() ->
-                        enable && !srLayoutMainContentHolder.isRefreshing());
-                Log.d("what", "what 1," + layoutParams.getBehavior() + " ,enable:" + enable);
+            if (srLayoutMainContentHolder.getLayoutParams() != null) {
+                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) srLayoutMainContentHolder.getLayoutParams();
+                CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
+                if (behavior != null && behavior instanceof DisableAppBarLayoutBehavior) {
+                    ((DisableAppBarLayoutBehavior) behavior).setCanDragChecker(() ->
+                            mItemAdapter != null && mItemAdapter.getItemCount() > 4 && !srLayoutMainContentHolder.isRefreshing());
+                    Log.d("what", "what 1," + layoutParams.getBehavior() + " ,enable:" + (mItemAdapter != null && mItemAdapter.getItemCount() > 4));
+                }
             }
-        }
+        });
     }
 
     @Override

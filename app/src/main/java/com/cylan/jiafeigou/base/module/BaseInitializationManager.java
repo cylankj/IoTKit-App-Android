@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okserver.download.DownloadManager;
+import com.squareup.leakcanary.LeakCanary;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
@@ -262,7 +263,7 @@ public final class BaseInitializationManager {
     }
 
     private void initLeakCanary() {
-//        LeakCanary.install((Application) appContext);
+        LeakCanary.install((Application) appContext);
     }
 
     private void enableDebugOptions() {

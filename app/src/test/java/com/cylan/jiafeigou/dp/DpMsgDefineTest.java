@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.msgpack.MsgPackTest;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -36,28 +37,41 @@ public class DpMsgDefineTest {
         return sb.toString();
     }
 
+    @Message
+    public static class Good {
+        @Index(0)
+        public String cmd;
+        @Index(1)
+        public String cid;
+        @Index(2)
+        public String mac;
+        @Index(3)
+        public byte[] version;
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "cmd='" + cmd + '\'' +
+                    ", cid='" + cid + '\'' +
+                    ", mac='" + mac + '\'' +
+                    ", version=" + Arrays.toString(version) +
+                    '}';
+        }
+    }
+
     @Test
     public void testObject() throws IOException {
-        byte[] array = new byte[]{-108,
-                -84,
-                53,
-                48,
-                48,
-                48,
-                48,
-                48,
-                48,
-                48,
-                49,
-                50,
-                57,
-                56,
-                -62,
-                -96,
-                -96};
+        Good good = new Good();
+        good.cid = "11111";
+        byte[] raw = DpUtils.pack(good);
+        System.out.println("raw: " + Arrays.toString(raw));
+        System.out.println("raw->obj: " + unpackData(raw, Good.class));
+        byte[] array = new byte[]{-108, -86, 102, 95, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 49, 50, 50, -79, 65, 67, 58, 56, 51, 58, 70, 51, 58, 56, 49, 58, 54, 54, 58, 67, 70, -72, 49, 46, 48, 46, 48, 46, 48, 48, 50, 54, 44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107};
         System.out.println(byteArrayToHex(array));
-        System.out.println(unpackData(array,
-                TT.class));
+        System.out.println("UdpSecondaryHeard:" + unpackData(array, JfgUdpMsg.UdpSecondaryHeard.class));
+        System.out.println("FPingAck:" + unpackData(array, Good.class));
+        System.out.println("FPingAck:" + unpackData(new byte[]{49, 46, 48, 46, 48, 46, 48, 48, 50, 54,
+                44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107}, TT.class));
         System.out.println(unpackData(new byte[]{-108, 0, 0, -9, -62}, DpMsgDefine.DPSdStatus.class));
 //        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
 //        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
@@ -209,7 +223,7 @@ public class DpMsgDefineTest {
     @Message
     public static class TT {
         @Index(0)
-        public String ret;
+        public int ret;
 
         @Override
         public String toString() {

@@ -133,7 +133,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
         boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0);
         //固件升级,分享设备不显示
-        rlHardwareUpdate.setVisibility(!JFGRules.isShareDevice(device) && showFU ? View.VISIBLE : View.GONE);
+        rlHardwareUpdate.setVisibility(showFU ? View.VISIBLE : View.GONE);
         tvDeviceIp.setVisibility(JFGRules.showIp(device.pid) ? View.VISIBLE : View.GONE);
     }
 

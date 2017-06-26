@@ -181,7 +181,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         AppLogger.e(e.getMessage());
                     });
         }
-        registerSubscription(fetchSubscription);
+        if (fetchLocation != -1)
+            registerSubscription(fetchSubscription);
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromServer(int time) {

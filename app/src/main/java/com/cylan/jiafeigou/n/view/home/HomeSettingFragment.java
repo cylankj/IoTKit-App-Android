@@ -298,10 +298,13 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                     return;
                 }
                 //第三方账号需要绑定手机/邮箱
-                if (BaseApplication.getAppComponent().getSourceManager().getLoginType() > 3) {
-                    if (account != null && TextUtils.isEmpty(account.getEmail()) &&
-                            TextUtils.isEmpty(account.getPhone())) {
-                        showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
+                int type = BaseApplication.getAppComponent().getSourceManager().getLoginType();
+                if (type > 3 && account != null) {
+                    //字符串相加
+                    if (TextUtils.isEmpty(account.getEmail() + account.getPhone())) {
+                        final String content = getString(type >= 6 ? R.string.Tap3_Friends_NoBindTips
+                                : R.string.Tap3_Friends_NoBindTips);
+                        showBindPhoneOrEmailDialog(content);
                         return;
                     }
                 }
@@ -356,6 +359,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
      * 弹出绑定手机或者邮箱的提示框
      */
     private void showBindPhoneOrEmailDialog(String title) {
+        svHomeSettingWechat.setChecked(false);
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("bindphone");
         if (f == null) {
             AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
@@ -381,7 +385,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                                     BindMailFragment.newInstance(null), android.R.id.content);
                         }
-                    }, getString(R.string.CANCEL), null, false);
+                    }, getString(R.string.CANCEL), (dialog, which) -> svHomeSettingWechat.setChecked(false), false);
         }
     }
 

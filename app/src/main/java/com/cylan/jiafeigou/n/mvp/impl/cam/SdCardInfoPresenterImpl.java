@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
+import com.cylan.entity.JfgEvent;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.cache.video.History;
@@ -101,6 +102,30 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
+    }
+
+    @Override
+    protected Subscription[] register() {
+        return super.register();
+    }
+
+    private Subscription robotDataSync() {
+        return RxBus.getCacheInstance().toObservable(JfgEvent.RobotoSyncData.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> TextUtils.equals(ret.identity, uuid))
+                .flatMap(robotoSyncData -> Observable.from(robotoSyncData.list))
+                .filter(ret -> ret.id == 204 && mView != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    try {
+                        DpMsgDefine.DPSdStatus status = DpUtils.unpack(ret.packValue, DpMsgDefine.DPSdStatus.class);
+                        if (status != null && (!status.hasSdcard || status.err != 0)) {
+                            mView.showSdPopDialog();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }, AppLogger::e);
     }
 
     /**

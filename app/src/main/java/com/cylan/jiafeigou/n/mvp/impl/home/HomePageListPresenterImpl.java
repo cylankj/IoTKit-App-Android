@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -340,7 +341,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void updateConnectInfo(NetworkInfo networkInfo) {
         Observable.just(networkInfo)
                 .subscribeOn(Schedulers.newThread())
-                .map(aLong -> NetUtils.isPublicNetwork())
+                .map(aLong -> {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+                    if (info != null && info.isAvailable() && info.isConnected())
+                        return true;
+                    return NetUtils.isPublicNetwork();
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
                 .subscribe(ret -> getView().onNetworkChanged(ret), AppLogger::e);

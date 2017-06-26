@@ -65,6 +65,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
     public void stop() {
 //        frameRateList.clear();
         preStatus = false;
+        badFrameCount = 0;
     }
 
     /**
