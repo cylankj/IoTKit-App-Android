@@ -126,8 +126,8 @@ public class BaseForwardHelper {
             if (rsp.rets.size() == 0) return null;
             JFGDPMsgRet msg = rsp.rets.get(0);
             if (msgId == 218) {
-                DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
-                status.hasSdcard = msg.ret == 0;
+                PanoramaEvent.MsgSdInfoRsp status = new PanoramaEvent.MsgSdInfoRsp();
+                status.sdIsExist = msg.ret == 0 ? 1 : 0;
                 return (R) status;
             }
         } catch (Exception e) {
