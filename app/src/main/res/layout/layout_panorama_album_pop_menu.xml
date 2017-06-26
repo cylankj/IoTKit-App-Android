@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    app:cardCornerRadius="@dimen/y3"
+    app:cardElevation="@dimen/y5">
 
-
-    <android.support.v7.widget.CardView
+    <RadioGroup
+        android:id="@+id/menu_album_pop_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:cardCornerRadius="@dimen/y3">
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/y24"
+        android:layout_marginStart="@dimen/y24"
+        android:orientation="vertical"
+        android:weightSum="3">
 
-        <RadioGroup
-            android:id="@+id/menu_album_pop_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical"
-            android:weightSum="3">
+        <com.cylan.jiafeigou.widget.SafeRadioButton
+            android:id="@+id/menu_item_album_pop_both"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:button="@drawable/icon_panorama_album_menu_photo_phone"
+            android:padding="@dimen/y13"
+            android:text="@string/Tap1_File_CameraNPhone"
+            android:textColor="@color/color_panorama_album_menu_photo_mode"
+            android:textSize="@dimen/sp16" />
 
-            <com.cylan.jiafeigou.widget.SafeRadioButton
-                android:id="@+id/menu_item_album_pop_both"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:button="@drawable/icon_panorama_album_menu_photo_phone"
-                android:padding="@dimen/y13"
-                android:text="@string/Tap1_File_CameraNPhone"
-                android:textColor="@color/color_panorama_album_menu_photo_mode"
-                android:textSize="@dimen/sp16" />
+        <com.cylan.jiafeigou.widget.SafeRadioButton
+            android:id="@+id/menu_item_album_pop_panorama"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:button="@drawable/icon_panorama_album_menu_panorama"
+            android:padding="@dimen/y13"
+            android:text="@string/Tap1_File_Camera"
+            android:textColor="@color/color_panorama_album_menu_photo_mode"
+            android:textSize="@dimen/sp16" />
 
-            <com.cylan.jiafeigou.widget.SafeRadioButton
-                android:id="@+id/menu_item_album_pop_panorama"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:button="@drawable/icon_panorama_album_menu_panorama"
-                android:padding="@dimen/y13"
-                android:paddingStart="@dimen/y14"
-                android:text="@string/Tap1_File_Camera"
-                android:textColor="@color/color_panorama_album_menu_photo_mode"
-                android:textSize="@dimen/sp16" />
+        <com.cylan.jiafeigou.widget.SafeRadioButton
+            android:id="@+id/menu_item_album_pop_photo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:button="@drawable/icon_panorama_album_menu_photo"
+            android:padding="@dimen/y13"
+            android:text="@string/Tap1_File_Phone"
+            android:textColor="@color/color_panorama_album_menu_photo_mode"
+            android:textSize="@dimen/sp16" />
+    </RadioGroup>
 
-            <com.cylan.jiafeigou.widget.SafeRadioButton
-                android:id="@+id/menu_item_album_pop_photo"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:button="@drawable/icon_panorama_album_menu_photo"
-                android:padding="@dimen/y13"
-                android:paddingStart="@dimen/y14"
-                android:text="@string/Tap1_File_Phone"
-                android:textColor="@color/color_panorama_album_menu_photo_mode"
-                android:textSize="@dimen/sp16" />
-        </RadioGroup>
-
-    </android.support.v7.widget.CardView>
-</FrameLayout>
+</android.support.v7.widget.CardView>

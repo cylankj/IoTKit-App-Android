@@ -195,7 +195,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
             if (simulatePercent != null)
                 simulatePercent.stop();
         }
-        bindResult = BindUtils.BIND_PREPARED;
     }
 
 

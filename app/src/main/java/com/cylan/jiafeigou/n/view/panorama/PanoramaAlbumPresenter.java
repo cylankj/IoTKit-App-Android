@@ -208,7 +208,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                     item.downloadInfo = null;
                                 }
                             }
-                            if (deviceIp != null && item.type == 0) {
+                            if (deviceIp != null) {
                                 String url = deviceIp + "/images/" + item.fileName;
                                 GetRequest request = OkGo.get(url);
                                 DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
@@ -217,7 +217,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                     downloadInfo.setUrl(request.getBaseUrl());
                                     DownloadDBManager.INSTANCE.replace(downloadInfo);
                                 }
-                                DownloadManager.getInstance().addTask(taskKey, request, null);
+                                if (item.type == 0) {
+                                    DownloadManager.getInstance().addTask(taskKey, request, null);
+                                }
                             }
                             item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                         }

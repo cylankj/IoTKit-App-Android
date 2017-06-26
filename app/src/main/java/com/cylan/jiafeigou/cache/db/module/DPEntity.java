@@ -17,7 +17,6 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -234,20 +233,18 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     public boolean equals(Object o) {
         if (this == o) return true;
         DPEntity value = (DPEntity) o;
-        return Objects.equals(version, value.version) && Objects.equals(msgId, value.msgId);
+        return (long) version == value.version && (int) msgId == value.msgId;
 
     }
 
     @Override
     public int hashCode() {
-        int result = 0;
-        result = 31 * result + (int) (version ^ (version >>> 32));
-        return result;
+        return String.valueOf(version).hashCode() + String.valueOf(msgId).hashCode();
     }
 
     @Override
     public int compareTo(@NonNull DPEntity another) {
-        return Objects.equals(version, another.version) ? 0 : version > another.version ? -1 : 1;//降序
+        return (long) version == another.version ? 0 : version > another.version ? -1 : 1;//降序
     }
 
 

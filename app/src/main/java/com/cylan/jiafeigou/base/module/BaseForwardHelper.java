@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -97,11 +98,12 @@ public class BaseForwardHelper {
         return sendForward(uuid, msgId, msg, 0);
     }
 
-    public <T> Observable<T> setDataPoint(String uuid, int msgId) {
+    public <T> Observable<T> setDataPoint(String uuid, int msgId, Object value) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
+                dpMsg.packValue = DpUtils.pack(value);
                 params.add(dpMsg);
                 Long seq = appCmd.robotSetData(uuid, params);
                 AppLogger.d("正在向服务器发送 dp消息:" + msgId);
@@ -134,13 +136,13 @@ public class BaseForwardHelper {
         return null;
     }
 
-    public <T> Observable<T> sendDataPoint(String uuid, int msgId) {
+    public <T> Observable<T> sendDataPoint(String uuid, int msgId, int limit) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
                 params.add(dpMsg);
-                Long seq = appCmd.robotGetData(uuid, params, 20, false, 0);
+                Long seq = appCmd.robotGetData(uuid, params, limit, false, 0);
                 AppLogger.d("正在向服务器发送 dp消息:" + msgId);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

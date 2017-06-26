@@ -57,6 +57,16 @@ public class DP {
 
 
     @Test
+    public void testMerge() {
+        RxBus.getCacheInstance().toObservable(String.class).mergeWith(Observable.create(subscriber -> {
+            RxBus.getCacheInstance().post("just for test");
+        }))
+                .subscribe(ret -> {
+                    System.out.println(ret);
+                });
+    }
+
+    @Test
     public void testMonitor() throws Exception {
         LiveFrameRateMonitor monitor = new LiveFrameRateMonitor();
         IFeedRtcp.MonitorListener listener = new IFeedRtcp.MonitorListener() {

@@ -12,11 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -29,14 +28,12 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
@@ -68,13 +65,8 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         basePresenter = new SdCardInfoPresenterImpl(this, uuid);
         customToolbar.setBackAction(o -> onBackPressed());
         initDetailData();
-        subscription = Observable.just(new DPEntity()
-                .setMsgId(204)
-                .setUuid(uuid)
-                .setAction(DBAction.QUERY)
-                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
-                .timeout(3, TimeUnit.SECONDS)
-                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
+        subscription = BasePanoramaApiHelper.getInstance().getSdInfo()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> initSdUseDetailRsp(null), throwable -> {
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
@@ -115,7 +107,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(dpNet)) {
+        if (!JFGRules.isDeviceOnline(dpNet) && !JFGRules.isAPDirect(uuid, device.$(DpMsgMap.ID_202_MAC, ""))) {
             ToastUtil.showToast(getString(R.string.RET_EUNONLINE_CID));
             return;
         }
@@ -180,8 +172,14 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
 
     @Override
     public void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus) {
-        sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
-                .$(204, new DpMsgDefine.DPSdStatus());
+        if (sdStatus == null) {
+            sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
+                    .$(204, new DpMsgDefine.DPSdStatus());
+        }
+        if (sdStatus == null) {
+            ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
+            return;
+        }
         if (sdStatus.err == 0 && sdStatus.hasSdcard) {
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
@@ -196,7 +194,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     public void showSdPopDialog() {
         AlertDialogManager.getInstance()
                 .showDialog(this, getString(R.string.MSG_SD_OFF), getString(R.string.MSG_SD_OFF),
-                        getString(R.string.OK), null);
+                        getString(R.string.OK), (dialog, which) -> finish());
     }
 
     @Override

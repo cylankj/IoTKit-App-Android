@@ -187,6 +187,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
         }
         radioGroup.check(modeToResId(albumViewMode, true));
+        menuItemAlbumPopPhoto.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PHOTO || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+        menuItemAlbumPopBoth.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+        menuItemAlbumPopPanorama.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PANORAMA || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
         setWindowAlpha(0.4f);
         PopupWindowCompat.showAsDropDown(albumModeSelectPop, toolbarAlbumViewMode, 0, -toolbarAlbumViewMode.getMeasuredHeight(), Gravity.LEFT | Gravity.BOTTOM);
     }
@@ -415,6 +418,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
+        if (albumViewMode != ALBUM_VIEW_MODE.MODE_NONE && mode > 0) return;
         if (albumModeSelectPop != null) {
             radioGroup.check(modeToResId(mode, true));
             menuItemAlbumPopPhoto.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PHOTO || mode == ALBUM_VIEW_MODE.MODE_BOTH);
