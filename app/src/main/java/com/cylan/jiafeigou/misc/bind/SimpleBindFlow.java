@@ -8,7 +8,9 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
@@ -22,6 +24,7 @@ import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -139,14 +142,14 @@ public class SimpleBindFlow extends AFullBind {
     /**
      * 发送服务器信息,发送timeZone信息
      *
-     * @param udpDevicePortrait
+     * @param portrait
      */
-    public void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-        Observable.just(1)
+    public void setServerLanguage(UdpConstant.UdpDevicePortrait portrait) {
+        Observable.just(portrait)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(ret -> {
                     try {
-                        AppLogger.i(BIND_TAG + udpDevicePortrait);
+                        AppLogger.i(BIND_TAG + portrait);
                         //
                         String serverAddress = OptionsImpl.getServer();
                         int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1));
@@ -155,24 +158,23 @@ public class SimpleBindFlow extends AFullBind {
                             throw new IllegalArgumentException("server address is empty");
                         //设置语言
                         JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
-                                udpDevicePortrait.uuid,
-                                udpDevicePortrait.mac,
+                                portrait.uuid,
+                                portrait.mac,
                                 JFGRules.getLanguageType(ContextUtils.getContext()));
 
                         //设置服务器
-                        JfgUdpMsg.SetServer setServer = new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
-                                udpDevicePortrait.mac,
+                        JfgUdpMsg.SetServer setServer = new JfgUdpMsg.SetServer(portrait.uuid,
+                                portrait.mac,
                                 serverAddress,
                                 port,
                                 80);
                         //增加绑定随机数.
-                        bindCode = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount() + System.currentTimeMillis();
-                        bindCode = MD5Util.lowerCaseMD5(bindCode);//cast to md5
-                        devicePortrait.bindCode = bindCode;
+                        String bindCode = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount() + System.currentTimeMillis();
+                        ret.bindCode = MD5Util.lowerCaseMD5(bindCode);//cast to md5
+                        devicePortrait = ret;
                         JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
-                                udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
+                                ret.uuid, portrait.mac, bindCode);
                         try {
-                            final boolean isRs = false;
                             for (int i = 0; i < 2; i++) {
                                 BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                         UdpConstant.PORT, code.toBytes());
@@ -209,38 +211,95 @@ public class SimpleBindFlow extends AFullBind {
                 }, AppLogger::e);
     }
 
+    private MapSubscription subscriptionMap = new MapSubscription();
+
     /**
      * 此处的消息来源非常关键{@link com.cylan.jiafeigou.n.engine.GlobalUdpDataSource}
      * emit出来 {@link JfgUdpMsg.PingAck},两者都是异步.
      *
-     * @param ssidInDigits
+     * @param cidSuffix
      * @return
      */
-    private Observable<JfgUdpMsg.PingAck> pingObservable(final String ssidInDigits) {
-        return RxBus.getCacheInstance().toObservable(JfgUdpMsg.PingAck.class)
-                .filter((JfgUdpMsg.PingAck pingAck) -> {
-                    //注意条件
-                    return !TextUtils.isEmpty(pingAck.cid)
-                            && pingAck.cid.endsWith(ssidInDigits);
-                })
-                .first();
+    private Observable<JfgUdpMsg.PingAck> pingObservable(final String cidSuffix) {
+        return Observable.create(subscriber -> {
+            final Subscription sub = RxBus.getCacheInstance().toObservable(JfgUdpMsg.PingAck.class)
+                    .timeout(3, TimeUnit.SECONDS)
+                    .filter(pingAck -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) &&
+                            pingAck.cid.endsWith(cidSuffix))
+                    .timeout(3, TimeUnit.SECONDS)
+                    .subscribe(pingAck -> {
+                        AppLogger.d(BIND_TAG + "得到ping消息");
+                        if (subscriber != null && !subscriber.isUnsubscribed()) {
+                            subscriber.onNext(pingAck);
+                            subscriber.onCompleted();
+                        }
+                        //结束本身.
+                        subscriptionMap.remove("PingAck");
+                    }, throwable -> {
+                        subscriber.onError(new RxEvent.HelperBreaker(1));
+                        subscriptionMap.remove("PingAck");
+                    });
+            subscriptionMap.add(sub, "PingAck");
+            try {
+                for (int i = 0; i < 2; i++) {
+                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.Ping().toBytes());
+                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.Ping().toBytes());
+                }
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
      * 此处的消息来源非常关键{@link com.cylan.jiafeigou.n.engine.GlobalUdpDataSource}
      * emit出来 {@link JfgUdpMsg.FPingAck}
      *
-     * @param ssidInDigits f_ping_ack 消息只取100ms内的第一条
+     * @param pingAck f_ping_ack 消息只取100ms内的第一条
      * @return
      */
-    private Observable<JfgUdpMsg.FPingAck> fPingObservable(final String ssidInDigits) {
-        return RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
-                .filter((JfgUdpMsg.FPingAck pingAck) -> {
-                    //注意条件
-                    return !TextUtils.isEmpty(pingAck.cid)
-                            && pingAck.cid.endsWith(ssidInDigits);
-                })
-                .first();
+    private Observable<UdpConstant.UdpDevicePortrait> fPingObservable(JfgUdpMsg.PingAck pingAck) {
+        return Observable.create(subscriber -> {
+            final Subscription sub = RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
+                    .timeout(3, TimeUnit.SECONDS)
+                    .filter(ret -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) &&
+                            TextUtils.equals(pingAck.cid, ret.cid))
+                    .timeout(3, TimeUnit.SECONDS)
+                    .subscribe(ret -> {
+                        AppLogger.d(BIND_TAG + "得到fping消息");
+                        UdpConstant.UdpDevicePortrait d = new UdpConstant.UdpDevicePortrait();
+                        d.uuid = ret.cid;
+                        d.mac = ret.mac;
+                        d.version = ret.version;
+                        d.net = pingAck.net;
+                        if (subscriber != null && !subscriber.isUnsubscribed()) {
+                            subscriber.onNext(d);
+                            subscriber.onCompleted();
+                            //结束本身.
+                            subscriptionMap.remove("FPingAck");
+                        }
+                    }, throwable -> {
+                        subscriber.onError(new RxEvent.HelperBreaker(2));
+                        subscriptionMap.remove("FPingAck");
+                    });
+            subscriptionMap.add(sub, "FPingAck");
+            try {
+                for (int i = 0; i < 2; i++) {
+                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.FPing().toBytes());
+                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                            UdpConstant.PORT,
+                            new JfgUdpMsg.FPing().toBytes());
+                }
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -283,18 +342,14 @@ public class SimpleBindFlow extends AFullBind {
                     }
                     return devicePortrait;
                 })
-                .last()
                 .subscribe((UdpConstant.UdpDevicePortrait portrait) -> {
                     //此时,设备还没恢复连接,需要加入队列
                     AppLogger.d("设备画像为:" + portrait);
-                    portrait.bindCode = bindCode;
                     PreferencesUtils.putString(JConstant.BINDING_DEVICE, new Gson().toJson(portrait));
                     AppLogger.i(BIND_TAG + "onLocalFlowFinish: " + portrait);
                     //恢复wifi
                     iBindResult.onLocalFlowFinish();
-                }, (Throwable throwable) -> {
-                    AppLogger.e(BIND_TAG + throwable.getLocalizedMessage());
-                });
+                }, (Throwable throwable) -> AppLogger.e(BIND_TAG + throwable.getLocalizedMessage()));
 
     }
 
@@ -302,17 +357,13 @@ public class SimpleBindFlow extends AFullBind {
     public Observable<UdpConstant.UdpDevicePortrait> getBindObservable(boolean check3GCase, String shortUUID) {
         //zip用法,合并,这里使用了timeout,也就是说,次subscription的生命周期只有1s
         AppLogger.d(BIND_TAG + "check3GCase:" + check3GCase);
-        return Observable.zip(pingObservable(shortUUID),
-                fPingObservable(shortUUID), (JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) -> {
-                    //此处完成了第1和第2步.
-                    UdpConstant.UdpDevicePortrait d = BindUtils.assemble(pingAck, fPingAck);
-                    setDevicePortrait(d);
-                    AppLogger.i(BIND_TAG + d);
-                    return d;
-                })
-                //1s内
-                .timeout(3000, TimeUnit.MILLISECONDS, timeoutException(check3GCase))
+        return Observable.just(shortUUID)
                 .subscribeOn(Schedulers.newThread())
+                .flatMap(this::pingObservable)
+                .flatMap(this::fPingObservable)
+                //1s内
+                .timeout(3, TimeUnit.SECONDS, timeoutException(check3GCase))
+//                .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     boolean needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
@@ -322,7 +373,7 @@ public class SimpleBindFlow extends AFullBind {
                         iBindResult.needToUpgrade();
                     AppLogger.d(BIND_TAG + "need to upgrade: " + needUpdate);
                     return !needUpdate;
-                }).first();
+                });
     }
 
     @Override

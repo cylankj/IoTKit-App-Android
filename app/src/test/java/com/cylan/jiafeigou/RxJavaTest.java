@@ -1,12 +1,11 @@
 package com.cylan.jiafeigou;
 
-import android.util.Log;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -79,7 +78,7 @@ public class RxJavaTest {
     }
 
     private long timeTick;
-    private Subscription subscription;
+    private Subscription sub = null;
 
     @Test
     public void testInterval() throws InterruptedException {
@@ -118,6 +117,39 @@ public class RxJavaTest {
         }
         System.out.println(good);
 
-        System.out.println((10+"%"));
+        System.out.println((10 + "%"));
     }
+
+    Subscription subscription;
+
+    @Test
+    public void testCompose() throws InterruptedException {
+        System.out.println("compose");
+        Observable.create(subscriber -> subscription = RxBus.getCacheInstance()
+                .toObservable(String.class)
+                .timeout(1, TimeUnit.SECONDS, Observable.just("so?"))
+                .filter(ret -> ret.startsWith("111"))
+                .timeout(1, TimeUnit.SECONDS, Observable.just("what?"))
+                .subscribe(ret -> {
+                    subscriber.onNext(ret);
+                    if (ret.endsWith("222")) {
+                        subscriber.onCompleted();
+                        if (subscription != null) subscription.unsubscribe();
+                    }
+                }, throwable -> {
+                    subscriber.onError(throwable);
+                    if (subscription != null) subscription.unsubscribe();
+                })).subscribe(ret -> System.out.println("result?" + ret),
+                throwable -> System.out.println("err"));
+        Thread.sleep(900);
+        RxBus.getCacheInstance().post("0000");
+        RxBus.getCacheInstance().post("111");
+        Thread.sleep(900);
+        RxBus.getCacheInstance().post("1112222");
+        RxBus.getCacheInstance().post("111000");
+        System.out.println("subscription: " + subscription.isUnsubscribed());
+        Thread.sleep(1000);
+    }
+
+
 }

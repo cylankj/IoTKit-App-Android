@@ -19,7 +19,7 @@
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_tab_back_selector"
         hunt:ct_icon_right="@drawable/details_icon_share"
-        hunt:ct_left_title="MIJIA"
+        hunt:ct_left_title=""
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 

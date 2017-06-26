@@ -1209,6 +1209,16 @@ public class RxEvent {
         public HelperBreaker(Throwable throwable) {
             super(throwable);
         }
+
+        @Override
+        public String getLocalizedMessage() {
+            return super.getLocalizedMessage();
+        }
+
+        @Override
+        public String getMessage() {
+            return super.getMessage();
+        }
     }
 
     @IntDef({

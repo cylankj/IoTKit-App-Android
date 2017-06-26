@@ -88,7 +88,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     AppLogger.d(BIND_TAG + "last state");
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
                     if (device.available()) {
-//                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onDeviceAlreadyExist());
                         device.setValue(201, new DpMsgDefine.DPNet());//先清空防止过早绑定成功
                     }
                     if (aFullBind != null) {
@@ -96,7 +95,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         aFullBind.sendWifiInfo(ssid, pwd, type);
                     }
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-        aFullBind.startPingFPing(shortCid);
         addSubscription(subscription, "startPingFPing");
     }
 
@@ -179,7 +177,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 })
                 .subscribe(result -> {
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-        aFullBind.startPingFPing(shortCid);
         addSubscription(subscription, "getBindObservable");
     }
 
