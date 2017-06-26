@@ -277,7 +277,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                     })
                     .subscribe(ret -> {
                     }, AppLogger::e);
-        }
+        } else if (fromLogout) goAheadAfterPermissionGranted();
         if (basePresenter != null)
             basePresenter.reEnableSmartcallLog();
     }
