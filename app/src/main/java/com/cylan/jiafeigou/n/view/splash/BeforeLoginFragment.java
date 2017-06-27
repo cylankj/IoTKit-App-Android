@@ -5,19 +5,27 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -29,7 +37,18 @@ import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
  * Created by lxh on 16-6-12.
  */
 
-public class BeforeLoginFragment extends android.support.v4.app.Fragment {
+public class BeforeLoginFragment extends Fragment {
+
+//    @BindView(R.id.imv_login_logo)
+//    ImageView imvLoginLogo;
+    @BindView(R.id.btn_to_login)
+    TextView btnToLogin;
+    @BindView(R.id.btn_to_register)
+    TextView btnToRegister;
+    @BindView(R.id.btn_look_around)
+    TextView btnLookAround;
+//    @BindView(R.id.rLayout_before_login)
+//    RelativeLayout rLayoutBeforeLogin;
 
     @Nullable
     @Override
@@ -52,6 +71,19 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
             Log.d("", "");
             return false;
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.InitFrom2x.class)) {
+            if (AutoSignIn.getInstance().isNotEmpty()) {
+                AutoSignIn.getInstance().autoLogin();
+                btnToLogin.setEnabled(false);
+                btnToRegister.setEnabled(false);
+                btnLookAround.setEnabled(false);
+            }
+        }
     }
 
     @OnClick(R.id.btn_look_around)
@@ -90,4 +122,8 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         ((NeedLoginActivity) getActivity()).signInFirst(bundle);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

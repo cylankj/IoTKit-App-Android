@@ -650,10 +650,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
             }
             resetView();
-            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "")
-                    .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                    .subscribe(ret -> {
-                    }, AppLogger::e);
+            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");
         }
     }
 

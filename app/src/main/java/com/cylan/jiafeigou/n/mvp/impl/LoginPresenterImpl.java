@@ -65,10 +65,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                             //账号和密码
                         }
-                        AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
-                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                                .subscribe(ret -> {
-                                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                        AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd);
                         AppLogger.d("logresult:" + o.toString());
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
