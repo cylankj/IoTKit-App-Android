@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -19,15 +17,24 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
 
@@ -39,7 +46,7 @@ import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
 
 public class BeforeLoginFragment extends Fragment {
 
-//    @BindView(R.id.imv_login_logo)
+    //    @BindView(R.id.imv_login_logo)
 //    ImageView imvLoginLogo;
     @BindView(R.id.btn_to_login)
     TextView btnToLogin;
@@ -73,15 +80,37 @@ public class BeforeLoginFragment extends Fragment {
         });
     }
 
+    private Subscription subscription;
+
     @Override
     public void onResume() {
         super.onResume();
         if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.InitFrom2x.class)) {
             if (AutoSignIn.getInstance().isNotEmpty()) {
+                subscription = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .delay(1, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(throwable -> {
+                            btnToLogin.setEnabled(true);
+                            btnToRegister.setEnabled(true);
+                            btnLookAround.setEnabled(true);
+                            LoadingDialog.dismissLoading(getFragmentManager());
+                        })
+                        .subscribe(ret -> {
+                            btnToLogin.setEnabled(true);
+                            btnToRegister.setEnabled(true);
+                            btnLookAround.setEnabled(true);
+                            LoadingDialog.dismissLoading(getFragmentManager());
+                            if (ret.code == JError.ErrorOK) {
+                                startActivity(new Intent(getActivity(), NewHomeActivity.class));
+                            }
+                        }, AppLogger::e);
                 AutoSignIn.getInstance().autoLogin();
                 btnToLogin.setEnabled(false);
                 btnToRegister.setEnabled(false);
                 btnLookAround.setEnabled(false);
+                LoadingDialog.showLoading(getFragmentManager(), getString(R.string.PLEASE_WAIT_1));
             }
         }
     }
