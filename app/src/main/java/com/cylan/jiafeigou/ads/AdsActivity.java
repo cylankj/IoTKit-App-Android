@@ -54,7 +54,6 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
             //遇到网络不好的情况会出现白屏,因为图片还没下载,所以先下载图片.
             Glide.with(this)
                     .load(description.url)
-                    .centerCrop()
                     .into(imvAdsPic);
 
         }
