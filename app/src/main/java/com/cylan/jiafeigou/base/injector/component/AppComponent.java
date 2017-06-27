@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.danikula.videocache.HttpProxyCacheServer;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -56,4 +57,6 @@ public interface AppComponent {
 
     OkHttpClient getOkHttpClient();
 
+    @Named("LogPath")
+    String getLogPath();
 }

@@ -234,7 +234,7 @@ public class SimpleBindFlow extends AFullBind {
 
     @Override
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
-        Observable.range(1, 3)
+        Observable.just(1)
                 .subscribeOn(Schedulers.newThread())
                 .filter((Integer integer) -> {
                     return devicePortrait != null;
@@ -242,22 +242,23 @@ public class SimpleBindFlow extends AFullBind {
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
-                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
-                            devicePortrait.mac,
-                            ssid, pwd);
-                    setWifi.security = type;
-                    //发送wifi配置
-                    try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
-                        AppLogger.d(TAG + new Gson().toJson(setWifi));
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+                    for (int i = 0; i < 3; i++) {
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
+                                devicePortrait.mac,
+                                ssid, pwd);
+                        setWifi.security = type;
+                        //发送wifi配置
+                        try {
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    setWifi.toBytes());
+                            AppLogger.d(TAG + new Gson().toJson(setWifi));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                     return devicePortrait;
                 })
-                .last()
                 .subscribe((UdpConstant.UdpDevicePortrait portrait) -> {
                     //此时,设备还没恢复连接,需要加入队列
                     AppLogger.d("设备画像为:" + portrait);
