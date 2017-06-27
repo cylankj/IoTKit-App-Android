@@ -118,7 +118,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     try {
-                        DpMsgDefine.DPSdStatus status = DpUtils.unpack(ret.packValue, DpMsgDefine.DPSdStatus.class);
+                        DpMsgDefine.DPSdStatus status = DpUtils.unpackData(ret.packValue, DpMsgDefine.DPSdStatus.class);
                         if (status != null && (!status.hasSdcard || status.err != 0)) {
                             mView.showSdPopDialog();
                         }
