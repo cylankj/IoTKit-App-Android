@@ -290,7 +290,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         } else {
             //只显示邮箱注册
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-            etRegisterInputBox.setHint(getString(R.string.EMAIL_1));
+            etRegisterInputBox.setHint(getString(R.string.EMAIL));
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 65);
         }
     }
@@ -650,10 +650,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
             }
             resetView();
-            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "")
-                    .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                    .subscribe(ret -> {
-                    }, AppLogger::e);
+            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");
         }
     }
 

@@ -1302,4 +1302,11 @@ public class RxEvent {
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
         public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
     }
+
+    public static final class InitFrom2x {
+        public static final InitFrom2x INSTANCE = new InitFrom2x();
+    }
+
 }
+
+

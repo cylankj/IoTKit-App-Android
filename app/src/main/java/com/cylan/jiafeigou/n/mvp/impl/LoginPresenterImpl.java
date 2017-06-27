@@ -58,17 +58,15 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .map(login -> {
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
-                        if (o.loginType) {
-                            BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
-                            AppLogger.d("第三方登录:" + o.userName + ":" + o.pwd);
-                        } else {
-                            BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
-                            //账号和密码
-                        }
-                        AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
-                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                                .subscribe(ret -> {
-                                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+//                        if (o.loginType) {
+//                            BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
+//                            AppLogger.d("第三方登录:" + o.userName + ":" + o.pwd);
+//                        } else {
+//                            BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
+//                            //账号和密码
+//                        }
+                        AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd);
+                        AutoSignIn.getInstance().autoLogin();
                         AppLogger.d("logresult:" + o.toString());
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());

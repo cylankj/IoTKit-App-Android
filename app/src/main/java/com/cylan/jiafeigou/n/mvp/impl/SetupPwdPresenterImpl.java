@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -68,19 +69,20 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
     public void executeLogin(final LoginAccountBean login) {
         Observable.just(login)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<LoginAccountBean, LoginAccountBean>() {
-                    @Override
-                    public LoginAccountBean call(LoginAccountBean o) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
-                        //非三方登录的标记
-                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
-                        return o;
+                .map(o -> {
+                    try {
+//                        BaseApplication.getAppComponent()
+//                                .getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),
+//                                o.userName, o.pwd);
+                        AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd);
+                        AutoSignIn.getInstance().autoLogin();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
+                    //非三方登录的标记
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
+                    return o;
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);

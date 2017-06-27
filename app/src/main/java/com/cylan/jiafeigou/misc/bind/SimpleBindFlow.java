@@ -234,26 +234,29 @@ public class SimpleBindFlow extends AFullBind {
 
     @Override
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
-        Observable.range(1, 3)
+        Observable.just(1)
                 .subscribeOn(Schedulers.newThread())
+                .delay(200, TimeUnit.MILLISECONDS)
                 .filter((Integer integer) -> {
                     return devicePortrait != null;
                 })
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
-                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
-                            devicePortrait.mac,
-                            ssid, pwd);
-                    setWifi.security = type;
-                    //发送wifi配置
-                    try {
-                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
-                        AppLogger.d(TAG + new Gson().toJson(setWifi));
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+                    for (int i = 0; i < 3; i++) {
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
+                                devicePortrait.mac,
+                                ssid, pwd);
+                        setWifi.security = type;
+                        //发送wifi配置
+                        try {
+                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    setWifi.toBytes());
+                            AppLogger.d(TAG + new Gson().toJson(setWifi));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                     return devicePortrait;
                 })
