@@ -7,6 +7,7 @@
     tools:context="com.cylan.jiafeigou.ads.AdsActivity">
 
     <ImageView
+        android:scaleType="fitXY"
         android:id="@+id/imv_ads_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
