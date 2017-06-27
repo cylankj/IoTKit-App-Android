@@ -169,7 +169,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Device getDevice(String uuid) {
-        Device device = mCachedDeviceMap.get(uuid);
+        Device device = mCachedDeviceMap == null ? new Device() : mCachedDeviceMap.get(uuid);
         return device == null ? new Device() : device;//给一个默认的 device, 防止出现空指针
     }
 

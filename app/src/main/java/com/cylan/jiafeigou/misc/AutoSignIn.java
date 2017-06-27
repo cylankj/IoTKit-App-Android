@@ -74,74 +74,69 @@ public class AutoSignIn {
         Observable.just(PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY))
                 .subscribeOn(Schedulers.io())
                 .flatMap(signTypeAes -> {
-                            try {
-//                                final String netName = NetUtils.getNetName(ContextUtils.getContext());
-//                                if (netName != null && netName.contains("DOG"))
-//                                    MiscUtils.recoveryWiFi();
-                                AppLogger.e("autoLogin");
-                                String finalAccount = null;
-                                String finalPwd = null;
-                                SignType signType = null;
-                                if (TextUtils.isEmpty(signTypeAes) && PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true)) {
-                                    finalAccount = getString(JConstant.KEY_PHONE);
-                                    //2.x的密码是MD5保存
-                                    finalPwd = getString(JConstant.KEY_PSW);
-                                    Log.d(TAG, "get info from 2.x? " + finalAccount);
-                                    Log.d(TAG, "get info from 2.x? " + finalPwd);
+                    try {
+                        AppLogger.e("autoLogin");
+                        String finalAccount = null;
+                        String finalPwd = null;
+                        SignType signType = null;
+                        if (TextUtils.isEmpty(signTypeAes) && PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true)) {
+                            finalAccount = getString(JConstant.KEY_PHONE);
+                            //2.x的密码是MD5保存
+                            finalPwd = getString(JConstant.KEY_PSW);
+                            Log.d(TAG, "get info from 2.x? " + finalAccount);
+                            Log.d(TAG, "get info from 2.x? " + finalPwd);
 //                                    clear_2x();
-                                    signType = new SignType();
-                                    signType.account = finalAccount;
-                                    signType.type = 0;//此处不能填1,会自动登录.0 不去登录,走欢迎页的逻辑.
-                                } else if (!TextUtils.isEmpty(signTypeAes)) {
-                                    String decryption = AESUtil.decrypt(signTypeAes);
-                                    signType = new Gson().fromJson(decryption, SignType.class);
-                                    if (signType != null) {
-                                        finalAccount = signType.account;
-                                        if (signType.type == 0)//=0 可能是上一步,从2.x读配置文件.
-                                            signType.type = 1;
-                                        finalPwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + signTypeAes + ".dat", "UTF-8").toString();
-                                        Log.d(TAG, "read account from file: " + finalAccount);
-                                        Log.d(TAG, "read pwd md5 from file: " + finalPwd);
-                                        if (TextUtils.isEmpty(finalAccount) || TextUtils.isEmpty(finalPwd)) {
-                                            throw new IllegalArgumentException("用户名或者密码不能为空");
-                                        }
-                                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
-                                    }
+                            signType = new SignType();
+                            signType.account = finalAccount;
+                            signType.type = 0;//此处不能填1,会自动登录.0 不去登录,走欢迎页的逻辑.
+                        } else if (!TextUtils.isEmpty(signTypeAes)) {
+                            String decryption = AESUtil.decrypt(signTypeAes);
+                            signType = new Gson().fromJson(decryption, SignType.class);
+                            if (signType != null) {
+                                finalAccount = signType.account;
+                                if (signType.type == 0)//=0 可能是上一步,从2.x读配置文件.
+                                    signType.type = 1;
+                                finalPwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + signTypeAes + ".dat", "UTF-8").toString();
+                                Log.d(TAG, "read account from file: " + finalAccount);
+                                Log.d(TAG, "read pwd md5 from file: " + finalPwd);
+                                if (TextUtils.isEmpty(finalAccount) || TextUtils.isEmpty(finalPwd)) {
+                                    throw new IllegalArgumentException("用户名或者密码不能为空");
                                 }
-                                String aes = saveAccountAes(signType);
-                                savePwdMd5(aes, finalPwd);
-                                if (signType != null) {
-                                    if (!TextUtils.isEmpty(finalPwd) && !TextUtils.isEmpty(finalAccount)) {
-                                        //需要告知
-                                        loginAccount = finalAccount;
-                                        loginpwd = finalPwd;
-                                        RxBus.getCacheInstance().postSticky(RxEvent.InitFrom2x.INSTANCE);
-                                    }
-                                    if (signType.type == 1) {
-                                        clear_2x();
-                                        BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd);
-                                    } else if (signType.type >= 3) {
-                                        clear_2x();
-                                        BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
-                                    } else if (signType.type == 0) {
-                                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
-                                    }
-                                    Log.d(TAG, "finalPwd:" + finalPwd);
-                                }
-                            } catch (Exception e) {
-                                AppLogger.e("no sign type" + e.getLocalizedMessage());
+                                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                            }
+                        }
+                        String aes = saveAccountAes(signType);
+                        savePwdMd5(aes, finalPwd);
+                        if (signType != null) {
+                            if (!TextUtils.isEmpty(finalPwd) && !TextUtils.isEmpty(finalAccount)) {
+                                //需要告知
+                                loginAccount = finalAccount;
+                                loginpwd = finalPwd;
+                                RxBus.getCacheInstance().postSticky(RxEvent.InitFrom2x.INSTANCE);
+                            }
+                            if (signType.type == 1) {
+                                clear_2x();
+                                BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd);
+                            } else if (signType.type >= 3) {
+                                clear_2x();
+                                BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
+                            } else if (signType.type == 0) {
                                 PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                             }
-
-                            if (!BaseApplication.isOnline() && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
-                                BaseApplication.getAppComponent().getSourceManager().initFromDB();
-                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));
-                            }
-                            return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
+                            Log.d(TAG, "finalPwd:" + finalPwd);
                         }
-                )
+                    } catch (Exception e) {
+                        AppLogger.e("no sign type" + e.getLocalizedMessage());
+                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
+                    }
+                    if (!BaseApplication.isOnline() && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
+                        BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));
+                    }
+                    return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first();
+                })
                 .observeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS, Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true))
                         .map(hasPswError -> {
