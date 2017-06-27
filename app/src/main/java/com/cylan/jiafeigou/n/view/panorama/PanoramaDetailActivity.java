@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -147,7 +149,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     protected void initViewAndListener() {
         super.initViewAndListener();
         refreshControllerView(false);
+
+        Drawable progressDrawable = panoramaPanelSeekBar.getProgressDrawable().mutate();
+        Drawable drawable = DrawableCompat.wrap(progressDrawable);
+        DrawableCompat.setTint(drawable, getResources().getColor(R.color.color_white));
+        panoramaPanelSeekBar.setProgressDrawable(drawable);
+        Drawable mutate = panoramaPanelSeekBar.getThumb().mutate();
+        Drawable wrap = DrawableCompat.wrap(mutate);
+        DrawableCompat.setTint(wrap, getResources().getColor(R.color.color_white));
+        panoramaPanelSeekBar.setThumb(wrap);
+        panoramaPanelSeekBar.requestLayout();
         panoramaPanelSeekBar.setOnSeekBarChangeListener(this);
+
         panoramaItem = getIntent().getParcelableExtra("panorama_item");
         mode = getIntent().getIntExtra("panorama_mode", 2);
         topBack.setText(TimeUtils.getTimeSpecial(panoramaItem.time * 1000L));
@@ -460,7 +473,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void clickedMore() {
         AppLogger.d("点击了更多菜单");
         if (morePopMenu == null) {
-            morePopMenu = new PopupWindow(this);
             View contentView = LayoutInflater.from(this).inflate(R.layout.item_panorama_more, null);
             contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
             download = (TextView) contentView.findViewById(R.id.panorama_detail_more_download);
@@ -485,15 +497,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             deleted.setOnClickListener(v -> {
                 deleteWithAlert();
             });
-            morePopMenu.setContentView(contentView);
+            morePopMenu = new PopupWindow(contentView, contentView.getMeasuredWidth(), contentView.getMeasuredHeight());
             morePopMenu.setOutsideTouchable(true);
             morePopMenu.setFocusable(true);
             morePopMenu.setBackgroundDrawable(new ColorDrawable(0));
         }
         if (!morePopMenu.isShowing()) {
-            if (downloadInfo == null || downloadInfo.getState() != DownloadManager.FINISH) {
+            if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
                 download.setText(R.string.Tap1_Album_Download);
-            } else if (downloadInfo.getState() == 4) {
+            } else if (downloadInfo.getState() == DownloadManager.FINISH) {
                 download.setText(R.string.FINISHED);
             } else {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");

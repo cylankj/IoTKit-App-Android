@@ -1,20 +1,17 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+import com.cylan.jiafeigou.utils.JFGAccountURL;
 
 import java.util.List;
 
@@ -23,64 +20,50 @@ import java.util.List;
  * 创建时间：2016/10/26
  * 描述：
  */
-public class MineHasShareAdapter extends SuperAdapter<FriendBean> {
+public class MineHasShareAdapter extends SuperAdapter<JFGFriendAccount> {
 
-    private OnCancleShareListenter listenter;
-    private RoundedImageView userImag;
+    private OnCancelShareListener listener;
 
-    public interface OnCancleShareListenter {
-        void onCancleShare(FriendBean item);
+    public interface OnCancelShareListener {
+        void onCancelShare(JFGFriendAccount item);
     }
 
-    public void setOnCancleShareListenter(OnCancleShareListenter listenter) {
-        this.listenter = listenter;
+    public void setOnCancelShareListener(OnCancelShareListener listener) {
+        this.listener = listener;
     }
 
 
-    public MineHasShareAdapter(Context context, List<FriendBean> items, IMulItemViewType<FriendBean> mulItemViewType) {
+    public MineHasShareAdapter(Context context, List<JFGFriendAccount> items, IMulItemViewType<JFGFriendAccount> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final FriendBean item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final JFGFriendAccount item) {
         holder.setText(R.id.tv_username, TextUtils.isEmpty(item.markName) ? item.alias : item.markName);
         holder.setText(R.id.tv_friend_account, item.account);
         holder.setOnClickListener(R.id.tv_btn_cancle_share, v -> {
-            if (listenter != null) {//存在复用的情况,不可取
-                listenter.onCancleShare(item);
+            if (listener != null) {//存在复用的情况,不可取
+                listener.onCancelShare(item);
             }
         });
-        userImag = holder.getView(R.id.iv_userhead);
-        holder.itemView.setTag(item.iconUrl);
         //头像
-        Glide.with(getContext()).load(item.iconUrl)
-                .asBitmap().centerCrop()
+        Glide.with(getContext()).load(new JFGAccountURL(item.account))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new BitmapImageViewTarget(userImag) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        if (item.iconUrl.equals(holder.itemView.getTag())) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            userImag.setImageDrawable(circularBitmapDrawable);
-                        }
-                    }
-                });
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into((ImageView) holder.getView(R.id.iv_userhead));
     }
 
     @Override
-    protected IMulItemViewType<FriendBean> offerMultiItemViewType() {
-        return new IMulItemViewType<FriendBean>() {
+    protected IMulItemViewType<JFGFriendAccount> offerMultiItemViewType() {
+        return new IMulItemViewType<JFGFriendAccount>() {
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
 
             @Override
-            public int getItemViewType(int position, FriendBean account) {
+            public int getItemViewType(int position, JFGFriendAccount account) {
                 return 0;
             }
 

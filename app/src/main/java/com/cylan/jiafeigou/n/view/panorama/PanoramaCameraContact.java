@@ -83,7 +83,7 @@ public interface PanoramaCameraContact {
 
         void onNewFirmwareRsp();
 
-        void onRefreshViewModeUI(int viewMode, boolean enable);
+        void onRefreshViewModeUI(int viewMode, boolean enable, boolean record);
 
         void onRefreshControllerView(boolean enable, boolean all);
 

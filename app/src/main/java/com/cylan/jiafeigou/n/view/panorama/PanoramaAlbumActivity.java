@@ -184,12 +184,11 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             albumModeSelectPop.setOutsideTouchable(true);
             albumModeSelectPop.setFocusable(true);
             albumModeSelectPop.setOnDismissListener(() -> setWindowAlpha(1));
-
+            radioGroup.check(modeToResId(albumViewMode, true));
+            menuItemAlbumPopPhoto.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PHOTO || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+            menuItemAlbumPopBoth.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+            menuItemAlbumPopPanorama.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PANORAMA || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
         }
-        radioGroup.check(modeToResId(albumViewMode, true));
-        menuItemAlbumPopPhoto.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PHOTO || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
-        menuItemAlbumPopBoth.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
-        menuItemAlbumPopPanorama.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PANORAMA || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
         setWindowAlpha(0.4f);
         PopupWindowCompat.showAsDropDown(albumModeSelectPop, toolbarAlbumViewMode, 0, -toolbarAlbumViewMode.getMeasuredHeight(), Gravity.LEFT | Gravity.BOTTOM);
     }
@@ -209,7 +208,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             case ALBUM_VIEW_MODE.MODE_PHOTO:
                 return isPop ? R.id.menu_item_album_pop_photo : 2;
             default:
-                return isPop ? R.id.menu_item_album_pop_both : 0;
+                return isPop ? R.id.menu_item_album_pop_photo : 0;
         }
     }
 
@@ -222,7 +221,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             case R.id.menu_item_album_pop_photo:
                 return ALBUM_VIEW_MODE.MODE_PHOTO;
             default:
-                return ALBUM_VIEW_MODE.MODE_BOTH;
+                return ALBUM_VIEW_MODE.MODE_PHOTO;
         }
     }
 
@@ -418,24 +417,19 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
-        if (albumViewMode != ALBUM_VIEW_MODE.MODE_NONE && mode > 0) return;
+        if (panoramaAdapter != null) {
+            panoramaAdapter.notifyDataSetChanged();
+        }
         if (albumModeSelectPop != null) {
             radioGroup.check(modeToResId(mode, true));
             menuItemAlbumPopPhoto.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PHOTO || mode == ALBUM_VIEW_MODE.MODE_BOTH);
             menuItemAlbumPopBoth.setEnabled(mode == ALBUM_VIEW_MODE.MODE_BOTH);
             menuItemAlbumPopPanorama.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PANORAMA || mode == ALBUM_VIEW_MODE.MODE_BOTH);
         }
-        panoramaAdapter.notifyDataSetChanged();
+        toolbarAlbumViewMode.setText(titles[modeToResId(mode, false)]);
         if (albumViewMode == mode) return;
-//        if (report) {
-//            ToastUtil.showNegativeToast(getString(R.string.Tap1_Disconnected));
-//        }
         swipeRefreshLayout.setRefreshing(true);
-        presenter.fetch(0, albumViewMode = mode);
-        toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-        if (albumModeSelectPop != null && report) {
-
-        }
+        presenter.fetch(0, albumViewMode=mode);
     }
 
     @Override
