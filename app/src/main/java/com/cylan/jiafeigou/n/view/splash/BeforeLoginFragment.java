@@ -104,6 +104,7 @@ public class BeforeLoginFragment extends Fragment {
                             LoadingDialog.dismissLoading(getFragmentManager());
                             if (ret.code == JError.ErrorOK) {
                                 startActivity(new Intent(getActivity(), NewHomeActivity.class));
+                                getActivity().finish();
                             }
                         }, AppLogger::e);
                 AutoSignIn.getInstance().autoLogin();
