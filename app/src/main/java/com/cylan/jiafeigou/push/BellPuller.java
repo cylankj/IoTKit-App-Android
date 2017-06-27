@@ -102,7 +102,7 @@ public class BellPuller {
         }
         String url = null;
         try {
-            url = new JFGGlideURL(cid, time + ".jpg").toURL().toString();
+            url = new JFGGlideURL(cid, time + ".jpg", device.regionType).toURL().toString();
             AppLogger.d(PUSH_TAG + "门铃截图地址:" + url);
         } catch (MalformedURLException e) {
             AppLogger.e(PUSH_TAG + "err:" + MiscUtils.getErr(e));

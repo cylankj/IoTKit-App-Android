@@ -146,7 +146,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         }
         //填满
         Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg"))
+                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg", dpAlarm.type))
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new SimpleTarget<Bitmap>() {

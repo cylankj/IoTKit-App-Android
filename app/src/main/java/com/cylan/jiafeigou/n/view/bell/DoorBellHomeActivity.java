@@ -422,7 +422,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
         Glide.with(this)
-                .load(new JFGGlideURL(uuid, item.timeInLong / 1000 + ".jpg"))
+                .load(new JFGGlideURL(uuid, item.timeInLong / 1000 + ".jpg", item.type))
                 .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()

@@ -27,15 +27,14 @@ public class JFGGlideURL extends GlideUrl {
     private int regionType;
 
 
-    public JFGGlideURL(String cid, String fileName) {
+    public JFGGlideURL(String cid, String fileName, int type) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(cid);
         this.vid = Security.getVId();
+        this.regionType = type;
         if (device != null) {
             this.V2 = TextUtils.isEmpty(device.vid);
             Log.d("V2", "V2? " + V2);
-            this.regionType = device.regionType;
-            if (this.regionType > 1 || this.regionType < 0) regionType = 0;
         } else Log.d("V2", "V2? is empty ");
         this.timestamp = fileName;
         this.cid = cid;
