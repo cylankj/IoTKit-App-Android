@@ -116,7 +116,7 @@ public class AutoSignIn {
                             }
                             if (signType.type == 1) {
                                 clear_2x();
-                                BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd);
+                                BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, true);
                             } else if (signType.type >= 3) {
                                 clear_2x();
                                 BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), finalAccount, finalPwd, signType.type);
