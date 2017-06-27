@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import org.msgpack.MessagePack;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -38,13 +37,13 @@ public class DpUtils {
         return mp.createBufferUnpacker(data).read(clazz);
     }
 
-    public static <T> T unpack(byte[] bytes, Type type) throws IOException {
-        if (bytes == null || type == null) {
-            AppLogger.e("value is null: " + type);
-            return null;
-        }
-        return (T) mp.createBufferUnpacker(bytes).read(type);
-    }
+//    public static <T> T unpack(byte[] bytes, Type type) throws IOException {
+//        if (bytes == null || type == null) {
+//            AppLogger.e("value is null: " + type);
+//            return null;
+//        }
+//        return (T) mp.createBufferUnpacker(bytes).read(type);
+//    }
 
     public static <T> T getMsg(ArrayList<JFGDPMsg> list, int id, Class<T> tClass) {
         if (list != null) {

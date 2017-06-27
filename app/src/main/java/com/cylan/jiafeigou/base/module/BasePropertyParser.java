@@ -120,7 +120,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, PROPERTY, CAMERA));
         properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
-        properties.put(228,new DPProperty(DpMsgDefine.DPSdStatus.class,PROPERTY,CAMERA));
+        properties.put(228, new DPProperty(DpMsgDefine.DPSdStatus.class, PROPERTY, CAMERA));
         properties.put(ID_223_MOBILE_NET, new DPProperty(int.class, PROPERTY, CAMERA));//
         properties.put(ID_222_SDCARD_SUMMARY, new DPProperty(DpMsgDefine.DPSdcardSummary.class));//set
         properties.put(ID_220_SDK_VERSION, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
@@ -152,7 +152,7 @@ public class BasePropertyParser implements IPropertyParser {
 
     @Override
     public <T extends DataPoint> T parser(int msgId, byte[] bytes, long version) {
-        T result;
+        T result = null;
         try {
             DPProperty property = properties.get(msgId);
             if (property == null) return null;
@@ -164,11 +164,31 @@ public class BasePropertyParser implements IPropertyParser {
             }
             result.setMsgId(msgId);
             result.setVersion(version);
-            return result;
         } catch (Exception e) {
             Log.d("parser", "parser:" + msgId + " " + e.getLocalizedMessage());
         }
-        return null;
+        return result == null ? repair(msgId, bytes, version) : result;
+    }
+
+
+    private <T extends DataPoint> T repair(int msgId, byte[] bytes, long version) {
+        T result = null;
+        try {
+            if (msgId == 204) {
+                DpMsgDefine.DPSdStatusInt unpack = DpUtils.unpackData(bytes, DpMsgDefine.DPSdStatusInt.class);
+                DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
+                status.total = unpack.total;
+                status.used = unpack.used;
+                status.err = unpack.err;
+                status.hasSdcard = unpack.hasSdcard == 1;
+                result = (T) status;
+                result.setMsgId(msgId);
+                result.setVersion(version);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override

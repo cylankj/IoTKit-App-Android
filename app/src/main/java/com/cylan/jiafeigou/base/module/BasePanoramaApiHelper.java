@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -140,11 +141,18 @@ public class BasePanoramaApiHelper {
 
     private Observable<RxEvent.PanoramaApiAvailable> getAvailableApi() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
-                .filter(panoramaApiAvailable -> {
+                .first(panoramaApiAvailable -> {
                     AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
                     return panoramaApiAvailable.ApiType >= 0;
                 })
-                .first()
+                .timeout(5, TimeUnit.SECONDS, Observable.just(null))
+                .filter(ret -> {
+                    if (ret == null) {
+                        AppLogger.d("正在初始化");
+                        BaseDeviceInformationFetcher.getInstance().init(uuid);
+                    }
+                    return ret != null;
+                })
                 .observeOn(Schedulers.io());
     }
 
@@ -180,6 +188,27 @@ public class BasePanoramaApiHelper {
         return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus() : forwardHelper.sendForward(uuid, 13, null));
     }
 
+    public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat(String deviceUuid) {
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.sdFormat().map(ret -> {
+            //更新设备属性
+            DpMsgDefine.DPSdStatus status = new DpMsgDefine.DPSdStatus();
+            status.err = ret.sdcard_recogntion;
+            status.hasSdcard = ret.sdIsExist == 1;
+            status.used = ret.storage_used;
+            status.total = ret.storage;
+            Device device = DataSourceManager.getInstance().getDevice(deviceUuid);
+            if (device.available()) {
+                DPEntity property = device.getProperty(204);
+                if (property == null) {
+                    property = device.getEmptyProperty(204);
+                }
+                property.setValue(status, DpUtils.pack(status), property.getVersion());
+                device.updateProperty(204, property);
+            }
+            return ret;
+        }) : forwardHelper.setDataPoint(deviceUuid, 218, 0));
+    }
+
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
         return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.sdFormat().map(ret -> {
             //更新设备属性
@@ -198,7 +227,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(204, property);
             }
             return ret;
-        }) : forwardHelper.setDataPoint(uuid, 218));
+        }) : forwardHelper.setDataPoint(uuid, 218, 0));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> getSdInfo() {
@@ -219,7 +248,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(204, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(uuid, 204));
+        }) : forwardHelper.sendDataPoint(uuid, 204, 1));
     }
 
     public Observable<PanoramaEvent.MsgPowerLineRsp> getPowerLine() {
@@ -235,7 +264,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(205, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(uuid, 205));
+        }) : forwardHelper.sendDataPoint(uuid, 205, 1));
     }
 
     public Observable<PanoramaEvent.MsgBatteryRsp> getBattery() {
@@ -251,7 +280,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(206, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(uuid, 206));
+        }) : forwardHelper.sendDataPoint(uuid, 206, 1));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setLogo(int logType) {
@@ -271,6 +300,6 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgUpgradeStatusRsp> getUpgradeStatus() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : forwardHelper.sendDataPoint(uuid, 228));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : forwardHelper.sendDataPoint(uuid, 228, 1));
     }
 }

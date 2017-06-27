@@ -237,18 +237,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void initPanoramaView() {
         panoramicView720Ext = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, this, true);
-        panoramicView720Ext.configV720();
         panoramicView720Ext.setId("IVideoView".hashCode());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         panoramicView720Ext.setLayoutParams(params);
         panoramaContentContainer.addView(panoramicView720Ext);
-        panoramicView720Ext.setEventListener(this);
-        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
-        panoramicView720Ext.enableGyro(false);
         bottomPictureMenuGyroscope.setImageResource(R.drawable.photos_icon_manual_selector);
         bottomVideoMenuGyroscope.setImageResource(R.drawable.video_icon_manual_selector);
         bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
         bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
+        panoramicView720Ext.setEventListener(this);
+        panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
+        panoramicView720Ext.enableGyro(false);
+        panoramicView720Ext.configV720();
     }
 
     private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
@@ -556,11 +556,16 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("将进行下载");
         String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
         if (deviceIp != null) {
-            String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName);
             GetRequest request = OkGo.get(deviceIp + "/images/" + panoramaItem.fileName);
+            String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName);
+            DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
+            if (downloadInfo != null) {
+                downloadInfo.setRequest(request);
+                downloadInfo.setUrl(request.getBaseUrl());
+                DownloadDBManager.INSTANCE.replace(downloadInfo);
+            }
             DownloadManager.getInstance().addTask(taskKey, request, listener);
-
-            downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
+            this.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
         } else {
             AppLogger.d("非家居模式不能进行下载");
         }

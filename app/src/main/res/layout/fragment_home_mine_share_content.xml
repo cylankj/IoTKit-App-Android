@@ -49,36 +49,37 @@
             app:ct_icon="@drawable/nav_icon_back_white"
             app:ct_left_title="@string/Tap3_ShareDevice_SharedContents"
             app:ct_left_title_color="@color/color_white"
-            app:ct_right_title_color="@color/color_white"
+            app:ct_right_title_color="@color/normal_btn_color_selector"
             app:rightAction="@{rightAction}"
             app:rightEnable="@{isEmpty?false:true}"
             app:toolbarRightTitle="@{editMode?@string/CANCEL:@string/EDIT_THEME}" />
 
-
-        <LinearLayout
-            android:id="@+id/empty"
+        <ImageView
+            android:id="@+id/empty_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y180"
-            android:orientation="vertical"
+            android:src="@drawable/pic_no_share"
             android:visibility="@{isEmpty?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/empty_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintVertical_chainStyle="packed" />
 
-            <ImageView
-                android:id="@+id/empty_picture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pic_no_share" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Tap3_ShareDevice_NoShare" />
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/empty_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y16"
+            android:text="@string/Tap3_ShareDevice_NoShare"
+            android:textColor="#AAAAAA"
+            android:textSize="@dimen/sp15"
+            android:visibility="@{isEmpty?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/empty_picture"
+            app:layout_constraintStart_toStartOf="@id/empty_picture"
+            app:layout_constraintTop_toBottomOf="@id/empty_picture"
+            app:layout_goneMarginTop="@dimen/y16" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/sharedRefresh"

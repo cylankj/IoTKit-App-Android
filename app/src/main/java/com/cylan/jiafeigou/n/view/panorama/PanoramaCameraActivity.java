@@ -308,13 +308,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         hasResolution = true;
         if (surfaceView == null) {
             surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, this, true);
-            surfaceView.configV720();
-            surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
-            surfaceView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             surfaceView.setLayoutParams(params);
             videoLiveContainer.addView(surfaceView);
-
+            surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
+            surfaceView.configV720();
+            surfaceView.setId("IVideoView".hashCode());
         }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
@@ -833,7 +832,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onRefreshConnectionMode(int connectionType) {//-1:连接设备超时 ,-2:可以忽略
-        if (upgrading) return;//升级中所有选项不可操作
         bannerSwitcher.setVisibility(View.VISIBLE);
         cameraUpgrading.setVisibility(View.GONE);
         Device device = sourceManager.getDevice(uuid);
@@ -852,6 +850,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bannerConnectionIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.GONE);
         bannerConnectionText.setVisibility(upgrading ? View.INVISIBLE : View.VISIBLE);
         bannerConnectionText.setText(apMode ? R.string.Tap1_OutdoorMode : isOnline ? R.string.DEVICE_WIFI_ONLINE : R.string.NOT_ONLINE);
+        bottomPanelAlbumItem.setEnabled(!upgrading);
+        bottomPanelAlbumItem.setAlpha(bottomPanelAlbumItem.isEnabled() ? 1 : 0.3f);
         if (!apMode && !isOnline) {
             bannerChargeText.setVisibility(View.INVISIBLE);
             bannerChargeIcon.setVisibility(View.INVISIBLE);
