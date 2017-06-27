@@ -19,7 +19,7 @@ buildscript {
         classpath 'com.google.gms:google-services:3.0.0'
 
         classpath 'com.mcxiaoke.gradle:packer-ng:1.0.9'
-        if (project.rootProject.file('fastdex.properties'))
+        if (project.rootProject.file('fastdex.properties').exists())
             classpath 'com.github.typ0520:fastdex-gradle:0.1.6'
     }
 }
