@@ -404,6 +404,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
                 .addToBackStack("HomeMineFragment")
                 .commit();
+        homeMineItemHelp.showHint(false);
     }
 
     /**

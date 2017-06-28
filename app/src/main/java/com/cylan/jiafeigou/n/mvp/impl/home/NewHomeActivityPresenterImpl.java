@@ -62,7 +62,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.InfoUpdate.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                }, throwable -> addSubscription(mineTabNewInfoRsp()));
+                .filter(ret -> mView != null)
+                .subscribe(ret -> mView.refreshHint(true), throwable -> addSubscription(mineTabNewInfoRsp()));
     }
 }
