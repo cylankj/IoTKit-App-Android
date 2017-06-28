@@ -15,11 +15,12 @@ import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.OptionsImpl;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -148,7 +149,6 @@ public class HomeMineHelpFragment extends Fragment {
         mWvHelp.getSettings().setJavaScriptEnabled(true);
         mWvHelp.getSettings().setDefaultTextEncodingName("utf-8");
         mWvHelp.getSettings().setAllowFileAccess(true);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWvHelp.getSettings().setMixedContentMode(
                     WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
@@ -179,7 +179,7 @@ public class HomeMineHelpFragment extends Fragment {
     @SuppressLint("SetJavaScriptEnabled")
     public void onLoad(String url) {
         try {
-            mWvHelp.setWebViewClient(new WebViewClient() {
+            mWvHelp.setWebViewClient(new CheckServerTrustedWebViewClient(ContextUtils.getContext()) {
                 @Override
                 public void onLoadResource(WebView view, String url) {
                     super.onLoadResource(view, url);
@@ -190,12 +190,6 @@ public class HomeMineHelpFragment extends Fragment {
                                                         String url) {
                     webview.loadUrl(url);
                     return true;
-                }
-
-                @Override
-                public void onReceivedSslError(WebView view,
-                                               SslErrorHandler handler, SslError error) {
-                    handler.proceed();  //接受所有证书
                 }
 
                 @Override

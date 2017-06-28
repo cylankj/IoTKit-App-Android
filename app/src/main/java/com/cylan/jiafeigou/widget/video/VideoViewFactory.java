@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget.video;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.view.View;
 
 import com.cylan.panorama.CameraParam;
 
@@ -102,6 +103,8 @@ public class VideoViewFactory {
         void detectOrientationChanged(boolean port);
 
         void onDestroy();
+
+        void showMobileDataInterface(View.OnClickListener clickListener);
     }
 
     public interface InterActListener {

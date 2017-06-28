@@ -163,7 +163,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                CamWarnGlideURL url = new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (i + 1) + ".jpg");
+                CamWarnGlideURL url = new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (i + 1) + ".jpg", alarmMsg.type);
                 Glide.with(this)
                         .load(url)
                         .asBitmap()
@@ -257,7 +257,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 ShareDialogFragment fragment = initShareDialog();
-                fragment.setPictureURL(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
+                fragment.setPictureURL(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg", alarmMsg.type));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
@@ -427,7 +427,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
         if (basePresenter != null)
-            basePresenter.saveImage(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
+            basePresenter.saveImage(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg", alarmMsg.type));
     }
 
 }

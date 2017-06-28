@@ -106,4 +106,6 @@ public interface ICamLiveLayer {
     void startBadFrame();
 
     void reAssembleHistory(CamLiveContract.Presenter presenter, long timeTarget);
+
+    void showMobileDataCover(CamLiveContract.Presenter presenter);
 }

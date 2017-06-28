@@ -56,6 +56,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(retAccount -> {
                     BaseApplication.getAppComponent().getCmd().logout();
+                    AutoSignIn.getInstance().autoLogout();
                     NotifyManager.getNotifyManager().clearAll();
                     RxBus.getCacheInstance().removeAllStickyEvents();
                     AutoSignIn.getInstance().autoSave(retAccount.getAccount(), 1, "");

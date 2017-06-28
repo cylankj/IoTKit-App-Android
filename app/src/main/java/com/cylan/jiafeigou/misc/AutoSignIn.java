@@ -33,7 +33,7 @@ public class AutoSignIn {
     private static final String TAG = "AutoSignIn";
     private static AutoSignIn instance;
     private String loginAccount = null;
-    private String loginpwd = null;
+    private String loginPwd = null;
 
     public static AutoSignIn getInstance() {
         if (instance == null)
@@ -45,7 +45,7 @@ public class AutoSignIn {
     }
 
     public boolean isNotEmpty() {
-        return !TextUtils.isEmpty(loginAccount) && !TextUtils.isEmpty(loginpwd);
+        return !TextUtils.isEmpty(loginAccount) && !TextUtils.isEmpty(loginPwd);
     }
 
     public void setJfgAccount(JFGAccount jfgAccount) {
@@ -57,6 +57,11 @@ public class AutoSignIn {
     }
 
     private AutoSignIn() {
+    }
+
+    public void autoLogout() {
+        this.loginPwd = "";
+        this.loginAccount = "";
     }
 
     public void setFinish(boolean finish) {
@@ -111,7 +116,7 @@ public class AutoSignIn {
                             if (!TextUtils.isEmpty(finalPwd) && !TextUtils.isEmpty(finalAccount)) {
                                 //需要告知
                                 loginAccount = finalAccount;
-                                loginpwd = finalPwd;
+                                loginPwd = finalPwd;
                                 RxBus.getCacheInstance().postSticky(RxEvent.InitFrom2x.INSTANCE);
                             }
                             if (signType.type == 1) {

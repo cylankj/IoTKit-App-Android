@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.cam;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -664,7 +665,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
         //直播
         findViewById(R.id.tv_live).setEnabled(playType == TYPE_HISTORY);
-        RelativeLayout.LayoutParams lp = (LayoutParams) findViewById(R.id.layout_e).getLayoutParams();
+        @SuppressLint("WrongViewCast") RelativeLayout.LayoutParams lp = (LayoutParams) findViewById(R.id.layout_e).getLayoutParams();
         if (isLand) {
             lp.removeRule(3);//remove below rules
             lp.addRule(2, R.id.v_guide);//set above v_guide
@@ -1081,6 +1082,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+    }
+
+    @Override
+    public void showMobileDataCover(CamLiveContract.Presenter presenter) {
+        AppLogger.d("显示遮罩");
+        liveViewWithThumbnail.showMobileDataInterface(v -> {
+            presenter.startPlay();
+        });
     }
 
     @Override

@@ -54,7 +54,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -215,9 +214,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStart() {
         super.onStart();
         Device device = basePresenter.getDevice();
-        camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        playAfterCheck();
+        basePresenter.startPlay();
     }
 
     @Override
@@ -258,7 +256,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //
                 return;
             }
-            playAfterCheck();
+            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
             basePresenter.stopPlayVideo(PLAY_STATE_IDLE).subscribe(ret -> {
             }, AppLogger::e);
@@ -268,23 +266,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-    private void playAfterCheck() {
-        //满足条件才需要播放
-        if (!accept()) return;
-        basePresenter.startPlay();
-    }
-
-    private boolean accept() {
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
-            return false;
-        else return true;
-    }
 
     @Override
     public void onResume() {
         super.onResume();
         if (basePresenter != null) {
-            if (!accept()) return;//还没开始播放
+            if (!judge()) return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
     }
@@ -438,6 +425,33 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public boolean isLocalSpeakerOn() {
         return camLiveControlLayer.getSpeakerState() == 3
                 || camLiveControlLayer.getSpeakerState() == 1;
+    }
+
+    /**
+     * 0:没有允许过,1:允许,不需要再次提醒
+     */
+
+    private static boolean ALLOW_PLAY_WITH_MOBILE_NET;
+
+    @Override
+    public boolean judge() {
+        //待机模式
+        if (basePresenter.isDeviceStandby()) {
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
+            camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
+            return false;
+        }
+        //全景,首次使用模式
+        if (camLiveControlLayer.isSightSettingShow())
+            return false;
+        //手机数据
+//        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {
+//            ALLOW_PLAY_WITH_MOBILE_NET = true;
+//            //显示遮罩层
+//            camLiveControlLayer.showMobileDataCover(basePresenter);
+//            return false;
+//        }
+        return true;
     }
 
     @Override

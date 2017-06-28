@@ -260,7 +260,6 @@ public class SimpleBindFlow extends AFullBind {
                     }
                     return devicePortrait;
                 })
-                .last()
                 .subscribe((UdpConstant.UdpDevicePortrait portrait) -> {
                     //此时,设备还没恢复连接,需要加入队列
                     AppLogger.d("设备画像为:" + portrait);
