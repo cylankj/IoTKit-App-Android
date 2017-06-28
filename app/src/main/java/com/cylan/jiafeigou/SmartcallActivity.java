@@ -231,7 +231,8 @@ public class SmartcallActivity extends NeedLoginActivity
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ShouldCheckPermission.class);
         }
         try {
-            BaseApplication.getAppComponent().getCmd().enableLog(false, "");
+            BaseApplication.getAppComponent().getCmd().enableLog(false,
+                    BaseApplication.getAppComponent().getLogPath());
             BaseApplication.getAppComponent().getCmd().enableLog(true,
                     BaseApplication.getAppComponent().getLogPath());
         } catch (Exception e) {

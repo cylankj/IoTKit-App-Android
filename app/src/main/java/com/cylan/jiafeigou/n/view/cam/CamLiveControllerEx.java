@@ -392,8 +392,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable portHideRunnable = new Runnable() {
         @Override
         public void run() {
-            layoutD.setVisibility(INVISIBLE);
-            showHistoryWheel(false);
+//            layoutD.setVisibility(INVISIBLE);
+//            showHistoryWheel(false);
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
