@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -77,6 +79,11 @@ public class WebsiteFragment extends Fragment {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
             }
         });
         wvWebsite.loadUrl(agreementUrl);

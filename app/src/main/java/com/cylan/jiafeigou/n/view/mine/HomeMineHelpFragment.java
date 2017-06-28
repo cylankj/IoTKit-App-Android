@@ -148,7 +148,6 @@ public class HomeMineHelpFragment extends Fragment {
         mWvHelp.getSettings().setJavaScriptEnabled(true);
         mWvHelp.getSettings().setDefaultTextEncodingName("utf-8");
         mWvHelp.getSettings().setAllowFileAccess(true);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWvHelp.getSettings().setMixedContentMode(
                     WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
