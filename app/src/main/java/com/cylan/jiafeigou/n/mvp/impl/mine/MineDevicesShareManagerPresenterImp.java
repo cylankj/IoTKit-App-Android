@@ -7,7 +7,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.ex.JfgException;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
@@ -32,16 +32,11 @@ import rx.schedulers.Schedulers;
  */
 public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineDevicesShareManagerContract.View>
         implements MineDevicesShareManagerContract.Presenter {
-
+    private JFGShareListInfo shareListInfo;
 
     public MineDevicesShareManagerPresenterImp(MineDevicesShareManagerContract.View view) {
         super(view);
         view.setPresenter(this);
-    }
-
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{cancelShareCallBack()};
     }
 
 
@@ -52,13 +47,11 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
 
     @Override
     public void initShareDeviceList(String uuid) {
-        Subscription subscribe = Observable.from(DataSourceManager.getInstance().getShareList())
+        Subscription subscribe = Observable.just(DataSourceManager.getInstance().getShareListByCid(uuid))
                 .subscribeOn(Schedulers.io())
-                .first(ret -> TextUtils.equals(uuid, ret.cid))
-                .timeout(3, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
-                    getView().onInitShareDeviceList(list.friends);
+                    getView().onInitShareDeviceList((shareListInfo = list).friends);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
@@ -67,48 +60,39 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
 
     /**
      * 取消分享设备
-     *
-     * @param cid
-     * @param bean
      */
     @Override
-    public void cancelShare(final String cid, final JFGFriendAccount bean) {
-        if (getView() != null) {
-            getView().showCancleShareProgress();
-        }
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
+    public void cancelShare(int position) {
+        Subscription subscribe = Observable.just("正在取消分享")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(ret -> {
+                    int seq = 0;
                     try {
-                        AppLogger.e("正在取消分享:" + bean.account);
-                        BaseApplication.getAppComponent().getCmd().unShareDevice(cid, bean.account);
-                    } catch (JfgException e) {
+                        JFGFriendAccount account = shareListInfo.friends.get(position);
+                        AppLogger.e("正在取消分享:" + account.account);
+                        seq = BaseApplication.getAppComponent().getCmd().unShareDevice(getUuid(), account.account);
+                    } catch (Exception e) {
                         e.printStackTrace();
+                        AppLogger.e(e.getMessage());
                     }
-                }, throwable -> AppLogger.e("cancelShare" + throwable.getLocalizedMessage()));
-    }
-
-    /**
-     * 取消分享的回调
-     *
-     * @return
-     */
-    public Subscription cancelShareCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.UnShareDeviceCallBack.class)
+                    return seq;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.UnShareDeviceCallBack.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handlerUnShareCallback, AppLogger::e);
-    }
-
-    /**
-     * 取消分享回调的处理
-     *
-     * @param unshareDeviceCallBack
-     */
-    private void handlerUnShareCallback(RxEvent.UnShareDeviceCallBack unshareDeviceCallBack) {
-        if (getView() != null) {
-            getView().hideCancleShareProgress();
-            getView().showUnShareResult(unshareDeviceCallBack);
-        }
+                .doOnSubscribe(() -> getView().showCancelShareProgress())
+                .doOnTerminate(() -> getView().hideCancelShareProgress())
+                .subscribe(result -> {
+                    if (result != null && result.i == 0 && shareListInfo != null && position < shareListInfo.friends.size()) {
+                        shareListInfo.friends.remove(position);
+                    }
+                    getView().showUnShareResult(position, result);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
 
     @Override

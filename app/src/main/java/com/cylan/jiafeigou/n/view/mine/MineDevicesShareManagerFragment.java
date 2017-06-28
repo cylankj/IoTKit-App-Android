@@ -37,29 +37,23 @@ import butterknife.OnClick;
  */
 public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View, MineHasShareAdapter.OnCancelShareListener {
     private MineDevicesShareManagerContract.Presenter presenter;
-    private MineHasShareAdapter hasShareAdapter;
-    private int unShareSucNum = 0;
-    private ArrayList<String> unShareAccount = new ArrayList<>();
-
-    private OnUnShareChangeListener listener;
+    private MineHasShareAdapter shareFriendsAdapter;
     private String uuid;
     private Device device;
     private FragmentMineDeviceShareManagerBinding shareManagerBinding;
     private ObservableBoolean empty = new ObservableBoolean(false);
-
-    public interface OnUnShareChangeListener {
-        void unShareChange(int number, ArrayList<String> account);
-    }
-
-    public void setOncancelChangeListener(OnUnShareChangeListener listener) {
-        this.listener = listener;
-    }
+    private Runnable callback;
 
     public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
         MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    public void setCallback(Runnable callback) {
+        this.callback = callback;
+    }
+
 
     @Nullable
     @Override
@@ -70,9 +64,9 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         device = DataSourceManager.getInstance().getDevice(uuid);
         setTopTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         shareManagerBinding.recyclerHadShareRelativesAndFriend.setLayoutManager(new LinearLayoutManager(getContext()));
-        hasShareAdapter = new MineHasShareAdapter(getContext(), null, null);
-        shareManagerBinding.recyclerHadShareRelativesAndFriend.setAdapter(hasShareAdapter);
-        hasShareAdapter.setOnCancelShareListener(this);
+        shareFriendsAdapter = new MineHasShareAdapter(getContext(), null, null);
+        shareManagerBinding.recyclerHadShareRelativesAndFriend.setAdapter(shareFriendsAdapter);
+        shareFriendsAdapter.setOnCancelShareListener(this);
         initPresenter();
         return shareManagerBinding.getRoot();
     }
@@ -102,7 +96,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public String getUuid() {
-        return getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        return uuid;
     }
 
     @OnClick(R.id.tv_toolbar_icon)
@@ -115,24 +109,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     }
 
     @Override
-    public void showCancelShareDialog(final JFGFriendAccount bean) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
-        builder.setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
-            dialog.dismiss();
-            presenter.cancelShare(device.uuid, bean);
-        });
-        builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> dialog.dismiss());
-        builder.show();
-    }
-
-    @Override
-    public void showCancleShareProgress() {
+    public void showCancelShareProgress() {
         LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
-    public void hideCancleShareProgress() {
+    public void hideCancelShareProgress() {
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
@@ -142,28 +124,26 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         if (presenter != null) {
             presenter.stop();
         }
-
-        if (listener != null) {
-            listener.unShareChange(unShareSucNum, unShareAccount);
-        }
     }
 
     @Override
-    public void onCancelShare(JFGFriendAccount item) {
+    public void onCancelShare(int position, JFGFriendAccount item) {
         if (getView() != null) {
             if (NetUtils.getNetType(getContext()) == -1) {
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 return;
             }
-            showCancelShareDialog(item);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
+            builder.setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
+                presenter.cancelShare(position);
+                dialog.dismiss();
+            });
+            builder.setNegativeButton(getString(R.string.CANCEL), null);
+            builder.show();
         }
     }
 
-    @Override
-    public void deleteItems() {
-//        hasShareAdapter.remove(tempBean);
-        hasShareAdapter.notifyDataSetChanged();
-    }
 
     /**
      * 取消分享的结果
@@ -171,25 +151,20 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
      * @param result
      */
     @Override
-    public void showUnShareResult(RxEvent.UnShareDeviceCallBack result) {
-        if (result.i == JError.ErrorOK) {
+    public void showUnShareResult(int position, RxEvent.UnShareDeviceCallBack result) {
+        if (result != null && result.i == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_DeleteSucces));
-            deleteItems();
-            unShareSucNum++;
-            unShareAccount.add(result.account);
+            shareFriendsAdapter.remove(position);
+            if (callback != null) {
+                callback.run();
+            }
         } else {
             ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_CancelShareTips));
             return;
         }
-        empty.set(hasShareAdapter.getItemCount() == 0);
+        empty.set(shareFriendsAdapter.getItemCount() == 0);
     }
 
-    /**
-     * 顶部标题
-     *
-     * @param name
-     */
-    @Override
     public void setTopTitle(String name) {
         shareManagerBinding.customToolbar.setToolbarLeftTitle(name);
     }
@@ -202,17 +177,16 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void onNetStateChanged(int state) {
         if (state == -1) {
-            hideCancleShareProgress();
+            hideCancelShareProgress();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
     }
 
     @Override
     public void onInitShareDeviceList(ArrayList<JFGFriendAccount> friends) {
-        hasShareAdapter.clear();
-        hasShareAdapter.addAll(friends);
-        empty.set(hasShareAdapter.getCount() == 0);
+        shareFriendsAdapter.clear();
+        shareFriendsAdapter.addAll(friends);
+        empty.set(shareFriendsAdapter.getCount() == 0);
     }
-
 
 }

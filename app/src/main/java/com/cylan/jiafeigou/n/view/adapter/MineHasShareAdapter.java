@@ -25,7 +25,7 @@ public class MineHasShareAdapter extends SuperAdapter<JFGFriendAccount> {
     private OnCancelShareListener listener;
 
     public interface OnCancelShareListener {
-        void onCancelShare(JFGFriendAccount item);
+        void onCancelShare(int position, JFGFriendAccount item);
     }
 
     public void setOnCancelShareListener(OnCancelShareListener listener) {
@@ -43,7 +43,7 @@ public class MineHasShareAdapter extends SuperAdapter<JFGFriendAccount> {
         holder.setText(R.id.tv_friend_account, item.account);
         holder.setOnClickListener(R.id.tv_btn_cancle_share, v -> {
             if (listener != null) {//存在复用的情况,不可取
-                listener.onCancelShare(item);
+                listener.onCancelShare(layoutPosition, item);
             }
         });
         //头像

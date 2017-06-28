@@ -16,38 +16,20 @@ public interface MineDevicesShareManagerContract {
 
     interface View extends BaseView<Presenter> {
 
-
-        /**
-         * desc：弹出取消分享的对话框
-         */
-        void showCancelShareDialog(JFGFriendAccount bean);
-
         /**
          * desc：显示取消分享的进度
          */
-        void showCancleShareProgress();
+        void showCancelShareProgress();
 
         /**
          * desc：隐藏取消分享的进度
          */
-        void hideCancleShareProgress();
-
-        /**
-         * desc：删除列表的一个条目
-         */
-        void deleteItems();
+        void hideCancelShareProgress();
 
         /**
          * 取消分享的结果
          */
-        void showUnShareResult(RxEvent.UnShareDeviceCallBack unshareDeviceCallBack);
-
-        /**
-         * 显示顶部标题头
-         *
-         * @param name
-         */
-        void setTopTitle(String name);
+        void showUnShareResult(int position, RxEvent.UnShareDeviceCallBack unshareDeviceCallBack);
 
         /**
          * 网络状态变化
@@ -64,9 +46,9 @@ public interface MineDevicesShareManagerContract {
         /**
          * desc：取消分享
          *
-         * @param bean
+         * @param position
          */
-        void cancelShare(String cid, JFGFriendAccount bean);
+        void cancelShare(int position);
     }
 
 }

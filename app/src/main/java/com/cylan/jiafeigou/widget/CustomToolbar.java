@@ -255,6 +255,13 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         }
     }
 
+    public void setToolbarRightColor(int resId) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            tvToolbarRight.setTextColor(getResources().getColorStateList(resId));
+        }
+    }
+
     public void setTvToolbarRightEnable(boolean isEnable) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             tvToolbarRight.setEnabled(isEnable);

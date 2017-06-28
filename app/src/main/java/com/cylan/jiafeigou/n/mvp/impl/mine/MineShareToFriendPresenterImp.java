@@ -1,28 +1,26 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.text.TextUtils;
+
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.adapter.item.ShareFriendItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -32,216 +30,94 @@ import rx.subscriptions.CompositeSubscription;
 public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareToFriendContract.View>
         implements MineShareToFriendContract.Presenter {
 
-    private CompositeSubscription compositeSubscription;
-
-    private ArrayList<RxEvent.ShareDeviceCallBack> callbackList = new ArrayList();
-
-    private int ShareTotalFriend;
-
     public MineShareToFriendPresenterImp(MineShareToFriendContract.View view) {
         super(view);
         view.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getAllShareFriendCallBack());
-            compositeSubscription.add(shareDeviceCallBack());
-        }
-
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        }
     }
 
     /**
      * 发送分享给亲友请求
      */
     @Override
-    public void sendShareToFriendReq(final String cid, ArrayList<FriendBean> list) {
-        if (getView() != null) {
-            getView().showSendProgress();
-        }
-        ShareTotalFriend = list.size();
-        rx.Observable.just(list)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<ArrayList<FriendBean>>() {
-                    @Override
-                    public void call(ArrayList<FriendBean> list) {
-                        for (FriendBean bean : list) {
-                            try {
-                                BaseApplication.getAppComponent().getCmd().shareDevice(cid, bean.account);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
+    public void shareDeviceToFriend(final String cid, ArrayList<ShareFriendItem> friendItems) {
+        Subscription subscribe = Observable.just("shareDeviceToFriend")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(ret -> {
+                    try {
+                        String[] accounts = new String[friendItems.size()];
+                        for (int i = 0; i < friendItems.size(); i++) {
+                            accounts[i] = friendItems.get(i).friendAccount.account;
                         }
+                        AppLogger.d("shareDeviceToFriend: cid:" + cid + accounts[0]);
+                        BaseApplication.getAppComponent().getCmd().multiShareDevices(new String[]{cid}, accounts);
+                        BaseApplication.getAppComponent().getCmd().multiShareDevices(accounts, new String[]{cid});
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendShareToFriendReq" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    @Override
-    public boolean checkNetConnetion() {
-        if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 判断分享人数是否已超过5人
-     *
-     * @param number
-     * @return
-     */
-    @Override
-    public void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number) {
-        getView().setHasShareFriendNum(isChange, number);
-//        if (number > 5 && getView() != null) {
-//            getView().showNumIsOverDialog(holder);
-//        } else {
-//            getView().setHasShareFriendNum(isChange, number);
-//        }
-    }
-
-    /**
-     * 获取到未分享的亲友
-     */
-    @Override
-    public void getAllShareFriend(String cid) {
-        rx.Observable.just(cid)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String cid) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().getUnShareListByCid(cid);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getAllShareFriend" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    /**
-     * 获取到未分享亲友的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription getAllShareFriendCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetHasShareFriendCallBack.class)
-                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<FriendBean>>>() {
-                    @Override
-                    public Observable<ArrayList<FriendBean>> call(RxEvent.GetHasShareFriendCallBack getFriendList) {
-                        if (getFriendList != null) {
-                            if (getFriendList.i == 0 && getFriendList.arrayList.size() != 0) {
-                                return Observable.just(converData(getFriendList.arrayList));
-                            } else {
-                                return Observable.just(null);
-                            }
-                        } else {
-                            return Observable.just(null);
-                        }
-                    }
+                    return ret;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<FriendBean>>() {
-                    @Override
-                    public void call(ArrayList<FriendBean> list) {
-                        if (list != null) {
-                            handlerDataResult(list);
-                        } else {
-                            getView().showNoFriendNullView();
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 分享设备的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription shareDeviceCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
-                    @Override
-                    public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
-                        if (shareDeviceCallBack != null && shareDeviceCallBack instanceof RxEvent.ShareDeviceCallBack) {
-                            callbackList.add(shareDeviceCallBack);
-                        }
-
-                        if (callbackList.size() == ShareTotalFriend) {
-                            if (getView() != null) {
-                                getView().handlerAfterSendShareReq(callbackList);
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.MultiShareDeviceEvent.class)
+                        .first(rsp -> {
+                            if (rsp.ret == 0) {
+                                JFGShareListInfo result = null;
+                                for (JFGShareListInfo listInfo : DataSourceManager.getInstance().getShareList()) {
+                                    if (TextUtils.equals(listInfo.cid, cid)) {
+                                        result = listInfo;
+                                        break;
+                                    }
+                                }
+                                if (result != null) {
+                                    for (ShareFriendItem item : friendItems) {
+                                        result.friends.add(item.friendAccount);
+                                    }
+                                }
                             }
-                        }
+                            return true;
+                        }))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> getView().showSendProgress())
+                .doOnTerminate(() -> getView().hideSendProgress())
+                .subscribe(result -> {
+                    getView().showShareToFriendsResult(result);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
+    }
+
+    @Override
+    public void getCanShareFriendsList(String uuid) {
+        Subscription subscribe = Observable.just("getCanShareFriendsList")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(ret -> {
+                    try {
+                        AppLogger.d("getCanShareFriendsList:" + uuid);
+                        BaseApplication.getAppComponent().getCmd().getUnShareListByCid(uuid);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, AppLogger::e);
+                    return ret;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.UnShareListByCidEvent.class).first(rsp -> rsp.i == 0))
+                .map(ret -> {
+                    ArrayList<ShareFriendItem> result = new ArrayList<>(ret.arrayList.size());
+                    for (JFGFriendAccount account : ret.arrayList) {
+                        result.add(new ShareFriendItem(account));
+                    }
+                    return result;
+                })
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    getView().onInitCanShareFriendList(result);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
-
-    /**
-     * 数据的转换
-     *
-     * @param friendList
-     * @return
-     */
-    private ArrayList<FriendBean> converData(ArrayList<JFGFriendAccount> friendList) {
-        ArrayList<FriendBean> list = new ArrayList<>();
-        for (JFGFriendAccount friendAccount : friendList) {
-            FriendBean bean = new FriendBean();
-            bean.account = friendAccount.account;
-            bean.alias = friendAccount.alias;
-            bean.markName = friendAccount.markName;
-            try {
-                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
-                bean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", friendAccount.account));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            list.add(bean);
-        }
-        return list;
-    }
-
-    /**
-     * 处理返回数据
-     *
-     * @param relAndFriendBeen
-     */
-    private void handlerDataResult(ArrayList<FriendBean> relAndFriendBeen) {
-        if (relAndFriendBeen != null) {
-            if (getView() != null && relAndFriendBeen.size() != 0) {
-                getView().initRecycleView(relAndFriendBeen);
-            } else {
-                getView().showNoFriendNullView();
-            }
-        } else {
-            getView().showNoFriendNullView();
-        }
-    }
-
 }

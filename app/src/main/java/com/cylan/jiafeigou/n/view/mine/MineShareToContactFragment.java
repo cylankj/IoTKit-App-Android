@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.ObservableBoolean;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,30 +19,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.databinding.FragmentMineShareToContactBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
+import com.cylan.jiafeigou.n.view.adapter.item.ShareContactItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
-import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+import java.util.List;
 
 /**
  * 作者：zsl
@@ -49,25 +45,12 @@ import butterknife.OnTextChanged;
  * 描述：
  */
 public class MineShareToContactFragment extends Fragment implements MineShareToContactContract.View, ShareToContactAdapter.onShareLisenter {
-
-    @BindView(R.id.iv_mine_share_to_contact_back)
-    ImageView ivMineShareToContactBack;
-    @BindView(R.id.iv_mine_share_to_contact_search)
-    ImageView ivMineShareToContactSearch;
-    @BindView(R.id.rcy_mine_share_to_contact_list)
-    RecyclerView rcyMineShareToContactList;
-    @BindView(R.id.ll_no_contact)
-    LinearLayout llNoContact;
-    @BindView(R.id.tv_top_title)
-    TextView tvTopTitle;
-    @BindView(R.id.et_search_contact)
-    EditText etSearchContact;
-
     private MineShareToContactContract.Presenter presenter;
-    private ShareToContactAdapter shareToContactAdapter;
-    private DeviceBean deviceinfo;
+    private ItemAdapter<ShareContactItem> shareFriendItemItemAdapter;
     private String contractPhone;
-    private ArrayList<FriendBean> hasSharefriend;
+    private FragmentMineShareToContactBinding shareToContactBinding;
+    private String uuid;
+    private ObservableBoolean empty = new ObservableBoolean(false);
 
     public static MineShareToContactFragment newInstance(Bundle bundle) {
         MineShareToContactFragment fragment = new MineShareToContactFragment();
@@ -78,47 +61,56 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frgment_mine_share_to_contact, container, false);
-        ButterKnife.bind(this, view);
-        getArgumentData();
-        initPresenter();
-        return view;
-    }
+        uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID, "");
+        shareToContactBinding = FragmentMineShareToContactBinding.inflate(inflater, container, false);
+        shareToContactBinding.rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
+        shareToContactBinding.setEmpty(empty);
+        shareFriendItemItemAdapter = new ItemAdapter<>();
+        FastAdapter<ShareContactItem> fastAdapter = new FastAdapter<>();
+        fastAdapter.withMultiSelect(false);
+        fastAdapter.withSelectable(false);
+        fastAdapter.withItemEvent(new ClickEventHook<ShareContactItem>() {
+            @Override
+            public void onClick(View v, int position, FastAdapter<ShareContactItem> fastAdapter, ShareContactItem item) {
+                // TODO: 2017/6/28 分享给联系人
+            }
 
-    /**
-     * 获取到传递过来的参数
-     */
-    private void getArgumentData() {
-        Bundle arguments = getArguments();
-        deviceinfo = arguments.getParcelable("deviceinfo");
-        hasSharefriend = arguments.getParcelableArrayList("sharefriend");
+            @Nullable
+            @Override
+            public View onBind(@NonNull RecyclerView.ViewHolder viewHolder) {
+                return viewHolder.itemView.findViewById(R.id.tv_contactshare);
+            }
+        });
+        shareFriendItemItemAdapter.wrap(fastAdapter);
+        shareToContactBinding.rcyMineShareToContactList.setAdapter(shareFriendItemItemAdapter);
+        initPresenter();
+        return shareToContactBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) {
-//            presenter.getHasShareContract(deviceinfo.uuid);
             presenter.start();
+            presenter.checkAndInitContactList();
         }
     }
 
     /**
      * desc；监听搜索输入的变化
      */
-    @OnTextChanged(R.id.et_search_contact)
+//    @OnTextChanged(R.id.et_search_contact)
     public void initEditListener(CharSequence s, int start, int before, int count) {
         presenter.handlerSearchResult(s.toString().trim());
     }
 
     private void initPresenter() {
-        presenter = new MineShareToContactPresenterImp(this, hasSharefriend);
+        presenter = new MineShareToContactPresenterImp(this);
     }
 
     @Override
@@ -128,10 +120,9 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public String getUuid() {
-        return null;
+        return uuid;
     }
 
-    @OnClick({R.id.iv_mine_share_to_contact_back, R.id.iv_mine_share_to_contact_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_share_to_contact_back:
@@ -152,58 +143,36 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             presenter.stop();
         }
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(etSearchContact.getWindowToken(), 0);
+//        imm.hideSoftInputFromWindow(etSearchContact.getWindowToken(), 0);
     }
 
     @Override
-    public void initContactReclyView(ArrayList<FriendBean> list) {
-        rcyMineShareToContactList.setVisibility(View.VISIBLE);
-        rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        shareToContactAdapter = new ShareToContactAdapter(getView().getContext(), list, null);
-        rcyMineShareToContactList.setAdapter(shareToContactAdapter);
-        initAdaListener();
-        if (getView() != null) {
-            getView().post(() -> LoadingDialog.dismissLoading(getFragmentManager()));
-        }
+    public void onInitContactFriends(List<ShareContactItem> friendItems) {
+        shareFriendItemItemAdapter.clear();
+        shareFriendItemItemAdapter.add(friendItems);
+        empty.set(shareFriendItemItemAdapter.getItemCount() == 0);
     }
 
-    /**
-     * 设置列表的监听器
-     */
-    private void initAdaListener() {
-        shareToContactAdapter.setOnShareLisenter(this);
-    }
-
-    @Override
-    public void showNoContactNullView() {
-        rcyMineShareToContactList.setVisibility(View.INVISIBLE);
-        llNoContact.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideNoContactNullView() {
-        llNoContact.setVisibility(View.INVISIBLE);
-    }
 
     @Override
     public void hideTopTitle() {
-        tvTopTitle.setVisibility(View.GONE);
+//        tvTopTitle.setVisibility(View.GONE);
     }
 
     @Override
     public void showSearchInputEdit() {
-        etSearchContact.setVisibility(View.VISIBLE);
-        etSearchContact.requestFocus();
-        etSearchContact.setFocusable(true);
-        etSearchContact.setFocusableInTouchMode(true);
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(etSearchContact, InputMethodManager.SHOW_FORCED);
+//        etSearchContact.setVisibility(View.VISIBLE);
+//        etSearchContact.requestFocus();
+//        etSearchContact.setFocusable(true);
+//        etSearchContact.setFocusableInTouchMode(true);
+//        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(etSearchContact, InputMethodManager.SHOW_FORCED);
         //TODO 弹出键盘
     }
 
     @Override
     public void hideSearchInputEdit() {
-        etSearchContact.setVisibility(View.GONE);
+//        etSearchContact.setVisibility(View.GONE);
     }
 
     @Override
@@ -219,7 +188,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                     public void run() {
                         AppLogger.e("分享给:" + account);
                         dialog.dismiss();
-                        presenter.handlerShareClick(deviceinfo.uuid, account);
+//                        presenter.handlerShareClick(deviceinfo.uuid, account);
                     }
                 }, 2000);
             }

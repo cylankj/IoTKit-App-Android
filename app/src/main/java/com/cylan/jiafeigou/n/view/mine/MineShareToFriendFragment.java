@@ -1,37 +1,34 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.DialogInterface;
+import android.databinding.ObservableBoolean;
+import android.databinding.ObservableInt;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.databinding.FragmentMineShareToFriendBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToFriendPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
+import com.cylan.jiafeigou.n.view.adapter.item.ShareFriendItem;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * 作者：zsl
@@ -39,33 +36,18 @@ import butterknife.OnClick;
  * 描述：
  */
 public class MineShareToFriendFragment extends Fragment implements MineShareToFriendContract.View {
-
-    @BindView(R.id.rcy_mine_share_to_relative_and_friend_list)
-    RecyclerView rcyMineShareToRelativeAndFriendList;
-    @BindView(R.id.ll_relative_and_friend_none)
-    RelativeLayout llNoFriend;
-    @BindView(R.id.custom_toolbar)
-    CustomToolbar customToolbar;
-
+    private static final int MAX_SHARE_NUMBER = 5;
     private MineShareToFriendContract.Presenter presenter;
-    private ShareToFriendsAdapter shareToFriendsAdapter;
-    private int hasShareNum;
-    private int hasCheckNum;
-    private int shareSucceedNum;
-    private ArrayList<FriendBean> shareSucceedFriend = new ArrayList<>();
+    private ItemAdapter<ShareFriendItem> shareToFriendsAdapter;
+    private String uuid;
+    private FragmentMineShareToFriendBinding shareToFriendBinding;
+    private ObservableBoolean empty = new ObservableBoolean(false);
+    private ObservableInt sharedNumber = new ObservableInt();
+    private Runnable callback;
+    private JFGShareListInfo shareListInfo;
 
-    private ArrayList<FriendBean> isChooseToShareList = new ArrayList<>();
-    private DeviceBean deviceinfo;
-    private ArrayList<FriendBean> hasSharefriend;
-
-    private OnShareSucceedListener listener;
-
-    public interface OnShareSucceedListener {
-        void shareSucceed(int num, ArrayList<FriendBean> list);
-    }
-
-    public void setOnShareSucceedListener(OnShareSucceedListener listener) {
-        this.listener = listener;
+    public void setCallBack(Runnable runnable) {
+        this.callback = runnable;
     }
 
     public static MineShareToFriendFragment newInstance(Bundle bundle) {
@@ -77,26 +59,37 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_share_to_friend, container, false);
-        ButterKnife.bind(this, view);
-        getArgumentData();
+        Bundle arguments = getArguments();
+        this.uuid = arguments.getString(JConstant.KEY_DEVICE_ITEM_UUID, "");
+        shareToFriendBinding = FragmentMineShareToFriendBinding.inflate(inflater, container, false);
+        shareToFriendBinding.customToolbar.setToolbarRightColor(R.color.color_d8d8d8_fffffff);
+        shareToFriendBinding.customToolbar.setBackAction(this::onClick);
+        shareToFriendBinding.customToolbar.setRightAction(this::onClick);
+        shareToFriendBinding.btnToAdd.setOnClickListener(this::onClick);
+        shareToFriendBinding.setEmpty(empty);
+        shareToFriendBinding.setSharedNumber(sharedNumber);
+        shareToFriendsAdapter = new ItemAdapter<>();
+        FastAdapter<ShareFriendItem> fastAdapter = new FastAdapter<>();
+        fastAdapter.withSelectable(true);
+        fastAdapter.withMultiSelect(true);
+        fastAdapter.withAllowDeselection(true);
+        fastAdapter.withSelectWithItemUpdate(true);
+        fastAdapter.withSelectionListener((item, selected) -> addShareWithNumberCheck(item));
+        shareListInfo = DataSourceManager.getInstance().getShareListByCid(uuid);
+        shareToFriendBinding.setHasSharedNumber(shareListInfo == null ? 0 : shareListInfo.friends.size());
+        shareToFriendsAdapter.wrap(fastAdapter);
+        shareToFriendBinding.rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
+        shareToFriendBinding.rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
         initPresenter();
-        return view;
+        return shareToFriendBinding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    /**
-     * 获取传递过来的参数
-     */
-    private void getArgumentData() {
-        Bundle arguments = getArguments();
-        deviceinfo = arguments.getParcelable("deviceinfo");
-        hasSharefriend = arguments.getParcelableArrayList("hasSharefriend");
-    }
 
     private void initPresenter() {
         presenter = new MineShareToFriendPresenterImp(this);
@@ -105,18 +98,11 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void onStart() {
         super.onStart();
-        //第一次进入以分享数显示灰色
-        setHasShareFriendNum(false, hasSharefriend.size());
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (presenter != null) {
-            presenter.getAllShareFriend(deviceinfo.uuid);
             presenter.start();
+            presenter.getCanShareFriendsList(uuid);
         }
+
     }
 
     @Override
@@ -126,77 +112,36 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @Override
     public String getUuid() {
-        return null;
+        return this.uuid;
     }
 
-    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_toolbar_icon:
+            case R.id.tv_toolbar_icon: {
                 getActivity().getSupportFragmentManager().popBackStack();
-                if (listener != null) {
-                    listener.shareSucceed(shareSucceedNum, shareSucceedFriend);
-                }
                 break;
-
-            case R.id.tv_toolbar_right:
-                if (!presenter.checkNetConnetion()) {
-                    presenter.sendShareToFriendReq(deviceinfo.uuid, isChooseToShareList);
-                } else {
+            }
+            case R.id.tv_toolbar_right: {
+                if (NetUtils.getNetType(getContext()) == -1) {
                     ToastUtil.showNegativeToast(getString(R.string.Item_ConnectionFail));
+                } else {
+                    presenter.shareDeviceToFriend(uuid, new ArrayList<>(shareToFriendsAdapter.getFastAdapter().getSelectedItems()));
                 }
                 break;
+            }
+            case R.id.btn_to_add: {
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                        MineFriendAddFriendsFragment.newInstance(), android.R.id.content);
+                break;
+            }
         }
     }
 
     @Override
-    public void initRecycleView(ArrayList<FriendBean> list) {
-        rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
-        shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
-        rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
-        initAdaListener();
-        llNoFriend.setVisibility(list != null && list.size() > 0 ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
-    public void showNoFriendNullView() {
-        llNoFriend.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setHasShareFriendNum(boolean isChange, int number) {
-        if (number == 0) {
-            customToolbar.setToolbarRightTitle(getString(R.string.OK) + "（0/5）");
-            customToolbar.setTvToolbarRightEnable(false);
-            customToolbar.setTvToolbarRightColor("#d8d8d8");
-        } else if (isChange) {
-            customToolbar.setToolbarRightTitle(getString(R.string.OK) + "（" + number + "/5）");
-            customToolbar.setTvToolbarRightEnable(true);
-            customToolbar.setTvToolbarRightColor("#ffffff");
-        } else {
-            customToolbar.setToolbarRightTitle(getString(R.string.OK) + "（" + number + "/5）");
-            customToolbar.setTvToolbarRightEnable(false);
-            customToolbar.setTvToolbarRightColor("#d8d8d8");
-        }
-    }
-
-    @Override
-    public void showShareAllSuccess() {
-        //TODO 完善
-        ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-        getActivity().getSupportFragmentManager().popBackStack();
-    }
-
-    @Override
-    public void showShareSomeFail(int some) {
-        //TODO 完善
-        showShareResultDialog(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips), some));
-    }
-
-    @Override
-    public void showShareAllFail() {
-        //TODO 完善
-        showShareResultDialog(getString(R.string.Tap3_ShareDevice_FailTips));
+    public void onInitCanShareFriendList(ArrayList<ShareFriendItem> list) {
+        shareToFriendsAdapter.clear();
+        shareToFriendsAdapter.add(list);
+        empty.set(shareToFriendsAdapter.getItemCount() == 0);
     }
 
     @Override
@@ -209,45 +154,30 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
-    @Override
-    public void showNumIsOverDialog(SuperViewHolder holder) {
-        //当人数超过5人时选中 松开手之后弹起
-        holder.setChecked(R.id.checkbox_is_share_check, false);
-        ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_Tips));
+    private void addShareWithNumberCheck(ShareFriendItem item) {
+        int hasSharedNumber = shareListInfo == null ? 0 : shareListInfo.friends.size();
+        int selectedNumber = shareToFriendsAdapter.getFastAdapter().getSelectedItems().size();
+        if (hasSharedNumber + selectedNumber > MAX_SHARE_NUMBER) {
+            int position = shareToFriendsAdapter.getFastAdapter().getPosition(item);
+            shareToFriendsAdapter.getFastAdapter().deselect(position);
+            ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_Tips));
+        } else {
+            sharedNumber.set(selectedNumber);
+        }
+
     }
 
-    /**
-     * 处理分享后的结果
-     *
-     * @param callbackList
-     */
     @Override
-    public void handlerAfterSendShareReq(ArrayList<RxEvent.ShareDeviceCallBack> callbackList) {
-        hideSendProgress();
-        int totalFriend = isChooseToShareList.size();
-        Iterator iterators = isChooseToShareList.iterator();
-        while (iterators.hasNext()) {
-            FriendBean friendBean = (FriendBean) iterators.next();
-            for (RxEvent.ShareDeviceCallBack callBack : callbackList) {
-                if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
-                    iterators.remove();
-                    shareSucceedNum++;
-                    shareSucceedFriend.add(friendBean);
-                }
-            }
+    public void showShareToFriendsResult(RxEvent.MultiShareDeviceEvent result) {
+        if (result == null) {//操作超时了
+            // TODO: 2017/6/28 未注明怎么处理
+        } else if (result.ret == 0) {//分享成功了
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
+            if (callback != null) callback.run();
+            getActivity().getSupportFragmentManager().popBackStack();
+        } else {//分享失败了
+            showShareResultDialog(getString(R.string.Tap3_ShareDevice_FailTips));
         }
-
-        if (isChooseToShareList.size() == 0) {
-            //全部分享成功
-            showShareAllSuccess();
-        } else if (isChooseToShareList.size() == totalFriend) {
-            //全部分享失败
-            showShareAllFail();
-        } else {
-            //部分分享失败
-            showShareSomeFail(isChooseToShareList.size());
-        }
-
     }
 
     /**
@@ -258,62 +188,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private void showShareResultDialog(String title) {
         AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
         builder.setTitle(title);
-        builder.setPositiveButton(getString(R.string.TRY_AGAIN), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                //TODO　部分分享失败 等待SDK返回的数据
-                presenter.sendShareToFriendReq(deviceinfo.uuid, isChooseToShareList);
-            }
+        builder.setPositiveButton(getString(R.string.TRY_AGAIN), (dialog, which) -> {
+            dialog.dismiss();
+            presenter.shareDeviceToFriend(uuid, new ArrayList<>(shareToFriendsAdapter.getFastAdapter().getSelectedItems()));
         });
-        builder.setNegativeButton(getString(R.string.MAGNETISM_OFF), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.MAGNETISM_OFF), null);
         AlertDialogManager.getInstance().showDialog("showShareResultDialog", getActivity(), builder);
-    }
-
-    /**
-     * 列表的监听器
-     */
-    private void initAdaListener() {
-        shareToFriendsAdapter.setOnShareCheckListener(new ShareToFriendsAdapter.OnShareCheckListener() {
-            @Override
-            public void onCheck(boolean isCheckFlag, SuperViewHolder holder, FriendBean item) {
-                if (isCheckFlag && hasShareNum >= 5) {
-                    showNumIsOverDialog(holder);
-                    item.isCheckFlag = 2;
-                    return;
-                }
-                boolean numIsChange = false;
-                isChooseToShareList.clear();
-                hasShareNum = hasSharefriend.size();
-                hasCheckNum = 0;
-                for (FriendBean bean : shareToFriendsAdapter.getList()) {
-                    if (bean.isCheckFlag == 1) {
-                        hasCheckNum++;
-                        numIsChange = true;
-                        isChooseToShareList.add(bean);
-                    }
-                }
-                hasShareNum += hasCheckNum;
-                presenter.checkShareNumIsOver(holder, numIsChange, hasShareNum);
-            }
-        });
-
-    }
-
-    @OnClick(R.id.btn_to_add)
-    public void addNewFriend() {
-        jump2AddReAndFriendFragment();
-    }
-
-    private void jump2AddReAndFriendFragment() {
-        ActivityUtils.addFragmentSlideInFromRight(
-                getActivity().getSupportFragmentManager(),
-                MineFriendAddFriendsFragment.newInstance(), android.R.id.content);
     }
 
     @Override
@@ -321,10 +201,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         super.onStop();
         if (presenter != null) {
             presenter.stop();
-        }
-
-        if (listener != null) {
-            listener.shareSucceed(shareSucceedNum, shareSucceedFriend);
         }
     }
 }

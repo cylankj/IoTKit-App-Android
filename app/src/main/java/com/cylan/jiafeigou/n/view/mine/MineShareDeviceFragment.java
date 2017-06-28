@@ -18,13 +18,13 @@ import android.widget.LinearLayout;
 
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -59,7 +59,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private MineShareToFriendFragment shareToRelativeAndFriendFragment;
     private MineShareDeviceAdapter adapter;
     private int position;
-    public static final String SHARE_FRIENDS_LIST = "share_friends_list";
 
     public static MineShareDeviceFragment newInstance(Bundle bundle) {
         return new MineShareDeviceFragment();
@@ -78,11 +77,17 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private void initAdapter() {
         recycleShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new MineShareDeviceAdapter(getContext(), null, null);
-        adapter.setOnShareClickListener((holder, viewType, layoutPosition, item) -> processShare(layoutPosition, item));
+        adapter.setOnShareClickListener((holder, viewType, layoutPosition, item) -> {
+            this.position = layoutPosition;
+            ViewUtils.deBounceClick(holder.itemView);
+            AppLogger.d("setOnShareClickListener");
+            showShareMenu();
+        });
         adapter.setOnItemClickListener((itemView, viewType, position1) -> {
+            this.position = position1;
             ViewUtils.deBounceClick(itemView);
             AppLogger.e("tv_share_device_manger");
-            jump2ShareDeviceMangerFragment(position1);
+            jump2ShareDeviceMangerFragment();
         });
         recycleShareDeviceList.setAdapter(adapter);
     }
@@ -119,7 +124,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         return null;
     }
 
-    public void showShareDialog(final int layoutPosition) {
+    public void showShareDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         builder.setView(view);
@@ -128,7 +133,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             ViewUtils.deBounceClick(v);
             AppLogger.e("tv_share_to_friends");
             alertDialog.dismiss();
-            jump2ShareToFriendFragment(layoutPosition);
+            jump2ShareToFriendFragment();
             AlertDialogManager.getInstance().dismissOtherDialog("showShareDialog");
         });
         view.findViewById(R.id.tv_share_to_contract).setOnClickListener(v -> {
@@ -145,38 +150,23 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      * desc；跳转到通过联系人分享的界面
      */
     private void jump2ShareToContractFragment() {
+        JFGShareListInfo adapterItem = adapter.getItem(position);
         Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, adapter.getItem(position).cid);
-        bundle.putSerializable("sharefriend", adapter.getItem(position).friends);
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, adapterItem.cid);
         MineShareToContactFragment mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
-                .addToBackStack("mineShareDeviceFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineShareToContactFragment, android.R.id.content);
     }
 
     /**
      * desc:跳转到通过亲友分享
      */
-    private void jump2ShareToFriendFragment(int position) {
+    private void jump2ShareToFriendFragment() {
         JFGShareListInfo adapterItem = adapter.getItem(position);
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, adapterItem.cid);
-        bundle.putSerializable("sharedFriends", adapterItem.friends);
         shareToRelativeAndFriendFragment = MineShareToFriendFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
-                .addToBackStack("mineShareDeviceFragment")
-                .commit();
-
-        shareToRelativeAndFriendFragment.setOnShareSucceedListener((num, list) -> {
-            if (num == 0) return;
-            adapter.notifyDataSetChanged();
-        });
+        shareToRelativeAndFriendFragment.setCallBack(() -> adapter.notifyItemChanged(position));
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), shareToRelativeAndFriendFragment, android.R.id.content);
     }
 
     @Override
@@ -186,38 +176,25 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         llNoDevice.setVisibility(adapter.getCount() > 0 ? View.GONE : View.VISIBLE);
     }
 
-    private void processShare(int position, Device device) {
+    private void showShareMenu() {
         if (NetUtils.getNetType(getContext()) == -1) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        showShareDialog(position);
+        showShareDialog();
 
     }
 
     /**
      * 跳转到分享管理界面
      */
-    public void jump2ShareDeviceMangerFragment(int position) {
+    public void jump2ShareDeviceMangerFragment() {
         JFGShareListInfo adapterItem = adapter.getItem(position);
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, adapterItem.cid);
         mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
-                .addToBackStack("mineShareDeviceFragment")
-                .commit();
-
-        mineDevicesShareManagerFragment.setOncancelChangeListener(
-                new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
-                    @Override
-                    public void unShareChange(int num, ArrayList<String> arrayList) {
-                        adapter.notifyDataSetChanged();
-//                        presenter.unShareSucceedDel(position, arrayList);
-                    }
-                });
+        mineDevicesShareManagerFragment.setCallback(() -> adapter.notifyItemChanged(position));
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), mineDevicesShareManagerFragment, android.R.id.content);
     }
 
     /**
@@ -247,12 +224,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         if (presenter != null) {
             presenter.stop();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        presenter.clearData();
     }
 
     @Override

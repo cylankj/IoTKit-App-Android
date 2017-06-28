@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ripple_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -14,6 +15,7 @@
             android:layout_width="@dimen/y50"
             android:layout_height="@dimen/y50"
             android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
             android:src="@drawable/img_me_list_head" />
 
         <RelativeLayout
