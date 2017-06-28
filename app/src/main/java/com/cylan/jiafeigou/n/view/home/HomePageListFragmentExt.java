@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +51,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.WrapContentLinearLayoutManager;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -546,14 +546,20 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    private void prepareNext(int position) {
+    private void prepareNext(View itemView, int position) {
         Device device = mItemAdapter.getItem(position).getDevice();
         if (device != null && !TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
             if (JFGRules.isCamera(device.pid)) {
-                startActivity(new Intent(getActivity(), CameraLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+                Intent in = new Intent(getActivity(), CameraLiveActivity.class);
+                View tip = itemView.findViewById(R.id.img_device_icon);
+                if (tip != null && tip instanceof ImageViewTip) {
+                    if (((ImageViewTip) tip).isShowDot())
+                        in.putExtra(JConstant.KEY_NEW_MSG_PASS, JConstant.KEY_NEW_MSG_PASS);
+                }
+                in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
+                startActivity(in);
             } else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
@@ -582,7 +588,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public boolean onClick(View v, IAdapter<HomeItem> adapter, HomeItem item, int position) {
         if (position != -1) {
-            prepareNext(position);
+            prepareNext(v, position);
         } else {
             AppLogger.e("dis match position : " + position);
         }

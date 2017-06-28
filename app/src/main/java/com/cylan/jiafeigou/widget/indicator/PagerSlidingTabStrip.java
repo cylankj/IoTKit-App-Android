@@ -19,9 +19,9 @@ import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.widget.HintTextView;
 
 import java.util.Locale;
 
@@ -214,11 +214,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private void addTextTab(final int position, String title) {
 
-        TextView tab = new TextView(getContext());
+        HintTextView tab = new HintTextView(getContext());
         tab.setText(title);
         tab.setGravity(Gravity.CENTER);
         tab.setSingleLine();
-
+        tab.setId(title.hashCode());
         addTab(position, tab);
     }
 
@@ -253,9 +253,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
             v.setBackgroundResource(tabBackgroundResId);
 
-            if (v instanceof TextView) {
+            if (v instanceof HintTextView) {
 
-                TextView tab = (TextView) v;
+                HintTextView tab = (HintTextView) v;
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
                 tab.setTextColor(tabTextColor);
@@ -382,8 +382,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
             for (int i = 0; i < tabCount; i++) {
                 View v = tabsContainer.getChildAt(i);
-                if (v instanceof TextView) {
-                    TextView tab = (TextView) v;
+                if (v instanceof HintTextView) {
+                    HintTextView tab = (HintTextView) v;
                     tab.setAlpha(i == position ? 1.0f : 0.5f);
                 }
             }

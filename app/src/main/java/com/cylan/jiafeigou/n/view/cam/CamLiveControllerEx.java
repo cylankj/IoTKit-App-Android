@@ -231,9 +231,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         initSightSetting(presenter);
         //分享用户不显示
         boolean showFlip = !presenter.isShareDevice();
-        findViewById(R.id.layout_port_flip).setVisibility(showFlip ? VISIBLE : INVISIBLE);
+        View flipPort = findViewById(R.id.layout_port_flip);
+        flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
+        LiveShowCase.show((Activity) getContext(), flipPort, findViewById(R.id.imgV_cam_zoom_to_full_screen));
     }
 
     public boolean isSightSettingShow() {
@@ -371,6 +373,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(null, null, true);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
+        int net = NetUtils.getJfgNetType();
+        if (net == 2)
+            ToastUtil.showToast(getResources().getString(R.string.Tap1_Firmware_DataTips));
     }
 
     private boolean isLand() {
@@ -393,11 +398,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
 //            layoutD.setVisibility(INVISIBLE);
-//            showHistoryWheel(false);
+            showHistoryWheel(false);
             setLoadingState(null, null);
-            if (livePlayState == PLAY_STATE_PLAYING) {
-                layoutC.setVisibility(INVISIBLE);
-            }
+//            if (livePlayState == PLAY_STATE_PLAYING) {
+            layoutC.setVisibility(INVISIBLE);
+//            }
             Log.d("wahat", "portHideRunnable");
         }
     };

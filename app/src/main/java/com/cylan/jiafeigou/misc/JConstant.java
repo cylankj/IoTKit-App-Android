@@ -136,6 +136,7 @@ public class JConstant {
     public static final String KEY_DEVICE_TIME_ZONE = "key_device_time_zone";
     public static final java.lang.String SHOW_PASSWORD_CHANGED = "SHOW_PASSWORD_CHANGED";
 
+    public static final String KEY_NEW_MSG_PASS = "key_new_msg_pass";
     /**
      * 有区别于直接绑定
      */

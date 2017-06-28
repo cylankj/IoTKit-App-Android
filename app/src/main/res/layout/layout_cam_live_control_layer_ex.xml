@@ -186,7 +186,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/layout_land_flip"
                 android:orientation="horizontal"
-                android:visibility="invisible">
+                android:visibility="visible">
 
                 <View
                     android:id="@+id/v_flag"
