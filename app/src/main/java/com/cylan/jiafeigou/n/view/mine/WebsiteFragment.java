@@ -13,8 +13,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,18 +81,24 @@ public class WebsiteFragment extends Fragment {
         wvWebsite.removeJavascriptInterface("searchBoxJavaBridge_");
         wvWebsite.removeJavascriptInterface("accessibilityTraversal");
         wvWebsite.removeJavascriptInterface("accessibility");
-        wvWebsite.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
+        try {
+            wvWebsite.setWebViewClient(new CheckServerTrustedWebViewClient(ContextUtils.getContext()) {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
 
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                handler.proceed();
-            }
-        });
+            });
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         wvWebsite.loadUrl(agreementUrl);
     }
 

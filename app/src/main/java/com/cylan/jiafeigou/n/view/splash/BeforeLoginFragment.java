@@ -105,6 +105,7 @@ public class BeforeLoginFragment extends Fragment {
                             if (ret.code == JError.ErrorOK) {
                                 startActivity(new Intent(getActivity(), NewHomeActivity.class));
                                 getActivity().finish();
+                                RxBus.getCacheInstance().removeStickyEvent(RxEvent.InitFrom2x.class);
                             }
                         }, AppLogger::e);
                 AutoSignIn.getInstance().autoLogin();

@@ -5,5 +5,11 @@ yun.jfgou.com:443
 #test1平台
 test1.jfgou.com:443
 
-#yf平台
-yf.jfgou.com:443
+#德国
+deal1.jfgou.com:443
+
+#美国
+usal1.jfgou.com:443
+
+#新加坡
+sgal1.jfgou.com:443

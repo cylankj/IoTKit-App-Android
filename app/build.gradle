@@ -92,21 +92,21 @@ android {
 //            storePassword 'android'
 //            keyAlias 'AndroidDebugKey'
 //            keyPassword 'android'
-            Properties properties = new Properties()
-            File localProperties = project.rootProject.file('local.properties')
-            if (localProperties.exists()) {
-                properties.load(localProperties.newDataInputStream())
-                def store_file = properties.getProperty('store_file')
-                if (store_file != null) {
-                    def store_pwd = properties.getProperty('store_pwd')
-                    def store_alias = properties.getProperty('store_alias')
-                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
-                    storeFile file(store_file)
-                    storePassword store_pwd
-                    keyAlias store_alias
-                    keyPassword store_alias_pwd
-                }
-            }
+//            Properties properties = new Properties()
+//            File localProperties = project.rootProject.file('local.properties')
+//            if (localProperties.exists()) {
+//                properties.load(localProperties.newDataInputStream())
+//                def store_file = properties.getProperty('store_file')
+//                if (store_file != null) {
+//                    def store_pwd = properties.getProperty('store_pwd')
+//                    def store_alias = properties.getProperty('store_alias')
+//                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+//                    storeFile file(store_file)
+//                    storePassword store_pwd
+//                    keyAlias store_alias
+//                    keyPassword store_alias_pwd
+//                }
+//            }
         }
         release {
             // 满足下面两个条件时需要此配置
