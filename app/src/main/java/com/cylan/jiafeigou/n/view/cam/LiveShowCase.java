@@ -17,15 +17,18 @@ public class LiveShowCase {
 
     public static void show(Activity activity, View anchor0, View anchor1) {
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_CASE, true);
-        if (true) {
-            SimplePopupWindow left = new SimplePopupWindow(activity, R.drawable.collect_tips_left,
-                    R.string.Tap1_Camera_SetProtectionTips);
-            left.showOnAnchor(anchor0, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
-                    RelativePopupWindow.HorizontalPosition.ALIGN_LEFT);
-            SimplePopupWindow right = new SimplePopupWindow(activity, R.drawable.collect_tips,
-                    R.string.Tap1_Camera_BackLiveTips);
-            right.showOnAnchor(anchor1, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
-                    RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT);
+        PreferencesUtils.putBoolean(KEY_SHOW_CASE, false);
+        if (result) {
+            anchor0.post(() -> {
+                SimplePopupWindow left = new SimplePopupWindow(activity, R.drawable.collect_tips_left,
+                        R.string.Tap1_Camera_SetProtectionTips);
+                left.showOnAnchor(anchor0, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_LEFT, 20, -50);
+                SimplePopupWindow right = new SimplePopupWindow(activity, R.drawable.collect_tips,
+                        R.string.Tap1_Camera_BackLiveTips);
+                right.showOnAnchor(anchor1, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT);
+            });
         }
     }
 }

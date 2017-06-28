@@ -235,7 +235,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
-        LiveShowCase.show((Activity) getContext(), flipPort, findViewById(R.id.imgV_cam_zoom_to_full_screen));
+        LiveShowCase.show((Activity) getContext(), layoutD, findViewById(R.id.imgV_cam_zoom_to_full_screen));
     }
 
     public boolean isSightSettingShow() {
