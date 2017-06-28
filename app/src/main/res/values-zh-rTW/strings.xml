@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">偵測到異常時，設備將播放聲音</string>
   <string name="Added_successfully">綁定成功</string>
   <string name="Alarm_WeChat">微信接收報警消息</string>
+  <string name="Alarm_WeChat_NoBindTips">使用此功能需要綁定郵箱</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">返回</string>
@@ -63,7 +64,7 @@
   <string name="CLEAR_DATA">清空訊息暫存</string>
   <string name="CODE_ERR">請輸入有效的驗證碼</string>
   <string name="COMFIRM_NEW_PASS">重新輸入新密碼</string>
-  <string name="CONNECTING">正在連接中，不可多人同時查看</string>
+  <string name="CONNECTING">設備無回應，請重試</string>
   <string name="CONNECTING_1">正在連接網路，請稍後</string>
   <string name="CONN_INTERRUPTED">連接中斷，請檢查設備網路連接</string>
   <string name="CREATING">正在新增，請稍候&#8230;</string>
@@ -149,6 +150,7 @@
   <string name="DOOR_VOICE">聲音</string>
   <string name="DOOR_WIFI_HINT">設備指示燈狀態說明</string>
   <string name="DailyGreatTips_Full">每日精彩收藏數量已達50條上限，是否前去刪除？</string>
+  <string name="Daily_Great_NO_CONTENTS">暫無精彩內容</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">是否刪除分享</string>
   <string name="Device_Disconnected">對端斷開</string>
@@ -233,6 +235,10 @@
   <string name="GUIDE_INFO">滑一滑，顯示更多內容</string>
   <string name="GetCode_FrequentlyTips">操作過於頻繁，請10分鐘後重試</string>
   <string name="GetWifiList_FaiTips">1.允許客戶端獲取“位置信息”權限 \n 2.打開“GPS”開關</string>
+  <string name="H5_Asteroid">魚眼</string>
+  <string name="H5_Fisheye">全景</string>
+  <string name="H5_Panoramic">更多</string>
+  <string name="H5_VR_mode">小行星</string>
   <string name="HOME">主頁</string>
   <string name="HOUR">時</string>
   <string name="HOURS">全天提示</string>
@@ -271,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">藍色常亮，3G/4G線上</string>
   <string name="LIGTH_LABEL_2_1">閃爍，電量低</string>
   <string name="LIGTH_LABEL_2_2">藍色常亮，已正常通電</string>
+  <string name="LIVE_DATA">非WiFi網絡，請注意流量消耗</string>
   <string name="LOADING">載入中&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">請在手機設定－通知頁，找到%s，開啟“允許通知”</string>
   <string name="LOCATION">位置名稱：</string>
@@ -407,8 +414,8 @@
   <string name="RECORD_INFO_0">位移偵測到異常時啟用錄影，待移動停止時亦停止錄影</string>
   <string name="RECORD_INFO_1">24小時啟動錄影</string>
   <string name="RECORD_INFO_2">任何時候都不啟動錄影</string>
-  <string name="RECORD_MODE">位移偵測到異常時</string>
-  <string name="RECORD_MODE_1">24小時</string>
+  <string name="RECORD_MODE">偵測報警錄像</string>
+  <string name="RECORD_MODE_1">全天</string>
   <string name="RECORD_MODE_2">永不</string>
   <string name="RECORD_MODE_CHANGE">當前位置為回家模式，位移偵測已關閉，如需開啟，請修改模式</string>
   <string name="RECORD_NO_FIND">沒有此時段的錄影</string>
@@ -511,11 +518,11 @@
   <string name="SETTING">正在設定&#8230;</string>
   <string name="SETTINGS">設定</string>
   <string name="SETTINGS_1">功能設置</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">關閉將無法接收微信推送。想取消綁定請前往微信取消關注\“加菲狗官微服務\”公眾號。</string>
-  <string name="SETTINGS_Wechat_Switch_Open">請在新的微信號上關注\"加菲狗官微服務\"並綁定，成功後舊的微信號將不再接收消息推送</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">關閉將無法接收微信推送。想取消綁定請前往微信取消關注“加菲狗官微服务”公眾號。</string>
+  <string name="SETTINGS_Wechat_Switch_Open">請在新的微信號上關注“加菲狗官微服务”並綁定，成功後舊的微信號將不再接收消息推送</string>
   <string name="SETTING_DIRECTION">錄影指向</string>
   <string name="SETTING_FREE">自行設定單個設備的位移偵測及警示</string>
-  <string name="SETTING_RECORD">自動錄影</string>
+  <string name="SETTING_RECORD">錄像設置</string>
   <string name="SETTING_SD">Micro SD卡</string>
   <string name="SETTING_TIMEZONE">設備時區</string>
   <string name="SET_NEW_PWD">設定新密碼</string>
@@ -563,16 +570,16 @@
   <string name="Start_Failed">開啟失敗</string>
   <string name="Start_Hotspot">開啟熱點</string>
   <string name="Start_Hotspot_Note">開啟熱點會使設備離線，開啟後，請等待設備藍燈閃爍</string>
-  <string name="Start_Hotspot_Prompt">開啟前請確定手機已連接到\“%s\”WiFi網絡</string>
+  <string name="Start_Hotspot_Prompt">開啟前請確定手機已連接到“%s”WiFi網絡</string>
   <string name="Start_Success">開啟成功</string>
   <string name="Start_instructions">開啟說明</string>
   <string name="Start_instructions_A">在微信公眾號裡綁定加菲狗電子郵件，即可開啟此功能。</string>
   <string name="Start_instructions_B">步驟如下：</string>
-  <string name="Start_instructions_C">1. 請先關注微信公眾號\“加菲狗官微服務\”</string>
-  <string name="Start_instructions_D">方法一：點擊微信右上角的\“+\”號 > 添加朋友 > 公眾號，搜索 \“加菲狗官微服務\”然後關注。</string>
+  <string name="Start_instructions_C">1. 請先關注微信公眾號“加菲狗官微服务”</string>
+  <string name="Start_instructions_D">方法一：點擊微信右上角的“+”號 > 添加朋友 > 公眾號，搜索“加菲狗官微服务”然後關注。</string>
   <string name="Start_instructions_E">方法二：截圖此頁面，在微信 裡掃一掃關注。</string>
   <string name="Start_instructions_F">2. 綁定賬號</string>
-  <string name="Start_instructions_G">關注\“加菲狗官微服務\”公眾號後，進入主頁面，點擊菜單欄的\“服務\”，選擇\“綁定賬號\”。</string>
+  <string name="Start_instructions_G">關注“加菲狗官微服务”公眾號後，進入主頁面，點擊菜單欄的“服務”，選擇“綁定賬號”。</string>
   <string name="Start_instructions_H">綁定賬號</string>
   <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
   <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
@@ -672,16 +679,16 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">攝影機安全待機中，開啟延時攝影，需關閉安全待機模式，確認是否關閉？</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">確認關閉</string>
   <string name="Tap1_CameraFun_Timelapse_document">啟動延時攝影，更多精彩畫面呈現</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s 小時</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%小時</string>
   <string name="Tap1_CameraFun_UninitializedTips">Micro SD卡讀寫失敗</string>
-  <string name="Tap1_CameraFun_VideoDirection">倒掛（畫面反轉）</string>
+  <string name="Tap1_CameraFun_VideoDirection">畫面反轉 (倒掛)</string>
   <string name="Tap1_Camera_BackLiveTips">點擊返回直播</string>
   <string name="Tap1_Camera_Front">平視</string>
   <string name="Tap1_Camera_FrontTips">以平視的視角查看，需要保持攝像頭前方視野開闊</string>
   <string name="Tap1_Camera_Greetings">日出日落、雲彩變換、家庭生活、Baby成長&#8230;每天都有精彩和成長，每一刻都值得被記錄</string>
   <string name="Tap1_Camera_Messages">訊息</string>
   <string name="Tap1_Camera_Messages_ViewTheVideo">查看視頻</string>
-  <string name="Tap1_Camera_MotionDetection_OffTips">關閉“移動偵測”，將停止“偵測到異常時”自動錄像</string>
+  <string name="Tap1_Camera_MotionDetection_OffTips">關閉“移動偵測”，將停止“移動偵測報警錄像”</string>
   <string name="Tap1_Camera_NoSDCardTips">未檢測到SD卡</string>
   <string name="Tap1_Camera_Overlook">俯視</string>
   <string name="Tap1_Camera_OverlookTips">以從上往下的視角查看，需要將攝像頭放置於高處</string>
@@ -741,6 +748,7 @@
   <string name="Tap1_LowPower">電池電量低，請及時充電</string>
   <string name="Tap1_Magnetism_ClearRecord">清空開關記錄</string>
   <string name="Tap1_Magnetism_Setting_Notify">開/關時通知我</string>
+  <string name="Tap1_Menu_More">更多</string>
   <string name="Tap1_NeedsInitializedTips">設備SD卡需要先初始化，但會刪除卡內數據，確定初始化嗎？</string>
   <string name="Tap1_NewFirmware">新固件</string>
   <string name="Tap1_NoMessages">無消息</string>
@@ -796,6 +804,7 @@
   <string name="Tap2_Timelapse_screenshot">螢幕快照</string>
   <string name="Tap2_Timelapse_title">延時攝影</string>
   <string name="Tap2_TitleName">每日精彩</string>
+  <string name="Tap2_TitleName_Sentence">每日精彩</string>
   <string name="Tap2_share_sharevideo">分享了一段影片給你</string>
   <string name="Tap2_share_sharevideo_tips">我用砍價王智能攝像機拍攝了一段延時攝影，快來看看吧</string>
   <string name="Tap2_share_unabletoshare">手機沒有安裝Wechat，無法分享</string>
@@ -871,6 +880,7 @@
   <string name="Tap3_ShareDevice_NoDevice">還沒有保存</string>
   <string name="Tap3_ShareDevice_NoShare">暫未分享</string>
   <string name="Tap3_ShareDevice_NoneFriends">暫無添加親友</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">暫無可分享親友</string>
   <string name="Tap3_ShareDevice_NotYourself">無法分享設備給自己</string>
   <string name="Tap3_ShareDevice_Shared">已分享</string>
   <string name="Tap3_ShareDevice_SharedContents">已分享內容</string>
@@ -913,6 +923,7 @@
   <string name="USE_HELP">操作助理</string>
   <string name="Unconnect_Network">您的設備未連接移動網絡，或Wi&#8211;Fi網絡</string>
   <string name="VALID_STORAGE">儲存空間</string>
+  <string name="VIDEO_FirmwareUpdating">固件更新中&#8230;</string>
   <string name="VIDEO_REFRESHING">正在載入，請稍後</string>
   <string name="VIDEO_SD_DESC">Micro SD卡需要初始化，才能存儲影像資料</string>
   <string name="WARN_TIME">警示時間</string>

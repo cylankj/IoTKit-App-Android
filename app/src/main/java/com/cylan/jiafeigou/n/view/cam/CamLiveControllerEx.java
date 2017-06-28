@@ -304,7 +304,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //                layoutA.setTranslationY(0);
 //                layoutD.setTranslationY(0);
 //                layoutE.setTranslationY(0);
-                boolean toHide = layoutD.isShown();
+                boolean toHide = layoutC.isShown();
                 if (toHide) {
                     removeCallbacks(portShowRunnable);
                     post(portHideRunnable);

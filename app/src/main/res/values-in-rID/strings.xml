@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Pilih sebuah sinyal Audio untuk diputar ketika sensor gerakan terdeteksi</string>
   <string name="Added_successfully">Bind berhasil</string>
   <string name="Alarm_WeChat">Alarm via WeChet</string>
+  <string name="Alarm_WeChat_NoBindTips">Menggunakan fungsi ini perlu untuk mengikat email</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -63,7 +64,7 @@
   <string name="CLEAR_DATA">Hapus Pesan</string>
   <string name="CODE_ERR">Kode salah</string>
   <string name="COMFIRM_NEW_PASS">Ketik kata sandi baru</string>
-  <string name="CONNECTING">Seseorang sedang melihat video langsung</string>
+  <string name="CONNECTING">Tidak ada respon , silahkan coba lagi</string>
   <string name="CONNECTING_1">Menghubungkan</string>
   <string name="CONN_INTERRUPTED">Menghubungkan ke jaringan</string>
   <string name="CREATING">Menambahkan&#8230;</string>
@@ -149,6 +150,7 @@
   <string name="DOOR_VOICE">Suara</string>
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
   <string name="DailyGreatTips_Full">Nomor koleksi untuk Daily Great telah mencapai batas atas 50, pergi ke menghapus?</string>
+  <string name="Daily_Great_NO_CONTENTS">Tidak ada isi</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Hapus berbagi?</string>
   <string name="Device_Disconnected">Terputus</string>
@@ -233,6 +235,10 @@
   <string name="GUIDE_INFO">Sedang menggeser. \nperlihatkan lebih lanjut</string>
   <string name="GetCode_FrequentlyTips">Terlalu sering operasi, coba lagi 10 menit kemudian.</string>
   <string name="GetWifiList_FaiTips">1.Memungkinkan aplikasi untuk mendapatkan \"Lokasi\" izin \n 2.Hidupkan \"GPS\" atas.</string>
+  <string name="H5_Asteroid">Asteroid</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Panorama</string>
+  <string name="H5_VR_mode">Mode VR</string>
   <string name="HOME">Rumah</string>
   <string name="HOUR">Jam</string>
   <string name="HOURS">24 jam</string>
@@ -271,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Lampu biru, 3G/4G Online</string>
   <string name="LIGTH_LABEL_2_1">Berkedip, baterai lemah</string>
   <string name="LIGTH_LABEL_2_2">Lampu biru, terdapat daya listrik</string>
+  <string name="LIVE_DATA">Untuk seluler, perhatikan penggunaan data Anda</string>
   <string name="LOADING">Loading&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Please go to Phone\'s \"Settings\"&#8211;\"Notifications\", find %s and open \'Notifications\'</string>
   <string name="LOCATION">Lokasi:</string>
@@ -408,7 +415,7 @@
   <string name="RECORD_INFO_1">Mengaktifkan video 24 jam</string>
   <string name="RECORD_INFO_2">Mematikan video kapanpun</string>
   <string name="RECORD_MODE">Deteksi gerakan</string>
-  <string name="RECORD_MODE_1">24 jam</string>
+  <string name="RECORD_MODE_1">Sepanjang hari</string>
   <string name="RECORD_MODE_2">Tidak pernah</string>
   <string name="RECORD_MODE_CHANGE">Untuk sekarang.lokasi anda adalah \"di rumah\",sensor gerakan tertutup, jika anda butuh deteksi,silahkan lanjutkan</string>
   <string name="RECORD_NO_FIND">Tidak ada video saat ini</string>
@@ -511,11 +518,11 @@
   <string name="SETTING">Pengaturan&#8230;</string>
   <string name="SETTINGS">Pengaturan</string>
   <string name="SETTINGS_1">Pengaturan</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Jika ditutup, maka tidak bisa menerima dorongan WeChat. Unbinding dengan unfollowing "Clever Dog WeChat Official Account".</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Harap fokus pada akun WeChat "Cler Dog WeChat Official Account" dan mengikat, setelah kesuksesan akun WeChat lama tidak akan lagi menerima pesan push.</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Jika ditutup, maka tidak bisa menerima dorongan WeChat. Unbinding dengan unfollowing \"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Harap fokus pada akun WeChat \"加菲狗官微服务\" dan mengikat, setelah kesuksesan akun WeChat lama tidak akan lagi menerima pesan push.</string>
   <string name="SETTING_DIRECTION">Arah video</string>
   <string name="SETTING_FREE">Set deteksi gerak dan alarm perangkat</string>
-  <string name="SETTING_RECORD">Rekaman video</string>
+  <string name="SETTING_RECORD">Pengaturan video</string>
   <string name="SETTING_SD">Kartu Micro SD</string>
   <string name="SETTING_TIMEZONE">Zona waktu</string>
   <string name="SET_NEW_PWD">Set Kata sandi baru</string>
@@ -563,16 +570,16 @@
   <string name="Start_Failed">Mulai gagal</string>
   <string name="Start_Hotspot">Mulai hotspot</string>
   <string name="Start_Hotspot_Note">Mulai hotspot dapat menyebabkan offline perangkat; Setelah dinyalakan, tunggu lampu biru menyala</string>
-  <string name="Start_Hotspot_Prompt">Pastikan telepon terhubung ke jaringan WiFi "%s" sebelum membuka</string>
+  <string name="Start_Hotspot_Prompt">Pastikan telepon terhubung ke jaringan WiFi \"%s\" sebelum membuka</string>
   <string name="Start_Success">Mulai sukses</string>
   <string name="Start_instructions">Buka instruksinya</string>
   <string name="Start_instructions_A">Dalam Akun Resmi WeChat di email Clever Dog yang mengikat, Anda dapat membuka fungsi ini.</string>
   <string name="Start_instructions_B">Lanjutkan sebagai berikut:</string>
-  <string name="Start_instructions_C">1. Mohon memperhatikan nomor resmi WeChat "Clever Dog WeChat Official Account"</string>
-  <string name="Start_instructions_D">Metode 1: klik pada WeChat di sudut kanan atas \"+\"> Tambahkan Kontak> Akun Resmi, cari \"Akun Pejabat WeChat Clever Dog\" dan kemudian prihatin.</string>
+  <string name="Start_instructions_C">1. Mohon memperhatikan nomor resmi WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Metode 1: klik pada WeChat di sudut kanan atas \"+\"> Tambahkan Kontak> Akun Resmi, cari \"加菲狗官微服务\" dan kemudian prihatin.</string>
   <string name="Start_instructions_E">Metode 2: tangkapan layar halaman ini atau simpan kode dua dimensi berikut ke album, di sapaan WeChat menyapu.</string>
   <string name="Start_instructions_F">2. Bind account</string>
-  <string name="Start_instructions_G">Perhatian \"Akun Administratif Akun Khusus Clever Dog WeChat \", masukkan halaman utama, klik bilah menu layanan, pilih akun pengikat.</string>
+  <string name="Start_instructions_G">Perhatian \"加菲狗官微服务\", masukkan halaman utama, klik bilah menu layanan, pilih akun pengikat.</string>
   <string name="Start_instructions_H">Bind account</string>
   <string name="Start_instructions_I">Harap masukkan akun email anjing Pintar untuk mengikat, seperti lupa kata sandi, tolong masuk ke klien anjing Pintar</string>
   <string name="Switch_Mode">Silahkan beralih ke mode langsung untuk melihat konten pemotretan</string>
@@ -672,7 +679,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Perlu mematikan standby sebelum fotografi selang waktu , anda yakin?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Yakin</string>
   <string name="Tap1_CameraFun_Timelapse_document">Dapatkan lebih banyak momen&#8211;momen indah dengan fotografi selang waktu</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s jam</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%jam</string>
   <string name="Tap1_CameraFun_UninitializedTips">Gagal membaca Kartu Micro SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Kebalikan</string>
   <string name="Tap1_Camera_BackLiveTips">Back to live</string>
@@ -741,6 +748,7 @@
   <string name="Tap1_LowPower">daya rendah, silakan dikenakan biaya.</string>
   <string name="Tap1_Magnetism_ClearRecord">Hapus catatan</string>
   <string name="Tap1_Magnetism_Setting_Notify">Beritahu saya jika itu terbuka/tertutup</string>
+  <string name="Tap1_Menu_More">Lebih</string>
   <string name="Tap1_NeedsInitializedTips">kebutuhan kartu SD diinisialisasi dan data akan dibersihkan, pasti untuk melanjutkan?</string>
   <string name="Tap1_NewFirmware">Firmware baru</string>
   <string name="Tap1_NoMessages">Tidak ada pesan</string>
@@ -796,6 +804,7 @@
   <string name="Tap2_Timelapse_screenshot">Tangkap layar Live</string>
   <string name="Tap2_Timelapse_title">Fotografi selang waktu</string>
   <string name="Tap2_TitleName">Daily Great</string>
+  <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
   <string name="Tap2_share_sharevideo">Saya share video ke kamu</string>
   <string name="Tap2_share_sharevideo_tips">Saya sudah membuat fotografi selang waktu dengan Cleverdog Smart Camera, Lihat!</string>
   <string name="Tap2_share_unabletoshare">Tidak ada Wechat terpasang , tidak bisa bagikan</string>
@@ -871,6 +880,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Belum ada perangkat</string>
   <string name="Tap3_ShareDevice_NoShare">Belum membagikan</string>
   <string name="Tap3_ShareDevice_NoneFriends">None</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">None</string>
   <string name="Tap3_ShareDevice_NotYourself">Tidak membagi untuk anda sendiri</string>
   <string name="Tap3_ShareDevice_Shared">Shared</string>
   <string name="Tap3_ShareDevice_SharedContents">Dibagikan isi</string>
@@ -913,6 +923,7 @@
   <string name="USE_HELP">Bantuan</string>
   <string name="Unconnect_Network">Perangkat Anda tidak terhubung ke jaringan selular atau jaringan Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Penyimpanan Valid</string>
+  <string name="VIDEO_FirmwareUpdating">Firmware updating&#8230;</string>
   <string name="VIDEO_REFRESHING">Sedang memuat</string>
   <string name="VIDEO_SD_DESC">SD Card diperlukan untuk menyimpan informasi video</string>
   <string name="WARN_TIME">Waktu peringatan</string>

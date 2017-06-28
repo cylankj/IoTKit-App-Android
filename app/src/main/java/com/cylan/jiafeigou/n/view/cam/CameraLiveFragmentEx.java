@@ -215,7 +215,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.onStart();
         Device device = basePresenter.getDevice();
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        basePresenter.startPlay();
+        //不需要自动播放了
+        if (judge()) {
+            //显示按钮
+        }
+        //        basePresenter.startPlay();
     }
 
     @Override

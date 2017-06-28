@@ -24,7 +24,7 @@
         android:layout_below="@id/imgv_empty_layout_icon"
         android:layout_marginTop="@dimen/y20"
         android:gravity="center_horizontal"
-        android:text="@string/NO_CONTENTS_1"
+        android:text="@string/Daily_Great_NO_CONTENTS"
         android:textColor="@color/color_888888"
         android:textSize="@dimen/sp16" />
 

@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Hareket seçildiğinde çalınacak olan Sesli alarmı seçiniz</string>
   <string name="Added_successfully">Başarıyla bind</string>
   <string name="Alarm_WeChat">WeChet üzerinden alarm</string>
+  <string name="Alarm_WeChat_NoBindTips">Bu işlevi kullanmak, önce e&#8211;postayı bağlamak zorundadır.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -63,7 +64,7 @@
   <string name="CLEAR_DATA">Mesajlar cebini temizleyiniz</string>
   <string name="CODE_ERR">Geçersiz kod</string>
   <string name="COMFIRM_NEW_PASS">Yeni şifreyi tekrar yazın</string>
-  <string name="CONNECTING">Canlı video izleyen birisi var</string>
+  <string name="CONNECTING">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="CONNECTING_1">Bağlanılıyor</string>
   <string name="CONN_INTERRUPTED">Ağa bağlanıyor</string>
   <string name="CREATING">Ekleniyor&#8230;</string>
@@ -149,6 +150,7 @@
   <string name="DOOR_VOICE">Ses</string>
   <string name="DOOR_WIFI_HINT">LED Durum Göstergesi</string>
   <string name="DailyGreatTips_Full">Koleksiyonun Günlük Mükemmel sayısı 50\'ye ulaştı, silinecek mi?</string>
+  <string name="Daily_Great_NO_CONTENTS">İçerik yok</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Paylaşımı silinsin mi?</string>
   <string name="Device_Disconnected">Bağlantısız</string>
@@ -233,6 +235,10 @@
   <string name="GUIDE_INFO">Kaygan，\n daha fazla göster</string>
   <string name="GetCode_FrequentlyTips">İşlemler çok sıktır, lütfen 10 dakika sonra tekrar deneyin.</string>
   <string name="GetWifiList_FaiTips">1.Uygulamanın \"Konum\" iznini almasına izin ver \n 2.\"GPS\" i açın.</string>
+  <string name="H5_Asteroid">asteroit</string>
+  <string name="H5_Fisheye">Balık gözü</string>
+  <string name="H5_Panoramic">panoramik</string>
+  <string name="H5_VR_mode">VR modu</string>
   <string name="HOME">Ev</string>
   <string name="HOUR">S</string>
   <string name="HOURS">24 saat</string>
@@ -271,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Mavi ışık, 3G/4G Çevrimiçi</string>
   <string name="LIGTH_LABEL_2_1">Yanıp sönüyor, düşük pil</string>
   <string name="LIGTH_LABEL_2_2">Mavi ışık, elektrik var</string>
+  <string name="LIVE_DATA">Hücresel kullanım için lütfen veri kullanımınızı not edin</string>
   <string name="LOADING">Yükleniyor&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Phone\'nunuzda \"Ayarlamalar&#8211;Bildirimlar\" aracılığı ile %s i bulun ve Bildirimler i açın</string>
   <string name="LOCATION">Yer:</string>
@@ -408,7 +415,7 @@
   <string name="RECORD_INFO_1">24 saat videoya izin ver</string>
   <string name="RECORD_INFO_2">Herhangi bir zamandaki videoya izin verme</string>
   <string name="RECORD_MODE">Hareket algılama</string>
-  <string name="RECORD_MODE_1">24 saat</string>
+  <string name="RECORD_MODE_1">Tüm gün</string>
   <string name="RECORD_MODE_2">Hiçbir zaman</string>
   <string name="RECORD_MODE_CHANGE">Şu an için yeriniz \"evde\", hareket algılama kapalı, algılamaya ihtiyacınız varsa lütfen devam edin</string>
   <string name="RECORD_NO_FIND">Bu sefer video yok</string>
@@ -511,11 +518,11 @@
   <string name="SETTING">Ayarlanıyor&#8230;</string>
   <string name="SETTINGS">Ayarlamalar</string>
   <string name="SETTINGS_1">Ayarlamalar</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Kapanırsa, WeChat itilmesini kabul edemezsiniz. \"Akıllı Köpek WeChat Resmi Hesabı\" nı takip etmeden kaldırılmasını.</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Lütfen eski WeChat hesabının başarısı artık mesajı zorla almazsak WeChat hesabına \"Akıllı Köpek WeChat Resmi Hesabı\" na odaklanın ve bağlayın.</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Kapanırsa, WeChat itilmesini kabul edemezsiniz. \"加菲狗官微服务\" nı takip etmeden kaldırılmasını.</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Lütfen eski WeChat hesabının başarısı artık mesajı zorla almazsak WeChat hesabına \"加菲狗官微服务\" na odaklanın ve bağlayın.</string>
   <string name="SETTING_DIRECTION">Video yönlendirme</string>
   <string name="SETTING_FREE">Kişisel cihazın alarm ve hareket algılamasını ayarlayın</string>
-  <string name="SETTING_RECORD">Video kaydetme</string>
+  <string name="SETTING_RECORD">Video ayarları</string>
   <string name="SETTING_SD">Mikro SD kart</string>
   <string name="SETTING_TIMEZONE">Zaman bölgesi</string>
   <string name="SET_NEW_PWD">Yeni şifre kur</string>
@@ -568,11 +575,11 @@
   <string name="Start_instructions">Talimatları aç</string>
   <string name="Start_instructions_A">Clever Dog e&#8211;postasını bağlayan WeChat Resmi Hesaplarında bu işlevi açabilirsiniz.</string>
   <string name="Start_instructions_B">Aşağıdakileri yapın:</string>
-  <string name="Start_instructions_C">1. Lütfen WeChat genel numarasına \"Akıllı Köpek WeChat Resmi Hesabı\" na dikkat edin.</string>
-  <string name="Start_instructions_D">Yöntem 1: \"+\"> Rehber Ekle> Resmi Hesaplar\'ın sağ üst köşesindeki WeChat\'ı tıklayın, ardından \"Akıllı Köpek WeChat Resmi Hesabı\" arar ve ardından endişe duyar.</string>
+  <string name="Start_instructions_C">1. Lütfen WeChat genel numarasına \"加菲狗官微服务\" na dikkat edin.</string>
+  <string name="Start_instructions_D">Yöntem 1: \"+\"> Rehber Ekle> Resmi Hesaplar\'ın sağ üst köşesindeki WeChat\'ı tıklayın, ardından \"加菲狗官微服务\" arar ve ardından endişe duyar.</string>
   <string name="Start_instructions_E">Yöntem 2: Bu sayfanın ekran görüntüsü veya aşağıdaki iki boyutlu kodu Albüme kaydetmek için WeChat süpürme dikkatini kullanın.</string>
   <string name="Start_instructions_F">2. Hesap bağlayın</string>
-  <string name="Start_instructions_G">Dikkat \"Akıllı Köpek WeChat Resmi Hesabı\" Resmi Hesaplar, ana sayfaya girin, hizmetin menü çubuğuna tıklayın, cilt hesabı seçin.</string>
+  <string name="Start_instructions_G">Dikkat \"加菲狗官微服务\" Resmi Hesaplar, ana sayfaya girin, hizmetin menü çubuğuna tıklayın, cilt hesabı seçin.</string>
   <string name="Start_instructions_H">Hesabı bağla</string>
   <string name="Start_instructions_I">Lütfen şifreyi unuttum gibi bağlamak için Zeki köpek e&#8211;posta hesabını giriniz, lütfen Zeki köpek müşterisine geri dönün.</string>
   <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen doğrudan moda geçin</string>
@@ -672,7 +679,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Hızlandırılmış fotoğraflamadan önce beklemedeyi kapatmaya gerek var, emin misiniz?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Emin</string>
   <string name="Tap1_CameraFun_Timelapse_document">Hızlandırılmış fotoğrafçılık ile daha harika anları başlatın</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s aat</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% saat</string>
   <string name="Tap1_CameraFun_UninitializedTips">Mikro SD kart okuma başarısız</string>
   <string name="Tap1_CameraFun_VideoDirection">Ters</string>
   <string name="Tap1_Camera_BackLiveTips">Back to canlı</string>
@@ -741,6 +748,7 @@
   <string name="Tap1_LowPower">Düşük güç, lütfen şarj edin.</string>
   <string name="Tap1_Magnetism_ClearRecord">kayıt temizleyin</string>
   <string name="Tap1_Magnetism_Setting_Notify">Beni bilgilendir ne zaman açık/kapalı</string>
+  <string name="Tap1_Menu_More">Daha</string>
   <string name="Tap1_NeedsInitializedTips">SD kartının başlatılması gerekiyor ve veriler silinecek, emin misiniz?</string>
   <string name="Tap1_NewFirmware">yeni firmware</string>
   <string name="Tap1_NoMessages">Mesaj yok</string>
@@ -796,6 +804,7 @@
   <string name="Tap2_Timelapse_screenshot">Canlı ekran görüntüleri</string>
   <string name="Tap2_Timelapse_title">Hızlandırılmış fotoğrafçılık</string>
   <string name="Tap2_TitleName">Günlük Mükemmel</string>
+  <string name="Tap2_TitleName_Sentence">Günlük Mükemmel</string>
   <string name="Tap2_share_sharevideo">Seninle bir video paylaştım</string>
   <string name="Tap2_share_sharevideo_tips">Clever Dog Akıllı Kamera ile hızlandırılmış bir fotoğraf yaptım, kontrol et!</string>
   <string name="Tap2_share_unabletoshare">Kurulu Wechat yok, paylaşım yapılamıyor</string>
@@ -871,6 +880,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Cihaz yok.</string>
   <string name="Tap3_ShareDevice_NoShare">paylaşıldı değil</string>
   <string name="Tap3_ShareDevice_NoneFriends">Hiçbiri</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Hiçbiri</string>
   <string name="Tap3_ShareDevice_NotYourself">Kendiniz için paylaşmayınız</string>
   <string name="Tap3_ShareDevice_Shared">Paylaşılan</string>
   <string name="Tap3_ShareDevice_SharedContents">Paylaşılan içerik</string>
@@ -913,6 +923,7 @@
   <string name="USE_HELP">Yardım</string>
   <string name="Unconnect_Network">Cihazınız bir mobil şebekeye veya bir Kablosuz ağa bağlı değil</string>
   <string name="VALID_STORAGE">Geçerli depolama</string>
+  <string name="VIDEO_FirmwareUpdating">Firmware güncellemesi&#8230;</string>
   <string name="VIDEO_REFRESHING">YÜKLENİYOR</string>
   <string name="VIDEO_SD_DESC">Video bilgisi depolamak için SD kart başlatma gerekiyor</string>
   <string name="WARN_TIME">Uyarı süresi</string>

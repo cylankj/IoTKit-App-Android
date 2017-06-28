@@ -339,7 +339,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void startPlay() {
         if (mView == null || !mView.isUserVisible()) return;
-        if (!mView.judge()) return;
         if (getLiveStream().playState == PLAY_STATE_PREPARE) {
             AppLogger.d("已经loading");
             mView.onLivePrepare(getLiveStream().type);
@@ -593,7 +592,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             t = 1;
             if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
         }
-        if (!mView.judge()) return;
         final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
         getView().onLivePrepare(TYPE_HISTORY);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());

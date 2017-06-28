@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Emite sonidos el dispositivo al detectar estado anormal</string>
   <string name="Added_successfully">enlazar con éxito</string>
   <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
+  <string name="Alarm_WeChat_NoBindTips">El uso de esta función necesita unirse correo electrónico en primer lugar.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -63,7 +64,7 @@
   <string name="CLEAR_DATA">Limpiar caché</string>
   <string name="CODE_ERR">Introduzca el código de prueba válido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nueva contraseña</string>
-  <string name="CONNECTING">Cargando, no pueden averiguar varias personas al mismo tiempo</string>
+  <string name="CONNECTING">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
   <string name="CONNECTING_1">Conectando, espere por favor</string>
   <string name="CONN_INTERRUPTED">Conexión fracasada, confirme la red de la cámara</string>
   <string name="CREATING">Crando, espere por favor&#8230;</string>
@@ -149,6 +150,7 @@
   <string name="DOOR_VOICE">Sonido</string>
   <string name="DOOR_WIFI_HINT">Indicador LED de estado</string>
   <string name="DailyGreatTips_Full">Número de la colección de Gran día ha alcanzado el límite superior de 50, va a eliminar?</string>
+  <string name="Daily_Great_NO_CONTENTS">Sin contenido</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">¿Eliminar parte?</string>
   <string name="Device_Disconnected">Desconectado</string>
@@ -233,6 +235,10 @@
   <string name="GUIDE_INFO">Deslizar\n para cargar más contenido</string>
   <string name="GetCode_FrequentlyTips">Operaciones demasiado frecuentes, intente nuevamente 10 minutos más tarde.</string>
   <string name="GetWifiList_FaiTips">1.Permitir que la app obtenga el permiso \"Ubicación\" \n 2.Encienda \"GPS\".</string>
+  <string name="H5_Asteroid">Asteroide</string>
+  <string name="H5_Fisheye">Ojo de pez</string>
+  <string name="H5_Panoramic">panorámico</string>
+  <string name="H5_VR_mode">Modo VR</string>
   <string name="HOME">Página de inicio</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Notificación de 24h</string>
@@ -271,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Encendida luz azul, 3G/4G online</string>
   <string name="LIGTH_LABEL_2_1">Rojo parpadeante,batería menos</string>
   <string name="LIGTH_LABEL_2_2">Encendida luz azul, conectado con el circuito elétrico</string>
+  <string name="LIVE_DATA">Para celulares, tenga en cuenta el uso de datos</string>
   <string name="LOADING">Cargando&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Busque en el Phone \"%s\" en la página de \"Aviso&#8211;&#8211;Ajuste\" y elija \"permitir la notificación\"</string>
   <string name="LOCATION">Ubicaci:</string>
@@ -408,7 +415,7 @@
   <string name="RECORD_INFO_1">Cámara de 24h activada</string>
   <string name="RECORD_INFO_2">Grabación automática desactivada</string>
   <string name="RECORD_MODE">Al detectar movimiento</string>
-  <string name="RECORD_MODE_1">24 horas</string>
+  <string name="RECORD_MODE_1">Todo el dia</string>
   <string name="RECORD_MODE_2">Nunca</string>
   <string name="RECORD_MODE_CHANGE">Modo actual:Regreso a casa, detección de movimiento está desactivada, si la necesita encendida, actívala en Ajustes</string>
   <string name="RECORD_NO_FIND">No hay video de esta duración</string>
@@ -512,10 +519,10 @@
   <string name="SETTINGS">Ajustes</string>
   <string name="SETTINGS_1">Ajustes</string>
   <string name="SETTINGS_Wechat_Switch_Cancel">Al cerrar no podrá recibir mensajes de WeChat. Para desenlazar va a WeChat para dejar de seguir la cuenta de suscripción de Servicio Oficial de Clever Dog.</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Por favor, enfóquese en la cuenta de WeChat \"cuenta oficial de WeChat del perro listo\" y vincule, después del éxito de la antigua cuenta de WeChat ya no recibirá el mensaje push</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Por favor, enfóquese en la cuenta de WeChat \"加菲狗官微服务\" y vincule, después del éxito de la antigua cuenta de WeChat ya no recibirá el mensaje push</string>
   <string name="SETTING_DIRECTION">Dirección del vídeo</string>
   <string name="SETTING_FREE">Ajuste de la alarma y la detección del movimiento de cada dispositivo individual como quiera</string>
-  <string name="SETTING_RECORD">Grabación automática</string>
+  <string name="SETTING_RECORD">Ajustes de video</string>
   <string name="SETTING_SD">Tarjeta Micro SD</string>
   <string name="SETTING_TIMEZONE">Zona horaria</string>
   <string name="SET_NEW_PWD">Crear nueva contraseña</string>
@@ -568,11 +575,11 @@
   <string name="Start_instructions">Abra las instrucciones</string>
   <string name="Start_instructions_A">En las cuentas oficiales de WeChat en el correo electrónico vinculante de Clever Dog, puede abrir esta función.</string>
   <string name="Start_instructions_B">Proceder de la siguiente:</string>
-  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \""cuenta oficial de WeChat del perro listo\"</string>
-  <string name="Start_instructions_D">Método 1: haga clic en el WeChat en la esquina superior derecha del \"+\"> Añadir contactos> Cuentas oficiales, busque \"cuenta oficial de WeChat del perro listo\" y luego se refiere.</string>
+  <string name="Start_instructions_C">1. Preste por favor atención al número público de WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Método 1: haga clic en el WeChat en la esquina superior derecha del \"+\"> Añadir contactos> Cuentas oficiales, busque \"加菲狗官微服务\" y luego se refiere.</string>
   <string name="Start_instructions_E">Método 2: captura de pantalla de esta página o guardar el siguiente código bidimensional en el álbum, en el barrido WeChat atención.</string>
   <string name="Start_instructions_F">2. Cuenta enlazada</string>
-  <string name="Start_instructions_G">Atención \"cuenta oficial de WeChat del perro listo\" Cuentas oficiales, ingrese a la página principal, haga clic en la barra de menús del servicio, seleccione la cuenta de vinculación.</string>
+  <string name="Start_instructions_G">Atención \"加菲狗官微服务\" Cuentas oficiales, ingrese a la página principal, haga clic en la barra de menús del servicio, seleccione la cuenta de vinculación.</string>
   <string name="Start_instructions_H">Cuenta enlazada</string>
   <string name="Start_instructions_I">Por favor ingrese la cuenta de correo electrónico del perro Clever para enlazar, como olvidar la contraseña, por favor vaya al cliente Clever dog back</string>
   <string name="Switch_Mode">Cambie al modo directo para ver el contenido de disparo</string>
@@ -672,9 +679,9 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Cerrar el modo en espera antes de iniciar la fotografía a intervalos. ¿Está seguro?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Confirmar el cierre</string>
   <string name="Tap1_CameraFun_Timelapse_document">Los mejores momentos de las fotografias en intervalos</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s hora</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% hora</string>
   <string name="Tap1_CameraFun_UninitializedTips">Fallo de lectura y escritura en tarjeta Micro SD</string>
-  <string name="Tap1_CameraFun_VideoDirection">Al revés (imagen invertida)</string>
+  <string name="Tap1_CameraFun_VideoDirection">imagen invertida(Al revés)</string>
   <string name="Tap1_Camera_BackLiveTips">Volver a En directo</string>
   <string name="Tap1_Camera_Front">Frente</string>
   <string name="Tap1_Camera_FrontTips">La visualización con ángulo horizontal necesita mantener una visión amplia frente a la cámara</string>
@@ -741,6 +748,7 @@
   <string name="Tap1_LowPower">La energía baja, carga por favor en tiempo.</string>
   <string name="Tap1_Magnetism_ClearRecord">Borrar el registro</string>
   <string name="Tap1_Magnetism_Setting_Notify">Notificar me cuando está abierto/cerrado</string>
+  <string name="Tap1_Menu_More">Más</string>
   <string name="Tap1_NeedsInitializedTips">Tarjeta SD necesita ser inicializado y los datos se borraron, seguro de continuar?</string>
   <string name="Tap1_NewFirmware">Nuevo firmware</string>
   <string name="Tap1_NoMessages">Ningún mensaje</string>
@@ -796,6 +804,7 @@
   <string name="Tap2_Timelapse_screenshot">Captura de pantalla en directo</string>
   <string name="Tap2_Timelapse_title">Fotografía a intervalos</string>
   <string name="Tap2_TitleName">Gran día</string>
+  <string name="Tap2_TitleName_Sentence">Gran día</string>
   <string name="Tap2_share_sharevideo">He compartido con ustedes un video</string>
   <string name="Tap2_share_sharevideo_tips">He hecho una fotografía a intervalos por Clever doméstico elegante de la cámara, mira eso!</string>
   <string name="Tap2_share_unabletoshare">Sin WeChat instalado, no puede compartir.</string>
@@ -871,6 +880,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Aún no hay dispositivo.</string>
   <string name="Tap3_ShareDevice_NoShare">No ha sido compartida</string>
   <string name="Tap3_ShareDevice_NoneFriends">Nada</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Nada</string>
   <string name="Tap3_ShareDevice_NotYourself">No puede compartir consigo</string>
   <string name="Tap3_ShareDevice_Shared">Compartido</string>
   <string name="Tap3_ShareDevice_SharedContents">Contenido compartidos</string>
@@ -913,6 +923,7 @@
   <string name="USE_HELP">Ayuda</string>
   <string name="Unconnect_Network">Su dispositivo no está conectado a una red móvil oa una red Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Almacenamiento disponible</string>
+  <string name="VIDEO_FirmwareUpdating">Actualización de firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Cargando, espere un momento</string>
   <string name="VIDEO_SD_DESC">Se necesita una inicialización para que vaya bien la función de guardar vídeos en la Tarjeta Micro SD</string>
   <string name="WARN_TIME">Horario de alarma</string>

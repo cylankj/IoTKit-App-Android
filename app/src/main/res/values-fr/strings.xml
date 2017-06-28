@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Choisir l\'alerte sonore à jouer lorsqu\'un mouvement est détecté</string>
   <string name="Added_successfully">Liez réussi</string>
   <string name="Alarm_WeChat">Wechat va recevoir le message d\'avertissement</string>
+  <string name="Alarm_WeChat_NoBindTips">Cette fonction doit lier email en premier.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -63,7 +64,7 @@
   <string name="CLEAR_DATA">Vider le cache des messages</string>
   <string name="CODE_ERR">Code de vérification faux</string>
   <string name="COMFIRM_NEW_PASS">Confirmer le nouveau mot de passe</string>
-  <string name="CONNECTING">Regarder ce qui se passe en temps réel</string>
+  <string name="CONNECTING">La caméra ne répond pas, essayer à nouveau</string>
   <string name="CONNECTING_1">Connexion en cours</string>
   <string name="CONN_INTERRUPTED">Connexion interrompue, vérifier la caméra</string>
   <string name="CREATING">Création&#8230;</string>
@@ -149,6 +150,7 @@
   <string name="DOOR_VOICE">Voix</string>
   <string name="DOOR_WIFI_HINT">Voyant indicateur d\'état</string>
   <string name="DailyGreatTips_Full">Collection nombre de Merveilleux de la journée a atteint la limite supérieure de 50, va supprimer?</string>
+  <string name="Daily_Great_NO_CONTENTS">Pas content</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Supprimer partager?</string>
   <string name="Device_Disconnected">Débranché</string>
@@ -233,6 +235,10 @@
   <string name="GUIDE_INFO">Glisser, \n afficher plus d\'infos</string>
   <string name="GetCode_FrequentlyTips">Opérations trop fréquentes, veuillez réessayer 10 minutes plus tard.</string>
   <string name="GetWifiList_FaiTips">1.Autoriser l\'application pour obtenir le \"Location\" permission \n 2.Tourner \"GPS\" sur.</string>
+  <string name="H5_Asteroid">Astéroïde</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">panoramique</string>
+  <string name="H5_VR_mode">Mode VR</string>
   <string name="HOME">Accueil</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 heures sur 24</string>
@@ -271,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Voyant bleu allumé:3G/4G connecté</string>
   <string name="LIGTH_LABEL_2_1">Clignotant, la batterie est inférieure</string>
   <string name="LIGTH_LABEL_2_2">La lumière bleue, ont l\'électricité</string>
+  <string name="LIVE_DATA">Pour les téléphones cellulaires, notez l\'utilisation de vos données</string>
   <string name="LOADING">Chargement&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Pour l\'Phone, ouvrir \"Réglages&#8211;notifications\", puis %s et ouvrir \'Notifications\'</string>
   <string name="LOCATION">Emplacement</string>
@@ -408,7 +415,7 @@
   <string name="RECORD_INFO_1">Démarrer l\'enregistrement continu</string>
   <string name="RECORD_INFO_2">L\'enregistrement est désactivé</string>
   <string name="RECORD_MODE">Détection de mouvement</string>
-  <string name="RECORD_MODE_1">24 Heures</string>
+  <string name="RECORD_MODE_1">Toute la journée</string>
   <string name="RECORD_MODE_2">Jamais</string>
   <string name="RECORD_MODE_CHANGE">L\'emplacement actuel est \"à la maison\" et la détection de mouvement est désactivée. Modifier ?</string>
   <string name="RECORD_NO_FIND">Pas de vidéo pendant cette période</string>
@@ -511,11 +518,11 @@
   <string name="SETTING">Installation&#8230;</string>
   <string name="SETTINGS">Réglages</string>
   <string name="SETTINGS_1">Réglages</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Vous ne pouvez recevoir plus les messages poussés de Wechat si vous le fermez.Si vous voulez annuler la liaison, veuillez annuler tout à bord le compte public du service officiel du Chien Intelligent .</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Concentrez&#8211;vous sur le compte WeChat \"bord le compte public du service officiel du Chien Intelligent\" et liez, après que le succès de l\'ancien compte WeChat ne recevra plus le message push</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Vous ne pouvez recevoir plus les messages poussés de Wechat si vous le fermez.Si vous voulez annuler la liaison, veuillez annuler tout à bord \"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Concentrez&#8211;vous sur le compte WeChat \"加菲狗官微服务\" et liez, après que le succès de l\'ancien compte WeChat ne recevra plus le message push</string>
   <string name="SETTING_DIRECTION">Orientation</string>
   <string name="SETTING_FREE">Activer la détection de mouvement et l\'alarme d\'un appareil</string>
-  <string name="SETTING_RECORD">Enregistrement automatique</string>
+  <string name="SETTING_RECORD">Paramètres vidéo</string>
   <string name="SETTING_SD">Carte Micro SD</string>
   <string name="SETTING_TIMEZONE">Fuseau Horaire</string>
   <string name="SET_NEW_PWD">Définir le nouveau mot de passe</string>
@@ -568,11 +575,11 @@
   <string name="Start_instructions">Ouvrez les instructions</string>
   <string name="Start_instructions_A">Dans les comptes officiels de WeChat dans le courrier électronique Clever Dog, vous pouvez ouvrir cette fonction.</string>
   <string name="Start_instructions_B">Procédez comme suit:</string>
-  <string name="Start_instructions_C">1. Veuillez prêter attention au numéro public de WeChat \"bord le compte public du service officiel du Chien Intelligent\"</string>
-  <string name="Start_instructions_D">Méthode 1: cliquez sur le bouton WeChat dans le coin supérieur droit du \"+\"> Ajouter des contacts> Comptes officiels, recherchez \"bord le compte public du service officiel du Chien Intelligent\" et ensuite concerné.</string>
+  <string name="Start_instructions_C">1. Veuillez prêter attention au numéro public de WeChat \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Méthode 1: cliquez sur le bouton WeChat dans le coin supérieur droit du \"+\"> Ajouter des contacts> Comptes officiels, recherchez \"加菲狗官微服务\" et ensuite concerné.</string>
   <string name="Start_instructions_E">Méthode 2: capture d\'écran de cette page ou enregistrez le code bidimensionnel suivant dans l\'album, dans l\'attention du balayage WeChat.</string>
   <string name="Start_instructions_F">2. Lier le compte</string>
-  <string name="Start_instructions_G">À l\'attention des Comptes officiels \"bord le compte public du service officiel du Chien Intelligent\", entrez la page principale, cliquez sur la barre de menu du service, sélectionnez le compte reliant.</string>
+  <string name="Start_instructions_G">À l\'attention des Comptes officiels \"加菲狗官微服务\", entrez la page principale, cliquez sur la barre de menu du service, sélectionnez le compte reliant.</string>
   <string name="Start_instructions_H">Lier le compte</string>
   <string name="Start_instructions_I">Entrez le compte de courrier électronique intelligent de Chipper pour lier, par exemple, oubliez le mot de passe, allez chez le client de chien intelligent.</string>
   <string name="Switch_Mode">Passez en mode direct pour afficher le contenu de la prise de vue</string>
@@ -672,9 +679,9 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Caméra en mode de veille en sécurité pour activer filmer en retard, vous devez désactiver le mode de veille en sécurité,êtes&#8211;vous sûr de déactiver?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Confirmer de déactiver</string>
   <string name="Tap1_CameraFun_Timelapse_document">Activer le filmer en retard,avoir plus de merveilleux</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s Heure</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">% Heure</string>
   <string name="Tap1_CameraFun_UninitializedTips">Echouer à lire la carte de Micro SD</string>
-  <string name="Tap1_CameraFun_VideoDirection">Suspendre du haut ver le bas(image inversée)</string>
+  <string name="Tap1_CameraFun_VideoDirection">image inversée(Suspendre du haut ver le bas)</string>
   <string name="Tap1_Camera_BackLiveTips">Retour à En direct</string>
   <string name="Tap1_Camera_Front">De face</string>
   <string name="Tap1_Camera_FrontTips">La visualisation horizontale nécessite une vision large devant la caméra</string>
@@ -741,6 +748,7 @@
   <string name="Tap1_LowPower">Faible puissance, veuillez charger dans le temps.</string>
   <string name="Tap1_Magnetism_ClearRecord">Effacer l\'enregistrement</string>
   <string name="Tap1_Magnetism_Setting_Notify">Me alerter quand ce est ouvert/fermé</string>
+  <string name="Tap1_Menu_More">Plus</string>
   <string name="Tap1_NeedsInitializedTips">Carte SD doit être initialisé et les données seraient effacées, bien sûr à continuer?</string>
   <string name="Tap1_NewFirmware">Nouveau firmware</string>
   <string name="Tap1_NoMessages">Aucun message</string>
@@ -796,6 +804,7 @@
   <string name="Tap2_Timelapse_screenshot">Capture d\'écran en direct</string>
   <string name="Tap2_Timelapse_title">Filmer en retard</string>
   <string name="Tap2_TitleName">Merveilleux de la journée</string>
+  <string name="Tap2_TitleName_Sentence">Merveilleux de la journée</string>
   <string name="Tap2_share_sharevideo">Je partageais une vidéo avec vous</string>
   <string name="Tap2_share_sharevideo_tips">Je me suis fait un time&#8211;lapse photographie de Clever Dog Caméra intelligente, check it out!</string>
   <string name="Tap2_share_unabletoshare">Non WeChat installé, incapable de partager.</string>
@@ -871,6 +880,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Il n\'y a pas encore le dispositif</string>
   <string name="Tap3_ShareDevice_NoShare">Non être partagée</string>
   <string name="Tap3_ShareDevice_NoneFriends">Personne</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">Personne</string>
   <string name="Tap3_ShareDevice_NotYourself">Vous ne pouvez pas partager avec vous&#8211;même</string>
   <string name="Tap3_ShareDevice_Shared">Partagé</string>
   <string name="Tap3_ShareDevice_SharedContents">Contenu partagés</string>
@@ -913,6 +923,7 @@
   <string name="USE_HELP">Aide</string>
   <string name="Unconnect_Network">Votre appareil n\'est pas connecté à un réseau mobile ou à un réseau Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Stockage disponible</string>
+  <string name="VIDEO_FirmwareUpdating">Mise à jour du firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Chargement</string>
   <string name="VIDEO_SD_DESC">La carte Micro SD doit être initialisée avant de pouvoir stocker de la vidéo</string>
   <string name="WARN_TIME">Période D\'Alarme</string>

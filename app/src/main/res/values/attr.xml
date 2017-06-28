@@ -126,6 +126,7 @@
         <attr name="progress_point_radius" format="dimension" />
         <attr name="progress_swipe_degree" format="integer" />
         <attr name="progress_radius" format="dimension" />
+        <attr name="progress_init_loading" format="boolean" />
     </declare-styleable>
     <declare-styleable name="SettingItemViewStyle">
         <attr name="sv_red_hint" format="boolean|reference" />

@@ -28,6 +28,7 @@
   <string name="AUDIBLE_ALERT">Chọn Báo âm thanh để thực hiện khi phát hiện chuyển động</string>
   <string name="Added_successfully">Hãy cột thành công</string>
   <string name="Alarm_WeChat">Báo thức qua WeChet</string>
+  <string name="Alarm_WeChat_NoBindTips">Sử dụng chức năng này cần để ràng buộc email đầu tiên.</string>
   <string name="Apr">Apr.</string>
   <string name="Aug">Aug.</string>
   <string name="BACK">Back</string>
@@ -63,7 +64,7 @@
   <string name="CLEAR_DATA">Xoá tin nhắn</string>
   <string name="CODE_ERR">Mã không tồn tại</string>
   <string name="COMFIRM_NEW_PASS">Nhập lại mật khẩu</string>
-  <string name="CONNECTING">Đang có người xem trực tiếp</string>
+  <string name="CONNECTING">Không phản hồi, hãy thử lại</string>
   <string name="CONNECTING_1">Đang kết nối mạng</string>
   <string name="CONN_INTERRUPTED">Đang kết nối mạng</string>
   <string name="CREATING">Đang thêm vào&#8230;</string>
@@ -149,6 +150,7 @@
   <string name="DOOR_VOICE">Giọng nói</string>
   <string name="DOOR_WIFI_HINT">Trạng thái đèn LED</string>
   <string name="DailyGreatTips_Full">số lượng các Daily Great Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
+  <string name="Daily_Great_NO_CONTENTS">Không có nội dung</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Xóa chia sẻ?</string>
   <string name="Device_Disconnected">Đã ngắt kết nối</string>
@@ -233,6 +235,10 @@
   <string name="GUIDE_INFO">Kéo qua, \n xem nhiều hơn</string>
   <string name="GetCode_FrequentlyTips">Quá thường xuyên hoạt động, xin vui lòng thử lại sau 10 phút.</string>
   <string name="GetWifiList_FaiTips">1.Cho phép ứng dụng nhận \"Location\" phép \n 2.Quay \"GPS\" trên.</string>
+  <string name="H5_Asteroid">Tiểu hành tinh</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Toàn cảnh</string>
+  <string name="H5_VR_mode">Chế độ VR</string>
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 giờ</string>
@@ -271,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Đèn xanh ổn định, 3G/4G Online</string>
   <string name="LIGTH_LABEL_2_1">Nhấp nháy, pin yếu</string>
   <string name="LIGTH_LABEL_2_2">Đèn xanh, đang có nguồn</string>
+  <string name="LIVE_DATA">Đối với cellular, hãy lưu ý việc sử dụng dữ liệu của bạn</string>
   <string name="LOADING">Đang tải&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Trong mục Cài Đặt&#8211;Thông báo trên Phone, tìm %s mở \'Thông báo\'</string>
   <string name="LOCATION">Khu vực</string>
@@ -408,7 +415,7 @@
   <string name="RECORD_INFO_1">Bật video 24/7</string>
   <string name="RECORD_INFO_2">Tắt video bất cứ lúc nào</string>
   <string name="RECORD_MODE">Phát hiện chuyển động</string>
-  <string name="RECORD_MODE_1">24 giờ</string>
+  <string name="RECORD_MODE_1">Cả ngày</string>
   <string name="RECORD_MODE_2">Không bao giờ</string>
   <string name="RECORD_MODE_CHANGE">Khu vực bạn chọn \"At Home\", phát hiện chuyển động tắt. Nếu bạn muốn sử dụng, hãy tiếp tục</string>
   <string name="RECORD_NO_FIND">Không có video nào lúc này</string>
@@ -511,11 +518,11 @@
   <string name="SETTING">Đang cài đặt&#8230;</string>
   <string name="SETTINGS">Cài đặt</string>
   <string name="SETTINGS_1">Cài đặt</string>
-  <string name="SETTINGS_Wechat_Switch_Cancel">Nếu đóng cửa, nó không thể nhận được WeChat đẩy. Hủy bỏ nó bằng cách hủy theo dõi \"Tài khoản Chính thức của Clever Dog WeChat\".</string>
-  <string name="SETTINGS_Wechat_Switch_Open">Hãy tập trung vào tài khoản WeChat \"Tài khoản Chính thức của Clever Dog WeChat\" và ràng buộc, sau khi thành công của tài khoản WeChat cũ sẽ không còn nhận được thông báo push</string>
+  <string name="SETTINGS_Wechat_Switch_Cancel">Nếu đóng cửa, nó không thể nhận được WeChat đẩy. Hủy bỏ nó bằng cách hủy theo dõi \"加菲狗官微服务\".</string>
+  <string name="SETTINGS_Wechat_Switch_Open">Hãy tập trung vào tài khoản WeChat \"加菲狗官微服务\" và ràng buộc, sau khi thành công của tài khoản WeChat cũ sẽ không còn nhận được thông báo push</string>
   <string name="SETTING_DIRECTION">Hướng video</string>
   <string name="SETTING_FREE">Cài phát hiện chuyển động và báo động của thiết bị</string>
-  <string name="SETTING_RECORD">Đang lưu Video</string>
+  <string name="SETTING_RECORD">Cài đặt video</string>
   <string name="SETTING_SD">Thẻ nhớ Micro SD</string>
   <string name="SETTING_TIMEZONE">Vùng thời gian</string>
   <string name="SET_NEW_PWD">Cài mật khẩu mới</string>
@@ -568,11 +575,11 @@
   <string name="Start_instructions">Mở hướng dẫn</string>
   <string name="Start_instructions_A">Trong tài khoản chính thức của WeChat trong email Clever Dog ràng buộc, bạn có thể mở chức năng này.</string>
   <string name="Start_instructions_B">Tiến hành như sau:</string>
-  <string name="Start_instructions_C">1. Hãy chú ý đến số WeChat công cộng \"Tài khoản Chính thức của Clever Dog WeChat\"</string>
-  <string name="Start_instructions_D">Phương pháp 1: nhấp vào WeChat ở góc trên bên phải của \"+\"> Thêm địa chỉ liên hệ> Tài khoản chính thức, tìm kiếm \"Tài khoản Chính thức của Clever Dog WeChat\" và sau đó liên quan.</string>
+  <string name="Start_instructions_C">1. Hãy chú ý đến số WeChat công cộng \"加菲狗官微服务\"</string>
+  <string name="Start_instructions_D">Phương pháp 1: nhấp vào WeChat ở góc trên bên phải của \"+\"> Thêm địa chỉ liên hệ> Tài khoản chính thức, tìm kiếm \"加菲狗官微服务\" và sau đó liên quan.</string>
   <string name="Start_instructions_E">Phương pháp 2: ảnh chụp màn hình của trang này hoặc lưu mã hai chiều sau đây vào album, trong sự chú ý quét của WeChat.</string>
   <string name="Start_instructions_F">2. Liên kết tài khoản</string>
-  <string name="Start_instructions_G">Chú ý \"Tài khoản Chính thức của Clever Dog WeChat\" Tài khoản chính thức, nhập trang chính, nhấp vào thanh trình đơn của dịch vụ, chọn tài khoản ràng buộc.</string>
+  <string name="Start_instructions_G">Chú ý \"加菲狗官微服务\" Tài khoản chính thức, nhập trang chính, nhấp vào thanh trình đơn của dịch vụ, chọn tài khoản ràng buộc.</string>
   <string name="Start_instructions_H">Liên kết tài khoản</string>
   <string name="Start_instructions_I">Vui lòng nhập tài khoản điện tài khoản Clever dog để ràng buộc, chẳng hạn như quên mật khẩu, hãy chuyển đến khách hàng của Clever dog</string>
   <string name="Switch_Mode">Hãy chuyển sang chế độ trực tiếp để xem nội dung chụp</string>
@@ -672,7 +679,7 @@
   <string name="Tap1_CameraFun_Timelapse_Tips">Cần tắt Standby trước khi chụp time&#8211;lapse, bạn chắc không?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Chắc</string>
   <string name="Tap1_CameraFun_Timelapse_document">Ghi giữ thêm khoảnh khắc với tính năng Time&#8211;lapse</string>
-  <string name="Tap1_CameraFun_Timelapse_hours">%s giờ</string>
+  <string name="Tap1_CameraFun_Timelapse_hours">%giờ</string>
   <string name="Tap1_CameraFun_UninitializedTips">Lỗi đọc thẻ nhớ SD</string>
   <string name="Tap1_CameraFun_VideoDirection">Đảo chiều</string>
   <string name="Tap1_Camera_BackLiveTips">Back to live</string>
@@ -741,6 +748,7 @@
   <string name="Tap1_LowPower">điện năng thấp, xin vui lòng tính phí trong thời gian.</string>
   <string name="Tap1_Magnetism_ClearRecord">Dọn bản ghi</string>
   <string name="Tap1_Magnetism_Setting_Notify">Thông báo cho tôi khi nó mở/đóng</string>
+  <string name="Tap1_Menu_More">Thêm</string>
   <string name="Tap1_NeedsInitializedTips">Thẻ SD cần được khởi tạo và dữ liệu sẽ bị xóa, chắc chắn để tiếp tục?</string>
   <string name="Tap1_NewFirmware">Fimware mới</string>
   <string name="Tap1_NoMessages">Không có tin nhắn</string>
@@ -796,6 +804,7 @@
   <string name="Tap2_Timelapse_screenshot">Chụp trực tuyến</string>
   <string name="Tap2_Timelapse_title">Ảnh Time&#8211;lapse</string>
   <string name="Tap2_TitleName">Daily Great</string>
+  <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
   <string name="Tap2_share_sharevideo">Tôi đã chia sẻ một video với bạn</string>
   <string name="Tap2_share_sharevideo_tips">Tôi đã tạo 1 ảnh time&#8211;lapse từ Cleverdog, hãy xem nào!</string>
   <string name="Tap2_share_unabletoshare">Chưa cài Wechat, không thể chia sẻ</string>
@@ -871,6 +880,7 @@
   <string name="Tap3_ShareDevice_NoDevice">Không có thiết bị</string>
   <string name="Tap3_ShareDevice_NoShare">Không được chia sẻ</string>
   <string name="Tap3_ShareDevice_NoneFriends">không ai</string>
+  <string name="Tap3_ShareDevice_NoneShareFriends">không ai</string>
   <string name="Tap3_ShareDevice_NotYourself">Không chia sẻ cho bạn</string>
   <string name="Tap3_ShareDevice_Shared">Thuê chung</string>
   <string name="Tap3_ShareDevice_SharedContents">Nội dung chia sẻ</string>
@@ -913,6 +923,7 @@
   <string name="USE_HELP">Trợ giúp</string>
   <string name="Unconnect_Network">Thiết bị của bạn không được kết nối với mạng di động hoặc mạng Wi&#8211;Fi</string>
   <string name="VALID_STORAGE">Có bộ nhớ lưu trữ</string>
+  <string name="VIDEO_FirmwareUpdating">Cập nhật firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">ĐANG TẢI</string>
   <string name="VIDEO_SD_DESC">Cần định dạng thẻ nhớ để có thể lưu hình vào</string>
   <string name="WARN_TIME">Thời gian cảnh báo</string>
