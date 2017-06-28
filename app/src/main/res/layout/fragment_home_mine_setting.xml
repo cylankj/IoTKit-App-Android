@@ -9,9 +9,9 @@
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/layout_default_custom_tool_bar"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
         hunt:ct_enable_theme="true"
@@ -21,219 +21,237 @@
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:id="@+id/rLayout_home_setting_accessMes"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:text="@string/PUSH_MSG"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/sp16" />
-
-                <com.cylan.jiafeigou.widget.SafeSwitchButton
-                    android:id="@+id/btn_item_switch_accessMes"
-                    style="@style/SwitchButtonStyleMD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:checked="false"
-                    android:paddingRight="@dimen/x26" />
-
-                <View
+                <RelativeLayout
+                    android:id="@+id/rLayout_home_setting_accessMes"
                     android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_marginRight="@dimen/x20"
-                    android:background="@color/color_f2f2f2" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_sound_container"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:text="@string/IN_APP_SOUND"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/sp16" />
-
-                <com.cylan.jiafeigou.widget.SafeSwitchButton
-                    android:id="@+id/btn_item_switch_voide"
-                    style="@style/SwitchButtonStyleMD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:checked="false"
-                    android:paddingRight="@dimen/x26" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_marginRight="@dimen/x20"
-                    android:background="@color/color_f2f2f2" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_vibrate_container"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:text="@string/IN_APP_VIBRATE"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/sp16" />
-
-                <com.cylan.jiafeigou.widget.SafeSwitchButton
-                    android:id="@+id/btn_item_switch_shake"
-                    style="@style/SwitchButtonStyleMD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:checked="false"
-                    android:paddingRight="@dimen/x26" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_marginRight="@dimen/x20"
-                    android:background="@color/color_f2f2f2" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_home_setting_clear"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y70">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:orientation="vertical">
+                    android:layout_height="@dimen/y54">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/x20"
-                        android:text="@string/CLEAR_DATA"
+                        android:text="@string/PUSH_MSG"
                         android:textColor="@color/color_black"
                         android:textSize="@dimen/sp16" />
 
-                    <FrameLayout
+                    <com.cylan.jiafeigou.widget.SafeSwitchButton
+                        android:id="@+id/btn_item_switch_accessMes"
+                        style="@style/SwitchButtonStyleMD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true">
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:checked="false"
+                        android:paddingRight="@dimen/x26" />
 
-                        <ProgressBar
-                            android:id="@+id/progressbar_load_cache_size"
-                            android:layout_width="@dimen/x20"
-                            android:layout_height="@dimen/y20"
-                            android:layout_marginLeft="@dimen/x20"
-                            android:visibility="gone" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:layout_marginRight="@dimen/x20"
+                        android:background="@color/color_f2f2f2" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_sound_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:text="@string/IN_APP_SOUND"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/sp16" />
+
+                    <com.cylan.jiafeigou.widget.SafeSwitchButton
+                        android:id="@+id/btn_item_switch_voide"
+                        style="@style/SwitchButtonStyleMD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:checked="false"
+                        android:paddingRight="@dimen/x26" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:layout_marginRight="@dimen/x20"
+                        android:background="@color/color_f2f2f2" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_vibrate_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:text="@string/IN_APP_VIBRATE"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/sp16" />
+
+                    <com.cylan.jiafeigou.widget.SafeSwitchButton
+                        android:id="@+id/btn_item_switch_shake"
+                        style="@style/SwitchButtonStyleMD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:checked="false"
+                        android:paddingRight="@dimen/x26" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:layout_marginRight="@dimen/x20"
+                        android:background="@color/color_f2f2f2" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_home_setting_clear"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y70">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tv_cache_size"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/x20"
-                            android:text="2.3M"
-                            android:textColor="@color/color_8c8c8c"
-                            android:textSize="@dimen/sp13" />
+                            android:text="@string/CLEAR_DATA"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/sp16" />
 
-                    </FrameLayout>
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true">
 
-                </LinearLayout>
+                            <ProgressBar
+                                android:id="@+id/progressbar_load_cache_size"
+                                android:layout_width="@dimen/x20"
+                                android:layout_height="@dimen/y20"
+                                android:layout_marginLeft="@dimen/x20"
+                                android:visibility="gone" />
 
-                <View
+                            <TextView
+                                android:id="@+id/tv_cache_size"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/x20"
+                                android:text="2.3M"
+                                android:textColor="@color/color_8c8c8c"
+                                android:textSize="@dimen/sp13" />
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:layout_marginRight="@dimen/x20"
+                        android:background="@color/color_f2f2f2" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rl_home_setting_recommend"
                     android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_marginRight="@dimen/x20"
-                    android:background="@color/color_f2f2f2" />
+                    android:layout_height="@dimen/y54">
 
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:text="@string/app_share"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/sp16" />
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:layout_marginRight="@dimen/x20"
+                        android:background="@color/color_f2f2f2" />
 
-            <RelativeLayout
-                android:id="@+id/rl_home_setting_recommend"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
+                </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:text="@string/app_share"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/sp16" />
-
-                <View
+                <RelativeLayout
+                    android:id="@+id/rl_home_setting_about"
                     android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_marginRight="@dimen/x20"
-                    android:background="@color/color_f2f2f2" />
+                    android:layout_height="@dimen/y54">
 
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/x20"
+                        android:text="@string/ABOUT"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/sp16" />
 
-            <RelativeLayout
-                android:id="@+id/rl_home_setting_about"
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_home_mine_personal_information"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:text="@string/ABOUT"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/sp16" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
-    </FrameLayout>
-
+                android:layout_height="@dimen/y42"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/y42"
+                android:layout_marginEnd="@dimen/x30"
+                android:layout_marginStart="@dimen/x30"
+                android:layout_marginTop="@dimen/y10"
+                android:background="@drawable/long_btn_bg_shape_white"
+                android:gravity="center"
+                android:padding="@dimen/x10"
+                android:text="@string/LOGOUT"
+                android:textColor="@color/color_ff3b30"
+                android:textSize="@dimen/sp16" />
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

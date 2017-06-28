@@ -68,6 +68,7 @@ public interface HomeSettingContract {
          */
         Subscription getAccountInfo();
 
+        void logOut(String account);
     }
 
 }

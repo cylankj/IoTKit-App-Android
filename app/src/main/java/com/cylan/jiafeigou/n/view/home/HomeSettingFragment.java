@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -24,10 +25,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -76,6 +80,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     RelativeLayout rlHomeSettingRecommend;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.btn_home_mine_personal_information)
+    TextView btnHomeMinePersonalInformation;
 
     private HomeSettingContract.Presenter presenter;
     private AboutFragment aboutFragment;
@@ -123,7 +129,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         return null;
     }
 
-    @OnClick({R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
+    @OnClick({R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend, R.id.btn_home_mine_personal_information
+    })
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_home_setting_about:
@@ -141,6 +148,9 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             case R.id.rl_home_setting_recommend:
                 //推荐给亲友
                 share();
+                break;
+            case R.id.btn_home_mine_personal_information:
+                showLogOutDialog(view);
                 break;
         }
     }
@@ -379,5 +389,25 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             return convertView;
         }
     }
+
+    /**
+     * 删除亲友对话框
+     */
+    public void showLogOutDialog(View v) {
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                "showLogOutDialog", getString(R.string.LOGOUT_INFO),
+                getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
+                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    if (jfgAccount != null) {
+                        presenter.logOut(jfgAccount.getAccount());
+                        //进入登陆页 login page
+                        Intent intent = new Intent(getContext(), SmartcallActivity.class);
+                        intent.putExtra(JConstant.FROM_LOG_OUT, true);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                }, getString(R.string.CANCEL), null, false);
+    }
+
 
 }

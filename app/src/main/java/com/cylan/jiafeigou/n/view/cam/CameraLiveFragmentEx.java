@@ -274,10 +274,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onResume() {
         super.onResume();
+        camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
+                .getSourceManager().getDevice(getUuid()));
         if (basePresenter != null) {
             if (!judge()) return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
+
     }
 
     @Override

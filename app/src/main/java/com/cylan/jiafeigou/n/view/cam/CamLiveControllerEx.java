@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -122,6 +123,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private HistoryWheelHandler historyWheelHandler;
 
     private CamLiveContract.Presenter presenter;
+    private Handler handler = new Handler();
     /**
      * 设备的时区
      */
@@ -349,7 +351,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
             //显示
         } else {
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //4.被分享用户不显示
@@ -375,7 +377,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         int net = NetUtils.getJfgNetType();
         if (net == 2)
-            ToastUtil.showToast(getResources().getString(R.string.Tap1_Firmware_DataTips));
+            ToastUtil.showToast(getResources().getString(R.string.LIVE_DATA));
     }
 
     private boolean isLand() {
@@ -398,7 +400,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
 //            layoutD.setVisibility(INVISIBLE);
-            showHistoryWheel(false);
+//            showHistoryWheel(false);
             setLoadingState(null, null);
 //            if (livePlayState == PLAY_STATE_PLAYING) {
             layoutC.setVisibility(INVISIBLE);
@@ -533,6 +535,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutC.setVisibility(INVISIBLE);
             return;
         }
+        if (!TextUtils.isEmpty(content) || TextUtils.isEmpty(subContent))
+            layoutC.setVisibility(VISIBLE);
         switch (livePlayState) {
             case PLAY_STATE_LOADING_FAILED:
             case PLAY_STATE_STOP:
@@ -540,7 +544,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(VISIBLE);
                 break;
             case PLAY_STATE_IDLE:
-                layoutC.setVisibility(INVISIBLE);
+//                layoutC.setVisibility(INVISIBLE);
                 break;
         }
     }
@@ -557,8 +561,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         handlePlayErr(presenter, errCode);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
-        post(portHideRunnable);
-        post(() -> liveViewWithThumbnail.onLiveStop());
+        portHideRunnable.run();
+        liveViewWithThumbnail.onLiveStop();
     }
 
     /**
@@ -930,6 +934,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void onActivityStart(CamLiveContract.Presenter presenter, Device device) {
         boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
+        removeCallbacks(portHideRunnable);
         setFlipped(!safeIsOpen);
         updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
@@ -944,6 +949,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
         liveTimeDateFormat.setTimeZone(timeZone);
         AppLogger.d("得到设备时区:" + timeZone.getID() + "," + timeZone.getRawOffset());
+    }
+
+    @Override
+    public void onActivityResume(CamLiveContract.Presenter presenter, Device device) {
+        handler.postDelayed(() -> {
+            livePlayState = PLAY_STATE_STOP;
+            setLoadingState(null, null, true);
+        }, 100);
     }
 
     @Override

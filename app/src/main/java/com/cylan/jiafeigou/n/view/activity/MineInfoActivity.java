@@ -44,6 +44,8 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoSetPassWordFragment;
 import com.cylan.jiafeigou.n.view.mine.MineSetUserAliasFragment;
 import com.cylan.jiafeigou.n.view.mine.MineUserInfoLookBigHeadFragment;
 import com.cylan.jiafeigou.n.view.mine.MyQRCodeDialog;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
@@ -111,6 +113,8 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         ButterKnife.bind(this);
         basePresenter = new MineInfoPresenterImpl(this, getContext());
         createCameraTempFile(savedInstanceState);
+        rlChangePassword.setVisibility(RxBus.getCacheInstance().hasStickyEvent(RxEvent.ThirdLoginTab.class)
+                ? View.VISIBLE : View.INVISIBLE);
     }
 
 
