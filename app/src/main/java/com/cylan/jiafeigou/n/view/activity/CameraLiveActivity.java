@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.HintTextView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
+import com.cylan.jiafeigou.widget.TmpHint;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
 import com.google.gson.Gson;
 
@@ -221,8 +222,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
             imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
             View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
-            if (vHint != null && vHint instanceof HintTextView) {
-                ((HintTextView) vHint).showRedHint(newMsg);
+            if (vHint != null && vHint instanceof TmpHint) {
+                ((TmpHint) vHint).showHint(newMsg);
             }
             updateRedHint();
             customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> onNavBack());
@@ -293,8 +294,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 try {
                     BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003);
                     View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
-                    if (vHint != null && vHint instanceof HintTextView) {
-                        ((HintTextView) vHint).showRedHint(false);
+                    if (vHint != null && vHint instanceof TmpHint) {
+                        ((TmpHint) vHint).showHint(false);
                     }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

@@ -5,15 +5,21 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_home_mine_item_friend"
+        android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/y16"
-        android:layout_marginLeft="@dimen/x15"
-        android:drawableLeft="@drawable/me_icon_friend"
-        android:drawablePadding="@dimen/x16"
-        android:gravity="center_vertical"
-        android:textColor="#333333"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/color_white"
         android:textSize="@dimen/sp15" />
+
+    <View
+        android:id="@+id/v_hint"
+        android:layout_width="@dimen/x7"
+        android:layout_height="@dimen/y7"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/y5"
+        android:background="@drawable/hardware_update_point"
+        android:visibility="invisible" />
 </LinearLayout>
