@@ -43,32 +43,32 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
         return JConstant.EMAIL_REG.matcher(email).find();
     }
 
-    @Override
-    public void isEmailBind(final String email) {
-        addSubscription(Observable.just(email)
-                .subscribeOn(Schedulers.newThread())
-                .delay(2, TimeUnit.SECONDS)
-                .flatMap(s -> {
-                    try {
-                        int ret = BaseApplication.getAppComponent().getCmd().checkFriendAccount(email);
-                        return Observable.just(ret);
-                    } catch (JfgException e) {
-                        return Observable.just(-1);
-                    }
-                })
-                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class))
-                .filter(ret -> mView != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(checkAccountCallback -> {
-                    if (checkAccountCallback.i == 0) {
-                        //已经注册过
-                        getView().showMailHasBindDialog();
-                    } else {
-                        // 没有注册过
-                        sendSetAccountReq(email);
-                    }
-                }, AppLogger::e), "isEmailBind");
-    }
+//    @Override
+//    public void isEmailBind(final String email) {
+//        addSubscription(Observable.just(email)
+//                .subscribeOn(Schedulers.newThread())
+//                .delay(2, TimeUnit.SECONDS)
+//                .flatMap(s -> {
+//                    try {
+//                        int ret = BaseApplication.getAppComponent().getCmd().checkFriendAccount(email);
+//                        return Observable.just(ret);
+//                    } catch (JfgException e) {
+//                        return Observable.just(-1);
+//                    }
+//                })
+//                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class))
+//                .filter(ret -> mView != null)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(checkAccountCallback -> {
+//                    if (checkAccountCallback.i == 0) {
+//                        //已经注册过
+//                        getView().showMailHasBindDialog();
+//                    } else {
+//                        // 没有注册过
+//                        sendSetAccountReq(email);
+//                    }
+//                }, AppLogger::e), "isEmailBind");
+//    }
 
     /**
      * 发送修改用户属性请求

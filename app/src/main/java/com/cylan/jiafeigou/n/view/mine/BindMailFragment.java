@@ -173,20 +173,20 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     }
 
     private void initKeyListener() {
-        mETMailBox.setOnKeyListener((v, keyCode, event) -> {
-            if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                mailBox = getEditText();
-                if (TextUtils.isEmpty(mailBox)) {
-                    return false;
-                } else if (!basePresenter.checkEmail(mailBox)) {
-                    ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
-                    return false;
-                } else {
-                    basePresenter.isEmailBind(mailBox);
-                }
-            }
-            return false;
-        });
+//        mETMailBox.setOnKeyListener((v, keyCode, event) -> {
+//            if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
+//                mailBox = getEditText();
+//                if (TextUtils.isEmpty(mailBox)) {
+//                    return false;
+//                } else if (!basePresenter.checkEmail(mailBox)) {
+//                    ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
+//                    return false;
+//                } else {
+//                    basePresenter.isEmailBind(mailBox);
+//                }
+//            }
+//            return false;
+//        });
     }
 
     private void initPresenter() {
@@ -232,19 +232,12 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
                     ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
                     return;
                 } else {
-                    basePresenter.isEmailBind(mailBox);
+                    basePresenter.sendSetAccountReq(mailBox);
                 }
                 break;
         }
     }
 
-    /**
-     * 账号未注册过
-     */
-    @Override
-    public void showAccountUnReg() {
-        basePresenter.sendSetAccountReq(getEditText());
-    }
 
     @Override
     public void showSendReqHint() {
