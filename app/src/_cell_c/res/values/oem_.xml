@@ -8,6 +8,7 @@
     <bool name="show_official_website">false</bool>
     <bool name="show_official_hot_line">false</bool>
     <bool name="show_ruishi_interface">false</bool>
+    <bool name="show_scan_bind_interface">false</bool>
     <bool name="show_third_login">false</bool>
     <bool name="show_share_btn">false</bool>
     <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
