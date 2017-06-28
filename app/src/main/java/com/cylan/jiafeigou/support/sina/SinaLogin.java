@@ -46,7 +46,8 @@ public class SinaLogin {
      **/
     public SsoHandler mSsoHandler;
 
-    public SinaLogin(Context context) {
+    public SinaLogin(Activity context) {
+        if (context == null || context.isFinishing()) return;
         this.context = context;
         APP_KEY = PackageUtils.getMetaString(context, "sinaAppKey");
 //        APP_KEY = "1315129656";

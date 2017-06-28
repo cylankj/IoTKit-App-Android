@@ -561,7 +561,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         handlePlayErr(presenter, errCode);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
-        portHideRunnable.run();
+//        portHideRunnable.run();
         liveViewWithThumbnail.onLiveStop();
     }
 
