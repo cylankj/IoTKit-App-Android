@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ripple_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,6 +8,7 @@
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:singleLine="true"
@@ -18,8 +19,9 @@
         android:id="@+id/v_hint"
         android:layout_width="@dimen/x7"
         android:layout_height="@dimen/y7"
+        android:layout_alignTop="@+id/tv_content"
         android:layout_marginStart="@dimen/x5"
-        android:layout_marginTop="@dimen/y5"
+        android:layout_toEndOf="@+id/tv_content"
         android:background="@drawable/hardware_update_point"
         android:visibility="invisible" />
-</LinearLayout>
+</RelativeLayout>
