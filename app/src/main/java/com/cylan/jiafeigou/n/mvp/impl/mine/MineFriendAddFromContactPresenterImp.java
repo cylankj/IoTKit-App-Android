@@ -217,30 +217,24 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @Override
     public Subscription getFriendListDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
-                    @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null) {
-                            if (getFriendList.arrayList.size() != 0) {
-                                return Observable.just(converData(getFriendList.arrayList));
-                            } else {
-                                return Observable.just(getAllContactList());
-                            }
+                .flatMap(getFriendList -> {
+                    if (getFriendList != null) {
+                        if (getFriendList.arrayList.size() != 0) {
+                            return Observable.just(converData(getFriendList.arrayList));
                         } else {
                             return Observable.just(getAllContactList());
                         }
+                    } else {
+                        return Observable.just(getAllContactList());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
-                    @Override
-                    public void call(ArrayList<RelAndFriendBean> list) {
-                        if (allContactBean.size() > 0) {
-                            allContactBean.clear();
-                        }
-                        allContactBean.addAll(list);
-                        handlerDataResult(list);
+                .subscribe(list -> {
+                    if (allContactBean.size() > 0) {
+                        allContactBean.clear();
                     }
+                    allContactBean.addAll(list);
+                    handlerDataResult(list);
                 }, AppLogger::e);
     }
 

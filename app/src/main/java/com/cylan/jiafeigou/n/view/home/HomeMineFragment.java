@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
@@ -126,6 +127,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 //            setAliasName(getString(R.string.Tap3_LogIn));
         }
         super.onStart();
+        boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
+        homeMineItemHelp.showHint(needShowHelp);
     }
 
 

@@ -19,6 +19,16 @@
         android:textColor="#333333"
         android:textSize="@dimen/sp15" />
 
+    <View
+        android:id="@+id/v_hint"
+        android:layout_width="@dimen/x7"
+        android:layout_height="@dimen/y7"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_toEndOf="@+id/tv_home_mine_item_friend"
+        android:background="@drawable/hardware_update_point"
+        android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/iv_home_mine_item_friend"
         android:layout_width="wrap_content"

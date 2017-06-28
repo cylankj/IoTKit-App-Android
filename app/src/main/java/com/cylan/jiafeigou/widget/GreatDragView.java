@@ -85,7 +85,7 @@ public class GreatDragView extends FrameLayout {
 
             @Override
             public int clampViewPositionVertical(View child, int top, int dy) {
-                final int topBound = -draggedView.getHeight();
+                final int topBound = draggedView == null ? 0 : -draggedView.getHeight();
                 final int bottomBound = getMeasuredHeight();
                 return Math.min(Math.max(top, topBound), bottomBound);
             }

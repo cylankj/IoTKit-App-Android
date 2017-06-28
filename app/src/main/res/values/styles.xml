@@ -133,6 +133,23 @@
         <attr name="sp_color" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="HintRadioButton">
+        <attr name="cb_color" format="color|reference" />
+        <attr name="cb_radius" format="reference|dimension" />
+        <attr name="cb_padding_top" format="reference|dimension" />
+    </declare-styleable>
+    <declare-styleable name="HintTextView">
+        <attr name="ht_color" format="color|reference" />
+        <attr name="ht_radius" format="reference|dimension" />
+        <attr name="ht_padding" format="reference|dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="NumberBadgeStyle">
+        <attr name="bg_color" format="color|reference" />
+        <attr name="point_bg_color" format="color|reference" />
+        <attr name="point_radius" format="dimension|reference" />
+    </declare-styleable>
+
 
     <style name="BlurDialogFragment.Default.Animation" parent="@android:style/Animation.Activity">
         <item name="android:windowEnterAnimation">@anim/slide_in_down</item>

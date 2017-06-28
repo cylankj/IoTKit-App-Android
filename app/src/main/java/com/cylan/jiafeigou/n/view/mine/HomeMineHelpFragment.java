@@ -19,10 +19,13 @@ import android.webkit.WebView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -56,6 +59,8 @@ public class HomeMineHelpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferencesUtils.putBoolean(JConstant.KEY_HELP_GUIDE, false);
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
     }
 
     @Nullable

@@ -102,6 +102,7 @@ public class JConstant {
 
     public static final String KEY_FRESH = "is_you_fresh";
 
+    public static final String KEY_HELP_GUIDE = "need_help_guide";
     public static final String KEY_DELAY_RECORD_GUIDE = "KEY_DELAY_RECORD_GUIDE";
     public static final String VIEW_CALL_WAY = "VIEW_CALL_WAY";
     public static final String VIEW_CALL_WAY_VIEWER = "VIEW_CALL_WAY_VIEWER";

@@ -15,6 +15,7 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -38,9 +39,9 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
+
+    @BindView(R.id.btn_home_list)
+    RadioButton btnHomeList;
+    @BindView(R.id.btn_home_wonderful)
+    RadioButton btnHomeWonderful;
+    @BindView(R.id.btn_home_mine)
+    HintRadioButton btnHomeMine;
+
     private SharedElementCallBackListener sharedElementCallBackListener;
     private Subscription subscribe;
     private Subscription resetPwdSubscribe;
@@ -129,6 +138,12 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 }, AppLogger::e);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshHint(true);
+    }
+
     public void showHomeListFragment() {
         if (vpHomeContent != null)
             vpHomeContent.setCurrentItem(0);
@@ -178,51 +193,37 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     private void initBottomMenu() {
-        rgLayoutHomeBottomMenu.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.btn_home_list:
-                        if (vpHomeContent.getCurrentItem() != 0 && vpHomeContent.getCurrentItem() != 0) {
-                            vpHomeContent.setCurrentItem(0);
-                        }
-                        break;
-                    case R.id.btn_home_wonderful:
-                        if (vpHomeContent.getCurrentItem() != 1 && vpHomeContent.getCurrentItem() != 1) {
-                            vpHomeContent.setCurrentItem(1);
-                        }
-                        break;
-                    case R.id.btn_home_mine:
-                        if (vpHomeContent.getCurrentItem() != 2 && vpHomeContent.getCurrentItem() != 2) {
-                            vpHomeContent.setCurrentItem(2);
-                        }
-                        break;
-                }
+        rgLayoutHomeBottomMenu.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.btn_home_list:
+                    if (vpHomeContent.getCurrentItem() != 0) {
+                        vpHomeContent.setCurrentItem(0);
+                    }
+                    break;
+                case R.id.btn_home_wonderful:
+                    if (vpHomeContent.getCurrentItem() != 1) {
+                        vpHomeContent.setCurrentItem(1);
+                    }
+                    break;
+                case R.id.btn_home_mine:
+                    if (vpHomeContent.getCurrentItem() != 2) {
+                        vpHomeContent.setCurrentItem(2);
+                    }
+                    break;
             }
         });
+        //自定义的RadioButton,放在RadioGroup中不能被选中
+        findViewById(R.id.btn_home_mine)
+                .setOnClickListener(v -> {
+                    if (vpHomeContent.getCurrentItem() != 2) {
+                        vpHomeContent.setCurrentItem(2);
+                    }
+                });
     }
 
     @UiThread
     @Override
     public void initView() {
-    }
-
-    @Override
-    public void updateProcess(long currentByte, long totalByte) {
-    }
-
-    @Override
-    public void failed(Throwable throwable) {
-        ToastUtil.showNegativeToast(getString(R.string.Tap1_DownloadFirmwareFai));
-    }
-
-    @Override
-    public void finished(File file) {
-    }
-
-    @Override
-    public void start() {
-
     }
 
     @Override
@@ -242,6 +243,13 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
                     startActivity(i);
                 }, force == 1 ? "" : getString(R.string.CANCEL), null, false);
+    }
+
+    @Override
+    public void refreshHint(boolean show) {
+        AppLogger.e("显示? " + show);
+        boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
+        btnHomeMine.showRedHint(needShowHelp);
     }
 
     @Override

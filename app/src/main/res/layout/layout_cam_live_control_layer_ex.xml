@@ -102,8 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/y39"
         android:layout_above="@+id/layout_e"
-        android:background="@drawable/camera_sahdow"
-        android:visibility="invisible">
+        android:background="@drawable/camera_sahdow">
 
         <com.cylan.jiafeigou.widget.flip.FlipLayout
             android:id="@+id/layout_port_flip"
@@ -150,8 +149,7 @@
         android:id="@+id/layout_e"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y52"
-        android:layout_below="@+id/v_guide"
-        android:visibility="invisible">
+        android:layout_below="@+id/v_guide">
 
         <ImageView
             android:id="@+id/imgV_cam_live_land_play"
@@ -182,13 +180,13 @@
                 app:sw_textColor="@color/color_FFAAAAAA" />
 
             <LinearLayout
-                android:visibility="invisible"
                 android:id="@+id/tv_cam_live_land_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/layout_land_flip"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="invisible">
 
                 <View
                     android:id="@+id/v_flag"

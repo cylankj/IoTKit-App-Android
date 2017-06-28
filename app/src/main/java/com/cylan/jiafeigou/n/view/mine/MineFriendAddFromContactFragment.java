@@ -29,7 +29,6 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -73,6 +72,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void onStart() {
         super.onStart();
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
         if (presenter != null) {
             presenter.start();
             presenter.getFriendListData();
@@ -130,6 +130,12 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
+        if (getView() != null)
+            getView().post(() -> {
+                if (getView() != null && isAdded()) {
+                    LoadingDialog.dismissLoading(getFragmentManager());
+                }
+            });
     }
 
     /**

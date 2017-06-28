@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class HomeMineItemView extends RelativeLayout {
 
     ImageView iv;
     TextView tv;
+    View vHint;
 
     public HomeMineItemView(Context context) {
         this(context, null);
@@ -35,6 +37,7 @@ public class HomeMineItemView extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.layout_home_mine_item, this);
         iv = (ImageView) findViewById(R.id.iv_home_mine_item_friend);
         tv = (TextView) findViewById(R.id.tv_home_mine_item_friend);
+        vHint = findViewById(R.id.v_hint);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.HomeMineItemViewStyle, defStyleAttr, 0);
         Drawable leftDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_leftDrawable);
         Drawable rightDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_rightDrawable);
@@ -60,6 +63,10 @@ public class HomeMineItemView extends RelativeLayout {
     public void setText(String str) {
         tv.setText(str);
         invalidate();
+    }
+
+    public void showHint(boolean show) {
+        vHint.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
 }

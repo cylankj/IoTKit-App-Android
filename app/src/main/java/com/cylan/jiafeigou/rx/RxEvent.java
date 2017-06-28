@@ -759,7 +759,6 @@ public class RxEvent {
 //    }
 
 
-
     public static class CheckVersionRsp implements Parcelable {
         public long seq;
         public boolean hasNew;
@@ -1307,6 +1306,8 @@ public class RxEvent {
         public static final InitFrom2x INSTANCE = new InitFrom2x();
     }
 
+    public static final class InfoUpdate {
+    }
 }
 
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rLayout_new_home_container"
     android:layout_width="match_parent"
@@ -44,12 +45,14 @@
                 android:paddingBottom="3dp"
                 android:text="@string/Tap2_TitleName" />
 
-            <RadioButton
+            <com.cylan.jiafeigou.widget.HintRadioButton
                 android:id="@+id/btn_home_mine"
                 style="@style/home_bottom_radio_style"
                 android:drawableTop="@drawable/icon_bottom_mine_selector"
                 android:paddingBottom="3dp"
-                android:text="@string/Tap3_TitleName" />
+                android:text="@string/Tap3_TitleName"
+                app:cb_padding_top="@dimen/y5"
+                app:cb_radius="@dimen/y4" />
         </RadioGroup>
 
         <View

@@ -405,18 +405,22 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             layoutD.setVisibility(VISIBLE);
-            YoYo.with(Techniques.FadeIn)
-                    .duration(200)
-                    .playOn(layoutD);
+            if (layoutD.getAlpha() == 0.0f)
+                YoYo.with(Techniques.FadeIn)
+                        .duration(200)
+                        .playOn(layoutD);
             showHistoryWheel(true);
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
             //应该直接getPlayType.
-            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
+//            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
+//                layoutC.setVisibility(VISIBLE);
+//            } else if (livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING) {
+//                layoutC.setVisibility(INVISIBLE);
+//            }
+            if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
-            } else if (livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING) {
-                layoutC.setVisibility(INVISIBLE);
             }
         }
     };
@@ -444,7 +448,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             setLoadingState(null, null);
-            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
+//            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
+//                layoutC.setVisibility(VISIBLE);
+//            }
+            if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
             post(() -> {
@@ -665,7 +672,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
         //直播
         findViewById(R.id.tv_live).setEnabled(playType == TYPE_HISTORY);
-        @SuppressLint("WrongViewCast") RelativeLayout.LayoutParams lp = (LayoutParams) findViewById(R.id.layout_e).getLayoutParams();
+        @SuppressLint("WrongViewCast") RelativeLayout.LayoutParams lp = (LayoutParams) layoutE.getLayoutParams();
         if (isLand) {
             lp.removeRule(3);//remove below rules
             lp.addRule(2, R.id.v_guide);//set above v_guide
@@ -694,7 +701,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutG.setVisibility(GONE);
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
-        findViewById(R.id.layout_e).setLayoutParams(lp);
+        layoutE.setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }
 
