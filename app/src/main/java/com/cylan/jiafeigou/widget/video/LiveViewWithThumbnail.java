@@ -226,6 +226,22 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     }
 
+    @Override
+    public void showMobileDataInterface(OnClickListener clickListener) {
+        final View v = findViewById(R.id.v_mobile_data_cover);
+        if (v != null && v.isShown()) {
+            return;
+        } else if (v != null && !v.isShown()) {
+            v.setVisibility(VISIBLE);
+            findViewById(R.id.btn_go_ahead)
+                    .setOnClickListener(v1 -> {
+                        v.setVisibility(GONE);//
+                        if (clickListener != null) clickListener.onClick(v1);
+                    });
+            AppLogger.d("显示手机数据,层");
+        }
+    }
+
     private static class SimpleLoader extends SimpleTarget<Bitmap> {
 
         private WeakReference<ImageView> imageViewRef;

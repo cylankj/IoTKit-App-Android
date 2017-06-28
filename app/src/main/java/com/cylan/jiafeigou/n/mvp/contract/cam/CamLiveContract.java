@@ -35,6 +35,8 @@ public interface CamLiveContract {
 
         boolean isLocalSpeakerOn();
 
+        boolean judge();
+
         void onHistoryDataRsp(IData dataProvider);
 
         void onRtcp(JFGMsgVideoRtcp rtcp);

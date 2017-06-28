@@ -339,6 +339,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void startPlay() {
         if (mView == null || !mView.isUserVisible()) return;
+        if (!mView.judge()) return;
         if (getLiveStream().playState == PLAY_STATE_PREPARE) {
             AppLogger.d("已经loading");
             mView.onLivePrepare(getLiveStream().type);
@@ -592,6 +593,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             t = 1;
             if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
         }
+        if (!mView.judge()) return;
         final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
         getView().onLivePrepare(TYPE_HISTORY);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
@@ -864,11 +866,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private NetworkAction networkAction;
 
     private static class NetworkAction {
-        private int preState = 0;
+        private int preNetType = 0;
         private WeakReference<CamLivePresenterImpl> presenterWeakReference;
 
         public NetworkAction(CamLivePresenterImpl camLivePresenter) {
-            preState = NetUtils.getJfgNetType();
+            preNetType = NetUtils.getJfgNetType();
             this.presenterWeakReference = new WeakReference<>(camLivePresenter);
         }
 
@@ -879,8 +881,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> presenterWeakReference.get().mView != null)
                         .subscribe(ret -> {
                             int net = NetUtils.getJfgNetType();
-                            if (preState == net) return;
-                            preState = net;
+                            if (preNetType == net) return;
+                            preNetType = net;
                             if (net == 0) {
                                 AppLogger.i("网络中断");
                                 presenterWeakReference.get().mView.onNetworkChanged(false);
