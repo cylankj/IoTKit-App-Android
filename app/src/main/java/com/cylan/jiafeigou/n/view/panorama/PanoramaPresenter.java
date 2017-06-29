@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -81,13 +80,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (deviceState != null && deviceState.ret == 0) {
                         if (!shouldRefreshRecord) {
                             shouldRefreshRecord = true;
-                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
                             refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
                         }
                     } else if (deviceState == null) {
                         if (shouldRefreshRecord) {
                             shouldRefreshRecord = false;
-                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true, false);
                             mView.onRefreshControllerViewVisible(true);
                         }
                     }
@@ -219,7 +218,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
                     if (msgFileRsp.ret == 0) {
-                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE, true);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE, true, false);
                         mView.onRefreshControllerViewVisible(true);
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
                             if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
@@ -269,8 +268,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (rsp != null && rsp.ret == 0) {//检查录像状态
                         if (!shouldRefreshRecord) {
                             shouldRefreshRecord = true;
-                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
                             refreshVideoRecordUI(rsp.seconds, rsp.videoType);
+//                            DataSourceManager.getInstance().pushDeviceState(uuid, rsp);
                         }
                     }
                     AppLogger.d("初始化录像状态结果为:" + new Gson().toJson(rsp));
@@ -381,7 +381,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         if (!shouldRefreshRecord) {
                             shouldRefreshRecord = true;
                             refreshVideoRecordUI(0, type);
-                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false);
+                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
+                            PanoramaEvent.MsgVideoStatusRsp msgVideoStatusRsp = new PanoramaEvent.MsgVideoStatusRsp();
+                            msgVideoStatusRsp.videoType = type;
+                            msgVideoStatusRsp.ret = rsp.ret;
+//                            DataSourceManager.getInstance().pushDeviceState(uuid, msgVideoStatusRsp);
                         }
                     } else {
                         shouldRefreshRecord = false;
@@ -403,8 +407,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret.ret == 0 && ret.files != null && ret.files.size() > 0) {//成功了
-                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
+                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true, false);
                         mView.onRefreshControllerViewVisible(true);
+//                        DataSourceManager.getInstance().removeDeviceState(uuid);
                         if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
                             mView.onShowPreviewPicture(ret.files.get(0));
                         } else {
@@ -450,7 +455,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         if (type == PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT && second >= 8) {
                             shouldRefreshRecord = false;
 //                            mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true);
-                            DataSourceManager.getInstance().removeDeviceState(uuid);
+//                            DataSourceManager.getInstance().removeDeviceState(uuid);
                         }
                     }
                     return !shouldRefreshRecord;

@@ -70,6 +70,8 @@ public interface JFGSourceManager {
      */
     ArrayList<JFGShareListInfo> getShareList();
 
+    JFGShareListInfo getShareListByCid(String cid);
+
     void cacheShareList(ArrayList<JFGShareListInfo> arrayList);
 
     void setLoginState(LogState loginState);

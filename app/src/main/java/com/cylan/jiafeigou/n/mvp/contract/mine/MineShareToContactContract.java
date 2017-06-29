@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.view.adapter.item.ShareContactItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscription;
 
@@ -17,11 +17,8 @@ public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactReclyView(ArrayList<FriendBean> list);
+        void onInitContactFriends(List<ShareContactItem> friendItems);
 
-        void showNoContactNullView();
-
-        void hideNoContactNullView();
 
         void hideTopTitle();
 
@@ -103,6 +100,8 @@ public interface MineShareToContactContract {
          * @return
          */
         boolean checkSendSmsPermission();
+
+        void checkAndInitContactList();
 
     }
 

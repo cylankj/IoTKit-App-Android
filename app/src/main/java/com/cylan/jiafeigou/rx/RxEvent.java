@@ -339,11 +339,11 @@ public class RxEvent {
     /**
      * 获取到已经分享的好友的回调
      */
-    public static final class GetHasShareFriendCallBack {
+    public static final class UnShareListByCidEvent {
         public int i;
         public ArrayList<JFGFriendAccount> arrayList;
 
-        public GetHasShareFriendCallBack(int i, ArrayList<JFGFriendAccount> arrayList) {
+        public UnShareListByCidEvent(int i, ArrayList<JFGFriendAccount> arrayList) {
             this.i = i;
             this.arrayList = arrayList;
         }
@@ -1355,4 +1355,15 @@ public class RxEvent {
         public Object value;
     }
 
+    public static class MultiShareDeviceEvent {
+        public int ret;
+        public String device;
+        public String account;
+
+        public MultiShareDeviceEvent(int i, String s, String s1) {
+            this.ret = i;
+            this.device = s;
+            this.account = s1;
+        }
+    }
 }

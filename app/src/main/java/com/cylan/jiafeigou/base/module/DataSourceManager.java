@@ -573,6 +573,18 @@ public class DataSourceManager implements JFGSourceManager {
         return shareList;
     }
 
+    @Override
+    public JFGShareListInfo getShareListByCid(String cid) {
+        if (shareList != null) {
+            for (JFGShareListInfo listInfo : shareList) {
+                if (TextUtils.equals(cid, listInfo.cid)) {
+                    return listInfo;
+                }
+            }
+        }
+        return null;
+    }
+
     public void setLoginState(LogState loginState) {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
         if (loginState.state == LogState.STATE_NONE) {
