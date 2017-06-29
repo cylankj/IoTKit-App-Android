@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.base.wrapper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -28,8 +27,6 @@ import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.umeng.socialize.UMShareAPI;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -47,7 +44,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected AppCmd appCmd;
 
     protected String uuid;
-    protected AlertDialog alertDialog;
+    protected AlertDialog alert;
     protected Toast mToast;
 
     protected ActivityComponent component;
@@ -115,9 +112,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (presenter != null) {
             presenter.onStop();
         }
-        if (alertDialog != null && alertDialog.isShowing()) {
-            alertDialog.dismiss();
-            alertDialog = null;
+        if (alert != null && alert.isShowing()) {
+            alert.dismiss();
+            alert = null;
         }
         mToast = null;
     }
@@ -132,9 +129,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         }
     }
 
-    @Override
-    public void showLoading() {
-    }
 
     @Override
     protected void onResume() {
@@ -153,33 +147,24 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     @Override
-    public void showLoadingMsg(String msg) {
+    public void showLoading(int resId, String... args) {
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(resId, args));
+    }
+
+    @Override
+    public void hideLoading() {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     protected abstract void setActivityComponent(ActivityComponent activityComponent);
 
-
     @Override
-    public String showAlert(String title, String msg, String ok, String cancel) {
-        if (alertDialog == null) {
-            alertDialog = new AlertDialog.Builder(this).create();
+    public AlertDialog getAlert() {
+        if (alert != null) {
+            alert.dismiss();
+            alert = new AlertDialog.Builder(this).create();
         }
-        String handle = UUID.randomUUID().toString();
-        if (!TextUtils.isEmpty(title)) alertDialog.setTitle(title);
-        if (!TextUtils.isEmpty(msg)) alertDialog.setMessage(msg);
-        if (!TextUtils.isEmpty(ok)) {
-            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
-                presenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
-            });
-        }
-        if (!TextUtils.isEmpty(cancel)) {
-            alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
-                presenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
-            });
-        }
-        alertDialog.show();
-        return handle;
+        return alert;
     }
 
     @Override
@@ -277,8 +262,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     }
 
     protected void dismissAlert() {
-        if (alertDialog != null && alertDialog.isShowing()) {
-            alertDialog.dismiss();
+        if (alert != null && alert.isShowing()) {
+            alert.dismiss();
         }
     }
 

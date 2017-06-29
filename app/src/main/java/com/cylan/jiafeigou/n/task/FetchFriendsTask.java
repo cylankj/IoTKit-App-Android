@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.n.task;
 
 import android.util.Pair;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.cache.db.module.FriendBeanDao;
@@ -40,8 +42,9 @@ public class FetchFriendsTask implements Action1<Object> {
                 .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
                 .subscribe(ret -> {
-                    ArrayList<FriendBean> fList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
-                    ArrayList<FriendsReqBean> fReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                    // TODO: 2017/6/29 sssssssss
+                    ArrayList<JFGFriendAccount> fList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                    ArrayList<JFGFriendRequest> fReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     //需要替换数据库
                     try {
@@ -66,7 +69,7 @@ public class FetchFriendsTask implements Action1<Object> {
                     }
 
 
-                    saveToDb(fList, fReqList);
+//                    saveToDb(fList, fReqList);
                     RxBus.getCacheInstance().postSticky(new RxEvent.AllFriendsRsp());
                     RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
                     AppLogger.d("FetchFriendsTask rsp: " + new Gson().toJson(fList) + "h" + helper);

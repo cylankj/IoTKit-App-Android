@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -267,8 +268,9 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     private void openSetting() {
-        Intent localIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(localIntent);
+        Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        settingIntent.setData(Uri.parse("package:" + getContext().getPackageName()));
+        startActivity(settingIntent);
     }
 }

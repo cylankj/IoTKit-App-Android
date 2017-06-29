@@ -196,7 +196,6 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         }
         shareContentBinding.sharedRefresh.setRefreshing(false);
         empty.set(adapter.getItemCount() == 0);
-//        shareContentBinding.toolbar.setRightEnable(adapter.getItemCount() > 0);
     }
 
     @Override

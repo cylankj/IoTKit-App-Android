@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.cylan.jfgapp.interfases.AppCmd;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by yzd on 16-12-28.
@@ -41,10 +40,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Inject
     protected AppCmd appCmd;
     protected String mUUID;
-
+    protected AlertDialog alert;
     protected static Toast sToast;
 
-    protected Unbinder unbinder;
     protected FragmentComponent component;
 
     @Override
@@ -71,14 +69,17 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View contentView = null;
         if (getContentViewID() != -1) {//!=-1 会启动 butterknife ,==-1:自己设置 view, 可以使用 databinding
-            View contentView = inflater.inflate(getContentViewID(), container, false);
-            unbinder = ButterKnife.bind(this, contentView);
-            return contentView;
+            contentView = inflater.inflate(getContentViewID(), container, false);
+            ButterKnife.bind(this, contentView);
         } else if (getContentRootView() != null) {
-            return getContentRootView();
+            contentView = getContentRootView();
         }
-        return null;
+        if (contentView != null) {
+            contentView.setOnKeyListener(this);
+        }
+        return contentView;
     }
 
     protected View getContentRootView() {
@@ -103,7 +104,6 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (presenter != null) {
             presenter.onViewDetached();
         }
-        if (unbinder != null) unbinder.unbind();
     }
 
     protected abstract void setFragmentComponent(FragmentComponent fragmentComponent);
@@ -111,13 +111,10 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(this);
-        initViewAndListener();
         if (presenter != null) {
             presenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
         }
+        initViewAndListener();
     }
 
     @Override
@@ -171,19 +168,22 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     }
 
     @Override
-    public void showLoading() {
-        showLoadingMsg(getResources().getString(R.string.LOADING));
-    }
-
-
-    @Override
-    public void showLoadingMsg(String msg) {
-        LoadingDialog.dismissLoading(getChildFragmentManager());//以后有时间定义一个统一的样式
+    public void showLoading(int resId, String... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
     }
 
     @Override
-    public String showAlert(String title, String msg, String ok, String cancel) {
-        return null;
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+    }
+
+    @Override
+    public AlertDialog getAlert() {
+        if (alert != null) {
+            alert.dismiss();
+            alert = new AlertDialog.Builder(getContext()).create();
+        }
+        return alert;
     }
 
     @Override

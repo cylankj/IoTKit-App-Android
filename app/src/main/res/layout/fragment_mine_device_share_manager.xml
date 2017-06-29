@@ -69,30 +69,20 @@
             hunt:layout_constraintStart_toStartOf="parent"
             hunt:layout_constraintTop_toBottomOf="@+id/tv_has_share_title" />
 
-        <ImageView
-            android:id="@+id/empty_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pic_no_share"
-            android:visibility="@{empty?View.VISIBLE:View.GONE}"
-            hunt:layout_constraintBottom_toTopOf="@+id/empty_text"
-            hunt:layout_constraintEnd_toEndOf="parent"
-            hunt:layout_constraintStart_toStartOf="parent"
-            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar"
-            hunt:layout_constraintVertical_chainStyle="packed" />
-
         <TextView
             android:id="@+id/empty_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y16"
+            android:drawablePadding="@dimen/y16"
+            android:drawableTop="@drawable/pic_no_share"
+            android:gravity="center"
             android:text="@string/Tap3_ShareDevice_NoShare"
             android:textColor="#aaaaaa"
-            android:textSize="@dimen/sp15"
+            android:textSize="@dimen/sp17"
             android:visibility="@{empty?View.VISIBLE:View.GONE}"
             hunt:layout_constraintBottom_toBottomOf="parent"
             hunt:layout_constraintEnd_toEndOf="parent"
             hunt:layout_constraintStart_toStartOf="parent"
-            hunt:layout_constraintTop_toBottomOf="@+id/empty_picture" />
+            hunt:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 </layout>

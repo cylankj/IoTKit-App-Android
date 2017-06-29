@@ -49,31 +49,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shadow" />
 
-        <ImageView
-            android:id="@+id/empty_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_no_friends"
-            android:visibility="@{empty?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toTopOf="@id/empty_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/custom_toolbar"
-            app:layout_constraintVertical_chainStyle="packed" />
-
         <TextView
             android:id="@+id/empty_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y16"
+            android:drawablePadding="@dimen/y16"
+            android:drawableTop="@drawable/icon_no_friends"
+            android:gravity="center"
             android:text="@string/Tap3_FriendsAdd_NoContent"
             android:textColor="#aaaaaa"
-            android:textSize="@dimen/sp15"
+            android:textSize="@dimen/sp17"
             android:visibility="@{empty?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/empty_picture"
-            app:layout_constraintStart_toStartOf="@id/empty_picture"
-            app:layout_constraintTop_toBottomOf="@id/empty_picture" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

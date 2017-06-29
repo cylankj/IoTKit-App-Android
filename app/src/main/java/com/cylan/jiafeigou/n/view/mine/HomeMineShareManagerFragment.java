@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.databinding.FragmentMineShareManagerBinding;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 
 /**
  * Created by yanzhendong on 2017/5/26.
@@ -64,21 +65,11 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
 
     private void sharedContent() {
         HomeMineShareContentFragment mineShareDeviceFragment = HomeMineShareContentFragment.newInstance(null);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineShareDeviceFragment, MineShareToContactFragment.class.getSimpleName())
-                .addToBackStack(HomeMineShareManagerFragment.class.getName())
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineShareDeviceFragment, android.R.id.content);
     }
 
     private void sharedDevice() {
         MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance(null);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineShareDeviceFragment, MineShareDeviceFragment.class.getSimpleName())
-                .addToBackStack(HomeMineShareManagerFragment.class.getName())
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineShareDeviceFragment, android.R.id.content);
     }
 }

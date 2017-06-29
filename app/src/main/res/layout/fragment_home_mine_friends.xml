@@ -1,114 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:clickable="true"
-    android:orientation="vertical">
+<layout>
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/layout_default_custom_tool_bar"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="empty"
+            type="android.databinding.ObservableBoolean" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:hunt="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_enable_shadow="false"
-        hunt:ct_enable_theme="true"
-        hunt:ct_fit_system_window="true"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_left_title="@string/Tap3_Friends"
-        hunt:ct_left_title_color="@color/color_white"
-        hunt:ct_right_title="@string/Tap3_FriendsAdd"
-        hunt:ct_right_title_color="@color/color_white" />
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/ll_relative_and_friend"
-            android:layout_width="match_parent"
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!--添加请求-->
-            <TextView
-                android:id="@+id/tv_add_request_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x15"
-                android:layout_marginTop="@dimen/y19"
-                android:text="@string/Tap3_FriendsAdd_Request"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp14"
-                android:visibility="gone" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview_request_add"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never" />
-
-            <!--亲友列表-->
-            <TextView
-                android:id="@+id/tv_friend_list_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x15"
-                android:layout_marginTop="@dimen/y19"
-                android:text="@string/Tap3_FriendsList"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp14"
-                android:visibility="invisible" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_friends_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:scrollbars="vertical" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/ll_relative_and_friend_none"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="false"
+            hunt:ct_enable_theme="true"
+            hunt:ct_fit_system_window="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_left_title="@string/Tap3_Friends"
+            hunt:ct_left_title_color="@color/color_white"
+            hunt:ct_right_title="@string/Tap3_FriendsAdd"
+            hunt:ct_right_title_color="@color/color_white"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y120"
-                android:drawablePadding="@dimen/y16"
-                android:drawableTop="@drawable/icon_no_friends"
-                android:gravity="center_horizontal"
-                android:text="@string/Tap3_ShareDevice_NoneFriends"
-                android:textColor="#aaaaaa"
-                android:textSize="@dimen/sp15" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/friends"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            hunt:layout_constraintBottom_toBottomOf="parent"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-            <TextView
-                android:id="@+id/btn_to_add"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y42"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/y28"
-                android:layout_marginEnd="@dimen/x30"
-                android:layout_marginStart="@dimen/x30"
-                android:background="@drawable/long_btn_bg_shape_4b9fd5"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="@string/Tap3_FriendsAdd"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp17"
-                android:visibility="gone" />
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/y16"
+            android:drawableTop="@drawable/icon_no_friends"
+            android:gravity="center"
+            android:text="@string/Tap3_ShareDevice_NoneFriends"
+            android:textColor="#aaaaaa"
+            android:textSize="@dimen/sp17"
+            android:visibility="@{empty?View.VISIBLE:View.GONE}"
+            hunt:layout_constraintBottom_toBottomOf="parent"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toTopOf="parent" />
 
-    </FrameLayout>
-
-</LinearLayout>
-
-
+    </android.support.constraint.ConstraintLayout>
+</layout>

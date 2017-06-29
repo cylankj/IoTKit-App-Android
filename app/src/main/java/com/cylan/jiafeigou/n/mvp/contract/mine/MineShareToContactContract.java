@@ -19,25 +19,6 @@ public interface MineShareToContactContract {
 
         void onInitContactFriends(List<ShareContactItem> friendItems);
 
-
-        void hideTopTitle();
-
-        void showSearchInputEdit();
-
-        void hideSearchInputEdit();
-
-        void showShareDeviceDialog(String account);
-
-        /**
-         * 显示正在分享的进度提示
-         */
-        void showShareingProHint();
-
-        /**
-         * 隐藏正在分享进度的提示
-         */
-        void hideShareingProHint();
-
         /**
          * 修改正在分享的进度提示
          */
@@ -61,11 +42,13 @@ public interface MineShareToContactContract {
          */
         void handlerCheckRegister(int requtestId, String account);
 
+        void showLoading(int resId, String... args);
+
+        void hideLoading();
+
     }
 
     interface Presenter extends BasePresenter {
-
-        void handlerSearchResult(String input);
 
         /**
          * 处理点击按钮
@@ -103,6 +86,7 @@ public interface MineShareToContactContract {
 
         void checkAndInitContactList();
 
+        void shareDeviceToContact(ShareContactItem shareContactItem);
     }
 
 }

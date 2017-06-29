@@ -86,7 +86,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<FriendsReqBean> 
 
             @Override
             public int getLayoutId(int viewType) {
-                return R.layout.fragment_mine_friends_request_add_items;
+                return R.layout.fragment_mine_friends_items;
             }
         };
     }

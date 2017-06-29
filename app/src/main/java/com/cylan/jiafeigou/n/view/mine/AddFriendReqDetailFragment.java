@@ -23,7 +23,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.AddFriendsReqDetailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -32,7 +31,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -224,7 +222,7 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
         builder.setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
             dialog.dismiss();
         });
-        AlertDialogManager.getInstance().showDialog("showReqOutTimeDialog", getActivity(), builder);
+        AlertDialogManager.getInstance().showDialog("onRequestExpired", getActivity(), builder);
     }
 
     @Override
@@ -271,20 +269,21 @@ public class AddFriendReqDetailFragment extends Fragment implements MineFriendAd
      */
     @Override
     public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
-        ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
-        for (FriendsReqBean bean : arrayList) {
-            if (bean.account.equals(addRequestItems.account)) {
-                // 向我发送过请求
-                FriendsReqBean addReqBean = new FriendsReqBean();
-                addReqBean.account = bean.account;
-                addReqBean.time = bean.time;
-                presenter.checkAddReqOutTime(addReqBean);
-                return;
-            } else {
-                //未向我发送过请求
-                jump2AddReqFragment();
-            }
-        }
+        // TODO: 2017/6/29 AAAAAAAAAAAAAAAAA 
+//        ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+//        for (FriendsReqBean bean : arrayList) {
+//            if (bean.account.equals(addRequestItems.account)) {
+//                // 向我发送过请求
+//                FriendsReqBean addReqBean = new FriendsReqBean();
+//                addReqBean.account = bean.account;
+//                addReqBean.time = bean.time;
+//                presenter.checkAddReqOutTime(addReqBean);
+//                return;
+//            } else {
+//                //未向我发送过请求
+//                jump2AddReqFragment();
+//            }
+//        }
 
     }
 

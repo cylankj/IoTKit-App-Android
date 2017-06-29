@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -33,7 +34,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                     List<DPEntity> result = new ArrayList<>();
                     DPEntity entity;
                     for (DpMsgDefine.DPShareItem contentItem : items) {
-                        entity = new DPEntity(null, 606, contentItem.version, DBAction.DELETED, null);
+                        entity = new DPEntity(contentItem.cid, 606, contentItem.version, DBAction.DELETED, null);
                         result.add(entity);
                     }
                     return result;
@@ -63,6 +64,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
     @Override
     public void loadFromServer(long version, boolean refresh) {
         Subscription subscribe = Observable.just(new DPEntity(null, 606, 0, DBAction.QUERY, DBOption.SingleQueryOption.DESC_20_LIMIT))
+                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
                 .map(result -> {
@@ -81,6 +83,8 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> mView.showLoading(R.string.LOADING))
+                .doOnTerminate(() -> mView.hideLoading())
                 .subscribe(result -> {
                     mView.onShareContentResponse(result, refresh);
                 }, e -> {

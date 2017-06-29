@@ -9,9 +9,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
-
-import java.util.ArrayList;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -106,14 +103,15 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
         return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getAddReqList -> {
-                    ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
-                    if (ListUtils.getSize(arrayList) == 0) {
-                        // 未向我发送过请求
-                        if (getView() != null) getView().jump2AddReqFragment();
-                    } else {
-                        // 判断是否包含该账号
-                        if (getView() != null) getView().isHasAccountResult(getAddReqList);
-                    }
+                    // TODO: 2017/6/29
+//                    ArrayList<FriendsReqBean> arrayList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+//                    if (ListUtils.getSize(arrayList) == 0) {
+//                        // 未向我发送过请求
+//                        if (getView() != null) getView().jump2AddReqFragment();
+//                    } else {
+//                        // 判断是否包含该账号
+//                        if (getView() != null) getView().isHasAccountResult(getAddReqList);
+//                    }
 
                 }, AppLogger::e);
     }

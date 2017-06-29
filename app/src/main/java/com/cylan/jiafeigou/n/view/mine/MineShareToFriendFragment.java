@@ -144,16 +144,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         empty.set(shareToFriendsAdapter.getItemCount() == 0);
     }
 
-    @Override
-    public void showSendProgress() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
-    }
-
-    @Override
-    public void hideSendProgress() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
-    }
-
     private void addShareWithNumberCheck(ShareFriendItem item) {
         int hasSharedNumber = shareListInfo == null ? 0 : shareListInfo.friends.size();
         int selectedNumber = shareToFriendsAdapter.getFastAdapter().getSelectedItems().size();
@@ -178,6 +168,16 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         } else {//分享失败了
             showShareResultDialog(getString(R.string.Tap3_ShareDevice_FailTips));
         }
+    }
+
+    @Override
+    public void showLoading(int resId, String... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
+    }
+
+    @Override
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     /**

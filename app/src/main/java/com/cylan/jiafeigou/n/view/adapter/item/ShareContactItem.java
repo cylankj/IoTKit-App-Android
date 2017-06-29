@@ -20,6 +20,11 @@ public class ShareContactItem extends AbstractItem<ShareContactItem, AbstractBin
     public String email;
     public boolean shared = false;
 
+    public String getAccount() {
+        return TextUtils.isEmpty(phone) ? email : phone;
+    }
+
+
     @Override
     public int getType() {
         return 0;

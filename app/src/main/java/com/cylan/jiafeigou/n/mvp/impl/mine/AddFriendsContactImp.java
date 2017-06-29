@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.text.Collator;
@@ -189,23 +188,24 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      */
     @Override
     public Subscription getFriendListDataCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(getFriendList -> {
-                    ArrayList<FriendBean> list = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
-                    if (ListUtils.getSize(list) != 0) {
-                        return Observable.just(list);
-                    } else {
-                        return Observable.just(getAllContactList());
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> {
-                    if (allContactBean.size() > 0) {
-                        allContactBean.clear();
-                    }
-                    allContactBean.addAll(list);
-                    handlerDataResult(list);
-                }, AppLogger::e);
+//        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
+//                .flatMap(getFriendList -> {
+//                    ArrayList<FriendBean> list = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+//                    if (ListUtils.getSize(list) != 0) {
+//                        return Observable.just(list);
+//                    } else {
+//                        return Observable.just(getAllContactList());
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(list -> {
+//                    if (allContactBean.size() > 0) {
+//                        allContactBean.clear();
+//                    }
+//                    allContactBean.addAll(list);
+//                    handlerDataResult(list);
+//                }, AppLogger::e);
+        return null;
     }
 
     /**

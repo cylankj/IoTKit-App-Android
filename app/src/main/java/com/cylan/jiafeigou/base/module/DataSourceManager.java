@@ -23,8 +23,6 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -101,8 +99,8 @@ public class DataSourceManager implements JFGSourceManager {
     private Account account;//账号相关的数据全部保存到这里面
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
-    private ArrayList<FriendBean> friendBeanArrayList;
-    private ArrayList<FriendsReqBean> friendsReqBeanArrayList;
+    private ArrayList<JFGFriendAccount> friendBeanArrayList;
+    private ArrayList<JFGFriendRequest> friendsReqBeanArrayList;
 
     @Deprecated
     private boolean isOnline = true;
@@ -177,51 +175,24 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public ArrayList<FriendBean> getFriendsList() {
+    public ArrayList<JFGFriendAccount> getFriendsList() {
         return this.friendBeanArrayList;
     }
 
     @Override
     public void setFriendsList(ArrayList<JFGFriendAccount> list) {
-        this.friendBeanArrayList = new ArrayList<>();
-        for (JFGFriendAccount account : list) {
-            FriendBean emMessage = new FriendBean();
-            emMessage.markName = account.markName;
-            emMessage.account = account.account;
-            emMessage.alias = account.alias;
-            try {
-                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
-                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            friendBeanArrayList.add(emMessage);
-        }
+        this.friendBeanArrayList = list;
         RxBus.getCacheInstance().post(new RxEvent.GetFriendList());
     }
 
     @Override
     public void setFriendsReqList(ArrayList<JFGFriendRequest> list) {
-        friendsReqBeanArrayList = new ArrayList<>();
-        for (JFGFriendRequest jfgFriendRequest : list) {
-            FriendsReqBean emMessage = new FriendsReqBean();
-            emMessage.alias = jfgFriendRequest.alias;
-            emMessage.sayHi = jfgFriendRequest.sayHi;
-            emMessage.account = jfgFriendRequest.account;
-            emMessage.time = jfgFriendRequest.time;
-            try {
-                int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
-                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-            friendsReqBeanArrayList.add(emMessage);
-        }
+        friendsReqBeanArrayList = list;
         RxBus.getCacheInstance().postSticky(new RxEvent.GetAddReqList());
     }
 
     @Override
-    public ArrayList<FriendsReqBean> getFriendsReqList() {
+    public ArrayList<JFGFriendRequest> getFriendsReqList() {
         return friendsReqBeanArrayList;
     }
 

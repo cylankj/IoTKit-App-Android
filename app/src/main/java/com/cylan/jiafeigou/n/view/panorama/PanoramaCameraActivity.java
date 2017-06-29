@@ -70,7 +70,6 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -205,19 +204,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onDismiss() {
         if (surfaceView != null) {
             surfaceView.onDestroy();
-        }
-    }
-
-    public void showLoading(String msg) {
-        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
-        }
-        LoadingDialog.showLoading(getSupportFragmentManager(), msg);
-    }
-
-    public void dismissLoading() {
-        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
         }
     }
 
@@ -802,7 +788,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (bottomPanelSwitcher.getDisplayedChild() == 1) {
             bottomPanelSwitcher.showPrevious();
         }
-        if (enable) dismissLoading();
+        if (enable) hideLoading();
         onRefreshControllerView(enable, false);
         popOption.dismiss();
     }

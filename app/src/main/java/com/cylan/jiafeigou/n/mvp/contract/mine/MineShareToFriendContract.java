@@ -22,18 +22,11 @@ public interface MineShareToFriendContract {
          */
         void onInitCanShareFriendList(ArrayList<ShareFriendItem> list);
 
-        /**
-         * 显示发送分享请求的进度
-         */
-        void showSendProgress();
-
-        /**
-         * 隐藏发送请求的进度
-         */
-        void hideSendProgress();
-
-
         void showShareToFriendsResult(RxEvent.MultiShareDeviceEvent result);
+
+        void showLoading(int resId, String... args);
+
+        void hideLoading();
     }
 
     interface Presenter extends BasePresenter {

@@ -28,14 +28,12 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 
-import butterknife.OnClick;
-
 /**
  * 作者：zsl
  * 创建时间：2016/9/8
  * 描述：
  */
-public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View, MineHasShareAdapter.OnCancelShareListener {
+public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View {
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter shareFriendsAdapter;
     private String uuid;
@@ -66,7 +64,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         shareManagerBinding.recyclerHadShareRelativesAndFriend.setLayoutManager(new LinearLayoutManager(getContext()));
         shareFriendsAdapter = new MineHasShareAdapter(getContext(), null, null);
         shareManagerBinding.recyclerHadShareRelativesAndFriend.setAdapter(shareFriendsAdapter);
-        shareFriendsAdapter.setOnCancelShareListener(this);
+        shareFriendsAdapter.setOnCancelShareListener(this::onCancelShare);
+        shareManagerBinding.customToolbar.setBackAction(this::onClick);
         initPresenter();
         return shareManagerBinding.getRoot();
     }
@@ -99,7 +98,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         return uuid;
     }
 
-    @OnClick(R.id.tv_toolbar_icon)
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
@@ -126,7 +124,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         }
     }
 
-    @Override
     public void onCancelShare(int position, JFGFriendAccount item) {
         if (getView() != null) {
             if (NetUtils.getNetType(getContext()) == -1) {

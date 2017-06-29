@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 
 /**
  * Created by yzd on 16-12-28.
@@ -18,11 +19,11 @@ public interface JFGView {
 
     Activity getActivityContext();
 
-    void showLoadingMsg(String msg);
+    void showLoading(int resId, String... args);
 
-    void showLoading();
+    void hideLoading();
 
-    String showAlert(String title, String msg, String ok, String cancel);
+    AlertDialog getAlert();
 
     void showToast(String msg);
 

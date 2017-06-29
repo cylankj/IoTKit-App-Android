@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusable="false">
+
+    <TextView
+        android:id="@+id/tv_friend_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:paddingEnd="0dp"
+        android:paddingStart="@dimen/y15"
+        android:paddingTop="@dimen/y19"
+        android:text="@string/Tap3_FriendsList"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp14" />
+</android.support.constraint.ConstraintLayout>

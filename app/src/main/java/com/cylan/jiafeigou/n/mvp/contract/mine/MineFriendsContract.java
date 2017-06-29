@@ -1,11 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendGroupChildItem;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendGroupParentItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 作者：zsl
@@ -16,35 +16,24 @@ public interface MineFriendsContract {
 
     interface View extends BaseFragmentView<Presenter> {
 
-        /**
-         * desc:初始化好友列表
-         */
-        void initFriendList(ArrayList<FriendBean> list);
-
-
-        void initAddReqReqList(ArrayList<FriendsReqBean> list);
-
-        void showReqOutTimeDialog(FriendsReqBean item);
+        void onRequestExpired(FriendGroupChildItem item);
 
         /**
          * desc：长按删除添加请求条目
          */
-        void deleteItemRsp(final String account, int code);
+        void deleteItemRsp(FriendGroupChildItem item, int code);
 
-        void consentRsp(final String account, int code);
+        void acceptItemRsp(FriendGroupChildItem item, int code);
 
         /**
          * 网络状态变化
          */
         void onNetStateChanged(int state);
 
+        void onInitRequestAndFriendList(List<FriendGroupParentItem> result);
     }
 
     interface Presenter extends BasePresenter {
-
-
-        boolean checkAddRequestOutTime(FriendsReqBean bean);        //检测添加请求是否超时
-
 
         /**
          * 发送添加请求
@@ -63,7 +52,11 @@ public interface MineFriendsContract {
 
         void removeCache(String account);
 
+        void initRequestAndFriendList();
 
+        void deleteFriendRequest(FriendGroupChildItem item);
+
+        void acceptFriendRequest(FriendGroupChildItem item);
     }
 
 }

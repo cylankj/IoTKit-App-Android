@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:paddingTop="@dimen/y12"
-    android:paddingBottom="@dimen/y12"
-    android:paddingLeft="@dimen/x16"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_share_to_timeline"
-        android:drawablePadding="@dimen/x25"
-        android:gravity="center_vertical"
-        android:drawableLeft="@drawable/me_icon_friends_"
-        android:text="@string/Tap3_Friends"
-        android:textSize="@dimen/sp16"
-        android:textColor="@color/color_black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/y25"
+        android:drawableStart="@drawable/me_icon_friends_"
+        android:gravity="center_vertical"
+        android:padding="@dimen/y16"
+        android:text="@string/Tap3_Friends"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/sp16" />
+
+    <!--<View-->
+    <!--android:id="@+id/divider"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/y1"-->
+    <!--android:background="@color/color_f2f2f2" />-->
 
     <TextView
         android:id="@+id/tv_share_to_contract"
-        android:layout_marginTop="@dimen/y22"
-        android:drawablePadding="@dimen/x25"
-        android:gravity="center_vertical"
-        android:drawableLeft="@drawable/me_icon_tongxunlu_"
-        android:text="@string/contacts_auth"
-        android:textSize="@dimen/sp16"
-        android:textColor="@color/color_black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/y25"
+        android:drawableStart="@drawable/me_icon_tongxunlu_"
+        android:gravity="center_vertical"
+        android:padding="@dimen/y16"
+        android:text="@string/contacts_auth"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/sp16" />
 
 </LinearLayout>

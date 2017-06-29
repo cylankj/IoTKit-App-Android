@@ -20,12 +20,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -482,10 +482,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
         long aLong = PreferencesUtils.getLong(JConstant.FRIEND_LAST_VISABLE_TIME);
         //好友
-        ArrayList<FriendsReqBean> list = DataSourceManager.getInstance().getFriendsReqList();
+        ArrayList<JFGFriendRequest> list = DataSourceManager.getInstance().getFriendsReqList();
         int count = 0;
         if (list != null) {
-            for (FriendsReqBean bean : list) {
+            for (JFGFriendRequest bean : list) {
                 if (bean.time >= aLong / 1000) {
                     count++;
                 }

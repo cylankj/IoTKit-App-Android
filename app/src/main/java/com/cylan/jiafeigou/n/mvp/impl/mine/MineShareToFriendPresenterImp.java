@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
@@ -77,8 +78,8 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                         }))
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> getView().showSendProgress())
-                .doOnTerminate(() -> getView().hideSendProgress())
+                .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
+                .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(result -> {
                     getView().showShareToFriendsResult(result);
                 }, e -> {
@@ -112,6 +113,8 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 })
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
+                .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(result -> {
                     getView().onInitCanShareFriendList(result);
                 }, e -> {

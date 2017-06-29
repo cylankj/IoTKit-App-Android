@@ -4,27 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBeanDao;
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendGroupChildItem;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendGroupParentItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,6 +35,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+import static com.xiaomi.push.service.am.s;
 
 /**
  * 作者：zsl
@@ -50,7 +53,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public void start() {
         super.start();
-        fetchFriends();
+//        fetchFriends();
     }
 
     @Override
@@ -60,16 +63,17 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
     private Subscription fetchFriendsRspSub() {
-        return Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(s -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AllFriendsRsp.class))
-                .flatMap(ret -> Observable.just(BaseApplication.getAppComponent().getSourceManager().getFriendsList()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> ret != null && mView != null && mView.isAdded())
-                .subscribe(ret -> {
-                    mView.initAddReqReqList(sortAddReqList(BaseApplication.getAppComponent().getSourceManager().getFriendsReqList()));
-                    mView.initFriendList(BaseApplication.getAppComponent().getSourceManager().getFriendsList());
-                }, AppLogger::e);
+//        return Observable.just("go")
+//                .subscribeOn(Schedulers.newThread())
+//                .flatMap(s -> RxBus.getCacheInstance().toObservableSticky(RxEvent.AllFriendsRsp.class))
+//                .flatMap(ret -> Observable.just(BaseApplication.getAppComponent().getSourceManager().getFriendsList()))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(ret -> ret != null && mView != null && mView.isAdded())
+//                .subscribe(ret -> {
+//                    mView.initAddReqReqList(sortAddReqList(BaseApplication.getAppComponent().getSourceManager().getFriendsReqList()));
+//                    mView.initFriendList(BaseApplication.getAppComponent().getSourceManager().getFriendsList());
+//                }, AppLogger::e);
+        return null;
     }
 
     private void fetchFriends() {
@@ -84,29 +88,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
 
-    @Override
-    public boolean checkAddRequestOutTime(FriendsReqBean bean) {
+    public boolean checkRequestAvailable(FriendGroupChildItem bean) {
         long oneMonth = 30 * 24 * 60 * 60 * 1000L;
         long current = System.currentTimeMillis();
-        //怀疑 bean.time是秒
-        boolean isLongTime = String.valueOf(bean.time).length() == String.valueOf(current).length();
-        return (current - (isLongTime ? bean.time : bean.time * 1000L)) > oneMonth;
-    }
-
-    /**
-     * desc：添加请求集合的排序
-     *
-     * @param list
-     * @return
-     */
-    public ArrayList<FriendsReqBean> sortAddReqList(ArrayList<FriendsReqBean> list) {
-        Comparator<FriendsReqBean> comparator = (lhs, rhs) -> {
-            long oldTime = Long.parseLong(rhs.time + "");
-            long newTime = Long.parseLong(lhs.time + "");
-            return (int) (newTime - oldTime);
-        };
-        Collections.sort(list, comparator);
-        return list;
+        boolean isLongTime = String.valueOf(bean.friendRequest.time).length() == String.valueOf(current).length();
+        return (current - (isLongTime ? bean.friendRequest.time : bean.friendRequest.time * 1000L)) > oneMonth;
     }
 
     /**
@@ -161,13 +147,13 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             updateReqList(account);
                         }
                         AppLogger.d("需要更新缓存");
-                        if (viewWeakReference.get() != null)
-                            viewWeakReference.get().deleteItemRsp(account, result.code);
-                        BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
-                        FriendsReqBeanDao dao = dbHelper.getDaoSession().getFriendsReqBeanDao();
-                        List<FriendsReqBean> list1 = dao.queryBuilder().where(FriendsReqBeanDao.Properties.Account.eq(account)).list();
-                        dao.deleteInTx(list1);
-                        throw new RxEvent.HelperBreaker("结束了");
+//                        if (viewWeakReference.get() != null)
+////                            viewWeakReference.get().deleteItemRsp(account, result.code);
+//                            BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+//                        FriendsReqBeanDao dao = dbHelper.getDaoSession().getFriendsReqBeanDao();
+//                        List<FriendsReqBean> list1 = dao.queryBuilder().where(FriendsReqBeanDao.Properties.Account.eq(account)).list();
+//                        dao.deleteInTx(list1);
+//                        throw new RxEvent.HelperBreaker("结束了");
                     }, AppLogger::e);
             try {
                 BaseApplication.getAppComponent().getCmd().delAddFriendMsg(account);
@@ -178,19 +164,19 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
     private static void updateReqList(final String account) {
-        ArrayList<FriendsReqBean> list = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
-        if (list != null) {
-            for (FriendsReqBean bean : list) {
-                if (bean != null && TextUtils.equals(bean.account, account)) {
-                    list.remove(bean);
-                    break;
-                }
-            }
-        }
-        AppLogger.d("重新刷新列表,走一遍流程,就不需要特殊处理");
-        Observable.just(new FetchFriendsTask())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
+//        ArrayList<FriendsReqBean> list = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+//        if (list != null) {
+//            for (FriendsReqBean bean : list) {
+//                if (bean != null && TextUtils.equals(bean.account, account)) {
+//                    list.remove(bean);
+//                    break;
+//                }
+//            }
+//        }
+//        AppLogger.d("重新刷新列表,走一遍流程,就不需要特殊处理");
+//        Observable.just(new FetchFriendsTask())
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
     }
 
     /**
@@ -218,12 +204,12 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             AppLogger.d("刷新列表");
                         }
                         if (viewWeakReference.get() != null && viewWeakReference.get().isAdded()) {
-                            viewWeakReference.get().consentRsp(s, result.code);
+//                            viewWeakReference.get().acceptItemRsp(s, result.code);
                         }
                         throw new RxEvent.HelperBreaker("结束了");
                     }, throwable -> {
                         if (throwable instanceof TimeoutException && viewWeakReference.get() != null && viewWeakReference.get().isAdded()) {
-                            viewWeakReference.get().consentRsp(s, -1);
+//                            viewWeakReference.get().acceptItemRsp(s, -1);
                         }
                     });
             try {
@@ -269,6 +255,148 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 //        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
 //        node.setCacheData(new CacheObject().setCount(pair == null || pair.second == null ? 0 : ListUtils.getSize(pair.second))
 //                .setObject(pair == null || pair.second == null ? 0 : pair.second));
+    }
+
+    @Override
+    public void initRequestAndFriendList() {
+        Subscription subscribe = Observable.just("initRequestAndFriendList")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .flatMap(cmd -> {
+                    BaseApplication.getAppComponent().getCmd().getFriendRequestList();
+                    return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class).first();
+                })
+                .flatMap(ret -> {
+                    BaseApplication.getAppComponent().getCmd().getFriendList();
+                    return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class).first();
+                })
+                .map(ret -> {
+                    List<FriendGroupParentItem> groupChildItems = new ArrayList<>(2);//request ,friends
+                    JFGSourceManager manager = BaseApplication.getAppComponent().getSourceManager();
+                    ArrayList<JFGFriendRequest> friendsReqList = manager.getFriendsReqList();
+                    ArrayList<JFGFriendAccount> friendsList = manager.getFriendsList();
+                    FriendGroupParentItem parentItem;
+                    FriendGroupChildItem childItem;
+                    List<FriendGroupChildItem> childItems;
+                    if (friendsReqList != null && friendsReqList.size() > 0) {
+                        parentItem = new FriendGroupParentItem();
+                        parentItem.withIdentifier(1000);
+                        childItems = new ArrayList<>(friendsReqList.size());
+                        for (int i = 0; i < friendsReqList.size(); i++) {
+                            childItem = new FriendGroupChildItem(friendsReqList.get(i));
+                            childItem.withIdentifier(1000 + i);
+                            childItems.add(childItem);
+                        }
+                        parentItem.withSubItems(childItems);
+                        parentItem.withTitle(ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_Request));
+                        parentItem.withIsExpanded(true);
+                        groupChildItems.add(parentItem);
+                    }
+                    if (friendsList != null && friendsList.size() > 0) {
+                        parentItem = new FriendGroupParentItem();
+                        parentItem.withIdentifier(5000);
+                        childItems = new ArrayList<>(friendsList.size());
+                        for (int i = 0; i < friendsList.size(); i++) {
+                            childItem = new FriendGroupChildItem(friendsList.get(i));
+                            childItem.withIdentifier(5000 + i);
+                            childItems.add(childItem);
+                        }
+                        parentItem.withSubItems(childItems);
+                        parentItem.withTitle(ContextUtils.getContext().getString(R.string.Tap3_FriendsList));
+                        parentItem.withIsExpanded(true);
+                        groupChildItems.add(parentItem);
+                    }
+                    return groupChildItems;
+                })
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    getView().onInitRequestAndFriendList(result);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
+    }
+
+    @Override
+    public void deleteFriendRequest(FriendGroupChildItem item) {
+        Subscription subscribe = Observable.just("deleteFriendRequest")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().delAddFriendMsg(item.friendRequest.account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.e(e.getMessage());
+                    }
+                    return cmd;
+                })
+                .flatMap(o -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteAddReqBack.class)
+                        .first(ret -> {
+                            if (ret.jfgResult.code == JError.ErrorOK) {
+                                // TODO: 2017/6/29 删除数据库中的数据
+                            }
+                            return true;
+                        }))
+
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+//                    JFGResult result = ret.jfgResult;
+//                    if (result.code == JError.ErrorOK) {
+////                        updateReqList(account);
+//                    }
+                    getView().deleteItemRsp(item, ret == null ? -1 : ret.jfgResult.code);
+//                    AppLogger.d("需要更新缓存");
+////                    if (viewWeakReference.get() != null)
+////                        viewWeakReference.get().deleteItemRsp(account, result.code);
+//                    BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+//                    FriendsReqBeanDao dao = dbHelper.getDaoSession().getFriendsReqBeanDao();
+//                    List<FriendsReqBean> list1 = dao.queryBuilder().where(FriendsReqBeanDao.Properties.Account.eq(account)).list();
+//                    dao.deleteInTx(list1);
+                }, AppLogger::e);
+
+        addSubscription(subscribe);
+    }
+
+    @Override
+    public void acceptFriendRequest(FriendGroupChildItem item) {
+        Subscription subscribe = Observable.just("acceptFriendRequest")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .filter(cmd -> {
+                    boolean available = checkRequestAvailable(item);
+                    if (!available) {
+                        getView().onRequestExpired(item);
+                    }
+                    return available;
+                })
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().consentAddFriend(item.friendRequest.account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.e(e.getMessage());
+                    }
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ConsentAddFriendBack.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    JFGResult result = ret.jfgResult;
+                    if (result.code == JError.ErrorOK) {
+                        updateReqList(s);
+                        AppLogger.d("刷新列表");
+                    }
+                    getView().acceptItemRsp(item, ret == null ? -1 : result.code);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
 
 

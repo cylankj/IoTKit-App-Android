@@ -13,8 +13,6 @@ import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 
@@ -141,13 +139,13 @@ public interface JFGSourceManager {
 
     void handleSystemNotification(ArrayList<JFGFeedbackInfo> list);
 
-    ArrayList<FriendBean> getFriendsList();
+    ArrayList<JFGFriendAccount> getFriendsList();
 
     void setFriendsList(ArrayList<JFGFriendAccount> list);
 
     void setFriendsReqList(ArrayList<JFGFriendRequest> list);
 
-    ArrayList<FriendsReqBean> getFriendsReqList();
+    ArrayList<JFGFriendRequest> getFriendsReqList();
 
     void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list);
 

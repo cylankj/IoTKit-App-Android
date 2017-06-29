@@ -10,7 +10,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -63,33 +65,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 //            allCoverData.addAll(list);
 //            handlerContactDataResult(list);
 //        }
-//
-//        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-//            compositeSubscription.unsubscribe();
-//        } else {
-//            compositeSubscription = new CompositeSubscription();
-////            compositeSubscription.add(getHasShareContractCallBack());
-//            compositeSubscription.add(shareDeviceCallBack());
-//        }
-    }
-
-    @Override
-    public void handlerSearchResult(String inputContent) {
-//        filterDateList = new ArrayList<>();
-//        if (TextUtils.isEmpty(inputContent)) {
-//            filterDateList.clear();
-//            filterDateList.addAll(allCoverData);
-//        } else {
-//            filterDateList.clear();
-//            for (FriendBean s : allCoverData) {
-//                String phone = s.account;
-//                String name = s.alias;
-//                if (phone.replace(" ", "").contains(inputContent) || name.contains(inputContent)) {
-//                    filterDateList.add(s);
-//                }
-//            }
-//        }
-//        handlerContactDataResult(filterDateList);
     }
 
     @Override
@@ -154,7 +129,8 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         if (getHasShareFriendCallBack != null) {
 
                             if (getHasShareFriendCallBack.arrayList.size() != 0) {
-                                return Observable.just(converData(getHasShareFriendCallBack.arrayList));
+//                                return Observable.just(converData(getHasShareFriendCallBack.arrayList));
+                                return Observable.just(null);
                             } else {
                                 return Observable.just(getAllContactList());
                             }
@@ -187,7 +163,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
                         if (shareDeviceCallBack != null) {
                             if (getView() != null) {
-                                getView().hideShareingProHint();
                                 getView().handlerCheckRegister(shareDeviceCallBack.requestId, shareDeviceCallBack.account);
                             }
                         }
@@ -248,22 +223,23 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         if (query != null) query.close();
                     }
                     if (cursor != null) cursor.close();
-                    return result;
-                })
-                .zipWith(Observable.just(DataSourceManager.getInstance().getShareListByCid(getUuid())), (shareContactItems, jfgShareListInfo) -> {
+                    JFGShareListInfo jfgShareListInfo = DataSourceManager.getInstance().getShareListByCid(getUuid());
                     if (jfgShareListInfo != null && jfgShareListInfo.friends != null) {
                         for (JFGFriendAccount friend : jfgShareListInfo.friends) {
-                            for (ShareContactItem contactItem : shareContactItems) {
-                                if (TextUtils.equals(friend.account, contactItem.phone) || TextUtils.equals(friend.account, contactItem.email)) {
+                            for (ShareContactItem contactItem : result) {
+                                if (TextUtils.equals(friend.account, contactItem.phone)
+                                        || TextUtils.equals(friend.account, contactItem.email)) {
                                     contactItem.shared = true;
                                 }
                             }
                         }
                     }
-                    return shareContactItems;
+                    return result;
                 })
-                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
+                .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(result -> {
                     getView().onInitContactFriends(result);
                 }, e -> {
@@ -273,25 +249,29 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         addSubscription(subscribe);
     }
 
-    /**
-     * 数据的转换 标记已分享和未分享
-     *
-     * @param arrayList
-     * @return
-     */
-    private ArrayList<FriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
-        ArrayList<FriendBean> list = new ArrayList<>();
-        for (FriendBean contract : getAllContactList()) {
-            for (JFGFriendAccount friend : arrayList) {
-                if (friend.account.equals(contract.account)) {
-                    contract.isCheckFlag = 1;
-                } else {
-                    contract.isCheckFlag = 0;
-                }
-            }
-            list.add(contract);
-        }
-        return list;
+    @Override
+    public void shareDeviceToContact(ShareContactItem shareContactItem) {
+        Subscription subscribe = Observable.just("shareDeviceToContact")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().shareDevice(getUuid(), shareContactItem.getAccount());
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.e(e.getMessage());
+                    }
+                    return cmd;
+                })
+                .flatMap(cmd -> RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class).first())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
 
 
