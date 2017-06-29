@@ -280,12 +280,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         LiveShowCase.show((Activity) getContext(), layoutD, findViewById(R.id.imgV_cam_zoom_to_full_screen));
     }
 
-    public boolean isSightSettingShow() {
-        return isSightSettingShow;
-    }
-
-    private boolean isSightSettingShow = false;
-
     public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
         reInitHistoryHandler(presenter);
         return historyWheelHandler;
@@ -301,8 +295,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!isFirstShow) return;//不是第一次
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
-            isSightSettingShow = true;
-            layoutC.setVisibility(INVISIBLE);
+            livePlayState = PLAY_STATE_IDLE;
+            setLoadingState(null, null);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
             liveViewWithThumbnail.addView(view);//最顶
             View layout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
@@ -312,7 +306,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
                 if (layout != null) liveViewWithThumbnail.removeView(layout);
                 basePresenter.startPlay();
-                isSightSettingShow = false;
             });
             layout.setOnClickListener(v -> AppLogger.d("don't click me"));
             view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
@@ -320,13 +313,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Intent intent = new Intent(getContext(), SightSettingActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 getContext().startActivity(intent);
-                isSightSettingShow = false;
             });
             PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
         } else {
             //已经添加了
             oldLayout.setVisibility(View.VISIBLE);
-            layoutC.setVisibility(INVISIBLE);
+            livePlayState = PLAY_STATE_IDLE;
+            setLoadingState(null, null);
         }
     }
 
@@ -418,7 +411,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onLivePrepared(int type) {
         livePlayType = type;
         livePlayState = PLAY_STATE_PREPARE;
-        setLoadingState(null, null, true);
+        setLoadingState(null, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         int net = NetUtils.getJfgNetType();
         if (net == 2)
@@ -444,16 +437,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable portHideRunnable = new Runnable() {
         @Override
         public void run() {
-//            layoutD.setVisibility(INVISIBLE);
-//            showHistoryWheel(false);
             setLoadingState(null, null);
             streamSwitcher.setVisibility(GONE);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
             }
-//            if (livePlayState == PLAY_STATE_PLAYING) {
             layoutC.setVisibility(INVISIBLE);
-//            }
             Log.d("wahat", "portHideRunnable");
         }
     };
@@ -470,12 +459,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
             streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
-            //应该直接getPlayType.
-//            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
-//                layoutC.setVisibility(VISIBLE);
-//            } else if (livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING) {
-//                layoutC.setVisibility(INVISIBLE);
-//            }
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
@@ -507,9 +490,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             setLoadingState(null, null);
-//            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
-//                layoutC.setVisibility(VISIBLE);
-//            }
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
@@ -570,25 +550,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
         //直播
         findViewById(R.id.tv_live).setEnabled(livePlayType == TYPE_HISTORY);
-        setLoadingState(null, null, false);
         liveViewWithThumbnail.onLiveStart();
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         post(portShowRunnable);
     }
 
-    private void setLoadingState(String content, String subContent, boolean forceShowOrHide) {
-        layoutC.setState(livePlayState, content, subContent);
-        layoutC.setVisibility(forceShowOrHide ? VISIBLE : INVISIBLE);
-    }
 
     private void setLoadingState(String content, String subContent) {
         layoutC.setState(livePlayState, content, subContent);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
-        if (isStandBY.standby) {
-            layoutC.setVisibility(INVISIBLE);
-            return;
-        }
         if (!TextUtils.isEmpty(content) || TextUtils.isEmpty(subContent))
             layoutC.setVisibility(VISIBLE);
         switch (livePlayState) {
@@ -598,7 +567,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(VISIBLE);
                 break;
             case PLAY_STATE_IDLE:
-//                layoutC.setVisibility(INVISIBLE);
+                layoutC.setVisibility(INVISIBLE);
                 break;
         }
     }
@@ -615,7 +584,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         handlePlayErr(presenter, errCode);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
-//        portHideRunnable.run();
         liveViewWithThumbnail.onLiveStop();
     }
 
@@ -629,7 +597,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                setLoadingState(getContext().getString(R.string.OFFLINE_ERR_1), getContext().getString(R.string.USER_HELP), true);
+                setLoadingState(getContext().getString(R.string.OFFLINE_ERR_1), getContext().getString(R.string.USER_HELP));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -937,7 +905,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.enableStandbyMode(standby.standby && dpNet.net > 0, clickListener, !TextUtils.isEmpty(device.shareAccount));
         if (standby.standby && dpNet.net > 0 && !isLand()) {
             post(portHideRunnable);
-            setLoadingState(null, null, false);
+            setLoadingState(null, null);
         }
     }
 
@@ -1021,10 +989,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onActivityResume(CamLiveContract.Presenter presenter, Device device) {
+        final boolean judge = presenter.judge();
+        Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
-            livePlayState = PLAY_STATE_STOP;
-            setLoadingState(null, null, true);
-        }, 100);
+            livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
+            setLoadingState(null, null);
+        }, judge ? 0 : 100);
     }
 
     @Override
@@ -1134,7 +1104,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void resumeGoodFrame() {
         livePlayState = PLAY_STATE_PLAYING;
-        setLoadingState(null, null, false);
+        setLoadingState(null, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         //0:off-disable,1.on-disable,2.off-enable,3.on-enable
         if (livePlayType == TYPE_HISTORY) {
@@ -1148,7 +1118,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void startBadFrame() {
         livePlayState = PLAY_STATE_PREPARE;
-        setLoadingState(null, null, true);
+        setLoadingState(null, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
     }
 

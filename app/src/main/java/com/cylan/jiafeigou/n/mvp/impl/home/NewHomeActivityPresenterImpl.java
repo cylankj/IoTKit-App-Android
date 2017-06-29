@@ -1,10 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -63,6 +65,9 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
-                .subscribe(ret -> mView.refreshHint(true), throwable -> addSubscription(mineTabNewInfoRsp()));
+                .subscribe(ret -> {
+                    TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("NewHomeActivity");
+                    mView.refreshHint(node != null && node.getNodeCount() > 0);
+                }, throwable -> addSubscription(mineTabNewInfoRsp()));
     }
 }

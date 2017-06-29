@@ -98,7 +98,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     SettingItemView1 svSettingWechatSwitch;
 
     private List<ResolveInfoEx> finalList;
-    @BindView(R.id.btn_home_mine_personal_information)
+    @BindView(R.id.btn_to_info)
     TextView btnHomeMinePersonalInformation;
 
     private AboutFragment aboutFragment;
@@ -148,7 +148,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @OnClick({R.id.sv_home_setting_about,
             R.id.sv_home_setting_clear,
             R.id.sv_home_setting_recommend,
-            R.id.btn_home_mine_personal_information
+            R.id.btn_to_info
     })
     public void onClick(View view) {
         switch (view.getId()) {
@@ -190,7 +190,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             dialog.show(getActivity().getSupportFragmentManager(), "share");
                         }, AppLogger::e);
                 break;
-            case R.id.btn_home_mine_personal_information:
+            case R.id.btn_to_info:
                 showLogOutDialog(view);
                 break;
         }

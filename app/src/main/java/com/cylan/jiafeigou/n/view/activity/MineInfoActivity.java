@@ -14,13 +14,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -55,6 +55,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
@@ -80,30 +81,27 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     private static final int REQUEST_CROP_PHOTO = 102;
     private static final int OPEN_CAMERA = 101;
 
-    @BindView(R.id.tv_home_mine_personal_mailbox)
-    TextView mTvMailBox;
-    @BindView(R.id.RLayout_home_mine_personal_phone)
-    RelativeLayout mPhoneNum;
     @BindView(R.id.user_ImageHead)
     RoundedImageView userImageHead;
-    @BindView(R.id.tv_user_name)
-    TextView tvUserName;
-    @BindView(R.id.rLayout_home_mine_personal_name)
-    RelativeLayout rLayoutHomeMinePersonalName;
-    @BindView(R.id.tv_user_account)
-    TextView tvUserAccount;
-    @BindView(R.id.tv_home_mine_personal_phone)
-    TextView tvHomeMinePersonalPhone;
+
+    @BindView(R.id.sv_alias)
+    SettingItemView0 rLayoutHomeMinePersonalName;
+
+    @BindView(R.id.tv_my_id)
+    SettingItemView0 tvUserAccount;
     @BindView(R.id.rl_change_password)
     RelativeLayout rlChangePassword;
     @BindView(R.id.rl_my_QRCode)
     RelativeLayout rlMyQRCode;
-    @BindView(R.id.tv_my_number)
-    TextView tvMyNumber;
-    @BindView(R.id.btn_home_mine_personal_information)
+    @BindView(R.id.btn_to_info)
     TextView btnHomeMinePersonalInformation;
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
+
+    @BindView(R.id.sv_email)
+    SettingItemView0 svEmail;
+    @BindView(R.id.sv_phone)
+    SettingItemView0 svPhone;
 
     private Uri outPutUri;
     private File tempFile;
@@ -119,6 +117,10 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 ? View.VISIBLE : View.INVISIBLE);
     }
 
+    @Override
+    public void onBackPressed() {
+        finishExt();
+    }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void onCameraPermissionDenied() {
@@ -131,7 +133,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
                 },
                 getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     setPermissionDialog(getString(R.string.CAMERA));
@@ -180,9 +182,9 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     private void initView() {
         int way = LocaleUtils.getLanguageType(this);
         if (way != JConstant.LOCALE_SIMPLE_CN) {
-            mPhoneNum.setVisibility(View.GONE);
+            svPhone.setVisibility(View.GONE);
         } else {
-            mPhoneNum.setVisibility(View.VISIBLE);
+            svPhone.setVisibility(View.VISIBLE);
         }
     }
 
@@ -198,10 +200,10 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         if (basePresenter != null) basePresenter.stop();
     }
 
-    @OnClick({R.id.tv_toolbar_icon, R.id.btn_home_mine_personal_information,
-            R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
-            R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead,
-            R.id.rLayout_home_mine_personal_name, R.id.rl_change_password, R.id.rl_my_QRCode})
+    @OnClick({R.id.tv_toolbar_icon, R.id.btn_to_info,
+            R.id.sv_email, R.id.rLayout_home_mine_personal_pic,
+            R.id.sv_phone, R.id.user_ImageHead,
+            R.id.sv_alias, R.id.rl_change_password, R.id.rl_my_QRCode})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -209,11 +211,11 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 finishExt();
                 break;
             //点击退出做相应的逻辑
-            case R.id.btn_home_mine_personal_information:
+            case R.id.btn_to_info:
                 showLogOutDialog(view);
                 break;
             //点击邮箱跳转到相应的页面
-            case R.id.lLayout_home_mine_personal_mailbox:
+            case R.id.sv_email:
                 jump2SetEmailFragment();
                 break;
 
@@ -221,7 +223,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 pickImageDialog(view);
                 break;
 
-            case R.id.RLayout_home_mine_personal_phone:         //跳转到设置手机号界面
+            case R.id.sv_phone:         //跳转到设置手机号界面
                 ViewUtils.deBounceClick(view);
                 AppLogger.d("RLayout_home_mine_personal_phone");
                 jump2SetPhoneFragment();
@@ -233,7 +235,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 lookBigImageHead();
                 break;
 
-            case R.id.rLayout_home_mine_personal_name:          //更改昵称
+            case R.id.sv_alias:          //更改昵称
                 ViewUtils.deBounceClick(view);
                 AppLogger.d("rLayout_home_mine_personal_name");
                 jump2SetUserNameFragment();
@@ -329,21 +331,21 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
             if (basePresenter.checkOpenLogin() && TextUtils.isEmpty(bean.getAlias())) {
                 String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
+                rLayoutHomeMinePersonalName.setTvSubTitle(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
             } else {
-                tvUserName.setText(TextUtils.isEmpty(bean.getAlias()) ? getString(R.string.NO_SET) : bean.getAlias());
+                rLayoutHomeMinePersonalName.setTvSubTitle(TextUtils.isEmpty(bean.getAlias()) ? getString(R.string.NO_SET) : bean.getAlias());
             }
 
             if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())) {
-                mTvMailBox.setText(getString(R.string.NO_SET));
+                svEmail.setTvSubTitle(getString(R.string.NO_SET));
             } else {
-                mTvMailBox.setText(bean.getEmail());
+                svEmail.setTvSubTitle(bean.getEmail());
             }
 
             if (TextUtils.isEmpty(bean.getPhone())) {
-                tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
+                svPhone.setTvSubTitle(getString(R.string.NO_SET));
             } else {
-                tvHomeMinePersonalPhone.setText(bean.getPhone());
+                svPhone.setTvSubTitle(bean.getPhone());
             }
 
             basePresenter.loginType(bean.getAccount(), bean.getPhone(), bean.getEmail());
@@ -388,19 +390,19 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     @Override
     public void setAccount(String account, String phone, String email, int type) {
         if (!TextUtils.isEmpty(phone)) {
-            tvUserAccount.setText(phone);
+            tvUserAccount.setTvSubTitle(phone);
         } else if (!TextUtils.isEmpty(email)) {
-            tvUserAccount.setText(email);
+            tvUserAccount.setTvSubTitle(email);
         } else if (type == 3) {
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_QQ) : email) : phone);
+            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_QQ) : email) : phone);
         } else if (type == 4) {
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_WEIBO) : email) : phone);
+            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_WEIBO) : email) : phone);
         } else if (type == 6) {
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "Twitter LOGIN" : email) : phone);
+            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "Twitter LOGIN" : email) : phone);
         } else if (type == 7) {
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "FaceBook LOGIN" : email) : phone);
+            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "FaceBook LOGIN" : email) : phone);
         } else {
-            tvUserAccount.setText(account);
+            tvUserAccount.setTvSubTitle(account);
         }
     }
 
@@ -445,7 +447,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 bindPhoneFragment, android.R.id.content);
-        bindPhoneFragment.setOnChangePhoneListener(phone -> tvHomeMinePersonalPhone.setText(phone));
+        bindPhoneFragment.setOnChangePhoneListener(phone -> svPhone.setTvSubTitle(phone));
     }
 
 

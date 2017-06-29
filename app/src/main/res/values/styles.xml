@@ -153,6 +153,11 @@
         <attr name="ht_color" format="color|reference" />
         <attr name="ht_radius" format="reference|dimension" />
         <attr name="ht_padding" format="reference|dimension" />
+        <attr name="ht_show" format="reference|boolean" />
+        <attr name="ht_position">
+            <flag name="right_top" value="0" />
+            <flag name="right" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="NumberBadgeStyle">

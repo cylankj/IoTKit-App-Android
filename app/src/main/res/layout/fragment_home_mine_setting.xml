@@ -31,7 +31,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/btn_home_mine_personal_information"
+                android:id="@+id/btn_to_info"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"
                 android:layout_alignParentBottom="true"

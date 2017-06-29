@@ -21,7 +21,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.widget.TmpHint;
+import com.cylan.jiafeigou.widget.HintTextView;
 
 import java.util.Locale;
 
@@ -214,10 +214,10 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private void addTextTab(final int position, String title) {
 
-        TmpHint tab = new TmpHint(getContext());
+        HintTextView tab = new HintTextView(getContext());
         tab.setText(title);
         tab.setGravity(Gravity.CENTER);
-//        tab.setSingleLine();
+        tab.setSingleLine();
         tab.setId(title.hashCode());
         addTab(position, tab);
     }
@@ -252,20 +252,20 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
             v.setBackgroundResource(tabBackgroundResId);
 
-            if (v instanceof TmpHint) {
+            if (v instanceof HintTextView) {
 
-                TmpHint tab = (TmpHint) v;
+                HintTextView tab = (HintTextView) v;
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
-//                tab.setTextColor(tabTextColor);
+                tab.setTextColor(tabTextColor);
 
                 // setAllCaps() is only available from API 14, so the upper case is made manually if we are on activity_cloud_live_mesg_call_out_item
                 // pre-ICS-build
                 if (textAllCaps) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//                        tab.setAllCaps(true);
+                        tab.setAllCaps(true);
                     } else {
-//                        tab.setText(tab.getText().toString().toUpperCase(locale));
+                        tab.setText(tab.getText().toString().toUpperCase(locale));
                     }
                 }
             }
@@ -378,15 +378,13 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         }
 
         private void updateTabAlpha(final int position) {
-
             for (int i = 0; i < tabCount; i++) {
                 View v = tabsContainer.getChildAt(i);
-                if (v instanceof TmpHint) {
-                    TmpHint tab = (TmpHint) v;
+                if (v instanceof HintTextView) {
+                    HintTextView tab = (HintTextView) v;
                     tab.setAlpha(i == position ? 1.0f : 0.5f);
                 }
             }
-
         }
     }
 

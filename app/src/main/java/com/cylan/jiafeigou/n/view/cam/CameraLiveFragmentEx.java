@@ -41,14 +41,13 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -68,6 +67,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -259,7 +259,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     throw new IllegalArgumentException("play history time is 0");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
                 //满足条件才需要播放
-                if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
+                if (!judge())
                     return;
                 if (String.valueOf(time).length() != String.valueOf(System.currentTimeMillis()).length()) {
                     time = time * 1000L;//确保是毫秒
@@ -277,17 +277,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-    private void playAfterCheck() {
-        //满足条件才需要播放
-        if (!accept()) return;
-        AppLogger.e("playAfterCheck,let go................");
-        basePresenter.startPlay();
-    }
-
     private boolean accept() {
         Intent intent = getActivity().getIntent();
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() ||
-                intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+        if (!judge() || intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
             return false;
         } else return true;
     }
@@ -464,11 +456,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 || camLiveControlLayer.getSpeakerState() == 1;
     }
 
-    /**
-     * 0:没有允许过,1:允许,不需要再次提醒
-     */
-
-    private static boolean ALLOW_PLAY_WITH_MOBILE_NET;
 
     @Override
     public boolean judge() {
@@ -479,7 +466,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             return false;
         }
         //全景,首次使用模式
-        if (camLiveControlLayer.isSightSettingShow())
+        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + getUuid(), false);
+        if (sightShow)
             return false;
         //手机数据
 //        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {

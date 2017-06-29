@@ -75,6 +75,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -372,6 +373,28 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public boolean isDeviceStandby() {
         DpMsgDefine.DPStandby standby = getDevice().$(508, new DpMsgDefine.DPStandby());
         return standby.standby;
+    }
+
+    @Override
+    public boolean judge() {
+        //待机模式
+        if (isDeviceStandby()) {
+            return false;
+        }
+        //全景,首次使用模式
+        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + getUuid(),
+                true);
+        if (sightShow)
+            return false;
+        //手机数据
+//        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {
+//            ALLOW_PLAY_WITH_MOBILE_NET = true;
+//            //显示遮罩层
+//            camLiveControlLayer.showMobileDataCover(basePresenter);
+//            return false;
+//        }
+        return true;
+
     }
 
     @Override

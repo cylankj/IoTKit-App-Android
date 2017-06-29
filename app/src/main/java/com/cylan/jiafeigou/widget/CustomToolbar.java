@@ -244,7 +244,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
 
     public void showToolbarRightHint(boolean show) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            tvToolbarRight.showRedHint(show);
+            tvToolbarRight.showHint(show);
         }
     }
 

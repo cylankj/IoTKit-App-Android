@@ -235,6 +235,8 @@ public interface CamLiveContract {
         void restoreHotSeatState();
 
         boolean isDeviceStandby();
+
+        boolean judge();
     }
 
     class LiveStream {
