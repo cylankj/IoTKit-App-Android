@@ -64,7 +64,7 @@
     <string name="CLEAR_DATA">Clear messages cache</string>
     <string name="CODE_ERR">Invalid code</string>
     <string name="COMFIRM_NEW_PASS">Retype new Password</string>
-    <string name="CONNECTING">Have someone watching live video</string>
+    <string name="CONNECTING">No response, please try again</string>
     <string name="CONNECTING_1">Connecting</string>
     <string name="CONN_INTERRUPTED">Connecting to network</string>
     <string name="CREATING">Adding&#8230;</string>
@@ -150,6 +150,7 @@
     <string name="DOOR_VOICE">Voice</string>
     <string name="DOOR_WIFI_HINT">LED Status Indicator</string>
     <string name="DailyGreatTips_Full">Collection\'s number of Daily Great has reached the upper limit 50, going to delete?</string>
+    <string name="Daily_Great_NO_CONTENTS">No content</string>
     <string name="Dec">Dec.</string>
     <string name="Delete_Share">Delete share?</string>
     <string name="Device_Disconnected">Disconnected</string>
@@ -204,7 +205,7 @@
     <string name="EQUIPMENT_NAME">Device Name</string>
     <string name="EQUIPMENT_NAME_1">Device Name:</string>
     <string name="ERR_CODE">Error code</string>
-    <string name="EVERY_DAY">All day</string>
+    <string name="EVERY_DAY">Everyday</string>
     <string name="EXPECT">Coming soon, please expect.</string>
     <string name="EXPERIENCE">Experience</string>
     <string name="FEEDBACK">Feedback</string>
@@ -234,6 +235,10 @@
     <string name="GUIDE_INFO">Sliding，\nshow more</string>
     <string name="GetCode_FrequentlyTips">Too frequently operations, please try again 10 mins later.</string>
     <string name="GetWifiList_FaiTips">1.Allow app to get the \"Location\" permission. \n 2.Turn \"GPS\" on.</string>
+    <string name="H5_Asteroid">Asteroid</string>
+    <string name="H5_Fisheye">Fisheye</string>
+    <string name="H5_Panoramic">Panoramic</string>
+    <string name="H5_VR_mode">VR mode</string>
     <string name="HOME">Home</string>
     <string name="HOUR">H</string>
     <string name="HOURS">24 hours</string>
@@ -272,6 +277,7 @@
     <string name="LIGTH_LABEL_1_2">Blue light, 3G/4G Online</string>
     <string name="LIGTH_LABEL_2_1">Blinking,Battery is less</string>
     <string name="LIGTH_LABEL_2_2">Blue light, Have electricity</string>
+    <string name="LIVE_DATA">For cellular,please note your data usage</string>
     <string name="LOADING">Loading&#8230;</string>
     <string name="LOCAL_NOTIFICATION_AndroidMSG">Please go to Phone\'s \"Settings\"&#8211;\"Notifications\", find %s and open \'Notifications\'</string>
     <string name="LOCATION">Location:</string>
@@ -497,7 +503,7 @@
     <string name="SD_NO">No card</string>
     <string name="SD_NORMAL">Normal</string>
     <string name="SECOND">%d second</string>
-    <string name="SECURE">Protection</string>
+    <string name="SECURE">Security</string>
     <string name="SECURE_ALARM_CLOSE">When Protection is off, it will not record video when \"motion detected\"</string>
     <string name="SECURE_SENSITIVITY">Sensitivity</string>
     <string name="SECURE_TYPE">Motion Detection</string>
@@ -731,7 +737,7 @@
     <string name="Tap1_HomeMode">Home mode</string>
     <string name="Tap1_HomeMode_Opened">Home mode has been opened</string>
     <string name="Tap1_Index_DayGreetings">Expect for everyday</string>
-    <string name="Tap1_Index_NightGreetings">Take a rest and restart again</string>
+    <string name="Tap1_Index_NightGreetings">Rest is for better work</string>
     <string name="Tap1_Index_NoDevice">No device</string>
     <string name="Tap1_Index_Tips_Newvisitor">New visitor</string>
     <string name="Tap1_Index_Tips_Newvoice">New voice message</string>
@@ -742,6 +748,7 @@
     <string name="Tap1_LowPower">Low power, please charge in time.</string>
     <string name="Tap1_Magnetism_ClearRecord">Clear the record</string>
     <string name="Tap1_Magnetism_Setting_Notify">Notify me when it\'s open/closed</string>
+    <string name="Tap1_Menu_More">More</string>
     <string name="Tap1_NeedsInitializedTips">SD card needs to be initialized and data would be cleared, sure to continue?</string>
     <string name="Tap1_NewFirmware">New firmware</string>
     <string name="Tap1_NoMessages">No messages</string>

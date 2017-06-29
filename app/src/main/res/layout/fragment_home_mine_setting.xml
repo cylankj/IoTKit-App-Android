@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clickable="true"
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -21,97 +20,120 @@
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_home_setting_accessMes"
+            <TextView
+                android:id="@+id/btn_home_mine_personal_information"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_title="@string/PUSH_MSG"
-                hunt:sv_v_divider="true" />
+                android:layout_height="@dimen/y42"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/y42"
+                android:layout_marginEnd="@dimen/x30"
+                android:layout_marginStart="@dimen/x30"
+                android:layout_marginTop="@dimen/y10"
+                android:background="@drawable/long_btn_bg_shape_white"
+                android:gravity="center"
+                android:padding="@dimen/x10"
+                android:text="@string/LOGOUT"
+                android:textColor="@color/color_ff3b30"
+                android:textSize="@dimen/sp16" />
 
-
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_sound_container"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_title="@string/IN_APP_SOUND"
-                hunt:sv_v_divider="true" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_home_setting_accessMes"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_title="@string/PUSH_MSG"
+                    hunt:sv_v_divider="true" />
 
 
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_vibrate_container"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_title="@string/IN_APP_VIBRATE"
-                hunt:sv_v_divider="true" />
-
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_home_setting_wechat"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_title="@string/Alarm_WeChat"
-                hunt:sv_v_divider="true" />
-
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_setting_wechat_switch"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_switch_visibility="false"
-                hunt:sv_title="@string/Change_ID"
-                hunt:sv_v_divider="true" />
-
-            <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/sv_home_setting_clear"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y72"
-                android:layout_marginEnd="@dimen/x10"
-                android:layout_marginStart="@dimen/x10"
-                hunt:sv_sub_title="0.0M"
-                hunt:sv_switch_visibility="false"
-                hunt:sv_title="@string/CLEAR_DATA"
-                hunt:sv_v_divider="true" />
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_sound_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_title="@string/IN_APP_SOUND"
+                    hunt:sv_v_divider="true" />
 
 
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_home_setting_recommend"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_switch_visibility="false"
-                hunt:sv_title="@string/app_share"
-                hunt:sv_v_divider="true" />
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_vibrate_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_title="@string/IN_APP_VIBRATE"
+                    hunt:sv_v_divider="true" />
 
-            <com.cylan.jiafeigou.widget.SettingItemView1
-                android:id="@+id/sv_home_setting_about"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginEnd="@dimen/x20"
-                android:layout_marginStart="@dimen/x20"
-                hunt:sv_switch_visibility="false"
-                hunt:sv_title="@string/ABOUT"
-                hunt:sv_v_divider="true" />
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_home_setting_wechat"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_title="@string/Alarm_WeChat"
+                    hunt:sv_v_divider="true" />
 
-        </LinearLayout>
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_setting_wechat_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_switch_visibility="false"
+                    hunt:sv_title="@string/Change_ID"
+                    hunt:sv_v_divider="true" />
 
-    </FrameLayout>
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_home_setting_clear"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y72"
+                    android:layout_marginEnd="@dimen/x10"
+                    android:layout_marginStart="@dimen/x10"
+                    hunt:sv_sub_title="0.0M"
+                    hunt:sv_switch_visibility="false"
+                    hunt:sv_title="@string/CLEAR_DATA"
+                    hunt:sv_v_divider="true" />
 
+
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_home_setting_recommend"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_switch_visibility="false"
+                    hunt:sv_title="@string/app_share"
+                    hunt:sv_v_divider="true" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_home_setting_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
+                    android:layout_marginEnd="@dimen/x20"
+                    android:layout_marginStart="@dimen/x20"
+                    hunt:sv_switch_visibility="false"
+                    hunt:sv_title="@string/ABOUT"
+                    hunt:sv_v_divider="true" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

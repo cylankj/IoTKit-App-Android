@@ -78,6 +78,7 @@ public interface ICamLiveLayer {
     void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
 
     void onActivityStart(CamLiveContract.Presenter presenter, Device device);
+    void onActivityResume(CamLiveContract.Presenter presenter, Device device);
 
 //    void setCaptureListener(View.OnClickListener captureListener);
 
@@ -106,4 +107,6 @@ public interface ICamLiveLayer {
     void startBadFrame();
 
     void reAssembleHistory(CamLiveContract.Presenter presenter, long timeTarget);
+
+    void showMobileDataCover(CamLiveContract.Presenter presenter);
 }

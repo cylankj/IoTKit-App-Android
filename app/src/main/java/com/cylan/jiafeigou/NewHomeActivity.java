@@ -42,6 +42,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.List;
@@ -141,6 +142,12 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 }, AppLogger::e);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshHint(true);
+    }
+
     public void showHomeListFragment() {
         if (vpHomeContent != null)
             vpHomeContent.setCurrentItem(0);
@@ -222,7 +229,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     public void initView() {
     }
-
 
     @Override
     public void needUpdate(@RxEvent.UpdateType int type, String desc, String filePath, int force) {

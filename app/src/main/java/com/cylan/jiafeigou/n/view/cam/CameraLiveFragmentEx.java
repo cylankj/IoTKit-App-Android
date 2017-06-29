@@ -222,9 +222,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStart() {
         super.onStart();
         Device device = basePresenter.getDevice();
-        camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        playAfterCheck();
+        //不需要自动播放了
+        if (judge()) {
+            //显示按钮
+        }
+        //        basePresenter.startPlay();
     }
 
     @Override
@@ -264,7 +267,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 camLiveControlLayer.reAssembleHistory(basePresenter, time);
                 return;
             }
-            playAfterCheck();
+            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
             basePresenter.stopPlayVideo(PLAY_STATE_IDLE).subscribe(ret -> {
             }, AppLogger::e);
@@ -292,10 +295,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onResume() {
         super.onResume();
+        camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
+                .getSourceManager().getDevice(getUuid()));
         if (basePresenter != null) {
-            if (!accept()) return;//还没开始播放
+            if (!judge()) return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
+
     }
 
     @Override
@@ -456,6 +462,33 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public boolean isLocalSpeakerOn() {
         return camLiveControlLayer.getSpeakerState() == 3
                 || camLiveControlLayer.getSpeakerState() == 1;
+    }
+
+    /**
+     * 0:没有允许过,1:允许,不需要再次提醒
+     */
+
+    private static boolean ALLOW_PLAY_WITH_MOBILE_NET;
+
+    @Override
+    public boolean judge() {
+        //待机模式
+        if (basePresenter.isDeviceStandby()) {
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
+            camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
+            return false;
+        }
+        //全景,首次使用模式
+        if (camLiveControlLayer.isSightSettingShow())
+            return false;
+        //手机数据
+//        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {
+//            ALLOW_PLAY_WITH_MOBILE_NET = true;
+//            //显示遮罩层
+//            camLiveControlLayer.showMobileDataCover(basePresenter);
+//            return false;
+//        }
+        return true;
     }
 
     @Override

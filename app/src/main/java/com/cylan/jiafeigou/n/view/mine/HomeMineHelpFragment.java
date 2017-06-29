@@ -4,30 +4,30 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -64,6 +64,8 @@ public class HomeMineHelpFragment extends IBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferencesUtils.putBoolean(JConstant.KEY_HELP_GUIDE, false);
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
     }
 
     @Nullable
@@ -134,7 +136,6 @@ public class HomeMineHelpFragment extends IBaseFragment {
         mWvHelp.getSettings().setJavaScriptEnabled(true);
         mWvHelp.getSettings().setDefaultTextEncodingName("utf-8");
         mWvHelp.getSettings().setAllowFileAccess(true);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWvHelp.getSettings().setMixedContentMode(
                     WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
@@ -165,42 +166,13 @@ public class HomeMineHelpFragment extends IBaseFragment {
     @SuppressLint("SetJavaScriptEnabled")
     public void onLoad(String url) {
         try {
-            mWvHelp.setWebChromeClient(new WebChromeClient() {
-                @Override
-                public void onProgressChanged(WebView view, int newProgress) {
-                    vProgress.setProgress(newProgress);
-                    if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
-                    if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
-                }
-            });
-            mWvHelp.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onLoadResource(WebView view, String url) {
-                    super.onLoadResource(view, url);
-                }
-
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView webview,
-                                                        String url) {
-                    webview.loadUrl(url);
-                    return true;
-                }
-
-                @Override
-                public void onReceivedSslError(WebView view,
-                                               SslErrorHandler handler, SslError error) {
-                    handler.proceed();  //接受所有证书
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                }
-
-                @Override
-                public void onReceivedError(WebView view, int errorCode,
-                                            String description, String failingUrl) {
-
-                }
+            mWvHelp.setWebViewClient(new CheckServerTrustedWebViewClient(ContextUtils.getContext()) {
+//                @Override
+//                public void onProgressChanged(WebView view, int newProgress) {
+//                    vProgress.setProgress(newProgress);
+//                    if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
+//                    if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
+//                }
             });
             mWvHelp.loadUrl(url);
         } catch (Exception e) {

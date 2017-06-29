@@ -103,6 +103,7 @@ public class JConstant {
 
     public static final String KEY_FRESH = "is_you_fresh";
 
+    public static final String KEY_HELP_GUIDE = "need_help_guide";
     public static final String KEY_DELAY_RECORD_GUIDE = "KEY_DELAY_RECORD_GUIDE";
     public static final String VIEW_CALL_WAY = "VIEW_CALL_WAY";
     public static final String VIEW_CALL_WAY_VIEWER = "VIEW_CALL_WAY_VIEWER";
@@ -137,6 +138,7 @@ public class JConstant {
     public static final String KEY_DEVICE_TIME_ZONE = "key_device_time_zone";
     public static final java.lang.String SHOW_PASSWORD_CHANGED = "SHOW_PASSWORD_CHANGED";
 
+    public static final String KEY_NEW_MSG_PASS = "key_new_msg_pass";
     /**
      * 有区别于直接绑定
      */

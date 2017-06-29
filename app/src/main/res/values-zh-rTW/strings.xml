@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">清空訊息暫存</string>
   <string name="CODE_ERR">請輸入有效的驗證碼</string>
   <string name="COMFIRM_NEW_PASS">重新輸入新密碼</string>
-  <string name="CONNECTING">正在連接中，不可多人同時查看</string>
+  <string name="CONNECTING">設備無回應，請重試</string>
   <string name="CONNECTING_1">正在連接網路，請稍後</string>
   <string name="CONN_INTERRUPTED">連接中斷，請檢查設備網路連接</string>
   <string name="CREATING">正在新增，請稍候&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">聲音</string>
   <string name="DOOR_WIFI_HINT">設備指示燈狀態說明</string>
   <string name="DailyGreatTips_Full">每日精彩收藏數量已達50條上限，是否前去刪除？</string>
+  <string name="Daily_Great_NO_CONTENTS">暫無精彩內容</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">是否刪除分享</string>
   <string name="Device_Disconnected">對端斷開</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">滑一滑，顯示更多內容</string>
   <string name="GetCode_FrequentlyTips">操作過於頻繁，請10分鐘後重試</string>
   <string name="GetWifiList_FaiTips">1.允許客戶端獲取“位置信息”權限 \n 2.打開“GPS”開關</string>
+  <string name="H5_Asteroid">魚眼</string>
+  <string name="H5_Fisheye">全景</string>
+  <string name="H5_Panoramic">更多</string>
+  <string name="H5_VR_mode">小行星</string>
   <string name="HOME">主頁</string>
   <string name="HOUR">時</string>
   <string name="HOURS">全天提示</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">藍色常亮，3G/4G線上</string>
   <string name="LIGTH_LABEL_2_1">閃爍，電量低</string>
   <string name="LIGTH_LABEL_2_2">藍色常亮，已正常通電</string>
+  <string name="LIVE_DATA">非WiFi網絡，請注意流量消耗</string>
   <string name="LOADING">載入中&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">請在手機設定－通知頁，找到%s，開啟“允許通知”</string>
   <string name="LOCATION">位置名稱：</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">電池電量低，請及時充電</string>
   <string name="Tap1_Magnetism_ClearRecord">清空開關記錄</string>
   <string name="Tap1_Magnetism_Setting_Notify">開/關時通知我</string>
+  <string name="Tap1_Menu_More">更多</string>
   <string name="Tap1_NeedsInitializedTips">設備SD卡需要先初始化，但會刪除卡內數據，確定初始化嗎？</string>
   <string name="Tap1_NewFirmware">新固件</string>
   <string name="Tap1_NoMessages">無消息</string>

@@ -135,6 +135,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 //            setAliasName(getString(R.string.Tap3_LogIn));
         }
         super.onStart();
+        boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
+        homeMineItemHelp.showHint(needShowHelp);
     }
 
 
@@ -412,6 +414,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
                 .addToBackStack("HomeMineFragment")
                 .commit();
+        homeMineItemHelp.showHint(false);
     }
 
     /**

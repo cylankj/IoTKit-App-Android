@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">キャッシュクリア</string>
   <string name="CODE_ERR">有効な検証コードを入力してください</string>
   <string name="COMFIRM_NEW_PASS">新しいパスワードを確認してください</string>
-  <string name="CONNECTING">接続中（複数で同時検索できません）</string>
+  <string name="CONNECTING">デバイスに反応がありません。再試行してください</string>
   <string name="CONNECTING_1">ネットワーク接続中、しばらくお待ちください</string>
   <string name="CONN_INTERRUPTED">接続中止、カメラのネットワークをチェックしてください</string>
   <string name="CREATING">作成中、しばらくお待ちください&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">ボイス</string>
   <string name="DOOR_WIFI_HINT">デバイスのライト状態説明</string>
   <string name="DailyGreatTips_Full">毎日の見どころのコレクションは削除に行くかどうか、50の上限に達していますか？</string>
+  <string name="Daily_Great_NO_CONTENTS">コンテンツなし</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">共有を削除しますか？</string>
   <string name="Device_Disconnected">接続が切断されました</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">スライドして\nにもっと多くの内容が表示されます</string>
   <string name="GetCode_FrequentlyTips">操作が頻繁になると、10分後にもう一度お試しください。</string>
   <string name="GetWifiList_FaiTips">1.アプリに「場所」権限を許可する \n 2.「GPS」をオンにします。</string>
+  <string name="H5_Asteroid">小惑星</string>
+  <string name="H5_Fisheye">フィッシュアイ</string>
+  <string name="H5_Panoramic">パノラマ</string>
+  <string name="H5_VR_mode">VRモード</string>
   <string name="HOME">ホーム</string>
   <string name="HOUR">时</string>
   <string name="HOURS">24時間プロプティング</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">青く点灯する、3G/4Gオンライン</string>
   <string name="LIGTH_LABEL_2_1">点滅、バッテリーが低いです</string>
   <string name="LIGTH_LABEL_2_2">青く点灯する、正常に電源が入っている</string>
+  <string name="LIVE_DATA">非WiFiネットワーク、データ消費に注意してください</string>
   <string name="LOADING">読み込み中&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">先にPhoneの設定－通知画面に %s を見つけ、\"通知を許可\"をオンにしてください</string>
   <string name="LOCATION">位置の名前</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">低消費電力、時間で充電してください。</string>
   <string name="Tap1_Magnetism_ClearRecord">レコードをクリア</string>
   <string name="Tap1_Magnetism_Setting_Notify">オン/オフ情報を知らせて</string>
+  <string name="Tap1_Menu_More">もっと</string>
   <string name="Tap1_NeedsInitializedTips">SDカードを初期化してデータをクリアする必要がありますか？</string>
   <string name="Tap1_NewFirmware">新しいファームウェア</string>
   <string name="Tap1_NoMessages">メッセージはありません</string>

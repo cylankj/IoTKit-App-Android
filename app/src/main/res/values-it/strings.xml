@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Cancella Cache</string>
   <string name="CODE_ERR">Codice non valido</string>
   <string name="COMFIRM_NEW_PASS">Conferma nuova password</string>
-  <string name="CONNECTING">Avere qualcuno per guardare video in diretta</string>
+  <string name="CONNECTING">Nessuna reazione, riprova per favore</string>
   <string name="CONNECTING_1">Connessione in corso</string>
   <string name="CONN_INTERRUPTED">Collegamento alla rete</string>
   <string name="CREATING">Aggiungere&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Voce</string>
   <string name="DOOR_WIFI_HINT">Indicatore di stato LED</string>
   <string name="DailyGreatTips_Full">il numero di Raccolta dei Splendida della giornata ha raggiunto il limite massimo di 50, andando a eliminare?</string>
+  <string name="Daily_Great_NO_CONTENTS">Nessun contenuto</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Elimina condivisione?</string>
   <string name="Device_Disconnected">Disconnessa</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Scorrere \n per mostrare di più</string>
   <string name="GetCode_FrequentlyTips">Troppo spesso le operazioni, si prega di riprovare 10 minuti più tardi.</string>
   <string name="GetWifiList_FaiTips">1.Consentire app per ottenere l\'autorizzazione \"Location\" \n 2.Turn \"GPS\" su.</string>
+  <string name="H5_Asteroid">Asteroide</string>
+  <string name="H5_Fisheye">fisheye</string>
+  <string name="H5_Panoramic">panoramico</string>
+  <string name="H5_VR_mode">Modalità VR</string>
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 ore</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Led blu, 3G/4G online</string>
   <string name="LIGTH_LABEL_2_1">Lampeggiante, la batteria è scarica</string>
   <string name="LIGTH_LABEL_2_2">Led blu, con l\'elettricità</string>
+  <string name="LIVE_DATA">Per cellulari, tieni presente il tuo utilizzo dei dati</string>
   <string name="LOADING">In caricamento&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Clicca sulla \"%s\" nella rubbrica \"Impostazioni\" del tuo Phone e attiva \"Messaggi\"</string>
   <string name="LOCATION">Luogo:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">Bassa potenza, carica nel tempo.</string>
   <string name="Tap1_Magnetism_ClearRecord">Cancellare la registrazione</string>
   <string name="Tap1_Magnetism_Setting_Notify">Avvisami quando è aperta/chiuso</string>
+  <string name="Tap1_Menu_More">Più</string>
   <string name="Tap1_NeedsInitializedTips">Esigenze scheda SD per inizializzare e dati sarebbero stati cancellati, sicuro di continuare?</string>
   <string name="Tap1_NewFirmware">Nuovi firmware</string>
   <string name="Tap1_NoMessages">Nessun messaggio</string>

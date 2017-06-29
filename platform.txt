@@ -7,3 +7,11 @@ test1.jfgou.com:443
 
 #yun3平台
 yun3.jfgou.com:443
+#德国
+deal1.jfgou.com:443
+
+#美国
+usal1.jfgou.com:443
+
+#新加坡
+sgal1.jfgou.com:443

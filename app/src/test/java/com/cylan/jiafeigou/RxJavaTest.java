@@ -151,5 +151,31 @@ public class RxJavaTest {
         Thread.sleep(1000);
     }
 
+    @Test
+    public void testTask() {
+    }
+
+    private static class Task implements Func1<String, Task> {
+
+        @Override
+        public Task call(String s) {
+            System.out.println("what");
+            return this;
+        }
+    }
+
+    /**
+     * a static task
+     */
+    protected <T, R> void enqueueTask(ITask<T, R> func1) {
+    }
+
+    private interface ITask<T, R> extends Func1<T, R> {
+        void taskStart();
+
+        void taskErr(Throwable throwable);
+
+        void taskSuccess(R r);
+    }
 
 }

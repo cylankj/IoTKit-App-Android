@@ -16,12 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -96,6 +98,9 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     SettingItemView1 svSettingWechatSwitch;
 
     private List<ResolveInfoEx> finalList;
+    @BindView(R.id.btn_home_mine_personal_information)
+    TextView btnHomeMinePersonalInformation;
+
     private AboutFragment aboutFragment;
 
     public static HomeSettingFragment newInstance() {
@@ -142,7 +147,9 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @OnClick({R.id.sv_home_setting_about,
             R.id.sv_home_setting_clear,
-            R.id.sv_home_setting_recommend})
+            R.id.sv_home_setting_recommend,
+            R.id.btn_home_mine_personal_information
+    })
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sv_home_setting_about:
@@ -182,6 +189,9 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                             dialog.updateDataList(ret);
                             dialog.show(getActivity().getSupportFragmentManager(), "share");
                         }, AppLogger::e);
+                break;
+            case R.id.btn_home_mine_personal_information:
+                showLogOutDialog(view);
                 break;
         }
     }
@@ -472,4 +482,25 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         if (!isAdded()) return;
         LoadingDialog.dismissLoading(getFragmentManager());
     }
+
+    /**
+     * 删除亲友对话框
+     */
+    public void showLogOutDialog(View v) {
+        AlertDialogManager.getInstance().showDialog(getActivity(),
+                "showLogOutDialog", getString(R.string.LOGOUT_INFO),
+                getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
+                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    if (jfgAccount != null) {
+                        basePresenter.logOut(jfgAccount.getAccount());
+                        //进入登陆页 login page
+                        Intent intent = new Intent(getContext(), SmartcallActivity.class);
+                        intent.putExtra(JConstant.FROM_LOG_OUT, true);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                }, getString(R.string.CANCEL), null, false);
+    }
+
+
 }

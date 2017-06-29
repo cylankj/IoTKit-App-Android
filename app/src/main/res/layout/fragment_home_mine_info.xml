@@ -262,7 +262,8 @@
                     android:padding="@dimen/x10"
                     android:text="@string/LOGOUT"
                     android:textColor="@color/color_ff3b30"
-                    android:textSize="@dimen/sp16" />
+                    android:textSize="@dimen/sp16"
+                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
 

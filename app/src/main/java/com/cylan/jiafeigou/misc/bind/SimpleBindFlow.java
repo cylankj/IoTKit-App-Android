@@ -317,28 +317,27 @@ public class SimpleBindFlow extends AFullBind {
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
         Observable.just(1)
                 .subscribeOn(Schedulers.newThread())
-                .delay(500, TimeUnit.MILLISECONDS)
-                .filter(ret -> devicePortrait != null)
+                .delay(200, TimeUnit.MILLISECONDS)
+                .filter((Integer integer) -> {
+                    return devicePortrait != null;
+                })
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
-                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
-                            devicePortrait.mac,
-                            ssid, pwd);
-                    setWifi.security = type;
-                    //发送wifi配置
-                    try {
-                        for (int i = 0; i < 2; i++) {
+                    for (int i = 0; i < 3; i++) {
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
+                                devicePortrait.mac,
+                                ssid, pwd);
+                        setWifi.security = type;
+                        //发送wifi配置
+                        try {
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                     UdpConstant.PORT,
                                     setWifi.toBytes());
-                            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
-                                    UdpConstant.PORT,
-                                    setWifi.toBytes());
+                            AppLogger.d(TAG + new Gson().toJson(setWifi));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
-                        AppLogger.d(TAG + new Gson().toJson(setWifi));
-                    } catch (JfgException e) {
-                        e.printStackTrace();
                     }
                     return devicePortrait;
                 })

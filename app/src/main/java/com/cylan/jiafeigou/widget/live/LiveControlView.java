@@ -27,7 +27,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     /**
      * 开始默认是loading状态
      */
-    private int state = PLAY_STATE_PREPARE;
+    private int state = PLAY_STATE_STOP;
 
     private TextView textView;
     private TextView tvHelp;

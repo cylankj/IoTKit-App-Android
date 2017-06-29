@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.umeng.socialize.UMAuthListener;
 
 import rx.Subscription;
 
@@ -69,8 +68,7 @@ public interface HomeSettingContract {
          */
         Subscription getAccountInfo();
 
-        void refreshWechat(UMAuthListener listener);
-
+        void logOut(String account);
     }
 
 }

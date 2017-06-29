@@ -45,6 +45,8 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoSetPassWordFragment;
 import com.cylan.jiafeigou.n.view.mine.MineSetUserAliasFragment;
 import com.cylan.jiafeigou.n.view.mine.MineUserInfoLookBigHeadFragment;
 import com.cylan.jiafeigou.n.view.mine.MyQRCodeDialog;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
@@ -113,6 +115,8 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         ButterKnife.bind(this);
         basePresenter = new MineInfoPresenterImpl(this, getContext());
         createCameraTempFile(savedInstanceState);
+        rlChangePassword.setVisibility(RxBus.getCacheInstance().hasStickyEvent(RxEvent.ThirdLoginTab.class)
+                ? View.VISIBLE : View.INVISIBLE);
     }
 
 
@@ -466,21 +470,10 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                     if (jfgAccount != null) {
                         basePresenter.logOut(jfgAccount.getAccount());
                         //进入登陆页 login page
-//                        Intent intent = new Intent(getContext(), SmartcallActivity.class);
-//                        intent.putExtra(JConstant.FROM_LOG_OUT, true);
-//                        startActivity(intent);
                         setResult(RESULT_OK);
-                        finish();
+                        finishExt();
                     }
                 }, getString(R.string.CANCEL), null, false);
-    }
-
-
-    //设置屏幕背景透明效果
-    public void setBackgroundAlpha(float alpha) {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = alpha;
-        getWindow().setAttributes(lp);
     }
 
     @Override

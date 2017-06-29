@@ -24,10 +24,6 @@ public interface BindMailContract {
          */
         void showSendReqResult(int code);
 
-        /**
-         * 显示账号未注册过
-         */
-        void showAccountUnReg();
 
         /**
          * 显示绑定进度
@@ -68,7 +64,7 @@ public interface BindMailContract {
 
         boolean checkEmail(String email);               //检查邮箱的合法性
 
-        void isEmailBind(String email);       //检验邮箱是否已经绑定过
+//        void isEmailBind(String email);       //检验邮箱是否已经绑定过
 
         /**
          * 发送修改用户属性请求

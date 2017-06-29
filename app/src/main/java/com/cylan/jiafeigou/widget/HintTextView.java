@@ -11,7 +11,11 @@ import android.util.AttributeSet;
 import com.cylan.jiafeigou.R;
 
 /**
+<<<<<<< HEAD
  * Created by hds on 17-6-14.
+=======
+ * Created by hds on 17-6-28.
+>>>>>>> 3.1.2
  */
 
 public class HintTextView extends AppCompatTextView {
@@ -40,7 +44,7 @@ public class HintTextView extends AppCompatTextView {
         TypedArray typedArray =
                 getContext().obtainStyledAttributes(attrs, R.styleable.HintTextView, defStyleAttr, 0);
         int pointColor = typedArray.getColor(R.styleable.HintTextView_ht_color, Color.RED);
-        defaultRadius = typedArray.getDimension(R.styleable.HintTextView_ht_radius, 5);
+        defaultRadius = typedArray.getDimension(R.styleable.HintTextView_ht_radius, 8);
         padding = typedArray.getDimension(R.styleable.HintTextView_ht_padding, 5);
         mPaint.setColor(pointColor);
         typedArray.recycle();
@@ -61,7 +65,7 @@ public class HintTextView extends AppCompatTextView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (!show) return;
-        canvas.drawCircle(getMeasuredWidth() - padding,
+        canvas.drawCircle(getRight() - padding - defaultRadius,
                 defaultRadius + padding,
                 defaultRadius,
                 mPaint);
