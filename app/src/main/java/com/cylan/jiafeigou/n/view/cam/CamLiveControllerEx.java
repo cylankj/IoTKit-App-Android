@@ -210,6 +210,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         setHotSeatState(-1, false, false, false, false, false, false);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
+        findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         this.cVersion = device.$(207, "");
@@ -444,9 +445,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         public void run() {
             setLoadingState(null, null);
             streamSwitcher.setVisibility(GONE);
-            if (livePlayState == PLAY_STATE_PLAYING) {
-                layoutC.setVisibility(INVISIBLE);
-            }
             layoutC.setVisibility(INVISIBLE);
             Log.d("wahat", "portHideRunnable");
         }

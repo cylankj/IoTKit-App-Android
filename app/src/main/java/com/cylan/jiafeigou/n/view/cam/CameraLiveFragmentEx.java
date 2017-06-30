@@ -267,7 +267,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 camLiveControlLayer.reAssembleHistory(basePresenter, time);
                 return;
             }
-            basePresenter.startPlay();
+//            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
             basePresenter.stopPlayVideo(PLAY_STATE_IDLE).subscribe(ret -> {
             }, AppLogger::e);

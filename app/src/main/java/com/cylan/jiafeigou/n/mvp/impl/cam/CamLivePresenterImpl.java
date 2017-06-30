@@ -79,6 +79,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NETWORK;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
@@ -694,6 +695,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public Observable<Boolean> stopPlayVideo(int reasonOrState) {
         AppLogger.d("pre play state: " + liveStream);
+        if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE)
+            return Observable.just(false);
         if (getLiveStream().playState == PLAY_STATE_PLAYING) {
             //暂停播放了，还需要截图
             takeSnapShot(false);
@@ -720,7 +723,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public Observable<Boolean> stopPlayVideo(boolean detach) {
-        return stopPlayVideo(PLAY_STATE_IDLE);
+        return stopPlayVideo(PLAY_STATE_STOP);
     }
 
     @Override

@@ -883,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">Keiner</string>
   <string name="Tap3_ShareDevice_NotYourself">Sie können nicht mit Ihnen selbst teilen</string>
   <string name="Tap3_ShareDevice_Shared">Gemeinsam genutzt</string>
-  <string name="Tap3_ShareDevice_SharedContents">Geteilte Inhalt</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam Geteilte Inhalt</string>
   <string name="Tap3_ShareDevice_SharedUsers">Geteilte Benutzer</string>
   <string name="Tap3_ShareDevice_SuccessTips">erfolgreich geteilt</string>
   <string name="Tap3_ShareDevice_Tips">Dieses Gerät kann nicht mit anderen Benutzern geteilt werden</string>

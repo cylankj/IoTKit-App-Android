@@ -883,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">暫無可分享親友</string>
   <string name="Tap3_ShareDevice_NotYourself">無法分享設備給自己</string>
   <string name="Tap3_ShareDevice_Shared">已分享</string>
-  <string name="Tap3_ShareDevice_SharedContents">已分享內容</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°全景已分享內容</string>
   <string name="Tap3_ShareDevice_SharedUsers">已分享用戶</string>
   <string name="Tap3_ShareDevice_SuccessTips">成功分享</string>
   <string name="Tap3_ShareDevice_Tips">該設備已到達最大分享數</string>

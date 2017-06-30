@@ -883,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">なし</string>
   <string name="Tap3_ShareDevice_NotYourself">自分にシェアできません</string>
   <string name="Tap3_ShareDevice_Shared">シェアード</string>
-  <string name="Tap3_ShareDevice_SharedContents">共有コンテンツ</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam 共有コンテンツ</string>
   <string name="Tap3_ShareDevice_SharedUsers">共有ユーザー</string>
   <string name="Tap3_ShareDevice_SuccessTips">シェア完了</string>
   <string name="Tap3_ShareDevice_Tips">デバイスは共有の最大数に達しました</string>

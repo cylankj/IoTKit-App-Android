@@ -403,10 +403,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
-        if (!NetUtils.isNetworkAvailable(getContext())) {
-            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
-            return;
-        }
         ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), HomeMineHelpFragment.newInstance(new Bundle()),
                 android.R.id.content);
         homeMineItemHelp.showHint(false);

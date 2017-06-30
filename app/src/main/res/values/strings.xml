@@ -37,7 +37,7 @@
     <string name="BEGIN_TALKBACK">Start to talkback</string>
     <string name="BIND_INFO">Adding is not finished,sure to quit?</string>
     <string name="BLE_SENSOR">Bluetooth</string>
-    <string name="BLINKING">Light\'s blue flashing</string>
+    <string name="BLINKING">Blue light is blinking</string>
     <string name="BLUE_BLINKING">Please make sure WIFI indicator light is flashing blue , If not please press the WIFI button for 3 seconds until indicator light starts to flash blue.</string>
     <string name="Button_Add">Add</string>
     <string name="Button_No">No</string>
@@ -149,7 +149,7 @@
     <string name="DOOR_UNCALL">Missed</string>
     <string name="DOOR_VOICE">Voice</string>
     <string name="DOOR_WIFI_HINT">LED Status Indicator</string>
-    <string name="DailyGreatTips_Full">Collection\'s number of Daily Great has reached the upper limit 50, going to delete?</string>
+    <string name="DailyGreatTips_Full">Collection\'s number of My Favorite has reached the upper limit 50, going to delete?</string>
     <string name="Daily_Great_NO_CONTENTS">No content</string>
     <string name="Dec">Dec.</string>
     <string name="Delete_Share">Delete share?</string>
@@ -277,7 +277,7 @@
     <string name="LIGTH_LABEL_1_2">Blue light, 3G/4G Online</string>
     <string name="LIGTH_LABEL_2_1">Blinking,Battery is less</string>
     <string name="LIGTH_LABEL_2_2">Blue light, Have electricity</string>
-    <string name="LIVE_DATA">For cellular,please note your data usage</string>
+    <string name="LIVE_DATA">Cellular network,Pls note data usage</string>
     <string name="LOADING">Loading&#8230;</string>
     <string name="LOCAL_NOTIFICATION_AndroidMSG">Please go to Phone\'s \"Settings\"&#8211;\"Notifications\", find %s and open \'Notifications\'</string>
     <string name="LOCATION">Location:</string>
@@ -297,9 +297,9 @@
     <string name="Logo_Selection">None</string>
     <string name="MAC">MAC</string>
     <string name="MAGNETISM_NOTIFY">Notify me when door sensor is on/off</string>
-    <string name="MAGNETISM_OFF">Close</string>
+    <string name="MAGNETISM_OFF">Off</string>
     <string name="MAGNETISM_OFF_PUSH">%s is closed</string>
-    <string name="MAGNETISM_ON">Open</string>
+    <string name="MAGNETISM_ON">On</string>
     <string name="MAGNETISM_ON_PUSH">%s is opened</string>
     <string name="MESSAGE">Messages</string>
     <string name="MINUTE">M</string>
@@ -318,14 +318,14 @@
     <string name="MSG_REBIND">Device is added by %s . Any questions, please contact us</string>
     <string name="MSG_RECORD">Playback</string>
     <string name="MSG_SD_OFF">Micro SD card has been pulled out</string>
-    <string name="MSG_SD_ON">Card\'s beed detected and videos can be recorded now.</string>
+    <string name="MSG_SD_ON">TF card is detected. video recording is now available.</string>
     <string name="MSG_SD_ON_1">A memory card has been detected. Please initialize the memory card first</string>
     <string name="MSG_SHARE">Shared to %s</string>
     <string name="MSG_SYSTEM_UPGRADE">So cool! Upgrades the system to V%s</string>
     <string name="MSG_UNBIND">Device has been deleted</string>
     <string name="MSG_UNSHARE">Cancel the sharing with %s</string>
     <string name="MSG_VIDEO">Video</string>
-    <string name="MSG_WARNING">New discoveries</string>
+    <string name="MSG_WARNING">New discovery</string>
     <string name="MSG_WARN_OFF">Motion Detection has been turned off, but can open again.</string>
     <string name="MSG_WARN_ON">Motion Detection has been turned on, you will be notified when movements detected.</string>
     <string name="MUTE">Mute</string>
@@ -344,7 +344,7 @@
     <string name="NEW_VERSION">Latest version already</string>
     <string name="NEXT">Next</string>
     <string name="NEXT_TIME">Next time</string>
-    <string name="NOT_ONLINE">Device has been offline</string>
+    <string name="NOT_ONLINE">The device is offline</string>
     <string name="NO_CONTENTS_1">No messages</string>
     <string name="NO_CONTENTS_2">No history video</string>
     <string name="NO_DEVICE_1">Not find the new device</string>
@@ -623,11 +623,11 @@
     <string name="Tap0_wrongcode">Error code</string>
     <string name="Tap1_AddDeviceTips">Click\"+\"to add device</string>
     <string name="Tap1_AddDevice_CameraTipShort">Short press the WiFi button for 1s</string>
-    <string name="Tap1_AddDevice_CameraTips">Wait for the indicator to flicker in blue</string>
-    <string name="Tap1_AddDevice_CameraTipsTitle">Long press the WiFi button for 3s</string>
+    <string name="Tap1_AddDevice_CameraTips">until the light is blinking blue</string>
+    <string name="Tap1_AddDevice_CameraTipsTitle">Press and hold the wifi button for 3s</string>
     <string name="Tap1_AddDevice_ConnectWifi">Connect WiFi</string>
     <string name="Tap1_AddDevice_DoorbellTips">Wait for the indicator to keep in red</string>
-    <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot and long press the WiFi button for 3s</string>
+    <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot and Press and hold the wifi button for 3s</string>
     <string name="Tap1_AddDevice_FindNoResult">No device found, please try again</string>
     <string name="Tap1_AddDevice_FindingTips">Searching for nearby devices, please starup WiFi configuration mode</string>
     <string name="Tap1_AddDevice_QR">Scan QR code</string>
@@ -650,8 +650,8 @@
     <string name="Tap1_Album_PutInVR">Put cellphone into VR glasses</string>
     <string name="Tap1_Album_Share_Description">Add description</string>
     <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" not installed, please install it and try again</string>
-    <string name="Tap1_Album_Share_To_Daily_Great">The shared content will be saved to\"Daily Great\"</string>
-    <string name="Tap1_BigPic_FavoriteTips">Collect pics in\"Daily Great\"</string>
+    <string name="Tap1_Album_Share_To_Daily_Great">The shared content will be saved to\"My Favorite \"</string>
+    <string name="Tap1_BigPic_FavoriteTips">Collect pics in\"My Favorite \"</string>
     <string name="Tap1_CameraFun_Standby">Standby</string>
     <string name="Tap1_CameraFun_Standby_Description">Start standby to hibernate, that will be unable to watch live, check history videos, protect and alert, Video settings, time&#8211;lapse photography and etc.</string>
     <string name="Tap1_CameraFun_Standby_OnTips">Time&#8211;lapse photographing, unable to standby</string>
@@ -666,7 +666,7 @@
     <string name="Tap1_CameraFun_Timelapse_GoWatch">Take a look</string>
     <string name="Tap1_CameraFun_Timelapse_Interval">Interval</string>
     <string name="Tap1_CameraFun_Timelapse_NotStart">Coming</string>
-    <string name="Tap1_CameraFun_Timelapse_OnTips">Time&#8211;lapse photography will turnoff automatically when shooting done and save it in\"Daily Great\"</string>
+    <string name="Tap1_CameraFun_Timelapse_OnTips">Time&#8211;lapse photography will turnoff automatically when shooting done and save it in\"My Favorite \"</string>
     <string name="Tap1_CameraFun_Timelapse_RecordTime">Shooting length</string>
     <string name="Tap1_CameraFun_Timelapse_Setting">Take one more shoot</string>
     <string name="Tap1_CameraFun_Timelapse_StandbyTips">Start time&#8211;lapse photography before close standby</string>
@@ -675,7 +675,7 @@
     <string name="Tap1_CameraFun_Timelapse_StartTimeFail">Earlier than current time, please reset</string>
     <string name="Tap1_CameraFun_Timelapse_Startnow">Start now</string>
     <string name="Tap1_CameraFun_Timelapse_Synthesis">Merging</string>
-    <string name="Tap1_CameraFun_Timelapse_SynthesisTips">Merged done, check in the \"Daily Great\"</string>
+    <string name="Tap1_CameraFun_Timelapse_SynthesisTips">Merged done, check in the \"My Favorite \"</string>
     <string name="Tap1_CameraFun_Timelapse_Tips">Need to turn off standby before time&#8211;lapse photographing, sure?</string>
     <string name="Tap1_CameraFun_Timelapse_TipsOption">Sure</string>
     <string name="Tap1_CameraFun_Timelapse_document">Get down more wonderful moments with time&#8211;lapse photography</string>
@@ -688,7 +688,7 @@
     <string name="Tap1_Camera_Greetings">Sunrise and sunset, family life and baby\'s growing&#8230;Always have things deserved to be recorde for everyday</string>
     <string name="Tap1_Camera_Messages">Messages</string>
     <string name="Tap1_Camera_Messages_ViewTheVideo">Video</string>
-    <string name="Tap1_Camera_MotionDetection_OffTips">Turn off \"Motion Detection\" will also stop recording \"Motion detection alarm recording\"</string>
+    <string name="Tap1_Camera_MotionDetection_OffTips">Motion video recording is not available when turn off “Motion Detection”</string>
     <string name="Tap1_Camera_NoSDCardTips">No SD card detected</string>
     <string name="Tap1_Camera_Overlook">Overlook</string>
     <string name="Tap1_Camera_OverlookTips">Viewing with overlooking angle needs to place the camera on high</string>
@@ -803,8 +803,8 @@
     <string name="Tap2_Timelapse_fail">Video file can not be generated for disconnection when time&#8211;lapse photographying</string>
     <string name="Tap2_Timelapse_screenshot">Live screenshot</string>
     <string name="Tap2_Timelapse_title">Time&#8211;lapse photography</string>
-    <string name="Tap2_TitleName">Daily Great</string>
-    <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
+    <string name="Tap2_TitleName">My Favorite</string>
+    <string name="Tap2_TitleName_Sentence">My Favorite</string>
     <string name="Tap2_share_sharevideo">I shared a video with you</string>
     <string name="Tap2_share_sharevideo_tips">I\'ve made a time&#8211;lapse photography by Clever Dog Smart Camera, check it out!</string>
     <string name="Tap2_share_unabletoshare">No Wechat installed, unable to share.</string>
@@ -883,7 +883,7 @@
     <string name="Tap3_ShareDevice_NoneShareFriends">No friends can be shared</string>
     <string name="Tap3_ShareDevice_NotYourself">Can\'t share with yourself</string>
     <string name="Tap3_ShareDevice_Shared">Shared</string>
-    <string name="Tap3_ShareDevice_SharedContents">Shared contents</string>
+    <string name="Tap3_ShareDevice_SharedContents">720°Cam Shared Contents</string>
     <string name="Tap3_ShareDevice_SharedUsers">Shared users</string>
     <string name="Tap3_ShareDevice_SuccessTips">Shared successfully</string>
     <string name="Tap3_ShareDevice_Tips">This device can\'t be shared with any more users</string>
@@ -954,7 +954,7 @@
     <string name="WIFI_SET_3">Please via \"Settings\"&#8211;>\"WLAN\",choose \"DOG&#8211;**&#8211;******\"join on your phone, Password is 11111111</string>
     <string name="WIFI_SET_3_1">Please via \"Settings\"&#8211;>\"WLAN\", choose \"DOG&#8211;ML&#8211;******\" join on your phone, password 11111111</string>
     <string name="WIFI_SET_4">Return to %s</string>
-    <string name="WIFI_SET_5GTIPS">Tips:5G WiFi signal not enabled now</string>
+    <string name="WIFI_SET_5GTIPS">Note: This device does not support 5G WIFI currently</string>
     <string name="WIFI_SET_RS">Please via \"Settings\"&#8211;>\"WLAN\", choose \"RS&#8211;CAM&#8211;******\" join on your phone, password 11111111</string>
     <string name="WONDER_TODAY_H_M">Today HH:mm</string>
     <string name="WONDER_YESTERDAY_H_M">Yesterday HH:mm</string>
