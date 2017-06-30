@@ -285,18 +285,23 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         return historyWheelHandler;
     }
 
+    private boolean isSightShow;
+
+    public boolean isSightShow() {
+        return isSightShow;
+    }
+
     /**
      * 全景视角设置
      */
     private void initSightSetting(CamLiveContract.Presenter basePresenter) {
         if (isNormalView || basePresenter.isShareDevice()) return;
         String uuid = basePresenter.getUuid();
-        boolean isFirstShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
-        if (!isFirstShow) return;//不是第一次
+        isSightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
+        Log.d("initSightSetting", "judge? " + isSightShow);
+        if (!isSightShow) return;//不是第一次
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
-            livePlayState = PLAY_STATE_IDLE;
-            setLoadingState(null, null);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
             liveViewWithThumbnail.addView(view);//最顶
             View layout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
@@ -318,9 +323,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } else {
             //已经添加了
             oldLayout.setVisibility(View.VISIBLE);
-            livePlayState = PLAY_STATE_IDLE;
-            setLoadingState(null, null);
         }
+        livePlayState = PLAY_STATE_IDLE;
+        setLoadingState(null, null);
     }
 
     /**
@@ -558,7 +563,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void setLoadingState(String content, String subContent) {
         layoutC.setState(livePlayState, content, subContent);
-        if (!TextUtils.isEmpty(content) || TextUtils.isEmpty(subContent))
+        if (!TextUtils.isEmpty(content) || !TextUtils.isEmpty(subContent))
             layoutC.setVisibility(VISIBLE);
         switch (livePlayState) {
             case PLAY_STATE_LOADING_FAILED:
@@ -989,12 +994,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onActivityResume(CamLiveContract.Presenter presenter, Device device) {
-        final boolean judge = presenter.judge();
+        final boolean judge = !isSightShow() && !isStandBy();
         Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
-        }, judge ? 0 : 100);
+        }, 100);
     }
 
     @Override

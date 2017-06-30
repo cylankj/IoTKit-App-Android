@@ -383,7 +383,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         //全景,首次使用模式
         boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + getUuid(),
-                true);
+                false);
         if (sightShow)
             return false;
         //手机数据

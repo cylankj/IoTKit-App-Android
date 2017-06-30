@@ -233,6 +233,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private void addTab(final int position, View tab) {
         tab.setAlpha(position == 0 ? 1.0f : 0.5f);
+        if (tab instanceof HintTextView) {
+            ((HintTextView) tab).setTextColor(0 == position ? (int) (tabTextColor * 0.5f) : tabTextColor);
+        }
         tab.setFocusable(true);
         tab.setOnClickListener(new OnClickListener() {
             @Override
@@ -382,7 +385,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 View v = tabsContainer.getChildAt(i);
                 if (v instanceof HintTextView) {
                     HintTextView tab = (HintTextView) v;
-                    tab.setAlpha(i == position ? 1.0f : 0.5f);
+                    tab.setTextColor(i == position ? (int) (tabTextColor * 0.5f) : tabTextColor);
                 }
             }
         }
