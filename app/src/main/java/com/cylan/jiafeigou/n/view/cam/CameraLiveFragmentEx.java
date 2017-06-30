@@ -269,7 +269,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
 //            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
-            basePresenter.stopPlayVideo(PLAY_STATE_IDLE).subscribe(ret -> {
+            basePresenter.stopPlayVideo(PLAY_STATE_STOP).subscribe(ret -> {
             }, AppLogger::e);
             AppLogger.d("stop play");
         } else {
@@ -290,7 +290,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
                 .getSourceManager().getDevice(getUuid()));
         if (basePresenter != null) {
-            if (!judge()) return;//还没开始播放
+            if (!judge() || basePresenter.getLiveStream().playState == PLAY_STATE_STOP)
+                return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
 

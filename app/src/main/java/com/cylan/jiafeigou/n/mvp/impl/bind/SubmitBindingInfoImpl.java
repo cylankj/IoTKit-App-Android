@@ -131,12 +131,13 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
     }
 
     private boolean sendBindInfo;
+    private static final int INTERVAL = 3;
 
     private Subscription submitBindDeviceSub() {
         final long timeout = Math.min(TIME_OUT - (System.currentTimeMillis() - startTick), TIME_OUT);
-        return Observable.interval(2, TimeUnit.SECONDS, Schedulers.newThread())
+        return Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.newThread())
                 .flatMap(aLong -> {
-                    if (aLong * 1000 >= timeout) {
+                    if (INTERVAL * aLong * 1000 >= timeout) {
                         throw new RxEvent.HelperBreaker("timeout");
                     }
                     JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
