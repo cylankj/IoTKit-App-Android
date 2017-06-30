@@ -9,11 +9,11 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -81,7 +81,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                             }
                             getDeviceInfo(cidList);
                         } else {
-                            getView().hideLoadingDialog();
+                            getView().hideLoading();
                             getView().showNoDeviceView();
                         }
                     }
@@ -108,7 +108,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      * 发送分享设备给亲友的请求
      */
     @Override
-    public void sendShareToReq(ArrayList<DeviceBean> chooseList, final FriendBean friendBean) {
+    public void sendShareToReq(ArrayList<DeviceBean> chooseList, final FriendContextItem friendItem) {
         totalFriend = chooseList.size();
         if (getView() != null) {
             getView().showSendReqProgress();
@@ -118,7 +118,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 .subscribe(deviceBeen -> {
                     for (DeviceBean bean : deviceBeen) {
                         try {
-                            BaseApplication.getAppComponent().getCmd().shareDevice(bean.uuid, friendBean.account);
+                            BaseApplication.getAppComponent().getCmd().shareDevice(bean.uuid, friendItem.friendAccount.account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -178,7 +178,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
             }
         } else {
             if (getView() != null) {
-                getView().hideLoadingDialog();
+                getView().hideLoading();
                 getView().showNoDeviceView();
             }
         }

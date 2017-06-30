@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
@@ -18,11 +18,6 @@ import rx.Subscription;
 public interface MineFriendListShareDevicesToContract {
 
     interface View extends BaseView<Presenter> {
-        /**
-         * 初始化头部标题显示
-         */
-        void initTitleView(FriendBean bean);
-
         /**
          * 初始化列表的显示
          *
@@ -65,15 +60,10 @@ public interface MineFriendListShareDevicesToContract {
          */
         void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> list);
 
-        /**
-         * 显示加载进度
-         */
-        void showLoadingDialog();
+        void showLoading(int resId, String... args);
 
-        /**
-         * 隐藏加载进度
-         */
-        void hideLoadingDialog();
+        void hideLoading();
+
 
         /**
          * 网络状态变化
@@ -92,7 +82,7 @@ public interface MineFriendListShareDevicesToContract {
         /**
          * 发送分享设备给的亲友的请求
          */
-        void sendShareToReq(ArrayList<DeviceBean> chooseList, FriendBean bean);
+        void sendShareToReq(ArrayList<DeviceBean> chooseList, FriendContextItem bean);
 
         /**
          * 检测是否有选中的

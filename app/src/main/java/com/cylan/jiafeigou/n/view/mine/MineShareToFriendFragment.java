@@ -172,7 +172,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @Override
     public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, (Object[]) args));
     }
 
     @Override

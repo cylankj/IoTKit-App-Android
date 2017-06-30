@@ -13,11 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -48,9 +48,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
 
     private MineFriendListShareDevicesToContract.Presenter presenter;
-    private FriendBean shareDeviceBean;
+    private FriendContextItem friendItem;
     private ChooseShareDeviceAdapter chooseShareDeviceAdapter;
-    private ArrayList<DeviceBean> chooseList = new ArrayList<DeviceBean>();
+    private ArrayList<DeviceBean> chooseList = new ArrayList<>();
 
     public static MineFriendsListShareDevicesFragment newInstance(Bundle bundle) {
         MineFriendsListShareDevicesFragment fragment = new MineFriendsListShareDevicesFragment();
@@ -70,8 +70,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
         ButterKnife.bind(this, view);
         getArgumentData();
         initPresenter();
-        initTitleView(shareDeviceBean);
-        showLoadingDialog();
+        initTitleView(friendItem);
+        showLoading(R.string.LOADING);
         return view;
     }
 
@@ -80,7 +80,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     private void getArgumentData() {
         Bundle arguments = getArguments();
-        shareDeviceBean = arguments.getParcelable("shareDeviceBean");
+        friendItem = arguments.getParcelable("friendItem");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MineFriendListShareDevicesPresenterImp(shareDeviceBean.account, this);
+        presenter = new MineFriendListShareDevicesPresenterImp(friendItem.friendAccount.account, this);
     }
 
     @Override
@@ -122,22 +122,16 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
                 break;
             case R.id.tv_toolbar_right:
                 if (chooseList.size() == 0) return;
-                presenter.sendShareToReq(chooseList, shareDeviceBean);
+                presenter.sendShareToReq(chooseList, friendItem);
                 break;
         }
     }
 
-    /**
-     * 初始化头部标题显示
-     *
-     * @param bean
-     */
-    @Override
-    public void initTitleView(FriendBean bean) {
-        if (TextUtils.isEmpty(bean.markName.trim())) {
-            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), bean.alias)));
+    public void initTitleView(FriendContextItem friendItem) {
+        if (TextUtils.isEmpty(friendItem.friendAccount.markName.trim())) {
+            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.alias)));
         } else {
-            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), bean.markName)));
+            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.markName)));
         }
     }
 
@@ -148,7 +142,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void initRecycleView(ArrayList<DeviceBean> list) {
-        hideLoadingDialog();
+        hideLoading();
         rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(getContext(), list, null);
         rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
@@ -203,7 +197,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void onNetStateChanged(int state) {
         if (state == -1) {
-            hideLoadingDialog();
+            hideLoading();
             hideSendReqProgress();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
@@ -270,20 +264,13 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
         }
     }
 
-    /**
-     * 显示加载进度
-     */
     @Override
-    public void showLoadingDialog() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
+    public void showLoading(int resId, String... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, (Object[]) args));
     }
 
-    /**
-     * 隐藏加载进度
-     */
     @Override
-    public void hideLoadingDialog() {
+    public void hideLoading() {
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
-
 }

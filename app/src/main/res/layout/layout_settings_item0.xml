@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/y72">
 
@@ -7,69 +8,70 @@
         android:id="@+id/imgv_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical" />
-
-    <LinearLayout
-        android:id="@+id/lLayout_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/x10"
-        android:layout_marginStart="@dimen/x10"
-        android:layout_toEndOf="@+id/imgv_item_icon"
-        android:layout_toStartOf="@+id/btn_item_switch"
-        android:orientation="vertical">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <TextView
-            android:id="@+id/tv_settings_item_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/EQUIPMENT_INFO"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/sp16" />
+    <TextView
+        android:id="@+id/tv_settings_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/y10"
+        android:gravity="center"
+        android:text="@string/EQUIPMENT_INFO"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/sp16"
+        app:layout_constraintBottom_toTopOf="@+id/tv_settings_item_sub_title"
+        app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-        <TextView
-            android:id="@+id/tv_settings_item_sub_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y3"
-            android:gravity="center"
-            android:textColor="@color/color_8C8C8C"
-            android:textSize="@dimen/sp13"
-            android:visibility="gone" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_settings_item_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/y10"
+        android:layout_marginTop="@dimen/y3"
+        android:gravity="center"
+        android:textColor="@color/color_8C8C8C"
+        android:textSize="@dimen/sp13"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title" />
 
     <com.cylan.jiafeigou.widget.SafeSwitchButton
         android:id="@+id/btn_item_switch"
         style="@style/SwitchButtonStyleMD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="end|center_vertical"
         android:gravity="end"
-        android:paddingStart="@dimen/x20" />
+        android:paddingEnd="0dp"
+        android:paddingStart="@dimen/y20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imv_item_red_hint"
-        android:layout_width="@dimen/x8"
-        android:layout_height="@dimen/x8"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/x10"
-        android:layout_marginStart="@dimen/x10"
+        android:layout_width="@dimen/y8"
+        android:layout_height="@dimen/y8"
+        android:layout_marginEnd="@dimen/y10"
+        android:layout_marginStart="@dimen/y10"
         android:src="@drawable/hardware_update_point"
-        android:visibility="gone" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/v_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/x10"
-        android:layout_marginStart="@dimen/x10"
-        android:background="@color/color_e8e8e8" />
-</RelativeLayout>
+        android:layout_marginEnd="@dimen/y10"
+        android:layout_marginStart="@dimen/y10"
+        android:background="@color/color_e8e8e8"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>

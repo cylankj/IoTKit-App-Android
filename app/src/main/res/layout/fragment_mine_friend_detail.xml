@@ -1,131 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:clickable="true">
+<layout>
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/layout_default_custom_tool_bar"
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="isFriend"
+            type="android.databinding.ObservableBoolean" />
+
+        <variable
+            name="alias"
+            type="String" />
+
+        <variable
+            name="account"
+            type="String" />
+
+        <variable
+            name="message"
+            type="String" />
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:hunt="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_enable_shadow="false"
-        hunt:ct_enable_theme="true"
-        hunt:ct_fit_system_window="true"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_left_title="@string/Tap3_Friends_Details"
-        hunt:ct_left_title_color="@color/color_white" />
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/custom_toolbar">
-
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-                android:id="@+id/iv_detail_user_head"
-                android:layout_width="@dimen/x80"
-                android:layout_height="@dimen/y80"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y42"
-                android:clickable="true"
-                android:src="@drawable/icon_mine_head_normal" />
-
-            <TextView
-                android:id="@+id/tv_relative_and_friend_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y8"
-                android:textColor="@color/color_333333"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_relative_and_friend_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y3"
-                android:textColor="@color/color_777777"
-                android:textSize="@dimen/sp14" />
-
-            <RelativeLayout
-                android:id="@+id/rl_change_name"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54"
-                android:layout_marginTop="@dimen/y41">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:gravity="center_vertical"
-                    android:text="@string/Tap3_Friends_UserInfo_ModName"
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/sp15" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:layout_marginRight="@dimen/x15"
-                    android:background="@color/color_f2f2f2" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_delete_relativeandfriend"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:gravity="center_vertical"
-                    android:text="@string/Tap3_DeleteFriends"
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/sp15" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/x15"
-                    android:layout_marginRight="@dimen/x15"
-                    android:background="@color/color_f2f2f2" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="false"
+            hunt:ct_enable_theme="true"
+            hunt:ct_fit_system_window="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_left_title="@string/Tap3_Friends_Details"
+            hunt:ct_left_title_color="@color/color_white"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
+            android:background="@drawable/little_shape"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-    </FrameLayout>
 
-    <TextView
-        android:id="@+id/tv_share_device"
-        android:layout_width="@dimen/x268"
-        android:layout_height="@dimen/y42"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/y28"
-        android:background="@drawable/share_device_btn_selector"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="@string/Tap3_ShareDevice"
-        android:textColor="@color/color_white"
-        android:textSize="@dimen/sp15" />
+        <com.cylan.jiafeigou.support.photoselect.CircleImageView
+            android:id="@+id/friend_info_picture"
+            android:layout_width="@dimen/y80"
+            android:layout_height="@dimen/y80"
+            android:layout_marginTop="@dimen/y42"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/icon_mine_head_normal"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/friend_info_alias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y8"
+            android:text="@{alias}"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp16"
+            android:visibility="@{TextUtils.isEmpty(alias)?View.GONE:View.VISIBLE}"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/friend_info_picture" />
+
+        <TextView
+            android:id="@+id/friend_info_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y3"
+            android:text='@{(isFriend?@string/ALIAS+":":"")+account}'
+            android:textColor="@color/color_777777"
+            android:textSize="@dimen/sp14"
+            android:visibility="@{TextUtils.isEmpty(account)?View.GONE:View.VISIBLE}"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/friend_info_alias" />
+
+        <TextView
+            android:id="@+id/change_name_message_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y60"
+            android:enabled="@{isFriend}"
+            android:gravity="center_vertical"
+            android:padding="@dimen/y15"
+            android:text="@{isFriend?@string/Tap3_Friends_UserInfo_ModName:@string/Tap3_FriendsAdd_Content}"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp15"
+            hunt:layout_constraintTop_toBottomOf="@+id/friend_info_account" />
+
+
+        <TextView
+            android:id="@+id/request_message_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_mesg"
+            android:background="@null"
+            android:clickable="false"
+            android:paddingEnd="@dimen/y15"
+            android:paddingStart="@dimen/y15"
+            android:text="@{message}"
+            android:visibility="@{TextUtils.isEmpty(message)?View.GONE:View.VISIBLE}"
+            hunt:layout_constraintTop_toBottomOf="@+id/change_name_message_title" />
+
+        <View
+            android:id="@+id/change_name_message_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y1"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/y15"
+            android:layout_marginStart="@dimen/y15"
+            android:background="@color/color_f2f2f2"
+            android:visibility="@{TextUtils.isEmpty(message)?View.GONE:View.VISIBLE}"
+            hunt:layout_constraintTop_toBottomOf="@+id/request_message_detail" />
+
+
+        <TextView
+            android:id="@+id/delete_friend_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="@dimen/y15"
+            android:text="@string/Tap3_DeleteFriends"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp15"
+            android:visibility="@{isFriend?View.VISIBLE:View.GONE}"
+            hunt:layout_constraintTop_toBottomOf="@+id/change_name_message_divider" />
+
+        <View
+            android:id="@+id/delete_friend_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y1"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/x15"
+            android:layout_marginRight="@dimen/x15"
+            android:background="@color/color_f2f2f2"
+            android:visibility="@{isFriend?View.VISIBLE:View.GONE}"
+            hunt:layout_constraintTop_toBottomOf="@+id/delete_friend_title" />
+
+
+        <TextView
+            android:id="@+id/share_delete_function"
+            android:layout_width="@dimen/y268"
+            android:layout_height="@dimen/y42"
+            android:layout_marginBottom="@dimen/y28"
+            android:background="@drawable/share_device_btn_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@{isFriend?@string/Tap3_ShareDevice:@string/Tap3_Friends_UserInfo_Add}"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp15"
+            hunt:layout_constraintBottom_toBottomOf="parent"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

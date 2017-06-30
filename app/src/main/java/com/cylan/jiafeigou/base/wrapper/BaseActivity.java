@@ -148,7 +148,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(resId, args));
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(resId, (Object[]) args));
     }
 
     @Override

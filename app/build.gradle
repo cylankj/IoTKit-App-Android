@@ -339,6 +339,7 @@ dependencies {
     }
     compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
     compile 'com.mikepenz:materialize:1.0.2@aar'
+    compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
     //可以单独使用，不需要依赖下方的扩展包
     //RxJava扩展支持，根据需要添加
     //可以单独使用，不需要依赖下方的扩展包
