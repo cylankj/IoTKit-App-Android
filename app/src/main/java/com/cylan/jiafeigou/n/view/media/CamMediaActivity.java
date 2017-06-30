@@ -309,9 +309,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     public void onCollectingRsp(int err) {
         imgVBigPicCollect.setEnabled(true);
-        runOnUiThread(() -> {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
-        });
+        runOnUiThread(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
         switch (err) {
             case 1050:
                 AlertDialogManager.getInstance().showDialog(this, getString(R.string.DailyGreatTips_Full), getString(R.string.DailyGreatTips_Full),
@@ -323,6 +321,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                         }, getString(R.string.CANCEL), null, false);
                 break;
             case 0:
+                ToastUtil.showToast(getString(R.string.Tap1_BigPic_FavoriteTips));
                 imgVBigPicCollect.setTag(true);
                 imgVBigPicCollect.setImageResource(R.drawable.icon_collected);
                 break;

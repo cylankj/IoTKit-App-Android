@@ -407,13 +407,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        HomeMineHelpFragment mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), HomeMineHelpFragment.newInstance(new Bundle()),
+                android.R.id.content);
         homeMineItemHelp.showHint(false);
     }
 
@@ -499,24 +494,17 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         else
             homeMineItemFriend.showNumber(count);//count ==0 dismiss
         //系统消息未读数
-        node = helper.findTreeNodeByName(SystemMessageFragment.class.
-
-                getSimpleName());
+        node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());
         count = node == null ? 0 : node.getNodeCount();
         tvHomeMineMsgCount.setText(count == 0 ? null : count > 99 ? "99+" : String.valueOf(count));
         //意见反馈
-        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.
-
-                getSimpleName());
-        Object o = node == null ? null : node.getCacheData();
+        node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
         count = node == null ? 0 : node.getNodeCount();
         homeMineItemHelp.showHint(count > 0);
         //分享管理
 
         //设置
-        node = helper.findTreeNodeByName(WechatGuideFragment.class.
-
-                getSimpleName());
+        node = helper.findTreeNodeByName(WechatGuideFragment.class.getSimpleName());
         homeMineItemSettings.showHint(node != null && node.getTraversalCount() > 0);
     }
 

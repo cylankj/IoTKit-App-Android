@@ -81,7 +81,7 @@ public class ShareManager {
                 case WEIXIN:
                     return ContextUtils.getContext().getString(R.string.WeChat);
                 case WEIXIN_CIRCLE:
-                    return ContextUtils.getContext().getString(R.string.Tap2_Share_Moments);
+                    return ContextUtils.getContext().getString(R.string.WeChat);
                 case QZONE:
                     return ContextUtils.getContext().getString(R.string.Qzone_QQ);
             }
