@@ -19,7 +19,7 @@ public interface JFGView {
 
     Activity getActivityContext();
 
-    void showLoading(int resId, String... args);
+    void showLoading(int resId, Object... args);
 
     void hideLoading();
 

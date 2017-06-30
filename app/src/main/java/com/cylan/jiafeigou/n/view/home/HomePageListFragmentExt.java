@@ -577,7 +577,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 View tip = itemView.findViewById(R.id.img_device_icon);
                 if (tip != null && tip instanceof ImageViewTip) {
                     if (((ImageViewTip) tip).isShowDot())
-                        in.putExtra(JConstant.KEY_NEW_MSG_PASS, JConstant.KEY_NEW_MSG_PASS);
+                        in.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
                 }
                 in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
                 startActivity(in);

@@ -69,15 +69,12 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             AppLogger.e("what the hell uuid is null");
             finishExt();
         }
-        initToolbar(getIntent().hasExtra(JConstant.KEY_NEW_MSG_PASS));
+        boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
+        initToolbar(hasNewMsg);
         initAdapter();
-        Intent intent = getIntent();
-        boolean jumpToMessage = intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
-        if (jumpToMessage) {
+        if (hasNewMsg && vpCameraLive.getAdapter().getCount() > 1) {
             //跳转到
-            if (vpCameraLive.getAdapter().getCount() > 1) {
-                vpCameraLive.setCurrentItem(1);
-            }
+            vpCameraLive.setCurrentItem(1);
         }
         JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
@@ -131,7 +128,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             AppLogger.e("what the hell uuid is null");
             finishExt();
         }
-        initToolbar(getIntent().hasExtra(JConstant.KEY_NEW_MSG_PASS));
+        initToolbar(getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE));
         initAdapter();
     }
 
@@ -218,10 +215,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             vIndicator.setViewPager(vpCameraLive);
             vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
             imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
-            View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
-            if (vHint != null && vHint instanceof HintTextView) {
-                ((HintTextView) vHint).showHint(newMsg);
-            }
+//            View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
+//            if (vHint != null && vHint instanceof HintTextView) {
+//                ((HintTextView) vHint).showHint(newMsg);
+//            }
             updateRedHint();
             customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> onNavBack());
         });

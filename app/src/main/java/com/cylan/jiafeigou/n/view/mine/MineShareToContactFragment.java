@@ -288,7 +288,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void showLoading(int resId, String... args) {
+    public void showLoading(int resId, Object... args) {
         LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
     }
 

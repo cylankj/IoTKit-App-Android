@@ -178,7 +178,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     AppLogger.d("绑定成功,网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
                     bindResult = BIND_SUC;
                     endCounting();
-                    sendTimeZone(uuid);
                     finalSetSome();
                 }, e -> {
                     if (e instanceof TimeoutException) {
@@ -201,17 +200,23 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         //303,501
                         AppLogger.d("设置睿视属性");
                         try {
+                            DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
+                            timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
+                            timeZone.timezone = TimeZone.getDefault().getID();
                             ArrayList<JFGDPMsg> list = new ArrayList<>();
                             JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
                             _303.packValue = DpUtils.pack(2);
                             JFGDPMsg _505 = new JFGDPMsg(501, System.currentTimeMillis());
                             _505.packValue = DpUtils.pack(false);
+                            JFGDPMsg _timeZone = new JFGDPMsg(214, System.currentTimeMillis());
+                            _timeZone.packValue = timeZone.toBytes();
                             list.add(_303);
                             list.add(_303);
                             list.add(_505);
+                            list.add(_timeZone);
                             BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
-                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(2), 303);
-                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(false), 501);
+//                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(2), 303);
+//                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(false), 501);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -251,23 +256,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     getView().onCounting(integer);
                 }, AppLogger::e);
         addSubscription(subscription, "actionPercent");
-    }
-
-    private void sendTimeZone(String uuid) {
-        //等设备上线之后,要设置时区.
-        Observable.just("setTimeZone")
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(ret -> {
-                    DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
-                    timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
-                    timeZone.timezone = TimeZone.getDefault().getID();
-                    try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, 214);
-                        AppLogger.d("设置设备时区:" + uuid + " ,offset:" + timeZone);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }, AppLogger::e);
     }
 
 }

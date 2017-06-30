@@ -24,7 +24,7 @@ public interface MineShareToFriendContract {
 
         void showShareToFriendsResult(RxEvent.MultiShareDeviceEvent result);
 
-        void showLoading(int resId, String... args);
+        void showLoading(int resId, Object... args);
 
         void hideLoading();
     }

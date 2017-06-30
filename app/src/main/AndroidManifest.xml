@@ -563,7 +563,7 @@
             android:enabled="true" />
         <!-- 红色这段没有错,不需要更改 -->
         <receiver
-            android:name="${ApplicationId}.MiMessageReceiver"
+            android:name="${ApplicationId}.push.mi.MiMessageReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />

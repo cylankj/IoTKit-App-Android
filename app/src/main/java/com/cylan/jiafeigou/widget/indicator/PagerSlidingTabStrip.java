@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -231,10 +232,17 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     }
 
+    private int color(int color, float alpha) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+        int a = color >>> 24;
+        return Color.argb((int) (alpha * a), r, g, b);
+    }
+
     private void addTab(final int position, View tab) {
-        tab.setAlpha(position == 0 ? 1.0f : 0.5f);
         if (tab instanceof HintTextView) {
-            ((HintTextView) tab).setTextColor(0 == position ? (int) (tabTextColor * 0.5f) : tabTextColor);
+            ((HintTextView) tab).setTextColor(0 == position ? tabTextColor : color(tabTextColor, .5f));
         }
         tab.setFocusable(true);
         tab.setOnClickListener(new OnClickListener() {
@@ -385,7 +393,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 View v = tabsContainer.getChildAt(i);
                 if (v instanceof HintTextView) {
                     HintTextView tab = (HintTextView) v;
-                    tab.setTextColor(i == position ? (int) (tabTextColor * 0.5f) : tabTextColor);
+                    tab.setTextColor(i != position ? color(tabTextColor, .5f) : tabTextColor);
                 }
             }
         }

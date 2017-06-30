@@ -42,7 +42,7 @@ public interface MineShareToContactContract {
          */
         void handlerCheckRegister(int requtestId, String account);
 
-        void showLoading(int resId, String... args);
+        void showLoading(int resId, Object... args);
 
         void hideLoading();
 
