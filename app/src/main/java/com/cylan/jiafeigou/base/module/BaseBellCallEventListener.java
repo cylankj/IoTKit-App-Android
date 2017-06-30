@@ -52,7 +52,7 @@ public class BaseBellCallEventListener {
         if (!callEvent.isFromLocal) {
             try {
                 AppLogger.d("门铃呼叫 CID:" + callEvent.caller.cid + ",门铃呼叫时间:" + callEvent.caller.time);
-                String url = new JFGGlideURL(callEvent.caller.cid, callEvent.caller.time + ".jpg").toURL().toString();
+                String url = new JFGGlideURL(callEvent.caller.cid, callEvent.caller.time + ".jpg", callEvent.caller.regionType).toURL().toString();
                 intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, url);
                 AppLogger.d("门铃截图地址:" + url);
             } catch (MalformedURLException e) {

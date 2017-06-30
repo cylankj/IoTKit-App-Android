@@ -79,9 +79,8 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
         customToolbar.setBackAction(v -> onClick());
         customToolbar.getTvToolbarRight().setOnClickListener(v -> {
             AppLogger.d("分享");
-            ShareManager.byWeb(AdsDetailActivity.this)
+            ShareManager.byH5(AdsDetailActivity.this)
                     .withThumb(description.tagUrl)
-                    .withUrl(description.tagUrl)
                     .share();
             if (customToolbar.getTvToolbarRight() != null) {
                 ViewUtils.setDrawablePadding(customToolbar.getTvToolbarRight(), R.drawable.details_icon_share, 0);

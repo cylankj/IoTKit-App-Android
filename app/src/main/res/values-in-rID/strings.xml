@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Hapus Pesan</string>
   <string name="CODE_ERR">Kode salah</string>
   <string name="COMFIRM_NEW_PASS">Ketik kata sandi baru</string>
-  <string name="CONNECTING">Seseorang sedang melihat video langsung</string>
+  <string name="CONNECTING">Tidak ada respon , silahkan coba lagi</string>
   <string name="CONNECTING_1">Menghubungkan</string>
   <string name="CONN_INTERRUPTED">Menghubungkan ke jaringan</string>
   <string name="CREATING">Menambahkan&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Suara</string>
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
   <string name="DailyGreatTips_Full">Nomor koleksi untuk Daily Great telah mencapai batas atas 50, pergi ke menghapus?</string>
+  <string name="Daily_Great_NO_CONTENTS">Tidak ada isi</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Hapus berbagi?</string>
   <string name="Device_Disconnected">Terputus</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Sedang menggeser. \nperlihatkan lebih lanjut</string>
   <string name="GetCode_FrequentlyTips">Terlalu sering operasi, coba lagi 10 menit kemudian.</string>
   <string name="GetWifiList_FaiTips">1.Memungkinkan aplikasi untuk mendapatkan \"Lokasi\" izin \n 2.Hidupkan \"GPS\" atas.</string>
+  <string name="H5_Asteroid">Asteroid</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Panorama</string>
+  <string name="H5_VR_mode">Mode VR</string>
   <string name="HOME">Rumah</string>
   <string name="HOUR">Jam</string>
   <string name="HOURS">24 jam</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Lampu biru, 3G/4G Online</string>
   <string name="LIGTH_LABEL_2_1">Berkedip, baterai lemah</string>
   <string name="LIGTH_LABEL_2_2">Lampu biru, terdapat daya listrik</string>
+  <string name="LIVE_DATA">Untuk seluler, perhatikan penggunaan data Anda</string>
   <string name="LOADING">Loading&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Please go to Phone\'s \"Settings\"&#8211;\"Notifications\", find %s and open \'Notifications\'</string>
   <string name="LOCATION">Lokasi:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">daya rendah, silakan dikenakan biaya.</string>
   <string name="Tap1_Magnetism_ClearRecord">Hapus catatan</string>
   <string name="Tap1_Magnetism_Setting_Notify">Beritahu saya jika itu terbuka/tertutup</string>
+  <string name="Tap1_Menu_More">Lebih</string>
   <string name="Tap1_NeedsInitializedTips">kebutuhan kartu SD diinisialisasi dan data akan dibersihkan, pasti untuk melanjutkan?</string>
   <string name="Tap1_NewFirmware">Firmware baru</string>
   <string name="Tap1_NoMessages">Tidak ada pesan</string>

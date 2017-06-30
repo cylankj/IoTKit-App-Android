@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Xoá tin nhắn</string>
   <string name="CODE_ERR">Mã không tồn tại</string>
   <string name="COMFIRM_NEW_PASS">Nhập lại mật khẩu</string>
-  <string name="CONNECTING">Đang có người xem trực tiếp</string>
+  <string name="CONNECTING">Không phản hồi, hãy thử lại</string>
   <string name="CONNECTING_1">Đang kết nối mạng</string>
   <string name="CONN_INTERRUPTED">Đang kết nối mạng</string>
   <string name="CREATING">Đang thêm vào&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Giọng nói</string>
   <string name="DOOR_WIFI_HINT">Trạng thái đèn LED</string>
   <string name="DailyGreatTips_Full">số lượng các Daily Great Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
+  <string name="Daily_Great_NO_CONTENTS">Không có nội dung</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Xóa chia sẻ?</string>
   <string name="Device_Disconnected">Đã ngắt kết nối</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Kéo qua, \n xem nhiều hơn</string>
   <string name="GetCode_FrequentlyTips">Quá thường xuyên hoạt động, xin vui lòng thử lại sau 10 phút.</string>
   <string name="GetWifiList_FaiTips">1.Cho phép ứng dụng nhận \"Location\" phép \n 2.Quay \"GPS\" trên.</string>
+  <string name="H5_Asteroid">Tiểu hành tinh</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Toàn cảnh</string>
+  <string name="H5_VR_mode">Chế độ VR</string>
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 giờ</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Đèn xanh ổn định, 3G/4G Online</string>
   <string name="LIGTH_LABEL_2_1">Nhấp nháy, pin yếu</string>
   <string name="LIGTH_LABEL_2_2">Đèn xanh, đang có nguồn</string>
+  <string name="LIVE_DATA">Đối với cellular, hãy lưu ý việc sử dụng dữ liệu của bạn</string>
   <string name="LOADING">Đang tải&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Trong mục Cài Đặt&#8211;Thông báo trên Phone, tìm %s mở \'Thông báo\'</string>
   <string name="LOCATION">Khu vực</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">điện năng thấp, xin vui lòng tính phí trong thời gian.</string>
   <string name="Tap1_Magnetism_ClearRecord">Dọn bản ghi</string>
   <string name="Tap1_Magnetism_Setting_Notify">Thông báo cho tôi khi nó mở/đóng</string>
+  <string name="Tap1_Menu_More">Thêm</string>
   <string name="Tap1_NeedsInitializedTips">Thẻ SD cần được khởi tạo và dữ liệu sẽ bị xóa, chắc chắn để tiếp tục?</string>
   <string name="Tap1_NewFirmware">Fimware mới</string>
   <string name="Tap1_NoMessages">Không có tin nhắn</string>

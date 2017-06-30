@@ -116,9 +116,6 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                     tvHelp.setText(help);
                 }
                 break;
-            case PLAY_STATE_IDLE:
-                setVisibility(GONE);
-                break;
         }
         Log.d("setState", "setState: " + state);
     }

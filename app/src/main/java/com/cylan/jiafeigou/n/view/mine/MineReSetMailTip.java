@@ -24,7 +24,7 @@ import butterknife.OnClick;
  */
 public class MineReSetMailTip extends Fragment {
 
-    public static final String KEY_MAIL = "key_mail";
+    public static final String KEY_MAIL = "useraccount";
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.tv_mail_address)

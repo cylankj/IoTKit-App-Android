@@ -299,6 +299,14 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                 }
                 break;
         }
+        try {
+//            BaseApplication.getAppComponent().getCmd().enableLog(false,
+//                    BaseApplication.getAppComponent().getLogPath());
+            BaseApplication.getAppComponent().getCmd().enableLog(true,
+                    BaseApplication.getAppComponent().getLogPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @NeedsPermission({Manifest.permission.SYSTEM_ALERT_WINDOW})

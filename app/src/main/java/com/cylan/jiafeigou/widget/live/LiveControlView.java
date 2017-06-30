@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -27,7 +26,7 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
     /**
      * 开始默认是loading状态
      */
-    private int state = PLAY_STATE_PREPARE;
+    private int state = PLAY_STATE_STOP;
 
     private TextView textView;
     private TextView tvHelp;
@@ -104,9 +103,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                     tvHelp.setVisibility(VISIBLE);
                     tvHelp.setText(help);
                 }
-                break;
-            case PLAY_STATE_IDLE:
-                setVisibility(INVISIBLE);
                 break;
         }
         Log.d("setState", "setState: " + state);

@@ -1,19 +1,28 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,13 +79,24 @@ public class AgreementFragment extends Fragment {
         webview.removeJavascriptInterface("searchBoxJavaBridge_");
         webview.removeJavascriptInterface("accessibilityTraversal");
         webview.removeJavascriptInterface("accessibility");
-        webview.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
+        try {
+            webview.setWebViewClient(new CheckServerTrustedWebViewClient(ContextUtils.getContext()) {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+
+            });
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         webview.loadUrl(agreementUrl);
     }
 }

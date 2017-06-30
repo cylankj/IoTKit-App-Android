@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Limpiar caché</string>
   <string name="CODE_ERR">Introduzca el código de prueba válido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nueva contraseña</string>
-  <string name="CONNECTING">Cargando, no pueden averiguar varias personas al mismo tiempo</string>
+  <string name="CONNECTING">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
   <string name="CONNECTING_1">Conectando, espere por favor</string>
   <string name="CONN_INTERRUPTED">Conexión fracasada, confirme la red de la cámara</string>
   <string name="CREATING">Crando, espere por favor&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Sonido</string>
   <string name="DOOR_WIFI_HINT">Indicador LED de estado</string>
   <string name="DailyGreatTips_Full">Número de la colección de Gran día ha alcanzado el límite superior de 50, va a eliminar?</string>
+  <string name="Daily_Great_NO_CONTENTS">Sin contenido</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">¿Eliminar parte?</string>
   <string name="Device_Disconnected">Desconectado</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Deslizar\n para cargar más contenido</string>
   <string name="GetCode_FrequentlyTips">Operaciones demasiado frecuentes, intente nuevamente 10 minutos más tarde.</string>
   <string name="GetWifiList_FaiTips">1.Permitir que la app obtenga el permiso \"Ubicación\" \n 2.Encienda \"GPS\".</string>
+  <string name="H5_Asteroid">Asteroide</string>
+  <string name="H5_Fisheye">Ojo de pez</string>
+  <string name="H5_Panoramic">panorámico</string>
+  <string name="H5_VR_mode">Modo VR</string>
   <string name="HOME">Página de inicio</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Notificación de 24h</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Encendida luz azul, 3G/4G online</string>
   <string name="LIGTH_LABEL_2_1">Rojo parpadeante,batería menos</string>
   <string name="LIGTH_LABEL_2_2">Encendida luz azul, conectado con el circuito elétrico</string>
+  <string name="LIVE_DATA">Para celulares, tenga en cuenta el uso de datos</string>
   <string name="LOADING">Cargando&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Busque en el Phone \"%s\" en la página de \"Aviso&#8211;&#8211;Ajuste\" y elija \"permitir la notificación\"</string>
   <string name="LOCATION">Ubicaci:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">La energía baja, carga por favor en tiempo.</string>
   <string name="Tap1_Magnetism_ClearRecord">Borrar el registro</string>
   <string name="Tap1_Magnetism_Setting_Notify">Notificar me cuando está abierto/cerrado</string>
+  <string name="Tap1_Menu_More">Más</string>
   <string name="Tap1_NeedsInitializedTips">Tarjeta SD necesita ser inicializado y los datos se borraron, seguro de continuar?</string>
   <string name="Tap1_NewFirmware">Nuevo firmware</string>
   <string name="Tap1_NoMessages">Ningún mensaje</string>

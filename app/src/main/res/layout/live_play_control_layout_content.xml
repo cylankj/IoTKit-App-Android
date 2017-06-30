@@ -17,13 +17,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone" />
+            android:src="@drawable/camera_icon_play" />
 
         <com.cylan.jiafeigou.widget.SimpleProgressBar
             android:id="@+id/sp_control_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/x5"
+            android:visibility="gone"
+            hunt:progress_init_loading="false"
             hunt:progress_point_radius="@dimen/x2"
             hunt:progress_radius="@dimen/x20"
             hunt:progress_stroke_color="@color/color_white"

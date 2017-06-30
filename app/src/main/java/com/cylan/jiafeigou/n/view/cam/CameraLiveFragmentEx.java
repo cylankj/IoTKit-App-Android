@@ -41,14 +41,13 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -68,6 +67,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -222,9 +222,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onStart() {
         super.onStart();
         Device device = basePresenter.getDevice();
-        camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        playAfterCheck();
+        //不需要自动播放了
+        if (judge()) {
+            //显示按钮
+        }
+        //        basePresenter.startPlay();
     }
 
     @Override
@@ -256,7 +259,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     throw new IllegalArgumentException("play history time is 0");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
                 //满足条件才需要播放
-                if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow())
+                if (!judge())
                     return;
                 if (String.valueOf(time).length() != String.valueOf(System.currentTimeMillis()).length()) {
                     time = time * 1000L;//确保是毫秒
@@ -264,7 +267,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 camLiveControlLayer.reAssembleHistory(basePresenter, time);
                 return;
             }
-            playAfterCheck();
+            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
             basePresenter.stopPlayVideo(PLAY_STATE_IDLE).subscribe(ret -> {
             }, AppLogger::e);
@@ -274,17 +277,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
     }
 
-    private void playAfterCheck() {
-        //满足条件才需要播放
-        if (!accept()) return;
-        AppLogger.e("playAfterCheck,let go................");
-        basePresenter.startPlay();
-    }
-
     private boolean accept() {
         Intent intent = getActivity().getIntent();
-        if (basePresenter.isDeviceStandby() || camLiveControlLayer.isSightSettingShow() ||
-                intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+        if (!judge() || intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
             return false;
         } else return true;
     }
@@ -292,10 +287,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onResume() {
         super.onResume();
+        camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
+                .getSourceManager().getDevice(getUuid()));
         if (basePresenter != null) {
-            if (!accept()) return;//还没开始播放
+            if (!judge()) return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
+
     }
 
     @Override
@@ -456,6 +454,29 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public boolean isLocalSpeakerOn() {
         return camLiveControlLayer.getSpeakerState() == 3
                 || camLiveControlLayer.getSpeakerState() == 1;
+    }
+
+
+    @Override
+    public boolean judge() {
+        //待机模式
+        if (basePresenter.isDeviceStandby()) {
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
+            camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
+            return false;
+        }
+        //全景,首次使用模式
+        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + getUuid(), false);
+        if (sightShow)
+            return false;
+        //手机数据
+//        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {
+//            ALLOW_PLAY_WITH_MOBILE_NET = true;
+//            //显示遮罩层
+//            camLiveControlLayer.showMobileDataCover(basePresenter);
+//            return false;
+//        }
+        return true;
     }
 
     @Override

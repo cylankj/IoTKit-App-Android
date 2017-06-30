@@ -157,7 +157,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
             item.time = (int) finalVersion;
             FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                    .load(new JFGGlideURL(uuid, item.fileName))
+                    .load(new JFGGlideURL(uuid, item.fileName, item.regionType))
                     .downloadOnly(100, 100);
             String filePath = null;
             try {

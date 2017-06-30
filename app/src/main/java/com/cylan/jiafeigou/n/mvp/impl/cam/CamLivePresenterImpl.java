@@ -75,6 +75,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -372,6 +373,28 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public boolean isDeviceStandby() {
         DpMsgDefine.DPStandby standby = getDevice().$(508, new DpMsgDefine.DPStandby());
         return standby.standby;
+    }
+
+    @Override
+    public boolean judge() {
+        //待机模式
+        if (isDeviceStandby()) {
+            return false;
+        }
+        //全景,首次使用模式
+        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + getUuid(),
+                false);
+        if (sightShow)
+            return false;
+        //手机数据
+//        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {
+//            ALLOW_PLAY_WITH_MOBILE_NET = true;
+//            //显示遮罩层
+//            camLiveControlLayer.showMobileDataCover(basePresenter);
+//            return false;
+//        }
+        return true;
+
     }
 
     @Override
@@ -934,11 +957,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private NetworkAction networkAction;
 
     private static class NetworkAction {
-        private int preState = 0;
+        private int preNetType = 0;
         private WeakReference<CamLivePresenterImpl> presenterWeakReference;
 
         public NetworkAction(CamLivePresenterImpl camLivePresenter) {
-            preState = NetUtils.getJfgNetType();
+            preNetType = NetUtils.getJfgNetType();
             this.presenterWeakReference = new WeakReference<>(camLivePresenter);
         }
 
@@ -949,8 +972,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> presenterWeakReference.get().mView != null)
                         .subscribe(ret -> {
                             int net = NetUtils.getJfgNetType();
-                            if (preState == net) return;
-                            preState = net;
+                            if (preNetType == net) return;
+                            preNetType = net;
                             if (net == 0) {
                                 AppLogger.i("网络中断");
                                 presenterWeakReference.get().mView.onNetworkChanged(false);

@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Очистить кэш</string>
   <string name="CODE_ERR">Пожалуйста, введите верный пароль</string>
   <string name="COMFIRM_NEW_PASS">Снова введите новый пароль</string>
-  <string name="CONNECTING">Кто&#8211;то уже смотрит live video</string>
+  <string name="CONNECTING">Нет ответа, пожалуйста, попробуйте еще раз</string>
   <string name="CONNECTING_1">Подключение к интернету, пожалуйста, подождите</string>
   <string name="CONN_INTERRUPTED">Соединение прервано, пожалуйста, проверьте подключение веб&#8211;камеры</string>
   <string name="CREATING">Загрузка&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Голос</string>
   <string name="DOOR_WIFI_HINT">Светодиодный индикатор состояния</string>
   <string name="DailyGreatTips_Full">Число коллекции Ежедневное чудо достиг верхнего предела 50, собирается удалять?</string>
+  <string name="Daily_Great_NO_CONTENTS">Без содержания</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Удалить общий доступ?</string>
   <string name="Device_Disconnected">Отключен</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Слайд, \n показать больше информации </string>
   <string name="GetCode_FrequentlyTips">Слишком часто операции, попробуйте еще раз 10 минут позже.</string>
   <string name="GetWifiList_FaiTips">1.Разрешить app получить \"Location\" разрешения \n 2.Включите \"GPS\" на.</string>
+  <string name="H5_Asteroid">астероид</string>
+  <string name="H5_Fisheye">Рыбий</string>
+  <string name="H5_Panoramic">панорамный</string>
+  <string name="H5_VR_mode">Режим VR</string>
   <string name="HOME">Главная</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Круглосуточно</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Горит голубая лампочка, 3G/4G подключен</string>
   <string name="LIGTH_LABEL_2_1">мигающая лампочка,Заряда батареи низкий</string>
   <string name="LIGTH_LABEL_2_2">Горит голубая лампочка, нормальная подача электричества </string>
+  <string name="LIVE_DATA">Для сотовой связи обратите внимание на использование данных</string>
   <string name="LOADING">Загрузка&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Пожалуйста, через настройки&#8211;уведомления на вашем Phone, найдите %s и откройте уведомления</string>
   <string name="LOCATION">Местоположение:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">Низкая мощность, пожалуйста, зарядите вовремя.</string>
   <string name="Tap1_Magnetism_ClearRecord">Очистить отчет</string>
   <string name="Tap1_Magnetism_Setting_Notify">Сообщите мне, когда оно открыто/закрыто</string>
+  <string name="Tap1_Menu_More">Больше</string>
   <string name="Tap1_NeedsInitializedTips">потребности карты SD для инициализации и данные будут очищены, обязательно продолжить?</string>
   <string name="Tap1_NewFirmware">Новая прошивка</string>
   <string name="Tap1_NoMessages">Нет сообщений</string>

@@ -565,7 +565,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    private void prepareNext(int position) {
+    private void prepareNext(View itemView, int position) {
         Device device = mItemAdapter.getItem(position).getDevice();
         if (device != null && !TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
@@ -573,8 +573,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             if (JFGRules.isPan720(device.pid)) {
                 startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             } else if (JFGRules.isCamera(device.pid)) {
-                startActivity(new Intent(getActivity(), CameraLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+                Intent in = new Intent(getActivity(), CameraLiveActivity.class);
+                View tip = itemView.findViewById(R.id.img_device_icon);
+                if (tip != null && tip instanceof ImageViewTip) {
+                    if (((ImageViewTip) tip).isShowDot())
+                        in.putExtra(JConstant.KEY_NEW_MSG_PASS, JConstant.KEY_NEW_MSG_PASS);
+                }
+                in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
+                startActivity(in);
             } else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
@@ -582,26 +588,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    private void prepareNext(int position, boolean jump2Message) {
-        Device device = mItemAdapter.getItem(position).getDevice();
-        if (device != null && !TextUtils.isEmpty(device.uuid)) {
-            Intent intent = new Intent();
-            //有新消息
-            if (jump2Message)
-                intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
-            if (JFGRules.isPan720(device.pid)) {
-                intent.setClass(getActivity(), PanoramaCameraActivity.class);
-                startActivity(intent);
-            } else if (JFGRules.isCamera(device.pid)) {
-                intent.setClass(getActivity(), CameraLiveActivity.class);
-                startActivity(intent);
-            } else if (JFGRules.isBell(device.pid)) {
-                intent.setClass(getActivity(), DoorBellHomeActivity.class);
-                startActivity(intent);
-            }
-        }
-    }
 
     @Override
     public void onDialogAction(int id, Object value) {
@@ -622,9 +608,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public boolean onClick(View v, IAdapter<HomeItem> adapter, HomeItem item, int position) {
         if (position != -1) {
-            boolean hasNew = ((ImageViewTip) v.findViewById(R.id.img_device_icon))
-                    .isShowDot();
-            prepareNext(position, hasNew);
+            prepareNext(v, position);
         } else {
             AppLogger.e("dis match position : " + position);
         }

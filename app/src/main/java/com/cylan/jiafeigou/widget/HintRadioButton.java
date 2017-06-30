@@ -14,7 +14,7 @@ import android.util.Log;
 import com.cylan.jiafeigou.R;
 
 /**
- * Created by hds on 17-6-14.
+ * Created by hds on 17-6-28.
  */
 
 public class HintRadioButton extends AppCompatRadioButton {
@@ -41,11 +41,11 @@ public class HintRadioButton extends AppCompatRadioButton {
 
     public HintRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray typedArray =
-                getContext().obtainStyledAttributes(attrs, R.styleable.Cbutton, defStyleAttr, 0);
-        int pointColor = typedArray.getColor(R.styleable.Cbutton_cb_color, Color.RED);
-        defaultRadius = typedArray.getDimension(R.styleable.Cbutton_cb_radius, 5);
-        paddingTop = typedArray.getDimension(R.styleable.Cbutton_cb_padding_top, 0);
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs,
+                R.styleable.HintRadioButton, defStyleAttr, 0);
+        int pointColor = typedArray.getColor(R.styleable.HintRadioButton_cb_color, Color.RED);
+        defaultRadius = typedArray.getDimension(R.styleable.HintRadioButton_cb_radius, 5);
+        paddingTop = typedArray.getDimension(R.styleable.HintRadioButton_cb_padding_top, 0);
         mPaint.setColor(pointColor);
         typedArray.recycle();
     }
