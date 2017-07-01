@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsAddFriendPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import permissions.dispatcher.NeedsPermission;
@@ -89,12 +90,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
     private void jump2AddByNumberFragment() {
         MineFriendSearchFragment addByNumFragment = MineFriendSearchFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addByNumFragment, addByNumFragment.getClass().getName())
-                .addToBackStack("AddFlowStack")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), addByNumFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     private void jump2AddFromContactFragment() {

@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -136,7 +137,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
             case R.id.change_name_message_title:
                 ViewUtils.deBounceClick(friendDetailBinding.changeNameMessageTitle);
@@ -245,12 +246,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
         Bundle addReqBundle = new Bundle();
         addReqBundle.putParcelable("friendItem", friendItem);
         MineAddFromContactFragment addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addReqFragment, addReqFragment.getClass().getName())
-                .addToBackStack("AddFlowStack")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), addReqFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     /**

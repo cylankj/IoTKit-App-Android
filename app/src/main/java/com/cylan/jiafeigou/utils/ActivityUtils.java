@@ -98,6 +98,26 @@ public class ActivityUtils {
         return true;
     }
 
+    public static boolean addFragmentSlideInFromRight(FragmentManager fragmentManager, Fragment fragment, int containerId, String stackName) {
+        final String tag = fragment.getClass().getSimpleName();
+        Fragment f = fragmentManager.findFragmentByTag(tag);
+        if (f != null && f.isVisible()) {
+            return false;
+        }
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in,
+                        R.anim.slide_out_left,
+                        R.anim.slide_out_right,
+                        R.anim.slide_out_right)
+                .add(containerId, fragment, tag)
+                .addToBackStack(stackName)
+                .commitAllowingStateLoss();
+        return true;
+    }
+
+
     public static boolean addFragmentSlideInFromRight(FragmentManager fragmentManager, Fragment fragment, int containerId, boolean noStack) {
         final String tag = fragment.getClass().getSimpleName();
         Fragment f = fragmentManager.findFragmentByTag(tag);

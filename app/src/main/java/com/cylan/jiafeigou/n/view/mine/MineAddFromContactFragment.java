@@ -122,7 +122,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void showResultDialog(RxEvent.CheckAccountCallback callback) {
         if (callback.code == JError.ErrorFriendAlready | callback.isFriend) {
             ToastUtil.showToast(getString(R.string.Tap3_Added));
-            getActivity().getSupportFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else if (callback.code == JError.ErrorFriendToSelf) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
@@ -162,7 +162,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void sendReqBack(int code) {
         if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-            getActivity().getSupportFragmentManager().popBackStack("AddFlowStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else if (code == JError.ErrorFriendToSelf) {
             ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
@@ -183,7 +183,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
                 presenter.checkAccount(friendContextItem.friendRequest.account);
                 break;
             case R.id.tv_toolbar_icon:
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
         }
     }

@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -30,6 +31,8 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 /**
  * 作者：zsl
@@ -146,7 +149,7 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_friends_add_by_num_back:
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), POP_BACK_STACK_INCLUSIVE);
                 break;
         }
     }
@@ -173,12 +176,8 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
         Bundle bundle = new Bundle();
         bundle.putParcelable("friendItem", friendContextItem);
         MineFriendInformationFragment friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, friendInformationFragment, "relativeAndFrienDetialFragment")
-                .addToBackStack("mineHelpFragment")
-                .commit();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                friendInformationFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     /**
