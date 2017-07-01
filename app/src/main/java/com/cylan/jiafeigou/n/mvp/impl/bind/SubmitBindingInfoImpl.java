@@ -207,14 +207,14 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
                         timeZone.timezone = TimeZone.getDefault().getID();
                         ArrayList<JFGDPMsg> list = new ArrayList<>();
-                        JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
-                        _303.packValue = DpUtils.pack(2);
-                        JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
-                        _501.packValue = DpUtils.pack(false);
                         JFGDPMsg _timeZone = new JFGDPMsg(214, System.currentTimeMillis());
                         _timeZone.packValue = timeZone.toBytes();
                         boolean isRs = JFGRules.isRS(device.pid);
                         if (isRs) {
+                            JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
+                            _303.packValue = DpUtils.pack(2);
+                            JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
+                            _501.packValue = DpUtils.pack(false);
                             list.add(_303);
                             list.add(_501);
                         }

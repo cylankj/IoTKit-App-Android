@@ -188,9 +188,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         }
     }
 
-    private static final Pattern vidReg = Pattern.compile("vid=[0-9a-zA-Z]{0,12}");
-    private static final Pattern pidReg = Pattern.compile("pid=\\d{0,12}");
-    private static final Pattern snReg = Pattern.compile("sn=[0-9a-zA-Z]{0,64}");
+    public static final Pattern vidReg = Pattern.compile("vid=[0-9a-zA-Z]{0,12}", Pattern.CASE_INSENSITIVE);
+    public static final Pattern pidReg = Pattern.compile("pid=\\d{0,12}", Pattern.CASE_INSENSITIVE);
+    public static final Pattern snReg = Pattern.compile("sn=[0-9a-zA-Z]{0,64}", Pattern.CASE_INSENSITIVE);
 
     private void handleScanResult(String content) {
         Matcher matcher = vidReg.matcher(content);

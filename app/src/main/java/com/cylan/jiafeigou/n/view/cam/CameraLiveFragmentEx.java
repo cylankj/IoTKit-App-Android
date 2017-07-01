@@ -273,7 +273,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }, AppLogger::e);
             AppLogger.d("stop play");
         } else {
-            AppLogger.d("not ready ");
+            AppLogger.d("not ready :" + "isResumed?" + isResumed());
         }
     }
 
@@ -287,6 +287,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("isResumed", "isResumed: " + getUserVisibleHint());
         camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
                 .getSourceManager().getDevice(getUuid()));
         if (basePresenter != null) {
@@ -294,7 +295,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 return;//还没开始播放
             basePresenter.restoreHotSeatState();
         }
-
     }
 
     @Override

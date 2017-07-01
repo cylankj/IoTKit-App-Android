@@ -167,6 +167,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
     private ObjectAnimator countDownAnimator;
+    /**
+     * 保存前一次的网络类型,只有改变的时候才 toast
+     */
+    private int preNetType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -892,7 +896,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             if (!hasNetSetting) {
                 presenter.startViewer();
             }
-            ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
+            if (preNetType != connectionType)
+                ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
         } else if (connectionType == 1) {//mobile
             AppLogger.d("正在使用移动网络,请注意流量");
             boolean alert = PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
@@ -921,6 +926,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 presenter.startViewer();
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedNetwork));
             }
+            preNetType = connectionType;
         }
     }
 

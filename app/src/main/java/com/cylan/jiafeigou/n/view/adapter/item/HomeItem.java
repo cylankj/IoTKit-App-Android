@@ -177,10 +177,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         holder.setImageResource(R.id.img_device_icon, iconRes);
         handleMsgCountAndTime(holder, uuid, mDevice);
         //右下角状态
-        setItemState(holder, uuid, net);
         if (JFGRules.isPan720(mDevice.pid)) {
             handlePan720RightIcon(holder);
-        }
+        } else setItemState(holder, uuid, net);
     }
 
     /**
