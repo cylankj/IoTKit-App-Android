@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -41,7 +42,7 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ads_detail);
         ButterKnife.bind(this);
-        final AdsStrategy.AdsDescription description = getIntent().getParcelableExtra(JConstant.KEY_ADD_DESC);
+        final AdsStrategy.AdsDescription description = getIntent().getParcelableExtra(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType());
         if (description == null) {
             throw new IllegalArgumentException("错了");
         }

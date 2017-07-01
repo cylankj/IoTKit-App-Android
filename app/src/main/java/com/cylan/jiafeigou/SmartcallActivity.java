@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
@@ -268,7 +269,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                             //需要显示广告.
                             AppLogger.d("显示广告");
                             Intent intent = new Intent(SmartcallActivity.this, AdsActivity.class);
-                            intent.putExtra(JConstant.KEY_ADD_DESC, ret);
+                            intent.putExtra(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), ret);
                             startActivityForResult(intent, JConstant.CODE_AD_FINISH);
                         } else {
                             //跳过广告

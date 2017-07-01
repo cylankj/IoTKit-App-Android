@@ -695,7 +695,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public Observable<Boolean> stopPlayVideo(int reasonOrState) {
         AppLogger.d("pre play state: " + liveStream);
-        if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE)
+        if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
+                || liveStream.playState == PLAY_STATE_STOP)
             return Observable.just(false);
         if (getLiveStream().playState == PLAY_STATE_PLAYING) {
             //暂停播放了，还需要截图
@@ -771,16 +772,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public Observable<Boolean> switchStreamMode(int mode) {
         return Observable.just(mode)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<Integer, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Integer integer) {
-                        DpMsgDefine.DPPrimary<Integer> dpPrimary = new DpMsgDefine.DPPrimary<>(integer);
-                        try {
-                            AppLogger.e("还需要发送局域网消息");
-                            return Observable.just(BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, dpPrimary, 513));
-                        } catch (IllegalAccessException e) {
-                            return Observable.just(false);
-                        }
+                .flatMap(integer -> {
+                    DpMsgDefine.DPPrimary<Integer> dpPrimary = new DpMsgDefine.DPPrimary<>(integer);
+                    try {
+                        AppLogger.e("还需要发送局域网消息");
+                        return Observable.just(BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, dpPrimary, 513));
+                    } catch (IllegalAccessException e) {
+                        return Observable.just(false);
                     }
                 });
     }

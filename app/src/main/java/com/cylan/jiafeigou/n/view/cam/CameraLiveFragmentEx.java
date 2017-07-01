@@ -68,7 +68,6 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -221,6 +220,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onStart() {
         super.onStart();
+        Log.d("isResumed", "start isResumed: " + getUserVisibleHint());
         Device device = basePresenter.getDevice();
         camLiveControlLayer.onActivityStart(basePresenter, device);
         //不需要自动播放了
@@ -228,6 +228,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             //显示按钮
         }
         //        basePresenter.startPlay();
+        if (getUserVisibleHint())
+            camLiveControlLayer.showUseCase();
     }
 
     @Override
@@ -248,6 +250,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (basePresenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
+            camLiveControlLayer.showUseCase();
             Device device = basePresenter.getDevice();
             DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
             if (standby.standby) return;
@@ -265,7 +268,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     time = time * 1000L;//确保是毫秒
                 }
                 camLiveControlLayer.reAssembleHistory(basePresenter, time);
-                return;
             }
 //            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {

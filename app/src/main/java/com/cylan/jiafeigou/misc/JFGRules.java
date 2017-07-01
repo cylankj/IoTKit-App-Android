@@ -104,6 +104,10 @@ public class JFGRules {
 
     private static final Locale LOCALE_HK = new Locale("zh", "HK");
 
+    public static int getLanguageType() {
+        return getLanguageType(ContextUtils.getContext());
+    }
+
     public static int getLanguageType(Context ctx) {
         Locale locale = ctx.getResources().getConfiguration().locale;
         if (locale.equals(LOCALE_HK))

@@ -88,7 +88,7 @@ public class AdsStrategy {
                             .subscribeOn(AndroidSchedulers.mainThread())
                             .flatMap(adsRsp -> {
                                 AppLogger.d("广告啊:" + adsRsp);
-                                String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
+                                String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), "");
                                 if (!TextUtils.isEmpty(content)) {
                                     //判断是否同一个广告
                                     try {
@@ -143,7 +143,7 @@ public class AdsStrategy {
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         //下载成功,才发出
                         AppLogger.d("广告下载成功: ");
-                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC, new Gson().toJson(description));
+                        PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), new Gson().toJson(description));
                     }
                 });
     }
@@ -172,7 +172,7 @@ public class AdsStrategy {
 //                        //非简体中文
 //                        return null;
 //                    }
-                    String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC, "");
+                    String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), "");
                     if (TextUtils.isEmpty(content)) {
                         AdsStrategy.getStrategy().fetchAds();
                         return null;

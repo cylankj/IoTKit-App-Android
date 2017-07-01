@@ -278,6 +278,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
         });
         AppLogger.d("需要重置清晰度");
+    }
+
+    public void showUseCase() {
         LiveShowCase.show((Activity) getContext(), layoutD, findViewById(R.id.imgV_cam_zoom_to_full_screen));
     }
 

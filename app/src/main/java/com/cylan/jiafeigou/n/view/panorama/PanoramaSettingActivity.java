@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
@@ -41,11 +43,16 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     CustomToolbar toolbarContainer;
     @BindView(R.id.sv_setting_device_detail)
     SettingItemView0 deviceDetail;
+    @BindView(R.id.sv_setting_device_wifi)
+    SettingItemView0 svSettingDeviceWifi;
+    @BindView(R.id.sv_setting_device_mode)
+    SettingItemView0 svSettingDeviceMode;
 
 
     @Override
     public void onStart() {
         super.onStart();
+        attributeUpdate();
     }
 
     @Override
@@ -142,5 +149,30 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
             ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             startActivity(new Intent(this, NewHomeActivity.class));//回到主页
         }
+    }
+
+    @Override
+    public void attributeUpdate() {
+        Device mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        boolean isAp = JFGRules.isAPDirect(mDevice.uuid, mDevice.$(202, ""));
+        if (isAp) {
+            svSettingDeviceWifi.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            svSettingDeviceMode.setTvSubTitle(getString(R.string.Tap1_OutdoorMode_Opened));
+        } else {
+            svSettingDeviceMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
+            if (JFGRules.isDeviceOnline(net)) {
+                svSettingDeviceWifi.setTvSubTitle(net.ssid);
+            } else svSettingDeviceWifi.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+        }
+
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }
