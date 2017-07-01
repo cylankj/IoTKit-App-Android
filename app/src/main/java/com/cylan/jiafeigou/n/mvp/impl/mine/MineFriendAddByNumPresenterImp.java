@@ -124,12 +124,8 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
                 .doOnTerminate(() -> getView().hideLoading())
-                .subscribe(result -> {
-                    FriendContextItem friendContextItem = null;
-
-
+                .subscribe(friendContextItem -> {
                     getView().onCheckFriendResult(friendContextItem);
-
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
