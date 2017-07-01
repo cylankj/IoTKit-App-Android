@@ -612,6 +612,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 setLoadingState(getContext().getString(R.string.GLOBAL_NO_NETWORK), net == 0 ? getContext().getString(R.string.USER_HELP) : null);
                 break;
             case STOP_MAUNALLY:
+            case PLAY_STATE_STOP:
                 livePlayState = PLAY_STATE_STOP;
                 setLoadingState(null, null);
                 break;
