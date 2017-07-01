@@ -218,13 +218,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
 
-        if (basePresenter.checkOpenLogIn()) {
-            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
-                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
-                showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
-                return;
-            }
-        }
+//        if (basePresenter.checkOpenLogIn()) {
+//            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
+//                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
+//                showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
+//                return;
+//            }
+//        }
 //
 //        MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
 //        getActivity().getSupportFragmentManager().beginTransaction()

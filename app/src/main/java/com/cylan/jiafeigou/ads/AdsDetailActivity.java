@@ -9,6 +9,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -24,6 +28,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,9 +86,20 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
         customToolbar.setBackAction(v -> onClick());
         customToolbar.getTvToolbarRight().setOnClickListener(v -> {
             AppLogger.d("分享");
-            ShareManager.byH5(AdsDetailActivity.this)
-                    .withThumb(description.tagUrl)
-                    .share();
+            Glide.with(this)
+                    .load(description.url)
+                    .downloadOnly(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                            ShareManager.byWeb(AdsDetailActivity.this)
+                                    .withUrl(description.tagUrl)
+                                    .withDescription(" dd")
+                                    .withThumb(resource.getAbsolutePath())
+                                    .withTitle(" aaa")
+                                    .share();
+                        }
+                    });
+
             if (customToolbar.getTvToolbarRight() != null) {
                 ViewUtils.setDrawablePadding(customToolbar.getTvToolbarRight(), R.drawable.details_icon_share, 0);
             }
@@ -106,7 +123,7 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
             //没有登录,跳转到登录页面.
             setResult(JConstant.CODE_AD_FINISH);
         }
-        finishExt();
+        finish();
     }
 
     @Override

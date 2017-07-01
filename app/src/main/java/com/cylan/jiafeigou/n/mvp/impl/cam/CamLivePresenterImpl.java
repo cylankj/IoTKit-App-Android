@@ -256,6 +256,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         this.liveStream = prePlayType;
     }
 
+
     @Override
     public float getVideoPortHeightRatio() {
         AppLogger.d("获取分辨率?");
@@ -553,6 +554,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution) + "," + Thread.currentThread().getName());
                             try {
                                 getView().onResolution(resolution);
+                                //保存分辨率
+                                PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
