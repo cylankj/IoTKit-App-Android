@@ -597,7 +597,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                .subscribeOn(Schedulers.newThread())
 //                .flatMap(new Func1<String, Observable<Boolean>>() {
 //                    @Override
-//                    public Observable<Boolean> call(String s) {
+//                    public Observable<Boolean> call(String account) {
 //                        return null;
 //                    }
 //                })

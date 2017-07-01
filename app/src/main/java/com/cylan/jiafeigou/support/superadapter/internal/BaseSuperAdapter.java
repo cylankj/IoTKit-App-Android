@@ -157,7 +157,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
     /**
      * Get the data item associated with the specified position in the data set.
      *
-     * @param position Position of the item whose data we want within the adapter's
+     * @param position Position of the item whose data we want within the adapter'account
      *                 data set.
      * @return The data at the specified position.
      */
@@ -171,7 +171,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
     /**
      * Get the row msgId associated with the specified position in the list.
      *
-     * @param position The position of the item within the adapter's data set whose row msgId we want.
+     * @param position The position of the item within the adapter'account data set whose row msgId we want.
      * @return The msgId of the item at the specified position.
      */
     @Override
@@ -201,7 +201,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
      * {@link LayoutInflater#inflate(int, ViewGroup, boolean)}
      * to specify a root view and to prevent attachment to the root.
      *
-     * @param position    The position of the item within the adapter's data set of the item whose view
+     * @param position    The position of the item within the adapter'account data set of the item whose view
      *                    we want.
      * @param convertView The old view to reuse, if possible. Note: You should check that this view
      *                    is non-null and of an appropriate type before using. If it is not possible to convert
@@ -223,7 +223,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
     /**
      * Get the type of View that will be created by {@link #getView} for the specified item.
      *
-     * @param position The position of the item within the adapter's data set whose view type we
+     * @param position The position of the item within the adapter'account data set whose view type we
      *                 want.
      * @return An integer representing the type of View. Two views should share the same type if one
      * can be converted to the other in {@link #getView}. Note: Integers must be in the

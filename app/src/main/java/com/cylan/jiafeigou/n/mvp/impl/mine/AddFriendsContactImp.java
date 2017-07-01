@@ -268,10 +268,10 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
      */
     private void handlerCheckAccountResult(RxEvent.CheckAccountCallback checkAccountCallback) {
         if (getView() != null) {
-            if (checkAccountCallback.i == 240) {
+            if (checkAccountCallback.code == 240) {
                 //未注册发送短信
                 getView().openSendSms();
-            } else if (checkAccountCallback.i == 0) {
+            } else if (checkAccountCallback.code == 0) {
                 //已注册
                 getView().jump2SendAddMesgFragment();
             }

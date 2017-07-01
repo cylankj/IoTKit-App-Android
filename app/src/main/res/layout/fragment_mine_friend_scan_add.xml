@@ -1,92 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:clickable="true"
-    android:orientation="vertical"
-    tools:context=".n.view.mine.MineFriendScanAddFragment">
+<layout>
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/layout_default_custom_tool_bar"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:hunt="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp18"
-        hunt:ct_enable_theme="true"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_left_title="@string/Tap3_FriendsAdd_QR"
-        hunt:ct_left_title_color="@color/color_white" />
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true"
+        tools:context=".n.view.mine.MineFriendQRScanFragment">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.cylan.jiafeigou.support.zscan.ZXingScannerView
-            android:id="@+id/zxV_scan_add_relativesandfriend"
-            android:layout_width="@dimen/x260"
-            android:layout_height="@dimen/y260"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/y26"
-            hunt:hint="" />
-
-        <RelativeLayout
-            android:id="@+id/rl_send_pro_hint"
-            android:layout_width="wrap_content"
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/y120"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/pro_send_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" />
-
-            <TextView
-                android:id="@+id/tv_send_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/pro_send_hint"
-                android:text="loading..."
-                android:textColor="@color/color_black" />
-        </RelativeLayout>
+            android:textSize="@dimen/sp18"
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_theme="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_left_title="@string/Tap3_FriendsAdd_QR"
+            hunt:ct_left_title_color="@color/color_white"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
-    </FrameLayout>
+            android:background="@drawable/little_shape"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y18"
-        android:text="@string/Tap3_FriendsAdd_QR_Tips"
-        android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp16" />
 
-    <ImageView
-        android:id="@+id/iv_erweima"
-        android:layout_width="@dimen/x86"
-        android:layout_height="@dimen/x86"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y63"
-        android:background="@drawable/my_qrcode_bg_shape"
-        android:padding="@dimen/x4" />
+        <com.cylan.jiafeigou.support.zscan.ZXingScannerView
+            android:id="@+id/qr_scan_view"
+            android:layout_width="@dimen/y260"
+            android:layout_height="@dimen/y260"
+            android:layout_marginTop="@dimen/y26"
+            hunt:hint=""
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y18"
-        android:text="@string/Tap3_MyQRCode"
-        android:textColor="@color/color_33333"
-        android:textSize="@dimen/sp16" />
+        <TextView
+            android:id="@+id/friend_add_QR_tips_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
+            android:layout_marginStart="@dimen/y15"
+            android:layout_marginTop="@dimen/y18"
+            android:ellipsize="end"
+            android:text="@string/Tap3_FriendsAdd_QR_Tips"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp16"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/qr_scan_view" />
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/qr_code_picture"
+            android:layout_width="@dimen/y86"
+            android:layout_height="@dimen/y86"
+            android:layout_marginTop="@dimen/y63"
+            android:background="@drawable/my_qrcode_bg_shape"
+            android:padding="@dimen/y4"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/friend_add_QR_tips_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y18"
+            android:text="@string/Tap3_MyQRCode"
+            android:textColor="@color/color_33333"
+            android:textSize="@dimen/sp16"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/qr_code_picture" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

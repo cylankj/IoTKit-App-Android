@@ -39,8 +39,9 @@ import butterknife.OnClick;
 /**
  * 作者：zsl
  * 创建时间：2016/9/21
- * 描述：
+ * 描述：该类已废弃,请使用 MineFriendInformationFragment
  */
+@Deprecated
 public class AddFriendReqDetailFragment extends Fragment implements MineFriendAddReqDetailContract.View {
 
     @BindView(R.id.iv_detail_user_head)

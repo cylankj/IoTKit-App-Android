@@ -68,7 +68,7 @@ public class DurationDialogFragment extends BaseDialog<Integer> {
 
             @Override
             protected CharSequence getItemText(int index) {
-                return index + 1 + " s";
+                return index + 1 + " account";
             }
         };
         newValue = value;

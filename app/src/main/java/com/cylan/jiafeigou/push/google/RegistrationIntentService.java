@@ -42,7 +42,7 @@ public class RegistrationIntentService extends IntentService {
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
 
-            // TODO: Implement this method to send any registration to your app's servers.
+            // TODO: Implement this method to send any registration to your app'account servers.
             sendRegistrationToServer(token);
 
             // Subscribe to topic channels
@@ -67,7 +67,7 @@ public class RegistrationIntentService extends IntentService {
     /**
      * Persist registration to third-party servers.
      * <p>
-     * Modify this method to associate the user's GCM registration token with any server-side account
+     * Modify this method to associate the user'account GCM registration token with any server-side account
      * maintained by your application.
      *
      * @param token The new token.

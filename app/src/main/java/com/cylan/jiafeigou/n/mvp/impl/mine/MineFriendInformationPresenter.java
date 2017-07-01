@@ -14,12 +14,14 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendInformationContact;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -76,13 +78,13 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
     }
 
     @Override
-    public void deleteFriend(String account) {
+    public void deleteFriend(FriendContextItem friendContextItem) {
         Subscription subscription = Observable.just("deleteFriend")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().delFriend(account);
+                        BaseApplication.getAppComponent().getCmd().delFriend(friendContextItem.friendAccount.account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -103,9 +105,57 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
     }
 
     @Override
-    public void addFriend(String account) {
+    public void addFriend(FriendContextItem friendContextItem) {
+        Subscription subscribe = Observable.just("addFriend")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .filter(cmd -> {
+                    //是接受添加请求还是主动添加请求,如果是主动添加请求则跳转到设置 SayHi 页面,接受添加请求才继续往下走
+                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {//无网络连接
+                        getView().onNetStateChanged(0);
+                        return false;
+                    } else if (TextUtils.isEmpty(friendContextItem.friendRequest.sayHi)) {
+                        //主动添加请求,不继续走下面的逻辑了
+                        getView().onRequestByOwner(friendContextItem);
+                        return false;
+                    } else if (!checkRequestAvailable(friendContextItem)) {
+                        getView().onRequestExpired(friendContextItem);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().consentAddFriend(friendContextItem .friendRequest.account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.e(e.getMessage());
+                    }
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.ConsentAddFriendBack.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
+                .doOnTerminate(() -> getView().hideLoading())
+                .subscribe(ret -> {
+                    getView().acceptItemRsp(friendContextItem, ret == null ? -1 : ret.jfgResult.code);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
 
     }
+
+    public boolean checkRequestAvailable(FriendContextItem bean) {
+        long oneMonth = 30 * 24 * 60 * 60 * 1000L;
+        long current = System.currentTimeMillis();
+        boolean isLongTime = String.valueOf(bean.friendRequest.time).length() == String.valueOf(current).length();
+        return (current - (isLongTime ? bean.friendRequest.time : bean.friendRequest.time * 1000L)) < oneMonth;
+    }
+
 
     @Override
     public int getOwnerDeviceCount() {

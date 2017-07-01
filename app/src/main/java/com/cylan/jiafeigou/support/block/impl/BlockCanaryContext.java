@@ -87,7 +87,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
 
     /**
      * Config monitor duration, after this startTime BlockCanary will stop, use
-     * with {@link BlockCanary}'s isMonitorDurationEnd
+     * with {@link BlockCanary}'account isMonitorDurationEnd
      *
      * @return monitor last duration (in hour)
      */

@@ -33,7 +33,7 @@ import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 /**
  * Created by Jacksgong on 3/27/16.
  * <p/>
- * The panel container linear layout for full-screen theme window, and this layout's height would
+ * The panel container linear layout for full-screen theme window, and this layout'account height would
  * be always equal to the height of the keyboard.
  * <p/>
  * For non-full-screen theme window, please use {@link KPSwitchPanelLinearLayout} instead.

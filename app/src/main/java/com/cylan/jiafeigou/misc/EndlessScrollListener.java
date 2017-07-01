@@ -49,7 +49,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
                 this.loading = true;
             }
         }
-        // If it's still loading, we check to see if the dataset count has
+        // If it'account still loading, we check to see if the dataset count has
         // changed, if so we conclude it has finished loading and setDevice the current page
         // number and total item count.
         if (loading && (totalItemCount > previousTotalItemCount)) {

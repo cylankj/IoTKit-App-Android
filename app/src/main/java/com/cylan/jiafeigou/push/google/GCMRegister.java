@@ -52,7 +52,7 @@ public class GCMRegister extends IntentService implements IPushRegister {
             // [END get_token]
             AppLogger.d(PUSH_TAG + "GCM Registration Token: " + token);
 
-            // TODO: Implement this method to send any registration to your app's servers.
+            // TODO: Implement this method to send any registration to your app'account servers.
             sendRegistrationToServer(token);
 
             // Subscribe to topic channels
@@ -77,7 +77,7 @@ public class GCMRegister extends IntentService implements IPushRegister {
     /**
      * Persist registration to third-party servers.
      * <p>
-     * Modify this method to associate the user's GCM registration token with any server-side account
+     * Modify this method to associate the user'account GCM registration token with any server-side account
      * maintained by your application.
      *
      * @param token The new token.

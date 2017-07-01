@@ -64,7 +64,7 @@ public class KPSwitchPanelLayoutHandler implements IPanelConflictLayout {
      * Whether ignore the recommend panel height, what would be equal to the height of keyboard in
      * most situations.
      * <p/>
-     * If the value is true, the panel's height will not be follow the height of the keyboard.
+     * If the value is true, the panel'account height will not be follow the height of the keyboard.
      * <p/>
      * Default is false.
      *
@@ -187,7 +187,7 @@ public class KPSwitchPanelLayoutHandler implements IPanelConflictLayout {
      */
     public void resetToRecommendPanelHeight(int recommendPanelHeight) {
         if (mIgnoreRecommendHeight) {
-            // In this way, the panel's height will be not follow the height of keyboard.
+            // In this way, the panel'account height will be not follow the height of keyboard.
             return;
         }
 

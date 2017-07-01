@@ -498,12 +498,12 @@
 //                            presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
 //                        } else
 //                            presenterRef.get().startPlay(presenterRef.get().getPlayType());
-//                        AppLogger.i(String.format("land play history: %s", presenterRef.get().getPlayType()));
+//                        AppLogger.i(String.format("land play history: %account", presenterRef.get().getPlayType()));
 //                    } else {
 //                        long time = camLiveControlLayer.getSwCamLiveWheel()
 //                                .getCurrentFocusTime();
 //                        presenterRef.get().startPlayHistory(time);
-//                        AppLogger.i(String.format("land play history: %s", time));
+//                        AppLogger.i(String.format("land play history: %account", time));
 //                    }
 //                }
 //                break;
@@ -527,7 +527,7 @@
 //                }
 //                break;
 //        }
-//        AppLogger.i(String.format("onClick play: %s", (presenterRef != null && presenterRef.get() != null)));
+//        AppLogger.i(String.format("onClick play: %account", (presenterRef != null && presenterRef.get() != null)));
 //    }
 //
 //

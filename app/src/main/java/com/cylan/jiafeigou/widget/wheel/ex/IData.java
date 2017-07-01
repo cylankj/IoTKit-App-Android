@@ -50,7 +50,7 @@ public interface IData {
     ArrayList<HistoryFile> getMaskList(long start, long end);
 
     /**
-     * 快速滑动,或者滑动停止后,有一个自动定位的需求,---a--A----b---B---c----C--d--
+     * 快速滑动,或者滑动停止后,有一个自动定位的需求,---a--A----isFriend---B---c----C--d--
      *
      * @param time
      * @return

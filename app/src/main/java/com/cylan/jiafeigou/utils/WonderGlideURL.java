@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 import java.net.MalformedURLException;

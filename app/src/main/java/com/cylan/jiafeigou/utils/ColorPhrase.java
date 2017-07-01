@@ -26,7 +26,7 @@ import java.util.Stack;
  * <li>Surround keys with curly braces; use two {{ to escape.</li>
  * <li>Fails fast on any mismatched keys.</li>
  * </ul>
- * The constructor parses the original pattern into activity_cloud_live_mesg_call_out_item doubly-linked list of {@link Token}s.
+ * The constructor parses the original pattern into activity_cloud_live_mesg_call_out_item doubly-linked list of {@link Token}account.
  * These tokens do not perform the original pattern, thus preserving any spans.
  * <p/>
  * The {@link #format()} method iterates over the tokens, replacing and coloring the text as it iterates. The
@@ -128,7 +128,7 @@ public class ColorPhrase {
             throw new IllegalArgumentException("separator must not be empty!");
         }
         if (_separator.length() > 2) {
-            throw new IllegalArgumentException("separator‘s length must not be more than 3 charactors!");
+            throw new IllegalArgumentException("separator‘account length must not be more than 3 charactors!");
         }
         this.separator = _separator;
         return this;
@@ -340,7 +340,7 @@ public class ColorPhrase {
         }
 
         /**
-         * Replace text in {@code target} with this token's associated value.
+         * Replace text in {@code target} with this token'account associated value.
          */
         abstract void expand(SpannableStringBuilder target);
 

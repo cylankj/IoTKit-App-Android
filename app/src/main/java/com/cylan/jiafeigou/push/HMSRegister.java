@@ -26,7 +26,7 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
     private HuaweiApiClient client;
 
     /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
+     * Creates an IntentService.  Invoked by your subclass'account constructor.
      * <p>
      * Used to name the worker thread, important only for debugging.
      */

@@ -16,10 +16,15 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
+import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.badge.CacheObject;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
@@ -67,22 +72,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 ConnectivityManager.CONNECTIVITY_ACTION,
                 WifiManager.NETWORK_STATE_CHANGED_ACTION
         };
-    }
-
-    public void removeCache(String account) {
-//        Pair<ArrayList<JFGFriendAccount>, ArrayList<JFGFriendRequest>> pair = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
-//        if (pair != null && pair.second != null) {
-//            for (JFGFriendRequest request : pair.second) {
-//                if (request != null && TextUtils.equals(account, request.account)) {
-//                    pair.second.remove(request);
-//                    break;
-//                }
-//            }
-//        }
-//        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
-//        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-//        node.setCacheData(new CacheObject().setCount(pair == null || pair.second == null ? 0 : ListUtils.getSize(pair.second))
-//                .setObject(pair == null || pair.second == null ? 0 : pair.second));
     }
 
     @Override
@@ -152,6 +141,13 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         .first(ret -> {
                             if (ret.jfgResult.code == JError.ErrorOK) {
                                 // TODO: 2017/6/29 删除数据库中的数据
+                                AppLogger.d("需要更新缓存");
+                                ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                                friendsList.remove(item.friendAccount);
+                                ArrayList<JFGFriendRequest> friendsReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                                TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+                                TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
+                                node.setCacheData(new CacheObject().setCount(friendsReqList == null ? 0 : ListUtils.getSize(friendsReqList)).setObject(friendsList));
                             }
                             return true;
                         }))
@@ -159,12 +155,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-//                    JFGResult result = ret.jfgResult;
-//                    if (result.code == JError.ErrorOK) {
-////                        updateReqList(account);
-//                    }
                     getView().deleteItemRsp(item, ret == null ? -1 : ret.jfgResult.code);
-//                    AppLogger.d("需要更新缓存");
 ////                    if (viewWeakReference.get() != null)
 ////                        viewWeakReference.get().deleteItemRsp(account, result.code);
 //                    BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();

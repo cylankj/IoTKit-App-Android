@@ -20,7 +20,7 @@ public class GPlayServiceChecker {
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
-     * the Google Play Store or enable it in the device's system settings.
+     * the Google Play Store or enable it in the device'account system settings.
      */
     public static boolean checkPlayServices(Context context) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();

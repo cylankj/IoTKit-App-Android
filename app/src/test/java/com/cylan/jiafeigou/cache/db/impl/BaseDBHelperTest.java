@@ -12,7 +12,7 @@ public class BaseDBHelperTest {
     @Test
     public void test() {
         int size = RandomUtils.getRandom(50);
-        System.out.printf("s:" + size);
+        System.out.printf("account:" + size);
         if (size <= 1) return;
         String result = "";
         for (int i = 0; i < size; ) {

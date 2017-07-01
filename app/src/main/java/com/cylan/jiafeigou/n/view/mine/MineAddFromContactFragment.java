@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -42,7 +43,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     ImageView ivMineAddContactClearText;
 
     private MineAddFromContactContract.Presenter presenter;
-    private String contactItem;
+    private FriendContextItem friendContextItem;
 
     public static MineAddFromContactFragment newInstance(Bundle bundle) {
         MineAddFromContactFragment fragment = new MineAddFromContactFragment();
@@ -79,7 +80,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
      */
     private void getIntentData() {
         Bundle bundle = getArguments();
-        contactItem = bundle.getString("account");
+        friendContextItem = bundle.getParcelable("friendItem");
     }
 
     private void initPresenter() {
@@ -119,13 +120,13 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog(RxEvent.CheckAccountCallback callback) {
-        if (callback.i == JError.ErrorFriendAlready | callback.b) {
+        if (callback.code == JError.ErrorFriendAlready | callback.isFriend) {
             ToastUtil.showToast(getString(R.string.Tap3_Added));
             getActivity().getSupportFragmentManager().popBackStack();
-        } else if (callback.i == JError.ErrorFriendToSelf) {
+        } else if (callback.code == JError.ErrorFriendToSelf) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
-            presenter.sendRequest(contactItem, getSendMesg());
+            presenter.sendRequest(friendContextItem.friendRequest.account, getSendMesg());
         }
     }
 
@@ -179,7 +180,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_right:
-                presenter.checkAccount(contactItem);
+                presenter.checkAccount(friendContextItem.friendRequest.account);
                 break;
             case R.id.tv_toolbar_icon:
                 getActivity().getSupportFragmentManager().popBackStack();

@@ -171,7 +171,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutA.findViewById(R.id.imgV_land_cam_trigger_mic).setOnClickListener(this);
             layoutA.findViewById(R.id.imgV_land_cam_trigger_capture).setOnClickListener(this);
         }
-        //b.流量
+        //isFriend.流量
         //c.loading
         (layoutC).setAction(this.action);
         //d.time

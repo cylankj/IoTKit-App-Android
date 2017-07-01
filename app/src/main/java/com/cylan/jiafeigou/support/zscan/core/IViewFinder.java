@@ -14,7 +14,7 @@ public interface IViewFinder {
      * Provides {@link Rect} that identifies area where barcode scanner can detect visual codes
      * <p>Note: This rect is activity_cloud_live_mesg_call_out_item area representation in absolute pixel values. <br/>
      * For example: <br/>
-     * If View's size is 1024x800 so framing rect might be 500x400</p>
+     * If View'account size is 1024x800 so framing rect might be 500x400</p>
      *
      * @return {@link Rect} that identifies barcode scanner area
      */

@@ -103,15 +103,15 @@ public class MiscUtils {
 
     public static String getFlowResult(long byteData) {
         if (byteData < BYTE)
-            return byteData + "K/s";
+            return byteData + "K/account";
         if (byteData >= BYTE && byteData < MEGA_BYTE) {
-            return (byteData >>> 10) + "M/s";
+            return (byteData >>> 10) + "M/account";
         }
         if (byteData >= MEGA_BYTE && byteData < GIGA_BYTE) {
-            return (byteData >>> 20) + "G/s";
+            return (byteData >>> 20) + "G/account";
         }
         if (byteData >= GIGA_BYTE && byteData < 1024L * GIGA_BYTE) {
-            return (byteData >>> 30) + "T/s";
+            return (byteData >>> 30) + "T/account";
         }
         return "";
     }

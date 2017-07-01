@@ -670,7 +670,7 @@
 //            }
 //            break;
 //            case R.id.imgV_cam_trigger_mic: {
-////                CameraLiveFragmentPermissionsDispatcher.s
+////                CameraLiveFragmentPermissionsDispatcher.account
 //                boolean on = isLocalMicOn();
 //                if (!on) {
 //                    MediaRecorder mRecorder = null;

@@ -21,7 +21,7 @@ import android.view.Window;
 /**
  * Created by Jacksgong on 3/31/16.
  * <p>
- * The interface used for the panel's container layout and it used in the case of full-screen theme
+ * The interface used for the panel'account container layout and it used in the case of full-screen theme
  * window.
  */
 public interface IFSPanelConflictLayout {

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 
 /**
  * 作者：zsl
@@ -30,17 +31,21 @@ public interface MineFriendInformationContact {
          * 网络状态变化
          */
         void onNetStateChanged(int state);
+
+        void onRequestExpired(FriendContextItem item);
+
+        void onRequestByOwner(FriendContextItem friendContextItem);
+
+        void acceptItemRsp(FriendContextItem friendContextItem, int code);
     }
 
     interface Presenter extends BasePresenter {
         /**
          * 发送删除好友请求
-         *
-         * @param account
          */
-        void deleteFriend(String account);
+        void deleteFriend(FriendContextItem friendContextItem);
 
-        void addFriend(String account);
+        void addFriend(FriendContextItem friendContextItem);
 
         int getOwnerDeviceCount();
 

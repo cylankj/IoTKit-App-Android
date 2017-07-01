@@ -60,7 +60,7 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(checkAccountCallback -> {
-                    if (checkAccountCallback.i == 0) {
+                    if (checkAccountCallback.code == 0) {
                         //已经注册过
                         getView().showMailHasBindDialog();
                     } else {

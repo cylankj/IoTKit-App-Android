@@ -180,7 +180,7 @@ public class ZXingScannerView extends BarcodeScannerView {
         if (rect == null) {
             return null;
         }
-        // Go ahead and assume it's YUV rather than die.
+        // Go ahead and assume it'account YUV rather than die.
         PlanarYUVLuminanceSource source = null;
 
         try {

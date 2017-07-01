@@ -47,7 +47,7 @@ import butterknife.OnClick;
  */
 @Badge(parentTag = "HomeMineFragment")
 @SuppressWarnings("unchecked")
-public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Presenter> implements MineFriendsContract.View {
+public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Presenter> implements MineFriendsContract.View, MineFriendInformationFragment.FriendEventCallback {
 
     @BindView(R.id.tv_toolbar_right)
     TextView addFriend;
@@ -56,7 +56,6 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     private ObservableBoolean empty = new ObservableBoolean(false);
 
     private FastItemAdapter friendsAdapter;
-    private FriendContextItem backFriendContext;
 
 
     public static MineFriendsFragment newInstance() {
@@ -112,12 +111,9 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     private boolean onFriendItemClick(View view, IAdapter iAdapter, IItem item, int position) {
         if (!(item instanceof FriendContextItem)) return false;
         Bundle bundle = new Bundle();
-        bundle.putParcelable("friendItem", backFriendContext = (FriendContextItem) item);
+        bundle.putParcelable("friendItem", (FriendContextItem) item);
         friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
-        friendInformationFragment.setCallBack(() -> {
-            friendsAdapter.remove(friendsAdapter.getPosition(backFriendContext));
-            empty.set(friendsAdapter.getItemCount() == 0);
-        });
+        friendInformationFragment.setFriendEventCallback(this);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), friendInformationFragment,
                 android.R.id.content);
         return true;
@@ -289,9 +285,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     }
 
     private void jump2AddReAndFriendFragment() {
-        ActivityUtils.addFragmentSlideInFromRight(
-                getActivity().getSupportFragmentManager(),
-                MineFriendAddFriendsFragment.newInstance(), android.R.id.content);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), MineFriendAddFriendsFragment.newInstance(), android.R.id.content);
     }
 
     @Override
@@ -308,4 +302,14 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         super.onDestroyView();
     }
 
+    @Override
+    public void onDeleteFriend(FriendContextItem friendItem) {
+        friendsAdapter.remove(friendsAdapter.getPosition(friendItem));
+        empty.set(friendsAdapter.getItemCount() == 0);
+    }
+
+    @Override
+    public void onAddFriend(FriendContextItem friendItem) {
+        acceptItemRsp(friendItem, 0);
+    }
 }
