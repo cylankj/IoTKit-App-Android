@@ -127,7 +127,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                 break;
             case R.id.tv_toolbar_right:
                 if (presenter != null) {
-//                    presenter.sendSetmarkNameReq(getEditName(), friendBean);
+                    presenter.setMarkName(getEditName(), friendItem);
                 }
                 break;
             case R.id.iv_mine_personal_set_remarkname_clear:
@@ -156,7 +156,9 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showFinishResult(RxEvent.SetFriendMarkNameBack getFriendInfoCall) {
-        if (getFriendInfoCall.jfgResult.code == JError.ErrorOK) {
+        if (getFriendInfoCall == null) {
+            // TODO: 2017/7/1 timeout
+        } else if (getFriendInfoCall.jfgResult.code == JError.ErrorOK) {
             ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
             if (listener != null) {
                 listener.remarkNameChange(getEditName());
