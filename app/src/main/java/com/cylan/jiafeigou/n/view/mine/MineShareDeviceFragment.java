@@ -154,7 +154,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         JFGShareListInfo adapterItem = adapter.getItem(position);
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, adapterItem.cid);
-        MineShareToContactFragment mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
+        MineContactManagerFragment mineShareToContactFragment = MineContactManagerFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineShareToContactFragment, android.R.id.content);
     }
 
@@ -264,7 +264,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 });
-        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
+        AlertDialogManager.getInstance().showDialog("showSetPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {

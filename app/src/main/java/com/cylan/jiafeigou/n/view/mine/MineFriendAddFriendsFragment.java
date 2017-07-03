@@ -94,12 +94,11 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     }
 
     private void jump2AddFromContactFragment() {
-        AddFriendsFragment addFromContactFragment = AddFriendsFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
-                .addToBackStack("AddFlowStack")
-                .commitAllowingStateLoss();
+        Bundle bundle = new Bundle();
+        MineContactManagerFragment contactManagerFragment = MineContactManagerFragment.newInstance(bundle);
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, "");
+        bundle.putInt("contactType", 1);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), contactManagerFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     private void jump2ScanAddFragment() {

@@ -49,6 +49,8 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
         void onDeleteFriend(FriendContextItem friendItem);
 
         void onAddFriend(FriendContextItem friendItem);
+
+        void onModifyMarkName(FriendContextItem friendItem);
     }
 
 
@@ -192,7 +194,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
     @Override
     public void onDeleteResult(int code) {
         if (code == 0) {
-            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
+//            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             getActivity().getSupportFragmentManager().popBackStack();
             if (eventCallback != null) {
                 eventCallback.onDeleteFriend(friendItem);
@@ -231,6 +233,12 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
         Bundle bundle = new Bundle();
         bundle.putParcelable("friendItem", friendItem);
         mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(bundle);
+        mineSetRemarkNameFragment.setOnSetRemarkNameListener(name -> {
+            friendDetailBinding.setAlias(name);
+            if (eventCallback != null) {
+                eventCallback.onModifyMarkName(friendItem);
+            }
+        });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineSetRemarkNameFragment, android.R.id.content);
     }
 

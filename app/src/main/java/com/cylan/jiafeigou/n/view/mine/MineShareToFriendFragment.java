@@ -102,7 +102,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             presenter.start();
             presenter.getCanShareFriendsList(uuid);
         }
-
     }
 
     @Override

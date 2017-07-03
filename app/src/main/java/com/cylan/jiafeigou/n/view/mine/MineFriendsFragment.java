@@ -17,12 +17,15 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineFriendsBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextHeader;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeHelper;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -184,13 +187,13 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             }
             int position = friendsAdapter.getPosition(item);
             friendsAdapter.remove(position);
-            ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Success));
+            ToastUtil.showToast(getString(R.string.DELETED_SUC));
+
         } else if (code == -1) {
             // TODO: 2017/6/30 超时了
         } else {
             ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
         }
-
         empty.set(friendsAdapter.getItemCount() == 0);
     }
 
@@ -222,6 +225,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 break;
         }
     }
+
 
     /**
      * 网络状态变化
@@ -285,16 +289,15 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     }
 
     private void jump2AddReAndFriendFragment() {
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), MineFriendAddFriendsFragment.newInstance(), android.R.id.content);
+        MineFriendAddFriendsFragment friendAddFriendsFragment = MineFriendAddFriendsFragment.newInstance();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), friendAddFriendsFragment, android.R.id.content);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
-//        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
-//        if (node != null)
-//            node.setCacheData(addReqListAdapter == null ? 0 : addReqListAdapter.getCount());
+        TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+        TreeNode node = helper.findTreeNodeByName(MineFriendsFragment.class.getSimpleName());
     }
 
     @Override
@@ -304,12 +307,17 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 
     @Override
     public void onDeleteFriend(FriendContextItem friendItem) {
-        friendsAdapter.remove(friendsAdapter.getPosition(friendItem));
-        empty.set(friendsAdapter.getItemCount() == 0);
+        deleteItemRsp(friendItem, 0);
     }
 
     @Override
     public void onAddFriend(FriendContextItem friendItem) {
         acceptItemRsp(friendItem, 0);
     }
+
+    @Override
+    public void onModifyMarkName(FriendContextItem friendItem) {
+        friendsAdapter.notifyItemChanged(friendsAdapter.getPosition(friendItem));
+    }
+
 }
