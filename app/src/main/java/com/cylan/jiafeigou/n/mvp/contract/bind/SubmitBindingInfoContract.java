@@ -20,18 +20,6 @@ public interface SubmitBindingInfoContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        /**
-         * 开始模拟动画
-         */
-        void startCounting();
-
-        /**
-         * 动画结束:
-         */
-        void endCounting();
-
-
         void clean();
     }
 }

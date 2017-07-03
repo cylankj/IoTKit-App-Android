@@ -59,9 +59,6 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         customToolbar.setBackAction(v -> {
             onBackPressed();
         });
-        if (basePresenter != null) {
-            basePresenter.startCounting();
-        }
         if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
                 && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
                 getString(R.string._720PanoramicCamera))) {
@@ -98,60 +95,61 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     @Override
     public void bindState(int state) {
-        if (state == BindUtils.BIND_FAILED) {//失败
-            vsLayoutSwitch.showNext();
-            ivExplainGray.setVisibility(View.VISIBLE);
+        runOnUiThread(()->{
+            if (state == BindUtils.BIND_FAILED) {//失败
+                vsLayoutSwitch.showNext();
+                ivExplainGray.setVisibility(View.VISIBLE);
 //            customToolbar.setVisibility(View.INVISIBLE);
-        } else if (state == JError.ErrorCIDBinded) {//强绑
-            basePresenter.endCounting();
-            getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
-                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        //强绑提示按钮,
-                        onBindNext();
-                    }, false);
-        } else if (state == BindUtils.BIND_SUC) {//成功
-            progressLoading.setVisibility(View.INVISIBLE);
-            if (basePresenter != null)
-                basePresenter.stop();
-            String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
-            AppLogger.e("AAAAAAAAAA" + panoramaConfigure);
-            if (TextUtils.isEmpty(panoramaConfigure)) {
-                Bundle bundle = new Bundle();
-                bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
-                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
-                SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                        fragment, android.R.id.content);
-            } else {
-                Bundle bundle = new Bundle();
-                customToolbar.setVisibility(View.INVISIBLE);
-                bundle.putString("PanoramaConfigure", panoramaConfigure);
-                bundle.putBoolean("Success", true);
-                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
-                ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                        newInstance, android.R.id.content);
-            }
+            } else if (state == JError.ErrorCIDBinded) {//强绑
+                getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            //强绑提示按钮,
+                            onBindNext();
+                        }, false);
+            } else if (state == BindUtils.BIND_SUC) {//成功
+                progressLoading.setVisibility(View.INVISIBLE);
+                if (basePresenter != null)
+                    basePresenter.stop();
+                String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
+                AppLogger.e("AAAAAAAAAA" + panoramaConfigure);
+                if (TextUtils.isEmpty(panoramaConfigure)) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+                    bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+                    SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(bundle);
+                    ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                            fragment, android.R.id.content);
+                } else {
+                    Bundle bundle = new Bundle();
+                    customToolbar.setVisibility(View.INVISIBLE);
+                    bundle.putString("PanoramaConfigure", panoramaConfigure);
+                    bundle.putBoolean("Success", true);
+                    bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+                    ConfigPanoramaWiFiSuccessFragment newInstance = ConfigPanoramaWiFiSuccessFragment.newInstance(bundle);
+                    ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                            newInstance, android.R.id.content);
+                }
 
-        } else if (state == BindUtils.BIND_NULL) {
-            getAlertDialogManager().showDialog(this, "null", getString(R.string.RET_ECID_INVALID),
-                    getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    }, false);
-            if (basePresenter != null)
-                basePresenter.stop();
-        } else {
-            AppLogger.d("绑定失败了!!!!!!!!!!!!!");
-            progressLoading.setVisibility(View.INVISIBLE);
-            vsLayoutSwitch.showNext();
-            ivExplainGray.setVisibility(View.VISIBLE);
-        }
+            } else if (state == BindUtils.BIND_NULL) {
+                getAlertDialogManager().showDialog(this, "null", getString(R.string.RET_ECID_INVALID),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        }, getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        }, false);
+                if (basePresenter != null)
+                    basePresenter.stop();
+            } else {
+                AppLogger.d("绑定失败了!!!!!!!!!!!!!");
+                progressLoading.setVisibility(View.INVISIBLE);
+                vsLayoutSwitch.showNext();
+                ivExplainGray.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
     public void onCounting(int percent) {
         Log.d("SubmitBindingInfo", "SubmitBindingInfo: " + percent);
-        tvLoadingPercent.setText(percent + "%");//现在需要显示百分比
+        tvLoadingPercent.post(() -> tvLoadingPercent.setText(percent + "%"));//现在需要显示百分比
     }
 
     @OnClick(R.id.btn_bind_failed_repeat)

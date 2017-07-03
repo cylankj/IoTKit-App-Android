@@ -36,7 +36,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
 
     @Override
     public void feed(JFGMsgVideoRtcp rtcp) {
-        AppLogger.d("rtcp:" + rtcp.frameRate);
+        Log.d("rtcp", "此消息在smartcall已有打印,无需再打印.rtcp:" + rtcp.frameRate);
         badFrameCount = rtcp.frameRate == 0 ? ++badFrameCount : 0;
         if (monitorListener == null) return;
         boolean isFrameFailed = badFrameCount >= FAILED_TARGET;
