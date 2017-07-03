@@ -319,7 +319,9 @@ dependencies {
     //不需要指定aar名字
     //进程保活
 //    compile(name: 'LibMarsdaemon-release', ext: 'aar')
+//    compile file('libs/LibMarsdaemon-release.aar')
 //    compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
+//    compile fileTree(dir: 'libs', include: '*.aar')
     fileTree(dir: 'libs', include: '**/*.aar')
             .each { File file ->
 //        println("aar-libs-"+file.getName())
@@ -332,6 +334,8 @@ dependencies {
                 ext : 'aar'
         ])
     }
+
+//    compile 'com.cylan.iot.sdk:sdkLib:+'
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile('com.mikepenz:fastadapter:2.6.2@aar') {
@@ -339,6 +343,7 @@ dependencies {
     }
     compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
     compile 'com.mikepenz:materialize:1.0.2@aar'
+    compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
     //可以单独使用，不需要依赖下方的扩展包
     //RxJava扩展支持，根据需要添加
     //可以单独使用，不需要依赖下方的扩展包

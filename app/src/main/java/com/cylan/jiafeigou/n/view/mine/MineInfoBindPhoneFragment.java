@@ -114,7 +114,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         countDownTimer = new CountDownTimer(90 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                final String content = millisUntilFinished / 1000 + "s";
+                final String content = millisUntilFinished / 1000 + "account";
                 tvMeterGetCode.setText(content);
             }
 
@@ -270,7 +270,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @Override
     public void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (getInputPhone().equals(checkAccountCallback.s)) {
+        if (getInputPhone().equals(checkAccountCallback.account)) {
             ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
         } else {
             //发送验证码

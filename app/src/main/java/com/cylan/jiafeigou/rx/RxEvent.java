@@ -322,18 +322,18 @@ public class RxEvent {
      * 检验邮箱是否注册过回调
      */
     public static final class CheckAccountCallback {
-        public int i;
+        public int code;
 
-        public CheckAccountCallback(int i, String s, String s1, boolean b) {
-            this.i = i;
-            this.s = s;
-            this.s1 = s1;
-            this.b = b;
+        public CheckAccountCallback(int code, String account, String alias, boolean isFriend) {
+            this.code = code;
+            this.account = account;
+            this.alias = alias;
+            this.isFriend = isFriend;
         }
 
-        public String s;
-        public String s1;
-        public boolean b;
+        public String account;
+        public String alias;
+        public boolean isFriend;
     }
 
     /**
@@ -956,13 +956,13 @@ public class RxEvent {
 //     */
 //    public static final class ForSystemNotification {
 //
-//        public final boolean b;
-//        public final String s;
+//        public final boolean isFriend;
+//        public final String account;
 //        public final ArrayList<JFGDPMsg> arrayList;
 //
-//        public ForSystemNotification(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-//            this.b = b;
-//            this.s = s;
+//        public ForSystemNotification(boolean isFriend, String account, ArrayList<JFGDPMsg> arrayList) {
+//            this.isFriend = isFriend;
+//            this.account = account;
 //            this.arrayList = arrayList;
 //        }
 //    }

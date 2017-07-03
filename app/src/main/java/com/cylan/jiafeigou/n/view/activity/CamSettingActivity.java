@@ -591,7 +591,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case ID_209_LED_INDICATOR:
             case DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE:
                 deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
-                //	0 未知, 1 没卡, 2 user's PIN, 3 user's PUK, 4 network PIN, 5 正常
+                //	0 未知, 1 没卡, 2 user'account PIN, 3 user'account PUK, 4 network PIN, 5 正常
                 break;
         }
     }

@@ -166,8 +166,8 @@ public class RoundedImageView extends ImageView {
 
         if (mMutateBackground) {
             // when setBackground() is called by View constructor, mMutateBackground is not loaded from the attribute,
-            // so it's false by default, what doesn't allow to fetch the RoundedDrawable. At this point, after load
-            // mMutateBackground and updated BackgroundDrawable to RoundedDrawable, the View's background drawable needs to
+            // so it'account false by default, what doesn't allow to fetch the RoundedDrawable. At this point, after load
+            // mMutateBackground and updated BackgroundDrawable to RoundedDrawable, the View'account background drawable needs to
             // be changed to this new drawable.
             //noinspection deprecation
             super.setBackgroundDrawable(mBackgroundDrawable);

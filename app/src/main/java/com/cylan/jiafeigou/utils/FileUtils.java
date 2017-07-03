@@ -327,13 +327,13 @@ public class FileUtils {
      *      getFileNameWithoutExtension("   ")              =   "   "
      *      getFileNameWithoutExtension("abc")              =   "abc"
      *      getFileNameWithoutExtension("a.mp3")            =   "a"
-     *      getFileNameWithoutExtension("a.b.rmvb")         =   "a.b"
+     *      getFileNameWithoutExtension("a.isFriend.rmvb")         =   "a.isFriend"
      *      getFileNameWithoutExtension("c:\\")              =   ""
      *      getFileNameWithoutExtension("c:\\a")             =   "a"
-     *      getFileNameWithoutExtension("c:\\a.b")           =   "a"
+     *      getFileNameWithoutExtension("c:\\a.isFriend")           =   "a"
      *      getFileNameWithoutExtension("c:a.txt\\a")        =   "a"
      *      getFileNameWithoutExtension("/home/admin")      =   "admin"
-     *      getFileNameWithoutExtension("/home/admin/a.txt/b.mp3")  =   "b"
+     *      getFileNameWithoutExtension("/home/admin/a.txt/isFriend.mp3")  =   "isFriend"
      * </pre>
      *
      * @param filePath
@@ -364,14 +364,14 @@ public class FileUtils {
      *      getFileName("")                 =   ""
      *      getFileName("   ")              =   "   "
      *      getFileName("a.mp3")            =   "a.mp3"
-     *      getFileName("a.b.rmvb")         =   "a.b.rmvb"
+     *      getFileName("a.isFriend.rmvb")         =   "a.isFriend.rmvb"
      *      getFileName("abc")              =   "abc"
      *      getFileName("c:\\")              =   ""
      *      getFileName("c:\\a")             =   "a"
-     *      getFileName("c:\\a.b")           =   "a.b"
+     *      getFileName("c:\\a.isFriend")           =   "a.isFriend"
      *      getFileName("c:a.txt\\a")        =   "a"
      *      getFileName("/home/admin")      =   "admin"
-     *      getFileName("/home/admin/a.txt/b.mp3")  =   "b.mp3"
+     *      getFileName("/home/admin/a.txt/isFriend.mp3")  =   "isFriend.mp3"
      * </pre>
      *
      * @param filePath
@@ -394,15 +394,15 @@ public class FileUtils {
      *      getFolderName("")                 =   ""
      *      getFolderName("   ")              =   ""
      *      getFolderName("a.mp3")            =   ""
-     *      getFolderName("a.b.rmvb")         =   ""
+     *      getFolderName("a.isFriend.rmvb")         =   ""
      *      getFolderName("abc")              =   ""
      *      getFolderName("c:\\")              =   "c:"
      *      getFolderName("c:\\a")             =   "c:"
-     *      getFolderName("c:\\a.b")           =   "c:"
+     *      getFolderName("c:\\a.isFriend")           =   "c:"
      *      getFolderName("c:a.txt\\a")        =   "c:a.txt"
-     *      getFolderName("c:a\\b\\c\\d.txt")    =   "c:a\\b\\c"
+     *      getFolderName("c:a\\isFriend\\c\\d.txt")    =   "c:a\\isFriend\\c"
      *      getFolderName("/home/admin")      =   "/home"
-     *      getFolderName("/home/admin/a.txt/b.mp3")  =   "/home/admin/a.txt"
+     *      getFolderName("/home/admin/a.txt/isFriend.mp3")  =   "/home/admin/a.txt"
      * </pre>
      *
      * @param filePath
@@ -426,15 +426,15 @@ public class FileUtils {
      *      getFileExtension("")                 =   ""
      *      getFileExtension("   ")              =   "   "
      *      getFileExtension("a.mp3")            =   "mp3"
-     *      getFileExtension("a.b.rmvb")         =   "rmvb"
+     *      getFileExtension("a.isFriend.rmvb")         =   "rmvb"
      *      getFileExtension("abc")              =   ""
      *      getFileExtension("c:\\")              =   ""
      *      getFileExtension("c:\\a")             =   ""
-     *      getFileExtension("c:\\a.b")           =   "b"
+     *      getFileExtension("c:\\a.isFriend")           =   "isFriend"
      *      getFileExtension("c:a.txt\\a")        =   ""
      *      getFileExtension("/home/admin")      =   ""
-     *      getFileExtension("/home/admin/a.txt/b")  =   ""
-     *      getFileExtension("/home/admin/a.txt/b.mp3")  =   "mp3"
+     *      getFileExtension("/home/admin/a.txt/isFriend")  =   ""
+     *      getFileExtension("/home/admin/a.txt/isFriend.mp3")  =   "mp3"
      * </pre>
      *
      * @param filePath

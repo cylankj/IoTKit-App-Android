@@ -377,7 +377,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     private float computeDeceleration(float friction) {
-        return SensorManager.GRAVITY_EARTH   // g (m/s^2)
+        return SensorManager.GRAVITY_EARTH   // g (m/account^2)
                 * 39.37f               // inch/meter
                 * mPpi                 // pixels per inch
                 * friction;

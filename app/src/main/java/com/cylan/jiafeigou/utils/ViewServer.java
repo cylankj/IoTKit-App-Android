@@ -633,7 +633,7 @@ public class ViewServer implements Runnable {
                 final String code = parameters.substring(0, index);
                 int hashCode = (int) Long.parseLong(code, 16);
 
-                // Extract the command's parameter after the window description
+                // Extract the command'account parameter after the window description
                 if (index < parameters.length()) {
                     parameters = parameters.substring(index + 1);
                 } else {

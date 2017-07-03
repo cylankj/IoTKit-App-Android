@@ -4,30 +4,26 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.databinding.FragmentHomeMineFriendsAddFriendsBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsAddFriendPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -46,16 +42,8 @@ import static android.Manifest.permission.READ_CONTACTS;
 @RuntimePermissions
 public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFriendContract.Presenter> implements MineFriendsAddFriendContract.View {
 
-    @BindView(R.id.et_friend_phonenumber)
-    EditText etFriendPhonenumber;
-    @BindView(R.id.tv_scan_add)
-    TextView tvScanAdd;
-    @BindView(R.id.tv_add_from_contract)
-    TextView tvAddFromContract;
-    @BindView(R.id.fragment_container)
-    FrameLayout fragmentContainer;
-
     private MineFriendsAddFriendContract.Presenter presenter;
+    private FragmentHomeMineFriendsAddFriendsBinding addFriendsBinding;
 
     public static MineFriendAddFriendsFragment newInstance() {
         return new MineFriendAddFriendsFragment();
@@ -64,22 +52,20 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_friends_addfriends, container, false);
-        ButterKnife.bind(this, view);
-        initPresenter();
-        return view;
+        addFriendsBinding = FragmentHomeMineFriendsAddFriendsBinding.inflate(inflater, container, false);
+        presenter = new MineFriendsAddFriendPresenterImp(this);
+        return addFriendsBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        addFriendsBinding.customToolbar.setBackAction(this::onClick);
+        addFriendsBinding.tvAddFromContract.setOnClickListener(this::onClick);
+        addFriendsBinding.tvScanAdd.setOnClickListener(this::onClick);
+        addFriendsBinding.etFriendPhonenumber.setOnClickListener(this::onClick);
     }
 
-    private void initPresenter() {
-        presenter = new MineFriendsAddFriendPresenterImp(this);
-    }
-
-    @OnClick({R.id.tv_toolbar_icon, R.id.tv_scan_add, R.id.tv_add_from_contract, R.id.et_friend_phonenumber})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:        //返回
@@ -87,14 +73,12 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 break;
 
             case R.id.tv_scan_add:                                      //扫一扫添加
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
+                ViewUtils.deBounceClick(view);
                 AppLogger.d("tv_scan_add");
                 MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
                 break;
             case R.id.tv_add_from_contract:                             //从通讯录添加
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
+                ViewUtils.deBounceClick(view);
                 MineFriendAddFriendsFragmentPermissionsDispatcher.onContactsPermissionWithCheck(this);
                 break;
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
@@ -105,26 +89,20 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     }
 
     private void jump2AddByNumberFragment() {
-        MineFriendAddByNumFragment addByNumFragment = MineFriendAddByNumFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addByNumFragment, addByNumFragment.getClass().getName())
-                .addToBackStack("AddFlowStack")
-                .commit();
+        MineFriendSearchFragment addByNumFragment = MineFriendSearchFragment.newInstance();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), addByNumFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     private void jump2AddFromContactFragment() {
-        AddFriendsFragment addFromContactFragment = AddFriendsFragment.newInstance();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
-                .addToBackStack("AddFlowStack")
-                .commitAllowingStateLoss();
+        Bundle bundle = new Bundle();
+        MineContactManagerFragment contactManagerFragment = MineContactManagerFragment.newInstance(bundle);
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, "");
+        bundle.putInt("contactType", 1);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), contactManagerFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     private void jump2ScanAddFragment() {
-        MineFriendScanAddFragment scanAddFragment = MineFriendScanAddFragment.newInstance();
+        MineFriendQRScanFragment scanAddFragment = MineFriendQRScanFragment.newInstance();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(0, 0
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -160,7 +138,6 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     openSetting();
-//                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                 },
                 getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     getActivity().getSupportFragmentManager().popBackStack();
@@ -218,16 +195,8 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
 
     private void openSetting() {
-        Intent localIntent = new Intent();
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT >= 9) {
-            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
-        } else if (Build.VERSION.SDK_INT <= 8) {
-            localIntent.setAction(Intent.ACTION_VIEW);
-            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-            localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
-        }
-        startActivity(localIntent);
+        Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        settingIntent.setData(Uri.parse("package:" + getContext().getPackageName()));
+        startActivity(settingIntent);
     }
 }

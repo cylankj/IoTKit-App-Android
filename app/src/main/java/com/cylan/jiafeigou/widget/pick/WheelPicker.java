@@ -355,7 +355,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
 
     private void updateVisibleItemCount() {
         if (mVisibleItemCount < 2)
-            throw new ArithmeticException("Wheel's visible item count can not be less than 2!");
+            throw new ArithmeticException("Wheel'account visible item count can not be less than 2!");
 
         // 确保滚轮选择器可见数据项数量为奇数
         // Be sure count of visible item is odd number
@@ -418,14 +418,14 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
             resultHeight = (int) (2 * resultHeight / Math.PI);
         }
         if (isDebug)
-            Log.i(TAG, "Wheel's content size is (" + resultWidth + ":" + resultHeight + ")");
+            Log.i(TAG, "Wheel'account content size is (" + resultWidth + ":" + resultHeight + ")");
 
         // 考虑内边距对尺寸的影响
         // Consideration padding influence the view sizes
         resultWidth += getPaddingLeft() + getPaddingRight();
         resultHeight += getPaddingTop() + getPaddingBottom();
         if (isDebug)
-            Log.i(TAG, "Wheel's size is (" + resultWidth + ":" + resultHeight + ")");
+            Log.i(TAG, "Wheel'account size is (" + resultWidth + ":" + resultHeight + ")");
 
         // 考虑父容器对尺寸的影响
         // Consideration sizes of parent can influence the view sizes
@@ -454,7 +454,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
         mRectDrawn.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
                 getHeight() - getPaddingBottom());
         if (isDebug)
-            Log.i(TAG, "Wheel's drawn rect size is (" + mRectDrawn.width() + ":" +
+            Log.i(TAG, "Wheel'account drawn rect size is (" + mRectDrawn.width() + ":" +
                     mRectDrawn.height() + ") and location is (" + mRectDrawn.left + ":" +
                     mRectDrawn.top + ")");
 
@@ -550,7 +550,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
             int distanceToCenter = 0;
             if (isCurved) {
                 // 计算数据项绘制中心距离滚轮中心的距离比率
-                // Correct ratio of item's drawn center to wheel center
+                // Correct ratio of item'account drawn center to wheel center
                 float ratio = (mDrawnCenterY - Math.abs(mDrawnCenterY - mDrawnItemCenterY) -
                         mRectDrawn.top) * 1.0F / (mDrawnCenterY - mRectDrawn.top);
 
@@ -601,7 +601,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
                 mPaint.setAlpha(alpha);
             }
             // 根据卷曲与否计算数据项绘制Y方向中心坐标
-            // Correct item's drawn centerY base on curved state
+            // Correct item'account drawn centerY base on curved state
             int drawnCenterY = isCurved ? mDrawnCenterY - distanceToCenter : mDrawnItemCenterY;
 
             // 判断是否需要为当前数据项绘制不同颜色
@@ -708,7 +708,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
                     mOnWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_DRAGGING);
 
                 // 滚动内容
-                // Scroll WheelPicker's content
+                // Scroll WheelPicker'account content
                 float move = event.getY() - mLastPointY;
                 if (Math.abs(move) < 1) break;
                 mScrollOffsetY += move;
@@ -863,7 +863,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
     @Override
     public void setData(List data) {
         if (null == data)
-            throw new NullPointerException("WheelPicker's data can not be null!");
+            throw new NullPointerException("WheelPicker'account data can not be null!");
         mData = data;
 
         // 重置位置
@@ -1136,12 +1136,12 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
          * 滚轮选择器停止后会回调该方法并将当前选中的数据项在数据列表中的位置返回
          * <p>
          * Invoke when WheelPicker scroll stopped
-         * This method will be called when WheelPicker stop and return current selected item data's
+         * This method will be called when WheelPicker stop and return current selected item data'account
          * position in list
          *
          * @param position 当前选中的数据项在数据列表中的位置
          *                 <p>
-         *                 Current selected item data's position in list
+         *                 Current selected item data'account position in list
          */
         void onWheelSelected(int position);
 
@@ -1149,7 +1149,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
          * 当滚轮选择器滚动状态改变时回调该方法
          * 滚动选择器的状态总是会在静止、拖动和滑动三者之间切换，当状态改变时回调该方法
          * <p>
-         * Invoke when WheelPicker's scroll state changed
+         * Invoke when WheelPicker'account scroll state changed
          * The state of WheelPicker always between idle, dragging, and scrolling, this method will
          * be called when they switch
          *

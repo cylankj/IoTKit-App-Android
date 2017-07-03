@@ -59,7 +59,7 @@ public interface IWheelPicker {
      * 开启数据循环会使滚轮选择器上下滚动不再有边界，会呈现数据首尾相接无限循环的效果
      * <p>
      * Set whether WheelPicker is cyclic or not
-     * WheelPicker's items will be end to end and in an infinite loop if setCyclic true, and there
+     * WheelPicker'account items will be end to end and in an infinite loop if setCyclic true, and there
      * is no border whit scroll when WheelPicker in cyclic state
      *
      * @param isCyclic 是否为循环状态
@@ -118,7 +118,7 @@ public interface IWheelPicker {
      * {@link WheelPicker.OnWheelChangeListener} and
      * {@link WheelPicker.OnItemSelectedListener}, so you must always
      * consider the influence when you call this method set a new value
-     * You should always set a value which greater than or equal to 0 and less than data source's
+     * You should always set a value which greater than or equal to 0 and less than data source'account
      * length
      * By default, position of current selected item in data source is 0
      *
@@ -184,7 +184,7 @@ public interface IWheelPicker {
      * data text always has same width, you can call this method tell to WheelPicker your data
      * source has same width to save startTime and improve efficiency.
      * Sometimes the data source you set is positively has different text width, but maybe you know
-     * the maximum width text's position in data source, then you can call
+     * the maximum width text'account position in data source, then you can call
      * {@link #setMaximumWidthTextPosition(int)} tell to WheelPicker where is the maximum width text
      * in data source, WheelPicker will calculate its width base on this text which found by
      * position. If you don't know the position of maximum width text in data source, but you have
@@ -337,7 +337,7 @@ public interface IWheelPicker {
      * <p>
      * Set whether WheelPicker display indicator or not
      * WheelPicker will draw two lines above an below current selected item if display indicator
-     * Notice:Indicator's size will not participate in WheelPicker's size calculation, it will drawn
+     * Notice:Indicator'account size will not participate in WheelPicker'account size calculation, it will drawn
      * above the content
      *
      * @param hasIndicator 是否有指示器
@@ -439,7 +439,7 @@ public interface IWheelPicker {
      * 开启空气感的滚轮选择器将呈现中间不透明逐渐向两端透明过度的渐变效果
      * <p>
      * Set whether WheelPicker has atmospheric or not
-     * WheelPicker's items will be transparent from center to ends if atmospheric display
+     * WheelPicker'account items will be transparent from center to ends if atmospheric display
      *
      * @param hasAtmospheric 滚轮选择器是否有空气感
      */
@@ -473,7 +473,7 @@ public interface IWheelPicker {
      * Set whether WheelPicker enable curved effect or not
      * If setCurved true, WheelPicker will display with curved effect looks like ends bend into
      * screen with perspective.
-     * WheelPicker's curved effect base on strict geometric model, some parameters relate with size
+     * WheelPicker'account curved effect base on strict geometric model, some parameters relate with size
      * maybe invalidated, for example each item size looks like different because of perspective in
      * curved, the space between items looks like have a little difference
      *

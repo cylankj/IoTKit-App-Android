@@ -1,41 +1,33 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.Manifest;
 import android.content.ContentResolver;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
-import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContactItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -50,144 +42,15 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
         super(view);
         view.setPresenter(this);
-//        this.hasShareFriend = hasShareFiend;
     }
 
     @Override
     public void start() {
         super.start();
-//        if (hasShareFriend != null && hasShareFriend.size() != 0) {
-//            ArrayList<FriendBean> list = converData2(hasShareFriend);
-//            allCoverData.addAll(list);
-//            handlerContactDataResult(list);
-//        } else {
-//            ArrayList<FriendBean> list = getAllContactList();
-//            allCoverData.addAll(list);
-//            handlerContactDataResult(list);
-//        }
     }
 
     @Override
-    public void handlerShareClick(final String cid, String item) {
-        rx.Observable.just(item)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String account) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().shareDevice(cid, account);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("handlerShareClick" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    /**
-     * 获取到已经分享的亲友数
-     *
-     * @param cid
-     * @return
-     */
-    @Override
-    public Subscription getHasShareContract(final String cid) {
-        return rx.Observable.just(cid)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().getUnShareListByCid(cid);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getHasShareContract" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    /**
-     * 获取到已经分享好友的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription getHasShareContractCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.UnShareListByCidEvent.class)
-                .flatMap(new Func1<RxEvent.UnShareListByCidEvent, Observable<ArrayList<FriendBean>>>() {
-                    @Override
-                    public Observable<ArrayList<FriendBean>> call(RxEvent.UnShareListByCidEvent getHasShareFriendCallBack) {
-                        if (getHasShareFriendCallBack != null) {
-
-                            if (getHasShareFriendCallBack.arrayList.size() != 0) {
-//                                return Observable.just(converData(getHasShareFriendCallBack.arrayList));
-                                return Observable.just(null);
-                            } else {
-                                return Observable.just(getAllContactList());
-                            }
-                        } else {
-                            return Observable.just(getAllContactList());
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<FriendBean>>() {
-                    @Override
-                    public void call(ArrayList<FriendBean> list) {
-//                        allCoverData.addAll(list);
-                        handlerContactDataResult(list);
-                    }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 分享设备的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription shareDeviceCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
-                    @Override
-                    public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
-                        if (shareDeviceCallBack != null) {
-                            if (getView() != null) {
-                                getView().handlerCheckRegister(shareDeviceCallBack.requestId, shareDeviceCallBack.account);
-                            }
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 检测发送短信权限
-     *
-     * @return
-     */
-    @Override
-    public boolean checkSendSmsPermission() {
-        if (ContextCompat.checkSelfPermission(getView().getContext(),
-                Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    @Override
-    public void checkAndInitContactList() {
+    public void checkAndInitContactList(int contactType) {
         Subscription subscribe = Observable.just("checkAndInitContactList")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
@@ -218,6 +81,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         shareContactItem.name = displayName;
                         shareContactItem.phone = phoneNumber;
                         shareContactItem.email = emailAddress;
+                        shareContactItem.contactType = contactType;
                         result.add(shareContactItem);
                         AppLogger.d("添加联系人:" + new Gson().toJson(shareContactItem));
                         if (query != null) query.close();
@@ -264,9 +128,12 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     return cmd;
                 })
                 .flatMap(cmd -> RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
+                .doOnTerminate(() -> getView().hideLoading())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-
+                    getView().onShareDeviceResult(shareContactItem, result);
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
@@ -274,122 +141,74 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         addSubscription(subscribe);
     }
 
-
-    /**
-     * 数据的转换 标记已分享和未分享
-     *
-     * @param arrayList
-     * @return
-     */
-    private ArrayList<FriendBean> converData2(ArrayList<FriendBean> arrayList) {
-        ArrayList<FriendBean> list = new ArrayList<>();
-        for (FriendBean contract : getAllContactList()) {
-            for (FriendBean friend : arrayList) {
-                if (friend.account.equals(contract.account)) {
-                    contract.isCheckFlag = 1;
-                } else {
-                    contract.isCheckFlag = 0;
-                }
-            }
-            list.add(contract);
-        }
-        return list;
+    @Override
+    public void checkFriendAccount(ShareContactItem item) {
+        Subscription subscribe = Observable.just("addFriendByContact")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(item.getAccount());
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .doOnSubscribe(() -> getView().showLoading(R.string.getting))
+                .doOnTerminate(() -> getView().hideLoading())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    FriendContextItem friendContextItem = null;
+                    boolean accountExist = true;
+                    if (result != null) {
+                        JFGSourceManager manager = BaseApplication.getAppComponent().getSourceManager();
+                        if (result.isFriend) {
+                            ArrayList<JFGFriendAccount> friendsList = manager.getFriendsList();
+                            JFGFriendAccount friendAccount = null;
+                            if (friendsList != null) {
+                                for (JFGFriendAccount friend : friendsList) {
+                                    if (TextUtils.equals(friend.account, result.account)) {
+                                        friendAccount = friend;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (friendAccount == null) {
+                                friendAccount = new JFGFriendAccount(result.account, null, result.alias);
+                            }
+                            friendContextItem = new FriendContextItem(friendAccount);
+                        } else if (result.code == 240) {//未注册
+                            accountExist = false;
+                            friendContextItem = new FriendContextItem(new JFGFriendAccount(item.getAccount(), null, null));
+                        } else {//添加
+                            ArrayList<JFGFriendRequest> friendsRequestList = manager.getFriendsReqList();
+                            JFGFriendRequest friendRequest = null;
+                            if (friendsRequestList != null) {
+                                for (JFGFriendRequest request : friendsRequestList) {
+                                    if (TextUtils.equals(request.account, request.account)) {
+                                        friendRequest = request;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (friendRequest == null) {
+                                friendRequest = new JFGFriendRequest();
+                                friendRequest.time = System.currentTimeMillis();
+                                friendRequest.alias = result.alias;
+                                friendRequest.account = result.account;
+                                friendRequest.sayHi = null;
+                            }
+                            friendContextItem = new FriendContextItem(friendRequest);
+                        }
+                    }
+                    getView().onCheckFriendAccountResult(friendContextItem, item, accountExist);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
 
-    /**
-     * desc:处理得到的数据结果
-     *
-     * @param list
-     */
-    private void handlerContactDataResult(ArrayList<FriendBean> list) {
-//        if (getView() != null && list != null && list.size() != 0) {
-//            Collections.sort(list, new Comparent());
-//            getView().hideNoContactNullView();
-//            getView().initContactReclyView(list);
-//        } else {
-//            getView().showNoContactNullView();
-//        }
-    }
-
-    @NonNull
-    public ArrayList<FriendBean> getAllContactList() {
-        ArrayList<FriendBean> list = new ArrayList<FriendBean>();
-        //得到ContentResolver对象
-        ContentResolver cr = getView().getContext().getContentResolver();
-        //取得电话本中开始一项的光标
-        String sort = "sort_key";
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            sort = "phonebook_label";
-        }
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sort);
-        if (cursor == null) {
-            return list;
-        }
-        //向下移动光标
-        while (cursor.moveToNext()) {
-            //取得联系人名字
-            int nameFieldColumnIndex = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
-            String contact = cursor.getString(nameFieldColumnIndex);
-            //取得电话号码
-            String ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-            Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
-            String sort_key = cursor.getString(cursor.getColumnIndex(sort));
-            while (phone.moveToNext()) {
-                FriendBean friendBean = new FriendBean();
-                friendBean.alias = contact;
-                String PhoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                PhoneNumber = PhoneNumber.replace("-", "");
-                PhoneNumber = PhoneNumber.replace(" ", "");
-                friendBean.account = PhoneNumber;
-                friendBean.sortkey = sort_key;
-                if (friendBean.account.startsWith("+86")) {
-                    friendBean.account = friendBean.account.substring(3);
-                } else if (friendBean.account.startsWith("86")) {
-                    friendBean.account = friendBean.account.substring(2);
-                }
-
-                if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
-                    list.add(friendBean);
-                }
-            }
-            phone.close();
-
-            //****获取邮箱
-            Cursor emails = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + ContactId, null, null);
-            int emailIndex = 0;
-            if (emails.getCount() > 0) {
-                emailIndex = emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
-            }
-            while (emails.moveToNext()) {
-                String email = emails.getString(emailIndex);
-                FriendBean friendBean = new FriendBean();
-                friendBean.alias = contact;
-                friendBean.account = email;
-                friendBean.sortkey = sort_key;
-                if (JConstant.EMAIL_REG.matcher(friendBean.account).find()) {
-                    list.add(friendBean);
-                }
-            }
-            emails.close();
-        }
-        cursor.close();
-        return list;
-    }
-
-    public class Comparent implements Comparator<FriendBean> {
-        @SuppressWarnings("unchecked")
-        @Override
-        public int compare(FriendBean lhs, FriendBean rhs) {
-            Collator ca = Collator.getInstance(Locale.getDefault());
-            int flags = 0;
-            if (ca.compare(lhs.sortkey, rhs.sortkey) < 0) {
-                flags = -1;
-            } else if (ca.compare(lhs.sortkey, rhs.sortkey) > 0) {
-                flags = 1;
-            } else {
-                flags = 0;
-            }
-            return flags;
-        }
-    }
 }

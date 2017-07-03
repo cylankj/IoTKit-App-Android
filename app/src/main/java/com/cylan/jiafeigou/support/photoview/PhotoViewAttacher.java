@@ -85,7 +85,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     }
 
     /**
-     * @return true if the ImageView exists, and it's Drawable exists
+     * @return true if the ImageView exists, and it'account Drawable exists
      */
     private static boolean hasDrawable(ImageView imageView) {
         return null != imageView && null != imageView.getDrawable();
@@ -110,11 +110,11 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     }
 
     /**
-     * Set's the ImageView's ScaleType to Matrix.
+     * Set'account the ImageView'account ScaleType to Matrix.
      */
     private static void setImageViewScaleTypeMatrix(ImageView imageView) {
         /**
-         * PhotoView sets it's own ScaleType to Matrix, then diverts all calls
+         * PhotoView sets it'account own ScaleType to Matrix, then diverts all calls
          * setScaleType to this.setScaleType automatically.
          */
         if (null != imageView && !(imageView instanceof IPhotoView)) {
@@ -259,7 +259,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
                 observer.removeGlobalOnLayoutListener(this);
             }
 
-            // Remove the ImageView's reference to this
+            // Remove the ImageView'account reference to this
             imageView.setOnTouchListener(null);
 
             // make sure a pending fling runnable won't be run
@@ -384,7 +384,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         checkAndDisplayMatrix();
 
         /**
-         * Here we decide whether to let the ImageView's parent to initSubscription taking
+         * Here we decide whether to let the ImageView'account parent to initSubscription taking
          * over the touch event.
          *
          * First we check whether this function is enabled. We never want the
@@ -436,10 +436,10 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
                 final int left = imageView.getLeft();
 
                 /**
-                 * We need to check whether the ImageView's bounds have changed.
+                 * We need to check whether the ImageView'account bounds have changed.
                  * This would be easier if we targeted API 11+ as we could just use
                  * View.OnLayoutChangeListener. Instead we have to replicate the
-                 * work, keeping track of the ImageView's bounds and then checking
+                 * work, keeping track of the ImageView'account bounds and then checking
                  * if the values change.
                  */
                 if (top != mIvTop || bottom != mIvBottom || left != mIvLeft
@@ -729,13 +729,13 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         ImageView imageView = getImageView();
 
         /**
-         * PhotoView's getScaleType() will just divert to this.getScaleType() so
+         * PhotoView'account getScaleType() will just divert to this.getScaleType() so
          * only call if we're not attached to a PhotoView.
          */
         if (null != imageView && !(imageView instanceof IPhotoView)) {
             if (!ScaleType.MATRIX.equals(imageView.getScaleType())) {
                 throw new IllegalStateException(
-                        "The ImageView's ScaleType has been changed since attaching a PhotoViewAttacher. You should call setScaleType on the PhotoViewAttacher instead of on the ImageView");
+                        "The ImageView'account ScaleType has been changed since attaching a PhotoViewAttacher. You should call setScaleType on the PhotoViewAttacher instead of on the ImageView");
             }
         }
     }
@@ -853,7 +853,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     }
 
     /**
-     * Resets the Matrix back to FIT_CENTER, and then displays it.s
+     * Resets the Matrix back to FIT_CENTER, and then displays it.account
      */
     private void resetMatrix() {
         mSuppMatrix.reset();
@@ -971,9 +971,9 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     public interface OnMatrixChangedListener {
         /**
          * Callback for when the Matrix displaying the Drawable has changed. This could be because
-         * the View's bounds have changed, or the user has zoomed.
+         * the View'account bounds have changed, or the user has zoomed.
          *
-         * @param rect - Rectangle displaying the Drawable's new bounds.
+         * @param rect - Rectangle displaying the Drawable'account new bounds.
          */
         void onMatrixChanged(RectF rect);
     }
@@ -1053,8 +1053,8 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
          *
          * @param e1        - MotionEvent the user first touch.
          * @param e2        - MotionEvent the user last touch.
-         * @param velocityX - distance of user's horizontal fling.
-         * @param velocityY - distance of user's vertical fling.
+         * @param velocityX - distance of user'account horizontal fling.
+         * @param velocityY - distance of user'account vertical fling.
          */
         boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
     }

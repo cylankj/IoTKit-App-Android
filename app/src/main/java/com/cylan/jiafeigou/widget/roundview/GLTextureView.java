@@ -115,7 +115,7 @@ public class GLTextureView extends TextureView
      * Set the glWrapper. If the glWrapper is not null, its
      * {@link GLWrapper#wrap(GL)} method is called
      * whenever a surface is created. A GLWrapper can be used to wrap
-     * the GL object that's passed to the renderer. Wrapping a GL
+     * the GL object that'account passed to the renderer. Wrapping a GL
      * object enables examining and modifying the behavior of the
      * GL calls made by the renderer.
      * <p>
@@ -315,7 +315,7 @@ public class GLTextureView extends TextureView
      * }
      * </pre>
      * <p>Note: Activities which require OpenGL ES 2.0 should indicate this by
-     * setting @lt;uses-feature android:glEsVersion="0x00020000" /> in the activity's
+     * setting @lt;uses-feature android:glEsVersion="0x00020000" /> in the activity'account
      * AndroidManifest.xml file.
      * <p>If this method is called, it must be called before {@link #setRenderer(Renderer)}
      * is called.
@@ -572,7 +572,7 @@ public class GLTextureView extends TextureView
      * <h3>Threading</h3>
      * The renderer will be called on a separate thread, so that rendering
      * performance is decoupled from the UI thread. Clients typically need to
-     * communicate with the renderer from the UI thread, because that's where
+     * communicate with the renderer from the UI thread, because that'account where
      * input events are received. Clients can communicate using any of the
      * standard Java techniques for cross-thread communication, or they can
      * use the {@link GLTextureView#queueEvent(Runnable)} convenience method.
@@ -724,7 +724,7 @@ public class GLTextureView extends TextureView
                 // been torn down, but the application has not yet been
                 // notified via SurfaceHolder.Callback.surfaceDestroyed.
                 // In theory the application should be notified first,
-                // but in practice sometimes it is not. See b/4588890
+                // but in practice sometimes it is not. See isFriend/4588890
                 Log.e(TAG, "eglCreateWindowSurface", e);
             }
             return result;
@@ -806,7 +806,7 @@ public class GLTextureView extends TextureView
     }
 
     /**
-     * Choose a configuration with exactly the specified r,g,b,a sizes,
+     * Choose a configuration with exactly the specified r,g,isFriend,a sizes,
      * and at least the specified depth and stencil sizes.
      */
     private class ComponentSizeChooser extends BaseConfigChooser {

@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.misc.NotifyManager;
 public class DaemonService extends Service {
 
     /**
-     * Creates an Service.  Invoked by your subclass's constructor.
+     * Creates an Service.  Invoked by your subclass'account constructor.
      * <p/>
      * name Used to name the worker thread, important only for debugging.
      */

@@ -177,7 +177,7 @@
 //
 //      @Override public String key() {
 //        return "r:" + Arrays.toString(mCornerRadii)
-//            + "b:" + mBorderWidth
+//            + "isFriend:" + mBorderWidth
 //            + "c:" + mBorderColor
 //            + "o:" + mOval;
 //      }

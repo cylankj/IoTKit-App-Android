@@ -12,10 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -46,7 +46,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     private MineSetRemarkNameContract.Presenter presenter;
 
     private OnSetRemarkNameListener listener;
-    private FriendBean friendBean;
+    private FriendContextItem friendItem;
 
     public interface OnSetRemarkNameListener {
         void remarkNameChange(String name);
@@ -127,7 +127,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                 break;
             case R.id.tv_toolbar_right:
                 if (presenter != null) {
-                    presenter.sendSetmarkNameReq(getEditName(), friendBean);
+                    presenter.setMarkName(getEditName(), friendItem);
                 }
                 break;
             case R.id.iv_mine_personal_set_remarkname_clear:
@@ -147,8 +147,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     @Override
     public void initViewShow() {
         Bundle arguments = getArguments();
-        friendBean = arguments.getParcelable("friendBean");
-        etMineSetRemarknameNewName.setText(friendBean.markName);
+        friendItem = arguments.getParcelable("friendItem");
+        etMineSetRemarknameNewName.setText(friendItem.friendAccount.markName);
     }
 
     /**
@@ -156,7 +156,9 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showFinishResult(RxEvent.SetFriendMarkNameBack getFriendInfoCall) {
-        if (getFriendInfoCall.jfgResult.code == JError.ErrorOK) {
+        if (getFriendInfoCall == null) {
+            // TODO: 2017/7/1 timeout
+        } else if (getFriendInfoCall.jfgResult.code == JError.ErrorOK) {
             ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
             if (listener != null) {
                 listener.remarkNameChange(getEditName());

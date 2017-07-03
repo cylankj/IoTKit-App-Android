@@ -8,12 +8,15 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -21,7 +24,8 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -29,20 +33,18 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriendAddByNumContract.View>
-        implements MineFriendAddByNumContract.Presenter {
+public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriendSearchContract.View>
+        implements MineFriendSearchContract.Presenter {
 
-    private CompositeSubscription compositeSubscription;
     private Network network;
 
-    public MineFriendAddByNumPresenterImp(MineFriendAddByNumContract.View view) {
+    public MineFriendAddByNumPresenterImp(MineFriendSearchContract.View view) {
         super(view);
         view.setPresenter(this);
     }
@@ -50,30 +52,13 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            unSubscribe(compositeSubscription);
-        }
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(checkFriendAccountCallBack());
         registerNetworkMonitor();
     }
 
     @Override
     public void stop() {
         super.stop();
-        unSubscribe(compositeSubscription);
         unregisterNetworkMonitor();
-    }
-
-
-    /**
-     * 是否想我发送过请求
-     *
-     * @param bean
-     */
-    @Override
-    public void checkIsSendAddReqToMe(FriendsReqBean bean) {
-
     }
 
     /**
@@ -81,76 +66,73 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
      */
     @Override
     public void checkFriendAccount(final String account) {
-        rx.Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String account) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
+        Subscription subscribe = Observable.just("checkFriendAccount")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class).first())
+                .map(result -> {
+                    FriendContextItem friendContextItem = null;
+                    if (result != null && result.code == JError.ErrorOK) {
+                        if (result.isFriend) {
+                            JFGFriendAccount friendAccount = null;
+                            ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                            if (friendsList != null) {
+                                for (JFGFriendAccount friend : friendsList) {
+                                    if (TextUtils.equals(friend.account, result.account)) {
+                                        friendAccount = friend;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (friendAccount == null) {
+                                friendAccount = new JFGFriendAccount(result.account, null, result.alias);
+                            }
+                            friendContextItem = new FriendContextItem(friendAccount);
+                        } else {
+                            JFGFriendRequest friendRequest = null;
+
+                            ArrayList<JFGFriendRequest> friendsReqList = BaseApplication.getAppComponent().getSourceManager().getFriendsReqList();
+                            if (friendsReqList != null) {//这里我们判断当前是否有该好友的添加请求
+                                for (JFGFriendRequest request : friendsReqList) {
+                                    if (TextUtils.equals(request.account, result.account)) {
+                                        friendRequest = request;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (friendRequest == null) {
+                                friendRequest = new JFGFriendRequest();
+                                friendRequest.time = System.currentTimeMillis();
+                                friendRequest.account = result.account;
+                                friendRequest.alias = result.alias;
+                                friendContextItem = new FriendContextItem(friendRequest);
+                            }
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.d("checkFriendAccount" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    /**
-     * 检测好友的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription checkFriendAccountCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+                    return friendContextItem;
+                })
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
-                    @Override
-                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null) {
-                            handlerCheckCallBackResult(checkAccountCallback);
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 处理检测的回调结果
-     *
-     * @param checkAccountCallback
-     */
-    private void handlerCheckCallBackResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (checkAccountCallback.i == JError.ErrorOK) {
-            //  已注册
-            if (getView() != null) {
-                FriendsReqBean addReqBean = new FriendsReqBean();
-                addReqBean.account = checkAccountCallback.s;
-                addReqBean.alias = checkAccountCallback.s1;
-                try {
-                    //头像
-                    int type = BaseApplication.getAppComponent().getSourceManager().getStorageType();
-                    addReqBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(type, String.format(Locale.getDefault(), "/image/%s.jpg", addReqBean.account));
-                } catch (Exception e) {
+                .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
+                .doOnTerminate(() -> getView().hideLoading())
+                .subscribe(friendContextItem -> {
+                    getView().onCheckFriendResult(friendContextItem);
+                }, e -> {
                     e.printStackTrace();
-                }
-                getView().hideFindLoading();
-                getView().setFindResult(false, addReqBean, checkAccountCallback.b);
-            }
-        } else {
-            //  未注册 无结果
-            if (getView() != null) {
-                getView().hideFindLoading();
-                getView().showFindNoResult();
-            }
-        }
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
 
-    @Override
     public void registerNetworkMonitor() {
         try {
             if (network == null) {
@@ -165,7 +147,6 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
         }
     }
 
-    @Override
     public void unregisterNetworkMonitor() {
         if (network != null) {
             ContextUtils.getContext().unregisterReceiver(network);

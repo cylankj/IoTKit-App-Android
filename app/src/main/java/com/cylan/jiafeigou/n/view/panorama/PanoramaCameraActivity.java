@@ -308,7 +308,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         liveFlowSpeedText.setVisibility(View.VISIBLE);
-        liveFlowSpeedText.setText("0K/s");
+        liveFlowSpeedText.setText("0K/account");
         onRefreshViewModeUI(panoramaViewMode, true, false);
         onHideBadNetWorkBanner();
     }

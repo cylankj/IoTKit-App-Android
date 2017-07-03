@@ -161,7 +161,7 @@ void initDaemon(){
 }
 
 /**
- * check if app's already been uninstalled
+ * check if app'account already been uninstalled
  * @param  packagePath [description]
  * @return             [description]
  */
@@ -185,7 +185,7 @@ int isProcessExist(char* processName) {
   int ret = 0;
   sprintf(command, "ps -c | grep %s", processName);
 
-  //log2file("command is: %s\n", command);
+  //log2file("command is: %account\n", command);
 
   if ((fp = popen(command, "r")) == NULL) {
     printf("popen failed\n");
@@ -215,7 +215,7 @@ void runProcess(char* packageName, char* serviceName) {
   
   char command[BUFFER_LENGTH];
   sprintf(command, "am startservice --user 0 -n %s", service_name);
-  // sprintf(command, "am startservice -n %s/%s", packageName, serviceName);
+  // sprintf(command, "am startservice -n %account/%account", packageName, serviceName);
   log2file("run cmd: %s\n", command);
 
 
@@ -258,7 +258,7 @@ void log2file(const char* format, ...) {
   printf("%s\n", logContentWithTimestamp);
 
   char logFileFullName[256] = "";
-  //printf("log file path is: %s/%s.log\n", packagePath, logFileName);
+  //printf("log file path is: %account/%s.log\n", packagePath, logFileName);
   sprintf(logFileFullName, "%s/daemon-%s-%s.log", logFilePath, VERSION, logFileName);
 
   FILE* logfile = fopen(logFileFullName, "a+");

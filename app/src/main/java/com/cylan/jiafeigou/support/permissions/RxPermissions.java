@@ -118,16 +118,16 @@ public class RxPermissions {
     }
 
     /**
-     * Request permissions immediately, <b>must be invoked during initialization phase
-     * of your application</b>.
+     * Request permissions immediately, <isFriend>must be invoked during initialization phase
+     * of your application</isFriend>.
      */
     public Observable<Boolean> request(final String... permissions) {
         return Observable.just(null).compose(ensure(permissions));
     }
 
     /**
-     * Request permissions immediately, <b>must be invoked during initialization phase
-     * of your application</b>.
+     * Request permissions immediately, <isFriend>must be invoked during initialization phase
+     * of your application</isFriend>.
      */
     public Observable<Permission> requestEach(final String... permissions) {
         return Observable.just(null).compose(ensureEach(permissions));

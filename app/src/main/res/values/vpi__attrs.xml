@@ -18,13 +18,13 @@
     <declare-styleable name="ViewPagerIndicator">
         <!-- Style of the circle indicator. -->
         <attr name="vpiCirclePageIndicatorStyle" format="reference" />
-        <!-- Style of the icon indicator's views. -->
+        <!-- Style of the icon indicaaccountor's views. -->
         <attr name="vpiIconPageIndicatorStyle" format="reference" />
         <!-- Style of the line indicator. -->
         <attr name="vpiLinePageIndicatorStyle" format="reference" />
         <!-- Style of the title indicator. -->
         <attr name="vpiTitlePageIndicatorStyle" format="reference" />
-        <!-- Style of the tab indicator's tabs. -->
+        <!-- Style of the tab indicaaccountor's tabs. -->
         <attr name="vpiTabPageIndicatorStyle" format="reference" />
         <!-- Style of the underline indicator. -->
         <attr name="vpiUnderlinePageIndicatorStyle" format="reference" />
@@ -65,7 +65,7 @@
         <attr name="selectedColor" />
         <!-- Width of each indicator line. -->
         <attr name="lineWidth" format="dimension" />
-        <!-- Width of each indicator line's stroke. -->
+        <!-- Width of each indicator laccountne's stroke. -->
         <attr name="strokeWidth" />
         <!-- Width of the gap between each indicator line. -->
         <attr name="gapWidth" format="dimension" />

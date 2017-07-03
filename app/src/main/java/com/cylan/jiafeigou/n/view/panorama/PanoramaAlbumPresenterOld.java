@@ -18,7 +18,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //                .subscribeOn(Schedulers.newThread())
 //                .observeOn(Schedulers.newThread())
 //                .delay(2, TimeUnit.SECONDS)
-//                .subscribe(s -> {
+//                .subscribe(account -> {
 //                    makeTCPBridge();
 //                }, AppLogger::e);
 //    }
@@ -35,8 +35,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //        Observable.just("connected")
 //                .subscribeOn(AndroidSchedulers.mainThread())
 //                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(s -> mView != null)
-//                .subscribe(s -> mView.onConnected(), AppLogger::e);
+//                .filter(account -> mView != null)
+//                .subscribe(account -> mView.onConnected(), AppLogger::e);
 //    }
 //
 //    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
@@ -57,7 +57,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //    private void startGetFirstItem() {
 ////        Observable.just("go")
 ////                .subscribeOn(Schedulers.newThread())
-////                .subscribe(s -> {
+////                .subscribe(account -> {
 ////                    PanoramaEvent.MsgFirstFileInListReq req = new PanoramaEvent.MsgFirstFileInListReq();
 ////                    byte[] data = fill(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2,
 ////                            TYPE_FIRST_FILE_REQ, DpUtils.pack(req));
@@ -92,8 +92,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //        Observable.just("disconnect")
 //                .subscribeOn(AndroidSchedulers.mainThread())
 //                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(s -> mView != null)
-//                .subscribe(s -> mView.onDisconnected(), AppLogger::e);
+//                .filter(account -> mView != null)
+//                .subscribe(account -> mView.onDisconnected(), AppLogger::e);
 //    }
 //
 //    private static final String KEY_FIRST_FILE_TIME = "firstFileTime";
@@ -118,7 +118,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //        }
 //        Observable.just("o")
 //                .subscribeOn(Schedulers.newThread())
-//                .subscribe(s -> startSyncAlbumList(time, 20), AppLogger::e);
+//                .subscribe(account -> startSyncAlbumList(time, 20), AppLogger::e);
 //    }
 //
 //
@@ -277,7 +277,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //                    }
 //                })
 //                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(s -> mView != null)
+//                .filter(account -> mView != null)
 //                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
 //                .subscribe(integer -> mView.onUpdate(null, integer), AppLogger::e);
 //    }
@@ -351,7 +351,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //        return Observable.just("checkConnection")
 //                .observeOn(Schedulers.io())
 //                .subscribeOn(Schedulers.io())
-//                .map(s -> {
+//                .map(account -> {
 //                    final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
 //                    if (info == null || !JFGRules.isCylanDevice(info.getSSID())) {
 //                        AppLogger.i("checkConnection: " + info);
@@ -364,7 +364,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //    private void makeTCPBridge() {
 //        checkConnection()
 //                .filter(aBoolean -> aBoolean)
-//                .map(s -> {
+//                .map(account -> {
 //                    try {
 //                        AppLogger.d("正在发送 FPing 消息");
 //                        appCmd.sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
@@ -464,7 +464,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //                        AppLogger.d("back 2");
 //                        return null;
 //                    }
-//                    AppLogger.d("size: " + ListUtils.getSize(convertList) + " s:" + sizeInUi);
+//                    AppLogger.d("size: " + ListUtils.getSize(convertList) + " account:" + sizeInUi);
 //                    long timeLastItem = uiList.get(uiList.size() - 1).getDownloadFile().getTime() * 1000L;
 //                    long timeFirst = convertList.get(0).getDownloadFile().getTime() * 1000L;
 //                    AppLogger.d("timeLastItem: " + timeLastItem + " timeFirst:" + timeFirst);
@@ -479,7 +479,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //                })
 //                .filter(finalList -> ListUtils.getSize(finalList) > 0)
 //                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(s -> mView != null)
+//                .filter(account -> mView != null)
 //                .subscribe(beanArrayList -> {
 //                            mView.onAppend(beanArrayList);
 //                            Log.d(this.getClass().getSimpleName(), "beanArrayList: " + ListUtils.getSize(beanArrayList));
@@ -501,8 +501,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //                        AppLogger.e("文件损坏");
 //                        Observable.just("fileNotFound")
 //                                .observeOn(AndroidSchedulers.mainThread())
-//                                .filter(s -> mView != null)
-//                                .subscribe(s -> mView.onFileState(-1), AppLogger::e);
+//                                .filter(account -> mView != null)
+//                                .subscribe(account -> mView.onFileState(-1), AppLogger::e);
 //                    }
 //                    return null;
 //                });

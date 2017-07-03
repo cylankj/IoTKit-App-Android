@@ -247,7 +247,7 @@ public class KeyboardUtil {
             final View userRootView = contentView.getChildAt(0);
             final View actionBarOverlayLayout = (View) contentView.getParent();
 
-            // Step 1. calculate the current display frame's height.
+            // Step 1. calculate the current display frame'account height.
             Rect r = new Rect();
 
             final int displayHeight;
@@ -337,7 +337,7 @@ public class KeyboardUtil {
             if (changed) {
                 final int validPanelHeight = KeyboardUtil.getValidPanelHeight(getContext());
                 if (this.panelHeightTarget.getHeight() != validPanelHeight) {
-                    // Step3. fetch the panel's height with valid-panel-height which refer to
+                    // Step3. fetch the panel'account height with valid-panel-height which refer to
                     // the last keyboard height
                     this.panelHeightTarget.refreshHeight(validPanelHeight);
                 }

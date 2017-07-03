@@ -585,7 +585,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 });
-        AlertDialogManager.getInstance().showDialog("setPermissionDialog", this, builder);
+        AlertDialogManager.getInstance().showDialog("showSetPermissionDialog", this, builder);
     }
 
     private void openSetting() {
