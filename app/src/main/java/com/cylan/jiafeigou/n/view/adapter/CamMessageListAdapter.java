@@ -233,7 +233,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         for (int i = 0; i < count; i++) {
             Glide.with(getContext())
-                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg", item.alarmMsg.time, i + 1))
+                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg", item.alarmMsg.time, i + 1, item.alarmMsg.type))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

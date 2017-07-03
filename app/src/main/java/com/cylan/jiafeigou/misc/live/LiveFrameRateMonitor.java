@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.misc.live;
 
+import android.util.Log;
+
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -39,7 +41,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
         if (monitorListener == null) return;
         boolean isFrameFailed = badFrameCount >= FAILED_TARGET;
         boolean isFrameLoading = badFrameCount >= LOADING_TARGET;
-        AppLogger.d("视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badFrameCount);
+        Log.d("LiveFrameRateMonitor", "视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badFrameCount);
 
         if (isFrameLoading && isFrameFailed && System.currentTimeMillis() - lastNotifyTime > NOTIFY_WINDOW) {//加载失败了,4秒通知
             lastNotifyTime = System.currentTimeMillis();

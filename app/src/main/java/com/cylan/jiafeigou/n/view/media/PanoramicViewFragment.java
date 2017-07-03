@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -167,8 +168,8 @@ public class PanoramicViewFragment extends IBaseFragment {
 
         }
         //填满
-        target = Glide.with(this)
-                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg", dpAlarm.time, index + 1))
+        Glide.with(ContextUtils.getContext())
+                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg", dpAlarm.type))
                 .asBitmap()
                 //解决黑屏问题
                 .signature(new StringSignature(System.currentTimeMillis() + ""))

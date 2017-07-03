@@ -43,7 +43,8 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presenter> implements AddFriendContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
+public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presenter>
+        implements AddFriendContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_friends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -73,12 +74,18 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
         super.onStart();
         if (basePresenter != null) {
             basePresenter.getFriendListData();
+            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+            if (basePresenter != null) {
+                basePresenter.start();
+                basePresenter.getFriendListData();
+            }
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup
+            container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
         showLoadingPro();
@@ -123,7 +130,12 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
         contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
-        hideLoadingPro();
+        if (getView() != null)
+            getView().post(() -> {
+                if (getView() != null && isAdded()) {
+                    LoadingDialog.dismissLoading(getFragmentManager());
+                }
+            });
     }
 
     /**

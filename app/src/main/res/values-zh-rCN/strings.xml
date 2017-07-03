@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">清空消息缓存</string>
   <string name="CODE_ERR">请输入有效的验证码</string>
   <string name="COMFIRM_NEW_PASS">确认新密码</string>
-  <string name="CONNECTING">正在连接中，不可多人同时查看</string>
+  <string name="CONNECTING">设备无响应，请重试</string>
   <string name="CONNECTING_1">正在连接网络，请稍后</string>
   <string name="CONN_INTERRUPTED">连接中断，请检查摄像头网络</string>
   <string name="CREATING">正在创建，请稍候&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">声音</string>
   <string name="DOOR_WIFI_HINT">设备指示灯状态说明</string>
   <string name="DailyGreatTips_Full">每日精彩收藏数量已达50条上限，是否前去删除？</string>
+  <string name="Daily_Great_NO_CONTENTS">暂无精彩内容</string>
   <string name="Dec">12月</string>
   <string name="Delete_Share">是否删除分享</string>
   <string name="Device_Disconnected">对端断开</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">滑一滑，\n显示更多内容</string>
   <string name="GetCode_FrequentlyTips">操作过于频繁，请10分钟后重试</string>
   <string name="GetWifiList_FaiTips">1.允许客户端获取“位置信息”权限 \n 2.打开“GPS”开关</string>
+  <string name="H5_Asteroid">小行星</string>
+  <string name="H5_Fisheye">鱼眼</string>
+  <string name="H5_Panoramic">全景</string>
+  <string name="H5_VR_mode">VR模式</string>
   <string name="HOME">主页</string>
   <string name="HOUR">时</string>
   <string name="HOURS">全天提示</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">蓝色常亮，3G/4G在线</string>
   <string name="LIGTH_LABEL_2_1">闪烁，电量较低</string>
   <string name="LIGTH_LABEL_2_2">蓝色常亮，已正常通电</string>
+  <string name="LIVE_DATA">非WiFi网络，请注意流量消耗</string>
   <string name="LOADING">加载中&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">请在手机设置－通知页，找到“%s”，开启“允许通知”</string>
   <string name="LOCATION">位置名称：</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">电池电量低，请及时充电</string>
   <string name="Tap1_Magnetism_ClearRecord">清空开关记录</string>
   <string name="Tap1_Magnetism_Setting_Notify">开/关时通知我</string>
+  <string name="Tap1_Menu_More">更多</string>
   <string name="Tap1_NeedsInitializedTips">设备SD卡需要先初始化，但会删除卡内数据，确定初始化吗？</string>
   <string name="Tap1_NewFirmware">新固件</string>
   <string name="Tap1_NoMessages">无消息</string>
@@ -876,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">暂无可分享亲友</string>
   <string name="Tap3_ShareDevice_NotYourself">无法分享设备给自己</string>
   <string name="Tap3_ShareDevice_Shared">已分享</string>
-  <string name="Tap3_ShareDevice_SharedContents">已分享内容</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°全景已分享内容</string>
   <string name="Tap3_ShareDevice_SharedUsers">已分享用户</string>
   <string name="Tap3_ShareDevice_SuccessTips">分享成功</string>
   <string name="Tap3_ShareDevice_Tips">该设备已到达最大分享数</string>

@@ -24,7 +24,11 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.lang.ref.WeakReference;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -241,4 +245,25 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
             }
         }
     };
+
+    /**
+     * a static task
+     */
+    protected static <T, R> void enqueueTask(T source, Func1<T, R> func1) {
+        Observable.just(source)
+                .map(func1)
+                .compose(applySchedulers())
+                .subscribe(ret -> {
+                }, AppLogger::e);
+    }
+
+    final static Observable.Transformer<Object, Object> schedulersTransformer =
+            observable -> observable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+
+    @SuppressWarnings("unchecked")
+    static <T> Observable.Transformer<T, T> applySchedulers() {
+        return (Observable.Transformer<T, T>) schedulersTransformer;
+    }
+
 }

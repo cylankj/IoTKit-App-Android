@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 
 import org.junit.Test;
 
@@ -53,10 +54,13 @@ public class MiscUtilsTest {
 
     @Test
     public void testHAN() {
-        System.out.println(containsHanScript("xxx已下架xxx"));
-        for (int i = Character.MIN_VALUE; i <= Character.MAX_VALUE; ++i) {
-            System.out.println(i + "    " + (char) i);
-        }
+//        System.out.println(containsHanScript("xxx已下架xxx"));
+//        for (int i = Character.MIN_VALUE; i <= Character.MAX_VALUE; ++i) {
+//            System.out.println(i + "    " + (char) i);
+//        }
+
+        System.out.println(BindScanFragment.vidReg.matcher("vid=233233233233").find());
+        System.out.println(BindScanFragment.vidReg.matcher("Vid=233233233233").find());
     }
 
     public static boolean containsHanScript(String s) {

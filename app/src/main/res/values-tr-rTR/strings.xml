@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Mesajlar cebini temizleyiniz</string>
   <string name="CODE_ERR">Geçersiz kod</string>
   <string name="COMFIRM_NEW_PASS">Yeni şifreyi tekrar yazın</string>
-  <string name="CONNECTING">Canlı video izleyen birisi var</string>
+  <string name="CONNECTING">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="CONNECTING_1">Bağlanılıyor</string>
   <string name="CONN_INTERRUPTED">Ağa bağlanıyor</string>
   <string name="CREATING">Ekleniyor&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Ses</string>
   <string name="DOOR_WIFI_HINT">LED Durum Göstergesi</string>
   <string name="DailyGreatTips_Full">Koleksiyonun Günlük Mükemmel sayısı 50\'ye ulaştı, silinecek mi?</string>
+  <string name="Daily_Great_NO_CONTENTS">İçerik yok</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Paylaşımı silinsin mi?</string>
   <string name="Device_Disconnected">Bağlantısız</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Kaygan，\n daha fazla göster</string>
   <string name="GetCode_FrequentlyTips">İşlemler çok sıktır, lütfen 10 dakika sonra tekrar deneyin.</string>
   <string name="GetWifiList_FaiTips">1.Uygulamanın \"Konum\" iznini almasına izin ver \n 2.\"GPS\" i açın.</string>
+  <string name="H5_Asteroid">asteroit</string>
+  <string name="H5_Fisheye">Balık gözü</string>
+  <string name="H5_Panoramic">panoramik</string>
+  <string name="H5_VR_mode">VR modu</string>
   <string name="HOME">Ev</string>
   <string name="HOUR">S</string>
   <string name="HOURS">24 saat</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Mavi ışık, 3G/4G Çevrimiçi</string>
   <string name="LIGTH_LABEL_2_1">Yanıp sönüyor, düşük pil</string>
   <string name="LIGTH_LABEL_2_2">Mavi ışık, elektrik var</string>
+  <string name="LIVE_DATA">Hücresel kullanım için lütfen veri kullanımınızı not edin</string>
   <string name="LOADING">Yükleniyor&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Phone\'nunuzda \"Ayarlamalar&#8211;Bildirimlar\" aracılığı ile %s i bulun ve Bildirimler i açın</string>
   <string name="LOCATION">Yer:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">Düşük güç, lütfen şarj edin.</string>
   <string name="Tap1_Magnetism_ClearRecord">kayıt temizleyin</string>
   <string name="Tap1_Magnetism_Setting_Notify">Beni bilgilendir ne zaman açık/kapalı</string>
+  <string name="Tap1_Menu_More">Daha</string>
   <string name="Tap1_NeedsInitializedTips">SD kartının başlatılması gerekiyor ve veriler silinecek, emin misiniz?</string>
   <string name="Tap1_NewFirmware">yeni firmware</string>
   <string name="Tap1_NoMessages">Mesaj yok</string>
@@ -876,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">Hiçbiri</string>
   <string name="Tap3_ShareDevice_NotYourself">Kendiniz için paylaşmayınız</string>
   <string name="Tap3_ShareDevice_Shared">Paylaşılan</string>
-  <string name="Tap3_ShareDevice_SharedContents">Paylaşılan içerik</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam Paylaşılan içerik</string>
   <string name="Tap3_ShareDevice_SharedUsers">Paylaşılan kullanıcılar</string>
   <string name="Tap3_ShareDevice_SuccessTips">Başarılı olarak paylaşıldı</string>
   <string name="Tap3_ShareDevice_Tips">Bu cihaz, herhangi bir daha fazla kullanıcı ile paylaşılamaz</string>

@@ -123,7 +123,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         });
 
         Glide.with(this)
-                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg"))
+                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .error(R.drawable.broken_image)
                 .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
@@ -198,7 +198,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_share)
     public void share() {
-        new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg").fetch(localPath -> {
+        new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type).fetch(localPath -> {
             ShareManager.byImg(BellRecordDetailActivity.this)
                     .withImg(localPath)
                     .share();
@@ -241,7 +241,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             item.fileName = mCallRecord.timeInLong / 1000 + ".jpg";
             item.time = (int) (mCallRecord.timeInLong / 1000);
             FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                    .load(new JFGGlideURL(uuid, item.fileName))
+                    .load(new JFGGlideURL(uuid, item.fileName, item.regionType))
                     .downloadOnly(100, 100);
             String path = null;
             try {
@@ -345,7 +345,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-        Glide.with(this).load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg")).
+        Glide.with(this).load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type)).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {

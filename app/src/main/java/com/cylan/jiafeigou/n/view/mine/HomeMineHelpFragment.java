@@ -2,38 +2,38 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.schedulers.Schedulers;
 
 /**
  * 创建者     谢坤
@@ -64,6 +64,8 @@ public class HomeMineHelpFragment extends IBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferencesUtils.putBoolean(JConstant.KEY_HELP_GUIDE, false);
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
     }
 
     @Nullable
@@ -131,81 +133,29 @@ public class HomeMineHelpFragment extends IBaseFragment {
     @SuppressWarnings("deprecation")
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView(String url) {
-        mWvHelp.getSettings().setJavaScriptEnabled(true);
-        mWvHelp.getSettings().setDefaultTextEncodingName("utf-8");
+        mWvHelp.getSettings().setAppCacheMaxSize(5 * 1024 * 1024); // 5MB
+        mWvHelp.getSettings().setAppCachePath(getContext().getApplicationContext().getCacheDir().getAbsolutePath());
         mWvHelp.getSettings().setAllowFileAccess(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWvHelp.getSettings().setMixedContentMode(
-                    WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
-        }
-        // 设置 缓存模式
-        if (!NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
-            mWvHelp.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-        } else {
-            mWvHelp.getSettings().setCacheMode(
-                    WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        }
-        // webView.getSettings().setBlockNetworkImage(true);// 把图片加载放在最后来加载渲染
-        mWvHelp.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        // 支持多窗口
-        mWvHelp.getSettings().setSupportMultipleWindows(true);
-        // 开启 DOM storage API 功能
-        mWvHelp.getSettings().setDomStorageEnabled(true);
-        // 开启 Application Caches 功能
-        String cacheDirPath = getContext().getApplicationContext().getDir("cache", Context.MODE_PRIVATE).getPath();
-        mWvHelp.getSettings().setAppCachePath(cacheDirPath);
-        mWvHelp.getSettings().setAppCacheMaxSize(1024 * 1024 * 8);
-        mWvHelp.getSettings().setDatabaseEnabled(true);
         mWvHelp.getSettings().setAppCacheEnabled(true);
-        onLoad(url);
-    }
-
-    @SuppressWarnings("deprecation")
-    @SuppressLint("SetJavaScriptEnabled")
-    public void onLoad(String url) {
-        try {
-            mWvHelp.setWebChromeClient(new WebChromeClient() {
-                @Override
-                public void onProgressChanged(WebView view, int newProgress) {
-                    vProgress.setProgress(newProgress);
-                    if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
-                    if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
-                }
-            });
-            mWvHelp.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onLoadResource(WebView view, String url) {
-                    super.onLoadResource(view, url);
-                }
-
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView webview,
-                                                        String url) {
-                    webview.loadUrl(url);
-                    return true;
-                }
-
-                @Override
-                public void onReceivedSslError(WebView view,
-                                               SslErrorHandler handler, SslError error) {
-                    handler.proceed();  //接受所有证书
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                }
-
-                @Override
-                public void onReceivedError(WebView view, int errorCode,
-                                            String description, String failingUrl) {
-
-                }
-            });
-            mWvHelp.loadUrl(url);
-        } catch (Exception e) {
-            return;
+        mWvHelp.getSettings().setJavaScriptEnabled(true);
+        mWvHelp.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); // load online by default
+        if (NetUtils.getJfgNetType()!=0) { // loading offline
+            mWvHelp.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
+        try {
+            mWvHelp.setWebViewClient(new CheckServerTrustedWebViewClient(ContextUtils.getContext()) {
+                //                @Override
+                //                public void onProgressChanged(WebView view, int newProgress) {
+                //                    vProgress.setProgress(newProgress);
+                //                    if (newProgress == 0) vProgress.setVisibility(View.VISIBLE);
+                //                    if (newProgress == 100) vProgress.setVisibility(View.INVISIBLE);
+                //                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        AppLogger.d("help:" + url);
+        mWvHelp.loadUrl(url);
     }
 
     @Override

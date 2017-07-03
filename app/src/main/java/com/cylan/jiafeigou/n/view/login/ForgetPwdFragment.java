@@ -208,7 +208,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         etForgetUsername.setEnabled(true);
         ViewUtils.setChineseExclude(etNewPwdInput, JConstant.PWD_LEN_MAX);
         if (acceptType == 1) {
-            etForgetUsername.setHint(getString(R.string.EMAIL_1));
+            etForgetUsername.setHint(getString(R.string.EMAIL));
         }
         Bundle bundle = getArguments();
         if (bundle != null && !TextUtils.isEmpty(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT))) {
@@ -217,7 +217,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         }
         if (TextUtils.isEmpty(etForgetUsername.getText())) {
             final int type = LocaleUtils.getLanguageType(getActivity());
-            etForgetUsername.setHint(type == JConstant.LOCALE_SIMPLE_CN ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL_1));
+            etForgetUsername.setHint(type == JConstant.LOCALE_SIMPLE_CN ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
         }
     }
 

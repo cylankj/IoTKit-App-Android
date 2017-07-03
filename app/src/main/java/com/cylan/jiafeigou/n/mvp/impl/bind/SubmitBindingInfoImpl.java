@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -24,7 +25,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -130,30 +130,31 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 }, AppLogger::e);
     }
 
+    private boolean sendBindInfo;
+    private static final int INTERVAL = 3;
+
     private Subscription submitBindDeviceSub() {
-        return Observable.interval(0, 2, TimeUnit.SECONDS)
-                .map(s -> BaseApplication.getAppComponent().getSourceManager().getAccount())
-                .filter(account -> account != null && account.isOnline())
-                .first()
-                .flatMap(s -> Observable.interval(0, 5, TimeUnit.SECONDS))
-                .map(s -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    try {
-                        String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-                        UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                        if (portrait != null && device == null) {
-                            BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                            AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
-                        }
-                    } catch (Exception e) {
-                        AppLogger.d("err: " + e.getLocalizedMessage());
+        final long timeout = Math.min(TIME_OUT - (System.currentTimeMillis() - startTick), TIME_OUT);
+        return Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.newThread())
+                .flatMap(aLong -> {
+                    if (INTERVAL * aLong * 1000 >= timeout) {
+                        throw new RxEvent.HelperBreaker("timeout");
                     }
-                    return device;
-                })
-                .filter(device -> device != null && !TextUtils.isEmpty(device.uuid))
-                .first()
-                .flatMap(s -> Observable.interval(0, 3, TimeUnit.SECONDS))
-                .map(s -> {
+                    JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    if (account != null && !sendBindInfo) {
+                        sendBindInfo = true;
+                        try {
+                            String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
+                            UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+                            if (portrait != null) {
+                                BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                                AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
+                            }
+                        } catch (Exception e) {
+                            AppLogger.d("err: " + e.getLocalizedMessage());
+                        }
+                    }
+                    //
                     ArrayList<JFGDPMsg> params = new ArrayList<>(1);
                     JFGDPMsg msg = new JFGDPMsg(201, 0);
                     params.add(msg);
@@ -168,24 +169,27 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         net = device.$(201, new DpMsgDefine.DPNet());
                     }
                     AppLogger.d("正在查询设备网络状态:" + new Gson().toJson(net));
-                    return net;
-                })
-                .filter(net -> net != null && net.net > 0)
-                .first()
-                .timeout(Math.min(TIME_OUT - (System.currentTimeMillis() - startTick), TIME_OUT), TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(net -> {
-                    AppLogger.d("绑定成功,网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
-                    bindResult = BIND_SUC;
-                    endCounting();
-                    sendTimeZone(uuid);
-                    finalSetSome();
-                }, e -> {
-                    if (e instanceof TimeoutException) {
-                        mView.bindState(bindResult = BIND_TIME_OUT);
-                        AppLogger.d("绑定设备超时");
+                    if (JFGRules.isDeviceOnline(net)) {
+                        //成功了
+                        throw new RxEvent.HelperBreaker("good");
                     }
-                    AppLogger.d("擦,出错了:" + e.getMessage());
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                }, throwable -> {
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+                        if (TextUtils.equals(throwable.getMessage(), "good")) {
+                            AppLogger.d("绑定成功,网络状态为:");
+                            bindResult = BIND_SUC;
+                            endCounting();
+                            finalSetSome();
+                        } else {
+                            //timeout失败
+                            mView.bindState(bindResult = BIND_TIME_OUT);
+                            AppLogger.e("绑定设备超时");
+                        }
+                    }
                 });
     }
 
@@ -197,24 +201,28 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    if (JFGRules.isRS(device.pid)) {
-                        //303,501
-                        AppLogger.d("设置睿视属性");
-                        try {
-                            ArrayList<JFGDPMsg> list = new ArrayList<>();
+                    //303,501
+                    try {
+                        DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
+                        timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
+                        timeZone.timezone = TimeZone.getDefault().getID();
+                        ArrayList<JFGDPMsg> list = new ArrayList<>();
+                        JFGDPMsg _timeZone = new JFGDPMsg(214, System.currentTimeMillis());
+                        _timeZone.packValue = timeZone.toBytes();
+                        boolean isRs = JFGRules.isRS(device.pid);
+                        if (isRs) {
                             JFGDPMsg _303 = new JFGDPMsg(303, System.currentTimeMillis());
                             _303.packValue = DpUtils.pack(2);
-                            JFGDPMsg _505 = new JFGDPMsg(501, System.currentTimeMillis());
-                            _505.packValue = DpUtils.pack(false);
+                            JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
+                            _501.packValue = DpUtils.pack(false);
                             list.add(_303);
-                            list.add(_303);
-                            list.add(_505);
-                            BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
-                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(2), 303);
-                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<>(false), 501);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            list.add(_501);
                         }
+                        list.add(_timeZone);
+                        AppLogger.d("设置睿视属性?" + isRs);
+                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }, AppLogger::e);
     }
@@ -251,23 +259,6 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                     getView().onCounting(integer);
                 }, AppLogger::e);
         addSubscription(subscription, "actionPercent");
-    }
-
-    private void sendTimeZone(String uuid) {
-        //等设备上线之后,要设置时区.
-        Observable.just("setTimeZone")
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(ret -> {
-                    DpMsgDefine.DPTimeZone timeZone = new DpMsgDefine.DPTimeZone();
-                    timeZone.offset = TimeZone.getDefault().getRawOffset() / 1000;
-                    timeZone.timezone = TimeZone.getDefault().getID();
-                    try {
-                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, 214);
-                        AppLogger.d("设置设备时区:" + uuid + " ,offset:" + timeZone);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }, AppLogger::e);
     }
 
 }

@@ -102,6 +102,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             presenter.start();
             presenter.getCanShareFriendsList(uuid);
         }
+
     }
 
     @Override
@@ -170,8 +171,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     }
 
     @Override
-    public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, (Object[]) args));
+    public void showLoading(int resId, Object... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
     }
 
     @Override

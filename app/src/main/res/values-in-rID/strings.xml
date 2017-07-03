@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Hapus Pesan</string>
   <string name="CODE_ERR">Kode salah</string>
   <string name="COMFIRM_NEW_PASS">Ketik kata sandi baru</string>
-  <string name="CONNECTING">Seseorang sedang melihat video langsung</string>
+  <string name="CONNECTING">Tidak ada respon , silahkan coba lagi</string>
   <string name="CONNECTING_1">Menghubungkan</string>
   <string name="CONN_INTERRUPTED">Menghubungkan ke jaringan</string>
   <string name="CREATING">Menambahkan&#8230;</string>
@@ -149,7 +149,8 @@
   <string name="DOOR_UNCALL">Terjawab</string>
   <string name="DOOR_VOICE">Suara</string>
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
-  <string name="DailyGreatTips_Full">Nomor koleksi untuk Daily Great telah mencapai batas atas 50, pergi ke menghapus?</string>
+  <string name="DailyGreatTips_Full">Nomor koleksi untuk My Favorite telah mencapai batas atas 50, pergi ke menghapus?</string>
+  <string name="Daily_Great_NO_CONTENTS">Tidak ada isi</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Hapus berbagi?</string>
   <string name="Device_Disconnected">Terputus</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Sedang menggeser. \nperlihatkan lebih lanjut</string>
   <string name="GetCode_FrequentlyTips">Terlalu sering operasi, coba lagi 10 menit kemudian.</string>
   <string name="GetWifiList_FaiTips">1.Memungkinkan aplikasi untuk mendapatkan \"Lokasi\" izin \n 2.Hidupkan \"GPS\" atas.</string>
+  <string name="H5_Asteroid">Asteroid</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Panorama</string>
+  <string name="H5_VR_mode">Mode VR</string>
   <string name="HOME">Rumah</string>
   <string name="HOUR">Jam</string>
   <string name="HOURS">24 jam</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Lampu biru, 3G/4G Online</string>
   <string name="LIGTH_LABEL_2_1">Berkedip, baterai lemah</string>
   <string name="LIGTH_LABEL_2_2">Lampu biru, terdapat daya listrik</string>
+  <string name="LIVE_DATA">Untuk seluler, perhatikan penggunaan data Anda</string>
   <string name="LOADING">Loading&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Please go to Phone\'s \"Settings\"&#8211;\"Notifications\", find %s and open \'Notifications\'</string>
   <string name="LOCATION">Lokasi:</string>
@@ -644,8 +650,8 @@
   <string name="Tap1_Album_PutInVR">Meletakkan ponsel ke dalam gelas VR</string>
   <string name="Tap1_Album_Share_Description">Tambahkan deskripsi</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" tidak terpasang, silahkan install dan coba lagi</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Konten bersama akan disimpan ke \"Daily Great \"</string>
-  <string name="Tap1_BigPic_FavoriteTips">Kumpulkan gambar&#8211;gambar di\"Daily Great\"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Konten bersama akan disimpan ke \"My Favorite \"</string>
+  <string name="Tap1_BigPic_FavoriteTips">Kumpulkan gambar&#8211;gambar di\"My Favorite \"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Standby ke hibernate, tidak akan bisa menonton live, lihat riwayat video, lindungi dan awasi, rekam otomatis, fotografi selang waktu, dan lain&#8211;lain.</string>
   <string name="Tap1_CameraFun_Standby_OnTips">Fotografi selang waktu, tidak bisa standby</string>
@@ -660,7 +666,7 @@
   <string name="Tap1_CameraFun_Timelapse_GoWatch">Lihatlah</string>
   <string name="Tap1_CameraFun_Timelapse_Interval">Jangka waktu</string>
   <string name="Tap1_CameraFun_Timelapse_NotStart">Akan dimulai</string>
-  <string name="Tap1_CameraFun_Timelapse_OnTips">Fotografi selang waktu akan dimatikan otomatis saat selesai merekam dan disimpan dalam\"Daily Great\"</string>
+  <string name="Tap1_CameraFun_Timelapse_OnTips">Fotografi selang waktu akan dimatikan otomatis saat selesai merekam dan disimpan dalam\"My Favorite \"</string>
   <string name="Tap1_CameraFun_Timelapse_RecordTime">Lama rekaman</string>
   <string name="Tap1_CameraFun_Timelapse_Setting">Menembak</string>
   <string name="Tap1_CameraFun_Timelapse_StandbyTips">Mulai fotografi selang waktu sebelum standby</string>
@@ -669,7 +675,7 @@
   <string name="Tap1_CameraFun_Timelapse_StartTimeFail">Lebih awal dari waktu sekarang, silahkan reset</string>
   <string name="Tap1_CameraFun_Timelapse_Startnow">Mulai sekarang</string>
   <string name="Tap1_CameraFun_Timelapse_Synthesis">Sedang menggabung</string>
-  <string name="Tap1_CameraFun_Timelapse_SynthesisTips">Penggabungan selesai, cek di \"Daily Great\"</string>
+  <string name="Tap1_CameraFun_Timelapse_SynthesisTips">Penggabungan selesai, cek di \"My Favorite \"</string>
   <string name="Tap1_CameraFun_Timelapse_Tips">Perlu mematikan standby sebelum fotografi selang waktu , anda yakin?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Yakin</string>
   <string name="Tap1_CameraFun_Timelapse_document">Dapatkan lebih banyak momen&#8211;momen indah dengan fotografi selang waktu</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">daya rendah, silakan dikenakan biaya.</string>
   <string name="Tap1_Magnetism_ClearRecord">Hapus catatan</string>
   <string name="Tap1_Magnetism_Setting_Notify">Beritahu saya jika itu terbuka/tertutup</string>
+  <string name="Tap1_Menu_More">Lebih</string>
   <string name="Tap1_NeedsInitializedTips">kebutuhan kartu SD diinisialisasi dan data akan dibersihkan, pasti untuk melanjutkan?</string>
   <string name="Tap1_NewFirmware">Firmware baru</string>
   <string name="Tap1_NoMessages">Tidak ada pesan</string>
@@ -796,8 +803,8 @@
   <string name="Tap2_Timelapse_fail">File video tidak dapat dihasilkan untuk pemutusan ketika fotografi selang waktu</string>
   <string name="Tap2_Timelapse_screenshot">Tangkap layar Live</string>
   <string name="Tap2_Timelapse_title">Fotografi selang waktu</string>
-  <string name="Tap2_TitleName">Daily Great</string>
-  <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
+  <string name="Tap2_TitleName">My Favorite</string>
+  <string name="Tap2_TitleName_Sentence">My Favorite</string>
   <string name="Tap2_share_sharevideo">Saya share video ke kamu</string>
   <string name="Tap2_share_sharevideo_tips">Saya sudah membuat fotografi selang waktu dengan Cleverdog Smart Camera, Lihat!</string>
   <string name="Tap2_share_unabletoshare">Tidak ada Wechat terpasang , tidak bisa bagikan</string>
@@ -876,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">None</string>
   <string name="Tap3_ShareDevice_NotYourself">Tidak membagi untuk anda sendiri</string>
   <string name="Tap3_ShareDevice_Shared">Shared</string>
-  <string name="Tap3_ShareDevice_SharedContents">Dibagikan isi</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam Dibagikan isi</string>
   <string name="Tap3_ShareDevice_SharedUsers">Dibagikan pengguna</string>
   <string name="Tap3_ShareDevice_SuccessTips">Berhasil dibagikan</string>
   <string name="Tap3_ShareDevice_Tips">Perangkat ini tidak dapat dibagi dengan pengguna lebih</string>

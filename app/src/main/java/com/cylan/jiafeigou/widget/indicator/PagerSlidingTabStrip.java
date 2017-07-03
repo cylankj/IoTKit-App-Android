@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -19,9 +20,9 @@ import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.widget.HintTextView;
 
 import java.util.Locale;
 
@@ -214,11 +215,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private void addTextTab(final int position, String title) {
 
-        TextView tab = new TextView(getContext());
+        HintTextView tab = new HintTextView(getContext());
         tab.setText(title);
         tab.setGravity(Gravity.CENTER);
         tab.setSingleLine();
-
+        tab.setId(title.hashCode());
         addTab(position, tab);
     }
 
@@ -231,8 +232,18 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     }
 
+    private int color(int color, float alpha) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+        int a = color >>> 24;
+        return Color.argb((int) (alpha * a), r, g, b);
+    }
+
     private void addTab(final int position, View tab) {
-        tab.setAlpha(position == 0 ? 1.0f : 0.5f);
+        if (tab instanceof HintTextView) {
+            ((HintTextView) tab).setTextColor(0 == position ? tabTextColor : color(tabTextColor, .5f));
+        }
         tab.setFocusable(true);
         tab.setOnClickListener(new OnClickListener() {
             @Override
@@ -252,9 +263,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
             v.setBackgroundResource(tabBackgroundResId);
 
-            if (v instanceof TextView) {
+            if (v instanceof HintTextView) {
 
-                TextView tab = (TextView) v;
+                HintTextView tab = (HintTextView) v;
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
                 tab.setTextColor(tabTextColor);
@@ -378,15 +389,13 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         }
 
         private void updateTabAlpha(final int position) {
-
             for (int i = 0; i < tabCount; i++) {
                 View v = tabsContainer.getChildAt(i);
-                if (v instanceof TextView) {
-                    TextView tab = (TextView) v;
-                    tab.setAlpha(i == position ? 1.0f : 0.5f);
+                if (v instanceof HintTextView) {
+                    HintTextView tab = (HintTextView) v;
+                    tab.setTextColor(i != position ? color(tabTextColor, .5f) : tabTextColor);
                 }
             }
-
         }
     }
 

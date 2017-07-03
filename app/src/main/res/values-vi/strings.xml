@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Xoá tin nhắn</string>
   <string name="CODE_ERR">Mã không tồn tại</string>
   <string name="COMFIRM_NEW_PASS">Nhập lại mật khẩu</string>
-  <string name="CONNECTING">Đang có người xem trực tiếp</string>
+  <string name="CONNECTING">Không phản hồi, hãy thử lại</string>
   <string name="CONNECTING_1">Đang kết nối mạng</string>
   <string name="CONN_INTERRUPTED">Đang kết nối mạng</string>
   <string name="CREATING">Đang thêm vào&#8230;</string>
@@ -149,7 +149,8 @@
   <string name="DOOR_UNCALL">nhỡ</string>
   <string name="DOOR_VOICE">Giọng nói</string>
   <string name="DOOR_WIFI_HINT">Trạng thái đèn LED</string>
-  <string name="DailyGreatTips_Full">số lượng các Daily Great Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
+  <string name="DailyGreatTips_Full">số lượng các My Favorite Bộ sưu tập đã đạt đến mức giới hạn trên 50, đi xóa bỏ?</string>
+  <string name="Daily_Great_NO_CONTENTS">Không có nội dung</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Xóa chia sẻ?</string>
   <string name="Device_Disconnected">Đã ngắt kết nối</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Kéo qua, \n xem nhiều hơn</string>
   <string name="GetCode_FrequentlyTips">Quá thường xuyên hoạt động, xin vui lòng thử lại sau 10 phút.</string>
   <string name="GetWifiList_FaiTips">1.Cho phép ứng dụng nhận \"Location\" phép \n 2.Quay \"GPS\" trên.</string>
+  <string name="H5_Asteroid">Tiểu hành tinh</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Toàn cảnh</string>
+  <string name="H5_VR_mode">Chế độ VR</string>
   <string name="HOME">Home</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 giờ</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Đèn xanh ổn định, 3G/4G Online</string>
   <string name="LIGTH_LABEL_2_1">Nhấp nháy, pin yếu</string>
   <string name="LIGTH_LABEL_2_2">Đèn xanh, đang có nguồn</string>
+  <string name="LIVE_DATA">Đối với cellular, hãy lưu ý việc sử dụng dữ liệu của bạn</string>
   <string name="LOADING">Đang tải&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Trong mục Cài Đặt&#8211;Thông báo trên Phone, tìm %s mở \'Thông báo\'</string>
   <string name="LOCATION">Khu vực</string>
@@ -644,8 +650,8 @@
   <string name="Tap1_Album_PutInVR">Đặt điện thoại di động vào kính VR</string>
   <string name="Tap1_Album_Share_Description">Thêm mô tả</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" chưa được cài đặt, vui lòng cài đặt và thử lại</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Các nội dung được chia sẻ sẽ được lưu vào\"Daily Great \"</string>
-  <string name="Tap1_BigPic_FavoriteTips">Sưu tập hình trong mục \"Daily Great\"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Các nội dung được chia sẻ sẽ được lưu vào\"My Favorite \"</string>
+  <string name="Tap1_BigPic_FavoriteTips">Sưu tập hình trong mục \"My Favorite \"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Từ Standby chuyển sang Hibernate sẽ không thể thực hiện hoạt động gì nữa</string>
   <string name="Tap1_CameraFun_Standby_OnTips">Đang chụp Time&#8211;lapse, không thể chuyển sang Standby</string>
@@ -660,7 +666,7 @@
   <string name="Tap1_CameraFun_Timelapse_GoWatch">Xem</string>
   <string name="Tap1_CameraFun_Timelapse_Interval">Khoảng chờ</string>
   <string name="Tap1_CameraFun_Timelapse_NotStart">Đang đến</string>
-  <string name="Tap1_CameraFun_Timelapse_OnTips">Time&#8211;lapse sẽ tự động tắt khi chụp xong và lưu vào\"Daily Great\"</string>
+  <string name="Tap1_CameraFun_Timelapse_OnTips">Time&#8211;lapse sẽ tự động tắt khi chụp xong và lưu vào\"My Favorite \"</string>
   <string name="Tap1_CameraFun_Timelapse_RecordTime">Thời gian chụp</string>
   <string name="Tap1_CameraFun_Timelapse_Setting">Bắn súng</string>
   <string name="Tap1_CameraFun_Timelapse_StandbyTips">Bắt đầu time&#8211;lapse trước khi đóng Standby</string>
@@ -669,7 +675,7 @@
   <string name="Tap1_CameraFun_Timelapse_StartTimeFail">Đặt sớm hơn thời gian hiện tại, hãy cài đặt lại</string>
   <string name="Tap1_CameraFun_Timelapse_Startnow">Bắt đầu bây giờ</string>
   <string name="Tap1_CameraFun_Timelapse_Synthesis">Đang nối lại</string>
-  <string name="Tap1_CameraFun_Timelapse_SynthesisTips">Nối thành công, hãy kiểm tra trong \"Daily Great\"</string>
+  <string name="Tap1_CameraFun_Timelapse_SynthesisTips">Nối thành công, hãy kiểm tra trong \"My Favorite \"</string>
   <string name="Tap1_CameraFun_Timelapse_Tips">Cần tắt Standby trước khi chụp time&#8211;lapse, bạn chắc không?</string>
   <string name="Tap1_CameraFun_Timelapse_TipsOption">Chắc</string>
   <string name="Tap1_CameraFun_Timelapse_document">Ghi giữ thêm khoảnh khắc với tính năng Time&#8211;lapse</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">điện năng thấp, xin vui lòng tính phí trong thời gian.</string>
   <string name="Tap1_Magnetism_ClearRecord">Dọn bản ghi</string>
   <string name="Tap1_Magnetism_Setting_Notify">Thông báo cho tôi khi nó mở/đóng</string>
+  <string name="Tap1_Menu_More">Thêm</string>
   <string name="Tap1_NeedsInitializedTips">Thẻ SD cần được khởi tạo và dữ liệu sẽ bị xóa, chắc chắn để tiếp tục?</string>
   <string name="Tap1_NewFirmware">Fimware mới</string>
   <string name="Tap1_NoMessages">Không có tin nhắn</string>
@@ -796,8 +803,8 @@
   <string name="Tap2_Timelapse_fail">Video time&#8211;lapse không thể tạo được do mất kết nối</string>
   <string name="Tap2_Timelapse_screenshot">Chụp trực tuyến</string>
   <string name="Tap2_Timelapse_title">Ảnh Time&#8211;lapse</string>
-  <string name="Tap2_TitleName">Daily Great</string>
-  <string name="Tap2_TitleName_Sentence">Enjoy Everyday</string>
+  <string name="Tap2_TitleName">My Favorite</string>
+  <string name="Tap2_TitleName_Sentence">My Favorite</string>
   <string name="Tap2_share_sharevideo">Tôi đã chia sẻ một video với bạn</string>
   <string name="Tap2_share_sharevideo_tips">Tôi đã tạo 1 ảnh time&#8211;lapse từ Cleverdog, hãy xem nào!</string>
   <string name="Tap2_share_unabletoshare">Chưa cài Wechat, không thể chia sẻ</string>
@@ -876,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">không ai</string>
   <string name="Tap3_ShareDevice_NotYourself">Không chia sẻ cho bạn</string>
   <string name="Tap3_ShareDevice_Shared">Thuê chung</string>
-  <string name="Tap3_ShareDevice_SharedContents">Nội dung chia sẻ</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam Nội dung chia sẻ</string>
   <string name="Tap3_ShareDevice_SharedUsers">Người dùng chia sẻ</string>
   <string name="Tap3_ShareDevice_SuccessTips">Chia se thành công</string>
   <string name="Tap3_ShareDevice_Tips">Thiết bị này không thể được chia sẻ với bất kỳ người dùng hơn</string>

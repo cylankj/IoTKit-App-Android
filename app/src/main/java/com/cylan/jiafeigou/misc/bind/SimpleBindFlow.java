@@ -107,6 +107,7 @@ public class SimpleBindFlow extends AFullBind {
                                     UdpConstant.PORT,
                                     new JfgUdpMsg.FPing().toBytes());
                         }
+                        AppLogger.d("扫描设备....ping fping");
                     } catch (JfgException e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
@@ -224,8 +225,7 @@ public class SimpleBindFlow extends AFullBind {
         return Observable.create(subscriber -> {
             final Subscription sub = RxBus.getCacheInstance().toObservable(JfgUdpMsg.PingAck.class)
                     .timeout(3, TimeUnit.SECONDS)
-                    .filter(pingAck -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) &&
-                            pingAck.cid.endsWith(cidSuffix))
+                    .filter(pingAck -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) && pingAck.cid.endsWith(cidSuffix))
                     .timeout(3, TimeUnit.SECONDS)
                     .subscribe(pingAck -> {
                         AppLogger.d(BIND_TAG + "得到ping消息");
@@ -245,7 +245,7 @@ public class SimpleBindFlow extends AFullBind {
                     BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.Ping().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.Ping().toBytes());
                 }
@@ -266,8 +266,7 @@ public class SimpleBindFlow extends AFullBind {
         return Observable.create(subscriber -> {
             final Subscription sub = RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
                     .timeout(3, TimeUnit.SECONDS)
-                    .filter(ret -> pingAck != null && !TextUtils.isEmpty(pingAck.cid) &&
-                            TextUtils.equals(pingAck.cid, ret.cid))
+                    .filter(ret -> pingAck != null && TextUtils.equals(pingAck.cid, ret.cid))
                     .timeout(3, TimeUnit.SECONDS)
                     .subscribe(ret -> {
                         AppLogger.d(BIND_TAG + "得到fping消息");
@@ -292,7 +291,7 @@ public class SimpleBindFlow extends AFullBind {
                     BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.FPing().toBytes());
-                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
+                    BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
                             UdpConstant.PORT,
                             new JfgUdpMsg.FPing().toBytes());
                 }
@@ -317,28 +316,30 @@ public class SimpleBindFlow extends AFullBind {
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
         Observable.just(1)
                 .subscribeOn(Schedulers.newThread())
-                .delay(500, TimeUnit.MILLISECONDS)
-                .filter(ret -> devicePortrait != null)
+                .delay(200, TimeUnit.MILLISECONDS)
+                .filter((Integer integer) -> {
+                    return devicePortrait != null;
+                })
                 .map((Integer o) -> {
                     AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
-                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
-                            devicePortrait.mac,
-                            ssid, pwd);
-                    setWifi.security = type;
-                    //发送wifi配置
-                    try {
-                        for (int i = 0; i < 2; i++) {
+                    for (int i = 0; i < 3; i++) {
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
+                                devicePortrait.mac,
+                                ssid, pwd);
+                        setWifi.security = type;
+                        //发送wifi配置
+                        try {
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                     UdpConstant.PORT,
                                     setWifi.toBytes());
                             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP,
                                     UdpConstant.PORT,
                                     setWifi.toBytes());
+                            AppLogger.d(TAG + new Gson().toJson(setWifi));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
-                        AppLogger.d(TAG + new Gson().toJson(setWifi));
-                    } catch (JfgException e) {
-                        e.printStackTrace();
                     }
                     return devicePortrait;
                 })

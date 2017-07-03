@@ -68,7 +68,7 @@ public class DpMsgDefineTest {
         System.out.println("raw->obj: " + unpackData(raw, Good.class));
         byte[] array = new byte[]{-108, -86, 102, 95, 112, 105, 110, 103, 95, 97, 99, 107, -84, 50, 57, 48, 48, 48, 48, 48, 48, 48, 49, 50, 50, -79, 65, 67, 58, 56, 51, 58, 70, 51, 58, 56, 49, 58, 54, 54, 58, 67, 70, -72, 49, 46, 48, 46, 48, 46, 48, 48, 50, 54, 44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107};
         System.out.println(byteArrayToHex(array));
-        System.out.println("UdpSecondaryHeard:" + unpackData(array, JfgUdpMsg.UdpSecondaryHeard.class));
+        System.out.println("UdpSecondaryHeard:" + unpackData(new byte[]{-110, -1, -90, 121, 121, 116, 101, 115, 116}, DpMsgDefine.DPNet.class));
         System.out.println("FPingAck:" + unpackData(array, Good.class));
         System.out.println("FPingAck:" + unpackData(new byte[]{49, 46, 48, 46, 48, 46, 48, 48, 50, 54,
                 44, 49, 46, 48, 46, 48, -108, -95, 80, 107, 104, -95, 80, 107}, TT.class));

@@ -43,7 +43,7 @@
                     android:layout_height="@dimen/y48"
                     android:layout_marginStart="@dimen/x20"
                     android:layout_marginEnd="@dimen/x1"
-                    android:hint="@string/EMAIL_1"
+                    android:hint="@string/EMAIL"
                     android:background="@null"
                     android:maxLength="65"
                     android:singleLine="true"

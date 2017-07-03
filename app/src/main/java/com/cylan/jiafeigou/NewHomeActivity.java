@@ -34,14 +34,15 @@ import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.HintRadioButton;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.List;
@@ -141,6 +142,13 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                 }, AppLogger::e);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("NewHomeActivity");
+        refreshHint(node != null && node.getNodeCount() > 0);
+    }
+
     public void showHomeListFragment() {
         if (vpHomeContent != null)
             vpHomeContent.setCurrentItem(0);
@@ -222,7 +230,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     public void initView() {
     }
-
 
     @Override
     public void needUpdate(@RxEvent.UpdateType int type, String desc, String filePath, int force) {

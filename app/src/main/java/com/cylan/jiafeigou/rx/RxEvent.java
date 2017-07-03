@@ -868,13 +868,13 @@ public class RxEvent {
         }
     }
 
-//    public static class ThirdLoginTab {
-//        public boolean isThird;
-//
-//        public ThirdLoginTab(boolean isThird) {
-//            this.isThird = isThird;
-//        }
-//    }
+    public static class ThirdLoginTab {
+        public boolean isThird;
+
+        public ThirdLoginTab(boolean isThird) {
+            this.isThird = isThird;
+        }
+    }
 
     public static class ShowWonderPageEvent {
     }
@@ -1366,4 +1366,11 @@ public class RxEvent {
             this.account = s1;
         }
     }
+
+    public static final class InitFrom2x {
+        public static final InitFrom2x INSTANCE = new InitFrom2x();
+    }
+
 }
+
+

@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Cache leeren</string>
   <string name="CODE_ERR">Bitte den gültigen Spamschutzcode eingeben</string>
   <string name="COMFIRM_NEW_PASS">Neues Passwort wiederholen</string>
-  <string name="CONNECTING">In Verbindung, mehrere Leute zugleich nachschauen nicht erlaubt</string>
+  <string name="CONNECTING">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
   <string name="CONNECTING_1">In Verbindung,einen Moment bitte</string>
   <string name="CONN_INTERRUPTED">Verbindung abgebrochen, bitte Internet überprüfen</string>
   <string name="CREATING">Einen Moment bitte&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Stimme</string>
   <string name="DOOR_WIFI_HINT">Anleitung für LED&#8211;Anzeiger</string>
   <string name="DailyGreatTips_Full">Collection Anzahl von Täglich Groß erreicht die obere Grenze 50, gehen zu löschen?</string>
+  <string name="Daily_Great_NO_CONTENTS">Kein Inhalt</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Aktien löschen?</string>
   <string name="Device_Disconnected">Getrennt</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Schieben , \n zeigt mehr Inhalte</string>
   <string name="GetCode_FrequentlyTips">Zu oft Operationen, versuchen Sie es erneut 10 Minuten später.</string>
   <string name="GetWifiList_FaiTips">1.App erlauben, die Berechtigung \"Standort\" zu erhalten \n 2.Schalten Sie \"GPS\" ein.</string>
+  <string name="H5_Asteroid">Asteroid</string>
+  <string name="H5_Fisheye">Fisheye</string>
+  <string name="H5_Panoramic">Panorama&#8211;</string>
+  <string name="H5_VR_mode">VR&#8211;Modus</string>
   <string name="HOME">Homepage</string>
   <string name="HOUR">H</string>
   <string name="HOURS">Ganztäglich</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Blinkt es blau, ist es online via 3G/4G</string>
   <string name="LIGTH_LABEL_2_1">Blinkt, Die Batterie ist schwach</string>
   <string name="LIGTH_LABEL_2_2">Leuchtet es blau ständig, ist mit normaler elektronischer Leitung verbunden</string>
+  <string name="LIVE_DATA">Für Mobilfunk, beachten Sie bitte Ihre Datenverwendung</string>
   <string name="LOADING">Wird geladen&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">Bitte %s auf Seite Einstellungen&#8211;Mitteilungen im Phone finden, und Mitteilungen erlauben einschalten</string>
   <string name="LOCATION">Ort:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">Niedrige Leistung, bitte in der Zeit aufladen.</string>
   <string name="Tap1_Magnetism_ClearRecord">Löschen Sie den Datensatz</string>
   <string name="Tap1_Magnetism_Setting_Notify">Benachrichtige mich, wenn es offen/geschlossen ist</string>
+  <string name="Tap1_Menu_More">Mehr</string>
   <string name="Tap1_NeedsInitializedTips">SD&#8211;Karte muss initialisiert werden und die Daten werden gelöscht.</string>
   <string name="Tap1_NewFirmware">Neue Firmware</string>
   <string name="Tap1_NoMessages">Keine Nachrichten</string>
@@ -876,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">Keiner</string>
   <string name="Tap3_ShareDevice_NotYourself">Sie können nicht mit Ihnen selbst teilen</string>
   <string name="Tap3_ShareDevice_Shared">Gemeinsam genutzt</string>
-  <string name="Tap3_ShareDevice_SharedContents">Geteilte Inhalt</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam Geteilte Inhalt</string>
   <string name="Tap3_ShareDevice_SharedUsers">Geteilte Benutzer</string>
   <string name="Tap3_ShareDevice_SuccessTips">erfolgreich geteilt</string>
   <string name="Tap3_ShareDevice_Tips">Dieses Gerät kann nicht mit anderen Benutzern geteilt werden</string>

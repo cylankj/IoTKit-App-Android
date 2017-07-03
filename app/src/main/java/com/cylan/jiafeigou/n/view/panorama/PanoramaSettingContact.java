@@ -12,6 +12,8 @@ public interface PanoramaSettingContact {
     interface View extends JFGView {
 
         void unbindDeviceRsp(int resultCode);
+
+        void attributeUpdate();
     }
 
     interface Presenter extends JFGPresenter<View> {

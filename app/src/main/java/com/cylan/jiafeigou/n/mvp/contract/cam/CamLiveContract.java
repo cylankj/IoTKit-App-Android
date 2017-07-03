@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 import rx.Observable;
 
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
+
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -34,6 +36,8 @@ public interface CamLiveContract {
         boolean isLocalMicOn();
 
         boolean isLocalSpeakerOn();
+
+        boolean judge();
 
         void onHistoryDataRsp(IData dataProvider);
 
@@ -233,12 +237,14 @@ public interface CamLiveContract {
         void restoreHotSeatState();
 
         boolean isDeviceStandby();
+
+        boolean judge();
     }
 
     class LiveStream {
         public int type = TYPE_LIVE;
         public long time = -1;
-        public int playState;
+        public int playState = PLAY_STATE_STOP;
 
         @Override
         public String toString() {

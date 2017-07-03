@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clickable="true"
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -34,39 +33,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/tv_my_id"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72">
-
-                    <TextView
-                        android:id="@+id/tv_my_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y15"
-                        android:text="@string/Tap3_Friends_Myaccount"
-                        android:textColor="@color/color_8c8c8c"
-                        android:textSize="@dimen/sp12" />
-
-                    <TextView
-                        android:id="@+id/tv_user_account"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_my_id"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y8"
-                        android:singleLine="true"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:layout_marginRight="@dimen/x20"
-                        android:background="@color/color_f2f2f2" />
-                </RelativeLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x10"
+                    hunt:sv_sub_title=" "
+                    hunt:sv_title="@string/Tap3_Friends_Myaccount"
+                    hunt:sv_v_divider="true" />
 
                 <RelativeLayout
                     android:id="@+id/rLayout_home_mine_personal_pic"
@@ -125,112 +99,32 @@
                         android:background="@color/color_f2f2f2" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rLayout_home_mine_personal_name"
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_alias"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x10"
+                    hunt:sv_sub_title=" "
+                    hunt:sv_title="@string/ALIAS"
+                    hunt:sv_v_divider="true" />
 
-                    <TextView
-                        android:id="@+id/tv_like_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y15"
-                        android:text="@string/ALIAS"
-                        android:textColor="@color/color_8c8c8c"
-                        android:textSize="@dimen/sp12" />
-
-                    <TextView
-                        android:id="@+id/tv_user_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_like_name"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y8"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:layout_marginRight="@dimen/x20"
-                        android:background="@color/color_f2f2f2" />
-
-                </RelativeLayout>
-
-
-                <RelativeLayout
-                    android:id="@+id/lLayout_home_mine_personal_mailbox"
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_email"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x10"
+                    hunt:sv_sub_title=" "
+                    hunt:sv_title="@string/EMAIL"
+                    hunt:sv_v_divider="true" />
 
-                    <TextView
-                        android:id="@+id/tv_my_message"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y15"
-                        android:text="@string/EMAIL"
-                        android:textColor="@color/color_8c8c8c"
-                        android:textSize="@dimen/sp12" />
-
-                    <TextView
-                        android:id="@+id/tv_home_mine_personal_mailbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_my_message"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y8"
-                        android:text="@string/NO_SET"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:layout_marginRight="@dimen/x20"
-                        android:background="@color/color_f2f2f2" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/RLayout_home_mine_personal_phone"
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_phone"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72">
-
-                    <TextView
-                        android:id="@+id/tv_my_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y15"
-                        android:text="@string/PHONE_NUMBER"
-                        android:textColor="@color/color_8c8c8c"
-                        android:textSize="@dimen/sp12" />
-
-                    <TextView
-                        android:id="@+id/tv_home_mine_personal_phone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_my_number"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:paddingTop="@dimen/y8"
-                        android:text="@string/NO_SET"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:layout_marginRight="@dimen/x20"
-                        android:background="@color/color_f2f2f2" />
-
-                </RelativeLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x10"
+                    hunt:sv_sub_title=" "
+                    hunt:sv_title="@string/PHONE_NUMBER"
+                    hunt:sv_v_divider="true" />
 
                 <RelativeLayout
                     android:id="@+id/rl_change_password"
@@ -249,7 +143,7 @@
                 </RelativeLayout>
 
                 <TextView
-                    android:id="@+id/btn_home_mine_personal_information"
+                    android:id="@+id/btn_to_info"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y42"
                     android:layout_centerVertical="true"
@@ -262,14 +156,11 @@
                     android:padding="@dimen/x10"
                     android:text="@string/LOGOUT"
                     android:textColor="@color/color_ff3b30"
-                    android:textSize="@dimen/sp16" />
+                    android:textSize="@dimen/sp16"
+                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
     </FrameLayout>
 
 </LinearLayout>

@@ -136,11 +136,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void initBackListener() {
-        customToolbar.post(() -> {
-            customToolbar.setBackAction((View v) -> {
-                finishExt();
-            });
-        });
+        customToolbar.post(() -> customToolbar.setBackAction((View v) -> v.postDelayed(this::finishExt, 200)));
     }
 
 

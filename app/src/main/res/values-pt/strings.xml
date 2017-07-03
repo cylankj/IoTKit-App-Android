@@ -64,7 +64,7 @@
   <string name="CLEAR_DATA">Limpar cache de mensagens</string>
   <string name="CODE_ERR">Código de verificação inválido</string>
   <string name="COMFIRM_NEW_PASS">Confirmar nova senha</string>
-  <string name="CONNECTING">Alguém está visualizando. Conexão simultânea impossível</string>
+  <string name="CONNECTING">O dispositivo não responde. Por favor tente novamente</string>
   <string name="CONNECTING_1">Conectando à rede</string>
   <string name="CONN_INTERRUPTED">Conexão interrompida. Verifique a rede da câmera</string>
   <string name="CREATING">Adicionando. Aguarde&#8230;</string>
@@ -150,6 +150,7 @@
   <string name="DOOR_VOICE">Sons</string>
   <string name="DOOR_WIFI_HINT">Descrição do status do dispositivo</string>
   <string name="DailyGreatTips_Full">Número da coleção de Show Diário atingiu o limite superior de 50, vai para apagar?</string>
+  <string name="Daily_Great_NO_CONTENTS">Sem conteúdo</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Excluir compartilhamento?</string>
   <string name="Device_Disconnected">Desconectado</string>
@@ -234,6 +235,10 @@
   <string name="GUIDE_INFO">Deslize para mais conteúdo</string>
   <string name="GetCode_FrequentlyTips">Operações com demasiada frequência, tente novamente 10 minutos depois.</string>
   <string name="GetWifiList_FaiTips">1.Permitir aplicação para obter a permissão \"Location\" \n 2.Ligue \"GPS\".</string>
+  <string name="H5_Asteroid">Asteróide</string>
+  <string name="H5_Fisheye">Olho de peixe</string>
+  <string name="H5_Panoramic">panorâmico</string>
+  <string name="H5_VR_mode">Modo VR</string>
   <string name="HOME">Página inicial</string>
   <string name="HOUR">H</string>
   <string name="HOURS">24 horas</string>
@@ -272,6 +277,7 @@
   <string name="LIGTH_LABEL_1_2">Azul acesa:3G/4G on&#8211;line</string>
   <string name="LIGTH_LABEL_2_1">Piscando:A bateria está fraca</string>
   <string name="LIGTH_LABEL_2_2">Azul acesa:estado normal</string>
+  <string name="LIVE_DATA">Para celular, observe o uso de dados</string>
   <string name="LOADING">Carregando&#8230;</string>
   <string name="LOCAL_NOTIFICATION_AndroidMSG">No Phone, em \"Ajustes\", \"Notificações\", ative notificações do %s</string>
   <string name="LOCATION">O nome de localização:</string>
@@ -742,6 +748,7 @@
   <string name="Tap1_LowPower">Baixa potência, por favor cobrar no tempo.</string>
   <string name="Tap1_Magnetism_ClearRecord">Clarear o recorde</string>
   <string name="Tap1_Magnetism_Setting_Notify">Notifique&#8211;me quando é aberto/fechado</string>
+  <string name="Tap1_Menu_More">Mais</string>
   <string name="Tap1_NeedsInitializedTips">Cartão SD precisa ser inicializado e os dados seriam limpos, com certeza continuar?</string>
   <string name="Tap1_NewFirmware">Novo firmware</string>
   <string name="Tap1_NoMessages">Nenhuma mensagem</string>
@@ -876,7 +883,7 @@
   <string name="Tap3_ShareDevice_NoneShareFriends">Nenhum</string>
   <string name="Tap3_ShareDevice_NotYourself">Impossível compartilhar consigo próprio</string>
   <string name="Tap3_ShareDevice_Shared">Compartilhado</string>
-  <string name="Tap3_ShareDevice_SharedContents">Conteúdo compartilhados</string>
+  <string name="Tap3_ShareDevice_SharedContents">720°Cam Conteúdo compartilhados</string>
   <string name="Tap3_ShareDevice_SharedUsers">Usuários compartilhados</string>
   <string name="Tap3_ShareDevice_SuccessTips">Compartilhado com sucesso</string>
   <string name="Tap3_ShareDevice_Tips">Este dispositivo não pode ser compartilhado com mais todos os usuários</string>

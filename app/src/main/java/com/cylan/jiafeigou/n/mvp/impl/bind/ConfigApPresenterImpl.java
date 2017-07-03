@@ -102,6 +102,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
         Observable.just("just send wifi info")
                 .subscribeOn(Schedulers.newThread())
+                .delay(500, TimeUnit.MILLISECONDS)
                 .map(s -> {
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     String mac = device.$(202, "");

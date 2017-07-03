@@ -177,10 +177,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         holder.setImageResource(R.id.img_device_icon, iconRes);
         handleMsgCountAndTime(holder, uuid, mDevice);
         //右下角状态
-        setItemState(holder, uuid, net);
         if (JFGRules.isPan720(mDevice.pid)) {
             handlePan720RightIcon(holder);
-        }
+        } else setItemState(holder, uuid, net);
     }
 
     /**
@@ -202,7 +201,8 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         }
         //2 电量
 //        DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        if (mDevice != null && JFGRules.showBattery(mDevice.pid)) {//设备在线才显示电量
+        if (mDevice != null && JFGRules.showBattery(mDevice.pid) && JFGRules.isDeviceOnline(mDevice.$(201,
+                new DpMsgDefine.DPNet()))) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
             if (battery < 20) {//电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);

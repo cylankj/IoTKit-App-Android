@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -47,38 +48,33 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
     public void register(final String account, final String pwd, final int type, final String token) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("god..." + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("god..." + throwable.getLocalizedMessage()));
     }
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
         Observable.just(login)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<LoginAccountBean, LoginAccountBean>() {
-                    @Override
-                    public LoginAccountBean call(LoginAccountBean o) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
-                        return o;
+                .map(o -> {
+                    try {
+//                        BaseApplication.getAppComponent()
+//                                .getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),
+//                                o.userName, o.pwd);
+                        AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd);
+                        AutoSignIn.getInstance().autoLogin();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
+                    //非三方登录的标记
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
+                    return o;
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);
@@ -89,13 +85,10 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(1000L, TimeUnit.MICROSECONDS)
-                .subscribe(new Action1<RxEvent.ResultRegister>() {
-                    @Override
-                    public void call(RxEvent.ResultRegister register) {
-                        //注册成功
-                        PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
-                        getView().submitResult(register);
-                    }
+                .subscribe(register -> {
+                    //注册成功
+                    PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                    getView().submitResult(register);
                 }, e -> AppLogger.d(e.getMessage()));
     }
 
@@ -104,18 +97,10 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultLogin>() {
-                    @Override
-                    public void call(RxEvent.ResultLogin resultLogin) {
-                        if (getView() != null) {
-                            getView().loginResult(resultLogin.code);
-                        }
+                .subscribe(resultLogin -> {
+                    if (getView() != null) {
+                        getView().loginResult(resultLogin.code);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable);
-                    }
-                });
+                }, throwable -> AppLogger.e("" + throwable));
     }
 }

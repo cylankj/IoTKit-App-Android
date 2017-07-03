@@ -278,6 +278,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
+                        ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
                 if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentStart") != null)
@@ -296,6 +297,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
+                        ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
                 if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentEnd") != null)
@@ -316,6 +318,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
+                        ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
                 showFragment(fragment);

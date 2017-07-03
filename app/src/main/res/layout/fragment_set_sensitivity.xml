@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y48"
             android:gravity="end|center_vertical"
-            android:text="取消"
+            android:text="@string/CANCEL"
             android:textColor="@color/color_4b9fd5"
             android:textSize="@dimen/sp14" />
     </LinearLayout>

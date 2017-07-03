@@ -92,6 +92,7 @@ public class OptionsImpl {
     }
 
     private static void load() throws FileNotFoundException {
+        if (!BuildConfig.DEBUG) return;
         if (!new File(filePath).exists()) return;
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         JsonParser parser = new JsonParser();
