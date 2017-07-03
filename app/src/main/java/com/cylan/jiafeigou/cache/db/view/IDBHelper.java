@@ -105,8 +105,6 @@ public interface IDBHelper {
 
     Observable<Boolean> deleteHistoryFile(String uuid, long timeStart, long timeEnd);
 
-    Observable<Void> deleteAllHistoryFile(String uuid);
-
     void clearMsg(String uuid, Integer msgId);
 
     void clearDevice();

@@ -181,7 +181,7 @@ public class AdsStrategy {
                         AdsStrategy.AdsDescription description = new Gson().fromJson(content, AdsStrategy.AdsDescription.class);
                         if (description != null) {
                             //展示两次
-                            if (description.showCount > 20) {
+                            if (description.showCount > 2) {
                                 //不需要主动删,因为服务器不会帮忙处理.需要本地记录显示过的.
 //                                PreferencesUtils.remove(JConstant.KEY_ADD_DESC);
                                 AdsStrategy.getStrategy().fetchAds();

@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import rx.Subscription;
 
@@ -60,13 +59,15 @@ public interface SysMessageContract {
         void getMesgDpData(String account);
 
 
-        void deleteServiceMsg(long type, long version);
+//        void deleteServiceMsg(long type, long version);
 
         Subscription deleteMsgBack();
 
-        void deleteOneItem(SysMsgBean bean);
+//        void deleteOneItem(SysMsgBean bean);
 
         void markMesgHasRead();
+
+        void removeItems(ArrayList<SysMsgBean> list);
     }
 
 }

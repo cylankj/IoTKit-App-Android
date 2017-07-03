@@ -277,11 +277,6 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
-    public Observable<Void> deleteAllHistoryFile(String uuid) {
-        return historyFileDao.rx().deleteAll();
-    }
-
-    @Override
     public void clearMsg(String uuid, Integer msgId) {
         if (dpAccount == null || dpAccount.getAccount() == null) return;
         List<DPEntity> list = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null).list();
