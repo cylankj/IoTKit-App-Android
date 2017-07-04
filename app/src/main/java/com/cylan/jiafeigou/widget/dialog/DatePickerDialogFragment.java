@@ -159,7 +159,7 @@ public class DatePickerDialogFragment extends BaseDialog {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(timeZone);
         calendar.setTimeInMillis(timeFocus);
-        this.focusHour = calendar.get(Calendar.HOUR);
+        this.focusHour = calendar.get(Calendar.HOUR_OF_DAY);
         this.focusMinute = calendar.get(Calendar.MINUTE);
         AppLogger.d("设置焦点:" + focusMinute + "," + focusHour);
     }
