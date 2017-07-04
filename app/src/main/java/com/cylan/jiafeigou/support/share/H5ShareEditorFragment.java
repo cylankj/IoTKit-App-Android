@@ -109,13 +109,15 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         shareBinding.setBackClick(this::cancelShare);
         shareBinding.setShareClick(this::share);
         shareBinding.shareContextEditor.requestFocus();
-        shareBinding.shareRetry.setOnClickListener(v -> presenter.upload(shareItem.fileName, filePath));
+        shareBinding.shareRetry.setOnClickListener(v -> {
+            if (presenter != null) presenter.upload(shareItem.fileName, filePath);
+        });
         InputMethodManager imm = (InputMethodManager) getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.showSoftInput(shareBinding.shareContextEditor, 0);
         }
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
-        presenter.check(mUUID, shareItem.time);
+        if (presenter != null) presenter.check(mUUID, shareItem.time);
     }
 
     private String getNameByType(int shareType) {
@@ -146,7 +148,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         }
         AppLogger.d("上传到服务器返回的结果为:" + code);
         if (code == -1) {
-            presenter.upload(shareItem.fileName, filePath);
+            if(presenter!=null)presenter.upload(shareItem.fileName, filePath);
         }
     }
 
@@ -230,7 +232,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             if (!LoadingDialog.isShowing(getActivity().getSupportFragmentManager())) {
                 LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
             }
-            presenter.share(shareItem, getDescription(), thumbPath);
+            if(presenter!=null)presenter.share(shareItem, getDescription(), thumbPath);
         }
     }
 

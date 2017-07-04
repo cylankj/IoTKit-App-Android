@@ -17,6 +17,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -438,7 +439,11 @@ public class RxEvent {
      * 系统反馈回复
      */
     public static final class GetFeedBackRsp {
+        public ArrayList<FeedBackBean> newList;
 
+        public GetFeedBackRsp(ArrayList<FeedBackBean> newList) {
+            this.newList = newList;
+        }
     }
 
 
@@ -528,13 +533,22 @@ public class RxEvent {
         }
     }
 
+    public static final class SendLogRsp {
+        public FeedBackBean bean;
+
+        public SendLogRsp setTime(FeedBackBean bean) {
+            this.bean = bean;
+            return this;
+        }
+    }
+
     /**
      * 发送反馈的返回
      */
-    public static final class SendFeekBack {
+    public static final class SendFeedBack {
         public JFGResult jfgResult;
 
-        public SendFeekBack(JFGResult jfgResult) {
+        public SendFeedBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
     }

@@ -221,6 +221,7 @@
   <string name="FRI">星期五</string>
   <string name="FRI_1">每周五</string>
   <string name="FRI_2">五</string>
+  <string name="FRI_Hisvideo_Timeselector">周五</string>
   <string name="FROME">开始时间</string>
   <string name="Fail_Record">录像失败</string>
   <string name="Feb">2月</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">月</string>
   <string name="MON_1">每周一</string>
   <string name="MON_2">一</string>
+  <string name="MON_Hisvideo_Timeselector">周一</string>
   <string name="MSG_BIND">设备添加成功</string>
   <string name="MSG_BOTTOM_LINE">这是底线</string>
   <string name="MSG_DELETE_TITLE">删除后不能恢复，请再次确认</string>
@@ -483,6 +485,7 @@
   <string name="SAT">星期六</string>
   <string name="SAT_1">每周六</string>
   <string name="SAT_2">六</string>
+  <string name="SAT_Hisvideo_Timeselector">周六</string>
   <string name="SAVE">完成</string>
   <string name="SAVED_PHOTOS">已保存到相册</string>
   <string name="SCENE_ADDED">\“%s\”已添加</string>
@@ -551,6 +554,7 @@
   <string name="SUN">星期日</string>
   <string name="SUN_1">每周日</string>
   <string name="SUN_2">日</string>
+  <string name="SUN_Hisvideo_Timeselector">周日</string>
   <string name="SURE">我知道了</string>
   <string name="SURE_DELETE">确定删除该设备的所有消息？</string>
   <string name="SURE_DELETE_1">确定删除“%s”及相关数据吗？</string>
@@ -590,6 +594,7 @@
   <string name="THU">星期四</string>
   <string name="THU_1">每周四</string>
   <string name="THU_2">四</string>
+  <string name="THU_Hisvideo_Timeselector">周四</string>
   <string name="TIME">时间</string>
   <string name="TIMEOUT_TRY_AGIN">等待超时 \n 不要灰心哦，再试一次吧</string>
   <string name="TIMEZONE_CHOOSE">时区选择</string>
@@ -601,6 +606,7 @@
   <string name="TUE">星期二</string>
   <string name="TUE_1">每周二</string>
   <string name="TUE_2">二</string>
+  <string name="TUE_Hisvideo_Timeselector">周二</string>
   <string name="TURN_ON_PROTECTION">开启后，报警时间段内侦测到异常，将发送消息通知</string>
   <string name="Tap0_AlreadyEmailed">已发送邮件到</string>
   <string name="Tap0_Authorizationfailed">授权失败，请稍后再试</string>
@@ -931,6 +937,7 @@
   <string name="WED">星期三</string>
   <string name="WED_1">每周三</string>
   <string name="WED_2">三</string>
+  <string name="WED_Hisvideo_Timeselector">周三</string>
   <string name="WEEK">每周</string>
   <string name="WEEKDAYS">工作日</string>
   <string name="WEEKEND">周末</string>

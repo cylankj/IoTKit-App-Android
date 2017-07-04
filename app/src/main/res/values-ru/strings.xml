@@ -221,6 +221,7 @@
   <string name="FRI">Пт</string>
   <string name="FRI_1">Кажд. пт</string>
   <string name="FRI_2">Пт</string>
+  <string name="FRI_Hisvideo_Timeselector">пт</string>
   <string name="FROME">От</string>
   <string name="Fail_Record">Не удалось записать</string>
   <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">месяц</string>
   <string name="MON_1">Кажд. пн</string>
   <string name="MON_2">Пн</string>
+  <string name="MON_Hisvideo_Timeselector">пн</string>
   <string name="MSG_BIND">Оборудование установлено успешно!</string>
   <string name="MSG_BOTTOM_LINE">Дно</string>
   <string name="MSG_DELETE_TITLE">После удаления невозможно будет восстановить</string>
@@ -483,6 +485,7 @@
   <string name="SAT">Сб</string>
   <string name="SAT_1">Кажд. сб</string>
   <string name="SAT_2">Сб</string>
+  <string name="SAT_Hisvideo_Timeselector">сб</string>
   <string name="SAVE">Выполнено</string>
   <string name="SAVED_PHOTOS">Сохранённые фотографии</string>
   <string name="SCENE_ADDED">%s Добавлено</string>
@@ -551,6 +554,7 @@
   <string name="SUN">Вс</string>
   <string name="SUN_1">Кажд. вс</string>
   <string name="SUN_2">Вс</string>
+  <string name="SUN_Hisvideo_Timeselector">вс</string>
   <string name="SURE">Я знаю</string>
   <string name="SURE_DELETE">Уверены что хотите удалить?</string>
   <string name="SURE_DELETE_1">Вы уверены, что хотите удалить учетную запись %s и связанные с ней данные?</string>
@@ -590,6 +594,7 @@
   <string name="THU">Чт</string>
   <string name="THU_1">Кажд. чт</string>
   <string name="THU_2">Чт</string>
+  <string name="THU_Hisvideo_Timeselector">чт</string>
   <string name="TIME">Время</string>
   <string name="TIMEOUT_TRY_AGIN">Тайм&#8211;аут соединения \n Пожалуйста, попробуйте еще раз</string>
   <string name="TIMEZONE_CHOOSE">Часовой пояс</string>
@@ -601,6 +606,7 @@
   <string name="TUE">Вт</string>
   <string name="TUE_1">Кажд. вт</string>
   <string name="TUE_2">Вт</string>
+  <string name="TUE_Hisvideo_Timeselector">вт</string>
   <string name="TURN_ON_PROTECTION">После активации, после сигнала оповещения, обнаружения опасности и формирования изображения, будет отправлено уведомление.</string>
   <string name="Tap0_AlreadyEmailed">Письмо было отправлен на электронную почту</string>
   <string name="Tap0_Authorizationfailed">Авторизация не удалась</string>
@@ -931,6 +937,7 @@
   <string name="WED">Ср</string>
   <string name="WED_1">Кажд. ср</string>
   <string name="WED_2">Ср</string>
+  <string name="WED_Hisvideo_Timeselector">ср</string>
   <string name="WEEK">Кажд. неделю</string>
   <string name="WEEKDAYS">Рабочие дни</string>
   <string name="WEEKEND">Выходные</string>

@@ -176,13 +176,15 @@ public class SystemMessageFragment extends Fragment implements SysMessageContrac
                 if (hasCheckData.size() == 0) {
                     return;
                 }
-                for (SysMsgBean bean : hasCheckData) {
-                    messageAdapter.remove(bean);
-                    if (bean.type == 601) {
-                        presenter.deleteServiceMsg(bean.type, bean.getTime());
-                    }
-                    presenter.deleteOneItem(bean);
-                }
+//                for (SysMsgBean bean : hasCheckData) {
+//                    messageAdapter.remove(bean);
+//                    if (bean.type == 601) {
+//                        presenter.deleteServiceMsg(bean.type, bean.getTime());
+//                    }
+//                    presenter.deleteOneItem(bean);
+//                }
+                presenter.removeItems(hasCheckData);
+                messageAdapter.removeAll(hasCheckData);
                 hasCheckData.clear();
                 messageAdapter.notifyDataSetHasChanged();
                 if (messageAdapter.getItemCount() == 0) {

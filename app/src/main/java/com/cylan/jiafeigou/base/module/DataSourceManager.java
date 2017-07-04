@@ -63,7 +63,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -105,8 +104,6 @@ public class DataSourceManager implements JFGSourceManager {
     @Deprecated
     private boolean isOnline = true;
     private JFGAccount jfgAccount;
-
-    private ArrayList<JFGFeedbackInfo> newFeedBackList = new ArrayList<>();
 
     private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
     private static DataSourceManager instance;
@@ -194,27 +191,6 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public ArrayList<JFGFriendRequest> getFriendsReqList() {
         return friendsReqBeanArrayList;
-    }
-
-    @Override
-    public void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list) {
-        if (newFeedBackList == null) {
-            newFeedBackList = new ArrayList<>();
-        }
-        newFeedBackList.addAll(list);
-        newFeedBackList = new ArrayList<>(new HashSet<>(newFeedBackList));
-        RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp());
-        handleSystemNotification(newFeedBackList);
-    }
-
-    @Override
-    public void clearFeedbackList() {
-        this.newFeedBackList = null;
-    }
-
-    @Override
-    public ArrayList<JFGFeedbackInfo> getNewFeedbackList() {
-        return newFeedBackList;
     }
 
     @Override

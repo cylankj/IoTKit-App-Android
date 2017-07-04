@@ -1,9 +1,12 @@
 package com.cylan.jiafeigou.utils;
 
+import com.cylan.jiafeigou.misc.JFGRules;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -146,6 +149,32 @@ public class TimeUtilsTest {
 
     @Test
     public void getBellRecordTime() throws Exception {
+
+        Date now = new Date();
+        // EEE gives short day names, EEEE would be full length.
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EE", Locale.SIMPLIFIED_CHINESE);
+        String asWeek = dateFormat.format(now);
+        System.out.println(asWeek);
+        System.out.println("星期缩写:");
+        for (Locale locale : JFGRules.CONST_LOCALE) {
+            DateFormatSymbols symbols = new DateFormatSymbols(locale);
+            String[] dayNames = symbols.getShortWeekdays();
+            System.out.print("" + locale.getCountry() + ":");
+            for (String s : dayNames) {
+                System.out.print(s + " ");
+            }
+            System.out.println("");
+        }
+        System.out.print("月份缩写:");
+        for (Locale locale : JFGRules.CONST_LOCALE) {
+            DateFormatSymbols symbols = new DateFormatSymbols(locale);
+            String[] dayNames = symbols.getShortMonths();
+            System.out.print("" + locale.getCountry() + ":");
+            for (String s : dayNames) {
+                System.out.print(s + " ");
+            }
+            System.out.println("");
+        }
 
     }
 

@@ -16,15 +16,40 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/x20" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        <com.cylan.jiafeigou.widget.pick.WheelVerticalView
-            android:id="@+id/wheel_date_pick"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y100"
-            android:layout_marginEnd="@dimen/x20"
-            android:layout_marginStart="@dimen/x20"
-            app:selectionDivider="@drawable/wheel_divider"
-            app:selectionDividerHeight="1px" />
+            <com.cylan.jiafeigou.widget.pick.WheelVerticalView
+                android:id="@+id/wheel_date"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y100"
+                android:layout_marginEnd="@dimen/x10"
+                android:layout_marginStart="@dimen/x10"
+                app:selectionDivider="@drawable/wheel_divider"
+                app:selectionDividerHeight="1px" />
+
+            <com.cylan.jiafeigou.widget.pick.WheelVerticalView
+                android:id="@+id/wheel_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y100"
+                android:layout_marginEnd="@dimen/x10"
+                android:layout_marginStart="@dimen/x10"
+                app:selectionDivider="@drawable/wheel_divider"
+                app:selectionDividerHeight="1px" />
+
+            <com.cylan.jiafeigou.widget.pick.WheelVerticalView
+                android:id="@+id/wheel_minute"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y100"
+                android:layout_marginEnd="@dimen/x10"
+                android:layout_marginStart="@dimen/x10"
+                app:selectionDivider="@drawable/wheel_divider"
+                app:selectionDividerHeight="1px" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"

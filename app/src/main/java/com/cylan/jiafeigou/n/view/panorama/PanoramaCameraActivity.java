@@ -1049,7 +1049,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 //松开弹
                 if (useAlert) {
                     deviceReportDialog.setMessage(getString(R.string.Switch_Mode_Pop));
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (DialogInterface.OnClickListener) null);
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SURE), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false));
                     deviceReportDialog.show();
                 } else {

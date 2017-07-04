@@ -1,73 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_marginTop="@dimen/y20"
         android:id="@+id/tv_mine_suggestion_client_time"
-        android:textColor="@color/color_adadad"
-        android:textSize="@dimen/sp13"
-        android:layout_gravity="center_horizontal"
-        android:text="2016/04/01 12:00"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/y20"
+        android:text="2016/04/01 12:00"
+        android:textColor="@color/color_adadad"
+        android:textSize="@dimen/sp13" />
 
     <RelativeLayout
-        android:layout_marginTop="@dimen/y6"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y6">
 
         <ImageView
             android:id="@+id/iv_mine_suggestion_client"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/x10"
-            android:src="@drawable/img_head"
-            android:layout_marginLeft="@dimen/x3"
             android:layout_width="@dimen/x41"
-            android:layout_height="@dimen/y40" />
+            android:layout_height="@dimen/y40"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/x3"
+            android:layout_marginRight="@dimen/x10"
+            android:src="@drawable/img_head" />
 
         <LinearLayout
-            android:layout_marginTop="@dimen/y8"
-            android:layout_toLeftOf="@id/iv_mine_suggestion_client"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y8"
+            android:layout_toStartOf="@id/iv_mine_suggestion_client"
+            android:orientation="horizontal">
 
             <FrameLayout
-                android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
 
                 <ProgressBar
-                    android:layout_gravity="center"
                     android:id="@+id/send_pro"
-                    android:visibility="invisible"
                     android:layout_width="58px"
-                    android:layout_height="58px" />
+                    android:layout_height="58px"
+                    android:layout_gravity="center"
+                    android:visibility="invisible" />
 
                 <ImageView
-                    android:padding="@dimen/x10"
                     android:id="@+id/iv_send_pro"
-                    android:src="@drawable/album_icon_caution"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/x10"
+                    android:src="@drawable/album_icon_caution" />
             </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_mine_suggestion_client_speak"
-                android:background="@drawable/pic_container_blue"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/x3"
+                android:background="@drawable/pic_container_blue"
+                android:paddingBottom="@dimen/y10"
                 android:paddingLeft="@dimen/x12"
                 android:paddingRight="@dimen/x12"
-                android:paddingBottom="@dimen/y10"
                 android:paddingTop="@dimen/y10"
-                android:text="希望你们会做视频下载功能，非常实用呢"
-                android:layout_width="@dimen/x230"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp14" />
         </LinearLayout>
 
     </RelativeLayout>

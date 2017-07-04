@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.TimeZone;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -46,6 +47,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     private RecyclerView recyclerView;
     private WeakReference<DatePickerDialogFragment> datePickerRef;
     private static final String TAG = "HistoryWheelHandler";
+    private TimeZone timeZone;
 
     public HistoryWheelHandler(ViewGroup landDateListContainer, SuperWheelExt superWheel, CamLiveContract.Presenter presenter) {
         this.landDateListContainer = landDateListContainer;
@@ -58,6 +60,10 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         });
     }
 
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
+
     public void dateUpdate() {
         if (presenter.getHistoryDataProvider() == null) {
             AppLogger.d("历史录像没准备好");
@@ -67,18 +73,18 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     public void showDatePicker(boolean isLand) {
-        if (isLand) {
-            if (landDateListContainer.getVisibility() == View.GONE
-                    || landDateListContainer.getTranslationX() == landDateListContainer.getWidth()) {
-                AnimatorUtils.slideInRight(landDateListContainer);
-                landDateListContainer.removeCallbacks(containerHide);
-                landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
-            } else if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == 0)
-                AnimatorUtils.slideOutRight(landDateListContainer);
-            showLandDatePicker();
-        } else {
-            showPortDatePicker();
-        }
+//        if (isLand) {
+//            if (landDateListContainer.getVisibility() == View.GONE
+//                    || landDateListContainer.getTranslationX() == landDateListContainer.getWidth()) {
+//                AnimatorUtils.slideInRight(landDateListContainer);
+//                landDateListContainer.removeCallbacks(containerHide);
+//                landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
+//            } else if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == 0)
+//                AnimatorUtils.slideOutRight(landDateListContainer);
+//            showLandDatePicker();
+//        } else {
+        showPortDatePicker();
+//        }
     }
 
     public void onBackPress() {
@@ -96,7 +102,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).addAll(dateStartList);
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setOnItemClickListener((View itemView, int viewType, int position) -> {
                 long time = dateStartList.get(position);
-                AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate(time));
+                AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate(time));
                 loadSelectedDay(TimeUtils.getSpecificDayStartTime(time));
                 landDateListContainer.removeCallbacks(containerHide);
                 landDateListContainer.post(containerHide);//选中立马隐藏
@@ -121,13 +127,14 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
             datePickerRef.get().setAction((int id, Object value) -> {
                 if (value != null && value instanceof Long) {
-                    AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
+                    AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate((Long) value));
                     if (datePickerListener != null)
                         datePickerListener.onPickDate((Long) value, STATE_FINISH);
                     loadSelectedDay((Long) value);
                 }
             });
         }
+        datePickerRef.get().setTimeZone(timeZone);
         datePickerRef.get().setTimeFocus(getWheelCurrentFocusTime());
         datePickerRef.get().setDateList(presenter.getFlattenDateList());
         datePickerRef.get().show(((FragmentActivity) context).getSupportFragmentManager(),

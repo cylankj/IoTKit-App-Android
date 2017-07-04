@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.support.share;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
@@ -32,6 +35,10 @@ public class ShareManager {
         return new ShareByH5EditorOption(activity);
     }
 
+    public static ShareByH5LinkOption byH5Link(FragmentActivity activity) {
+        return new ShareByH5LinkOption(activity);
+    }
+
     public static ShareByWebLinkOption byWeb(FragmentActivity activity) {
         return new ShareByWebLinkOption(activity);
     }
@@ -40,12 +47,19 @@ public class ShareManager {
         return new ShareByPictureOption(activity);
     }
 
+
     static abstract class ShareAction implements ShareOptionMenuDialog.ShareOptionClickListener, UMShareListener, DialogInterface.OnCancelListener {
         protected FragmentActivity activity;
         protected ShareOptionMenuDialog dialog;
+        protected String title;
+        protected String description;
+        private LifeCircle lifeCircle;
 
         public ShareAction(FragmentActivity activity) {
             this.activity = activity;
+            lifeCircle = new LifeCircle(activity.getClass().getSimpleName());
+            ((Application) ContextUtils.getContext())
+                    .registerActivityLifecycleCallbacks(lifeCircle);
         }
 
         protected SHARE_MEDIA getPlatform(int shareType) {
@@ -97,6 +111,15 @@ public class ShareManager {
             }
         }
 
+        private void clean() {
+            activity = null;
+            if (lifeCircle != null) {
+                lifeCircle.dismiss();
+                ((Application) ContextUtils.getContext()).unregisterActivityLifecycleCallbacks(lifeCircle);
+                AppLogger.d("清理");
+            }
+        }
+
         @Override
         public void onShareOptionClick(int shareItemType) {
             if (dialog != null) {
@@ -111,9 +134,9 @@ public class ShareManager {
         @Override
         public void onStart(SHARE_MEDIA share_media) {
             AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
-            if (activity != null) {
-                LoadingDialog.dismissLoading(activity.getSupportFragmentManager());
-            }
+//            if (activity != null) {
+//                LoadingDialog.showLoading(activity.getSupportFragmentManager(), activity.getResources().getString(R.string.LOADING));
+//            }
         }
 
         @Override
@@ -122,7 +145,7 @@ public class ShareManager {
             if (activity != null) {
                 ToastUtil.showPositiveToast(activity.getString(R.string.Tap3_ShareDevice_SuccessTips));
             }
-            activity = null;
+            clean();
         }
 
         @Override
@@ -135,7 +158,7 @@ public class ShareManager {
                     ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
                 }
             }
-            activity = null;
+            clean();
         }
 
         @Override
@@ -144,13 +167,14 @@ public class ShareManager {
             if (activity != null) {
                 ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_CanceldeTips));
             }
-            activity = null;
+            clean();
         }
 
         @Override
         public void onCancel(DialogInterface dialog) {
             this.activity = null;
             this.dialog = null;
+            clean();
         }
     }
 
@@ -160,6 +184,16 @@ public class ShareManager {
 
         public ShareByWebLinkOption(FragmentActivity activity) {
             super(activity);
+        }
+
+        public ShareByWebLinkOption withTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public ShareByWebLinkOption withDescription(String description) {
+            this.description = description;
+            return this;
         }
 
         public ShareByWebLinkOption withUrl(String url) {
@@ -180,15 +214,24 @@ public class ShareManager {
             if (activity != null) {
                 com.umeng.socialize.ShareAction shareAction = new com.umeng.socialize.ShareAction(activity);
                 UMWeb web = new UMWeb(webLink);
-                web.setThumb(new UMImage(activity, new File(webThumb)));
-                web.setTitle(activity.getString(R.string.share_default_title));
-                web.setDescription(activity.getString(R.string.share_default_description));
+                if (!TextUtils.isEmpty(webThumb))
+                    web.setThumb(new UMImage(activity, new File(webThumb)));
+                web.setTitle(!TextUtils.isEmpty(title) ? title : activity.getString(R.string.share_default_title));
+                web.setDescription(!TextUtils.isEmpty(description) ? description : activity.getString(R.string.share_default_description));
                 shareAction.setPlatform(getPlatform(shareItemType));
                 shareAction.withMedia(web);
                 shareAction.setCallback(this);
                 shareAction.share();
             }
         }
+    }
+
+    public static class ShareByH5LinkOption extends ShareAction {
+
+        public ShareByH5LinkOption(FragmentActivity activity) {
+            super(activity);
+        }
+
     }
 
     public static class ShareByH5EditorOption extends ShareAction {
@@ -275,6 +318,56 @@ public class ShareManager {
                 shareAction.setCallback(this);
                 shareAction.share();
             }
+        }
+    }
+
+    private static final class LifeCircle implements Application.ActivityLifecycleCallbacks {
+
+        private final String activityName;
+
+        public void dismiss() {
+        }
+
+        public LifeCircle(String activityName) {
+            this.activityName = activityName;
+        }
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+            final String name = activity.getClass().getSimpleName();
+            if (TextUtils.equals(activityName, name) && activity instanceof FragmentActivity) {
+                LoadingDialog.dismissLoading(((FragmentActivity) activity).getSupportFragmentManager());
+            }
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+
         }
     }
 }
