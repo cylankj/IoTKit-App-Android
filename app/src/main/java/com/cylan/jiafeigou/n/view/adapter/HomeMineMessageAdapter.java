@@ -73,7 +73,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<SysMsgBean> {
         } else {
             //处理消息显示
             holder.setText(R.id.tv_device_name, item.getContent());
-            int resId = JConstant.getOnlineIcon(JFGRules.getPidByCid(item.content));
+            int resId = JConstant.getMessageIcon(JFGRules.getPidByCid(item.content));
             holder.setImageResource(R.id.iv_mesg_icon, resId);
         }
 

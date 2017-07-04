@@ -169,6 +169,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private boolean hasNetSetting = false;
     private boolean upgrading = false;
     private boolean alertSDFormatError = true;
+    private boolean alertHttpNotAvailable = true;
     private boolean alertMobile = true;
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
@@ -246,6 +247,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
         alertSDFormatError = true;
         deviceReportDialog = new AlertDialog.Builder(this).setCancelable(false).create();
+        alertHttpNotAvailable = PreferencesUtils.getBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable);
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -902,7 +904,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         } else if (connectionType == 1) {//mobile
             AppLogger.d("正在使用移动网络,请注意流量");
             if (alertMobile) {
-                presenter.cancelViewer();
                 onRefreshControllerView(false, false);
                 if (mobileAlert == null) {
                     mobileAlert = new AlertDialog.Builder(this)
@@ -1044,13 +1045,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_LessThan3sTips));
                 break;
             case ERROR_CODE_HTTP_NOT_AVAILABLE: {
-                boolean pop = PreferencesUtils.getBoolean(JConstant.SWITCH_MODE_POP, true);
-                if (!pop) return;
+                if (!alertHttpNotAvailable) return;
                 //松开弹
                 if (useAlert) {
                     deviceReportDialog.setMessage(getString(R.string.Switch_Mode_Pop));
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (DialogInterface.OnClickListener) null);
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (dialog, which) -> alertHttpNotAvailable = false);
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable = false));
                     deviceReportDialog.show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));

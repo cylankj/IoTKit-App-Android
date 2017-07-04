@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
@@ -20,6 +21,7 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -82,6 +84,15 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                 .doOnSubscribe(() -> getView().showSendReqPro())
                 .doOnTerminate(() -> getView().hideSendReqPro())
                 .subscribe(result -> {
+                    ArrayList<JFGFriendAccount> friendsList = BaseApplication.getAppComponent().getSourceManager().getFriendsList();
+                    if (friendsList != null) {
+                        for (JFGFriendAccount friendAccount : friendsList) {
+                            if (TextUtils.equals(friendAccount.account, friendContextItem.friendAccount.account)) {
+                                friendAccount.markName = newName;
+                                break;
+                            }
+                        }
+                    }
                     getView().showFinishResult(result);
                 }, e -> {
                     e.printStackTrace();

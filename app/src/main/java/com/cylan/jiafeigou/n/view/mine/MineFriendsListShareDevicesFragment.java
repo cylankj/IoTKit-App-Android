@@ -1,18 +1,17 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.databinding.FragmentMineFriendShareDevicesBinding;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -20,14 +19,11 @@ import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -36,21 +32,12 @@ import butterknife.OnClick;
  * 描述：
  */
 public class MineFriendsListShareDevicesFragment extends Fragment implements MineFriendListShareDevicesToContract.View {
-
-    @BindView(R.id.rcy_share_device_list)
-    RecyclerView rcyShareDeviceList;
-    @BindView(R.id.ll_no_device)
-    LinearLayout llNoDevice;
-    @BindView(R.id.tv_choose_device_title)
-    TextView tvChooseDeviceTitle;
-    @BindView(R.id.custom_toolbar)
-    CustomToolbar customToolbar;
-
-
     private MineFriendListShareDevicesToContract.Presenter presenter;
     private FriendContextItem friendItem;
     private ChooseShareDeviceAdapter chooseShareDeviceAdapter;
     private ArrayList<DeviceBean> chooseList = new ArrayList<>();
+    private FragmentMineFriendShareDevicesBinding shareDevicesBinding;
+    private ObservableBoolean empty = new ObservableBoolean(false);
 
     public static MineFriendsListShareDevicesFragment newInstance(Bundle bundle) {
         MineFriendsListShareDevicesFragment fragment = new MineFriendsListShareDevicesFragment();
@@ -66,21 +53,30 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_friend_share_devices, container, false);
-        ButterKnife.bind(this, view);
-        getArgumentData();
+        friendItem = getArguments().getParcelable("friendItem");
+        shareDevicesBinding = FragmentMineFriendShareDevicesBinding.inflate(inflater, container, false);
+        shareDevicesBinding.setEmpty(empty);
         initPresenter();
         initTitleView(friendItem);
-        showLoading(R.string.LOADING);
-        return view;
+        shareDevicesBinding.rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
+        chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(getContext(), null, R.layout.fragment_friend_share_device_items);
+        shareDevicesBinding.rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
+        chooseShareDeviceAdapter.setOnCheckClickListener(this::checkDevice);
+        return shareDevicesBinding.getRoot();
     }
 
-    /**
-     * 获取到转送过来的数据
-     */
-    private void getArgumentData() {
-        Bundle arguments = getArguments();
-        friendItem = arguments.getParcelable("friendItem");
+    private void checkDevice(DeviceBean deviceBean, boolean over) {
+        if (over) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_Tips));
+            return;
+        }
+        chooseList.clear();
+        for (DeviceBean bean : chooseShareDeviceAdapter.getList()) {
+            if (bean.isChooseFlag == 1) {
+                chooseList.add(bean);
+            }
+        }
+        presenter.checkIsChoose(chooseList);
     }
 
     @Override
@@ -129,9 +125,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
     public void initTitleView(FriendContextItem friendItem) {
         if (TextUtils.isEmpty(friendItem.friendAccount.markName.trim())) {
-            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.alias)));
+            shareDevicesBinding.customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.alias)));
         } else {
-            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.markName)));
+            shareDevicesBinding.customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.markName)));
         }
     }
 
@@ -142,33 +138,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void initRecycleView(ArrayList<DeviceBean> list) {
-        hideLoading();
-        rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
-        chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(getContext(), list, null);
-        rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
-        initAdaListener();
-    }
-
-    /**
-     * 列表的监听器
-     */
-    private void initAdaListener() {
-        chooseShareDeviceAdapter.setOnCheckClickListener(new ChooseShareDeviceAdapter.OnCheckClickListener() {
-            @Override
-            public void onCheckClick(DeviceBean item, boolean over) {
-                if (over) {
-                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_Tips));
-                    return;
-                }
-                chooseList.clear();
-                for (DeviceBean bean : chooseShareDeviceAdapter.getList()) {
-                    if (bean.isChooseFlag == 1) {
-                        chooseList.add(bean);
-                    }
-                }
-                presenter.checkIsChoose(chooseList);
-            }
-        });
+        chooseShareDeviceAdapter.clear();
+        chooseShareDeviceAdapter.addAll(list);
     }
 
     /**
@@ -176,8 +147,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showNoDeviceView() {
-        llNoDevice.setVisibility(View.VISIBLE);
-        tvChooseDeviceTitle.setVisibility(View.INVISIBLE);
+        empty.set(true);
     }
 
     /**
@@ -185,8 +155,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideNoDeviceView() {
-        llNoDevice.setVisibility(View.INVISIBLE);
-        tvChooseDeviceTitle.setVisibility(View.VISIBLE);
+        empty.set(false);
     }
 
     /**
@@ -208,8 +177,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showFinishBtn() {
-        customToolbar.setTvToolbarRightEnable(true);
-        customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+        shareDevicesBinding.customToolbar.setTvToolbarRightEnable(true);
+        shareDevicesBinding.customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
     }
 
     /**
@@ -217,8 +186,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideFinishBtn() {
-        customToolbar.setTvToolbarRightEnable(false);
-        customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+        shareDevicesBinding.customToolbar.setTvToolbarRightEnable(false);
+        shareDevicesBinding.customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
     }
 
     /**

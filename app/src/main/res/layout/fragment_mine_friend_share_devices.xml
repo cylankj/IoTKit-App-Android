@@ -1,83 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:clickable="true"
-    android:orientation="vertical">
+<layout>
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/layout_default_custom_tool_bar"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="empty"
+            type="android.databinding.ObservableBoolean" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:hunt="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_enable_shadow="false"
-        hunt:ct_enable_theme="true"
-        hunt:ct_fit_system_window="true"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_icon_right="@drawable/icon_finish_disable"
-        hunt:ct_left_title=""
-        hunt:ct_left_title_color="@color/color_white" />
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_choose_device_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/y8"
-                android:layout_marginLeft="@dimen/x15"
-                android:layout_marginTop="@dimen/y19"
-                android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Select"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp14"
-                android:visibility="invisible" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcy_share_device_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x15"
-                android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_no_device"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y142"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pic_none_equipment" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y16"
-                android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Fail"
-                android:textColor="#aaaaaa"
-                android:textSize="@dimen/sp15" />
-        </LinearLayout>
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="false"
+            hunt:ct_enable_theme="true"
+            hunt:ct_fit_system_window="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_icon_right="@drawable/icon_finish_disable"
+            hunt:ct_left_title=""
+            hunt:ct_left_title_color="@color/color_white" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
+            android:background="@drawable/little_shape"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
-    </FrameLayout>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_choose_device_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/y6"
+            android:paddingEnd="@dimen/y15"
+            android:paddingStart="@dimen/y15"
+            android:paddingTop="@dimen/y19"
+            android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Select"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp14"
+            android:visibility="@{empty?View.GONE:View.VISIBLE}"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcy_share_device_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            android:paddingEnd="@dimen/y0"
+            android:paddingStart="@dimen/y15"
+            hunt:layout_constraintBottom_toBottomOf="parent"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/tv_choose_device_title" />
+
+
+        <TextView
+            android:id="@+id/empty_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/y16"
+            android:drawableTop="@drawable/pic_none_equipment"
+            android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Fail"
+            android:textColor="#aaaaaa"
+            android:textSize="@dimen/sp15"
+            android:visibility="@{empty?View.VISIBLE:View.GONE}"
+            hunt:layout_constraintBottom_toBottomOf="parent"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toTopOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

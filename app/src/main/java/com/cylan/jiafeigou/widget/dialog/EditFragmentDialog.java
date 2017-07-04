@@ -83,7 +83,7 @@ public class EditFragmentDialog extends BaseDialog {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ivClear.setOnClickListener(v -> etInputBox.getText().clear());
         InputFilter[] filters = new InputFilter[2];
-        filters[0] = (source, start, end, dest, dstart, dend) -> String.valueOf(source).replace(" ", "");
+//        filters[0] = (source, start, end, dest, dstart, dend) -> String.valueOf(source).replace(" ", "");//#114342
         filters[1] = new InputFilter.LengthFilter(12);
         etInputBox.setFilters(filters);
         etInputBox.addTextChangedListener(new TextWatcher() {

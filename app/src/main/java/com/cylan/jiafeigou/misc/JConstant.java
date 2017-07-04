@@ -159,6 +159,18 @@ public class JConstant {
 
     public static final int INVALID_PROCESS = -1;
 
+    public static int getMessageIcon(int pid) {
+        if (JFGRules.isRS(pid)) return R.drawable.me_icon_head_camera_ruishi;
+        if (JFGRules.isBell(pid))
+            return R.drawable.me_icon_head_ring;
+        if (JFGRules.isPan720(pid))
+            return R.drawable.me_icon_head_720camera;
+        if (JFGRules.isCamera(pid))
+            return R.drawable.me_icon_head_camera;
+        AppLogger.e("bad pid: " + pid);
+        return R.mipmap.ic_launcher;
+    }
+
     public static class LOG_TAG {
         public static final String PERMISSION = "permission";
     }

@@ -63,6 +63,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
+    protected boolean disconnectBeforePlay() {
+        return true;
+    }
+
+    @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getApiMonitorSub());

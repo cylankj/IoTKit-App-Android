@@ -4,6 +4,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
             JFGDPMsg msg;
             for (IDPEntity entity : multiEntity) {
                 msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
+                msg.packValue = DpUtils.pack(0);
                 params.add(msg);
             }
             try {

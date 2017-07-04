@@ -21,11 +21,14 @@
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/y15"
         android:layout_marginStart="@dimen/y15"
         android:text="小名"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp16"
         app:layout_constraintBottom_toTopOf="@+id/tv_add_message"
+        app:layout_constraintEnd_toStartOf="@+id/tv_accept_request"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/iv_userhead"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_username"
+        android:layout_marginEnd="@dimen/y15"
         android:layout_marginStart="@dimen/y15"
         android:ellipsize="end"
         android:singleLine="true"
@@ -41,6 +45,8 @@
         android:textColor="@color/color_8c8c8c"
         android:textSize="@dimen/sp12"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_accept_request"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/iv_userhead"
         app:layout_constraintTop_toBottomOf="@+id/tv_username"
         app:layout_constraintVertical_chainStyle="packed" />

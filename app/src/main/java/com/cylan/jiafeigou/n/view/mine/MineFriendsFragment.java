@@ -113,10 +113,17 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 
     private boolean onFriendItemClick(View view, IAdapter iAdapter, IItem item, int position) {
         if (!(item instanceof FriendContextItem)) return false;
+        FriendContextItem friendContextItem = (FriendContextItem) item;
         Bundle bundle = new Bundle();
-        bundle.putParcelable("friendItem", (FriendContextItem) item);
+        if (friendContextItem.friendRequest != null) {
+            basePresenter.deleteFriendRequest(friendContextItem, false);
+            friendContextItem.friendRequest.sayHi = null;
+            friendContextItem.friendRequest.time = System.currentTimeMillis();
+        }
+        bundle.putParcelable("friendItem", friendContextItem);
         friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
         friendInformationFragment.setFriendEventCallback(this);
+        friendInformationFragment.setCallBack(t -> friendsAdapter.notifyDataSetChanged());
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), friendInformationFragment,
                 android.R.id.content);
         return true;
@@ -131,7 +138,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
                 builder.setTitle(R.string.Tips_SureDelete)
                         .setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
-                            basePresenter.deleteFriendRequest((FriendContextItem) item);
+                            basePresenter.deleteFriendRequest((FriendContextItem) item, true);
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null);
                 AlertDialogManager.getInstance().showDialog("showLongClickDialog", getActivity(), builder);
@@ -169,13 +176,13 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), informationFragment, android.R.id.content);
         });
         builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> {
-            basePresenter.deleteFriendRequest(item);
+            basePresenter.deleteFriendRequest(item, true);
             dialog.dismiss();
         }).show();
     }
 
     @Override
-    public void deleteItemRsp(FriendContextItem item, int code) {
+    public void deleteItemRsp(FriendContextItem item, int code, boolean alert) {
         if (code == JError.ErrorOK) {
             FriendContextHeader parent = item.parent;
             if (parent != null && parent.children != null) {
@@ -187,12 +194,16 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             }
             int position = friendsAdapter.getPosition(item);
             friendsAdapter.remove(position);
-            ToastUtil.showToast(getString(R.string.DELETED_SUC));
+            if (alert) {
+                ToastUtil.showToast(getString(R.string.DELETED_SUC));
+            }
 
         } else if (code == -1) {
             // TODO: 2017/6/30 超时了
         } else {
-            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            if (alert) {
+                ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            }
         }
         empty.set(friendsAdapter.getItemCount() == 0);
     }
@@ -307,7 +318,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 
     @Override
     public void onDeleteFriend(FriendContextItem friendItem) {
-        deleteItemRsp(friendItem, 0);
+        deleteItemRsp(friendItem, 0, false);
     }
 
     @Override

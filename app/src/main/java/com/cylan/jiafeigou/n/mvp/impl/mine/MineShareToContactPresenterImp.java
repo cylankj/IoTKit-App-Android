@@ -57,18 +57,17 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .map(cmd -> {
                     ArrayList<ShareContactItem> result = new ArrayList<>();
                     ContentResolver contentResolver = getView().getContext().getContentResolver();
-                    Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY);
+                    Cursor phoneQuery = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY);
                     //向下移动光标
                     ShareContactItem shareContactItem;
-                    while (cursor != null && cursor.moveToNext()) {
-                        String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
-                        String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                        String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        String emailAddress = null;
-                        Cursor query = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactId, null, ContactsContract.CommonDataKinds.Email.SORT_KEY_PRIMARY);
-                        if (query != null && query.moveToFirst()) {
-                            emailAddress = query.getString(query.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        }
+                    while (phoneQuery != null && phoneQuery.moveToNext()) {
+                        String displayName = phoneQuery.getString(phoneQuery.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY));
+                        String phoneNumber = phoneQuery.getString(phoneQuery.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        shareContactItem = new ShareContactItem();
+                        shareContactItem.name = displayName;
+                        shareContactItem.contactType = contactType;
+                        result.add(shareContactItem);
                         if (phoneNumber != null) {
                             phoneNumber = phoneNumber.replace("-", "").replace(" ", "");
                             if (phoneNumber.startsWith("+86")) {
@@ -77,16 +76,23 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                                 phoneNumber = phoneNumber.substring(2);
                             }
                         }
+                        shareContactItem.phone = phoneNumber;
+                        AppLogger.d("添加电话联系人:" + new Gson().toJson(shareContactItem));
+                    }
+                    if (phoneQuery != null) phoneQuery.close();
+                    Cursor emailQuery = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Email.SORT_KEY_PRIMARY);
+                    while (emailQuery != null && emailQuery.moveToNext()) {
+                        String displayName = emailQuery.getString(emailQuery.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
+                        String emailAddress = emailQuery.getString(emailQuery.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
                         shareContactItem = new ShareContactItem();
                         shareContactItem.name = displayName;
-                        shareContactItem.phone = phoneNumber;
-                        shareContactItem.email = emailAddress;
                         shareContactItem.contactType = contactType;
+                        shareContactItem.email = emailAddress;
                         result.add(shareContactItem);
-                        AppLogger.d("添加联系人:" + new Gson().toJson(shareContactItem));
-                        if (query != null) query.close();
+                        AppLogger.d("添加邮箱联系人:" + new Gson().toJson(shareContactItem));
                     }
-                    if (cursor != null) cursor.close();
+                    if (emailQuery != null) emailQuery.close();
+
                     JFGShareListInfo jfgShareListInfo = DataSourceManager.getInstance().getShareListByCid(getUuid());
                     if (jfgShareListInfo != null && jfgShareListInfo.friends != null) {
                         for (JFGFriendAccount friend : jfgShareListInfo.friends) {

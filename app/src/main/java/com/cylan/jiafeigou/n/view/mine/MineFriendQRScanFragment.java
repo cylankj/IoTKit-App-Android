@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -27,9 +28,6 @@ import com.google.zxing.Result;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -108,12 +106,11 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
         Bundle bundle = new Bundle();
         bundle.putParcelable("friendItem", friendContextItem);
         MineFriendInformationFragment friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, friendInformationFragment, MineFriendInformationFragment.class.getSimpleName())
-                .addToBackStack("AddFlowStack")
-                .commit();
+        friendInformationFragment.setCallBack(t -> {
+            scanAddBinding.qrScanView.startCamera();
+            scanAddBinding.qrScanView.resumeCameraPreview(this);
+        });
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), friendInformationFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     @Override
@@ -144,49 +141,46 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
         if (friendContextItem == null) {
             //未获取到账号信息
             ToastUtil.showToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
-        } else if (friendContextItem.childType == 1) {
-            //已经是好友了
-            ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
-            //不是好友,进入添加页面
+            //已经是好友了
+            scanAddBinding.qrScanView.removeCallbacks(resumeRunnable);
+            scanAddBinding.qrScanView.stop();
             enterFriendInformationFragment(friendContextItem);
         }
     }
 
+    private Runnable resumeRunnable = () -> scanAddBinding.qrScanView.resumeCameraPreview(MineFriendQRScanFragment.this);
+
     @Override
     public void handleResult(final Result rawResult) {
+        scanAddBinding.qrScanView.postDelayed(resumeRunnable, 2000);
         String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
 
         if (NetUtils.getJfgNetType() == 0) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        if (getView() != null) {
-            if (presenter != null) {
-                final String tag = "id=";
-                final String result = rawResult.getText();
-                final int start = result.indexOf(tag);
-                if (start < 0 || start > result.length()) {
-                    //无效二维码
-                    ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
-                    return;
-                }
-                final String targetAccount = result.substring(start).replace(tag, "").trim();
-                AppLogger.d("扫描结果: " + targetAccount);
-                if (TextUtils.equals(targetAccount, account)) {
-                    ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-                } else {
-                    presenter.checkFriendAccount(targetAccount);
-                }
-            }
+        final String tag = "id=";
+        final String result = rawResult.getText();
+        final int start = result.indexOf(tag);
+        if (start < 0 || start > result.length()) {
+            //无效二维码
+            ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
+            return;
+        }
+        final String targetAccount = result.substring(start).replace(tag, "").trim();
+        AppLogger.d("扫描结果: " + targetAccount);
+        if (TextUtils.equals(targetAccount, account)) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
+        } else {
+            presenter.checkFriendAccount(targetAccount);
         }
 
         // Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the startTime to figure out.
-        if (getView() != null)
-            getView().postDelayed(() -> scanAddBinding.qrScanView.resumeCameraPreview(MineFriendQRScanFragment.this), 2000);
+
     }
 
     @Override
@@ -204,14 +198,7 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
     @Override
     public void onPause() {
         super.onPause();
-        Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        scanAddBinding.qrScanView.stopCamera();
-                    }
-                }, AppLogger::e);
+        scanAddBinding.qrScanView.stopCamera();
     }
 
     @Override

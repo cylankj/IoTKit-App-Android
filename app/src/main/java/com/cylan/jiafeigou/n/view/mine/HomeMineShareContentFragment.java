@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.view.adapter.item.AbstractBindingViewHolder;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
@@ -105,7 +106,11 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
         for (ShareContentItem contentItem : items) {
             item.add(contentItem.shareItem);
         }
-        unShareWithAlert(item, adapter.getFastAdapter().getSelections());
+        if (NetUtils.getNetType(getContext()) == -1) {
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));//无网络不可删除
+        } else {
+            unShareWithAlert(item, adapter.getFastAdapter().getSelections());
+        }
     }
 
     public class ShareContentItemHook extends ClickEventHook<ShareContentItem> {

@@ -461,7 +461,9 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {
         return applyUnique(buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx()).map(result -> {
-            mEntityDao.delete(result);
+            if (result != null) {
+                mEntityDao.delete(result);
+            }
             return result;
         });
     }

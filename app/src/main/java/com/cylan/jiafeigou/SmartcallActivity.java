@@ -42,6 +42,7 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by chen on 5/24/16.
@@ -67,8 +68,6 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
         initPresenter();
-        PerformanceUtils.stopTrace("app2SmartCall");
-        PerformanceUtils.startTrace("smartCall2LogResult");
     }
 
     @Override
@@ -257,6 +256,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
+
         //检查广告的有效性
         boolean fromLogout = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
         if (basePresenter != null && showOnceInCircle && !fromLogout) {

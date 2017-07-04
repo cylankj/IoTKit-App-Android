@@ -1,52 +1,46 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.databinding.FragmentMineLookBigImageBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineLookBigImagePresenterImp;
-import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
+import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
-import java.lang.ref.WeakReference;
+import java.io.File;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/21
  * 描述：
  */
-public class MineLookBigImageFragment extends Fragment implements MineLookBigImageContract.View {
-
-    @BindView(R.id.iv_look_big_image)
-    ImageView ivLookBigImage;
-
+public class MineLookBigImageFragment extends IBaseFragment implements MineLookBigImageContract.View {
     private MineLookBigImageContract.Presenter presenter;
-    private static boolean loadResult = false;
-    private String imageUrl;
-    private static Bitmap bitmapSource;
+    private FriendContextItem friendContextItem;
+    private FragmentMineLookBigImageBinding bigImageBinding;
+    private boolean success = false;
 
     public static MineLookBigImageFragment newInstance(Bundle bundle) {
         MineLookBigImageFragment fragment = new MineLookBigImageFragment();
@@ -58,124 +52,91 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        imageUrl = arguments.getString("imageUrl");
+        friendContextItem = arguments.getParcelable("friendItem");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_look_big_image, container, false);
-        ButterKnife.bind(this, view);
+        bigImageBinding = FragmentMineLookBigImageBinding.inflate(inflater, container, false);
+        bigImageBinding.bigPicture.setOnLongClickListener(this::showSaveImageDialog);
+        bigImageBinding.bigPicture.setOnClickListener(this::onClick);
         initPresenter();
-        initImageViewSize();
-        initLongClickListener();
-        return view;
+        return bigImageBinding.getRoot();
+    }
+
+    private boolean showSaveImageDialog(View view) {
+        AlertDialogManager.getInstance().showDialog(getActivity(), "ave", getString(R.string.Tap3_SavePic),
+                getString(R.string.Tap3_SavePic), (DialogInterface dialog, int which) -> {
+                    dialog.dismiss();
+                    ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
+                    String account = friendContextItem.friendRequest == null ? friendContextItem.friendAccount.account : friendContextItem.friendRequest.account;
+                    Glide
+                            .with(MineLookBigImageFragment.this)
+                            .load(new JFGAccountURL(account))
+                            .downloadOnly(new SimpleTarget<File>() {
+                                @Override
+                                public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                                    Schedulers.io().createWorker().schedule(() -> {
+                                        String account = friendContextItem.friendRequest == null ? friendContextItem.friendAccount.account : friendContextItem.friendRequest.account;
+                                        FileUtils.copyFile(resource, new File(JConstant.MEDIA_PATH + account + ".jpg"));
+                                    });
+                                }
+                            });
+                }, getString(R.string.CANCEL), null, false);
+        return true;
     }
 
     private void initPresenter() {
         presenter = new MineLookBigImagePresenterImp(this);
     }
 
-    private void initLongClickListener() {
-        ivLookBigImage.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showSaveImageDialog();
-                return false;
-            }
-        });
-    }
-
-    /**
-     * 初始化大图大小
-     */
-    private void initImageViewSize() {
-        WindowManager wm = (WindowManager) getActivity()
-                .getSystemService(Context.WINDOW_SERVICE);
-        int height = wm.getDefaultDisplay().getHeight();
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ivLookBigImage.getLayoutParams());
-        lp.height = (int) (height * 0.47);
-        lp.setMargins(0, (int) (height * 0.23), 0, 0);
-        ivLookBigImage.setLayoutParams(lp);
-    }
-
-    /**
-     * desc:保存图片
-     */
-    private void showSaveImageDialog() {
-        AlertDialogManager.getInstance().showDialog(getActivity(), "ave", getString(R.string.Tap3_SavePic),
-                getString(R.string.Tap3_SavePic), (DialogInterface dialog, int which) -> {
-                    dialog.dismiss();
-                    ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
-                    if (presenter != null) {
-                        presenter.saveImage(bitmapSource);
-                    }
-                }, getString(R.string.CANCEL), null, false);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        loadImage();
+        loadPicture();
+    }
+
+    private void loadPicture() {
+        String account = friendContextItem.friendRequest == null ? friendContextItem.friendAccount.account : friendContextItem.friendRequest.account;
+        Glide
+                .with(this)
+                .load(new JFGAccountURL(account))
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new ImageViewTarget<GlideDrawable>(bigImageBinding.bigPicture) {
+                    @Override
+                    public void onLoadStarted(Drawable placeholder) {
+                        super.onLoadStarted(placeholder);
+//                        showLoadImageProgress();
+                    }
+
+                    @Override
+                    protected void setResource(GlideDrawable resource) {
+                        success = true;
+                        view.setImageDrawable(resource);
+//                        hideLoadImageProgress();
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+//                        hideLoadImageProgress();
+                    }
+
+                    @Override
+                    public void onLoadCleared(Drawable placeholder) {
+                        super.onLoadCleared(placeholder);
+//                        hideLoadImageProgress();
+                    }
+                });
     }
 
     @Override
     public void onStop() {
         super.onStop();
         presenter.stop();
-    }
-
-    /**
-     * desc:加载图片
-     */
-    private void loadImage() {
-        myViewTarget = new MyViewTarget(ivLookBigImage, ContextUtils.getContext(), getActivity().getSupportFragmentManager());
-        showLoadImageProgress();
-        Glide.with(getContext())
-                .load(imageUrl)
-                .asBitmap()
-                .placeholder(R.drawable.icon_mine_head_normal)
-                .error(R.drawable.icon_mine_head_normal)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(myViewTarget);
-    }
-
-    private MyViewTarget myViewTarget;
-
-    private static class MyViewTarget extends BitmapImageViewTarget {
-        private final WeakReference<ImageView> image;
-        private final WeakReference<Context> mContext;
-        private final WeakReference<FragmentManager> fragmentManager;
-
-        public MyViewTarget(ImageView view, Context context, FragmentManager manager) {
-            super(view);
-            image = new WeakReference<ImageView>(view);
-            mContext = new WeakReference<Context>(context);
-            fragmentManager = new WeakReference<FragmentManager>(manager);
-
-        }
-
-        @Override
-        public void onLoadStarted(Drawable placeholder) {
-            super.onLoadStarted(placeholder);
-        }
-
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-            super.onResourceReady(resource, glideAnimation);
-            bitmapSource = resource;
-            LoadingDialog.dismissLoading(fragmentManager.get());
-            loadResult = true;
-        }
-
-        @Override
-        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            super.onLoadFailed(e, errorDrawable);
-            loadResult = false;
-            LoadingDialog.dismissLoading(fragmentManager.get());
-//            ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
-        }
     }
 
     @Override
@@ -188,32 +149,24 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         return null;
     }
 
-    @OnClick({R.id.iv_look_big_image})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_look_big_image:                //点击大图退出全屏
-                if (loadResult) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                } else {
-                    loadImage();
-                }
-                break;
+        //点击大图退出全屏
+        if (success) {
+            getActivity().getSupportFragmentManager().popBackStack();
+        } else {
+            loadPicture();
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ivLookBigImage.setImageBitmap(null);
-        if (bitmapSource != null && bitmapSource.isRecycled()) {
-            bitmapSource.recycle();
-            bitmapSource = null;
-        }
     }
 
     public void showLoadImageProgress() {
         LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
+
 
     public void hideLoadImageProgress() {
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());

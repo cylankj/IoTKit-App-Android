@@ -71,7 +71,7 @@
             android:drawablePadding="@dimen/y16"
             android:drawableTop="@drawable/icon_no_friends"
             android:gravity="center_horizontal"
-            android:text="@string/Tap3_ShareDevice_NoneFriends"
+            android:text="@string/Tap3_ShareDevice_NoneShareFriends"
             android:textColor="#aaaaaa"
             android:textSize="@dimen/sp15"
             android:visibility="@{empty?View.VISIBLE:View.GONE}"

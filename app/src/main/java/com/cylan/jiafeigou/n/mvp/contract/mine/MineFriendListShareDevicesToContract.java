@@ -110,7 +110,6 @@ public interface MineFriendListShareDevicesToContract {
          */
         Subscription getDeviceInfoCallBack();
 
-
     }
 
 }

@@ -114,6 +114,9 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                             friendContextItem = new FriendContextItem(friendAccount);
                         } else {
                             JFGFriendRequest request = new JFGFriendRequest();
+                            request.account = result.account;
+                            request.alias = result.alias;
+                            request.time = System.currentTimeMillis();
                             friendContextItem = new FriendContextItem(request);
                         }
                     }

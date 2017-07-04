@@ -344,16 +344,17 @@ public class MiscUtils {
      * @return
      */
     public static String FormatSdCardSizeSpec(long fileS, String unit) {
-        DecimalFormat df = new DecimalFormat("#######0.00");
         switch (unit) {
             case "B":
-                if (fileS < 1024) return df.format((double) fileS) + "B";
+                if (fileS < 1024) return new DecimalFormat("#######0").format((double) fileS) + "B";
             case "K":
-                if (fileS < 1048576) return df.format((double) fileS / 1024) + "K";
+                if (fileS < 1048576)
+                    return new DecimalFormat("#######0").format((double) fileS / 1024) + "K";
             case "M":
-                if (fileS < 1073741824) return df.format((double) fileS / 1048576) + "M";
+                if (fileS < 1073741824)
+                    return new DecimalFormat("#######0").format((double) fileS / 1048576) + "M";
             case "G":
-                return df.format((double) fileS / 1073741824) + "G";
+                return new DecimalFormat("#######0.00").format((double) fileS / 1073741824) + "G";
             default:
                 return "";
         }

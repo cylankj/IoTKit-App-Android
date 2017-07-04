@@ -105,8 +105,8 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
     }
 
     @Override
-    public void addFriend(FriendContextItem friendContextItem) {
-        Subscription subscribe = Observable.just("addFriend")
+    public void consentFriend(FriendContextItem friendContextItem) {
+        Subscription subscribe = Observable.just("consentFriend")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(cmd -> {
                     //是接受添加请求还是主动添加请求,如果是主动添加请求则跳转到设置 SayHi 页面,接受添加请求才继续往下走

@@ -62,13 +62,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(load -> {
                     AppLogger.d("正在加载中" + load.slow);
-                    mView.onLoading(load.slow);
                     if (load.slow && !sourceManager.isOnline() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
                         AppLogger.d("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
                         disconn.remote = getViewHandler();
                         RxBus.getCacheInstance().post(disconn);
+
+                    } else {
+                        mView.onLoading(load.slow);
                     }
                 }, e -> {
                     AppLogger.e(e.getMessage());
@@ -113,6 +115,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handle -> {
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
+                        if (disconnectBeforePlay()) {
+                            appCmd.stopPlay(handle);
+                            AppLogger.d("播放前先发送断开消息!");
+                        }
                         int ret = appCmd.playVideo(handle);
                         AppLogger.d("准备开始直播返回的结果码为:" + ret);
                         if (ret != 0) {
@@ -191,6 +197,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         Subscription subscribe = stopViewer().subscribe(ret -> {
         }, AppLogger::e);
         registerSubscription(subscribe);
+    }
+
+    protected boolean disconnectBeforePlay() {
+        return false;
     }
 
     /**

@@ -426,10 +426,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             menuItemAlbumPopBoth.setEnabled(mode == ALBUM_VIEW_MODE.MODE_BOTH);
             menuItemAlbumPopPanorama.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PANORAMA || mode == ALBUM_VIEW_MODE.MODE_BOTH);
         }
-        toolbarAlbumViewMode.setText(titles[modeToResId(mode, false)]);
+        if (mode < albumViewMode) {
+            toolbarAlbumViewMode.setText(titles[modeToResId(mode, false)]);
+        }
         if (albumViewMode == mode) return;
         swipeRefreshLayout.setRefreshing(true);
-        presenter.fetch(0, albumViewMode=mode);
+        presenter.fetch(0, albumViewMode = mode);
     }
 
     @Override

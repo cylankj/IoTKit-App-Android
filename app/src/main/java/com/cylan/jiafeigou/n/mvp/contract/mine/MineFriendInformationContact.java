@@ -45,7 +45,7 @@ public interface MineFriendInformationContact {
          */
         void deleteFriend(FriendContextItem friendContextItem);
 
-        void addFriend(FriendContextItem friendContextItem);
+        void consentFriend(FriendContextItem friendContextItem);
 
         int getOwnerDeviceCount();
 

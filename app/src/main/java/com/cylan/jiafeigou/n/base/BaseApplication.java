@@ -105,8 +105,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
             GlobalResetPwdSource.getInstance().register();
             PerformanceUtils.stopTrace("appStart");
             PerformanceUtils.startTrace("app2SmartCall");
+            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
         }
-        Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
     }
 
     @Override

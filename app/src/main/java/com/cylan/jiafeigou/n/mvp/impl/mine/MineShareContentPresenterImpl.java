@@ -34,7 +34,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                     List<DPEntity> result = new ArrayList<>();
                     DPEntity entity;
                     for (DpMsgDefine.DPShareItem contentItem : items) {
-                        entity = new DPEntity(contentItem.cid, 606, contentItem.version, DBAction.DELETED, null);
+                        entity = new DPEntity("", 606, contentItem.version, DBAction.DELETED, null);
                         result.add(entity);
                     }
                     return result;
@@ -45,7 +45,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                     List<DPEntity> result = new ArrayList<>();
                     DPEntity entity;
                     for (DpMsgDefine.DPShareItem shareItem : item) {
-                        entity = new DPEntity(shareItem.cid, 511, shareItem.time, DBAction.DELETED, null);
+                        entity = new DPEntity("", 511, shareItem.time * 1000L, DBAction.DELETED, null);
                         result.add(entity);
                     }
                     return result;

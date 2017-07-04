@@ -24,7 +24,7 @@ public interface MineFriendsContract {
         /**
          * desc：长按删除添加请求条目
          */
-        void deleteItemRsp(FriendContextItem item, int code);
+        void deleteItemRsp(FriendContextItem item, int code, boolean alert);
 
         void acceptItemRsp(FriendContextItem item, int code);
 
@@ -40,7 +40,7 @@ public interface MineFriendsContract {
 
         void initRequestAndFriendList();
 
-        void deleteFriendRequest(FriendContextItem item);
+        void deleteFriendRequest(FriendContextItem item, boolean alert);
 
         void acceptFriendRequest(FriendContextItem item);
     }

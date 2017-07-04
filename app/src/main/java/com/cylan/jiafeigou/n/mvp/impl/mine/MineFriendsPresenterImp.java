@@ -124,7 +124,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
     @Override
-    public void deleteFriendRequest(FriendContextItem item) {
+    public void deleteFriendRequest(FriendContextItem item, boolean alert) {
         Subscription subscribe = Observable.just("deleteFriendRequest")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
@@ -155,7 +155,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    getView().deleteItemRsp(item, ret == null ? -1 : ret.jfgResult.code);
+                    getView().deleteItemRsp(item, ret == null ? -1 : ret.jfgResult.code, alert);
                 }, AppLogger::e);
 
         addSubscription(subscribe);

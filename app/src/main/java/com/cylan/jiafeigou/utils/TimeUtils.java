@@ -193,6 +193,10 @@ public class TimeUtils {
         }
     }
 
+    public static String getYMDHM(final long time) {
+        return getSimpleDateFormat_3.get().format(new Date(time));
+    }
+
     private static boolean sameYear(long time1, long time2) {
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();

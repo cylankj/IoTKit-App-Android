@@ -119,6 +119,11 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
     @Override
     public void onBackPressed() {
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
+
         finishExt();
     }
 

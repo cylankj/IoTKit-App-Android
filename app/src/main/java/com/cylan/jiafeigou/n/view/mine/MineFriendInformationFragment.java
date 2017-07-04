@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -16,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendDetailBinding;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendInformationContact;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendInformationPresenter;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
@@ -32,7 +32,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
  * 创建时间：2016/9/21
  * 描述：
  */
-public class MineFriendInformationFragment extends Fragment implements MineFriendInformationContact.View {
+public class MineFriendInformationFragment extends IBaseFragment implements MineFriendInformationContact.View {
 
     private MineFriendsListShareDevicesFragment mineShareDeviceFragment;
     private MineSetRemarkNameFragment mineSetRemarkNameFragment;
@@ -163,7 +163,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
                     }
                 } else {//添加亲友
                     AppLogger.d("将添加亲友");
-                    presenter.addFriend(friendItem);
+                    presenter.consentFriend(friendItem);
                 }
 //
                 break;
@@ -194,7 +194,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
     @Override
     public void onDeleteResult(int code) {
         if (code == 0) {
-//            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
+            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             getActivity().getSupportFragmentManager().popBackStack();
             if (eventCallback != null) {
                 eventCallback.onDeleteFriend(friendItem);
@@ -221,7 +221,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
      */
     private void enterUserBigPictureFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("account", isFriend.get() ? friendItem.friendAccount.account : friendItem.friendRequest.account);
+        bundle.putParcelable("friendItem", friendItem);
         mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineLookBigImageFragment, android.R.id.content);
     }
@@ -277,7 +277,8 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
                 .setMessage(R.string.Tap3_FriendsAdd_ExpiredTips)
                 .setPositiveButton(R.string.Tap3_FriendsAdd_Send, (dialog, which) -> {
                     friendItem.friendRequest.time = System.currentTimeMillis();
-                    presenter.addFriend(friendItem);
+                    friendItem.friendRequest.sayHi = null;//这是为了跳转到添加请求页面
+                    presenter.consentFriend(friendItem);
                 })
                 .setNegativeButton(R.string.CANCEL, null)
                 .show();
@@ -308,9 +309,7 @@ public class MineFriendInformationFragment extends Fragment implements MineFrien
                 break;
             default:
                 ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
-
         }
-
     }
 
     @Override

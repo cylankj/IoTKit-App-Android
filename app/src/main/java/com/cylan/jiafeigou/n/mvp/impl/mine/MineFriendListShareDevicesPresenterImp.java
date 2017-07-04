@@ -27,8 +27,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -67,23 +65,20 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     public Subscription initDeviceListData() {
         return Observable.just(getShareDeviceList())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<DeviceBean>>() {
-                    @Override
-                    public void call(ArrayList<DeviceBean> deviceList) {
-                        if (getView() != null && deviceList != null && deviceList.size() != 0) {
-                            allDevice.clear();
-                            ArrayList<String> cidList = new ArrayList<String>();
-                            for (DeviceBean bean : deviceList) {
-                                if (TextUtils.isEmpty(bean.shareAccount)) {
-                                    cidList.add(bean.uuid);
-                                    allDevice.add(bean);
-                                }
+                .subscribe(deviceList -> {
+                    if (getView() != null && deviceList != null && deviceList.size() != 0) {
+                        allDevice.clear();
+                        ArrayList<String> cidList = new ArrayList<>();
+                        for (DeviceBean bean : deviceList) {
+                            if (TextUtils.isEmpty(bean.shareAccount)) {
+                                cidList.add(bean.uuid);
+                                allDevice.add(bean);
                             }
-                            getDeviceInfo(cidList);
-                        } else {
-                            getView().hideLoading();
-                            getView().showNoDeviceView();
                         }
+                        getDeviceInfo(cidList);
+                    } else {
+                        getView().hideLoading();
+                        getView().showNoDeviceView();
                     }
                 }, AppLogger::e);
     }
@@ -149,19 +144,16 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     public Subscription shareDeviceCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
-                    @Override
-                    public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
+                .subscribe(shareDeviceCallBack -> {
 
-                        if (shareDeviceCallBack != null) {
-                            callBackList.add(shareDeviceCallBack);
-                        }
+                    if (shareDeviceCallBack != null) {
+                        callBackList.add(shareDeviceCallBack);
+                    }
 
-                        if (callBackList.size() == totalFriend) {
-                            if (getView() != null) {
-                                getView().hideSendReqProgress();
-                                getView().showSendReqFinishReuslt(callBackList);
-                            }
+                    if (callBackList.size() == totalFriend) {
+                        if (getView() != null) {
+                            getView().hideSendReqProgress();
+                            getView().showSendReqFinishReuslt(callBackList);
                         }
                     }
                 }, AppLogger::e);
@@ -212,30 +204,27 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     @Override
     public Subscription getDeviceInfoCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
-                .flatMap(new Func1<RxEvent.GetShareListRsp, Observable<ArrayList<DeviceBean>>>() {
-                    @Override
-                    public Observable<ArrayList<DeviceBean>> call(RxEvent.GetShareListRsp getShareListCallBack) {
-                        ArrayList<JFGShareListInfo> list =
-                                BaseApplication.getAppComponent().getSourceManager().getShareList();
-                        if (ListUtils.getSize(list) > 0) {
-                            //每个设备已分享的亲友集合
-                            hasShareFriendList.clear();
-                            hasShareFriendList.addAll(list);
-                            //该设备以分享的亲友数赋值
-                            for (int i = allDevice.size() - 1; i >= 0; i--) {
-                                if (allDevice.get(i).uuid.equals(list.get(i).cid)) {
-                                    allDevice.get(i).hasShareCount = list.get(i).friends.size();
-                                    for (int j = list.get(i).friends.size() - 1; j >= 0; j--) {
-                                        if (list.get(i).friends.get(j).account.equals(relAndFriendBean)) {
-                                            allDevice.remove(allDevice.get(i));
-                                        }
+                .flatMap(getShareListCallBack -> {
+                    ArrayList<JFGShareListInfo> list =
+                            BaseApplication.getAppComponent().getSourceManager().getShareList();
+                    if (ListUtils.getSize(list) > 0) {
+                        //每个设备已分享的亲友集合
+                        hasShareFriendList.clear();
+                        hasShareFriendList.addAll(list);
+                        //该设备以分享的亲友数赋值
+                        for (int i = allDevice.size() - 1; i >= 0; i--) {
+                            if (allDevice.get(i).uuid.equals(list.get(i).cid)) {
+                                allDevice.get(i).hasShareCount = list.get(i).friends.size();
+                                for (int j = list.get(i).friends.size() - 1; j >= 0; j--) {
+                                    if (list.get(i).friends.get(j).account.equals(relAndFriendBean)) {
+                                        allDevice.remove(allDevice.get(i));
                                     }
                                 }
                             }
-                            return Observable.just(allDevice);
-                        } else {
-                            return Observable.just(allDevice);
                         }
+                        return Observable.just(allDevice);
+                    } else {
+                        return Observable.just(allDevice);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

@@ -43,7 +43,7 @@ public class ShareContentItem extends AbstractItem<ShareContentItem, AbstractBin
         super.bindView(holder, payloads);
         ItemShareContentBinding viewDataBinding = holder.getViewDataBinding();
         viewDataBinding.setSharedContentItem(this);
-        viewDataBinding.setShareDate(TimeUtils.getYHM(shareItem.time * 1000L));
+        viewDataBinding.setShareDate(TimeUtils.getYMDHM(shareItem.time * 1000L));
         viewDataBinding.ShareContentCheckBox.setChecked(isSelected());
         Glide.with(viewDataBinding.sharedContentIcon.getContext())
                 .load(new WonderGlideURL(shareItem.toWonderItem()))

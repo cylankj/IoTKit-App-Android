@@ -3,13 +3,11 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
@@ -32,7 +30,7 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         this.listener = listener;
     }
 
-    public ChooseShareDeviceAdapter(Context context, List<DeviceBean> items, IMulItemViewType<DeviceBean> mulItemViewType) {
+    public ChooseShareDeviceAdapter(Context context, List<DeviceBean> items, int mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
@@ -51,44 +49,21 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
         CheckBox checkBox = holder.getView(R.id.cbx_share_isCheck);
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (item.hasShareCount == 5 && isChecked) {
-                    if (listener != null) {
-                        listener.onCheckClick(item, true);
-                    }
-                    checkBox.setChecked(false);
-                    return;
-                }
-                item.isChooseFlag = isChecked ? 1 : 0;
-                item.hasShareCount = isChecked ? item.hasShareCount + 1 : item.hasShareCount - 1;
-                hasShareNum.setText(item.hasShareCount + "/5");
-                if (listener != null) {
-                    listener.onCheckClick(item, false);
-                }
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                item.hasShareCount++;
+            }
+            if (item.hasShareCount > 5) {
+                checkBox.setChecked(false);
+                item.isChooseFlag = 0;
+            } else {
+                item.isChooseFlag = 1;
+            }
+            hasShareNum.setText(item.hasShareCount + "/5");
+            if (listener != null) {
+                listener.onCheckClick(item, item.hasShareCount > 5);
             }
         });
-    }
-
-    @Override
-    protected IMulItemViewType<DeviceBean> offerMultiItemViewType() {
-        return new IMulItemViewType<DeviceBean>() {
-            @Override
-            public int getViewTypeCount() {
-                return 1;
-            }
-
-            @Override
-            public int getItemViewType(int position, DeviceBean bean) {
-                return 0;
-            }
-
-            @Override
-            public int getLayoutId(int viewType) {
-                return R.layout.fragment_friend_share_device_items;
-            }
-        };
     }
 }
 

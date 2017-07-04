@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
@@ -91,6 +92,10 @@ public class ShareContentH5DetailFragment extends BaseFragment {
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
+        if (NetUtils.getNetType(getContext()) == -1) {
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+            return;
+        }
 
         subscribe = Observable.just(shareItem)
                 .map(items -> new DPEntity(null, 606, items.version, DBAction.DELETED, null))
@@ -120,11 +125,6 @@ public class ShareContentH5DetailFragment extends BaseFragment {
                             .withUrl(shareItem.url)
                             .withThumb(filePath)
                             .share();
-//                    Intent intent = new Intent(getContext(), ShareMediaActivity.class);
-//                    intent.putExtra(ShareConstant.SHARE_CONTENT, ShareConstant.SHARE_CONTENT_WEB_URL);
-//                    intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL, shareItem.url);
-//                    intent.putExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH, filePath);
-//                    startActivity(intent);
                 });
     }
 
