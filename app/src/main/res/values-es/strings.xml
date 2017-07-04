@@ -221,6 +221,7 @@
   <string name="FRI">Vie</string>
   <string name="FRI_1">Cada viernes</string>
   <string name="FRI_2">Cinco</string>
+  <string name="FRI_Hisvideo_Timeselector">viernes</string>
   <string name="FROME">Hora de inicio</string>
   <string name="Fail_Record">No se puede grabar</string>
   <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">mes</string>
   <string name="MON_1">Cada lunes</string>
   <string name="MON_2">Uno</string>
+  <string name="MON_Hisvideo_Timeselector">lunes</string>
   <string name="MSG_BIND">Dispositivos vinculados, ya se puede vigilar su hogar</string>
   <string name="MSG_BOTTOM_LINE">Fondo</string>
   <string name="MSG_DELETE_TITLE">Una vez borrado, no se puede recuperar, por favor ,reconfirme de Nuevo</string>
@@ -483,6 +485,7 @@
   <string name="SAT">Sáb</string>
   <string name="SAT_1">Cada sábado</string>
   <string name="SAT_2">Seis</string>
+  <string name="SAT_Hisvideo_Timeselector">sábado</string>
   <string name="SAVE">Guardar</string>
   <string name="SAVED_PHOTOS">Guardado en álbum</string>
   <string name="SCENE_ADDED">\"%s\" añadidura hecha</string>
@@ -551,6 +554,7 @@
   <string name="SUN">Dom</string>
   <string name="SUN_1">Cada domingo</string>
   <string name="SUN_2">Siete</string>
+  <string name="SUN_Hisvideo_Timeselector">domingo</string>
   <string name="SURE">Ya lo sé</string>
   <string name="SURE_DELETE">¿seguro de borrar todos los mensajes?</string>
   <string name="SURE_DELETE_1">¿seguro de borrar \"%s\" y los datos relacionados de la cuenta?</string>
@@ -590,6 +594,7 @@
   <string name="THU">Jue</string>
   <string name="THU_1">Cada jueves</string>
   <string name="THU_2">Cuatro</string>
+  <string name="THU_Hisvideo_Timeselector">jueves</string>
   <string name="TIME">Hora</string>
   <string name="TIMEOUT_TRY_AGIN">tiempo de espera conexión \n Por favor, inténtalo de nuevo</string>
   <string name="TIMEZONE_CHOOSE">Seleccionar zona horaria</string>
@@ -601,6 +606,7 @@
   <string name="TUE">Mar</string>
   <string name="TUE_1">Cada martes</string>
   <string name="TUE_2">Dos</string>
+  <string name="TUE_Hisvideo_Timeselector">martes</string>
   <string name="TURN_ON_PROTECTION">Cuando la protección está activada, el usuario será notificado cuando el movimiento se detecte en el período de tiempo establecido.</string>
   <string name="Tap0_AlreadyEmailed">Desde el sistema le hemos enviado un correo electrónico a</string>
   <string name="Tap0_Authorizationfailed">Error de autorización, por favor, inténtelo de nuevo.</string>
@@ -931,6 +937,7 @@
   <string name="WED">Mié</string>
   <string name="WED_1">Cada miércoles</string>
   <string name="WED_2">Tres</string>
+  <string name="WED_Hisvideo_Timeselector">miércoles</string>
   <string name="WEEK">Cada semana</string>
   <string name="WEEKDAYS">Días de trabajo</string>
   <string name="WEEKEND">Fin de semana</string>

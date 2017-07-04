@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.ResolveInfoEx;
 import com.cylan.jiafeigou.n.view.mine.BindMailFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
@@ -439,6 +440,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     public void onDestroyView() {
         super.onDestroyView();
         BaseApplication.getAppComponent().getTreeHelper().markNodeRead(WechatGuideFragment.class.getSimpleName());
+        RxBus.getCacheInstance().post(new RxEvent.InfoUpdate());
     }
 
     @Override

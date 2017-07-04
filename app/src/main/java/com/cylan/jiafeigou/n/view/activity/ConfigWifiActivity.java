@@ -299,7 +299,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         if (fiListDialogFragment != null)
             fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
         Object object = tvConfigApName.getTag();
-        etWifiPwd.getText().clear();
+//        etWifiPwd.getText().clear();
         if (object == null) {
             getInterestingSSid(resultList);
 //            tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
@@ -339,9 +339,9 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
                         if (ret != null) {
                             LocalWifiInfo info = ret.first;
-                            if (info != null && !TextUtils.isEmpty(info.getPwd()) && !TextUtils.isEmpty(info.getSsid())) {
+                            if (info != null && !TextUtils.isEmpty(info.getSsid())) {
                                 tvConfigApName.setText(resultList.get(0).SSID);
-                                etWifiPwd.setText(info.getPwd());
+                                etWifiPwd.setText(info.getPwd() == null ? "" : info.getPwd());
                             }
                             if (ret.second != null) {
                                 tvConfigApName.setTag(ret.second);

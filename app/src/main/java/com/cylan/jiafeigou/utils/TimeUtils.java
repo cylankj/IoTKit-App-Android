@@ -270,6 +270,19 @@ public class TimeUtils {
         return simpleDateFormat_1.format(new Date(time));
     }
 
+    public static String getDatePickFormat(long time, TimeZone timeZone) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd ", Locale.getDefault());
+        dateFormat.setTimeZone(timeZone);
+        return dateFormat.format(new Date(time));
+    }
+
+    public static int getWeekNum(long time, TimeZone timeZone) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        calendar.setTimeZone(timeZone);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
     public static long startOfDay(long time) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(time);

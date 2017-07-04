@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,9 +15,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.base.module.FeedbackManager;
+import com.cylan.jiafeigou.base.module.IManager;
+import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -28,6 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.cylan.jiafeigou.base.module.FeedbackManager.TASK_STATE_FAILED;
+import static com.cylan.jiafeigou.base.module.FeedbackManager.TASK_STATE_IDLE;
+import static com.cylan.jiafeigou.base.module.FeedbackManager.TASK_STATE_STARTED;
+
 /**
  * 创建者     谢坤
  * 创建时间   2016/8/18 15:43
@@ -37,7 +44,7 @@ import java.util.List;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggestionBean> {
+public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
 
     private static final int TYPE_COUNT = 2;
 
@@ -45,54 +52,65 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     private static final int TYPE_Client = 1;//客户端类型
 
+    //    private static FeedbackManager.SubmitFeedbackTask submitTask;
+    private IManager<FeedBackBean, FeedbackManager.SubmitFeedbackTask> manager;
     private OnResendFeedBackListener resendFeedBack;
+    private String portraitUrl;
 
     public interface OnResendFeedBackListener {
-        void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position);
+        void onResend(SuperViewHolder holder, FeedBackBean item, int position);
     }
 
     public void setOnResendFeedBack(OnResendFeedBackListener resendFeedBack) {
         this.resendFeedBack = resendFeedBack;
     }
 
-    public HomeMineHelpSuggestionAdapter(Context context,
-                                         List<MineHelpSuggestionBean> items,
-                                         IMulItemViewType<MineHelpSuggestionBean> mulItemViewType) {
+    public FeedbackAdapter(Context context,
+                           List<FeedBackBean> items,
+                           IMulItemViewType<FeedBackBean> mulItemViewType) {
         super(context, items, mulItemViewType);
+        manager = FeedbackManager.getInstance();
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        portraitUrl = account == null ? "" : account.getPhotoUrl();
+    }
+
+    private void refreshUrl() {
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        portraitUrl = account == null ? "" : account.getPhotoUrl();
+    }
+
+    private int itemLoading(long time) {
+        FeedbackManager.SubmitFeedbackTask task = manager.getTask(time);
+        if (task != null && task.getBackBean() != null) {
+            if (task.getBackBean().getMsgTime() == time) {
+                return task.getTaskState();
+            }
+        }
+        return TASK_STATE_IDLE;
+    }
+
+    private boolean showTime(int position, long currentBeanTime) {
+        if (position == 0) return true;
+        FeedBackBean preBean = getItem(position - 1);
+        return currentBeanTime - preBean.getMsgTime() > 5 * 60 * 1000L;
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineHelpSuggestionBean item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, FeedBackBean item) {
+        boolean showTime = showTime(layoutPosition, item.getMsgTime());
         if (viewType == 1) {     //客户端
-            TextView textView = holder.getView(R.id.tv_mine_suggestion_client_speak);
-            ViewGroup.LayoutParams lp = textView.getLayoutParams();
-            // 动态改变条目的长度
-            if (item.getText().length() <= 13) {
-                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                textView.setLayoutParams(lp);
-            } else {
-                lp.width = ViewUtils.dp2px(230);
-                textView.setLayoutParams(lp);
-            }
-
-            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(item.getDate()));
-            holder.setText(R.id.tv_mine_suggestion_client_speak, item.getText());
-
-            if (item.isShowTime) {
-                holder.setVisibility(R.id.tv_mine_suggestion_client_time, View.VISIBLE);
-            } else {
-                holder.setVisibility(R.id.tv_mine_suggestion_client_time, View.INVISIBLE);
-            }
+            holder.setVisibility(R.id.tv_mine_suggestion_client_time, showTime ? View.VISIBLE : View.INVISIBLE);
+            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(item.getMsgTime()));
+            holder.setText(R.id.tv_mine_suggestion_client_speak, item.getContent());
 
             ImageView iv_send_pro = holder.getView(R.id.iv_send_pro);
             ProgressBar send_pro = holder.getView(R.id.send_pro);
-
-            if (item.pro_falag == 0) {
+            int state = itemLoading(item.getMsgTime());
+            if (state == TASK_STATE_STARTED) {
                 //显示正在发送
                 iv_send_pro.setVisibility(View.INVISIBLE);
                 send_pro.setVisibility(View.VISIBLE);
-
-            } else if (item.pro_falag == 1) {
+            } else if (state == TASK_STATE_FAILED) {
                 //显示发送失败
                 iv_send_pro.setVisibility(View.VISIBLE);
                 holder.setImageDrawable(R.id.iv_send_pro, getContext().getResources().getDrawable(R.drawable.album_icon_caution));
@@ -110,22 +128,21 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
             ImageView clientImage = holder.getView(R.id.iv_mine_suggestion_client);
             MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage, getContext().getResources());
-            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-            if (account != null) {
-                Glide.with(getContext()).load(account.getPhotoUrl())
-                        .asBitmap()
-                        .error(R.drawable.icon_mine_head_normal)
-                        .centerCrop()
-                        .placeholder(R.drawable.icon_mine_head_normal)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(myImageViewTarget);
-            }
+            if (TextUtils.isEmpty(portraitUrl))
+                refreshUrl();
+            Glide.with(getContext()).load(portraitUrl)
+                    .asBitmap()
+                    .error(R.drawable.icon_mine_head_normal)
+                    .centerCrop()
+                    .placeholder(R.drawable.icon_mine_head_normal)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(myImageViewTarget);
 
         } else {     //服务端
             TextView textView = holder.getView(R.id.tv_mine_suggestion_server_speak);
             ViewGroup.LayoutParams lp = textView.getLayoutParams();
             // 动态改变条目的长度
-            if (item.getText().length() <= 13) {
+            if (item.getContent().length() <= 13) {
                 lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 textView.setLayoutParams(lp);
             } else {
@@ -133,31 +150,31 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
                 textView.setLayoutParams(lp);
             }
 
-            if (item.isShowTime) {
-                holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.VISIBLE);
-            } else {
-                holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.INVISIBLE);
-            }
+//            if (item.isShowTime) {
+//                holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.VISIBLE);
+//            } else {
+            holder.setVisibility(R.id.tv_mine_suggestion_server_time, showTime ? View.VISIBLE : View.INVISIBLE);
+//            }
 
-            holder.setText(R.id.tv_mine_suggestion_server_speak, item.getText());
+            holder.setText(R.id.tv_mine_suggestion_server_speak, item.getContent());
 
-            holder.setText(R.id.tv_mine_suggestion_server_time, getNowDate(item.getDate()));
+            holder.setText(R.id.tv_mine_suggestion_server_time, getNowDate(item.getMsgTime()));
 
             holder.setBackgroundResource(R.id.iv_mine_suggestion_server, R.drawable.pic_head);
         }
     }
 
     @Override
-    protected IMulItemViewType<MineHelpSuggestionBean> offerMultiItemViewType() {
-        return new IMulItemViewType<MineHelpSuggestionBean>() {
+    protected IMulItemViewType<FeedBackBean> offerMultiItemViewType() {
+        return new IMulItemViewType<FeedBackBean>() {
             @Override
             public int getViewTypeCount() {
                 return 2;
             }
 
             @Override
-            public int getItemViewType(int position, MineHelpSuggestionBean bean) {
-                return bean.type; //0.显示服务端 ，1.显示客户端
+            public int getItemViewType(int position, FeedBackBean bean) {
+                return bean.getViewType(); //0.显示服务端 ，1.显示客户端
             }
 
             @Override
@@ -172,12 +189,11 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     /**
      * 获得当前日期的方法
      *
-     * @param magDate
+     * @param time
      */
-    public String getNowDate(String magDate) {
+    public String getNowDate(long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        String nowDate = sdf.format(new Date(Long.parseLong(magDate)));
-        return nowDate;
+        return sdf.format(new Date(time));
     }
 
     private static class MyImageViewTarget extends BitmapImageViewTarget {

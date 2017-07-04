@@ -66,8 +66,8 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(ret -> {
-                    TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("NewHomeActivity");
-                    mView.refreshHint(node != null && node.getNodeCount() > 0);
+                    TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineFragment");
+                    mView.refreshHint(node != null && node.getTraversalCount() > 0);
                 }, throwable -> addSubscription(mineTabNewInfoRsp()));
     }
 }

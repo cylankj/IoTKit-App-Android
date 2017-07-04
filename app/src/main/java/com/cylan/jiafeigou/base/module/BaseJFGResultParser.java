@@ -86,7 +86,7 @@ BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.OpenLogInSetPwdBack(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_SEND_FEEDBACK:
-                RxBus.getCacheInstance().post(new RxEvent.SendFeekBack(jfgResult));
+                RxBus.getCacheInstance().post(new RxEvent.SendFeedBack(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_DEL_FRIEND_ADD_REQ:
                 RxBus.getCacheInstance().post(new RxEvent.DeleteAddReqBack(jfgResult));

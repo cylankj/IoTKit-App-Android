@@ -10,6 +10,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.module.SysMsgBean;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -219,13 +220,6 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
         addSubscription(subscription, "getMesgDpData");
     }
 
-    @Override
-    public void deleteServiceMsg(long type, long version) {
-        Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new DeleteMsgTask(type, version), AppLogger::e);
-    }
-
 
     @Override
     public Subscription deleteMsgBack() {
@@ -237,52 +231,59 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
     }
 
     @Override
-    public void deleteOneItem(SysMsgBean bean) {
-        Observable.just(bean)
-                .subscribeOn(Schedulers.io())
-                .subscribe(o -> {
-                    QueryBuilder<DPEntity> cacheBeanBuilder = BaseApplication.getAppComponent().getDBHelper().getDpEntityQueryBuilder();
-                    List<DPEntity> beanList = cacheBeanBuilder.where(DPEntityDao.Properties.Version.eq(bean.time))
-                            .list();
-                    JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                    if (beanList != null && account != null && !TextUtils.isEmpty(account.getAccount()))
-                        for (DPEntity dpEntity : beanList) {
-                            BaseApplication.getAppComponent().getDBHelper().deleteDPMsgForce(
-                                    account.getAccount(), null, null, dpEntity.getVersion(), dpEntity.getMsgId());
-                        }
-                }, AppLogger::e);
-    }
-
-    @Override
     public void markMesgHasRead() {
         Observable.just("markMesgHasRead")
                 .observeOn(Schedulers.io())
                 .subscribe(new MarkAsReadTask(), AppLogger::e);
     }
 
-    private static class DeleteMsgTask implements Action1<String> {
-        private long msgId;
-        private long version;
-
-        public DeleteMsgTask(long msgId, long version) {
-            this.msgId = msgId;
-            this.version = version;
-        }
-
-        @Override
-        public void call(String s) {
-            try {
-                ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                JFGDPMsg msg = new JFGDPMsg(msgId, version);
-                list.add(msg);
-                long req = BaseApplication.getAppComponent().getCmd().robotDelData("", list, 0);
-                AppLogger.d("deleteServiceMsg:" + req);
-            } catch (JfgException e) {
-                AppLogger.e("deleteServiceMsg:" + e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-        }
+    @Override
+    public void removeItems(ArrayList<SysMsgBean> list) {
+        Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                    removeFromServer(o);
+                    JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    if (!TextUtils.isEmpty(account.getAccount()))
+                        for (SysMsgBean bean : o) {
+                            BaseApplication.getAppComponent().getDBHelper().deleteDPMsgForce(
+                                    account.getAccount(), null, null, bean.getTime(), bean.getType())
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe(ret -> AppLogger.d("本地删除"),
+                                            AppLogger::e);
+                        }
+                }, AppLogger::e);
     }
+
+    private void removeFromServer(ArrayList<SysMsgBean> beans) {
+        ArrayList<JFGDPMsg> parse = parse(beans);
+        List<DPEntity> dpEntities = new ArrayList<>(ListUtils.getSize(parse));
+        for (SysMsgBean bean : beans) {
+            DPEntity entity = new DPEntity();
+            entity.setMsgId(bean.type);
+            entity.setVersion(bean.time);
+            entity.setAction(DBAction.DELETED);
+            dpEntities.add(entity);
+        }
+        BaseApplication.getAppComponent().getTaskDispatcher()
+                .perform(dpEntities)
+                .subscribeOn(Schedulers.io())
+                .subscribe(ret -> AppLogger.d("从服务器删除"),
+                        AppLogger::e);
+    }
+
+    private ArrayList<JFGDPMsg> parse(ArrayList<SysMsgBean> list) {
+        if (ListUtils.isEmpty(list)) return new ArrayList<>();
+        ArrayList<JFGDPMsg> finalList = new ArrayList<>(list.size());
+        for (SysMsgBean bean : list) {
+            JFGDPMsg msg = new JFGDPMsg();
+            msg.id = bean.type;
+            msg.version = bean.time;
+            finalList.add(msg);
+        }
+        return finalList;
+    }
+
 
     /**
      * 静态内部类

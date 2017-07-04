@@ -208,7 +208,7 @@ public class History {
                 dateMap.remove(key);
             }
 
-            BaseApplication.getAppComponent().getDBHelper().deleteAllHistoryFile(uuid)
+            BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(uuid,0,Integer.MAX_VALUE)
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
                     }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
@@ -55,6 +56,7 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
             //遇到网络不好的情况会出现白屏,因为图片还没下载,所以先下载图片.
             Glide.with(this)
                     .load(description.url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imvAdsPic);
 
         }

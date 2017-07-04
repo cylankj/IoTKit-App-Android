@@ -221,6 +221,7 @@
     <string name="FRI">Friday</string>
     <string name="FRI_1">Fri</string>
     <string name="FRI_2">Fri</string>
+    <string name="FRI_Hisvideo_Timeselector">Fri</string>
     <string name="FROME">From</string>
     <string name="Fail_Record">Fail to record</string>
     <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
     <string name="MONTHS">month</string>
     <string name="MON_1">Mon</string>
     <string name="MON_2">Mon</string>
+    <string name="MON_Hisvideo_Timeselector">Mon</string>
     <string name="MSG_BIND">Device is added successfully</string>
     <string name="MSG_BOTTOM_LINE">Bottom</string>
     <string name="MSG_DELETE_TITLE">Can\'t be restored if deleted, please reconfirm.</string>
@@ -483,6 +485,7 @@
     <string name="SAT">Saturday</string>
     <string name="SAT_1">Sat</string>
     <string name="SAT_2">Sat</string>
+    <string name="SAT_Hisvideo_Timeselector">Sat</string>
     <string name="SAVE">Done</string>
     <string name="SAVED_PHOTOS">Saved in Photos</string>
     <string name="SCENE_ADDED">\"%s\" Added successfully</string>
@@ -551,6 +554,7 @@
     <string name="SUN">Sunday</string>
     <string name="SUN_1">Sun</string>
     <string name="SUN_2">Sun</string>
+    <string name="SUN_Hisvideo_Timeselector">Sun</string>
     <string name="SURE">OK</string>
     <string name="SURE_DELETE">Are you sure to delete?</string>
     <string name="SURE_DELETE_1">Are you sure to delete the account \"%s\" and related data?</string>
@@ -590,6 +594,7 @@
     <string name="THU">Thursday</string>
     <string name="THU_1">Thu</string>
     <string name="THU_2">Thu</string>
+    <string name="THU_Hisvideo_Timeselector">Thu</string>
     <string name="TIME">Time</string>
     <string name="TIMEOUT_TRY_AGIN">Waiting&#8211;timeout \n please try again</string>
     <string name="TIMEZONE_CHOOSE">Time zone</string>
@@ -601,6 +606,7 @@
     <string name="TUE">Tuesday</string>
     <string name="TUE_1">Tue</string>
     <string name="TUE_2">Tue</string>
+    <string name="TUE_Hisvideo_Timeselector">Tue</string>
     <string name="TURN_ON_PROTECTION">When Protection is on, user will be notified when motion detected in the set time period.</string>
     <string name="Tap0_AlreadyEmailed">Already emailed to</string>
     <string name="Tap0_Authorizationfailed">Authorization fail, please try again.</string>
@@ -931,6 +937,7 @@
     <string name="WED">Wednesday</string>
     <string name="WED_1">Wed</string>
     <string name="WED_2">Wed</string>
+    <string name="WED_Hisvideo_Timeselector">Wed</string>
     <string name="WEEK">Every</string>
     <string name="WEEKDAYS">Weekdays</string>
     <string name="WEEKEND">Weekend</string>

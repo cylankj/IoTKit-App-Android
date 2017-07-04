@@ -892,6 +892,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (historyWheelHandler == null) {
             historyWheelHandler = new HistoryWheelHandler((ViewGroup) layoutG, superWheelExt, presenter);
         }
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        historyWheelHandler.setTimeZone(JFGRules.getDeviceTimezone(device));
     }
 
     @Override

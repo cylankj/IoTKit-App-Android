@@ -221,6 +221,7 @@
   <string name="FRI">Thứ sáu</string>
   <string name="FRI_1">Thứ sáu</string>
   <string name="FRI_2">Sáu</string>
+  <string name="FRI_Hisvideo_Timeselector">Thứ sáu</string>
   <string name="FROME">Từ</string>
   <string name="Fail_Record">Không ghi</string>
   <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">tháng</string>
   <string name="MON_1">Thứ hai</string>
   <string name="MON_2">Hai</string>
+  <string name="MON_Hisvideo_Timeselector">Thứ hai</string>
   <string name="MSG_BIND">Thiết bị thêm thành công</string>
   <string name="MSG_BOTTOM_LINE">Dưới cùng</string>
   <string name="MSG_DELETE_TITLE">Không thể khôi phục sau khi xoá</string>
@@ -483,6 +485,7 @@
   <string name="SAT">Thứ bảy</string>
   <string name="SAT_1">Thứ bảy</string>
   <string name="SAT_2">Bảy</string>
+  <string name="SAT_Hisvideo_Timeselector">Thứ bảy</string>
   <string name="SAVE">Hoàn thành</string>
   <string name="SAVED_PHOTOS">Lưu ảnh</string>
   <string name="SCENE_ADDED">\"%s\" thêm thành công</string>
@@ -551,6 +554,7 @@
   <string name="SUN">Chủ nhật</string>
   <string name="SUN_1">Chủ nhật</string>
   <string name="SUN_2">CN</string>
+  <string name="SUN_Hisvideo_Timeselector">Chủ nhật</string>
   <string name="SURE">OK</string>
   <string name="SURE_DELETE">Bạn muốn xoá?</string>
   <string name="SURE_DELETE_1">Bạn có muốn xoá từ tài khoản \"%s\" và dữ liệu liên quan?</string>
@@ -590,6 +594,7 @@
   <string name="THU">Thứ năm</string>
   <string name="THU_1">Thứ năm</string>
   <string name="THU_2">Năm</string>
+  <string name="THU_Hisvideo_Timeselector">Thứ năm</string>
   <string name="TIME">Thời gian cảnh báo</string>
   <string name="TIMEOUT_TRY_AGIN">Đợi quá hạn \n hãy thử lại</string>
   <string name="TIMEZONE_CHOOSE">Vùng thời gian</string>
@@ -601,6 +606,7 @@
   <string name="TUE">Thứ ba</string>
   <string name="TUE_1">Thứ ba</string>
   <string name="TUE_2">Ba</string>
+  <string name="TUE_Hisvideo_Timeselector">Thứ ba</string>
   <string name="TURN_ON_PROTECTION">Khi bật chế độ bảo vệ, tính năng phát hiện chuyển động và cảnh báo sẽ tự bật</string>
   <string name="Tap0_AlreadyEmailed">Đã gửi email đến</string>
   <string name="Tap0_Authorizationfailed">Lỗi xác thực, hãy thử lại</string>
@@ -931,6 +937,7 @@
   <string name="WED">Thứ tư</string>
   <string name="WED_1">Thứ tư</string>
   <string name="WED_2">Tư</string>
+  <string name="WED_Hisvideo_Timeselector">Thứ tư</string>
   <string name="WEEK">Mỗi</string>
   <string name="WEEKDAYS">Ngày trong tuần</string>
   <string name="WEEKEND">Cuối tuần</string>

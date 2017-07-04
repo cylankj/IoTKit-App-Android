@@ -312,7 +312,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            arrayList.add(info);
 //        }
         if (ListUtils.isEmpty(arrayList)) return;
-        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
+        FeedbackManager.getInstance().cachePush(arrayList);
+        BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
     }
 
 
@@ -356,7 +357,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnMultiShareDevices(int i, String s, String s1) {
         AppLogger.d(String.format(Locale.getDefault(), "check OnMultiShareDevices:%d,%s,%s", i, s, s1));
-        RxBus.getCacheInstance().post(new RxEvent.MultiShareDeviceEvent(i,s,s1));
+        RxBus.getCacheInstance().post(new RxEvent.MultiShareDeviceEvent(i, s, s1));
     }
 
     @Override
