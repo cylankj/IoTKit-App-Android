@@ -54,15 +54,17 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
                 item.hasShareCount++;
             }
             if (item.hasShareCount > 5) {
+
                 checkBox.setChecked(false);
                 item.isChooseFlag = 0;
             } else {
                 item.isChooseFlag = 1;
             }
-            hasShareNum.setText(item.hasShareCount + "/5");
             if (listener != null) {
                 listener.onCheckClick(item, item.hasShareCount > 5);
             }
+            item.hasShareCount = Math.min(5, item.hasShareCount);
+            hasShareNum.setText(item.hasShareCount + "/5");
         });
     }
 }
