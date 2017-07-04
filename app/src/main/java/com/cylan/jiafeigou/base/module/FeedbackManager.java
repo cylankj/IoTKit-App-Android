@@ -14,8 +14,11 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.badge.CacheObject;
+import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.cylan.jiafeigou.utils.ZipUtils;
@@ -59,12 +62,23 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
 
     private void saveCache(ArrayList<JFGFeedbackInfo> arrayList) {
         if (arrayList == null) return;
+
         ArrayList<FeedBackBean> feedBackBeans = new ArrayList<>();
         for (JFGFeedbackInfo info : arrayList) {
             FeedBackBean bean = new FeedBackBean();
             bean.setContent(info.msg);
-            bean.setMsgTime(info.time);
+            bean.setMsgTime(info.time * 1000);
             feedBackBeans.add(bean);
+        }
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineHelpFragment");
+        if (node == null) {
+            node = new TreeNode();
+        }
+        CacheObject object = node.getCacheData();
+        if (object != null && object.getObject() != null && object.getObject() instanceof List) {
+            List<FeedBackBean> beanList = (List<FeedBackBean>) object.getObject();
+            beanList.addAll(feedBackBeans);
+            object.setCount(ListUtils.getSize(beanList));
         }
         saveToCache(feedBackBeans)
                 .subscribeOn(Schedulers.io())

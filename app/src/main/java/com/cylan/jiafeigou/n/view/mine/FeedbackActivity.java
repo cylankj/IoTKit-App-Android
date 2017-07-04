@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.FeedBackContract;
@@ -206,38 +205,10 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         autoReplyBean.setViewType(0);
         autoReplyBean.setContent(getString(R.string.Tap3_Feedback_AutoTips));
         autoReplyBean.setMsgTime(System.currentTimeMillis());
-        presenter.saveIntoDb(autoReplyBean);
+//        presenter.saveIntoDb(autoReplyBean);
         return autoReplyBean;
     }
 
-
-    public void refreshList(int code) {
-        FeedBackBean FeedBackBean = null;
-        if (code != JError.ErrorOK) {
-//            if (resendFlag) {
-//                FeedBackBean.pro_falag = 1;
-//                resendFlag = false;
-//                mRvMineSuggestion.setAdapter(suggestionAdapter);
-//                presenter.saveIntoDb(FeedBackBean);
-//            } else {
-//                suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 1;
-//                mRvMineSuggestion.setAdapter(suggestionAdapter);
-//                presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
-//            }
-        } else {
-//            if (resendFlag) {
-//                FeedBackBean.pro_falag = 2;
-//                presenter.saveIntoDb(FeedBackBean);
-//                resendFlag = false;
-//            } else {
-//                suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 2;
-//                presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
-//            }
-//            mRvMineSuggestion.setAdapter(suggestionAdapter);
-            autoReply();
-        }
-        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
-    }
 
     /**
      * 上传日志的结果

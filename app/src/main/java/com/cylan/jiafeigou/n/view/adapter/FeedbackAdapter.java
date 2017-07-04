@@ -52,7 +52,7 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
 
     private static final int TYPE_Client = 1;//客户端类型
 
-//    private static FeedbackManager.SubmitFeedbackTask submitTask;
+    //    private static FeedbackManager.SubmitFeedbackTask submitTask;
     private IManager<FeedBackBean, FeedbackManager.SubmitFeedbackTask> manager;
     private OnResendFeedBackListener resendFeedBack;
     private String portraitUrl;
@@ -89,9 +89,17 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
         return TASK_STATE_IDLE;
     }
 
+    private boolean showTime(int position, long currentBeanTime) {
+        if (position == 0) return true;
+        FeedBackBean preBean = getItem(position - 1);
+        return currentBeanTime - preBean.getMsgTime() > 20 * 60 * 1000L;
+    }
+
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, FeedBackBean item) {
+        boolean showTime = showTime(layoutPosition, item.getMsgTime());
         if (viewType == 1) {     //客户端
+            holder.setVisibility(R.id.tv_mine_suggestion_client_time, showTime ? View.VISIBLE : View.GONE);
             holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(item.getMsgTime()));
             holder.setText(R.id.tv_mine_suggestion_client_speak, item.getContent());
 
@@ -146,6 +154,7 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
 //                holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.VISIBLE);
 //            } else {
             holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.INVISIBLE);
+            holder.setVisibility(R.id.tv_mine_suggestion_server_time, showTime ? View.VISIBLE : View.GONE);
 //            }
 
             holder.setText(R.id.tv_mine_suggestion_server_speak, item.getContent());
