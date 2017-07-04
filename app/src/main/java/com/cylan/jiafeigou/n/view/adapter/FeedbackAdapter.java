@@ -52,7 +52,7 @@ public class FeedbackAdapter extends SuperAdapter<FeedBackBean> {
 
     private static final int TYPE_Client = 1;//客户端类型
 
-    private static FeedbackManager.SubmitFeedbackTask submitTask;
+//    private static FeedbackManager.SubmitFeedbackTask submitTask;
     private IManager<FeedBackBean, FeedbackManager.SubmitFeedbackTask> manager;
     private OnResendFeedBackListener resendFeedBack;
     private String portraitUrl;

@@ -293,12 +293,15 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     private void showResendFeedBackDialog(SuperViewHolder holder, FeedBackBean item, int position) {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(getString(R.string.ANEW_SEND));
-        b.setNegativeButton(getString(R.string.Button_No), (DialogInterface dialog, int which) -> {
-            dialog.dismiss();
-        });
+        b.setNegativeButton(getString(R.string.Button_No), (DialogInterface dialog, int which) -> dialog.dismiss());
         b.setPositiveButton(getString(R.string.Button_Yes), (DialogInterface dialog, int which) -> {
-            presenter.sendFeedBack(item);
-            suggestionAdapter.notifyItemChanged(position);
+            presenter.sendFeedBack(item)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> {
+                        final int index = suggestionAdapter.getList().indexOf(item);
+                        if (index < 0) return;
+                        suggestionAdapter.notifyItemChanged(index);
+                    }, AppLogger::e);
             dialog.dismiss();
         });
         AlertDialogManager.getInstance().showDialog("showResendFeedBackDialog", this, b);

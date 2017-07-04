@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -141,6 +142,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
         private int taskState;
         private String account;
         private FeedBackBean backBean;
+        private Subscription subscription;
 
         public SubmitFeedbackTask(String account, FeedBackBean backBean) {
             this.account = account;
@@ -161,6 +163,8 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
 
         public void runTask() {
             boolean hasLog = false;
+            //失败重传
+            if (taskState == TASK_STATE_FAILED) lastSubmitLogTime = 0;
             if (lastSubmitLogTime == 0 || System.currentTimeMillis() - lastSubmitLogTime > 5 * 60 * 1000) {
                 lastSubmitLogTime = System.currentTimeMillis();
                 hasLog = true;
@@ -180,7 +184,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                 taskState = TASK_STATE_FAILED;
                 return;
             }
-            RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
+            subscription = RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
                     .subscribeOn(Schedulers.io())
                     .timeout(2, TimeUnit.MINUTES)
                     .filter(ret -> ret.requestId == req)
@@ -191,8 +195,18 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                         AppLogger.d("发送日志失败");
                     })
                     .subscribe(jfgMsgHttpResult -> {
-                        taskState = TASK_STATE_SUCCESS;
-                        AppLogger.d("发送日志成功");
+                        if (jfgMsgHttpResult.ret == 200) {
+                            taskState = TASK_STATE_SUCCESS;
+                        } else {
+                            taskState = TASK_STATE_FAILED;
+                            if (jfgMsgHttpResult.ret == 500)//重试
+                            {
+                                if (subscription != null) subscription.unsubscribe();
+                                lastSubmitLogTime = 0;
+                                runTask();
+                            }
+                        }
+                        AppLogger.d("发送日志成功? " + jfgMsgHttpResult.ret);
                         RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean));
                     }, AppLogger::e);
         }
