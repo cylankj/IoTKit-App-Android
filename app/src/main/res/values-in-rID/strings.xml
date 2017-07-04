@@ -221,6 +221,7 @@
   <string name="FRI">Jumat</string>
   <string name="FRI_1">Jumat</string>
   <string name="FRI_2">Jumat</string>
+  <string name="FRI_Hisvideo_Timeselector">Jumat</string>
   <string name="FROME">Dari</string>
   <string name="Fail_Record">Gagal mencatat</string>
   <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">bulan</string>
   <string name="MON_1">Senin</string>
   <string name="MON_2">Senin</string>
+  <string name="MON_Hisvideo_Timeselector">Senin</string>
   <string name="MSG_BIND">Perangkat berhasil ditambahkan</string>
   <string name="MSG_BOTTOM_LINE">Bagian bawah</string>
   <string name="MSG_DELETE_TITLE">Tidak dapat dikembalikan setaelah dihapus</string>
@@ -483,6 +485,7 @@
   <string name="SAT">Sabtu</string>
   <string name="SAT_1">Sabtu</string>
   <string name="SAT_2">Sabtu</string>
+  <string name="SAT_Hisvideo_Timeselector">Sabtu</string>
   <string name="SAVE">Done</string>
   <string name="SAVED_PHOTOS">Tersimpan ke foto</string>
   <string name="SCENE_ADDED">\"%s\" Berhasil menambahkan</string>
@@ -551,6 +554,7 @@
   <string name="SUN">Minggu</string>
   <string name="SUN_1">Minggu</string>
   <string name="SUN_2">Minggu</string>
+  <string name="SUN_Hisvideo_Timeselector">Minggu</string>
   <string name="SURE">OK</string>
   <string name="SURE_DELETE">Anda yakin mau menghapus?</string>
   <string name="SURE_DELETE_1">Anda yakin sudah terhapus dari akun \"%s\" dan data yang terhubung?</string>
@@ -590,6 +594,7 @@
   <string name="THU">Kamis</string>
   <string name="THU_1">Kamis</string>
   <string name="THU_2">Kamis</string>
+  <string name="THU_Hisvideo_Timeselector">Kamis</string>
   <string name="TIME">Waktu</string>
   <string name="TIMEOUT_TRY_AGIN">Waktu tunggu habis \n silahkan coba lagi</string>
   <string name="TIMEZONE_CHOOSE">Zona waktu</string>
@@ -601,6 +606,7 @@
   <string name="TUE">Selasa</string>
   <string name="TUE_1">Selasa</string>
   <string name="TUE_2">Selasa</string>
+  <string name="TUE_Hisvideo_Timeselector">Selasa</string>
   <string name="TURN_ON_PROTECTION">Saat perlindungan keamanan menyala, sensor gerakan akan menyala secara otomatis, dan akan mengirim sinyal peringatan menurut pengaturan jarak waktu.</string>
   <string name="Tap0_AlreadyEmailed">Sudah email ke</string>
   <string name="Tap0_Authorizationfailed">Otorisasi gagal, silahkan coba lagi</string>
@@ -931,6 +937,7 @@
   <string name="WED">Rabu</string>
   <string name="WED_1">Rabu</string>
   <string name="WED_2">Rabu</string>
+  <string name="WED_Hisvideo_Timeselector">Rabu</string>
   <string name="WEEK">Setiap</string>
   <string name="WEEKDAYS">Hari kerja</string>
   <string name="WEEKEND">Akhir pekan</string>

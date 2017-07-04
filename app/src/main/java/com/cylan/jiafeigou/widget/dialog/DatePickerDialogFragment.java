@@ -21,8 +21,11 @@ import com.cylan.jiafeigou.widget.pick.WheelVerticalView;
 import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,23 +42,33 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     @BindView(R.id.tv_dialog_title)
     TextView tvDialogTitle;
-    @BindView(R.id.wheel_date_pick)
+    @BindView(R.id.wheel_date)
     WheelVerticalView wheelDatePick;
     @BindView(R.id.tv_dialog_btn_left)
     TextView tvDialogBtnLeft;
     @BindView(R.id.tv_dialog_btn_right)
     TextView tvDialogBtnRight;
+    @BindView(R.id.wheel_hour)
+    WheelVerticalView wheelHour;
+    @BindView(R.id.wheel_minute)
+    WheelVerticalView wheelMinute;
     /**
      * <凌晨时间戳,当天最早视频时间></>
      */
     private List<Long> dateStartList = new ArrayList<>();
     private long timeFocus;
-    private int finalIndex;
+    private TimeZone timeZone;
+    private int focusHour, focusMinute, focusDateIndex;
 
     public static DatePickerDialogFragment newInstance(Bundle bundle) {
         DatePickerDialogFragment fragment = new DatePickerDialogFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected int getCustomWidth() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
     }
 
     @Override
@@ -80,7 +93,49 @@ public class DatePickerDialogFragment extends BaseDialog {
         if (!TextUtils.isEmpty(rContent))
             tvDialogBtnRight.setText(rContent);
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
-        initWheel(getIndexByTime());
+        initWheelDate(getIndexByTime());
+        initWheelHour();
+        initWheelMinute();
+    }
+
+    private void initWheelMinute() {
+        AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
+            @Override
+            public int getItemsCount() {
+                return 60;
+            }
+
+            @Override
+            protected CharSequence getItemText(int index) {
+                return String.format(Locale.getDefault(), "%02d", index);
+            }
+        };
+        adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
+        wheelMinute.setViewAdapter(adapter);
+        wheelMinute.setCurrentItem(this.focusMinute);
+        wheelMinute.addChangingListener(changedListener);
+        wheelMinute.setCyclic(false);
+        wheelMinute.setInterpolator(new AnticipateOvershootInterpolator());
+    }
+
+    private void initWheelHour() {
+        AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
+            @Override
+            public int getItemsCount() {
+                return 24;
+            }
+
+            @Override
+            protected CharSequence getItemText(int index) {
+                return String.format(Locale.getDefault(), "%02d", index) + getString(R.string.HOUR);
+            }
+        };
+        adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
+        wheelHour.setViewAdapter(adapter);
+        wheelHour.setCurrentItem(this.focusHour);
+        wheelHour.addChangingListener(changedListener);
+        wheelHour.setCyclic(false);
+        wheelHour.setInterpolator(new AnticipateOvershootInterpolator());
     }
 
     private int getIndexByTime() {
@@ -101,6 +156,16 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     public void setTimeFocus(long timeFocus) {
         this.timeFocus = timeFocus;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(timeZone);
+        calendar.setTimeInMillis(timeFocus);
+        this.focusHour = calendar.get(Calendar.HOUR);
+        this.focusMinute = calendar.get(Calendar.MINUTE);
+        AppLogger.d("设置焦点:" + focusMinute + "," + focusHour);
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 
     public void setDateList(ArrayList<Long> dateList) {
@@ -112,7 +177,18 @@ public class DatePickerDialogFragment extends BaseDialog {
         Log.d("setDateList", "setDateList performance: " + (System.currentTimeMillis() - time));
     }
 
-    private void initWheel(int index) {
+    private static final int[] weekRes = {
+            R.string.SUN_Hisvideo_Timeselector,
+            R.string.MON_Hisvideo_Timeselector,
+            R.string.TUE_Hisvideo_Timeselector,
+            R.string.WED_Hisvideo_Timeselector,
+            R.string.THU_Hisvideo_Timeselector,
+            R.string.FRI_Hisvideo_Timeselector,
+            R.string.SAT_Hisvideo_Timeselector
+    };
+
+    private void initWheelDate(int index) {
+        focusDateIndex = index;
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
@@ -121,7 +197,9 @@ public class DatePickerDialogFragment extends BaseDialog {
 
             @Override
             protected CharSequence getItemText(int index) {
-                return TimeUtils.getSpecifiedDate(dateStartList.get(index));
+                int week = TimeUtils.getWeekNum(dateStartList.get(index), timeZone);
+                return TimeUtils.getDatePickFormat(dateStartList.get(index), timeZone)
+                        + getString(weekRes[week - 1]);
             }
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
@@ -135,7 +213,18 @@ public class DatePickerDialogFragment extends BaseDialog {
     // Wheel changed listener
     private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
         public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
-            finalIndex = newValue;
+            int id = wheel.getId();
+            switch (id) {
+                case R.id.wheel_date:
+                    focusDateIndex = newValue;
+                    break;
+                case R.id.wheel_hour:
+                    focusHour = newValue;
+                    break;
+                case R.id.wheel_minute:
+                    focusMinute = newValue;
+                    break;
+            }
         }
     };
 
@@ -144,13 +233,22 @@ public class DatePickerDialogFragment extends BaseDialog {
         switch (view.getId()) {
             case R.id.tv_dialog_btn_right:
                 dismiss();
+                final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
+                Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(tmp));
                 break;
             case R.id.tv_dialog_btn_left:
                 dismiss();
-                if (action != null && finalIndex >= 0 && finalIndex < ListUtils.getSize(dateStartList)) {
-                    action.onDialogAction(1, dateStartList.get(finalIndex));
+                final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
+                Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(finalTime));
+                if (action != null && finalTime != timeFocus) {
+                    action.onDialogAction(view.getId(), finalTime);
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

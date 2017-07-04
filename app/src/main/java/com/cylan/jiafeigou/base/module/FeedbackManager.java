@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.support.badge.CacheObject;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
@@ -163,6 +164,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
         private String account;
         private FeedBackBean backBean;
         private Subscription subscription;
+        private FinalClean finalClean;
 
         public SubmitFeedbackTask(String account, FeedBackBean backBean) {
             this.account = account;
@@ -217,6 +219,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                     .subscribe(jfgMsgHttpResult -> {
                         if (jfgMsgHttpResult.ret == 200) {
                             taskState = TASK_STATE_SUCCESS;
+                            cleanLocalFile();
                         } else {
                             taskState = TASK_STATE_FAILED;
                             if (jfgMsgHttpResult.ret == 500)//重试
@@ -246,6 +249,8 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
             File smartcall_w = new File(JConstant.WORKER_PATH + "/smartCall_w.txt");
             File crashFile = new File(JConstant.CRASH_PATH);
             File outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + System.currentTimeMillis() / 1000 + JConstant.getRoot() + ".zip");
+            finalClean = new FinalClean();
+            finalClean.zipFile = outFile;
             try {
                 Collection<File> files = new ArrayList<>();
                 files.add(logFile);
@@ -262,6 +267,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                     }
                 }
                 ZipUtils.zipFiles(files, outFile);
+                finalClean.localOldFiles = new ArrayList<>(files);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -279,20 +285,36 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
         /**
          * 删除生成的本地log文件
          */
-        private void deleteLocalLogFile() {
-//            Observable.just("delete")
-//                    .subscribeOn(Schedulers.io())
-//                    .map(s -> {
-//                        if (outFile != null && outFile.exists()) {
-//                            boolean delete = outFile.delete();
-//                            return delete ? 0 : -1;
-//                        }
-//                        return 0;
-//                    })
-//                    .subscribe(ret -> {
-//                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-//
+        private void cleanLocalFile() {
+            if (finalClean != null) {
+                Observable.just("clean")
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(ret -> {
+                            if (finalClean.zipFile != null)
+                                FileUtils.deleteFile(finalClean.zipFile.getAbsolutePath());
+                            if (finalClean.localOldFiles != null) {
+                                AppLogger.d("清理 日志");
+                                AppLogger.permissionGranted = false;
+                                try {
+                                    BaseApplication.getAppComponent().getCmd().enableLog(false, BaseApplication.getAppComponent().getLogPath());
+                                } catch (Exception e) {
+                                }
+                                for (File file : finalClean.localOldFiles) {
+                                    FileUtils.deleteFile(file.getAbsolutePath());
+                                }
+                                AppLogger.permissionGranted = true;
+                                try {
+                                    BaseApplication.getAppComponent().getCmd().enableLog(true, BaseApplication.getAppComponent().getLogPath());
+                                } catch (Exception e) {
+                                }
+                            }
+                        }, AppLogger::e);
+            }
         }
 
+        private static class FinalClean {
+            private File zipFile;
+            private List<File> localOldFiles;
+        }
     }
 }

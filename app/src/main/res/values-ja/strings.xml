@@ -221,6 +221,7 @@
   <string name="FRI">金曜日</string>
   <string name="FRI_1">毎週金曜日</string>
   <string name="FRI_2">金曜日</string>
+  <string name="FRI_Hisvideo_Timeselector">金曜日</string>
   <string name="FROME">開始時刻</string>
   <string name="Fail_Record">記録に失敗する</string>
   <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">月</string>
   <string name="MON_1">毎週月曜日</string>
   <string name="MON_2">月曜日</string>
+  <string name="MON_Hisvideo_Timeselector">月曜日</string>
   <string name="MSG_BIND">デバイスのバインディングが成功しました！ハウスキーピングしてあげるよ</string>
   <string name="MSG_BOTTOM_LINE">ボトム</string>
   <string name="MSG_DELETE_TITLE">削除後戻せないので、再度確認してください。</string>
@@ -483,6 +485,7 @@
   <string name="SAT">土曜日</string>
   <string name="SAT_1">毎週土曜日</string>
   <string name="SAT_2">土曜日</string>
+  <string name="SAT_Hisvideo_Timeselector">土曜日</string>
   <string name="SAVE">セーブ</string>
   <string name="SAVED_PHOTOS">アルバムに保存しました</string>
   <string name="SCENE_ADDED">\"%s\"追加しました</string>
@@ -551,6 +554,7 @@
   <string name="SUN">日曜日</string>
   <string name="SUN_1">毎週日曜日</string>
   <string name="SUN_2">日曜日</string>
+  <string name="SUN_Hisvideo_Timeselector">日曜日</string>
   <string name="SURE">了解</string>
   <string name="SURE_DELETE">すべてのメッセージを削除してもよろしいでしょうか？</string>
   <string name="SURE_DELETE_1">アカウントから\"%s\"および関連データを削除してもよろしいですか?</string>
@@ -590,6 +594,7 @@
   <string name="THU">木曜日</string>
   <string name="THU_1">毎週木曜日</string>
   <string name="THU_2">木曜日</string>
+  <string name="THU_Hisvideo_Timeselector">木曜日</string>
   <string name="TIME">時間</string>
   <string name="TIMEOUT_TRY_AGIN">接続タイムアウト \n もう一度やり直してください</string>
   <string name="TIMEZONE_CHOOSE">タイムゾーン選択</string>
@@ -601,6 +606,7 @@
   <string name="TUE">火曜日</string>
   <string name="TUE_1">毎週火曜日</string>
   <string name="TUE_2">火曜日</string>
+  <string name="TUE_Hisvideo_Timeselector">火曜日</string>
   <string name="TURN_ON_PROTECTION">起動後、警報時間帯に画面の変化を検出した場合、警報およびメッセージ通知を行う。</string>
   <string name="Tap0_AlreadyEmailed">既にに電子メールで送信</string>
   <string name="Tap0_Authorizationfailed">権限付与は失敗しました。後でもう一回申請してください。</string>
@@ -931,6 +937,7 @@
   <string name="WED">水曜日</string>
   <string name="WED_1">毎週水曜日</string>
   <string name="WED_2">水曜日</string>
+  <string name="WED_Hisvideo_Timeselector">水曜日</string>
   <string name="WEEK">毎週</string>
   <string name="WEEKDAYS">平日</string>
   <string name="WEEKEND">祝休日</string>

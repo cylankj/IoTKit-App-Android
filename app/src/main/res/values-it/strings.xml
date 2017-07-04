@@ -221,6 +221,7 @@
   <string name="FRI">Venerdi</string>
   <string name="FRI_1">VEN</string>
   <string name="FRI_2">Ven</string>
+  <string name="FRI_Hisvideo_Timeselector">VEN</string>
   <string name="FROME">Da</string>
   <string name="Fail_Record">Non registrare</string>
   <string name="Feb">Feb.</string>
@@ -310,6 +311,7 @@
   <string name="MONTHS">mese</string>
   <string name="MON_1">LUN</string>
   <string name="MON_2">Lun</string>
+  <string name="MON_Hisvideo_Timeselector">LUN</string>
   <string name="MSG_BIND">Dispositivo aggiunto con successo</string>
   <string name="MSG_BOTTOM_LINE">Parte inferiore</string>
   <string name="MSG_DELETE_TITLE">I dati non potranno essere recuperati se cancellati, Confermare ?</string>
@@ -483,6 +485,7 @@
   <string name="SAT">Sabato</string>
   <string name="SAT_1">SAB</string>
   <string name="SAT_2">Sab</string>
+  <string name="SAT_Hisvideo_Timeselector">SAB</string>
   <string name="SAVE">Fatto</string>
   <string name="SAVED_PHOTOS">Salva in immagini</string>
   <string name="SCENE_ADDED">\"%s\" Aaggiunto correttamente</string>
@@ -551,6 +554,7 @@
   <string name="SUN">Domenica</string>
   <string name="SUN_1">DOM</string>
   <string name="SUN_2">Dom</string>
+  <string name="SUN_Hisvideo_Timeselector">DOM</string>
   <string name="SURE">OK</string>
   <string name="SURE_DELETE">Sei sicuro di voler eliminare?</string>
   <string name="SURE_DELETE_1">Sei sicuro di eliminare l\'account \"%s\" e tutti i dati relativi ?</string>
@@ -590,6 +594,7 @@
   <string name="THU">Giovedi</string>
   <string name="THU_1">GIO</string>
   <string name="THU_2">Gio</string>
+  <string name="THU_Hisvideo_Timeselector">GIO</string>
   <string name="TIME">Orario</string>
   <string name="TIMEOUT_TRY_AGIN">Attendere&#8211;Timeout/riprova per favore</string>
   <string name="TIMEZONE_CHOOSE">Fuso orario</string>
@@ -601,6 +606,7 @@
   <string name="TUE">Martedi</string>
   <string name="TUE_1">MAR</string>
   <string name="TUE_2">Mar</string>
+  <string name="TUE_Hisvideo_Timeselector">MAR</string>
   <string name="TURN_ON_PROTECTION">Quando il sistema di movimento è attivato, verranno automaticamente inviate immagini e suoni d\'allarme per la durata preimpostata.</string>
   <string name="Tap0_AlreadyEmailed">Email inviata a</string>
   <string name="Tap0_Authorizationfailed">L\'autorizzazione non riuscita, si prega di riprovare più tardi</string>
@@ -931,6 +937,7 @@
   <string name="WED">Mercoledi</string>
   <string name="WED_1">MER</string>
   <string name="WED_2">Mer</string>
+  <string name="WED_Hisvideo_Timeselector">MER</string>
   <string name="WEEK">Sempre</string>
   <string name="WEEKDAYS">Giorni settimanali</string>
   <string name="WEEKEND">Fine settimana</string>

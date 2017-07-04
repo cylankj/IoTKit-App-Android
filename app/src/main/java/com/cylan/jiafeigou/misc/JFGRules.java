@@ -89,7 +89,7 @@ public class JFGRules {
     public static final int LANGUAGE_TYPE_TURKISH = 9;
     public static final int LANGUAGE_TYPE_TRA_CHINESE = 10;
 
-    private static final Locale[] CONST_LOCALE = {
+    public static final Locale[] CONST_LOCALE = {
             Locale.SIMPLIFIED_CHINESE,
             Locale.ENGLISH,
             new Locale("ru", "RU"),
