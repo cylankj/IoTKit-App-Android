@@ -6,10 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.mikepenz.fastadapter.IExpandable;
-import com.mikepenz.fastadapter.IItem;
-import com.mikepenz.fastadapter.ISubItem;
-import com.mikepenz.fastadapter.commons.items.AbstractExpandableItem;
+import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
 
@@ -20,19 +17,29 @@ import butterknife.ButterKnife;
  * Created by yanzhendong on 2017/6/29.
  */
 
-public class FriendGroupParentItem<Parent extends IItem & IExpandable, SubItem extends IItem & ISubItem> extends AbstractExpandableItem<FriendGroupParentItem<Parent, SubItem>, FriendGroupParentItem.ViewHolder, SubItem> {
-    public String title;
+public class FriendContextHeader extends AbstractItem<FriendContextHeader, FriendContextHeader.ViewHolder> {
+    public String header;
+    public List<FriendContextItem> children;
+
+    public FriendContextHeader withHeader(String header) {
+        this.header = header;
+        return this;
+    }
+
+    public FriendContextHeader withChildren(List<FriendContextItem> children) {
+        this.children = children;
+        if (children != null) {
+            for (FriendContextItem child : children) {
+                child.withParent(this);
+            }
+        }
+        return this;
+    }
 
     @Override
     public ViewHolder getViewHolder(View v) {
         return new ViewHolder(v);
     }
-
-    public FriendGroupParentItem<Parent, SubItem> withTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
 
     @SuppressLint("ResourceType")
     @Override
@@ -59,6 +66,6 @@ public class FriendGroupParentItem<Parent extends IItem & IExpandable, SubItem e
     @Override
     public void bindView(ViewHolder holder, List<Object> payloads) {
         super.bindView(holder, payloads);
-        holder.listHeader.setText(title);
+        holder.listHeader.setText(header);
     }
 }

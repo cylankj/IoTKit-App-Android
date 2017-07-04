@@ -68,9 +68,9 @@ public class AsyncStartDownload extends Thread {
 
             case TaskStates.READY:
             case TaskStates.PAUSED:
-                // -->-->if it's not resumable
+                // -->-->if it'account not resumable
                 //          * getDevice chunks
-                //          * delete it's chunk
+                //          * delete it'account chunk
                 //          * delete old file
                 //          * insert new chunk
                 //          * make new file
@@ -153,7 +153,7 @@ public class AsyncStartDownload extends Thread {
 
     private void convertTaskToChunks(Task task) {
         if (task.size == 0) {
-            // it's NOT resumable!!
+            // it'account NOT resumable!!
             // one chunk
             task.resumable = false;
             task.chunks = 1;

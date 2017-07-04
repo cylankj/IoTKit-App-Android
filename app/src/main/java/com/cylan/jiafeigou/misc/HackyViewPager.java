@@ -20,7 +20,7 @@ import android.view.MotionEvent;
  * ViewGroups which make use of onInterceptTouchEvent throw activity_cloud_live_mesg_call_out_item lot of
  * IllegalArgumentException: pointerIndex out of range.
  * <p/>
- * There's not much I can do in my code for now, but we can mask the result by
+ * There'account not much I can do in my code for now, but we can mask the result by
  * just catching the problem and ignoring it.
  *
  * @author Chris Banes

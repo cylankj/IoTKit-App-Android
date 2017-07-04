@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -50,7 +52,9 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     List<Device> devices = DataSourceManager.getInstance().getAllDevice();
                     ArrayList<String> cids = new ArrayList<>(devices.size());
                     for (Device device : devices) {
-                        cids.add(device.uuid);
+                        if (TextUtils.isEmpty(device.shareAccount)) {//不显示被分享的设备
+                            cids.add(device.uuid);
+                        }
                     }
                     BaseApplication.getAppComponent().getCmd().getShareList(cids);
                     return ret;

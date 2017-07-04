@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,14 +25,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentMineShareToContactBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.LinkManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContactItem;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -49,22 +52,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.PermissionUtils;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/13
  * 描述：
  */
-public class MineShareToContactFragment extends Fragment implements MineShareToContactContract.View {
+@RuntimePermissions
+public class MineContactManagerFragment extends Fragment implements MineShareToContactContract.View {
     private MineShareToContactContract.Presenter presenter;
     private FastItemAdapter<ShareContactItem> shareFriendItemItemAdapter;
     private FragmentMineShareToContactBinding shareToContactBinding;
     private String uuid;
     private ObservableBoolean empty = new ObservableBoolean(false);
-    private ShareContactItem currentShareContact;
-    private ObservableBoolean searchMode = new ObservableBoolean(false) {
-
-    };
+    private boolean searchMode = false;
     //Custom Toolbar Views
     @BindView(R.id.iv_mine_share_to_contact_search)
     ImageView searchContact;
@@ -72,9 +78,10 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     TextView searchBarTitle;
     @BindView(R.id.et_search_contact)
     EditText searchInput;
+    int contactType = 0;//0:分享给联系人; 1:添加联系人;
 
-    public static MineShareToContactFragment newInstance(Bundle bundle) {
-        MineShareToContactFragment fragment = new MineShareToContactFragment();
+    public static MineContactManagerFragment newInstance(Bundle bundle) {
+        MineContactManagerFragment fragment = new MineContactManagerFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -83,6 +90,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID, "");
+        contactType = getArguments().getInt("contactType", 0);
         shareToContactBinding = FragmentMineShareToContactBinding.inflate(inflater, container, false);
         shareToContactBinding.rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         ButterKnife.bind(this, shareToContactBinding.customToolbar);
@@ -94,7 +102,17 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             @Override
             public void onClick(View v, int position, FastAdapter<ShareContactItem> fastAdapter, ShareContactItem item) {
                 AppLogger.d("点击了联系人");
-                showShareDeviceDialog(item);
+                if (contactType == 0) {//分享联系人
+                    showShareDeviceDialog(item);
+                } else if (contactType == 1) {//添加联系人
+                    Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+                    if (account != null && TextUtils.equals(account.getAccount(), item.getAccount())) {
+                        //不能添加自己为好友
+                        showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
+                    } else {
+                        presenter.checkFriendAccount(item);
+                    }
+                }
             }
 
             @Nullable
@@ -119,19 +137,14 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         });
         shareToContactBinding.rcyMineShareToContactList.setAdapter(shareFriendItemItemAdapter);
         shareToContactBinding.customToolbar.setOnKeyListener(this::keyEventListener);
-        searchMode.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                modifySearchMode(((ObservableBoolean) sender).get());
-            }
-        });
+        modifySearchMode(searchMode = contactType == 1, contactType == 1);
         initPresenter();
         return shareToContactBinding.getRoot();
     }
 
     private boolean keyEventListener(View view, int keyCode, KeyEvent keyEvent) {
-        boolean ret = keyCode == KeyEvent.KEYCODE_BACK && searchMode.get();
-        searchMode.set(false);
+        boolean ret = keyCode == KeyEvent.KEYCODE_BACK && searchMode;
+        modifySearchMode(searchMode = false, contactType == 1);
         return ret;
     }
 
@@ -145,7 +158,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         super.onStart();
         if (presenter != null) {
             presenter.start();
-            presenter.checkAndInitContactList();
+            presenter.checkAndInitContactList(contactType);
         }
     }
 
@@ -178,15 +191,15 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_share_to_contact_search:
-                searchMode.set(true);
+                modifySearchMode(searchMode = true, contactType == 1);
                 break;
         }
     }
 
-    private void modifySearchMode(boolean enter) {
+    private void modifySearchMode(boolean enter, boolean hideSearchIcon) {
+        searchContact.setVisibility(hideSearchIcon ? View.GONE : View.VISIBLE);
         searchBarTitle.setVisibility(enter ? View.GONE : View.VISIBLE);
         searchInput.setVisibility(enter ? View.VISIBLE : View.GONE);
-
         if (enter) {
             searchInput.requestFocus();
             searchInput.setFocusable(true);
@@ -215,7 +228,6 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     public void showShareDeviceDialog(ShareContactItem shareContactItem) {
-        currentShareContact = shareContactItem;
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.Tap3_ShareDevice))
                 .setPositiveButton(getString(R.string.Button_Sure), (dialog, which) -> {
@@ -227,69 +239,13 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         builder.show();
     }
 
-    @Override
-    public void changeShareingProHint(String finish) {
-    }
-
-    @Override
     public void showPersonOverDialog(String content) {
         ToastUtil.showToast(content);
     }
 
     @Override
-    public void startSendMesgActivity(String account) {
-        Uri smsToUri = Uri.parse("smsto:" + account);
-        Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", LinkManager.getSmsContent());
-        startActivity(mIntent);
-    }
-
-    /**
-     * 分享结果的处理
-     *
-     * @param requtestId
-     */
-    @Override
-    public void handlerCheckRegister(int requtestId, String item) {
-        switch (requtestId) {
-            case JError.ErrorOK:                                           //分享成功
-                ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-                break;
-
-            case JError.ErrorShareExceedsLimit:                             //已注册 未分享但人数达到5人
-                if (getView() != null) {
-                    showPersonOverDialog(getString(R.string.SHARE_ERR));
-                }
-                break;
-
-            case JError.ErrorShareAlready:                                    //已注册 已分享
-                if (getView() != null) {
-                    showPersonOverDialog(getString(R.string.RET_ESHARE_REPEAT));
-                }
-                break;
-            case JError.ErrorShareInvalidAccount:                             //未注册
-//                if (JConstant.EMAIL_REG.matcher(contractPhone).find()) {
-//                    sendEmail();
-//                    return;
-//                }
-                if (presenter.checkSendSmsPermission()) {
-//                    startSendMesgActivity(contractPhone);
-                } else {
-                    MineShareToContactFragment.this.requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
-                }
-                break;
-
-            case JError.ErrorShareToSelf:                                     //不能分享给自己
-                if (getView() != null) {
-                    showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void showLoading(int resId, Object... args) {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
+    public void showLoading(int resId, String... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, (Object[]) args));
     }
 
     @Override
@@ -297,40 +253,85 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
-    private void sendEmail() {
-//        Intent intent = new Intent(Intent.ACTION_SEND);
-//        intent.setType("message/rfc822");
-//        intent.putExtra(Intent.EXTRA_EMAIL,
-//                new String[]{contractPhone});
-//        intent.putExtra(Intent.EXTRA_CC, contractPhone); // 抄送人
-//        intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getSmsContent()); // 正文
-//        startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                startSendMesgActivity(contractPhone);
-            } else {
-                setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
-            }
+    public void onCheckFriendAccountResult(FriendContextItem friendContextItem, ShareContactItem shareContactItem, boolean accountExist) {
+        if (friendContextItem == null && accountExist) {//超时了
+            // TODO: 2017/7/3 超时处理
+        } else if (accountExist) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("friendItem", friendContextItem);
+            MineAddFromContactFragment mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), mineAddFromContactFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
+        } else {
+            invitationFriend(shareContactItem);
         }
     }
 
+    @Override
+    public void onShareDeviceResult(ShareContactItem shareContactItem, RxEvent.ShareDeviceCallBack result) {
+        if (result == null) {
+            // TODO: 2017/7/3 超时了
+        } else if (result.requestId == JError.ErrorOK) { //分享成功
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
+        } else if (result.requestId == JError.ErrorShareExceedsLimit) {  //已注册 未分享但人数达到5人
+            showPersonOverDialog(getString(R.string.SHARE_ERR));
+        } else if (result.requestId == JError.ErrorShareAlready) { //已注册 已分享
+            showPersonOverDialog(getString(R.string.RET_ESHARE_REPEAT));
+        } else if (result.requestId == JError.ErrorShareInvalidAccount) {  //未注册
+            invitationFriend(shareContactItem);
+        } else if (result.requestId == JError.ErrorShareToSelf) {   //不能分享给自己
+            showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
 
-    public void setPermissionDialog(String permission) {
-        new android.app.AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, permission))
-                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    dialog.dismiss();
-                })
+        }
+
+    }
+
+    private void invitationFriend(ShareContactItem friendContextItem) {
+        if (JConstant.EMAIL_REG.matcher(friendContextItem.getAccount()).find()) {
+            sendEmail(friendContextItem);
+        } else {
+            MineContactManagerFragmentPermissionsDispatcher.sendSmsWithPermissionWithCheck(this, friendContextItem);
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.SEND_SMS)
+    public void sendSmsWithPermission(ShareContactItem friendContextItem) {
+        if (PermissionUtils.hasSelfPermissions(getContext(), Manifest.permission.SEND_SMS)) {//双重检查
+            Uri smsToUri = Uri.parse("smsto:" + friendContextItem.phone);
+            Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
+            mIntent.putExtra("sms_body", LinkManager.getSmsContent());
+            startActivity(mIntent);
+        } else {
+            showSetPermissionDialog();
+        }
+    }
+
+    @OnNeverAskAgain(Manifest.permission.SEND_SMS)
+    @OnPermissionDenied(Manifest.permission.SEND_SMS)
+    public void showSetPermissionDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.permission_auth, getString(R.string.Tap3_ShareDevice_Contacts)))
+                .setNegativeButton(getString(R.string.CANCEL), null)
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 })
                 .create()
                 .show();
+    }
+
+    private void sendEmail(ShareContactItem friendContextItem) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{friendContextItem.email});
+        intent.putExtra(Intent.EXTRA_CC, friendContextItem.email); // 抄送人
+        intent.putExtra(Intent.EXTRA_TEXT, LinkManager.getSmsContent()); // 正文
+        startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MineContactManagerFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     private void openSetting() {

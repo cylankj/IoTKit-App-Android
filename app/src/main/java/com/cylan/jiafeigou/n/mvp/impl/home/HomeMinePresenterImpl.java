@@ -81,8 +81,8 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
 
     @Override
     public String createRandomName() {
-        String[] firtPart = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
-                , "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+        String[] firtPart = {"a", "isFriend", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
+                , "m", "n", "o", "p", "q", "r", "account", "t", "u", "v", "w", "x", "y", "z"};
         Random random = new Random();
         int randNum1 = random.nextInt(10);
         int randNum2 = random.nextInt(10);

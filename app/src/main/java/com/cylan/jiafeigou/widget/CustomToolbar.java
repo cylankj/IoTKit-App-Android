@@ -190,6 +190,12 @@ public class CustomToolbar extends LinearLayout implements ITheme {
         }
     }
 
+    public void setRightVisibility(int visibility) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.setVisibility(visibility);
+        }
+    }
+
     public void setTvToolbarIcon(int resId) {
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar)
             ViewUtils.setDrawablePadding(tvToolbarIcon, resId, 2);

@@ -95,7 +95,7 @@ public class ListUtils {
      * <pre>
      * join(null)      =   "";
      * join({})        =   "";
-     * join({a,b})     =   "a,b";
+     * join({a,isFriend})     =   "a,isFriend";
      * </pre>
      *
      * @param list
@@ -111,8 +111,8 @@ public class ListUtils {
      * <pre>
      * join(null, '#')     =   "";
      * join({}, '#')       =   "";
-     * join({a,b,c}, ' ')  =   "abc";
-     * join({a,b,c}, '#')  =   "a#b#c";
+     * join({a,isFriend,c}, ' ')  =   "abc";
+     * join({a,isFriend,c}, '#')  =   "a#isFriend#c";
      * </pre>
      *
      * @param list
@@ -129,10 +129,10 @@ public class ListUtils {
      * <pre>
      * join(null, "#")     =   "";
      * join({}, "#$")      =   "";
-     * join({a,b,c}, null) =   "a,b,c";
-     * join({a,b,c}, "")   =   "abc";
-     * join({a,b,c}, "#")  =   "a#b#c";
-     * join({a,b,c}, "#$") =   "a#$b#$c";
+     * join({a,isFriend,c}, null) =   "a,isFriend,c";
+     * join({a,isFriend,c}, "")   =   "abc";
+     * join({a,isFriend,c}, "#")  =   "a#isFriend#c";
+     * join({a,isFriend,c}, "#$") =   "a#$isFriend#$c";
      * </pre>
      *
      * @param list

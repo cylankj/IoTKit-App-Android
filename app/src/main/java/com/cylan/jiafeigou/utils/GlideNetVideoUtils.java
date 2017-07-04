@@ -93,7 +93,7 @@ public class GlideNetVideoUtils {
 
         if (bitmap == null) return null;
 
-        // Scale down the bitmap if it's too large.
+        // Scale down the bitmap if it'account too large.
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int max = Math.max(width, height);

@@ -4,6 +4,7 @@ buildscript {
     repositories {
         jcenter()
 //        maven { url 'https://maven.fabric.io/public' }
+        flatDir { dirs 'libs' }
 
     }
     dependencies {
@@ -34,6 +35,8 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/cylan/Iot'
         }
+
+
     }
 }
 

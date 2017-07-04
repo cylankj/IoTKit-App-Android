@@ -22,7 +22,7 @@ public class XiaoMiHMSRegister extends IntentService implements IPushRegister {
 
 
     /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
+     * Creates an IntentService.  Invoked by your subclass'account constructor.
      * <p>
      * Used to name the worker thread, important only for debugging.
      */

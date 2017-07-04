@@ -439,6 +439,7 @@ public class MiscUtils {
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222));
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505));
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 401));
         }
         return list;
     }

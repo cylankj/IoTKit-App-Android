@@ -294,7 +294,7 @@ public class DownloadManagerPro {
     /**
      * report task download status in "ReportStructure" style
      *
-     * @param token when you add a new download task it's return to you
+     * @param token when you add a new download task it'account return to you
      * @return
      */
     public ReportStructure singleDownloadStatus(int token) {
@@ -313,7 +313,7 @@ public class DownloadManagerPro {
 
     /**
      * <p>
-     * it's an report method for
+     * it'account an report method for
      * return list of download task in same state that developer want as ReportStructure List object
      * </p>
      *
@@ -384,9 +384,9 @@ public class DownloadManagerPro {
 
     /**
      * delete download task from db and if you set deleteTaskFile as true
-     * it's go to saved folder and delete that file
+     * it'account go to saved folder and delete that file
      *
-     * @param token          when you add a new download task it's return to you
+     * @param token          when you add a new download task it'account return to you
      * @param deleteTaskFile delete completed download file from sd card if you set it true
      * @return "true" if anything goes right
      * "false" if something goes wrong

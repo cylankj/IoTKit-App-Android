@@ -104,6 +104,15 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .setAction(DBAction.CAM_MULTI_QUERY)
                 .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+
+        //adapter for doorbell
+        list.add(new DPEntity()
+                .setMsgId(401)
+                .setUuid(uuid)
+                .setAction(DBAction.CAM_MULTI_QUERY)
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
+                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
+
         return list;
     }
 
@@ -158,6 +167,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         }
                         if (bean.id == 512 || bean.id == 505) {
                             bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
+                        }
+                        if (bean.id == 401) {
+                            DpMsgDefine.DPBellCallRecord bellCallRecord = (DpMsgDefine.DPBellCallRecord) dataPoint;
+                            bean.alarmMsg = bellCallRecord.converToAlarm();
                         }
                         if (!list.contains(bean))//防止重复
                             list.add(bean);

@@ -276,7 +276,7 @@ public class ImageSelectActivity extends HelperActivity {
         public void run() {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             /*
-            If the adapter is null, this is first startTime this activity's view is
+            If the adapter is null, this is first startTime this activity'account view is
             being shown, hence send FETCH_STARTED message to show progress bar
             while images are loaded from phone
              */

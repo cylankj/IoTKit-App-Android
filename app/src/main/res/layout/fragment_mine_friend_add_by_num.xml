@@ -1,99 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:clickable="true"
-    android:background="@color/color_white"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout>
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/mine_add_by_num_toolbar"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="empty"
+            type="android.databinding.ObservableBoolean" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:ct_background_color="@color/color_0ba8cf"
-        app:ct_enable_theme="true"
-        app:ct_fit_system_window="true" />
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:clickable="true"
+        android:focusable="true">
 
-
-    <FrameLayout
-        android:id="@+id/fl_display_find_result"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:visibility="gone"
-            android:id="@+id/rl_relative_and_friend_container"
-            android:layout_marginLeft="@dimen/x15"
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/mine_add_by_num_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y67">
-
-            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-                android:layout_centerVertical="true"
-                android:id="@+id/iv_userhead"
-                android:src="@drawable/pic_head"
-                android:layout_width="@dimen/x43"
-                android:layout_height="@dimen/y43" />
-
-            <RelativeLayout
-                android:gravity="center_vertical"
-                android:layout_toRightOf="@id/iv_userhead"
-                android:paddingLeft="@dimen/x15"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y67">
-
-                <TextView
-                    android:id="@+id/tv_username"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_333333"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/tv_user_phone"
-                    android:paddingTop="@dimen/y8"
-                    android:layout_below="@id/tv_username"
-                    android:textSize="@dimen/sp12"
-                    android:textColor="@color/color_8c8c8c"
-                    android:text="12345678901"
-                    android:singleLine="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/ll_no_friend"
-            android:layout_marginTop="@dimen/y120"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_no_friends"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/btn_add_relative_and_friend"
-                android:layout_marginTop="@dimen/y16"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/Tap3_FriendsAdd_NoContent"
-                android:textSize="@dimen/sp15"
-                android:textColor="#aaaaaa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            app:ct_background_color="@color/color_0ba8cf"
+            app:ct_enable_theme="true"
+            app:ct_fit_system_window="true"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
+            android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
+            android:background="@drawable/little_shape"
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
 
-    </FrameLayout>
 
-</LinearLayout>
+        <!--<com.cylan.jiafeigou.support.photoselect.CircleImageView-->
+        <!--android:id="@+id/iv_userhead"-->
+        <!--android:layout_width="@dimen/x43"-->
+        <!--android:layout_height="@dimen/y43"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:src="@drawable/pic_head" />-->
+
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/y67"-->
+        <!--android:layout_toRightOf="@id/iv_userhead"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:paddingLeft="@dimen/x15">-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_username"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="@color/color_333333"-->
+        <!--android:textSize="@dimen/sp16" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_user_phone"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/tv_username"-->
+        <!--android:paddingTop="@dimen/y8"-->
+        <!--android:singleLine="true"-->
+        <!--android:text="12345678901"-->
+        <!--android:textColor="@color/color_8c8c8c"-->
+        <!--android:textSize="@dimen/sp12" />-->
+        <!--</RelativeLayout>-->
+
+
+        <TextView
+            android:id="@+id/btn_add_relative_and_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawablePadding="@dimen/y16"
+            android:drawableTop="@drawable/icon_no_friends"
+            android:gravity="center"
+            android:text="@string/Tap3_FriendsAdd_NoContent"
+            android:textColor="#aaaaaa"
+            android:textSize="@dimen/sp15"
+            android:visibility="@{empty?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

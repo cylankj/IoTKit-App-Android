@@ -73,9 +73,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         if (timeMin != -1) {//向前查询,timeMin可能是隔天的数据了.
             versionMin = Math.max(timeMin, versionMin);
         }
-        AppLogger.d("let's go for local cache:" + option);
-        AppLogger.d("let's go for local versionMin:" + versionMin);
-        AppLogger.d("let's go for local versionMax:" + versionMax);
+        AppLogger.d("let'account go for local cache:" + option);
+        AppLogger.d("let'account go for local versionMin:" + versionMin);
+        AppLogger.d("let'account go for local versionMax:" + versionMax);
         return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
                 versionMin, versionMax, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
@@ -104,7 +104,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 //需要先清空这一天的.
-                AppLogger.d("let's go for server cache:" + option);
+                AppLogger.d("let'account go for server cache:" + option);
                 long seq = sourceManager.syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

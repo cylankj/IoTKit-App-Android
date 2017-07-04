@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.Context;
+import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,66 +15,53 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
+import com.cylan.jiafeigou.databinding.FragmentMineFriendAddByNumBinding;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineFriendAddByNumFragment extends Fragment implements MineFriendAddByNumContract.View {
-
-    @BindView(R.id.iv_home_mine_friends_add_by_num_back)
-    ImageView ivHomeMineRelativesandfriendsAddByNumBack;
+public class MineFriendSearchFragment extends Fragment implements MineFriendSearchContract.View {
     @BindView(R.id.et_add_by_number)
     EditText etAddByNumber;
-    @BindView(R.id.iv_userhead)
-    RoundedImageView ivUserhead;
-    @BindView(R.id.tv_username)
-    TextView tvUsername;
-    @BindView(R.id.tv_user_phone)
-    TextView tvUserPhone;
-    @BindView(R.id.rl_relative_and_friend_container)
-    RelativeLayout rlRelativeAndFriendContainer;
-    @BindView(R.id.fl_display_find_result)
-    FrameLayout flDisplayFindResult;
-    @BindView(R.id.ll_no_friend)
-    LinearLayout llNoFriend;
 
-    private MineFriendAddByNumContract.Presenter presenter;
+    private ObservableBoolean empty = new ObservableBoolean(false);
 
-    public static MineFriendAddByNumFragment newInstance() {
-        return new MineFriendAddByNumFragment();
+    private MineFriendSearchContract.Presenter presenter;
+    private FragmentMineFriendAddByNumBinding friendAddByNumBinding;
+
+    public static MineFriendSearchFragment newInstance() {
+        return new MineFriendSearchFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_add_by_num, container, false);
-        ButterKnife.bind(this, view);
+        friendAddByNumBinding = FragmentMineFriendAddByNumBinding.inflate(inflater, container, false);
+        friendAddByNumBinding.setEmpty(empty);
+        ButterKnife.bind(this, friendAddByNumBinding.customToolbar);
         initPresenter();
         addOnTouchListener(view);
-        return view;
+        return friendAddByNumBinding.getRoot();
     }
 
     @Override
@@ -105,7 +93,6 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
                 } else if (getInputNum().equals(account)) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
                 } else {
-                    showFindLoading();
                     presenter.checkFriendAccount(getInputNum());
                 }
                 return true;
@@ -126,13 +113,13 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
             @Override
             public void afterTextChanged(Editable s) {
-                hideFindNoResult();
+                empty.set(false);
             }
         });
     }
 
     @Override
-    public void setPresenter(MineFriendAddByNumContract.Presenter presenter) {
+    public void setPresenter(MineFriendSearchContract.Presenter presenter) {
 
     }
 
@@ -162,84 +149,35 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_friends_add_by_num_back:
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), POP_BACK_STACK_INCLUSIVE);
                 break;
         }
     }
 
-    @Override
     public String getInputNum() {
         return etAddByNumber.getText().toString().trim();
     }
 
+
     @Override
-    public void showFindResult(FriendsReqBean bean) {
-        if (bean == null) {
-            showFindNoResult();
-        } else {
-            presenter.checkIsSendAddReqToMe(bean);
-        }
+    public void showLoading(int resId, String... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getContext().getString(resId, (Object[]) args));
     }
 
     @Override
-    public void showFindLoading() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
-    }
-
-    @Override
-    public void hideFindLoading() {
+    public void hideLoading() {
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
-    /**
-     * 显示无结果
-     */
     @Override
-    public void showFindNoResult() {
-        rlRelativeAndFriendContainer.setVisibility(View.GONE);
-        llNoFriend.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * 隐藏显示无结果
-     */
-    @Override
-    public void hideFindNoResult() {
-        llNoFriend.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setFindResult(boolean isFrom, FriendsReqBean bean, boolean isFriend) {
-        if (!isFriend) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isFrom", isFrom);
-            bundle.putSerializable("addRequestItems", bean);
-            AddFriendReqDetailFragment addReqDetailFragment = AddFriendReqDetailFragment.newInstance(bundle);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, addReqDetailFragment, addReqDetailFragment.getClass().getName())
-                    .addToBackStack("AddFlowStack")
-                    .commit();
-        } else {
-            //已是亲友的跳转到分享
-            FriendBean friendBean = new FriendBean();
-            friendBean.account = bean.account;
-            friendBean.alias = bean.alias;
-            friendBean.markName = "";
-            friendBean.iconUrl = bean.iconUrl;
-            Bundle bundle = new Bundle();
-            bundle.putInt("position", -1);
-            bundle.putParcelable("frienditembean", friendBean);
-            MineFriendDetailFragment relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
-                    .addToBackStack("mineHelpFragment")
-                    .commit();
-        }
-
+    public void onCheckFriendResult(FriendContextItem friendContextItem) {
+        empty.set(friendContextItem == null);
+        if (empty.get()) return;
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("friendItem", friendContextItem);
+        MineFriendInformationFragment friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                friendInformationFragment, android.R.id.content, MineFriendInformationFragment.class.getSimpleName());
     }
 
     /**
@@ -250,7 +188,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     @Override
     public void onNetStateChanged(int state) {
         if (state == -1) {
-            hideFindLoading();
+            hideLoading();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
     }

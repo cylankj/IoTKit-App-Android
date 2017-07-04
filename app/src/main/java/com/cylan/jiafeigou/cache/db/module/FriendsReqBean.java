@@ -12,9 +12,10 @@ import java.io.Serializable;
 /**
  * 作者：zsl
  * 创建时间：2016/11/1
- * 描述：添加亲友请求类
+ * 描述：添加亲友请求类,该类已废弃,请使用 FriendContextItem
  */
 @Entity
+@Deprecated
 public class FriendsReqBean implements Parcelable, Serializable {
 
     private static final long serialVersionUID = 1608319968864588726L;
@@ -53,7 +54,7 @@ public class FriendsReqBean implements Parcelable, Serializable {
 
     @Generated(hash = 924087945)
     public FriendsReqBean(Long id, String iconUrl, String account, String alias, String sayHi,
-            long time) {
+                          long time) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.account = account;

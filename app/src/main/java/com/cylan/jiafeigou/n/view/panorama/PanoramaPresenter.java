@@ -222,8 +222,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshControllerViewVisible(true);
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
                             if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
-                                mView.onShowPreviewPicture(msgFileRsp.files.get(0));
+                                mView.onShowPreviewPicture(null);
                             } else {
+                                mView.onShowPreviewPicture(null);
                                 mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                             }
                         }
@@ -411,8 +412,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshControllerViewVisible(true);
 //                        DataSourceManager.getInstance().removeDeviceState(uuid);
                         if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
-                            mView.onShowPreviewPicture(ret.files.get(0));
+                            mView.onShowPreviewPicture(null);
                         } else {
+                            mView.onShowPreviewPicture(null);
                             mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                         }
 

@@ -19,6 +19,7 @@ public class ShareContactItem extends AbstractItem<ShareContactItem, AbstractBin
     public String phone;
     public String email;
     public boolean shared = false;
+    public int contactType;//0:分享给联系人;1:添加联系人
 
     public String getAccount() {
         return TextUtils.isEmpty(phone) ? email : phone;
@@ -47,9 +48,9 @@ public class ShareContactItem extends AbstractItem<ShareContactItem, AbstractBin
         FragmentShareToContactItemBinding viewDataBinding = holder.getViewDataBinding();
         viewDataBinding.tvContactname.setText(name);
         viewDataBinding.tvContactphone.setText(TextUtils.isEmpty(phone) ? email : phone);
-        viewDataBinding.tvContactshare.setText(shared ? R.string.Tap3_ShareDevice_Shared : R.string.Tap3_ShareDevice_Button);
-        viewDataBinding.tvContactshare.setBackgroundResource(shared ? 0 : R.drawable.btn_accept_add_request_shape);
-        viewDataBinding.tvContactshare.setTextColor(shared ? Color.parseColor("#ADADAD") : Color.parseColor("#4b9fd5"));
+        viewDataBinding.tvContactshare.setText(contactType == 1 ? R.string.Button_Add : shared ? R.string.Tap3_ShareDevice_Shared : R.string.Tap3_ShareDevice_Button);
+        viewDataBinding.tvContactshare.setBackgroundResource(contactType == 1 ? R.drawable.btn_accept_add_request_shape : shared ? 0 : R.drawable.btn_accept_add_request_shape);
+        viewDataBinding.tvContactshare.setTextColor(contactType == 1 ? Color.parseColor("#4b9fd5") : shared ? Color.parseColor("#ADADAD") : Color.parseColor("#4b9fd5"));
         viewDataBinding.tvContactshare.setEnabled(!shared);
     }
 }

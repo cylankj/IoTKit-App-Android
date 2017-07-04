@@ -42,25 +42,17 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
         boolean isFrameFailed = badFrameCount >= FAILED_TARGET;
         boolean isFrameLoading = badFrameCount >= LOADING_TARGET;
         Log.d("LiveFrameRateMonitor", "视频帧率分析结果, 是否加载失败:" + isFrameFailed + ",是否 Loading:" + isFrameLoading + ",badCount:" + badFrameCount);
-
-        if (isFrameLoading && isFrameFailed && System.currentTimeMillis() - lastNotifyTime > NOTIFY_WINDOW) {//加载失败了,4秒通知
+        long dutation = System.currentTimeMillis() - lastNotifyTime;
+        if (isFrameLoading && isFrameFailed && dutation > NOTIFY_WINDOW) {//加载失败了,4秒通知
             lastNotifyTime = System.currentTimeMillis();
             monitorListener.onFrameFailed();
             AppLogger.d("onFrameFailed");
-        } else if (preStatus != isFrameLoading) {
+        } else if (dutation > NOTIFY_WINDOW && preStatus != isFrameLoading) {
             preStatus = isFrameLoading;
+            lastNotifyTime = System.currentTimeMillis();
             monitorListener.onFrameRate(isFrameLoading);
             AppLogger.d("onFrameRate" + isFrameLoading);
         }
-//
-//        synchronized (lock) {
-//            if (frameRateList.size() > MAX_SIZE - 1) {
-//                frameRateList.remove(frameRateList.size() - 1);
-//            }
-//            //默认加到末端
-//            frameRateList.add(0, rtcp);
-//            startAnalyze();
-//        }
     }
 
     @Override

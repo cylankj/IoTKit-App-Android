@@ -171,7 +171,7 @@ public class PicDetailsFragment extends LazyFragment {
     }
 
     /**
-     * Returns true if {@param view} is contained within {@param container}'s bounds.
+     * Returns true if {@param view} is contained within {@param container}'account bounds.
      */
     private static boolean isViewInBounds(@NonNull View container, @NonNull View view) {
         Rect containerBounds = new Rect();

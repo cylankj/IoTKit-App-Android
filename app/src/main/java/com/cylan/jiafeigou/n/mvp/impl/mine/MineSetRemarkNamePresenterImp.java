@@ -9,10 +9,10 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -20,13 +20,14 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -35,7 +36,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRemarkNameContract.View> implements MineSetRemarkNameContract.Presenter {
 
-    private CompositeSubscription compositeSubscription;
     private Network network;
 
     public MineSetRemarkNamePresenterImp(MineSetRemarkNameContract.View view) {
@@ -45,20 +45,13 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getFriendRemarkNameCallBack());
-        }
+        super.start();
         registerNetworkMonitor();
     }
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        }
+        super.stop();
         unregisterNetworkMonitor();
     }
 
@@ -69,41 +62,34 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     /**
      * 发送修改备注名的请求
-     *
-     * @param friendBean
      */
     @Override
-    public void sendSetmarkNameReq(final String newName, final FriendBean friendBean) {
-        getView().showSendReqPro();
-        rx.Observable.just(friendBean)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(bean -> {
+    public void setMarkName(final String newName, final FriendContextItem friendContextItem) {
+        Subscription subscribe = Observable.just("setMarkName")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().setFriendMarkName(friendBean.account, newName);
+                        BaseApplication.getAppComponent().getCmd().setFriendMarkName(friendContextItem.friendAccount.account, newName);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                }, AppLogger::e);
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.SetFriendMarkNameBack.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> getView().showSendReqPro())
+                .doOnTerminate(() -> getView().hideSendReqPro())
+                .subscribe(result -> {
+                    getView().showFinishResult(result);
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
+        addSubscription(subscribe);
     }
 
-    /**
-     * 设置好友的备注名回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription getFriendRemarkNameCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SetFriendMarkNameBack.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.SetFriendMarkNameBack rsp) -> {
-                    if (rsp != null) {
-                        if (getView() != null) {
-                            getView().hideSendReqPro();
-                            getView().showFinishResult(rsp);
-                        }
-                    }
-                }, AppLogger::e);
-    }
 
     @Override
     public void registerNetworkMonitor() {

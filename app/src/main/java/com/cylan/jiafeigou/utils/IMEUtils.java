@@ -94,7 +94,7 @@ public class IMEUtils {
                         boolean servedViewAttached = servedView.getWindowVisibility() != View.GONE;
 
                         if (servedViewAttached) {
-                            // The view held by the IMM was replaced without a global focus change. Let's make
+                            // The view held by the IMM was replaced without a global focus change. Let'account make
                             // sure we get notified when that view detaches.
 
                             // Avoid double registration.
@@ -104,7 +104,7 @@ public class IMEUtils {
                             // servedView is not attached. InputMethodManager is being stupid!
                             Activity activity = extractActivity(servedView.getContext());
                             if (activity == null || activity.getWindow() == null) {
-                                // Unlikely case. Let's finish the input anyways.
+                                // Unlikely case. Let'account finish the input anyways.
                                 finishInputLockedMethod.invoke(inputMethodManager);
                             } else {
                                 View decorView = activity.getWindow().peekDecorView();

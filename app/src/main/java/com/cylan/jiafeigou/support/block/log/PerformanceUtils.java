@@ -59,7 +59,7 @@ public class PerformanceUtils {
     public static void stopTrace(String tag) {
         Long time = timeCostMap.get(tag);
         if (time != null) {
-            AppLogger.d(String.format(Locale.getDefault(), "%s cost:%sms", tag, (System.currentTimeMillis() - time)));
+            AppLogger.d(String.format(Locale.getDefault(), "%s cost:%s ms", tag, (System.currentTimeMillis() - time)));
             timeCostMap.remove(tag);
         }
     }

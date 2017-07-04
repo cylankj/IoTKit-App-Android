@@ -367,7 +367,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onDeleteBellCallRecordFailed() {
-        ToastUtil.showNegativeToast("刪除失敗");
+        ToastUtil.showNegativeToast(getString(R.string.Tips_DeleteFail));
     }
 
     @Override

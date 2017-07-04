@@ -100,7 +100,7 @@ public class RoundedDrawable extends Drawable {
     public static Drawable fromDrawable(Drawable drawable) {
         if (drawable != null) {
             if (drawable instanceof RoundedDrawable) {
-                // just return if it's already activity_cloud_live_mesg_call_out_item RoundedDrawable
+                // just return if it'account already activity_cloud_live_mesg_call_out_item RoundedDrawable
                 return drawable;
             } else if (drawable instanceof LayerDrawable) {
                 LayerDrawable ld = (LayerDrawable) drawable;

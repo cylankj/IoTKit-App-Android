@@ -5,8 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -281,20 +281,13 @@ public class AddFriendsFragment extends IBaseFragment<AddFriendContract.Presente
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
                 });
-        AlertDialogManager.getInstance().showDialog("setPermissionDialog", getActivity(), builder);
+        AlertDialogManager.getInstance().showDialog("showSetPermissionDialog", getActivity(), builder);
     }
 
     private void openSetting() {
-        Intent localIntent = new Intent();
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT >= 9) {
-            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
-        } else if (Build.VERSION.SDK_INT <= 8) {
-            localIntent.setAction(Intent.ACTION_VIEW);
-            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-            localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
-        }
-        startActivity(localIntent);
+        Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        settingIntent.setData(Uri.parse("package:" + getContext().getPackageName()));
+        startActivity(settingIntent);
     }
 }

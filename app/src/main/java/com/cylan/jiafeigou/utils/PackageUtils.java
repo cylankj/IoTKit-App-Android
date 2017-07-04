@@ -413,7 +413,7 @@ public class PackageUtils {
     }
 
 //    /**
-//     * whether the app whost package's name is packageName is on the top of the stack
+//     * whether the app whost package'account name is packageName is on the top of the stack
 //     * <ul>
 //     * <strong>Attentions:</strong>
 //     * <li>You should add <strong>android.permission.GET_TASKS</strong> in manifest</li>
@@ -490,7 +490,7 @@ public class PackageUtils {
     }
 
     /**
-     * get external apk's version-name
+     * get external apk'account version-name
      *
      * @param context
      * @param apkPath
@@ -511,7 +511,7 @@ public class PackageUtils {
     }
 
     /**
-     * get external apk's version-code
+     * get external apk'account version-code
      *
      * @param context
      * @param apkPath
@@ -569,7 +569,7 @@ public class PackageUtils {
             case APP_INSTALL_INTERNAL:
                 return "-f";
             case APP_INSTALL_EXTERNAL:
-                return "-s";
+                return "-account";
         }
         return "";
     }
@@ -640,7 +640,7 @@ public class PackageUtils {
     /**
      * Installation return code<br/>
      * a previously installed package of the same name has a different signature than the new package (and the old
-     * package's data was not removed).
+     * package'account data was not removed).
      */
     public static final int INSTALL_FAILED_UPDATE_INCOMPATIBLE = -7;
 
@@ -698,7 +698,7 @@ public class PackageUtils {
 
     /**
      * Installation return code<br/>
-     * the package being installed contains native code, but none that is compatible with the the device's CPU_ABI.
+     * the package being installed contains native code, but none that is compatible with the the device'account CPU_ABI.
      */
     public static final int INSTALL_FAILED_CPU_ABI_INCOMPATIBLE = -16;
 

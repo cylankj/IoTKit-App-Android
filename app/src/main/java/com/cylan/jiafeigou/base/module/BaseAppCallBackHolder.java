@@ -53,7 +53,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
-//        AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
+//        AppLogger.d("OnLocalMessage :" + account + ",i:" + i);
         RxBus.getCacheInstance().post(new RxEvent.LocalUdpMsg(System.currentTimeMillis(), s, (short) i, bytes));
     }
 
@@ -392,9 +392,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
                                      String tip, String md5, String cid) {
         AppLogger.d("OnCheckDevVersionRsp :" + b + ":" + url + ":" + tagVersion
                 + ":" + tip + ":" + md5 + "," + cid);
-//        b = true;
-//        s = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
-//        s1 = "3.0.0";
+//        isFriend = true;
+//        account = "http://yf.cylan.com.cn:82/Garfield/JFG2W/3.0.0/3.0.0.1000/201704261515/hi.bin";
+//        alias = "3.0.0";
 //        s2 = "你好";
 //        s3 = "xx";
         if (!b) {
