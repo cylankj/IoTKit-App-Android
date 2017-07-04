@@ -442,33 +442,20 @@ public class RxBusTest {
 
     @Test
     public void complete() throws InterruptedException {
-
-        long time = System.currentTimeMillis();
-
-        System.out.println(time / 1000);
-        System.out.println(time / 1000 + 10 + 1);
-        Observable.just("go")
-                .timeout(2, TimeUnit.SECONDS)
-                .map(ret -> {
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return ret;
-                })
-
-                .subscribe(ret -> {
-                    System.out.println(ret);
-                }, throwable -> System.out.println(throwable));
-        Thread.sleep(5000);
+        Subscription subscription = RxBus.getCacheInstance().toObservable(String.class)
+                .timeout(200, TimeUnit.MILLISECONDS)
+                .filter(ret -> ret.equals("finish1"))
+                .first()
+                .timeout(200, TimeUnit.MILLISECONDS)
+                .subscribe(ret -> System.out.println("好了"), throwable -> System.out.println("坏了"));
 
         RxBus.getCacheInstance().post("finish0");
-//        Thread.sleep(10);
+        Thread.sleep(250);
         RxBus.getCacheInstance().post("finish1");
 //        Thread.sleep(10);
         RxBus.getCacheInstance().post("finish2");
-//        Thread.sleep(10);
+        Thread.sleep(1000);
+        System.out.println(subscription.isUnsubscribed());
         RxBus.getCacheInstance().post("finish3");
         Thread.sleep(10);
         RxBus.getCacheInstance().post("finish4");
@@ -476,7 +463,7 @@ public class RxBusTest {
         RxBus.getCacheInstance().post("finish5");
         Thread.sleep(10);
         RxBus.getCacheInstance().post("finish6");
-        Thread.sleep(3000);
+        Thread.sleep(30000);
     }
 
     private int count;

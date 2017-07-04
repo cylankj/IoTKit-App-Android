@@ -1,17 +1,9 @@
 package com.cylan.jiafeigou.n.task;
 
-import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.badge.CacheObject;
-import com.cylan.jiafeigou.support.badge.TreeHelper;
-import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
-
-import java.util.ArrayList;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -41,11 +33,11 @@ public class FetchFeedbackTask implements Action1<Object> {
                 .subscribeOn(Schedulers.io())
                 .subscribe(getFeedBackRsp -> {
                     AppLogger.d("FetchFeedbackTask rsp");
-                    ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
-                    TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
-                    TreeNode node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
-                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(list)).setObject(list));
-                    RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
+//                    ArrayList<JFGFeedbackInfo> list = BaseApplication.getAppComponent().getSourceManager().getNewFeedbackList();
+//                    TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
+//                    TreeNode node = helper.findTreeNodeByName(HomeMineHelpFragment.class.getSimpleName());
+//                    node.setCacheData(new CacheObject().setCount(ListUtils.getSize(list)).setObject(list));
+//                    RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
                     throw new RxEvent.HelperBreaker("结束本地调用");
                 }, AppLogger::e);
     }

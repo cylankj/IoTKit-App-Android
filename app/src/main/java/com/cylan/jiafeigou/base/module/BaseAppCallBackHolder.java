@@ -312,7 +312,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            arrayList.add(info);
 //        }
         if (ListUtils.isEmpty(arrayList)) return;
-        BaseApplication.getAppComponent().getSourceManager().cacheNewFeedbackList(arrayList);
+        FeedbackManager.getInstance().cachePush(arrayList);
+        BaseApplication.getAppComponent().getSourceManager().handleSystemNotification(arrayList);
     }
 
 

@@ -1,12 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import com.cylan.jiafeigou.cache.db.module.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import rx.Subscription;
+import rx.Observable;
 
 /**
  * 创建者     谢坤
@@ -20,39 +20,21 @@ public interface FeedBackContract {
          *
          * @param list
          */
-        void initRecycleView(ArrayList<MineHelpSuggestionBean> list);
+        void initList(List<FeedBackBean> list);
+
+        void appendList(List<FeedBackBean> list);
 
         /**
          * 添加自动回复条目
          */
         void addAutoReply();
 
-        /**
-         * 添加用户输入的条目
-         */
-        void addInputItem();
-
-        /**
-         * 显示加载进度的提示框
-         */
-        void showLoadingDialog();
-
-        /**
-         * 隐藏加载进度的提示框
-         */
-        void hideLoadingDialog();
 
         /**
          * 系统的自动回复
          */
         void addSystemAutoReply(long time, String content);
 
-        /**
-         * 更新列表显示
-         *
-         * @param code
-         */
-        void refrshRecycleView(int code);
 
         /**
          * 上传日志的结果
@@ -63,10 +45,6 @@ public interface FeedBackContract {
 
     interface Presenter extends BasePresenter {
 
-        /**
-         * 获取列表的数据
-         */
-        void initData();
 
         /**
          * 清空记录
@@ -74,30 +52,11 @@ public interface FeedBackContract {
         void onClearAllTalk();
 
         /**
-         * 获取到用户的信息拿到数据库对象
-         */
-        Subscription getAccountInfo();
-
-        /**
          * 保存到本地数据库
          *
          * @param bean
          */
-        void saveIntoDb(MineHelpSuggestionBean bean);
-
-        void update(MineHelpSuggestionBean bean);
-
-        /**
-         * 获取到用户的头像地址
-         */
-        String getUserPhotoUrl();
-
-        /**
-         * 检测是否超过5分钟
-         *
-         * @return
-         */
-        boolean checkOverTime(String time);
+        void saveIntoDb(FeedBackBean bean);
 
         /**
          * 检测是否超过2分钟
@@ -105,60 +64,19 @@ public interface FeedBackContract {
          * @param time
          * @return
          */
-        boolean checkOver20Min(String time);
+        boolean checkOver20Min(long time);
 
         /**
          * 上传意见反馈
          */
-        void sendFeedBack(MineHelpSuggestionBean bean);
-
-        /**
-         * 获取系统的自动回复
-         */
-        void getSystemAutoReply();
-
-        /**
-         * 获取系统的自动回复回调
-         *
-         * @return
-         */
-        Subscription getSystemAutoReplyCallBack();
-
-        /**
-         * 发送反馈的回调
-         *
-         * @return
-         */
-        Subscription sendFeedBackReq();
+        Observable<Boolean> sendFeedBack(FeedBackBean bean);
 
         /**
          * 数据库中删除一条数据
          *
          * @param bean
          */
-        void deleteOnItemFromDb(MineHelpSuggestionBean bean);
-
-        /**
-         * 三方登录回调
-         *
-         * @return
-         */
-        Subscription isOpenLogin();
-
-        /**
-         * 获取本地日志Url
-         *
-         * @return
-         */
-        void upLoadLogFile(MineHelpSuggestionBean bean);
-
-        /**
-         * 上传日志回调
-         */
-        Subscription sendLogBack();
-
-
-        boolean isSending();
+        void deleteItemFromDb(FeedBackBean bean);
 
     }
 }

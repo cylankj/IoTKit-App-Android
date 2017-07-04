@@ -35,7 +35,6 @@
             android:paddingRight="@dimen/x10"
             android:paddingBottom="@dimen/y10"
             android:paddingTop="@dimen/y10"
-            android:text="亲爱的用户,客户端将进行系统维护升级"
             android:layout_marginLeft="@dimen/x3"
             android:layout_marginTop="@dimen/y8"
             android:layout_toRightOf="@id/iv_mine_suggestion_server"

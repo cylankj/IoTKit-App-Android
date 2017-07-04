@@ -1,0 +1,262 @@
+package com.cylan.jiafeigou.base.module;
+
+import android.os.Build;
+import android.os.Environment;
+
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
+import com.cylan.entity.jniCall.JFGMsgHttpResult;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
+import com.cylan.jiafeigou.cache.db.module.FeedBackBeanDao;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.ProcessUtils;
+import com.cylan.jiafeigou.utils.ZipUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
+/**
+ * Created by hds on 17-7-3.
+ */
+
+public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.SubmitFeedbackTask> {
+    private static FeedbackManager instance;
+
+    private FeedbackManager() {
+    }
+
+    private HashMap<Long, SubmitFeedbackTask> submitTaskMap = new HashMap<>();
+
+    public static FeedbackManager getInstance() {
+        if (instance == null)
+            instance = new FeedbackManager();
+        return instance;
+    }
+
+
+    public void cachePush(ArrayList<JFGFeedbackInfo> arrayList) {
+        saveCache(arrayList);
+    }
+
+    private void saveCache(ArrayList<JFGFeedbackInfo> arrayList) {
+        if (arrayList == null) return;
+        ArrayList<FeedBackBean> feedBackBeans = new ArrayList<>();
+        for (JFGFeedbackInfo info : arrayList) {
+            FeedBackBean bean = new FeedBackBean();
+            bean.setContent(info.msg);
+            bean.setMsgTime(info.time);
+            feedBackBeans.add(bean);
+        }
+        saveToCache(feedBackBeans)
+                .subscribeOn(Schedulers.io())
+                .subscribe(ret -> AppLogger.d("反馈已经存档"), AppLogger::e);
+        //收到,并且存档.
+        RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(feedBackBeans));
+    }
+
+    @Override
+    public Observable<List<FeedBackBean>> getNewList() {
+        boolean isOnline = BaseApplication.getAppComponent().getSourceManager().isOnline();
+        if (isOnline) {
+            BaseApplication.getAppComponent().getCmd().getFeedbackList();
+        }
+        return loadFromLocal();
+    }
+
+    private Observable<List<FeedBackBean>> loadFromLocal() {
+        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        return helper.getDaoSession().getFeedBackBeanDao()
+                .queryBuilder()
+                .orderDesc(FeedBackBeanDao.Properties.MsgTime)
+                .rx().list()
+                .flatMap(feedBackBeans -> {
+                    //排序过
+                    if (feedBackBeans != null) {
+                        ArrayList<FeedBackBean> list = new ArrayList<>(new TreeSet<>(feedBackBeans));
+                        Collections.sort(list);
+                        return Observable.just(list);
+                    }
+                    return Observable.just(null);
+                });
+    }
+
+    @Override
+    public Observable<Iterable<FeedBackBean>> saveToCache(List<FeedBackBean> arrayList) {
+        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        return helper.getDaoSession().getFeedBackBeanDao().rx().saveInTx(arrayList)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<Void> deleteCache(List<FeedBackBean> arrayList) {
+        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        return helper.getDaoSession().getFeedBackBeanDao().rx().deleteInTx(arrayList);
+    }
+
+    @Override
+    public Observable<Void> deleteAllCache() {
+        BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        return helper.getDaoSession().getFeedBackBeanDao().rx().deleteAll();
+    }
+
+    @Override
+    public SubmitFeedbackTask getTask(long key) {
+        return submitTaskMap.get(key);
+    }
+
+    @Override
+    public void submitTask(SubmitFeedbackTask submitTask) {
+        this.submitTaskMap.put(submitTask.backBean.getMsgTime(), submitTask);
+        AppLogger.d("需要执行这个task");
+        submitTask.runTask();
+    }
+
+    public static final int TASK_STATE_IDLE = 0;
+    public static final int TASK_STATE_STARTED = 1;
+    public static final int TASK_STATE_SUCCESS = 2;
+    public static final int TASK_STATE_FAILED = 3;
+
+    private static long lastSubmitLogTime;
+
+    public static class SubmitFeedbackTask {
+
+        private int taskState;
+        private String account;
+        private FeedBackBean backBean;
+
+        public SubmitFeedbackTask(String account, FeedBackBean backBean) {
+            this.account = account;
+            this.backBean = backBean;
+        }
+
+        public FeedBackBean getBackBean() {
+            return backBean;
+        }
+
+        public void setTaskState(int taskState) {
+            this.taskState = taskState;
+        }
+
+        public int getTaskState() {
+            return taskState;
+        }
+
+        public void runTask() {
+            boolean hasLog = false;
+            if (lastSubmitLogTime == 0 || System.currentTimeMillis() - lastSubmitLogTime > 5 * 60 * 1000) {
+                lastSubmitLogTime = System.currentTimeMillis();
+                hasLog = true;
+                sendLog();
+            } else {
+                taskState = TASK_STATE_SUCCESS;
+            }
+            BaseApplication.getAppComponent().getCmd().sendFeedback(backBean.getMsgTime(), backBean.getContent(), hasLog);
+        }
+
+        private void sendLog() {
+            taskState = TASK_STATE_STARTED;
+            int req = upLoadLogFile();
+            AppLogger.d("准备上传日志:" + req);
+            if (req == -1) {
+                AppLogger.e("上传日志失败:");
+                taskState = TASK_STATE_FAILED;
+                return;
+            }
+            RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
+                    .subscribeOn(Schedulers.io())
+                    .timeout(2, TimeUnit.MINUTES)
+                    .filter(ret -> ret.requestId == req)
+                    .first()
+                    .doOnError(throwable -> {
+                        taskState = TASK_STATE_FAILED;
+                        RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean.getMsgTime()));
+                    })
+                    .subscribe(jfgMsgHttpResult -> {
+                        taskState = TASK_STATE_SUCCESS;
+                        RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean.getMsgTime()));
+                    }, AppLogger::e);
+        }
+
+        public int upLoadLogFile() {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)) {
+                return -1;
+            }
+            AppLogger.d(PackageUtils.getAppVersionName(ContextUtils.getContext()));
+            AppLogger.d("" + PackageUtils.getAppVersionCode(ContextUtils.getContext()));
+            AppLogger.d(ProcessUtils.myProcessName(ContextUtils.getContext()));
+            AppLogger.d(Build.DISPLAY);
+            AppLogger.d(Build.MODEL);
+            AppLogger.d(Build.VERSION.SDK_INT + " " + Build.VERSION.RELEASE);
+            File logFile = new File(JConstant.WORKER_PATH + "/log.txt");
+            File smartcall_t = new File(JConstant.WORKER_PATH + "/smartCall_t.txt");
+            File smartcall_w = new File(JConstant.WORKER_PATH + "/smartCall_w.txt");
+            File crashFile = new File(JConstant.CRASH_PATH);
+            File outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + System.currentTimeMillis() / 1000 + JConstant.getRoot() + ".zip");
+            try {
+                Collection<File> files = new ArrayList<>();
+                files.add(logFile);
+                files.add(smartcall_t);
+                files.add(smartcall_w);
+                if (crashFile.exists()) {
+                    File[] file = crashFile.listFiles();
+                    if (file.length <= 10) {
+                        files.add(crashFile);
+                    } else {
+                        for (int i = file.length - 1; i > file.length - 11; i--) {
+                            files.add(file[i]);
+                        }
+                    }
+                }
+                ZipUtils.zipFiles(files, outFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                final String fileName = System.currentTimeMillis() / 1000 + ".zip";
+                final String remoteUrl = "/log/" + Security.getVId() + "/" + account + "/" + fileName;
+                AppLogger.d("upload log:" + remoteUrl);
+                return BaseApplication.getAppComponent().getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
+            } catch (JfgException e) {
+                return -1;
+            }
+        }
+
+        /**
+         * 删除生成的本地log文件
+         */
+        private void deleteLocalLogFile() {
+//            Observable.just("delete")
+//                    .subscribeOn(Schedulers.io())
+//                    .map(s -> {
+//                        if (outFile != null && outFile.exists()) {
+//                            boolean delete = outFile.delete();
+//                            return delete ? 0 : -1;
+//                        }
+//                        return 0;
+//                    })
+//                    .subscribe(ret -> {
+//                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+//
+        }
+
+    }
+}

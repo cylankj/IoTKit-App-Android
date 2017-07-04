@@ -147,11 +147,6 @@ public interface JFGSourceManager {
 
     ArrayList<JFGFriendRequest> getFriendsReqList();
 
-    void cacheNewFeedbackList(ArrayList<JFGFeedbackInfo> list);
-
-    void clearFeedbackList();
-
-    ArrayList<JFGFeedbackInfo> getNewFeedbackList();
 
     void pushDeviceState(String uuid, PanoramaEvent.MsgVideoStatusRsp videoStatusRsp);
 

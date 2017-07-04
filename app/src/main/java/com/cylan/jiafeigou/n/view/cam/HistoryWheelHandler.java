@@ -96,7 +96,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).addAll(dateStartList);
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setOnItemClickListener((View itemView, int viewType, int position) -> {
                 long time = dateStartList.get(position);
-                AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate(time));
+                AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate(time));
                 loadSelectedDay(TimeUtils.getSpecificDayStartTime(time));
                 landDateListContainer.removeCallbacks(containerHide);
                 landDateListContainer.post(containerHide);//选中立马隐藏
@@ -121,7 +121,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
             datePickerRef.get().setAction((int id, Object value) -> {
                 if (value != null && value instanceof Long) {
-                    AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
+                    AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate((Long) value));
                     if (datePickerListener != null)
                         datePickerListener.onPickDate((Long) value, STATE_FINISH);
                     loadSelectedDay((Long) value);
