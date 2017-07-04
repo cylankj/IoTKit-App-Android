@@ -52,9 +52,10 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 item.hasShareCount++;
+            } else {
+                item.hasShareCount--;
             }
             if (item.hasShareCount > 5) {
-
                 checkBox.setChecked(false);
                 item.isChooseFlag = 0;
             } else {
