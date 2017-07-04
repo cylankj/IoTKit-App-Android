@@ -17,6 +17,8 @@
             android:layout_margin="@dimen/x20" />
 
         <LinearLayout
+            android:layout_marginEnd="@dimen/x20"
+            android:layout_marginStart="@dimen/x20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -26,8 +28,8 @@
                 android:id="@+id/wheel_date"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y100"
-                android:layout_marginEnd="@dimen/x10"
-                android:layout_marginStart="@dimen/x10"
+                android:layout_marginEnd="@dimen/x5"
+                android:layout_marginStart="@dimen/x5"
                 app:selectionDivider="@drawable/wheel_divider"
                 app:selectionDividerHeight="1px" />
 
@@ -35,8 +37,8 @@
                 android:id="@+id/wheel_hour"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y100"
-                android:layout_marginEnd="@dimen/x10"
-                android:layout_marginStart="@dimen/x10"
+                android:layout_marginEnd="@dimen/x5"
+                android:layout_marginStart="@dimen/x5"
                 app:selectionDivider="@drawable/wheel_divider"
                 app:selectionDividerHeight="1px" />
 
@@ -44,8 +46,8 @@
                 android:id="@+id/wheel_minute"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y100"
-                android:layout_marginEnd="@dimen/x10"
-                android:layout_marginStart="@dimen/x10"
+                android:layout_marginEnd="@dimen/x5"
+                android:layout_marginStart="@dimen/x5"
                 app:selectionDivider="@drawable/wheel_divider"
                 app:selectionDividerHeight="1px" />
         </LinearLayout>
