@@ -534,10 +534,10 @@ public class RxEvent {
     }
 
     public static final class SendLogRsp {
-        public long time;
+        public FeedBackBean bean;
 
-        public SendLogRsp setTime(long time) {
-            this.time = time;
+        public SendLogRsp setTime(FeedBackBean bean) {
+            this.bean = bean;
             return this;
         }
     }

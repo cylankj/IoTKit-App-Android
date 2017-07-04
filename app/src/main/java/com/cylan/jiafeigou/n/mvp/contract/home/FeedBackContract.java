@@ -22,6 +22,8 @@ public interface FeedBackContract {
          */
         void initList(List<FeedBackBean> list);
 
+        void updateItem(FeedBackBean bean);
+
         void appendList(List<FeedBackBean> list);
 
         /**

@@ -63,7 +63,9 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
 
     private Subscription sendLogRspSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SendLogRsp.class)
-                .subscribe();
+                .filter(ret -> mView != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> mView.updateItem(ret.bean));
     }
 
     private Subscription newListRsp() {

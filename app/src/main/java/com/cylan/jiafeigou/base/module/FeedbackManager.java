@@ -168,7 +168,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
             } else {
                 taskState = TASK_STATE_SUCCESS;
             }
-            BaseApplication.getAppComponent().getCmd().sendFeedback(backBean.getMsgTime(), backBean.getContent(), hasLog);
+            BaseApplication.getAppComponent().getCmd().sendFeedback(backBean.getMsgTime() / 1000, backBean.getContent(), hasLog);
         }
 
         private void sendLog() {
@@ -187,11 +187,13 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                     .first()
                     .doOnError(throwable -> {
                         taskState = TASK_STATE_FAILED;
-                        RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean.getMsgTime()));
+                        RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean));
+                        AppLogger.d("发送日志失败");
                     })
                     .subscribe(jfgMsgHttpResult -> {
                         taskState = TASK_STATE_SUCCESS;
-                        RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean.getMsgTime()));
+                        AppLogger.d("发送日志成功");
+                        RxBus.getCacheInstance().post(new RxEvent.SendLogRsp().setTime(backBean));
                     }, AppLogger::e);
         }
 
@@ -231,7 +233,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
             }
 
             try {
-                final String fileName = System.currentTimeMillis() / 1000 + ".zip";
+                final String fileName = backBean.getMsgTime() / 1000 + ".zip";
                 final String remoteUrl = "/log/" + Security.getVId() + "/" + account + "/" + fileName;
                 AppLogger.d("upload log:" + remoteUrl);
                 return BaseApplication.getAppComponent().getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());

@@ -275,6 +275,15 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     }
 
     @Override
+    public void updateItem(FeedBackBean bean) {
+        final int count = suggestionAdapter == null ? 0 : suggestionAdapter.getCount();
+        final int index = suggestionAdapter == null || suggestionAdapter.getCount() == 0 ? -1
+                : suggestionAdapter.getList().indexOf(bean);
+        if (index < 0 || index > count) return;
+        suggestionAdapter.notifyItemChanged(index);
+    }
+
+    @Override
     public void appendList(List<FeedBackBean> list) {
         if (suggestionAdapter == null) return;
         suggestionAdapter.addAll(list);
