@@ -115,7 +115,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .doOnSubscribe(() -> getView().showLoading(R.string.LOADING))
                 .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(result -> {
-                    getView().onInitRequestAndFriendList(result.first, result.second);
+                    getView().onInitRequestAndFriendList(result == null ? null : result.first, result == null ? null : result.second);
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.e(e.getMessage());
@@ -156,12 +156,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     getView().deleteItemRsp(item, ret == null ? -1 : ret.jfgResult.code);
-////                    if (viewWeakReference.get() != null)
-////                        viewWeakReference.get().deleteItemRsp(account, result.code);
-//                    BaseDBHelper dbHelper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
-//                    FriendsReqBeanDao dao = dbHelper.getDaoSession().getFriendsReqBeanDao();
-//                    List<FriendsReqBean> list1 = dao.queryBuilder().where(FriendsReqBeanDao.Properties.Account.eq(account)).list();
-//                    dao.deleteInTx(list1);
                 }, AppLogger::e);
 
         addSubscription(subscribe);

@@ -698,6 +698,10 @@ public class FileUtils {
             return result;
         FileOutputStream out = null;
         try {
+            if (!isFileExist(filePath)) {
+                File file = new File(filePath);
+                file.getParentFile().mkdirs();
+            }
             out = new FileOutputStream(filePath);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
@@ -733,6 +737,7 @@ public class FileUtils {
         }
 
     }
+
     /**
      * Reads the text of an asset. Should not be run on the UI thread.
      *

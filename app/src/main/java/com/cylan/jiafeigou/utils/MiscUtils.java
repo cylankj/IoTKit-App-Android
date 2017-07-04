@@ -103,15 +103,15 @@ public class MiscUtils {
 
     public static String getFlowResult(long byteData) {
         if (byteData < BYTE)
-            return byteData + "K/account";
+            return byteData + "K/s";
         if (byteData >= BYTE && byteData < MEGA_BYTE) {
-            return (byteData >>> 10) + "M/account";
+            return (byteData >>> 10) + "M/s";
         }
         if (byteData >= MEGA_BYTE && byteData < GIGA_BYTE) {
-            return (byteData >>> 20) + "G/account";
+            return (byteData >>> 20) + "G/s";
         }
         if (byteData >= GIGA_BYTE && byteData < 1024L * GIGA_BYTE) {
-            return (byteData >>> 30) + "T/account";
+            return (byteData >>> 30) + "T/s";
         }
         return "";
     }
@@ -439,6 +439,7 @@ public class MiscUtils {
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222));
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505));
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 401));
         }
         return list;
     }

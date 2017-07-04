@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
 /**
  * Created by yanzhendong on 2017/6/29.
  */
-
 public class FriendContextItem extends AbstractItem<FriendContextItem, FriendContextItem.ViewHolder> implements Parcelable {
     public FriendContextHeader parent;
     public JFGFriendRequest friendRequest;

@@ -832,6 +832,18 @@ public class DpMsgDefine {
         public DPBellCallRecord() {
         }
 
+        public DPAlarm converToAlarm() {
+            DPAlarm dpAlarm = new DPAlarm();
+            dpAlarm.time = time;
+            dpAlarm.isRecording = 0;
+            dpAlarm.version = version;
+            dpAlarm.msgId = 505;
+            dpAlarm.type = type;
+            dpAlarm.tly = "";
+
+            return dpAlarm;
+        }
+
         @Override
         public int describeContents() {
             return 0;

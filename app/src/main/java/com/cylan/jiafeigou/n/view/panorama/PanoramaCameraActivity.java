@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
@@ -22,7 +23,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -62,9 +62,9 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -73,7 +73,11 @@ import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.panorama.CommonPanoramicView;
 import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -83,6 +87,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.ERROR_CODE_HTTP_NOT_AVAILABLE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT;
@@ -91,7 +96,7 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PAN
  * Created by yanzhendong on 2017/3/7.
  */
 @RuntimePermissions
-public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View {
+public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View, CommonPanoramicView.PanoramaEventListener {
 
     @BindView(R.id.act_panorama_camera_banner)
     ViewSwitcher bannerSwitcher;
@@ -164,6 +169,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private boolean hasNetSetting = false;
     private boolean upgrading = false;
     private boolean alertSDFormatError = true;
+    private boolean alertMobile = true;
     private PopupWindow popOption;
     private LayoutPanoramaPopMenuBinding menuBinding;
     private ObjectAnimator countDownAnimator;
@@ -229,9 +235,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         menuBinding.actPanoramaCameraQuickMenuItem3Resolution.setOnClickListener(this::clickedQuickMenuItem3Resolution);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         bottomPanelLoading.setEnabled(false);
-        String picture = PreferencesUtils.getString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid);
-        if (!TextUtils.isEmpty(picture)) {
-            onShowPreviewPicture(picture);
+        if (FileUtils.isFileExist(JConstant.MEDIA_PATH + File.separator + JConstant.PANORAMA_THUMB_PICTURE + File.separator + uuid + ".jpg")) {
+            onShowPreviewPicture(JConstant.MEDIA_PATH + File.separator + JConstant.PANORAMA_THUMB_PICTURE + File.separator + uuid + ".jpg");
         }
         Device device = sourceManager.getDevice(uuid);
         String alias = device.getAlias();
@@ -304,48 +309,43 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
             surfaceView.configV720();
             surfaceView.setId("IVideoView".hashCode());
+            surfaceView.setEventListener(this);
         }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         liveFlowSpeedText.setVisibility(View.VISIBLE);
-        liveFlowSpeedText.setText("0K/account");
+        liveFlowSpeedText.setText("0K/s");
         onRefreshViewModeUI(panoramaViewMode, true, false);
         onHideBadNetWorkBanner();
     }
 
     @Override
     public void onShowPreviewPicture(String picture) {
-        AppLogger.e("正在加载相册最新缩略图" + PreferencesUtils.getString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid) + "," + picture);
-        Glide.with(this)
-                .load(new PanoramaThumbURL(uuid, picture))
-                .animate(view -> {
-                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0.7f, 1.2f, 1.0f);
-                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0.7f, 1.2f, 1.0f);
-                    AnimatorSet set = new AnimatorSet();
-                    set.playTogether(scaleX, scaleY);
-                    set.setDuration(300);
-                    set.start();
-                })
-                .error(R.drawable.camera720_icon_album_selector)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new ImageViewTarget<GlideDrawable>(bottomPanelAlbumItem) {
-                    @Override
-                    protected void setResource(GlideDrawable resource) {
-//
-//                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(), resource.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-//                        Canvas canvas = new Canvas(bitmap);
-//                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-//                        resource.draw(canvas);
-//                        Drawable tintIcon = DrawableCompat.wrap(new BitmapDrawable(getResources(), bitmap));
-//
-//                        DrawableCompat.setTintList(tintIcon, getResources().getColorStateList(R.color.color_panorama_album));
-//                        DrawableCompat.setTintMode(tintIcon, PorterDuff.Mode.SRC_ATOP);
-                        view.setImageDrawable(resource);
-                        view.setAlpha(view.isEnabled() ? 1 : 0.3f);
-                        PreferencesUtils.putString(JConstant.PANORAMA_THUMB_PICTURE + ":" + uuid, picture);
-                    }
-                });
-
+        if (!TextUtils.isEmpty(picture)) {
+            Glide.with(this)
+                    .load(picture)
+                    .animate(view -> {
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0.7f, 1.2f, 1.0f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0.7f, 1.2f, 1.0f);
+                        AnimatorSet set = new AnimatorSet();
+                        set.playTogether(scaleX, scaleY);
+                        set.setDuration(300);
+                        set.start();
+                    })
+                    .error(R.drawable.camera720_icon_album_selector)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(new ImageViewTarget<GlideDrawable>(bottomPanelAlbumItem) {
+                        @Override
+                        protected void setResource(GlideDrawable resource) {
+                            view.setImageDrawable(resource);
+                            view.setAlpha(view.isEnabled() ? 1 : 0.3f);
+                        }
+                    });
+        } else {
+            if (surfaceView != null) {
+                surfaceView.takeSnapshot(true);
+            }
+        }
     }
 
     @Override
@@ -561,7 +561,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         int xPos = (int) ((videoPopHint.getWidth() - bottomPanelVideoMode.getWidth()) / 2 + getResources().getDimension(R.dimen.y2));
         int yPos = (int) (videoPopHint.getHeight() + getResources().getDimension(R.dimen.y2) + bottomPanelVideoMode.getHeight());
         PopupWindowCompat.showAsDropDown(videoPopHint, bottomPanelVideoMode, -xPos, -yPos, Gravity.TOP | Gravity.START);
-//        videoPopHint.showAsDropDown(bottomPanelVideoMode, -xPos, -yPos);
     }
 
     public boolean hideVideoModePop() {
@@ -887,6 +886,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled(!apMode);
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled(!apMode);
         if (connectionType < 0) return;
+
+        onHideBadNetWorkBanner();//不管是 WiFi 还是移动网络,都应该隐藏网络不好的 banner
         if (connectionType == 0) {//wifi
             AppLogger.d("正在使用 WiFi 网络,可以放心观看");
 
@@ -900,8 +901,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
         } else if (connectionType == 1) {//mobile
             AppLogger.d("正在使用移动网络,请注意流量");
-            boolean alert = PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
-            if (alert) {
+            if (alertMobile) {
                 presenter.cancelViewer();
                 onRefreshControllerView(false, false);
                 if (mobileAlert == null) {
@@ -914,9 +914,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                                     presenter.startViewer();
                                 }
                             })
-                            .setNegativeButton(R.string.Dont_Show_Again, (dialog, which) -> {
+                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
                                 loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
-                                PreferencesUtils.putBoolean(JConstant.ALERT_MOBILE, false);
+                                alertMobile = false;
                             })
                             .create();
                 }
@@ -930,7 +930,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
     }
 
-    private Interpolator interpolator = new LinearInterpolator();
 
     @Override
     public void onRefreshVideoRecordUI(int offset, @PANORAMA_RECORD_MODE int type) {
@@ -983,7 +982,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     });
                     countDownAnimator.start();
                 }
-//                bottomCountDownLine.animate().setDuration(500).setInterpolator(interpolator).scaleX(countDown * 1.0F / 8).start();
                 break;
             default:
                 break;
@@ -1007,11 +1005,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Tap1_SDCardFullyTips), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
                     deviceReportDialog.show();
-//                    new AlertDialog.Builder(this).setCancelable(false).
-//                            setMessage(R.string.Tap1_SDCardFullyTips)
-//                            .setCancelable(false)
-//                            .setPositiveButton(R.string.OK, null)
-//                            .show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Tap1_SDCardFullyTips));
                 }
@@ -1023,11 +1016,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
                     deviceReportDialog.show();
-//                    new AlertDialog.Builder(this).setCancelable(false).
-//                            setMessage(R.string.MSG_SD_OFF)
-//                            .setCancelable(false)
-//                            .setPositiveButton(R.string.OK, null)
-//                            .show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
                 }
@@ -1047,16 +1035,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SD_INIT), (dialog, which) -> presenter.formatSDCard());
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (dialog, which) -> alertSDFormatError = false);
                     deviceReportDialog.show();
-//                    AlertDialog show = new AlertDialog.Builder(this)
-//                            .setMessage(R.string.Tap1_NeedsInitializedTips)
-//                            .setPositiveButton(R.string.SD_INIT, (dialog, which) -> {
-//                                presenter.formatSDCard();
-//                            })
-//                            .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
-//                                alertSDFormatError = false;
-//                            })
-//                            .setCancelable(false)
-//                            .show();
                     break;
                 }
                 //小于
@@ -1074,15 +1052,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false));
                     deviceReportDialog.show();
-//
-//                    new AlertDialog.Builder(PanoramaCameraActivity.this)
-//                            .setMessage(R.string.Switch_Mode_Pop)
-//                            .setCancelable(false)
-//                            .setNegativeButton(R.string.WELL_OK, null)
-//                            .setPositiveButton(R.string.Dont_Show_Again, (dialog, which) -> {
-//                                PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, false);
-//                            })
-//                            .show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));
                 }
@@ -1102,5 +1071,30 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                     startActivity(intent);
                 }, getString(R.string.CANCEL), null, false);
+    }
+
+    @Override
+    public void onSingleTap(float v, float v1) {
+
+    }
+
+    @Override
+    public void onSnapshot(Bitmap bitmap, boolean tag) {
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleX", 0.7f, 1.2f, 1.0f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(bottomPanelAlbumItem, "scaleY", 0.7f, 1.2f, 1.0f);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(scaleX, scaleY);
+        set.setDuration(300);
+        set.start();
+        bottomPanelAlbumItem.setImageBitmap(bitmap);
+        bottomPanelAlbumItem.setAlpha(bottomPanelAlbumItem.isEnabled() ? 1 : 0.3f);
+        Schedulers.io().createWorker().schedule(() -> {
+            try {
+                String filePath = JConstant.MEDIA_PATH + File.separator + JConstant.PANORAMA_THUMB_PICTURE + File.separator + uuid + ".jpg";
+                FileUtils.saveBitmap(bitmap, filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

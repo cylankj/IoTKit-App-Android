@@ -189,10 +189,12 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
 
     @Override
     public void onShareContentResponse(List<ShareContentItem> shareContentItems, boolean refresh) {
-        if (refresh) {
-            adapter.set(shareContentItems);
-        } else {
-            adapter.add(shareContentItems);
+        if (shareContentItems != null) {
+            if (refresh) {
+                adapter.set(shareContentItems);
+            } else {
+                adapter.add(shareContentItems);
+            }
         }
         shareContentBinding.sharedRefresh.setRefreshing(false);
         empty.set(adapter.getItemCount() == 0);
