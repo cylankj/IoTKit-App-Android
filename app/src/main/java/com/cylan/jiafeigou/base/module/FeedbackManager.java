@@ -79,12 +79,18 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
             List<FeedBackBean> beanList = (List<FeedBackBean>) object.getObject();
             beanList.addAll(feedBackBeans);
             object.setCount(ListUtils.getSize(beanList));
+        } else {
+            object = new CacheObject();
+            object.setCount(ListUtils.getSize(feedBackBeans));
+            object.setObject(feedBackBeans);
         }
+        node.setCacheData(object);
         saveToCache(feedBackBeans)
                 .subscribeOn(Schedulers.io())
                 .subscribe(ret -> AppLogger.d("反馈已经存档"), AppLogger::e);
         //收到,并且存档.
         RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(feedBackBeans));
+        RxBus.getCacheInstance().postSticky(new RxEvent.InfoUpdate());
     }
 
     @Override

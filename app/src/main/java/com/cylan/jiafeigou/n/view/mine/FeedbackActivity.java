@@ -80,6 +80,12 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new FeedbackAdapter(getContext(), null, null);
         mRvMineSuggestion.setAdapter(suggestionAdapter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         BaseApplication.getAppComponent().getTreeHelper().markNodeRead(HomeMineHelpFragment.class.getSimpleName());
     }
 
@@ -118,20 +124,6 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     }
 
     /**
-     * 自动回复
-     */
-    private void autoReply() {
-        if (suggestionAdapter.getItemCount() == 0) {
-            return;
-        }
-        if ((suggestionAdapter.getItemCount() == 1
-                || suggestionAdapter.getItemCount() == 2)
-                || (suggestionAdapter.getCount() > 2 && suggestionAdapter.getItem(suggestionAdapter.getCount() - 1).getViewType() != 0)) {
-            addAutoReply();
-        }
-    }
-
-    /**
      * 弹出对话框
      */
     private void showDialog() {
@@ -146,7 +138,6 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
     /**
      * 用户进行反馈时添加一个自动回复的条目
      */
-    @Override
     public void addAutoReply() {
         FeedBackBean autoReplyBean = new FeedBackBean();
         autoReplyBean.setViewType(0);
@@ -169,35 +160,9 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
                 .subscribe(ret -> {
                     suggestionAdapter.add(suggestionBean);
                     mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
+                    addAutoReply();
                 }, AppLogger::e);
         presenter.saveIntoDb(suggestionBean);
-    }
-
-    public void showLoadingDialog() {
-        LoadingDialog.showLoading(getSupportFragmentManager());
-    }
-
-    public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
-    }
-
-    /**
-     * 系统的回复
-     *
-     * @param time
-     * @param content
-     */
-    @Override
-    public void addSystemAutoReply(long time, String content) {
-        FeedBackBean autoReplyBean = new FeedBackBean();
-        autoReplyBean.setViewType(0);
-        autoReplyBean.setContent(content);
-        autoReplyBean.setMsgTime(System.currentTimeMillis());
-        suggestionAdapter.add(autoReplyBean);
-        suggestionAdapter.notifyDataSetHasChanged();
-        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
-        presenter.saveIntoDb(autoReplyBean);
-//        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     public FeedBackBean addSystemAutoReply() {
@@ -205,18 +170,10 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         autoReplyBean.setViewType(0);
         autoReplyBean.setContent(getString(R.string.Tap3_Feedback_AutoTips));
         autoReplyBean.setMsgTime(System.currentTimeMillis());
-//        presenter.saveIntoDb(autoReplyBean);
+        presenter.saveIntoDb(autoReplyBean);
         return autoReplyBean;
     }
 
-
-    /**
-     * 上传日志的结果
-     */
-    @Override
-    public void sendLogResult(int code) {
-//        hideLoadingDialog();
-    }
 
     /**
      * 初始化显示列表

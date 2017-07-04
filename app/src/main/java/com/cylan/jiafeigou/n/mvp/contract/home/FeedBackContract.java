@@ -26,22 +26,6 @@ public interface FeedBackContract {
 
         void appendList(List<FeedBackBean> list);
 
-        /**
-         * 添加自动回复条目
-         */
-        void addAutoReply();
-
-
-        /**
-         * 系统的自动回复
-         */
-        void addSystemAutoReply(long time, String content);
-
-
-        /**
-         * 上传日志的结果
-         */
-        void sendLogResult(int code);
 
     }
 
