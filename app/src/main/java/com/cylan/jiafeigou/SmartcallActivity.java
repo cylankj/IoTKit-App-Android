@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -63,6 +64,8 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.splash_screen));
+        PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
@@ -74,8 +77,9 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @Override
     protected void onStart() {
         super.onStart();
-//        goAheadAfterPermissionGranted();应该是权限允许之后,才登录,免得登录后,没有权限,导致奔溃
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+        if (Build.VERSION.SDK_INT >= 23) {
+            SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+        } else showWriteStoragePermissions();
     }
 
     /**
@@ -96,7 +100,6 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
                 basePresenter.autoLogin();
             basePresenter.selectNext(showSplash);
         }
-//        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     @Override
@@ -209,14 +212,16 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (permissions.length == 1) {
-            if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                if (grantResults[0] == -1) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+            if (permissions.length == 1) {
+                if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (grantResults[0] == -1) {
 //                    reEnablePermission();
-                    return;
+                        return;
+                    }
+                    SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
                 }
-                SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
             }
         }
     }
@@ -335,6 +340,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
 
     @Override
     public void loginError(int code) {
+        PerformanceUtils.stopTrace("smartCall2LogResult");
         AutoSignIn.getInstance().clearPsw();
         splashOver();
         if (PreferencesUtils.getBoolean(JConstant.SHOW_PASSWORD_CHANGED, false)) {

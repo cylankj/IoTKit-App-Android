@@ -19,6 +19,7 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="@dimen/y32"
                 android:layout_marginTop="@dimen/y200"
+                android:visibility="invisible"
                 android:src="@drawable/logo_splash_screen" />
 
             <TextView
