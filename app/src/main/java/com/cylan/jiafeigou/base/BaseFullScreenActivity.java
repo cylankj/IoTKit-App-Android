@@ -34,6 +34,7 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
         handleIntent(getIntent());
         overridePendingTransition(getOverridePendingTransition()[0], getOverridePendingTransition()[1]);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
