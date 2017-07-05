@@ -319,18 +319,60 @@ public class DataSourceManager implements JFGSourceManager {
     public void syncAllDevicePropertyManually() {
         if (mCachedDeviceMap.size() == 0) return;
         ArrayList<String> uuidList = new ArrayList<>();
+        if (mCachedDeviceMap.size() == 0) return;
+        HashMap<String, JFGDPMsg[]> map = new HashMap<>();
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             Device device = mCachedDeviceMap.get(entry.getKey());
-            syncDeviceProperty(entry.getKey());
             //非分享设备需要一些属性
             if (!JFGRules.isShareDevice(device)) {
                 uuidList.add(device.uuid);
             }
+
+            final String uuid = device.uuid;
+            if (TextUtils.isEmpty(uuid) || account == null) return;
+            ArrayList<JFGDPMsg> parameters = device.getQueryParams();
+            if (parameters == null || parameters.size() == 0) continue;
+            JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
+            for (int i = 0; i < parameters.size(); i++) {
+                array[i] = parameters.get(i);
+            }
+            map.put(uuid, array);
         }
+        try {
+            appCmd.robotGetMultiData(map, 1, false, 0);
+            AppLogger.d("多查询");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         /**
          * 设备分享列表
          */
         appCmd.getShareList(uuidList);
+    }
+
+    @Override
+    public void syncHomeProperty() {
+        if (mCachedDeviceMap.size() == 0) return;
+        HashMap<String, JFGDPMsg[]> map = new HashMap<>();
+        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+            Device device = mCachedDeviceMap.get(entry.getKey());
+            final String uuid = device.uuid;
+            if (TextUtils.isEmpty(uuid) || account == null) return;
+            ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
+            if (parameters == null || parameters.size() == 0) continue;
+            JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
+            for (int i = 0; i < parameters.size(); i++) {
+                array[i] = parameters.get(i);
+            }
+            map.put(uuid, array);
+        }
+        try {
+            appCmd.robotGetMultiData(map, 1, false, 0);
+            AppLogger.d("多查询");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -735,16 +777,17 @@ public class DataSourceManager implements JFGSourceManager {
                                 }
                             }
                         }
-                        Device device;
-                        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
-                            device = entry.getValue();
-                            parameters = device.getQueryParams();
-                            AppLogger.d("正在查询设备属性:" + new Gson().toJson(parameters));
-                            appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
-                        }
-                        appCmd.getShareList(uuidList);
+//                        Device device;
+                        syncAllDevicePropertyManually();
+//                        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+//                            device = entry.getValue();
+//                            parameters = device.getQueryParams();
+//                            AppLogger.d("正在查询设备属性:" + new Gson().toJson(parameters));
+//                            appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
+//                        }
+//                        appCmd.getShareList(uuidList);
                         getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
-                    } catch (JfgException e) {
+                    } catch (Exception e) {
                         AppLogger.d(e.getMessage());
                         e.printStackTrace();
                     }

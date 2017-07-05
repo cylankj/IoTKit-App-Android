@@ -17,6 +17,8 @@ public interface IPropertyParser {
 
     ArrayList<JFGDPMsg> getQueryParameters(int pid);
 
+    ArrayList<JFGDPMsg> getQueryParameters(int pid, int level);
+
     ArrayList<JFGDPMsg> getAllQueryParameters();
 
     boolean isProperty(int msgId);

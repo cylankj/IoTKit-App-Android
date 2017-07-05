@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -119,6 +120,8 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
+        Log.d("initialization", "initialization," + Thread.currentThread());
+        PerformanceUtils.startTrace("initialization");
         hasInitFinished = false;
         initOKGo();
         enableDebugOptions();
@@ -137,6 +140,7 @@ public final class BaseInitializationManager {
         initUmengSdk();
         hasInitFinished = true;
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
+        PerformanceUtils.stopTrace("initialization");
     }
 
     private void initOKGo() {
@@ -245,9 +249,11 @@ public final class BaseInitializationManager {
 
     private void initAppCmd() {
         try {
+            Log.d("initAppCmd", "initAppCmd start");
             System.loadLibrary("jfgsdk");
             appCmd.setCallBack(callBackHolder);
             appCmd.initNativeParam(vid, vkey, serverAddress, JConstant.ROOT_DIR);
+            Log.d("initAppCmd", "initAppCmd end");
 //            appCmd.enableLog(true, logPath);
         } catch (Exception e) {
             AppLogger.e("初始化出现错误!!!" + e.getMessage() + "vid:" + vid + ",vkey:" + vkey + ",serverAddress:" + serverAddress + ",logPath:" + logPath);
@@ -263,11 +269,12 @@ public final class BaseInitializationManager {
     }
 
     private void initLeakCanary() {
-        LeakCanary.install((Application) appContext);
+//        LeakCanary.install((Application) appContext);
     }
 
     private void enableDebugOptions() {
         OptionsImpl.enableCrashHandler(appContext, crashPath);
+//        OptionsImpl.enableStrictMode();
     }
 
     public void observeInitFinish() {

@@ -22,7 +22,7 @@ public class BugMonitor {
             //...在这里设置strategy的属性,在bugly初始化时传入
             //...
             String appId = PackageUtils.getMetaString(context, "BUGLY_APPID");
-            Log.d("BugMonitor", "BugMonitor: " + appId);
+            Log.d("BugMonitor", "BugMonitor: " + appId + "," + Thread.currentThread().getName());
             CrashReport.initCrashReport(context, appId, BuildConfig.DEBUG, strategy);
         } catch (Exception e) {
 

@@ -9,6 +9,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -136,6 +137,7 @@ public class AutoSignIn {
                         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                     }
+                    PerformanceUtils.stopTrace("autoLogin");
                     if (!BaseApplication.isOnline() && !PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true)) {//当前无法联网,则直指返回
                         BaseApplication.getAppComponent().getSourceManager().initFromDB();
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ERROR_OFFLINE_LOGIN));

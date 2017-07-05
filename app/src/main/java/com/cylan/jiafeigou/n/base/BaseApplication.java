@@ -9,10 +9,6 @@ import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.DaemonReceiver1;
-import com.cylan.jiafeigou.DaemonReceiver2;
-import com.cylan.jiafeigou.DaemonService1;
-import com.cylan.jiafeigou.DaemonService2;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
@@ -24,12 +20,11 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.marswin89.marsdaemon.DaemonClient;
-import com.marswin89.marsdaemon.DaemonConfigurations;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
@@ -40,49 +35,49 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static final String TAG = "BaseApplication";
 
-    private DaemonClient mDaemonClient;
+    //    private DaemonClient mDaemonClient;
     private static AppComponent appComponent;
     private static int viewCount = 0;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        mDaemonClient = new DaemonClient(createDaemonConfigurations());
-        mDaemonClient.onAttachBaseContext(base);
+//        mDaemonClient = new DaemonClient(createDaemonConfigurations());
+//        mDaemonClient.onAttachBaseContext(base);
     }
 
 
-    private DaemonConfigurations createDaemonConfigurations() {
-        DaemonConfigurations.DaemonConfiguration configuration1 = new DaemonConfigurations.DaemonConfiguration(
-                getPackageName() + ":process1",
-                DaemonService1.class.getCanonicalName(),
-                DaemonReceiver1.class.getCanonicalName());
-        DaemonConfigurations.DaemonConfiguration configuration2 = new DaemonConfigurations.DaemonConfiguration(
-                getPackageName() + ":process2",
-                DaemonService2.class.getCanonicalName(),
-                DaemonReceiver2.class.getCanonicalName());
-        DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
-        //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
-        return new DaemonConfigurations(configuration1, configuration2, listener);
-    }
+//    private DaemonConfigurations createDaemonConfigurations() {
+//        DaemonConfigurations.DaemonConfiguration configuration1 = new DaemonConfigurations.DaemonConfiguration(
+//                getPackageName() + ":process1",
+//                DaemonService1.class.getCanonicalName(),
+//                DaemonReceiver1.class.getCanonicalName());
+//        DaemonConfigurations.DaemonConfiguration configuration2 = new DaemonConfigurations.DaemonConfiguration(
+//                getPackageName() + ":process2",
+//                DaemonService2.class.getCanonicalName(),
+//                DaemonReceiver2.class.getCanonicalName());
+//        DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
+//        //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
+//        return new DaemonConfigurations(configuration1, configuration2, listener);
+//    }
 
 
-    private class MyDaemonListener implements DaemonConfigurations.DaemonListener {
-        @Override
-        public void onPersistentStart(Context context) {
-            AppLogger.d("onPersistentStart");
-        }
-
-        @Override
-        public void onDaemonAssistantStart(Context context) {
-            AppLogger.d("onDaemonAssistantStart");
-        }
-
-        @Override
-        public void onWatchDaemonDaed() {
-            AppLogger.d("onWatchDaemonDaed");
-        }
-    }
+//    private class MyDaemonListener implements DaemonConfigurations.DaemonListener {
+//        @Override
+//        public void onPersistentStart(Context context) {
+//            AppLogger.d("onPersistentStart");
+//        }
+//
+//        @Override
+//        public void onDaemonAssistantStart(Context context) {
+//            AppLogger.d("onDaemonAssistantStart");
+//        }
+//
+//        @Override
+//        public void onWatchDaemonDaed() {
+//            AppLogger.d("onWatchDaemonDaed");
+//        }
+//    }
 
 
     @Override
@@ -103,7 +98,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             registerActivityLifecycleCallbacks(this);
 //            startService(new Intent(this, DataSourceService.class));
             GlobalResetPwdSource.getInstance().register();
-            PerformanceUtils.stopTrace("appStart");
+            PerformanceUtils.stopTrace("appInit");
             PerformanceUtils.startTrace("app2SmartCall");
 //            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
         }
