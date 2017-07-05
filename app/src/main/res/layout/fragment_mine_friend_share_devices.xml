@@ -74,6 +74,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/y16"
             android:drawableTop="@drawable/pic_none_equipment"
+            android:gravity="center"
             android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Fail"
             android:textColor="#aaaaaa"
             android:textSize="@dimen/sp15"

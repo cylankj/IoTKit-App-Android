@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -61,6 +62,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
         shareDevicesBinding.rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(getContext(), null, R.layout.fragment_friend_share_device_items);
         shareDevicesBinding.rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
+        ButterKnife.bind(this, shareDevicesBinding.customToolbar);
         chooseShareDeviceAdapter.setOnCheckClickListener(this::checkDevice);
         return shareDevicesBinding.getRoot();
     }

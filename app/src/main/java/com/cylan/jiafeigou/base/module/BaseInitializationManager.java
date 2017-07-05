@@ -248,7 +248,7 @@ public final class BaseInitializationManager {
             System.loadLibrary("jfgsdk");
             appCmd.setCallBack(callBackHolder);
             appCmd.initNativeParam(vid, vkey, serverAddress, JConstant.ROOT_DIR);
-            appCmd.enableLog(true, logPath);
+//            appCmd.enableLog(true, logPath);
         } catch (Exception e) {
             AppLogger.e("初始化出现错误!!!" + e.getMessage() + "vid:" + vid + ",vkey:" + vkey + ",serverAddress:" + serverAddress + ",logPath:" + logPath);
         }

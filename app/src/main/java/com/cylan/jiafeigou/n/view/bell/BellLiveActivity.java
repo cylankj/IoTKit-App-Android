@@ -57,6 +57,7 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.jakewharton.rxbinding.view.RxView;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -607,6 +608,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
 //        notify.pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        NotifyManager.getNotifyManager().sendNotify(notify);
+        RxView.clicks(mBellFlow).subscribe(ret -> {
+        });
         onDismiss();
     }
 

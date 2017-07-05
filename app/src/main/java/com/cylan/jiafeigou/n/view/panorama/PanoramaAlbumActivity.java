@@ -129,7 +129,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
-//        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void onLoadMore() {
@@ -420,16 +420,19 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (panoramaAdapter != null) {
             panoramaAdapter.notifyDataSetChanged();
         }
+        if (mode >= albumViewMode && albumViewMode != ALBUM_VIEW_MODE.MODE_NONE) {
+            swipeRefreshLayout.setRefreshing(false);
+            return;
+        }
+
         if (albumModeSelectPop != null) {
             radioGroup.check(modeToResId(mode, true));
             menuItemAlbumPopPhoto.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PHOTO || mode == ALBUM_VIEW_MODE.MODE_BOTH);
             menuItemAlbumPopBoth.setEnabled(mode == ALBUM_VIEW_MODE.MODE_BOTH);
             menuItemAlbumPopPanorama.setEnabled(mode == ALBUM_VIEW_MODE.MODE_PANORAMA || mode == ALBUM_VIEW_MODE.MODE_BOTH);
         }
-        if (mode < albumViewMode) {
-            toolbarAlbumViewMode.setText(titles[modeToResId(mode, false)]);
-        }
-        if (albumViewMode == mode) return;
+
+//        if (albumViewMode == mode) return;
         swipeRefreshLayout.setRefreshing(true);
         presenter.fetch(0, albumViewMode = mode);
     }

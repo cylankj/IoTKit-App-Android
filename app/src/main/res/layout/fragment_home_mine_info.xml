@@ -1,166 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/ll_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:orientation="vertical">
+<layout>
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/layout_default_custom_tool_bar"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:hunt="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ll_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp18"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_enable_theme="true"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_left_title="@string/Tap3_Friends_UserInfo"
-        hunt:ct_left_title_color="@color/color_white" />
+        android:layout_height="match_parent"
+        android:background="@color/color_white">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp18"
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_theme="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_left_title="@string/Tap3_Friends_UserInfo"
+            hunt:ct_left_title_color="@color/color_white"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/tv_my_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar"
+            hunt:sv_title="@string/Tap3_Friends_Myaccount"
+            hunt:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/profile_photo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/tv_my_id"
+            hunt:sv_title="@string/PROFILE_PHOTO"
+            hunt:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.support.photoselect.CircleImageView
+            android:id="@+id/user_ImageHead"
+            android:layout_width="@dimen/y49"
+            android:layout_height="@dimen/y49"
+            android:layout_marginEnd="@dimen/y15"
+            android:layout_marginStart="@dimen/y15"
+            android:src="@drawable/icon_mine_head_normal"
+            hunt:layout_constraintBottom_toBottomOf="@+id/profile_photo"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintTop_toTopOf="@+id/profile_photo"
+            hunt:riv_oval="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/my_qr_code_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
+            hunt:layout_constraintEnd_toEndOf="parent"
+            hunt:layout_constraintStart_toStartOf="parent"
+            hunt:layout_constraintTop_toBottomOf="@+id/profile_photo"
+            hunt:sv_title="@string/Tap3_MyQRCode"
+            hunt:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_alias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none">
+            hunt:layout_constraintTop_toBottomOf="@+id/my_qr_code_text"
+            hunt:sv_title="@string/ALIAS"
+            hunt:sv_v_divider="true" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            hunt:layout_constraintTop_toBottomOf="@+id/sv_alias"
+            hunt:sv_title="@string/EMAIL"
+            hunt:sv_v_divider="true" />
 
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/tv_my_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/x10"
-                    hunt:sv_sub_title=" "
-                    hunt:sv_title="@string/Tap3_Friends_Myaccount"
-                    hunt:sv_v_divider="true" />
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            hunt:layout_constraintTop_toBottomOf="@+id/sv_email"
+            hunt:sv_title="@string/PHONE_NUMBER"
+            hunt:sv_v_divider="true" />
 
-                <RelativeLayout
-                    android:id="@+id/rLayout_home_mine_personal_pic"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72">
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/change_psw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            hunt:layout_constraintTop_toBottomOf="@+id/sv_phone"
+            hunt:sv_title="@string/CHANGE_PWD"
+            hunt:sv_v_divider="true" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:text="@string/PROFILE_PHOTO"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-                        android:id="@+id/user_ImageHead"
-                        android:layout_width="@dimen/x49"
-                        android:layout_height="@dimen/y49"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/x20"
-                        android:src="@drawable/icon_mine_head_normal"
-                        hunt:riv_oval="true" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:layout_marginRight="@dimen/x20"
-                        android:background="@color/color_f2f2f2" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_my_QRCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:text="@string/Tap3_MyQRCode"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:layout_marginRight="@dimen/x20"
-                        android:background="@color/color_f2f2f2" />
-                </RelativeLayout>
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_alias"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/x10"
-                    hunt:sv_sub_title=" "
-                    hunt:sv_title="@string/ALIAS"
-                    hunt:sv_v_divider="true" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/x10"
-                    hunt:sv_sub_title=" "
-                    hunt:sv_title="@string/EMAIL"
-                    hunt:sv_v_divider="true" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/x10"
-                    hunt:sv_sub_title=" "
-                    hunt:sv_title="@string/PHONE_NUMBER"
-                    hunt:sv_v_divider="true" />
-
-                <RelativeLayout
-                    android:id="@+id/rl_change_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:text="@string/CHANGE_PWD"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/btn_to_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y42"
-                    android:layout_centerVertical="true"
-                    android:layout_marginBottom="@dimen/y42"
-                    android:layout_marginEnd="@dimen/x30"
-                    android:layout_marginStart="@dimen/x30"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@drawable/long_btn_bg_shape_white"
-                    android:gravity="center"
-                    android:padding="@dimen/x10"
-                    android:text="@string/LOGOUT"
-                    android:textColor="@color/color_ff3b30"
-                    android:textSize="@dimen/sp16"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </ScrollView>
-
-    </FrameLayout>
-
-</LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+</layout>

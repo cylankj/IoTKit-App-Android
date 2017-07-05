@@ -132,7 +132,7 @@ public class AutoSignIn {
                             Log.d(TAG, "finalPwd:" + finalPwd);
                         }
                     } catch (Exception e) {
-                        AppLogger.e("no sign type" + e.getLocalizedMessage());
+                        AppLogger.e("no sign type" + e.getMessage());
                         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.ErrorLoginInvalidPass));
                     }

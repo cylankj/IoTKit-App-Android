@@ -272,7 +272,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
         if (JFGRules.isAPDirect(mDevice.uuid, getDevice().$(202, ""))) {
             return mContext.getString(R.string.Tap1_OutdoorMode);
-        } else if (serverOnline && net.net == 1) {
+        } else if (/*serverOnline &&*** #114473***/ net.net == 1) {
             //wifi在线
             return mContext.getString(R.string.DEVICE_WIFI_ONLINE);
         }

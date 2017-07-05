@@ -16,7 +16,7 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
-//        if (sourceManager.getAccount() == null) {//只在有账号信息的情况下发送网络状态变化通知
+//        if (sourceManager.monitorPersonInformation() == null) {//只在有账号信息的情况下发送网络状态变化通知
 //            return;
 //        }
 //        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
