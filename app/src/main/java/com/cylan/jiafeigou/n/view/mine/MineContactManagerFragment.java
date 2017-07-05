@@ -310,7 +310,7 @@ public class MineContactManagerFragment extends Fragment implements MineShareToC
     @OnPermissionDenied(Manifest.permission.SEND_SMS)
     public void showSetPermissionDialog() {
         new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, getString(R.string.Tap3_ShareDevice_Contacts)))
+                .setMessage(getString(R.string.permission_auth, getString(R.string.SMS)))
                 .setNegativeButton(getString(R.string.CANCEL), null)
                 .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
                     openSetting();
