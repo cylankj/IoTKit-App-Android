@@ -51,7 +51,7 @@ public interface JFGSourceManager {
      */
     void syncAllDevicePropertyManually();
 
-    void syncNeedDevicePropertyManually();
+    void syncHomeProperty();
 
     boolean isOnline();
 

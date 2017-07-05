@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -289,7 +288,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map((Boolean aBoolean) -> {
                     if (manually)
                         BaseApplication.getAppComponent().getCmd().refreshDevList();
-                    BaseApplication.getAppComponent().getSourceManager().syncNeedDevicePropertyManually();
+                    BaseApplication.getAppComponent().getSourceManager().syncHomeProperty();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;
                 })
