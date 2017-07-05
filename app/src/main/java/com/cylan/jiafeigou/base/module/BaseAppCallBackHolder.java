@@ -39,7 +39,9 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by yanzhendong on 2017/4/14.
@@ -373,6 +375,19 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnRobotGetMultiDataRsp(long l, Object o) {
         AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
+        if (o != null && o instanceof HashMap) {
+            HashMap<String, HashMap<Integer, ArrayList<JFGDPMsg>>> rawMap = (HashMap<String, HashMap<Integer, ArrayList<JFGDPMsg>>>) o;
+            Set<String> set = rawMap.keySet();
+            final int count = set.size();
+            for (String uuid : set) {
+                RobotoGetDataRsp rsp = new RobotoGetDataRsp();
+                rsp.identity = uuid;
+                rsp.seq = l;
+                rsp.map = rawMap.get(uuid);
+                RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
+            }
+            Log.d("OnRobotGetMultiDataRsp", "size: " + count);
+        }
     }
 
 

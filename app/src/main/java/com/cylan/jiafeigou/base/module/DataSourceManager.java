@@ -332,6 +332,30 @@ public class DataSourceManager implements JFGSourceManager {
         appCmd.getShareList(uuidList);
     }
 
+    @Override
+    public void syncNeedDevicePropertyManually() {
+        if (mCachedDeviceMap.size() == 0) return;
+        HashMap<String, JFGDPMsg[]> map = new HashMap<>();
+        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+            Device device = mCachedDeviceMap.get(entry.getKey());
+            final String uuid = device.uuid;
+            if (TextUtils.isEmpty(uuid) || account == null) return;
+            ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
+            if (parameters == null || parameters.size() == 0) continue;
+            JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
+            for (int i = 0; i < parameters.size(); i++) {
+                array[i] = parameters.get(i);
+            }
+            map.put(uuid, array);
+        }
+        try {
+            appCmd.robotGetMultiData(map, 1, false, 0);
+            AppLogger.d("多查询");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public Observable<Account> logout() {

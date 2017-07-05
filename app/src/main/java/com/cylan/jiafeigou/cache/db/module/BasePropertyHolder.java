@@ -52,6 +52,11 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     }
 
     @Override
+    public ArrayList<JFGDPMsg> getQueryParameters(int pid, int level) {
+        return propertyParser.getQueryParameters(pid(), level);
+    }
+
+    @Override
     @Deprecated
     public final boolean setValue(int msgId, byte[] bytes, long version) {
         return false;

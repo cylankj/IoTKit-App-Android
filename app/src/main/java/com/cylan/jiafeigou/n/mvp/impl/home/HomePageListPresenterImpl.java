@@ -100,9 +100,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                             if (recordSub != null && recordSub.isUnsubscribed()) {
                                 recordSub.unsubscribe();
                             }
-                        }, e -> {
-                            AppLogger.e(e.getMessage());
-                        });
+                        }, e -> AppLogger.e(e.getMessage()));
                         recordSub.add(subscribe);
                     }
                 }
@@ -291,7 +289,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map((Boolean aBoolean) -> {
                     if (manually)
                         BaseApplication.getAppComponent().getCmd().refreshDevList();
-                    BaseApplication.getAppComponent().getSourceManager().syncAllDevicePropertyManually();
+                    BaseApplication.getAppComponent().getSourceManager().syncNeedDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;
                 })

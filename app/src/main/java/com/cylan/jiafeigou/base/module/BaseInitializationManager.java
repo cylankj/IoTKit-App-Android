@@ -120,6 +120,7 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
+        Log.d("initialization", "initialization," + Thread.currentThread());
         PerformanceUtils.startTrace("initialization");
         hasInitFinished = false;
         initOKGo();
@@ -273,6 +274,7 @@ public final class BaseInitializationManager {
 
     private void enableDebugOptions() {
         OptionsImpl.enableCrashHandler(appContext, crashPath);
+//        OptionsImpl.enableStrictMode();
     }
 
     public void observeInitFinish() {
