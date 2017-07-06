@@ -28,6 +28,8 @@ import com.google.zxing.Result;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -63,7 +65,11 @@ public class MineFriendQRScanFragment extends Fragment implements ZXingScannerVi
         scanAddBinding.qrScanView.startCamera();
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
         if (account != null && account.getAccount() != null) {
-            scanAddBinding.qrCodePicture.setImageBitmap(Qrcode.createQRImage(LinkManager.getQrCodeLink(), ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+            rx.Observable.just("go")
+                    .subscribeOn(Schedulers.io())
+                    .map(ret -> Qrcode.createQRImage(LinkManager.getQrCodeLink(), ViewUtils.dp2px(78), ViewUtils.dp2px(78), null))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> scanAddBinding.qrCodePicture.setImageBitmap(ret), AppLogger::e);
         }
     }
 

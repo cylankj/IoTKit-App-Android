@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -31,6 +32,8 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -80,7 +83,11 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(LinkManager.getQrCodeLink(), ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+        rx.Observable.just("go")
+                .subscribeOn(Schedulers.io())
+                .map(ret -> Qrcode.createQRImage(LinkManager.getQrCodeLink(), ViewUtils.dp2px(78), ViewUtils.dp2px(78), null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> ivUserQrcode.setImageBitmap(ret), AppLogger::e);
     }
 
     private void initView() {

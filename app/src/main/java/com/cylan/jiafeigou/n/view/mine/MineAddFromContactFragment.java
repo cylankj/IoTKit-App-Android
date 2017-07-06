@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.item.FriendContextItem;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -160,6 +161,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
      */
     @Override
     public void sendReqBack(int code) {
+        hideSendReqHint();
         if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
             getActivity().getSupportFragmentManager().popBackStack(MineFriendInformationFragment.class.getSimpleName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -180,6 +182,11 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_right:
+                if (NetUtils.getJfgNetType() == 0) {
+                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                    return;
+                }
+                showSendReqHint();
                 presenter.checkAccount(friendContextItem.friendRequest.account);
                 break;
             case R.id.tv_toolbar_icon:

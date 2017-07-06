@@ -378,7 +378,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         public int getCount() {
             //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
             if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
-            Log.d("getCount", "getCount: ");
             return MiscUtils.getCount(dpAlarm.fileIndex);
         }
 

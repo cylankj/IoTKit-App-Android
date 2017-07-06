@@ -120,7 +120,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     @Override
     public void onStart() {
         super.onStart();
-        if (cacheList != null && cacheList.size() > 0) {
+        if (cacheList != null && cacheList.size() > 0 && TextUtils.isEmpty(tvConfigApName.getText())) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
         }
@@ -135,7 +135,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     protected void onResume() {
         super.onResume();
         initFragment();
-        if (basePresenter != null) {
+        if (basePresenter != null && TextUtils.isEmpty(tvConfigApName.getText())) {
             LoadingDialog.showLoading(getSupportFragmentManager(),
                     getString(R.string.LOADING), false, null);
             basePresenter.refreshWifiList();
@@ -300,7 +300,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
         Object object = tvConfigApName.getTag();
 //        etWifiPwd.getText().clear();
-        if (object == null) {
+        if (object == null && TextUtils.isEmpty(tvConfigApName.getText())) {
             getInterestingSSid(resultList);
 //            tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
 //            tvConfigApName.setText(resultList.get(0).SSID);

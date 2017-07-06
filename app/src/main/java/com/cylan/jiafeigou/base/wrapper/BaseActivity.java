@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +50,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     protected ActivityComponent component;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
+    }
 
     @Override
     public Context getAppContext() {
