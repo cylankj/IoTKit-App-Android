@@ -587,6 +587,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.v_live).setEnabled(true);
         liveViewWithThumbnail.showFlowView(false, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
+        removeCallbacks(portHideRunnable);
         handlePlayErr(presenter, errCode);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);

@@ -23,7 +23,7 @@ public class LiveShowCase {
                 SimplePopupWindow left = new SimplePopupWindow(activity, R.drawable.collect_tips_left,
                         R.string.Tap1_Camera_SetProtectionTips);
                 left.showOnAnchor(anchor0, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
-                        RelativePopupWindow.HorizontalPosition.ALIGN_LEFT, 20, -50);
+                        RelativePopupWindow.HorizontalPosition.ALIGN_LEFT, 20, -anchor0.getHeight());
                 SimplePopupWindow right = new SimplePopupWindow(activity, R.drawable.collect_tips,
                         R.string.Tap1_Camera_BackLiveTips);
                 right.showOnAnchor(anchor1, RelativePopupWindow.VerticalPosition.ALIGN_TOP,

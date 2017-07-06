@@ -165,7 +165,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        PerformanceUtils.startTrace("homePage layout");
         View view = inflater.inflate(R.layout.fragment_home_page_list_ext, container, false);
+        PerformanceUtils.stopTrace("homePage layout");
         ButterKnife.bind(this, view);
         return view;
     }

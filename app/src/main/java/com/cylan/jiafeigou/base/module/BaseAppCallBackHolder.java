@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
+import com.cylan.entity.jniCall.JFGDPValue;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
@@ -376,14 +377,27 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotGetMultiDataRsp(long l, Object o) {
         AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
         if (o != null && o instanceof HashMap) {
-            HashMap<String, HashMap<Integer, ArrayList<JFGDPMsg>>> rawMap = (HashMap<String, HashMap<Integer, ArrayList<JFGDPMsg>>>) o;
+            HashMap<String, HashMap<Long, JFGDPValue[]>> rawMap = (HashMap<String, HashMap<Long, JFGDPValue[]>>) o;
             Set<String> set = rawMap.keySet();
             final int count = set.size();
             for (String uuid : set) {
                 RobotoGetDataRsp rsp = new RobotoGetDataRsp();
                 rsp.identity = uuid;
                 rsp.seq = l;
-                rsp.map = rawMap.get(uuid);
+                rsp.map = new HashMap<>();
+                HashMap<Long, JFGDPValue[]> map = rawMap.get(uuid);
+                for (Long lll : map.keySet()) {
+                    ArrayList<JFGDPMsg> msgList = new ArrayList<>();
+                    int msgId = (int) ((long) lll);
+                    for (JFGDPValue j : map.get(lll)) {
+                        JFGDPMsg msg = new JFGDPMsg();
+                        msg.id = msgId;
+                        msg.version = j.version;
+                        msg.packValue = j.value;
+                        msgList.add(msg);
+                    }
+                    rsp.map.put(msgId, msgList);
+                }
                 RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
             }
             Log.d("OnRobotGetMultiDataRsp", "size: " + count);
