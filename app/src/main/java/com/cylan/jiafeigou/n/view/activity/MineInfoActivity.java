@@ -5,34 +5,24 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.signature.StringSignature;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.databinding.FragmentHomeMineInfoBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -52,24 +42,19 @@ import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -80,41 +65,18 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     //拉取出照相机时，产生的状态码
     private static final int REQUEST_CROP_PHOTO = 102;
     private static final int OPEN_CAMERA = 101;
-
-    @BindView(R.id.user_ImageHead)
-    RoundedImageView userImageHead;
-
-    @BindView(R.id.sv_alias)
-    SettingItemView0 rLayoutHomeMinePersonalName;
-
-    @BindView(R.id.tv_my_id)
-    SettingItemView0 tvUserAccount;
-    @BindView(R.id.rl_change_password)
-    RelativeLayout rlChangePassword;
-    @BindView(R.id.rl_my_QRCode)
-    RelativeLayout rlMyQRCode;
-    @BindView(R.id.btn_to_info)
-    TextView btnHomeMinePersonalInformation;
-    @BindView(R.id.ll_container)
-    LinearLayout llContainer;
-
-    @BindView(R.id.sv_email)
-    SettingItemView0 svEmail;
-    @BindView(R.id.sv_phone)
-    SettingItemView0 svPhone;
-
     private Uri outPutUri;
     private File tempFile;
+    private FragmentHomeMineInfoBinding homeMineInfoBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home_mine_info);
+        homeMineInfoBinding = DataBindingUtil.setContentView(this, R.layout.fragment_home_mine_info);
         ButterKnife.bind(this);
         basePresenter = new MineInfoPresenterImpl(this, getContext());
         createCameraTempFile(savedInstanceState);
-        rlChangePassword.setVisibility(RxBus.getCacheInstance().hasStickyEvent(RxEvent.ThirdLoginTab.class)
-                ? View.VISIBLE : View.INVISIBLE);
+        homeMineInfoBinding.changePsw.setVisibility(RxBus.getCacheInstance().hasStickyEvent(RxEvent.ThirdLoginTab.class) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -127,41 +89,25 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         finishExt();
     }
 
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    public void onCameraPermissionDenied() {
-        onNeverAskAgainCameraPermission();
-    }
-
     @OnNeverAskAgain(Manifest.permission.CAMERA)
-    public void onNeverAskAgainCameraPermission() {
-        AlertDialogManager.getInstance().showDialog(this,
-                getString(R.string.permission_auth, getString(R.string.CAMERA)),
-                getString(R.string.permission_auth, getString(R.string.CAMERA)),
-                getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
-                },
-                getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    setPermissionDialog(getString(R.string.CAMERA));
-                });
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    public void showOpenCameraPermissionDialog() {
+        showPermissionDialog(getString(R.string.CAMERA));
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
-    public void onOpenCameraPermissionGrant() {
-        openCamera();
+    public void openCameraWithPermission() {
+        if (PermissionUtils.hasSelfPermissions(this, Manifest.permission.CAMERA)) {
+            outPutUri = Uri.fromFile(tempFile);
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
+            startActivityForResult(intent, OPEN_CAMERA);
+        } else {
+            showPermissionDialog(getString(R.string.camera_auth));
+        }
     }
-
-    @OnShowRationale(Manifest.permission.CAMERA)
-    public void showRationaleForCamera(PermissionRequest request) {
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
-        onNeverAskAgainCameraPermission();
-    }
-
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        MineInfoActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -173,7 +119,6 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     public void onStart() {
         super.onStart();
         initView();
-        initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
     @Override
@@ -185,46 +130,31 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
      * 判断是否大陆用户显示绑定手机号码一栏
      */
     private void initView() {
+        basePresenter.monitorPersonInformation();
         int way = LocaleUtils.getLanguageType(this);
         if (way != JConstant.LOCALE_SIMPLE_CN) {
-            svPhone.setVisibility(View.GONE);
+            homeMineInfoBinding.svPhone.setVisibility(View.GONE);
         } else {
-            svPhone.setVisibility(View.VISIBLE);
+            homeMineInfoBinding.svPhone.setVisibility(View.VISIBLE);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (basePresenter != null) basePresenter.start();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (basePresenter != null) basePresenter.stop();
-    }
-
-    @OnClick({R.id.tv_toolbar_icon, R.id.btn_to_info,
-            R.id.sv_email, R.id.rLayout_home_mine_personal_pic,
+    @OnClick({R.id.tv_toolbar_icon,
+            R.id.sv_email, R.id.profile_photo,
             R.id.sv_phone, R.id.user_ImageHead,
-            R.id.sv_alias, R.id.rl_change_password, R.id.rl_my_QRCode})
+            R.id.sv_alias, R.id.change_psw, R.id.my_qr_code_text})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
             case R.id.tv_toolbar_icon:
                 finishExt();
                 break;
-            //点击退出做相应的逻辑
-            case R.id.btn_to_info:
-                showLogOutDialog(view);
-                break;
             //点击邮箱跳转到相应的页面
             case R.id.sv_email:
                 jump2SetEmailFragment();
                 break;
 
-            case R.id.rLayout_home_mine_personal_pic:           //更换头像
+            case R.id.profile_photo:           //更换头像
                 pickImageDialog(view);
                 break;
 
@@ -246,13 +176,13 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 jump2SetUserNameFragment();
                 break;
 
-            case R.id.rl_change_password:                       //修改密码
+            case R.id.change_psw:                       //修改密码
                 ViewUtils.deBounceClick(view);
                 AppLogger.d("rl_change_password");
                 jump2ChangePasswordFragment();
                 break;
 
-            case R.id.rl_my_QRCode:
+            case R.id.my_qr_code_text:
                 //我的二维码
                 ViewUtils.deBounceClick(view);
                 showQrCodeDialog();
@@ -286,7 +216,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         Bundle bundle = new Bundle();
         MineSetUserAliasFragment setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
         setUserNameFragment.setCallBack(t -> {
-            initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+            initPersonalInformation(BaseApplication.getAppComponent().getSourceManager().getAccount());
         });
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), setUserNameFragment,
                 android.R.id.content);
@@ -298,8 +228,9 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-        if (jfgAccount != null)
+        if (jfgAccount != null) {
             bundle.putString("imageUrl", isDefaultPhoto(jfgAccount.getPhotoUrl()) && basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl());
+        }
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 bigHeadFragment, android.R.id.content);
@@ -311,75 +242,51 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
     @Override
-    public void initPersonalInformation(JFGAccount bean) {
-        MyViewTarget myViewTarget = new MyViewTarget(userImageHead, getContext().getResources());
-        String photoUrl;
-        if (bean != null) {
-            //头像的回显
-            photoUrl = bean.getPhotoUrl();
-            if (isDefaultPhoto(photoUrl)) {
-                if (basePresenter.checkOpenLogin()) {
-                    photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
-                }
-            }
-            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-            if (!TextUtils.isEmpty(photoUrl) && getContext() != null || account != null) {
-                Glide.with(getContext()).load(photoUrl)
-                        .asBitmap()
-                        .centerCrop()
-//                        .placeholder(R.drawable.icon_mine_head_normal)//不需要placehole,因为开始时会设置这个id.如果频繁调用,则会闪烁.
-                        .error(R.drawable.icon_mine_head_normal)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .signature(new StringSignature(TextUtils.isEmpty(account.getToken()) ? "" : account.getToken()))
-                        .into(myViewTarget);
-            }
-
-            if (basePresenter.checkOpenLogin() && TextUtils.isEmpty(bean.getAlias())) {
-                String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                rLayoutHomeMinePersonalName.setTvSubTitle(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
-            } else {
-                rLayoutHomeMinePersonalName.setTvSubTitle(TextUtils.isEmpty(bean.getAlias()) ? getString(R.string.NO_SET) : bean.getAlias());
-            }
-
-            if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())) {
-                svEmail.setTvSubTitle(getString(R.string.NO_SET));
-            } else {
-                svEmail.setTvSubTitle(bean.getEmail());
-            }
-
-            if (TextUtils.isEmpty(bean.getPhone())) {
-                svPhone.setTvSubTitle(getString(R.string.NO_SET));
-            } else {
-                svPhone.setTvSubTitle(bean.getPhone());
-            }
-
-            basePresenter.loginType(bean.getAccount(), bean.getPhone(), bean.getEmail());
-            showSetPwd(!basePresenter.checkOpenLogin());
+    public void initPersonalInformation(Account account) {
+        Glide.with(this)
+                .load(basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : new JFGAccountURL(account.getAccount()))
+                .centerCrop()
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(homeMineInfoBinding.userImageHead);
+        if (!TextUtils.isEmpty(account.getPhone())) {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(account.getPhone());
+        } else if (!TextUtils.isEmpty(account.getEmail())) {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(account.getEmail());
+        } else if (account.getLoginType() == 3) {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? getString(R.string.LOGIN_QQ) : account.getEmail()) : account.getPhone());
+        } else if (account.getLoginType() == 4) {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? getString(R.string.LOGIN_WEIBO) : account.getEmail()) : account.getPhone());
+        } else if (account.getLoginType() == 6) {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? "Twitter LOGIN" : account.getEmail()) : account.getPhone());
+        } else if (account.getLoginType() == 7) {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? "FaceBook LOGIN" : account.getEmail()) : account.getPhone());
+        } else {
+            homeMineInfoBinding.tvMyId.setTvSubTitle(account.getAccount());
         }
+
+        if (basePresenter.checkOpenLogin() && TextUtils.isEmpty(account.getAlias())) {
+            String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
+            homeMineInfoBinding.svAlias.setTvSubTitle(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
+        } else {
+            homeMineInfoBinding.svAlias.setTvSubTitle(TextUtils.isEmpty(account.getAlias()) ? getString(R.string.NO_SET) : account.getAlias());
+        }
+
+        if (TextUtils.isEmpty(account.getEmail())) {
+            homeMineInfoBinding.svEmail.setTvSubTitle(getString(R.string.NO_SET));
+        } else {
+            homeMineInfoBinding.svEmail.setTvSubTitle(account.getEmail());
+        }
+
+        if (TextUtils.isEmpty(account.getPhone())) {
+            homeMineInfoBinding.svPhone.setTvSubTitle(getString(R.string.NO_SET));
+        } else {
+            homeMineInfoBinding.svPhone.setTvSubTitle(account.getPhone());
+        }
+        showSetPwd(!basePresenter.checkOpenLogin());
     }
 
-    private static class MyViewTarget extends BitmapImageViewTarget {
-        private final WeakReference<ImageView> image;
-        private final WeakReference<Resources> resources;
-
-        public MyViewTarget(ImageView view, Resources resource) {
-            super(view);
-            image = new WeakReference<>(view);
-            resources = new WeakReference<>(resource);
-        }
-
-        @Override
-        protected void setResource(Bitmap resource) {
-            if (resource == null || image.get() == null)
-                return;
-            RoundedBitmapDrawable circularBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(resources.get(), resource);
-            circularBitmapDrawable.setCircular(true);
-            image.get().setImageDrawable(circularBitmapDrawable);
-        }
-    }
-
-    @Override
     public void jump2SetEmailFragment() {
         Bundle bundle = new Bundle();
         BindMailFragment mailBoxFragment = BindMailFragment.newInstance(bundle);
@@ -387,28 +294,8 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 mailBoxFragment, android.R.id.content);
     }
 
-    @Override
     public void showSetPwd(boolean isVisible) {
-        rlChangePassword.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setAccount(String account, String phone, String email, int type) {
-        if (!TextUtils.isEmpty(phone)) {
-            tvUserAccount.setTvSubTitle(phone);
-        } else if (!TextUtils.isEmpty(email)) {
-            tvUserAccount.setTvSubTitle(email);
-        } else if (type == 3) {
-            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_QQ) : email) : phone);
-        } else if (type == 4) {
-            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_WEIBO) : email) : phone);
-        } else if (type == 6) {
-            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "Twitter LOGIN" : email) : phone);
-        } else if (type == 7) {
-            tvUserAccount.setTvSubTitle(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "FaceBook LOGIN" : email) : phone);
-        } else {
-            tvUserAccount.setTvSubTitle(account);
-        }
+        homeMineInfoBinding.changePsw.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -419,7 +306,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         PickImageFragment fragment = PickImageFragment.newInstance(null);
         fragment.setClickListener(vv -> {
             //打开相机
-            MineInfoActivityPermissionsDispatcher.onOpenCameraPermissionGrantWithCheck(this);
+            MineInfoActivityPermissionsDispatcher.openCameraWithPermissionWithCheck(MineInfoActivity.this);
         }, cc -> {
             openGallery();
         });
@@ -435,24 +322,13 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         startActivityForResult(intent, Constants.REQUEST_CODE);
     }
 
-    /**
-     * 启动相机
-     */
-    private void openCamera() {
-        outPutUri = Uri.fromFile(tempFile);
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
-        startActivityForResult(intent, OPEN_CAMERA);
-    }
 
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 bindPhoneFragment, android.R.id.content);
-        bindPhoneFragment.setOnChangePhoneListener(phone -> svPhone.setTvSubTitle(phone));
+        bindPhoneFragment.setOnChangePhoneListener(phone -> homeMineInfoBinding.svPhone.setTvSubTitle(phone));
     }
 
 
@@ -464,23 +340,6 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     @Override
     public String getUuid() {
         return "";
-    }
-
-    /**
-     * 删除亲友对话框
-     */
-    public void showLogOutDialog(View v) {
-        AlertDialogManager.getInstance().showDialog(this,
-                "showLogOutDialog", getString(R.string.LOGOUT_INFO),
-                getString(R.string.LOGOUT), (DialogInterface dialog, int which) -> {
-                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                    if (jfgAccount != null) {
-                        basePresenter.logOut(jfgAccount.getAccount());
-                        //进入登陆页 login page
-                        setResult(RESULT_OK);
-                        finishExt();
-                    }
-                }, getString(R.string.CANCEL), null, false);
     }
 
     @Override
@@ -558,30 +417,17 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         if (savedInstanceState != null && savedInstanceState.containsKey("tempFile")) {
             tempFile = (File) savedInstanceState.getSerializable("tempFile");
         } else {
-            tempFile = new File(basePresenter.checkFileExit(Environment.getExternalStorageDirectory().getPath() + "/image/"),
-                    System.currentTimeMillis() + ".jpg");
+            tempFile = new File(Environment.getExternalStorageDirectory().getPath() + "/image/", System.currentTimeMillis() + ".jpg");
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && PermissionUtils.hasSelfPermissions(getContext(), Manifest.permission.CAMERA)) {
-                openCamera();
-            } else {
-                setPermissionDialog(getString(R.string.camera_auth));
-            }
-        } else if (requestCode == 2) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            } else {
-                setPermissionDialog(getString(R.string.photo));
-            }
-        }
+        MineInfoActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    public void setPermissionDialog(String permission) {
+    public void showPermissionDialog(String permission) {
         AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(this);
         builder.setMessage(getString(R.string.permission_auth, permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
@@ -594,22 +440,9 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     }
 
     private void openSetting() {
-        Intent localIntent = new Intent();
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT >= 9) {
-            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
-        } else if (Build.VERSION.SDK_INT <= 8) {
-            localIntent.setAction(Intent.ACTION_VIEW);
-            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-            localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
-        }
-        startActivity(localIntent);
+        Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        settingIntent.setData(Uri.parse("package:" + getPackageName()));
+        startActivity(settingIntent);
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
 }

@@ -70,6 +70,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
+import okhttp3.internal.ws.RealWebSocket;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -920,8 +921,8 @@ public class DataSourceManager implements JFGSourceManager {
      * @param arrayList
      */
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
-        if (getAccount() == null || !getJFGAccount().isEnablePush())
-            return;
+        RealWebSocket realWebSocket = null;
+
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
         if (device != null && !TextUtils.isEmpty(device.account)) {
@@ -940,6 +941,8 @@ public class DataSourceManager implements JFGSourceManager {
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
+                                    if (getAccount() == null || !getJFGAccount().isEnablePush())
+                                        return;
                                     Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
@@ -965,6 +968,7 @@ public class DataSourceManager implements JFGSourceManager {
                     DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
                     if (dataPoint.isOK == 1) return; //已接听了,不需要发送通知了
                     AppLogger.d("may fire a notification: " + msgId);
+
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();
                     try {
@@ -974,6 +978,8 @@ public class DataSourceManager implements JFGSourceManager {
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
+                                    if (getAccount() == null || !getJFGAccount().isEnablePush())
+                                        return;
                                     Device dd = getDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
                                     Intent intent = new Intent(ContextUtils.getContext(), DoorBellHomeActivity.class);

@@ -383,6 +383,7 @@ dependencies {
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.9'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
 }
 
 //谷歌推送

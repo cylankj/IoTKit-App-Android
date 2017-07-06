@@ -693,6 +693,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".support.splash.SplashActivity" />
+        <activity android:name=".support.login.LoginActivity" />
     </application>
 
 </manifest>
