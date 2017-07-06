@@ -256,7 +256,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     }
 
     private void updateTabStyles() {
-
+        int currentIndex = pager == null ? -1 : pager.getCurrentItem();
         for (int i = 0; i < tabCount; i++) {
 
             View v = tabsContainer.getChildAt(i);
@@ -268,7 +268,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 HintTextView tab = (HintTextView) v;
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
-                tab.setTextColor(tabTextColor);
+                tab.setTextColor(currentIndex == i ? tabTextColor : color(tabTextColor, 0.5f));
 
                 // setAllCaps() is only available from API 14, so the upper case is made manually if we are on activity_cloud_live_mesg_call_out_item
                 // pre-ICS-build
