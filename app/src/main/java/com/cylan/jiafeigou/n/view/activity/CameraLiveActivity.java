@@ -113,7 +113,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         if (newMsgSub != null) newMsgSub.unsubscribe();
         RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
-                .filter(ret -> TextUtils.equals(ret.uuid, device.uuid))
+                .filter(ret -> TextUtils.equals(ret.uuid, device.uuid) && vpCameraLive.getCurrentItem() == 0)
                 .flatMap(ret -> Observable.from(ret.dpList))
                 .filter(ret -> filterNewMsgId(ret.id))
                 .observeOn(AndroidSchedulers.mainThread())

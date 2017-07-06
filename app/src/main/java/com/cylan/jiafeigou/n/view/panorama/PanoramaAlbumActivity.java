@@ -441,13 +441,13 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     public void onSDCardCheckResult(int has_sdcard) {
         if (has_sdcard == 1) {
         } else {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.MSG_SD_OFF)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.OK, (dialog, which) -> {
-                        onViewModeChanged(0, false);
-                    })
-                    .show();
+//            new AlertDialog.Builder(this)
+//                    .setMessage(R.string.MSG_SD_OFF)
+//                    .setCancelable(false)
+//                    .setPositiveButton(R.string.OK, (dialog, which) -> {
+//                        onViewModeChanged(0, false);
+//                    })
+//                    .show();
         }
     }
 }
