@@ -1287,6 +1287,9 @@ public class RxEvent {
 
         public static final PanoramaApiAvailable API_HTTP = new PanoramaApiAvailable(0);
         public static final PanoramaApiAvailable API_FORWARD = new PanoramaApiAvailable(1);
+        /**
+         * @deprecated 如果无法使用 http 接口,则默认使用透传接口,而不应该出现不可用的情况
+         */
         public static final PanoramaApiAvailable API_NOT_AVAILABLE = new PanoramaApiAvailable(-1);
     }
 

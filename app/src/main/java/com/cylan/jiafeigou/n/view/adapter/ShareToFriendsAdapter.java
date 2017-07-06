@@ -29,7 +29,7 @@ public class ShareToFriendsAdapter extends SuperAdapter<JFGFriendAccount> {
         this.listener = listener;
     }
 
-    public ShareToFriendsAdapter(Context context, List<JFGFriendAccount> items, int  mulItemViewType) {
+    public ShareToFriendsAdapter(Context context, List<JFGFriendAccount> items, int mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
@@ -53,7 +53,7 @@ public class ShareToFriendsAdapter extends SuperAdapter<JFGFriendAccount> {
         Glide.with(getContext()).load(new JFGAccountURL(item.account))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into((ImageView) holder.getView(R.id.iv_userhead));
     }
 

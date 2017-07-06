@@ -7,11 +7,11 @@
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx">
 
     <com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail
-        android:background="@android:color/background_dark"
         android:id="@+id/v_live"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/background_dark" />
 
     <View
         android:id="@+id/v_guide"

@@ -14,20 +14,10 @@
         <com.cylan.jiafeigou.support.photoview.PhotoView
             android:id="@+id/act_bell_detail_picture"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:scaleType="center"
             android:src="@drawable/ic_delete_photo" />
-        <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
-        <!--android:msgId="@+msgId/act_bell_detail_loading"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:padding="@dimen/x5"-->
-        <!--app:progress_point_radius="@dimen/y2"-->
-        <!--app:progress_radius="@dimen/y20"-->
-        <!--app:progress_stroke_color="@color/color_white"-->
-        <!--android:visibility="visible"-->
-        <!--app:progress_swipe_degree="310"  />-->
     </FrameLayout>
 
     <LinearLayout
@@ -60,7 +50,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:src="@drawable/icon_collection" />
-           </LinearLayout>
+    </LinearLayout>
 
 
     <RelativeLayout

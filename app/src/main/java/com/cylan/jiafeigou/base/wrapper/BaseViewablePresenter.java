@@ -258,6 +258,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             if (mView != null) {
                                 switch (dis.code) {
                                     case STOP_VIERER_BY_SYSTEM:
+                                    case BAD_FRAME_RATE:
                                         break;
                                     default:
                                         mView.onVideoDisconnect(dis.code);

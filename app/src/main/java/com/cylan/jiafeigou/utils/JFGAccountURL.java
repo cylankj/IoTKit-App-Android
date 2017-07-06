@@ -32,13 +32,14 @@ public class JFGAccountURL extends GlideUrl {
 
     @Override
     public URL toURL() throws MalformedURLException {
+        String url = null;
         try {
-            String url = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(storageType, String.format(Locale.getDefault(), "/image/%s.jpg", account));
-            return new URL(url);
+            url = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(storageType, String.format(Locale.getDefault(), "/image/%s.jpg", account));
+
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
-            return new URL("");
         }
+        return new URL(url == null ? "" : url);
     }
 
 }

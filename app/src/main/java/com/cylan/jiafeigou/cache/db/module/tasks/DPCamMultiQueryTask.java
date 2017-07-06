@@ -115,8 +115,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                 //麻痹的.没有diff,很麻烦,这里肯定是  505,512,222消息了.
                                 AppLogger.d("开始处理 拦截器");
                                 if (data != null && data.map != null) {
-                                    String account = getAppComponent().getSourceManager().getAccount().getAccount() == null ? null :
-                                            getAppComponent().getSourceManager().getAccount().getAccount();
+                                    String account = getAppComponent().getSourceManager().getAccount().getAccount();
                                     String uuid = data.identity;
                                     if (data.map.size() == 0) {
                                         AppLogger.d("没有数据");
@@ -126,11 +125,13 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             dpHelper.deleteDpSync(account, uuid, 505, option.timeStart, timeEnd);
                                             dpHelper.deleteDpSync(account, uuid, 512, option.timeStart, timeEnd);
                                             dpHelper.deleteDpSync(account, uuid, 222, option.timeStart, timeEnd);
+                                            dpHelper.deleteDpSync(account, uuid, 401, option.timeStart, timeEnd);
                                         } else {
                                             long timeStart = TimeUtils.getSpecificDayStartTime(option.timeStart);
                                             dpHelper.deleteDpSync(account, uuid, 505, timeStart, option.timeStart);
                                             dpHelper.deleteDpSync(account, uuid, 512, timeStart, option.timeStart);
                                             dpHelper.deleteDpSync(account, uuid, 222, timeStart, option.timeStart);
+                                            dpHelper.deleteDpSync(account, uuid, 401, timeStart, option.timeStart);
                                         }
                                         return;
                                     }
@@ -162,6 +163,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                         dpHelper.deleteDpSync(account, uuid, 505, timeMax, timeMin);
                                         dpHelper.deleteDpSync(account, uuid, 512, timeMax, timeMin);
                                         dpHelper.deleteDpSync(account, uuid, 222, timeMax, timeMin);
+                                        dpHelper.deleteDpSync(account, uuid, 401, timeMax, timeMin);
                                         PerformanceUtils.stopTrace("deleteDpSync");
                                     } catch (Exception e) {
                                         AppLogger.e("err:" + MiscUtils.getErr(e));

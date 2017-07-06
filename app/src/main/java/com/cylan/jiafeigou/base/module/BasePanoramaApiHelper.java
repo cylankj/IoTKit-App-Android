@@ -84,13 +84,13 @@ public class BasePanoramaApiHelper {
                         if (deviceInformation != null && deviceInformation.ip != null) {
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
                         } else {
-                            if (BaseApplication.isOnline()) {
-                                forwardHelper = BaseForwardHelper.getInstance();
-                                deviceInformation = null;
-                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
-                            } else {
-                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
-                            }
+//                            if (BaseApplication.isOnline()) {
+                            forwardHelper = BaseForwardHelper.getInstance();
+                            deviceInformation = null;
+                            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+//                            } else {
+//                                RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_NOT_AVAILABLE);
+//                            }
                         }
                     } else {
                         deviceInformation = null;

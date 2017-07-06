@@ -13,6 +13,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -27,10 +29,21 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class BaseBellCallEventListener {
     private Context appContext;
+    private Map<String, String> urlMap = new HashMap<>();
+    private static BaseBellCallEventListener instance;
+
+    public static BaseBellCallEventListener getInstance() {
+        return instance;
+    }
+
+    public BaseBellCallEventListener() {
+        instance = this;
+    }
 
     @Inject
     public BaseBellCallEventListener(@ContextLife Context appContext) {
         this.appContext = appContext;
+        instance = this;
     }
 
     public Subscription initSubscription() {
@@ -49,16 +62,22 @@ public class BaseBellCallEventListener {
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, callEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, callEvent.caller.time);
+        urlMap.remove(callEvent.caller.cid);
         if (!callEvent.isFromLocal) {
             try {
                 AppLogger.d("门铃呼叫 CID:" + callEvent.caller.cid + ",门铃呼叫时间:" + callEvent.caller.time);
                 String url = new JFGGlideURL(callEvent.caller.cid, callEvent.caller.time + ".jpg", callEvent.caller.regionType).toURL().toString();
                 intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, url);
+                urlMap.put(callEvent.caller.cid, url);
                 AppLogger.d("门铃截图地址:" + url);
             } catch (MalformedURLException e) {
                 AppLogger.e(e);
             }
         }
         appContext.startActivity(intent);
+    }
+
+    public String getUrl(String cid) {
+        return urlMap.get(cid);
     }
 }

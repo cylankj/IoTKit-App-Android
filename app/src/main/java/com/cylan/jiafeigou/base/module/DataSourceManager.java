@@ -455,7 +455,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (device != null) {
             try {
                 AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,version:%s,asc:%s,count:%s", uuid, version, asc, count));
-                return appCmd.robotGetDataEx(uuid, asc, version, new long[]{505L, 222L, 512}, 0);
+                return appCmd.robotGetDataEx(uuid, asc, version, new long[]{505L, 222L, 512L, 401L}, 0);
             } catch (Exception e) {
                 AppLogger.e("bad ,uuid may be null");
                 return -1;
@@ -506,6 +506,7 @@ public class DataSourceManager implements JFGSourceManager {
     public Account getAccount() {
         return account == null ? new Account() : account;
     }
+
 
     @Override
     public JFGAccount getJFGAccount() {

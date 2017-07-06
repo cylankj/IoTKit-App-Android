@@ -148,7 +148,6 @@
             android:text="@string/Tap1_Album_Share_To_Daily_Great"
             android:textColor="@color/color_888888"
             android:textSize="@dimen/sp13"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shareContentBackGround" />
 

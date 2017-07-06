@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -66,6 +65,7 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_BELL_LIST;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 
 @RuntimePermissions
@@ -74,6 +74,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     public static final String KEY_BUNDLE = "key_bundle";
     public static final String KEY_INDEX = "key_index";
+    public static final String KEY_BELL_RECORD_BUNDLE = "key_bell_record_bundle";
 
     @BindView(R.id.vp_container)
     HackyViewPager vpContainer;
@@ -92,6 +93,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     private int currentIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
+    private DpMsgDefine.DPBellCallRecord bellCallRecord;
     private String uuid;
     private Device device;
 
@@ -107,8 +109,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
+        bellCallRecord = getIntent().getParcelableExtra(KEY_BELL_RECORD_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
         customAdapter.setDpAlarm(alarmMsg);
+        customAdapter.setDpBellRecord(bellCallRecord);
         vpContainer.setAdapter(customAdapter);
         vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
         customAdapter.setCallback(object -> {
@@ -347,6 +351,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     private class CustomAdapter extends FragmentPagerAdapter {
         private DpMsgDefine.DPAlarm dpAlarm;
         private NormalMediaFragment.CallBack callBack;
+        private DpMsgDefine.DPBellCallRecord dpBellRecord;
 
         public void setDpAlarm(DpMsgDefine.DPAlarm dpAlarm) {
             this.dpAlarm = dpAlarm;
@@ -361,9 +366,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             boolean isPan = device != null && JFGRules.isNeedPanoramicView(device.pid);
             Bundle bundle = new Bundle();
             bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, dpAlarm);
+            bundle.putParcelable(KEY_SHARED_ELEMENT_BELL_LIST, dpBellRecord);
             bundle.putInt(KEY_INDEX, isPan ? getIntent().getIntExtra(KEY_INDEX, 0) : position);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            bundle.putInt("totalCount", MiscUtils.getCount(dpAlarm.fileIndex));
+            bundle.putInt("totalCount", MiscUtils.getCount(dpAlarm == null ? 1 : dpAlarm.fileIndex));
             IBaseFragment fragment = null;
             if (isPan) {
                 fragment = PanoramicViewFragment.newInstance(bundle);
@@ -388,6 +394,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
         private void setCallback(IBaseFragment.CallBack callback) {
             this.callBack = callback;
+        }
+
+        public void setDpBellRecord(DpMsgDefine.DPBellCallRecord dpBellRecord) {
+            this.dpBellRecord = dpBellRecord;
         }
     }
 

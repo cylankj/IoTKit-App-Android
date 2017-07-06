@@ -177,6 +177,7 @@ public class JConstant {
 
     public static final String KEY_SHARE_ELEMENT_BYTE = "key_share_element_byte";
     public static final String KEY_SHARED_ELEMENT_LIST = "key_shared_element_url";
+    public static final String KEY_SHARED_ELEMENT_BELL_LIST = "key_shared_element_bell_list";
     public static final String KEY_SHARED_ELEMENT_STARTED_POSITION = "key_shared_element_pos";
     public static final String EXTRA_STARTING_ALBUM_POSITION = "key_start_position";
     public static final String EXTRA_CURRENT_ALBUM_POSITION = "key_current_position";

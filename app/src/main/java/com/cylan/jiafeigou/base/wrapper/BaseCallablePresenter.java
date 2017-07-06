@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -119,7 +120,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscription = load(url).subscribe(ret -> {
+        Subscription subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
         registerSubscription(subscription);
     }

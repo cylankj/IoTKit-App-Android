@@ -11,7 +11,8 @@ public class CamMessageBean {
      * 直接类型，不需要转型。
      */
     public DpMsgDefine.DPAlarm alarmMsg;
-    public DpMsgDefine.DPSdcardSummary sdcardSummary;//204消息
+    public DpMsgDefine.DPSdcardSummary sdcardSummary; //204消息
+    public DpMsgDefine.DPBellCallRecord bellCallRecord;//401消息
     public long id = 0;
     public long version;
     public int viewType = 0;

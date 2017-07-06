@@ -9,8 +9,8 @@ import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.google.gson.Gson;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.Unique;
 
 /**
@@ -39,6 +39,7 @@ public class Account extends BasePropertyHolder<Account> {
     private String option;
     private String accountJson;
     private transient boolean isOnline;
+    private transient boolean available = false;
 
     public void setOnline(boolean isOnline) {
         this.isOnline = isOnline;
@@ -69,14 +70,14 @@ public class Account extends BasePropertyHolder<Account> {
         if (TextUtils.isEmpty(this.state)) {
             this.state = DBState.ACTIVE.state();
         }
+        this.available = true;
         return this;
     }
-
-    @Generated(hash = 882125521)
+@Keep
     public Account() {
     }
 
-    @Generated(hash = 1864618567)
+    @Keep
     public Account(Long _id, String account, String server, String password, int loginType, String phone,
                    String token, String alias, boolean enablePush, boolean enableSound, String email,
                    boolean enableVibrate, String photoUrl, String action, String state, String option,
@@ -98,6 +99,7 @@ public class Account extends BasePropertyHolder<Account> {
         this.state = state;
         this.option = option;
         this.accountJson = accountJson;
+        this.available = true;
     }
 
     public String getAccount() {
@@ -289,5 +291,9 @@ public class Account extends BasePropertyHolder<Account> {
 
     public void setAccountJson(String accountJson) {
         this.accountJson = accountJson;
+    }
+
+    public boolean isAvailable() {
+        return available;
     }
 }

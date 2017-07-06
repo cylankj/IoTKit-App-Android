@@ -1,126 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:orientation="vertical"
-    tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
-    <RelativeLayout
-        android:id="@+id/act_panorama_album_toolbar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_0ba8cf">
+<layout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <data>
 
+        <variable
+            name="connected"
+            type="android.databinding.ObservableBoolean" />
 
-            <ImageView
-                android:id="@+id/act_panorama_album_back"
-                android:layout_width="@dimen/y48"
-                android:layout_height="@dimen/y48"
-                android:paddingEnd="@dimen/y17"
-                android:paddingStart="@dimen/y15"
-                android:src="@drawable/nav_tab_back_selector" />
+        <import type="android.view.View" />
+    </data>
 
-            <TextView
-                android:id="@+id/act_panorama_album_toolbar_header_title"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:layout_toEndOf="@id/act_panorama_album_back"
-                android:drawablePadding="@dimen/x5"
-                android:drawableRight="@drawable/album_icon_open"
-                android:gravity="center_vertical"
-                android:padding="0dp"
-                android:text="@string/Tap1_File_CameraNPhone"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-
-            <TextView
-                android:id="@+id/tv_album_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/y11"
-                android:background="@drawable/album_delete_selector"
-                android:enabled="false"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </RelativeLayout>
-    </RelativeLayout>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/act_panorama_album_refresh"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/act_panorama_album_toolbar_container">
+        android:clickable="true"
+        android:focusable="true"
+        tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
         <RelativeLayout
+            android:id="@+id/act_panorama_album_toolbar_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/color_0ba8cf"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/act_panorama_album_back"
+                    android:layout_width="@dimen/y48"
+                    android:layout_height="@dimen/y48"
+                    android:paddingEnd="@dimen/y17"
+                    android:paddingStart="@dimen/y15"
+                    android:src="@drawable/nav_tab_back_selector" />
+
+                <TextView
+                    android:id="@+id/act_panorama_album_toolbar_header_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y48"
+                    android:layout_toEndOf="@id/act_panorama_album_back"
+                    android:clickable="false"
+                    android:drawablePadding="@dimen/y5"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:padding="0dp"
+                    android:text="@string/Tap1_File_CameraNPhone"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp18" />
+
+                <TextView
+                    android:id="@+id/tv_album_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/y11"
+                    android:background="@drawable/album_delete_selector"
+                    android:enabled="false"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp18" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/act_panorama_camera_banner_bad_net_work"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y42"
+            android:background="#FFFFFCE1"
+            android:visibility="@{connected?View.GONE:View.VISIBLE}"
+            app:layout_constraintTop_toBottomOf="@+id/act_panorama_album_toolbar_container">
+
+            <ImageView
+                android:id="@+id/act_panorama_camera_banner_bad_net_work_caution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/y28"
+                android:layout_marginStart="@dimen/y28"
+                android:src="@drawable/album_icon_caution" />
 
             <TextView
-                android:id="@+id/act_panorama_refresh_header"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y44"
-                android:layout_centerInParent="true"
-                android:drawableStart="@drawable/camera720_loading"
-                android:gravity="center"
-                android:text="@string/REFRESHING"
-                android:visibility="gone" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/act_panorama_album_lists"
+                android:id="@+id/act_panorama_camera_banner_bad_net_work_configure"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/act_panorama_refresh_header" />
+                android:layout_toEndOf="@+id/act_panorama_camera_banner_bad_net_work_caution"
+                android:layout_toLeftOf="@+id/act_panorama_camera_banner_bad_net_work_close"
+                android:layout_toRightOf="@+id/act_panorama_camera_banner_bad_net_work_caution"
+                android:layout_toStartOf="@+id/act_panorama_camera_banner_bad_net_work_close"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical|start"
+                android:paddingStart="@dimen/y15"
+                android:text="@string/LOADING"
+                android:textColor="@color/color_888888"
+                android:textSize="@dimen/sp15" />
 
-            <include
-                layout="@layout/layout_panorama_empty_photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            <ImageView
+                android:id="@+id/act_panorama_camera_banner_bad_net_work_close"
+                android:layout_width="@dimen/y23"
+                android:layout_height="@dimen/y23"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/y13"
+                android:layout_marginRight="@dimen/y13"
+                android:src="@drawable/icon_close" />
+
         </RelativeLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
 
-    <FrameLayout
-        android:id="@+id/act_panorama_album_bottom_menu_container"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:layout_alignParentBottom="true"
-        android:background="@color/color_f6f9fa"
-        android:visibility="invisible">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/act_panorama_album_refresh"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_banner_bad_net_work">
 
-        <View
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/act_panorama_refresh_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y44"
+                    android:layout_centerInParent="true"
+                    android:drawableStart="@drawable/camera720_loading"
+                    android:gravity="center"
+                    android:text="@string/REFRESHING"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/act_panorama_album_lists"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/act_panorama_refresh_header" />
+
+                <include
+                    layout="@layout/layout_panorama_empty_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <FrameLayout
+            android:id="@+id/act_panorama_album_bottom_menu_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:background="@color/color_d2d2d2" />
+            android:layout_height="@dimen/y48"
+            android:background="@color/color_f6f9fa"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:id="@+id/tv_msg_full_select"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/x28"
-            android:paddingStart="@dimen/x28"
-            android:text="@string/SELECT_ALL"
-            android:textColor="@color/color_4b9fd5" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:background="@color/color_d2d2d2" />
 
-        <TextView
-            android:id="@+id/tv_msg_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/x28"
-            android:paddingStart="@dimen/x28"
-            android:text="@string/DELETE"
-            android:textColor="@color/common_btn_color_state" />
-    </FrameLayout>
+            <TextView
+                android:id="@+id/tv_msg_full_select"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/x28"
+                android:paddingStart="@dimen/x28"
+                android:text="@string/SELECT_ALL"
+                android:textColor="@color/color_4b9fd5" />
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/tv_msg_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/x28"
+                android:paddingStart="@dimen/x28"
+                android:text="@string/DELETE"
+                android:textColor="@color/common_btn_color_state" />
+        </FrameLayout>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

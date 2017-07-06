@@ -144,7 +144,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private Runnable autoLoading = () -> presenter.startRefresh();
 
     private void lazyLoad() {
-        if (getUserVisibleHint() && isPrepaper && sourceManager.getAccount() != null) {
+        if (getUserVisibleHint() && isPrepaper && sourceManager.getAccount() != null && sourceManager.getAccount().isAvailable()) {
             srLayoutMainContentHolder.setRefreshing(true);
             srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
         }
@@ -373,7 +373,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onRefresh() {
-        if (sourceManager.getAccount() != null) {
+        if (sourceManager.getAccount() != null && sourceManager.getAccount().isAvailable()) {
             srLayoutMainContentHolder.removeCallbacks(autoLoading);
             presenter.startRefresh();
             srLayoutMainContentHolder.setRefreshing(true);

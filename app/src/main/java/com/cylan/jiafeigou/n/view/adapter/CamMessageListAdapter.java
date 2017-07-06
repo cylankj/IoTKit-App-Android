@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -153,7 +154,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case 1:
                 handlePicsLayout(holder, item);
                 break;
-            case 2:
+            case 3:
+                handlerBellLayout(holder, item);
+                break;
+            default:
                 return;
         }
         if (onClickListener != null)
@@ -167,12 +171,50 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             holder.setChecked(R.id.rbtn_item_check, selectedMap.containsKey(layoutPosition));
     }
 
+    private void handlerBellLayout(SuperViewHolder holder, CamMessageBean item) {
+        int count = 1;
+        ViewGroup.LayoutParams containerLp = holder.getView(R.id.lLayout_cam_msg_container).getLayoutParams();
+        containerLp.height = getLayoutHeight(count);
+        holder.getView(R.id.lLayout_cam_msg_container).setLayoutParams(containerLp);
+        //根据图片总数,设置view的Gone属性
+        for (int i = 2; i >= 0; i--) {
+            View child = holder.getView(R.id.imgV_cam_message_pic_0 + i);
+            child.setVisibility(count - 1 >= i ? View.VISIBLE : View.GONE);
+            if (count - 1 >= i) {
+                ViewGroup.LayoutParams lp = child.getLayoutParams();
+                lp.width = getPicWidth(count);
+                lp.height = getPicHeight(count);
+                child.setLayoutParams(lp);
+            }
+        }
+        for (int i = 0; i < count; i++) {
+            Glide.with(getContext())
+                    .load(new JFGGlideURL(uuid, item.bellCallRecord.time + ".jpg", item.bellCallRecord.type))
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .override(pic_container_width / count, pic_container_width / count)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
+        }
+//        }
+        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
+        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
+        holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
+        holder.setEnabled(R.id.tv_jump_next, online());
+    }
+
     /**
      * 显示直播按钮
      *
      * @param time
      * @return
      */
+
     private boolean showLiveBtn(long time) {
         return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard();
     }
@@ -331,7 +373,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
                 if (camMessageBean.viewType == 2) return 2;
-                return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
+                return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : camMessageBean.bellCallRecord == null ? 0 : 3;
             }
 
             @Override
@@ -340,6 +382,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     case 0:
                         return R.layout.layout_item_cam_msg_list_0;
                     case 1:
+                        return R.layout.layout_item_cam_msg_list_1;
+                    case 3:
                         return R.layout.layout_item_cam_msg_list_1;
                     default:
                         return R.layout.simple_load_more_layout;

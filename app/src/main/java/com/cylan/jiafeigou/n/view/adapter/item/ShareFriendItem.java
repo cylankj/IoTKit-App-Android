@@ -55,7 +55,7 @@ public class ShareFriendItem extends AbstractItem<ShareFriendItem, AbstractBindi
         Glide.with(dataBinding.ivUserhead.getContext()).load(new JFGAccountURL(friendAccount.account))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(dataBinding.ivUserhead);
     }
 }

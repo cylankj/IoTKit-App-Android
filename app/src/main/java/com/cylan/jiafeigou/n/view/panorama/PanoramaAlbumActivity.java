@@ -30,7 +30,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.daimajia.androidanimations.library.Techniques;
@@ -73,9 +72,9 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     TextView refreshHeader;
 
     @ALBUM_VIEW_MODE
-    private int albumViewMode = ALBUM_VIEW_MODE.MODE_NONE;
+    private int albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
     //    private RadioGroup menuContainer;
-    private int[] titles = {R.string.Tap1_File_CameraNPhone, R.string.Tap1_File_Camera, R.string.Tap1_File_Phone};
+//    private int[] titles = {R.string.Tap1_File_CameraNPhone, R.string.Tap1_File_Camera, R.string.Tap1_File_Phone};
     private PanoramaAdapter panoramaAdapter;
     private LinearLayoutManager layoutManager;
     private boolean loading;
@@ -86,6 +85,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     private RadioButton menuItemAlbumPopBoth;
     private RadioButton menuItemAlbumPopPhoto;
     private RadioButton menuItemAlbumPopPanorama;
+
+    private AlertDialog alertDialog;
 
 
     @Override
@@ -118,18 +119,20 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         recyclerView.setAdapter(panoramaAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
         String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
-        if (mac != null) {
-            String routerMac = NetUtils.getRouterMacAddress(getApplication());
-            if (TextUtils.equals(mac, routerMac)) {
-                toolbarAlbumViewMode.setText(titles[modeToResId(2, false)]);
-//                toolbarAlbumViewMode.setEnabled(true);
-            } else {
-                toolbarAlbumViewMode.setText(titles[modeToResId(0, false)]);
-//                toolbarAlbumViewMode.setEnabled(false);
-            }
-        }
+//        if (mac != null) {
+//            String routerMac = NetUtils.getRouterMacAddress(getApplication());
+//            if (TextUtils.equals(mac, routerMac)) {
+//                toolbarAlbumViewMode.setText(titles[modeToResId(2, false)]);
+////                toolbarAlbumViewMode.setEnabled(true);
+//            } else {
+//                toolbarAlbumViewMode.setText(titles[modeToResId(0, false)]);
+////                toolbarAlbumViewMode.setEnabled(false);
+//            }
+//        }
         swipeRefreshLayout.setColorSchemeResources(R.color.color_36BDFF);
         swipeRefreshLayout.setRefreshing(true);
+        presenter.fetch(0, albumViewMode);
+        alertDialog = new AlertDialog.Builder(this).create();
     }
 
     private void onLoadMore() {
@@ -142,6 +145,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected int getContentViewID() {
         return R.layout.activity_panorama_album;
     }
+
+
 
     @Override
     protected void onStart() {
@@ -161,7 +166,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         activityComponent.inject(this);
     }
 
-    @OnClick(R.id.act_panorama_album_toolbar_header_title)
+    //    @OnClick(R.id.act_panorama_album_toolbar_header_title)
     public void showAlbumViewModePop(View view) {
         ViewUtils.deBounceClick(view);
         if (albumModeSelectPop == null) {
@@ -175,7 +180,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
                 ((RadioButton) group.findViewById(checkedId)).setChecked(true);
                 albumViewMode = resIdToMode(checkedId);
                 if (albumModeSelectPop != null) albumModeSelectPop.dismiss();
-                toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+//                toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
                 swipeRefreshLayout.setRefreshing(true);
                 presenter.fetch(0, albumViewMode);
             });
@@ -321,24 +326,21 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             }
         }
         if (hasDownloading) {
-            new AlertDialog.Builder(this)
-                    .setMessage("视频正在下载中，是否删除?")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.DELETE, (dialog, which) -> {
-                        bottomMenuContainer.setVisibility(View.INVISIBLE);
-                        presenter.deletePanoramaItem(items, albumViewMode);
-                    })
-                    .setNegativeButton(R.string.CANCEL, null)
-                    .show();
+            alertDialog.setMessage(getString(R.string.Downloading));
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.DELETE), (dialog, which) -> {
+                bottomMenuContainer.setVisibility(View.INVISIBLE);
+                presenter.deletePanoramaItem(items, albumViewMode);
+            });
+            alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (DialogInterface.OnClickListener) null);
+            alertDialog.show();
         } else {
-            new AlertDialog.Builder(this)
-                    .setMessage(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        bottomMenuContainer.setVisibility(View.INVISIBLE);
-                        presenter.deletePanoramaItem(items, albumViewMode);
-                    })
-                    .setNegativeButton(getString(R.string.CANCEL), null)
-                    .show();
+            alertDialog.setMessage(getString(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete));
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (dialog, which) -> {
+                bottomMenuContainer.setVisibility(View.INVISIBLE);
+                presenter.deletePanoramaItem(items, albumViewMode);
+            });
+            alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (DialogInterface.OnClickListener) null);
+            alertDialog.show();
         }
     }
 
@@ -417,6 +419,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
+        if (true) return;
         if (panoramaAdapter != null) {
             panoramaAdapter.notifyDataSetChanged();
         }
@@ -439,15 +442,12 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onSDCardCheckResult(int has_sdcard) {
-        if (has_sdcard == 1) {
-        } else {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.MSG_SD_OFF)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.OK, (dialog, which) -> {
-                        onViewModeChanged(0, false);
-                    })
-                    .show();
+        if (has_sdcard == 0) {
+            alertDialog.setMessage(getString(R.string.MSG_SD_OFF));
+            alertDialog.setCancelable(false);
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (dialog, which) -> onViewModeChanged(0, false));
+            alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
+            alertDialog.show();
         }
     }
 }

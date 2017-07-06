@@ -104,7 +104,7 @@ public class MineLookBigImageFragment extends IBaseFragment implements MineLookB
                 .load(new JFGAccountURL(account))
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(new ImageViewTarget<GlideDrawable>(bigImageBinding.bigPicture) {
                     @Override
                     public void onLoadStarted(Drawable placeholder) {

@@ -16,10 +16,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
@@ -126,20 +125,26 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg", mCallRecord.type))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .error(R.drawable.broken_image)
-                .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
+                .into(new ImageViewTarget<GlideDrawable>(mPictureDetail) {
+
                     @Override
-                    public boolean onException(Exception e, JFGGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        ToastUtil.showNegativeToast("图片加载失败");
-                        canCollect = false;
-                        return false;
+                    public void onLoadStarted(Drawable placeholder) {
+                        view.setScaleType(ImageView.ScaleType.CENTER);
+                        view.setImageDrawable(placeholder);
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, JFGGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        return false;
+                    protected void setResource(GlideDrawable resource) {
+                        view.setImageDrawable(resource);
                     }
-                })
-                .into(mPictureDetail);
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        ToastUtil.showNegativeToast("图片加载失败");
+                        canCollect = false;
+                    }
+                });
         mCollect.setEnabled(false);
         check().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {

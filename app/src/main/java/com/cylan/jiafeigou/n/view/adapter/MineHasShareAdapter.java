@@ -50,7 +50,7 @@ public class MineHasShareAdapter extends SuperAdapter<JFGFriendAccount> {
         Glide.with(getContext()).load(new JFGAccountURL(item.account))
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into((ImageView) holder.getView(R.id.iv_userhead));
     }
 

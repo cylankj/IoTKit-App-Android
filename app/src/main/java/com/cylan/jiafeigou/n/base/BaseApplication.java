@@ -24,7 +24,6 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
@@ -134,12 +133,12 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-//        AppLogger.i("life:onActivityCreated: " + activity.getClass().getSimpleName() + " " + savedInstanceState);
+        AppLogger.i("life:onActivityCreated: " + activity.getClass().getSimpleName() + " " + savedInstanceState);
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-//        AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
+        AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
         viewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
         cancelReportTask();
@@ -152,12 +151,12 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onActivityPaused(Activity activity) {
-//        AppLogger.i("life:onActivityPaused " + activity.getClass().getSimpleName());
+        AppLogger.i("life:onActivityPaused " + activity.getClass().getSimpleName());
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
-//        AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
+        AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
         viewCount--;
         if (viewCount == 0)
             prepareReportTask();

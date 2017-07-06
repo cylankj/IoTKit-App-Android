@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +12,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -26,6 +30,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.google.gson.Gson;
+
+import java.io.File;
 
 import rx.Observable;
 import rx.Subscription;
@@ -119,12 +125,24 @@ public class ShareContentH5DetailFragment extends BaseFragment {
 
     private void share(View view) {
         AppLogger.e("share");
-        new WonderGlideURL(shareItem.toWonderItem())
-                .fetchFile(filePath -> {
-                    ShareManager.byWeb(getActivity())
-                            .withUrl(shareItem.url)
-                            .withThumb(filePath)
-                            .share();
+        Glide.with(getContext())
+                .load(new WonderGlideURL(shareItem.toWonderItem()))
+                .downloadOnly(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                        ShareManager.byWeb(getActivity())
+                                .withUrl(shareItem.url)
+                                .withThumb(resource.getAbsolutePath())
+                                .share();
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        ShareManager.byWeb(getActivity())
+                                .withUrl(shareItem.url)
+                                .share();
+                    }
                 });
     }
 

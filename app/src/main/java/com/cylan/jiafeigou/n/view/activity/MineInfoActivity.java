@@ -42,7 +42,6 @@ import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -130,13 +129,13 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
      * 判断是否大陆用户显示绑定手机号码一栏
      */
     private void initView() {
-        basePresenter.monitorPersonInformation();
         int way = LocaleUtils.getLanguageType(this);
         if (way != JConstant.LOCALE_SIMPLE_CN) {
             homeMineInfoBinding.svPhone.setVisibility(View.GONE);
         } else {
             homeMineInfoBinding.svPhone.setVisibility(View.VISIBLE);
         }
+        basePresenter.monitorPersonInformation();
     }
 
     @OnClick({R.id.tv_toolbar_icon,
@@ -243,12 +242,10 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
     @Override
     public void initPersonalInformation(Account account) {
-        Glide.with(this)
-                .load(basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : new JFGAccountURL(account.getAccount()))
-                .centerCrop()
+        Glide.with(this).load(basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : account.getPhotoUrl())
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(homeMineInfoBinding.userImageHead);
         if (!TextUtils.isEmpty(account.getPhone())) {
             homeMineInfoBinding.tvMyId.setTvSubTitle(account.getPhone());

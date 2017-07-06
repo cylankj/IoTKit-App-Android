@@ -118,7 +118,7 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
         Glide.with(this).load(new JFGAccountURL(account))
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(friendDetailBinding.friendInfoPicture);
     }
 

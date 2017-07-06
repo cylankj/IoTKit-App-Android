@@ -110,7 +110,7 @@ public class FriendContextItem extends AbstractItem<FriendContextItem, FriendCon
                 .load(new JFGAccountURL(account))
                 .placeholder(R.drawable.img_me_list_head)
                 .error(R.drawable.img_me_list_head)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.picture);
     }
 
