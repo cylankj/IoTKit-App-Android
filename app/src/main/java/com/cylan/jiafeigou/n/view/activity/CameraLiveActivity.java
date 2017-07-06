@@ -18,11 +18,14 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -41,6 +44,10 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
@@ -55,9 +62,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private ImageViewTip imgVCameraTitleTopSetting;
     private PagerSlidingTabStrip vIndicator;
 
+    private Device device;
     private String uuid;
-
-//    private Bundle currentBundle;
+    private Subscription newMsgSub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             AppLogger.e("what the hell uuid is null");
             finishExt();
         }
+        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean hasNewMsg = getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE);
         initToolbar(hasNewMsg);
         initAdapter();
@@ -98,6 +106,29 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         if (MiscUtils.isLand()) {
             handleSystemBar(false, 1);
         }
+        makeNewMsgSub();
+    }
+
+    private void makeNewMsgSub() {
+        if (newMsgSub != null) newMsgSub.unsubscribe();
+        RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .subscribeOn(Schedulers.io())
+                .filter(ret -> TextUtils.equals(ret.uuid, device.uuid))
+                .flatMap(ret -> Observable.from(ret.dpList))
+                .filter(ret -> filterNewMsgId(ret.id))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
+                    if (vHint != null && vHint instanceof HintTextView) {
+                        ((HintTextView) vHint).showHint(true);
+                    }
+                }, AppLogger::e);
+    }
+
+    private boolean filterNewMsgId(long id) {
+        if (JFGRules.isCamera(device.pid))
+            return id == 505 || id == 222 || id == 512;
+        return true;
     }
 
     @Override

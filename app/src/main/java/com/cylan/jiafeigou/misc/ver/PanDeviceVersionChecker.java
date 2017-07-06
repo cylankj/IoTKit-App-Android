@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.misc.ver;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.DevUpgradeInfo;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -42,7 +43,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
 
     @Override
     public void startCheck() {
-        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > 60 * 1000) {
+        if (lastCheckTime == 0 || System.currentTimeMillis() - lastCheckTime > (BuildConfig.DEBUG ? 30 * 1000 : 5 * 60 * 1000)) {
             lastCheckTime = System.currentTimeMillis();
         } else return;
         if (!checkCondition()) return;
