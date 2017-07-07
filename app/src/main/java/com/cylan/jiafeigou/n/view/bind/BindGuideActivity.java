@@ -1,11 +1,17 @@
 package com.cylan.jiafeigou.n.view.bind;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +29,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,6 +104,71 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @OnClick(R.id.tv_bind_guide_next)
     public void onClick() {
         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        if (autoBack == null) autoBack = new AutoBack(this);
+        autoBack.run();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (autoBack != null) autoBack.cancel();
+    }
+
+    private AutoBack autoBack;
+
+    private static class AutoBack {
+        private Br br;
+        private WifiManager wifiManager;
+        private WeakReference<BindGuideActivity> weakReference;
+
+        public AutoBack(BindGuideActivity activity) {
+            weakReference = new WeakReference<>(activity);
+            wifiManager = NetUtils.getWifiManager(ContextUtils.getContext());
+        }
+
+        private class Br extends BroadcastReceiver {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                WifiInfo info = wifiManager.getConnectionInfo();
+                if (info != null && info.getSupplicantState() == SupplicantState.COMPLETED) {
+                    final String ssidName = NetUtils.getNetName(context);
+                    Log.d("bbbbb", "name:" + NetUtils.getNetName(context));
+                    if (ApFilter.accept(ssidName)) {
+                        if (weakReference.get() != null) {
+                            Intent toIntent = new Intent(weakReference.get(),
+                                    BindGuideActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            weakReference.get().startActivity(toIntent);
+                        } else {
+                            //start with context
+                            AppLogger.d("空了?");
+                        }
+                    }
+                }
+            }
+        }
+
+        private void run() {
+            try {
+                if (br != null)
+                    ContextUtils.getContext().unregisterReceiver(br);
+                br = new Br();
+                ContextUtils.getContext().registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            } catch (Exception e) {
+
+            }
+        }
+
+        private void cancel() {
+            weakReference = null;
+            try {
+                if (br != null)
+                    ContextUtils.getContext().unregisterReceiver(br);
+            } catch (Exception e) {
+
+            }
+
+        }
     }
 
     private void tryLoadConfigApFragment() {
@@ -121,6 +194,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
             startActivity(intent);
             finish();
         }
+        if (autoBack != null) autoBack.cancel();
     }
 
     @OnClick(R.id.iv_explain_gray)

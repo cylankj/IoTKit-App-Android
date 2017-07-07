@@ -5,13 +5,17 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Environment;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -24,7 +28,6 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
@@ -84,6 +87,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         //这是主进程
+        if (BuildConfig.DEBUG)
+            Debug.startMethodTracing(JConstant.ROOT_DIR);
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             viewCount = 0;
             //设计师不需要这个固定通知栏.20170531

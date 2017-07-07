@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
@@ -50,6 +51,8 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+
+import static com.cylan.jiafeigou.misc.JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE;
 
 /**
  * 忘记密码
@@ -345,6 +348,15 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             Toast.makeText(getContext(), getString(R.string.NO_NETWORK_4), Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        int language = JFGRules.getLanguageType();
+        if (language != LANGUAGE_TYPE_SIMPLE_CHINESE) {
+            //非中文,只能填邮箱
+            if (!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()) {
+                ToastUtil.showToast(getString(R.string.EMAIL_2));
+                return;
+            }
         }
 //        if (!JCache.getLoginState) {
 //            Toast.makeText(getContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
