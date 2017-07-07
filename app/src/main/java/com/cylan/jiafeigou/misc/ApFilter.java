@@ -16,19 +16,19 @@ import java.util.regex.Pattern;
  */
 
 public class ApFilter {
-    public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("DOG-[a-zA-Z0-9]{6}");
-    public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("DOG-ML-[a-zA-Z0-9]{6}");
-    public static final Pattern JFG_PAN_DEVICE_REG = Pattern.compile("DOG-5W-[a-zA-Z0-9]{6}");
-    public static final Pattern JFG_GENERAL_DEVICE = Pattern.compile("DOG-[a-zA-Z0-9]{2}-[a-zA-Z0-9]{6}");
-    public static final Pattern RS_GENERAL_DEVICE = Pattern.compile("RS-CAM-[a-zA-Z0-9]{6}");
+    public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("^DOG");
+    public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("^DOG-ML");
+    public static final Pattern JFG_BELL_DEVICE_REG_1 = Pattern.compile("^DOORBELL");
+    public static final Pattern JFG_BELL_DEVICE_REG_2 = Pattern.compile("^BELL");
+    public static final Pattern RS_GENERAL_DEVICE = Pattern.compile("^RS-CAM");
 
     public static boolean accept(String ssid) {
         if (!TextUtils.isEmpty(ssid)) {
             return JFG_DOG_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
                     || JFG_BELL_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JFG_PAN_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
+                    || JFG_BELL_DEVICE_REG_1.matcher(ssid.replace("\"", "")).find()
                     || RS_GENERAL_DEVICE.matcher(ssid.replace("\"", "")).find()
-                    || JFG_GENERAL_DEVICE.matcher(ssid.replace("\"", "")).find();
+                    || JFG_BELL_DEVICE_REG_2.matcher(ssid.replace("\"", "")).find();
         }
         return false;
 

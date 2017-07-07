@@ -413,15 +413,18 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".n.view.panorama.PanoramaAlbumActivity">
+        <activity
+            android:name=".n.view.panorama.PanoramaAlbumActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
 
         <!-- <service android:name=".n.engine.DataSourceService" /> -->
 

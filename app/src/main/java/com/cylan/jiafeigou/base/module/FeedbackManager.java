@@ -291,7 +291,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                         .subscribeOn(Schedulers.io())
                         .subscribe(ret -> {
                             if (finalClean.zipFile != null)
-                                FileUtils.deleteFile(finalClean.zipFile.getAbsolutePath());
+                                FileUtils.deleteAbsoluteFile(finalClean.zipFile.getAbsolutePath());
                             if (finalClean.localOldFiles != null) {
                                 AppLogger.d("清理 日志");
                                 AppLogger.permissionGranted = false;
@@ -300,7 +300,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                                 } catch (Exception e) {
                                 }
                                 for (File file : finalClean.localOldFiles) {
-                                    FileUtils.deleteFile(file.getAbsolutePath());
+                                    FileUtils.deleteAbsoluteFile(file.getAbsolutePath());
                                 }
                                 AppLogger.permissionGranted = true;
                                 try {

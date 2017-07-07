@@ -135,7 +135,6 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         super.onStart();
         Device device = basePresenter.getDevice();
         currentVersion = device.$(207, "");
-        tvCurrentVersion.setText(currentVersion);
         boolean result = isDownloading();
         if (!result)
             dealUpdate();
@@ -157,6 +156,11 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         }
         tvCurrentVersion.setText(currentVersion);
         tvNewVersionName.setText(newVersion);
+        if (TextUtils.equals(currentVersion, newVersion)) {
+            PreferencesUtils.remove(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
+            AppLogger.d("相同版本:" + newVersion);
+            return false;
+        }
         if (BindUtils.versionCompare(currentVersion, newVersion) < 0) {
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
         }

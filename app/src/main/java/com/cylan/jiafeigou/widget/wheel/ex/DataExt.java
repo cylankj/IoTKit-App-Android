@@ -62,7 +62,7 @@ public class DataExt implements IData {
         if (size > 0) {
             initDateFormat(zone);
             //需要判断顺序.....
-            AppLogger.e("需要判断顺序");
+            AppLogger.e("需要判断顺序:" + zone.getDisplayName());
             int maxIndex = list.get(0).time >= list.get(list.size() - 1).time ? 0 : list.size() - 1;
             int minIndex = maxIndex == 0 ? list.size() - 1 : 0;
             long timeMax = getTenMinuteByTimeRight((list.get(maxIndex).time + list.get(maxIndex).duration) * 1000L);

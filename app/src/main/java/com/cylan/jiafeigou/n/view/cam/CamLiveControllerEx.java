@@ -994,7 +994,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         TimeZone timeZone = JFGRules.getDeviceTimezone(device);
         liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
         liveTimeDateFormat.setTimeZone(timeZone);
-        AppLogger.d("得到设备时区:" + timeZone.getID() + "," + timeZone.getRawOffset());
+        AppLogger.d("得到设备时区:" + timeZone.getID() + "," + timeZone.getDisplayName());
         setHotSeatState(PLAY_STATE_STOP, false, false, false, false, false, false);
     }
 

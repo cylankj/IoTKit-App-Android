@@ -35,11 +35,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"
                 android:layout_alignParentBottom="true"
+                android:layout_below="@+id/v_layout"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="@dimen/y42"
                 android:layout_marginEnd="@dimen/x30"
                 android:layout_marginStart="@dimen/x30"
-                android:layout_marginTop="@dimen/y10"
+                android:layout_marginTop="@dimen/y30"
                 android:background="@drawable/long_btn_bg_shape_white"
                 android:gravity="center"
                 android:padding="@dimen/x10"
@@ -48,6 +49,7 @@
                 android:textSize="@dimen/sp16" />
 
             <LinearLayout
+                android:id="@+id/v_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -105,7 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y72"
                     android:layout_marginEnd="@dimen/x10"
-                    android:layout_marginStart="@dimen/x10"
+                    android:layout_marginStart="@dimen/x5"
                     hunt:sv_sub_title="0.0M"
                     hunt:sv_switch_visibility="false"
                     hunt:sv_title="@string/CLEAR_DATA"
