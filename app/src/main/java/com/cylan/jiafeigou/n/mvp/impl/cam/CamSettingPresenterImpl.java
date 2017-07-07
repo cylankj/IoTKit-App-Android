@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
@@ -15,7 +16,6 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -28,11 +28,10 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -40,6 +39,7 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -54,6 +54,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
             R.string.RECORD_MODE_1,
             R.string.RECORD_MODE_2
     };
+    private boolean isInitSd;
 
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view);
@@ -65,7 +66,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     protected Subscription[] register() {
         return new Subscription[]{
                 robotDataSync(),
-                robotDeviceDataSync()
+                robotDeviceDataSync(),
+                clearSdcardReqBack(),
+                onClearSdReqBack()
         };
     }
 
@@ -307,4 +310,102 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         addSubscription(subscription, tag);
     }
 
+    @Override
+    public void clearSdcard() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Object o) -> {
+                    try {
+                        ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+                        JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
+                        mesg.packValue = DpUtils.pack(0);
+                        ipList.add(mesg);
+                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
+                        isInitSd = true;
+                    } catch (Exception e) {
+                        AppLogger.e("format sd： " + e.getLocalizedMessage());
+                    }
+                }, AppLogger::e);
+    }
+
+    @Override
+    public Subscription clearSdcardReqBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<DpMsgDefine.DPSdStatus>>() {
+                    @Override
+                    public Observable<DpMsgDefine.DPSdStatus> call(RxEvent.DeviceSyncRsp rsp) {
+                        if (rsp != null && rsp.dpList.size() > 0) {
+                            for (JFGDPMsg dp : rsp.dpList) {
+                                try {
+                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.uuid)) {
+                                        DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
+                                        return Observable.just(sdStatus);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    return Observable.just(null);
+                                }
+                            }
+                        }
+                        return Observable.just(null);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> {
+                    if (o != null) {
+                        //清空SD卡提示
+                        if (isInitSd) {
+                            getView().clearSdResult(0);
+                            isInitSd = false;
+                        }
+
+                    }
+                }, AppLogger::e);
+    }
+
+    @Override
+    public Subscription onClearSdReqBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
+                .map(ret -> ret.rets)
+                .flatMap(Observable::from)
+                .filter(msg -> msg.id == 218)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (result.ret == 0) {
+
+                    } else {
+                        getView().clearSdResult(1);
+                    }
+                }, AppLogger::e);
+    }
+
+    @Override
+    public void clearBellRecord(String uuid) {
+        Subscription subscribe = Observable.just(new DPEntity()
+                .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
+                .setUuid(uuid)
+                .setAction(DBAction.CLEARED))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(ret -> BaseApplication.getAppComponent().getTaskDispatcher().perform(ret))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp.getResultCode() == 0) {//删除成功
+                        mView.onClearBellRecordSuccess();
+                        RxBus.getCacheInstance().post(new RxEvent.ClearDataEvent(DpMsgMap.ID_401_BELL_CALL_STATE));
+                        AppLogger.d("清空呼叫记录成功!");
+                    } else {
+                        mView.onClearBellRecordFailed();
+                        AppLogger.d("清空呼叫记录失败");
+                    }
+                }, e -> {
+                    mView.onClearBellRecordFailed();
+                    AppLogger.d(e.getMessage());
+                    AppLogger.d("清空呼叫记录失败!");
+                });
+        addSubscription(subscribe);
+    }
 }

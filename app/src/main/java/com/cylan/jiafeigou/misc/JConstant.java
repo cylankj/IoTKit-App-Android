@@ -148,6 +148,7 @@ public class JConstant {
     public static final java.lang.String SHOW_VR_MODE_TIPS = "show_vr_mode_tips";
     public static final java.lang.String KEY_SHOW_TIME_ZONE = "key_show_time_zone";
     public static final java.lang.String FRIEND_LAST_VISABLE_TIME = "friend_last_visiable_time";
+    public static final String KEY_DEVICE_ITEM_IS_BELL = "key_device_item_is_bell";
 
 
     /**

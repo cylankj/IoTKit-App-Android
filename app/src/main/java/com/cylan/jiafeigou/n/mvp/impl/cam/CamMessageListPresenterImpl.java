@@ -169,7 +169,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                             bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
                         }
                         if (bean.id == 401) {
-                            bean.bellCallRecord = (DpMsgDefine.DPBellCallRecord) dataPoint;
+                            bean.bellCallRecord = ((DpMsgDefine.DPBellCallRecord) dataPoint);
                         }
                         if (!list.contains(bean))//防止重复
                             list.add(bean);

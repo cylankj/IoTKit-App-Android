@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,8 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
@@ -23,8 +23,6 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.widget.LoadingDialog.dismissLoading;
 
 /**
  * 作者：zsl
@@ -55,10 +53,14 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         ButterKnife.bind(this, view);
         getArgumentData();
         initImageViewSize();
-        loadBigImage(iamgeUrl);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadBigImage(iamgeUrl);
+    }
 
     /**
      * 初始化大图大小
@@ -102,20 +104,20 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                         .error(R.drawable.icon_mine_head_normal)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
-                        .into(new ImageViewTarget<GlideDrawable>(ivUserinfoBigImage) {
-
+                        .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
-                            protected void setResource(GlideDrawable resource) {
-                                ivUserinfoBigImage.setImageDrawable(resource);
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                                 hideLoadImageProgress();
+                                return false;
                             }
 
                             @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                super.onLoadFailed(e, errorDrawable);
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                                 hideLoadImageProgress();
+                                return false;
                             }
-                        }), 1000);
+                        })
+                        .into(ivUserinfoBigImage), 1000);
     }
 
     @OnClick({R.id.rl_root_view, R.id.iv_userinfo_big_image})
@@ -144,7 +146,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @Override
     public void hideLoadImageProgress() {
-        dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

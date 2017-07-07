@@ -825,6 +825,12 @@ public class DpMsgDefine {
 
         @Index(3)
         public int type;
+        @Index(4)
+        @Optional
+        public int isRecording;
+        @Index(5)
+        @Optional
+        public int fileIndex;
 
         @Ignore
         public static DPBellCallRecord empty = new DPBellCallRecord();
@@ -835,12 +841,12 @@ public class DpMsgDefine {
         public DPAlarm converToAlarm() {
             DPAlarm dpAlarm = new DPAlarm();
             dpAlarm.time = time;
-            dpAlarm.isRecording = 0;
             dpAlarm.version = version;
             dpAlarm.msgId = 505;
             dpAlarm.type = type;
             dpAlarm.tly = "";
-
+            dpAlarm.isRecording = isRecording;
+            dpAlarm.fileIndex = fileIndex;
             return dpAlarm;
         }
 

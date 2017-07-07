@@ -46,6 +46,7 @@ public class NormalMediaFragment extends IBaseFragment {
     @BindView(R.id.imv_back)
     ImageView imgBack;
     private Device device;
+    private boolean isBell;
 
 
     public NormalMediaFragment() {
@@ -87,11 +88,12 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        isBell = getArguments().getBoolean(JConstant.KEY_DEVICE_ITEM_IS_BELL);
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         int index = getArguments().getInt(KEY_INDEX);
         DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (dpAlarm != null) {
-            loadBitmap(dpAlarm, index, uuid);
+            loadBitmap(dpAlarm, index, uuid, isBell);
         } else {
             Bitmap bitmap = getArguments().getParcelable(KEY_SHARE_ELEMENT_BYTE);
             loadBitmap(bitmap);
@@ -104,9 +106,9 @@ public class NormalMediaFragment extends IBaseFragment {
         });
     }
 
-    private void loadBitmap(DpMsgDefine.DPAlarm dpAlarm, int index, String uuid) {
+    private void loadBitmap(DpMsgDefine.DPAlarm dpAlarm, int index, String uuid, boolean isBell) {
         Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg", dpAlarm.type))
+                .load(new CamWarnGlideURL(uuid, dpAlarm.time + (isBell ? "" : "_" + (index + 1)) + ".jpg", dpAlarm.type))
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

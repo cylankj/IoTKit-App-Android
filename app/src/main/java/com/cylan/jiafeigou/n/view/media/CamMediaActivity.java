@@ -65,7 +65,6 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_BELL_LIST;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 
 @RuntimePermissions
@@ -94,6 +93,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     private int currentIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
     private DpMsgDefine.DPBellCallRecord bellCallRecord;
+    private boolean isBell = false;
     private String uuid;
     private Device device;
 
@@ -106,13 +106,19 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        isBell = getIntent().getBooleanExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, false);
+        if (isBell) {
+            bellCallRecord = getIntent().getParcelableExtra(KEY_BUNDLE);
+        } else {
+            alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
+        }
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
-        alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
-        bellCallRecord = getIntent().getParcelableExtra(KEY_BELL_RECORD_BUNDLE);
+
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
         customAdapter.setDpAlarm(alarmMsg);
-        customAdapter.setDpBellRecord(bellCallRecord);
+        customAdapter.setBellCallRecord(bellCallRecord);
+        customAdapter.setBell(isBell);
         vpContainer.setAdapter(customAdapter);
         vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
         customAdapter.setCallback(object -> {
@@ -350,11 +356,21 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     private class CustomAdapter extends FragmentPagerAdapter {
         private DpMsgDefine.DPAlarm dpAlarm;
+        private DpMsgDefine.DPBellCallRecord bellCallRecord;
         private NormalMediaFragment.CallBack callBack;
-        private DpMsgDefine.DPBellCallRecord dpBellRecord;
+        private boolean isBell = false;
+
+
+        public void setBell(boolean bell) {
+            isBell = bell;
+        }
 
         public void setDpAlarm(DpMsgDefine.DPAlarm dpAlarm) {
             this.dpAlarm = dpAlarm;
+        }
+
+        public void setBellCallRecord(DpMsgDefine.DPBellCallRecord bellCallRecord) {
+            this.bellCallRecord = bellCallRecord;
         }
 
         public CustomAdapter(FragmentManager fm) {
@@ -365,10 +381,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         public Fragment getItem(int position) {
             boolean isPan = device != null && JFGRules.isNeedPanoramicView(device.pid);
             Bundle bundle = new Bundle();
-            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, dpAlarm);
-            bundle.putParcelable(KEY_SHARED_ELEMENT_BELL_LIST, dpBellRecord);
+            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, dpAlarm == null ? bellCallRecord : dpAlarm);
             bundle.putInt(KEY_INDEX, isPan ? getIntent().getIntExtra(KEY_INDEX, 0) : position);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            bundle.putBoolean(JConstant.KEY_DEVICE_ITEM_IS_BELL, isBell);
             bundle.putInt("totalCount", MiscUtils.getCount(dpAlarm == null ? 1 : dpAlarm.fileIndex));
             IBaseFragment fragment = null;
             if (isPan) {
@@ -384,7 +400,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         public int getCount() {
             //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
             if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
-            return MiscUtils.getCount(dpAlarm.fileIndex);
+            return MiscUtils.getCount(dpAlarm == null ? 1 : dpAlarm.fileIndex);
         }
 
         @Override
@@ -394,10 +410,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
         private void setCallback(IBaseFragment.CallBack callback) {
             this.callBack = callback;
-        }
-
-        public void setDpBellRecord(DpMsgDefine.DPBellCallRecord dpBellRecord) {
-            this.dpBellRecord = dpBellRecord;
         }
     }
 

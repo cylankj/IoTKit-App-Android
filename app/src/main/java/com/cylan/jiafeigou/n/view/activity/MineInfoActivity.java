@@ -18,9 +18,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineInfoBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -48,6 +48,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
 
 import java.io.File;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -242,10 +243,16 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
     @Override
     public void initPersonalInformation(Account account) {
-        Glide.with(this).load(basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : account.getPhotoUrl())
+        String url = null;
+        try {
+            url = basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(DataSourceManager.getInstance().getStorageType(), String.format(Locale.getDefault(), "/image/%s.jpg", account.getAccount()));
+
+        } catch (Exception e) {
+            AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
+        }
+        Glide.with(this).load(url)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(homeMineInfoBinding.userImageHead);
         if (!TextUtils.isEmpty(account.getPhone())) {
             homeMineInfoBinding.tvMyId.setTvSubTitle(account.getPhone());

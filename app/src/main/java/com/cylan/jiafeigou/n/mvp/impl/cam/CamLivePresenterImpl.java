@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -20,6 +21,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.Base;
+import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -116,8 +118,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void start() {
         super.start();
-        getBatterySub();
+        addSubscription(getBatterySub());
+        addSubscription(getDeviceSyncSub());
     }
+
 
     /**
      * 1.需要获取设备电量并且,一天一次提醒弹窗.
@@ -147,8 +151,42 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             }
                         }
                     }, AppLogger::e);
+        } else {
+            Device device = getDevice();
+            Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
+            DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+            if (battery < 20 && net.net > 0) {
+                mView.onBatteryDrainOut();
+            }
         }
         return null;
+    }
+
+    private Subscription getDeviceSyncSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter(ret -> TextUtils.equals(ret.uuid, uuid))
+                .subscribe(deviceSyncRsp -> {
+                    if (deviceSyncRsp == null || deviceSyncRsp.dpList == null) {
+                        return;
+                    }
+                    try {
+                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+                            if (msg.id == DpMsgMap.ID_206_BATTERY) {
+                                Integer battery = DpUtils.unpackData(msg.packValue, Integer.class);
+                                if (battery != null && battery < 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                                    mView.onBatteryDrainOut();
+                                }
+
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        AppLogger.e(e.getMessage());
+                    }
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
+                });
     }
 
     private Subscription checkNewVersionRsp() {
@@ -195,6 +233,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
+                    BaseBellCallEventListener.getInstance().canNewCall(true);
                     updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
                     getView().onLiveStop(getLiveStream().type, ret.code);
 //                    feedRtcp.stop();
@@ -521,6 +560,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .timeout(30, TimeUnit.SECONDS)
                 .doOnError(ret -> AppLogger.e("30s 超时了"))
                 .subscribe(ret -> {
+                    BaseBellCallEventListener.getInstance().canNewCall(true);
                 }, AppLogger::e);
     }
 
@@ -537,6 +577,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .map(resolution -> {
                     removeTimeoutSub();
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
+                    BaseBellCallEventListener.getInstance().canNewCall(false);
                     //注册监听耳机
                     registerHeadSetObservable();
                     //正向,抛异常
@@ -713,6 +754,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         getHotSeatStateMaintainer().reset();
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
                         updateLiveStream(getLiveStream().type, -1, reasonOrState);
+                        BaseBellCallEventListener.getInstance().canNewCall(true);
                         AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());

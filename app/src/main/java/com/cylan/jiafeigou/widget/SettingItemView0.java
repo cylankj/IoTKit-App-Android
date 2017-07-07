@@ -146,4 +146,8 @@ public class SettingItemView0 extends RelativeLayout {
         imgvIcon.setAlpha(alpha);
         imgvRedHint.setAlpha(alpha);
     }
+
+    public void setCheckEnable(boolean enable) {
+        switchButton.setEnabled(enable);
+    }
 }

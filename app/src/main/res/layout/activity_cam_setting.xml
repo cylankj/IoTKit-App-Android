@@ -125,6 +125,14 @@
                 hunt:sv_title="@string/SETTING_RECORD"
                 hunt:sv_v_divider="true" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_sd_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_sd"
+                hunt:sv_title="@string/SETTING_SD"
+                hunt:sv_v_divider="true" />
+
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_device_delay_capture"
@@ -172,6 +180,14 @@
                 hunt:sv_title="@string/Tap1_CameraFun_VideoDirection"
                 hunt:sv_v_divider="true" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sbtn_setting_pir"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_ntsc"
+                hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
+                hunt:sv_title="红外夜视"
+                hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sbtn_setting_110v"
@@ -183,6 +199,12 @@
                 hunt:sv_title="@string/HZ_NTSC_PAL"
                 hunt:sv_v_divider="false" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_clear_record"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_title="@string/DOOR_CLEAR_REOCRD"
+                hunt:sv_v_divider="false" />
 
             <TextView
                 android:id="@+id/tv_setting_unbind"

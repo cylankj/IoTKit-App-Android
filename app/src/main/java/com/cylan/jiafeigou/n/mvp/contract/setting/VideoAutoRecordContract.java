@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.setting;
 
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -11,6 +12,8 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface VideoAutoRecordContract {
 
     interface View extends BaseView<Presenter> {
+
+        void onSDCardSync(DpMsgDefine.DPSdStatus status);
     }
 
     interface Presenter extends BasePresenter {
@@ -19,7 +22,8 @@ public interface VideoAutoRecordContract {
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        public <T extends DataPoint> void updateInfoReq(T value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
+
 
     }
 }

@@ -223,7 +223,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private void removeHint() {
         try {
-            BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003);
+            BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
             if (vIndicator == null) return;
             View vHint = vIndicator.findViewById(getString(R.string.Tap1_Camera_Messages).hashCode());
             if (vHint != null && vHint instanceof HintTextView) {

@@ -22,6 +22,10 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
+        void showLoading();
+
+        void hideLoading();
+
         void deviceUpdate(Device device);
 
         void deviceUpdate(JFGDPMsg msg) throws IOException;
@@ -29,6 +33,12 @@ public interface CamSettingContract {
         void unbindDeviceRsp(int state);
 
         void onNetworkChanged(boolean connected);
+
+        void clearSdResult(int i);
+
+        void onClearBellRecordSuccess();
+
+        void onClearBellRecordFailed();
     }
 
     interface Presenter extends BasePresenter {
@@ -59,6 +69,14 @@ public interface CamSettingContract {
         Observable<Boolean> switchApModel(int model);
 
         void addSub(Subscription subscription, String tag);
+
+        void clearSdcard();
+
+        Subscription clearSdcardReqBack();
+
+        Subscription onClearSdReqBack();
+
+        void clearBellRecord(String uuid);
     }
 }
 

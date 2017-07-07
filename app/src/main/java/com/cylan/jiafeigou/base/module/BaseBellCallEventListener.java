@@ -31,6 +31,7 @@ public class BaseBellCallEventListener {
     private Context appContext;
     private Map<String, String> urlMap = new HashMap<>();
     private static BaseBellCallEventListener instance;
+    private boolean canNewCall = true;
 
     public static BaseBellCallEventListener getInstance() {
         return instance;
@@ -57,6 +58,8 @@ public class BaseBellCallEventListener {
     }
 
     private void makeNewCall(RxEvent.BellCallEvent callEvent) {
+        //2、在直播界面查看直播时不拉起呼叫页面，在查看历史录像时拉起呼叫页面。
+        if (!canNewCall) return;
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, callEvent.caller.cid);
@@ -79,5 +82,9 @@ public class BaseBellCallEventListener {
 
     public String getUrl(String cid) {
         return urlMap.get(cid);
+    }
+
+    public void canNewCall(boolean newCall) {
+        this.canNewCall = newCall;
     }
 }

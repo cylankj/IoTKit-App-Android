@@ -26,6 +26,7 @@
         android:background="@drawable/little_shape" />
 
     <RelativeLayout
+        android:id="@+id/rl_alarm_setting_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/x10"
@@ -89,5 +90,20 @@
                 android:clickable="false"
                 android:theme="@style/RadioButtonStyle" />
         </RadioGroup>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_watch_video_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/siv_watch_video_switcher"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            hunt:sv_sub_title="开启后，查看实时监控将生成历史录像"
+            hunt:sv_switch_visibility="true"
+            hunt:sv_title="监看录像" />
+
     </RelativeLayout>
 </LinearLayout>

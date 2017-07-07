@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -26,6 +27,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -33,6 +35,7 @@ import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
+import com.cylan.jiafeigou.n.view.cam.SdcardDetailActivity;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.badge.Badge;
@@ -47,6 +50,8 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -65,6 +70,7 @@ import rx.schedulers.Schedulers;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_IS_BELL;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
@@ -105,9 +111,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView1 svSettingDeviceWiredMode;
     @BindView(R.id.sv_setting_device_soft_ap)
     SettingItemView0 svSettingDeviceSoftAp;
+    @BindView(R.id.sv_setting_device_sd_card)
+    SettingItemView0 svSettingDeviceSDCard;
+    @BindView(R.id.sv_setting_device_clear_record)
+    SettingItemView0 svSettingDeviceClearRecord;
+    @BindView(R.id.sbtn_setting_pir)
+    SettingItemView0 svSettingDevicePIR;
     private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
+    private SimpleDialogFragment mClearRecordFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +138,26 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
+        initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         AppLogger.d("检查升级包");
+    }
+
+    private void initProductLayout(Device device) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
+        svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
+        svSettingDeviceAutoRecord.setVisibility(productProperty.hasProperty(device.pid, "AUTORECORD") ? View.VISIBLE : View.GONE);
+        svSettingDevicePIR.setVisibility(productProperty.hasProperty(device.pid, "INFRAREDVISION") ? View.VISIBLE : View.GONE);
+        svSettingDeviceSDCard.setVisibility(productProperty.hasProperty(device.pid, "SD") ? View.VISIBLE : View.GONE);
+        sbtnSetting110v.setVisibility(productProperty.hasProperty(device.pid, "NTSC") ? View.VISIBLE : View.GONE);
+        svSettingDeviceRotate.setVisibility(productProperty.hasProperty(device.pid, "HANGUP") ? View.VISIBLE : View.GONE);
+        svSettingDeviceStandbyMode.setVisibility(productProperty.hasProperty(device.pid, "STANDBY") ? View.VISIBLE : View.GONE);
+        svSettingDeviceLedIndicator.setVisibility(productProperty.hasProperty(device.pid, "LED") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceMobileNetwork.setVisibility(productProperty.hasProperty(device.pid, "") ? View.VISIBLE : View.GONE);
+        svSettingDeviceSoftAp.setVisibility(productProperty.hasProperty(device.pid, "AP") ? View.VISIBLE : View.GONE);
+        svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
+        sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -175,7 +206,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.tv_setting_unbind,
             R.id.sv_setting_device_delay_capture,
             R.id.sv_setting_device_wifi,
-            R.id.sbtn_setting_sight
+            R.id.sbtn_setting_sight,
+            R.id.sv_setting_device_sd_card,
+            R.id.sv_setting_device_clear_record
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -199,15 +232,20 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.sv_setting_device_auto_record: {
+                Device device = DataSourceManager.getInstance().getDevice(uuid);
+
+
                 initVideoAutoRecordFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
+                bundle.putBoolean(KEY_DEVICE_ITEM_IS_BELL, JFGRules.isBell(device.pid));
                 VideoAutoRecordFragment fragment = videoAutoRecordFragmentWeakReference.get();
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
                     deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
                 });
+
             }
             break;
             case R.id.sv_setting_safe_protection: {
@@ -238,7 +276,99 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 startActivity(intent);
                 break;
+
+            //bell
+            case R.id.sv_setting_device_sd_card:
+                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+                String statusContent = getSdcardState(status.hasSdcard, status.err);
+                if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+                    showClearSDDialog();
+                    return;
+                }
+
+                if (status.hasSdcard)//没有sd卡,不能点击
+                    jump2SdcardDetailFragment();
+                break;
+            case R.id.sv_setting_device_clear_record:
+                ViewUtils.deBounceClick(view);
+                int cnet = NetUtils.getJfgNetType(this);
+                if (cnet == 0) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
+                if (mClearRecordFragment == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Tipsforclearrecents));
+                    bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+                    bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.DELETE));
+                    mClearRecordFragment = SimpleDialogFragment.newInstance(bundle);
+                }
+                mClearRecordFragment.setAction((id, value) -> {
+                    switch (id) {
+                        case R.id.tv_dialog_btn_right:
+                            basePresenter.clearBellRecord(uuid);
+                            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                    }
+                });
+                mClearRecordFragment.show(getSupportFragmentManager(), "ClearBellRecordFragment");
+                break;
         }
+    }
+
+    /**
+     * 显示Sd卡的详情
+     */
+    private void jump2SdcardDetailFragment() {
+//        Bundle bundle = new Bundle();
+//        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
+//        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+//                sdcardDetailFragment, android.R.id.content);
+        Intent intent = new Intent(this, SdcardDetailActivity.class);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        startActivity(intent);
+    }
+
+    /**
+     * 格式化SD卡
+     */
+    private void showClearSDDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.SD_INIT));
+        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.VIDEO_SD_DESC));
+        SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+        simpleDialogFragment.setAction((int id, Object value) -> {
+            //开始格式化
+            if (id == R.id.tv_dialog_btn_left) {
+                basePresenter.clearSdcard();
+                showLoading();
+            }
+        });
+        simpleDialogFragment.show(getSupportFragmentManager(), "simpleDialogFragment");
+    }
+
+    @Override
+    public void showLoading() {
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SD_INFO_2));
+    }
+
+    @Override
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
+    }
+
+    private String getSdcardState(boolean hasSdcard, int err) {
+        //sd卡状态
+        if (hasSdcard && err != 0) {
+            //sd初始化失败时候显示
+            return getString(R.string.SD_INIT_ERR, err);
+        }
+        if (!hasSdcard) {
+            return getString(R.string.SD_NO);
+        }
+        return getString(R.string.SD_NORMAL);
     }
 
     private void handleJumpToConfig() {
@@ -260,6 +390,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 if (JFGRules.isRS(device.pid)) {
                     //特殊设备优先
                     intent = new Intent(this, BindRsCamActivity.class);
+                } else if (JFGRules.isBell(device.pid)) {
+                    intent = new Intent(this, BindBellActivity.class);
                 } else {
                     intent = new Intent(this, BindCamActivity.class);
                 }
@@ -566,6 +698,34 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         basePresenter.addSub(subscription, "enableAp");
                     }, getString(R.string.CANCEL), null, false);
         });
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+
+        } else {
+            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+        }
+
+        //bell
+        if (JFGRules.isBell(device.pid)) {
+            svSettingDeviceClearRecord.setVisibility(View.VISIBLE);
+            svSettingDeviceSDCard.setVisibility(View.VISIBLE);
+            svSettingDevicePIR.setVisibility(View.GONE);
+            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+            DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+            String statusContent = getSdcardState(status.hasSdcard, status.err);
+            if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+                svSettingDeviceSDCard.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+            } else {
+                svSettingDeviceSDCard.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+            }
+            // TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
+            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+
+        } else {
+            svSettingDeviceSDCard.setVisibility(View.GONE);
+            svSettingDeviceClearRecord.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -649,6 +809,30 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceDelayCapture.setEnabled(connected);
         DpMsgDefine.DPNet net = basePresenter.getDevice().$(201, new DpMsgDefine.DPNet());
         enableStandby(connected && JFGRules.isDeviceOnline(net));
+    }
+
+    @Override
+    public void clearSdResult(int code) {
+        hideLoading();
+        if (code == 0) {
+            ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
+        } else if (code == -1) {
+            ToastUtil.showNegativeToast(getString(R.string.NETWORK_TIMEOUT));
+        } else {
+            ToastUtil.showNegativeToast(getString(R.string.SD_ERR_3));
+        }
+    }
+
+    @Override
+    public void onClearBellRecordSuccess() {
+        ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
+    }
+
+    @Override
+    public void onClearBellRecordFailed() {
+        ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     private void enableStandby(boolean enable) {
