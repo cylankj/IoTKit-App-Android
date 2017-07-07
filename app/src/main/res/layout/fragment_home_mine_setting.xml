@@ -34,7 +34,6 @@
                 android:id="@+id/btn_to_info"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"
-                android:layout_alignParentBottom="true"
                 android:layout_below="@+id/v_layout"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="@dimen/y42"

@@ -140,7 +140,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         countDownTimer = new CountDownTimer(90 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                final String content = millisUntilFinished / 1000 + "account";
+                final String content = millisUntilFinished / 1000 + "s";
                 tvMeterGetCode.setText(content);
                 tvMeterGetCode.setEnabled(false);
             }

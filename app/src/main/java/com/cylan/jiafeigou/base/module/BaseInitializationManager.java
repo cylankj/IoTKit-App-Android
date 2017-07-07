@@ -3,11 +3,13 @@ package com.cylan.jiafeigou.base.module;
 import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Debug;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -16,6 +18,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -36,6 +39,8 @@ import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -120,15 +125,17 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
+        if (BuildConfig.DEBUG)
+            Debug.startMethodTracing(JConstant.ROOT_DIR + File.separator + "what.trace");
         Log.d("initialization", "initialization," + Thread.currentThread());
         PerformanceUtils.startTrace("initialization");
         hasInitFinished = false;
+        initAppCmd();
         initOKGo();
         enableDebugOptions();
         initSourceManager();
         initDBHelper();
         initTaskDispatcher();
-        initAppCmd();
         initBugMonitor();
         initBlockCanary();
         initLeakCanary();
@@ -141,6 +148,9 @@ public final class BaseInitializationManager {
         hasInitFinished = true;
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         PerformanceUtils.stopTrace("initialization");
+        GlobalResetPwdSource.getInstance().register();
+        if (BuildConfig.DEBUG)
+            Debug.stopMethodTracing();
     }
 
     private void initOKGo() {
@@ -225,6 +235,7 @@ public final class BaseInitializationManager {
         String serverAddress = null;
         String logPath = null;
         BaseJFGResultParser resultParser = null;
+        GlobalResetPwdSource.getInstance().unRegister();
     }
 
     private void initSourceManager() {

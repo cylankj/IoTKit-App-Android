@@ -1,1 +1,1 @@
-include ':app', ':processor', ':LibMarsdaemon-release', ':sdkLib'
+include ':app', ':processor'

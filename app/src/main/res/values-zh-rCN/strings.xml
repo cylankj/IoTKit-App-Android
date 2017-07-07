@@ -694,7 +694,7 @@
   <string name="Tap1_Camera_Greetings">日出日落、云彩变换、家庭生活、Baby成长&#8230;每天都有精彩和成长，每一刻都值得被记录</string>
   <string name="Tap1_Camera_Messages">消息</string>
   <string name="Tap1_Camera_Messages_ViewTheVideo">查看视频</string>
-  <string name="Tap1_Camera_MotionDetection_OffTips">关闭“移动侦测”，将停止“移动侦测报警录像”</string>
+  <string name="Tap1_Camera_MotionDetection_OffTips">关闭“移动侦测”，将停止“侦测报警录像”</string>
   <string name="Tap1_Camera_NoSDCardTips">未检测到SD卡</string>
   <string name="Tap1_Camera_Overlook">俯视</string>
   <string name="Tap1_Camera_OverlookTips">以从上往下的视角查看，需要将摄像头放置于高处</string>

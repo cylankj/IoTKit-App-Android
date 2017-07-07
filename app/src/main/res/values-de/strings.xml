@@ -221,7 +221,7 @@
   <string name="FRI">Freitag</string>
   <string name="FRI_1">Freitags</string>
   <string name="FRI_2">Fr</string>
-  <string name="FRI_Hisvideo_Timeselector">Freitags</string>
+  <string name="FRI_Hisvideo_Timeselector">Fr</string>
   <string name="FROME">Startzeit</string>
   <string name="Fail_Record">Fehler beim Aufzeichnen</string>
   <string name="Feb">Feb.</string>
@@ -311,7 +311,7 @@
   <string name="MONTHS">Monat</string>
   <string name="MON_1">Montags</string>
   <string name="MON_2">Mo</string>
-  <string name="MON_Hisvideo_Timeselector">Montags</string>
+  <string name="MON_Hisvideo_Timeselector">Mo</string>
   <string name="MSG_BIND">Erfolgreich hinzugefügt</string>
   <string name="MSG_BOTTOM_LINE">Unterseite</string>
   <string name="MSG_DELETE_TITLE">Gelöschte Inhalte nicht zurücksetzbar, bitte wieder prüfen</string>
@@ -485,7 +485,7 @@
   <string name="SAT">Samstag</string>
   <string name="SAT_1">Samtags</string>
   <string name="SAT_2">Sa</string>
-  <string name="SAT_Hisvideo_Timeselector">Samtags</string>
+  <string name="SAT_Hisvideo_Timeselector">Sa</string>
   <string name="SAVE">Fertig</string>
   <string name="SAVED_PHOTOS">Im Archiv gespeichert</string>
   <string name="SCENE_ADDED">\"%s\" hinzugefügt</string>
@@ -554,7 +554,7 @@
   <string name="SUN">Sonntag</string>
   <string name="SUN_1">Sonntags</string>
   <string name="SUN_2">So</string>
-  <string name="SUN_Hisvideo_Timeselector">Sonntags</string>
+  <string name="SUN_Hisvideo_Timeselector">So</string>
   <string name="SURE">Gut</string>
   <string name="SURE_DELETE">Sind Sie sicher, alle Mitteilungen zu löschen?</string>
   <string name="SURE_DELETE_1">Möchten Sie \"%s\" und relevante Daten vom Account löschen?</string>
@@ -594,7 +594,7 @@
   <string name="THU">Donnerstag</string>
   <string name="THU_1">Donnerstags</string>
   <string name="THU_2">Do</string>
-  <string name="THU_Hisvideo_Timeselector">Donnerstags</string>
+  <string name="THU_Hisvideo_Timeselector">Do</string>
   <string name="TIME">Der Zeit</string>
   <string name="TIMEOUT_TRY_AGIN">Verbindungs&#8211;Timeout \n Bitte versuchen Sie es erneut</string>
   <string name="TIMEZONE_CHOOSE">Zeitzone auswählen</string>
@@ -606,7 +606,7 @@
   <string name="TUE">Dienstag</string>
   <string name="TUE_1">Dienstags</string>
   <string name="TUE_2">Di</string>
-  <string name="TUE_Hisvideo_Timeselector">Dienstags</string>
+  <string name="TUE_Hisvideo_Timeselector">Di</string>
   <string name="TURN_ON_PROTECTION">Beim Einschalten werden Sie rechtzeitig informiert und alarmiert wenn Bewegung im eingestellten Zeitraum erkannt</string>
   <string name="Tap0_AlreadyEmailed">Eine automatische Email an</string>
   <string name="Tap0_Authorizationfailed">Autorisierung fehlgeschlagen, bitte versuchen Sie es erneut.</string>
@@ -937,7 +937,7 @@
   <string name="WED">Mittwoch</string>
   <string name="WED_1">Mittwochs</string>
   <string name="WED_2">Mi</string>
-  <string name="WED_Hisvideo_Timeselector">Mittwochs</string>
+  <string name="WED_Hisvideo_Timeselector">Mi</string>
   <string name="WEEK">Wöchentlich</string>
   <string name="WEEKDAYS">Werktags</string>
   <string name="WEEKEND">Wochenende</string>

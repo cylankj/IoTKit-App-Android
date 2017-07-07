@@ -80,8 +80,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG)
-            Debug.stopMethodTracing();
         PerformanceUtils.startTrace("NewHomeActivityStart");
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_new_home);
