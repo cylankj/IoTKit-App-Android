@@ -705,13 +705,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             svSettingDeviceAutoRecord.setVisibility(View.GONE);
         }
-
-        //bell
-        if (JFGRules.isBell(device.pid)) {
-            svSettingDeviceClearRecord.setVisibility(View.VISIBLE);
+        //SD 卡的显示与隐藏
+        if (productProperty.hasProperty(device.pid, "SD")) {
             svSettingDeviceSDCard.setVisibility(View.VISIBLE);
-            svSettingDevicePIR.setVisibility(View.GONE);
-            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
             DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
             String statusContent = getSdcardState(status.hasSdcard, status.err);
             if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -719,12 +715,24 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             } else {
                 svSettingDeviceSDCard.setTvSubTitle(statusContent, R.color.color_8c8c8c);
             }
-            // TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
-
         } else {
             svSettingDeviceSDCard.setVisibility(View.GONE);
-            svSettingDeviceClearRecord.setVisibility(View.GONE);
+        }
+
+        //录像设置
+        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+            // TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
+            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+        } else {
+            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+        }
+
+        //PIR 设置
+        if (productProperty.hasProperty(device.pid, "INFRAREDVISION")) {
+            svSettingDevicePIR.setVisibility(View.VISIBLE);
+        } else {
+            svSettingDevicePIR.setVisibility(View.GONE);
         }
     }
 
