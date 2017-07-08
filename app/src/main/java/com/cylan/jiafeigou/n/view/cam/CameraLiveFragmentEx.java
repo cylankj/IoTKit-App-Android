@@ -227,9 +227,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (judge()) {
             //显示按钮
         }
-        //        basePresenter.startPlay();
-        if (getUserVisibleHint())
-            camLiveControlLayer.showUseCase();
     }
 
     @Override

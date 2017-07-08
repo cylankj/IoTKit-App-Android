@@ -280,10 +280,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         AppLogger.d("需要重置清晰度");
     }
 
-    public void showUseCase() {
-        LiveShowCase.show((Activity) getContext(), layoutD, findViewById(R.id.imgV_cam_zoom_to_full_screen));
-    }
-
     public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
         reInitHistoryHandler(presenter);
         return historyWheelHandler;
@@ -544,12 +540,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayType = presenter.getPlayType();
         livePlayState = PLAY_STATE_PLAYING;
         boolean isPlayHistory = livePlayType == TYPE_HISTORY;
-        //左下角直播
-        boolean landPlayBtnEnable = livePlayType == TYPE_HISTORY;
+        //左下角直播,竖屏下:左下角按钮已经隐藏
         ((ImageView) findViewById(R.id.imgV_cam_live_land_play))
-                .setImageResource(landPlayBtnEnable ? R.drawable.icon_landscape_stop :
+                .setImageResource(isPlayHistory ? R.drawable.icon_landscape_playing :
                         R.drawable.icon_landscape_stop_disable);
-        findViewById(R.id.imgV_cam_live_land_play).setEnabled(landPlayBtnEnable);
+        findViewById(R.id.imgV_cam_live_land_play).setEnabled(isPlayHistory);
         //|直播| 按钮
         layoutE.findViewById(R.id.tv_live).setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
@@ -1006,7 +1001,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
+            showUseCase();
         }, 100);
+    }
+
+    public void showUseCase() {
+        if (presenter.isDeviceStandby()) return;
+        LiveShowCase.show((Activity) getContext(), layoutD, findViewById(R.id.imgV_cam_zoom_to_full_screen));
     }
 
     @Override
