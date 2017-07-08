@@ -88,6 +88,8 @@
     <string name="Clear_Sdcard_tips5">Connection timeout</string>
     <string name="Clear_Sdcard_tips6">Data of SD card has been wiped</string>
     <string name="ClearingTips">Clearing&#8230;</string>
+    <string name="Cloud_Camera">Cloud Camera</string>
+    <string name="Consumer_Camera">Consumer Camera</string>
     <string name="DEAL_FEEDBACK">Thank you for your feedback</string>
     <string name="DELETE">Delete</string>
     <string name="DELETED">Deleted</string>
@@ -571,6 +573,9 @@
     <string name="Sharing_Management">Sharing Management</string>
     <string name="Slogan">Homesick, Use Clever Dog</string>
     <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+    <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+    <string name="Smart_bell_Battery">Smart Doorbell (Battery Version)</string>
+    <string name="Smart_bell_Power">Smart Doorbell (Power Version)</string>
     <string name="Start_Failed">Start failed</string>
     <string name="Start_Hotspot">Start hotspot</string>
     <string name="Start_Hotspot_Note">Start hotspot may cause offline of the device; after turning on, wait for flashing blue light of device</string>

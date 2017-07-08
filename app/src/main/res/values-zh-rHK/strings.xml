@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">連接超時</string>
   <string name="Clear_Sdcard_tips6">SD卡數據已被清空</string>
   <string name="ClearingTips">清除中&#8230;</string>
+  <string name="Cloud_Camera">云攝像機</string>
+  <string name="Consumer_Camera">消費類攝像機</string>
   <string name="DEAL_FEEDBACK">感謝您的回饋</string>
   <string name="DELETE">刪除</string>
   <string name="DELETED">已刪除</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">分享管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
+  <string name="Smart_Door_Viewer">智能貓眼</string>
+  <string name="Smart_bell_Battery">智能門鈴(電池版)</string>
+  <string name="Smart_bell_Power">智能門鈴(無電池版)</string>
   <string name="Start_Failed">開啟失敗</string>
   <string name="Start_Hotspot">開啟熱點</string>
   <string name="Start_Hotspot_Note">開啟熱點會使設備離線，開啟後，請等待設備藍燈閃爍</string>

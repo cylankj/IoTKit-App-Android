@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">连接超时</string>
   <string name="Clear_Sdcard_tips6">SD卡数据已被清空</string>
   <string name="ClearingTips">清除中&#8230;</string>
+  <string name="Cloud_Camera">云摄像机</string>
+  <string name="Consumer_Camera">消费类摄像机</string>
   <string name="DEAL_FEEDBACK">感谢您的反馈</string>
   <string name="DELETE">删除</string>
   <string name="DELETED">已删除</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">分享管理</string>
   <string name="Slogan">想家，就用加菲狗</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
+  <string name="Smart_Door_Viewer">智能猫眼</string>
+  <string name="Smart_bell_Battery">智能门铃(电池版)</string>
+  <string name="Smart_bell_Power">智能门铃(无电池版)</string>
   <string name="Start_Failed">开启失败</string>
   <string name="Start_Hotspot">开启热点</string>
   <string name="Start_Hotspot_Note">开启热点会使设备离线，开启后，请等待设备蓝灯闪烁</string>

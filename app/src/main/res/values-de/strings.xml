@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">Verbindungs&#8211;Timeout</string>
   <string name="Clear_Sdcard_tips6">Die Daten der SD&#8211;Karte wurden gelöscht</string>
   <string name="ClearingTips">Clearing&#8230;</string>
+  <string name="Cloud_Camera">Cloud&#8211;Kamera</string>
+  <string name="Consumer_Camera">Consumer Camera</string>
   <string name="DEAL_FEEDBACK">Vielen Dank für Ihr Feedback</string>
   <string name="DELETE">Löschen</string>
   <string name="DELETED">Alles bereits gelöscht</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Teilen Management</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+  <string name="Smart_bell_Battery">Smart Türklingel (Batterieversion)</string>
+  <string name="Smart_bell_Power">Smart Türklingel (Power Version)</string>
   <string name="Start_Failed">Start fehlgeschlagen</string>
   <string name="Start_Hotspot">Hotspot aktivieren</string>
   <string name="Start_Hotspot_Note">Hotspotaktivieren kann zum Offline des Gerätes führen. Nach dem Aktivieren bitte warten Sie bis die blaue Lampe des Gerätes blinkt.</string>
