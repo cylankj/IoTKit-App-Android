@@ -170,42 +170,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             holder.setChecked(R.id.rbtn_item_check, selectedMap.containsKey(layoutPosition));
     }
 
-    private void handlerBellLayout(SuperViewHolder holder, CamMessageBean item) {
-        int count = 1;
-        ViewGroup.LayoutParams containerLp = holder.getView(R.id.lLayout_cam_msg_container).getLayoutParams();
-        containerLp.height = getLayoutHeight(count);
-        holder.getView(R.id.lLayout_cam_msg_container).setLayoutParams(containerLp);
-        //根据图片总数,设置view的Gone属性
-        for (int i = 2; i >= 0; i--) {
-            View child = holder.getView(R.id.imgV_cam_message_pic_0 + i);
-            child.setVisibility(count - 1 >= i ? View.VISIBLE : View.GONE);
-            if (count - 1 >= i) {
-                ViewGroup.LayoutParams lp = child.getLayoutParams();
-                lp.width = getPicWidth(count);
-                lp.height = getPicHeight(count);
-                child.setLayoutParams(lp);
-            }
-        }
-//        for (int i = 0; i < count; i++) {
-//            Glide.with(getContext())
-//                    .load(new JFGGlideURL(uuid, item.bellCallRecord.time + ".jpg", item.bellCallRecord.type))
-//                    .placeholder(R.drawable.wonderful_pic_place_holder)
-//                    .override(pic_container_width / count, pic_container_width / count)
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .centerCrop()
-//                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
-//        }
-//        }
-        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item, item.bellCallRecord != null));
-        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
-        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
-        holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
-        holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
-        holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
-        holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
-        holder.setEnabled(R.id.tv_jump_next, online());
-    }
-
     /**
      * 显示直播按钮
      *
@@ -246,7 +210,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private void handleTextContentLayout(SuperViewHolder holder,
                                          CamMessageBean item) {
-        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item, item.bellCallRecord != null));
+        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContentSD(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
         holder.setVisibility(R.id.tv_jump_next, textShowSdBtn(item) ? View.VISIBLE : View.INVISIBLE);
         if (onClickListener != null)
@@ -256,8 +220,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private void handlePicsLayout(SuperViewHolder holder,
                                   CamMessageBean item) {
 //        if (!isEditMode()) {
-        int count = item.bellCallRecord != null ? 1 : MiscUtils.getCount(item.alarmMsg.fileIndex);
-
+        int count = 0;
+        if (item.alarmMsg != null) {
+            count = MiscUtils.getCount(item.alarmMsg.fileIndex);
+        } else if (item.bellCallRecord != null) {
+            count = MiscUtils.getCount(item.bellCallRecord.fileIndex);
+        }
+        count = Math.max(count, 1);//最小为1
         ViewGroup.LayoutParams containerLp = holder.getView(R.id.lLayout_cam_msg_container).getLayoutParams();
         containerLp.height = getLayoutHeight(count);
         holder.getView(R.id.lLayout_cam_msg_container).setLayoutParams(containerLp);
@@ -272,32 +241,20 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 child.setLayoutParams(lp);
             }
         }
-
-        if (item.bellCallRecord != null) {
+        for (int index = 1; index <= count; index++) {
             Glide.with(getContext())
-                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + ".jpg", item.alarmMsg.time, 1, item.alarmMsg.type))
+                    .load(MiscUtils.getCamWarnUrl(uuid, item, index))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .listener(loadListener)
-                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + 1));
-        } else {
-
-            for (int i = 0; i < count; i++) {
-                Glide.with(getContext())
-                        .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg", item.alarmMsg.time, i + 1, item.alarmMsg.type))
-                        .placeholder(R.drawable.wonderful_pic_place_holder)
-                        .override(pic_container_width / count, pic_container_width / count)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .centerCrop()
-                        .listener(loadListener)
-                        .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
-            }
+                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + index - 1));
         }
 
+
 //        }
-        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item, item.bellCallRecord != null));
+        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
         holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
@@ -341,10 +298,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 时间
      *
      * @param bean
-     * @param isBell
      * @return
      */
-    private String getFinalTimeContent(CamMessageBean bean, boolean isBell) {
+    private String getFinalTimeContent(CamMessageBean bean) {
         long id = bean.id;
         String tContent = TimeUtils.getHH_MM(bean.version);
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
@@ -354,6 +310,22 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         return tContent;
     }
+
+    /**
+     * 时间
+     *
+     * @param bean
+     * @return
+     */
+    private String getFinalTimeContentSD(CamMessageBean bean) {
+        long id = bean.id;
+        String tContent = TimeUtils.getHH_MM(bean.version);
+        if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG || id == DpMsgMap.ID_401_BELL_CALL_STATE) {
+            return tContent + getContext().getString(R.string.MSG_WARNING);
+        }
+        return tContent;
+    }
+
 
     /**
      * sd卡内容
@@ -390,7 +362,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
                 if (camMessageBean.viewType == 2) return 2;
 //                return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : camMessageBean.bellCallRecord == null ? 0 : 3;
-
+                if (camMessageBean.bellCallRecord != null) return 1;
                 return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
             }
 

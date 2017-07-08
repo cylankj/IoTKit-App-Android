@@ -525,7 +525,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         Intent intent = new Intent(getActivity(), CamMediaActivity.class);
         CamMessageBean item = camMessageListAdapter.getItem(position);
         intent.putExtra(KEY_INDEX, index);
-        intent.putExtra(KEY_BUNDLE, item.alarmMsg == null ? item.bellCallRecord : item.alarmMsg);
+        intent.putExtra(KEY_BUNDLE, item);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, item.bellCallRecord != null);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);

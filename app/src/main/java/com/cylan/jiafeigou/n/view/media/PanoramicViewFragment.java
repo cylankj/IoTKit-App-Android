@@ -20,13 +20,13 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
@@ -55,7 +55,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     FrameLayout mPanoramicContainer;
     private String uuid;
     private PanoramicView360_Ext panoramicView;
-    private DpMsgDefine.DPAlarm dpAlarm;
+    private CamMessageBean camMessageBean;
     private Subscription subscription;
 
     public PanoramicViewFragment() {
@@ -97,7 +97,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         lp.height = screenWidth;
         mPanoramicContainer.setLayoutParams(lp);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
+        camMessageBean = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (getUserVisibleHint()) {//当前页面才显示
             loadBitmap(getArguments().getInt(KEY_INDEX, 0));
         }
@@ -169,7 +169,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         }
         //填满
         Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg", dpAlarm.type))
+                .load(MiscUtils.getCamWarnUrl(uuid, camMessageBean, index + 1))
                 .asBitmap()
                 //解决黑屏问题
                 .signature(new StringSignature(System.currentTimeMillis() + ""))
@@ -204,7 +204,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     }
 
     public void loadBitmap(int index) {
-        String mode = dpAlarm == null ? "0" : dpAlarm.tly;
+        String mode = camMessageBean.alarmMsg == null ? "0" : camMessageBean.alarmMsg.tly;
         Log.d("loadBitmap", "loadBitmap: " + mode);
         if (subscription != null) subscription.unsubscribe();
         subscription = Observable.just(mode)

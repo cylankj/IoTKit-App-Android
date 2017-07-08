@@ -31,7 +31,6 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -41,6 +40,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.share.ShareManager;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -91,9 +91,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     ImageView imgVBigPicDownload;
 
     private int currentIndex = -1;
-    private DpMsgDefine.DPAlarm alarmMsg;
-    private DpMsgDefine.DPBellCallRecord bellCallRecord;
-    private boolean isBell = false;
+    private CamMessageBean camMessageBean;
     private String uuid;
     private Device device;
 
@@ -106,19 +104,13 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        isBell = getIntent().getBooleanExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, false);
-        if (isBell) {
-            bellCallRecord = getIntent().getParcelableExtra(KEY_BUNDLE);
-        } else {
-            alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
-        }
+        camMessageBean = getIntent().getParcelableExtra(KEY_BUNDLE);
+
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
 
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
-        customAdapter.setDpAlarm(alarmMsg);
-        customAdapter.setBellCallRecord(bellCallRecord);
-        customAdapter.setBell(isBell);
+        customAdapter.setCamMessageBean(camMessageBean);
         vpContainer.setAdapter(customAdapter);
         vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
         customAdapter.setCallback(object -> {
@@ -130,7 +122,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             public void onPageSelected(int position) {
                 currentIndex = position;
                 if (basePresenter != null)
-                    basePresenter.checkCollection(alarmMsg.version, currentIndex);
+                    basePresenter.checkCollection(MiscUtils.getVersion(camMessageBean), currentIndex, camMessageBean);
             }
         });
 
@@ -156,7 +148,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
             vpContainer.setLocked(true);
             findViewById(R.id.v_layout).setVisibility(View.VISIBLE);
-            int count = MiscUtils.getCount(alarmMsg.fileIndex);
+            int count = MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean));
+
             for (int i = 3; i > count; i--) {
                 View v = lLayoutPreview.getChildAt(i - 1);
                 v.setVisibility(View.GONE);
@@ -171,7 +164,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                CamWarnGlideURL url = new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (i + 1) + ".jpg", alarmMsg.type);
+                CamWarnGlideURL url = MiscUtils.getCamWarnUrl(uuid, camMessageBean, i + 1);
                 Glide.with(this)
                         .load(url)
                         .asBitmap()
@@ -208,7 +201,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     private void updateFocus(boolean auto, int index) {
-        int count = MiscUtils.getCount(alarmMsg.fileIndex);
+        int count = MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean));
         if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
             //全景需要兼容,这里的tag的构造方式,看FragmentPagerAdapter,最后一个方法
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(MiscUtils.makeFragmentName(vpContainer.getId(), 0));
@@ -233,7 +226,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             }
         }
         if (basePresenter != null)
-            basePresenter.checkCollection(alarmMsg.version, index);
+            basePresenter.checkCollection(MiscUtils.getVersion(camMessageBean), index, camMessageBean);
     }
 
     @Override
@@ -246,7 +239,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     protected void onResume() {
         super.onResume();
-        customToolbar.setToolbarTitle(TimeUtils.getMediaPicTimeInString(alarmMsg.time * 1000L));
+        customToolbar.setToolbarTitle(TimeUtils.getMediaPicTimeInString(MiscUtils.getFileTime(camMessageBean) * 1000L));
     }
 
 
@@ -264,7 +257,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg", alarmMsg.type).fetch(file -> {
+                MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1).fetch(file -> {
                     ShareManager.byImg(CamMediaActivity.this)
                             .withImg(file)
                             .share();
@@ -282,10 +275,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 Object tag = imgVBigPicCollect.getTag();
                 if (tag == null || !(boolean) tag) {
                     if (basePresenter != null)
-                        basePresenter.collect(currentIndex, alarmMsg.version);
+                        basePresenter.collect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
                 } else {
                     if (basePresenter != null)
-                        basePresenter.unCollect(currentIndex, alarmMsg.version);
+                        basePresenter.unCollect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
                 }
                 LoadingDialog.showLoading(getSupportFragmentManager());
                 imgVBigPicCollect.setEnabled(false);
@@ -355,23 +348,13 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
-        private DpMsgDefine.DPAlarm dpAlarm;
-        private DpMsgDefine.DPBellCallRecord bellCallRecord;
         private NormalMediaFragment.CallBack callBack;
-        private boolean isBell = false;
+        private CamMessageBean camMessageBean;
 
-
-        public void setBell(boolean bell) {
-            isBell = bell;
+        public void setCamMessageBean(CamMessageBean camMessageBean) {
+            this.camMessageBean = camMessageBean;
         }
 
-        public void setDpAlarm(DpMsgDefine.DPAlarm dpAlarm) {
-            this.dpAlarm = dpAlarm;
-        }
-
-        public void setBellCallRecord(DpMsgDefine.DPBellCallRecord bellCallRecord) {
-            this.bellCallRecord = bellCallRecord;
-        }
 
         public CustomAdapter(FragmentManager fm) {
             super(fm);
@@ -381,11 +364,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         public Fragment getItem(int position) {
             boolean isPan = device != null && JFGRules.isNeedPanoramicView(device.pid);
             Bundle bundle = new Bundle();
-            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, dpAlarm == null ? bellCallRecord : dpAlarm);
+            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, camMessageBean);
             bundle.putInt(KEY_INDEX, isPan ? getIntent().getIntExtra(KEY_INDEX, 0) : position);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            bundle.putBoolean(JConstant.KEY_DEVICE_ITEM_IS_BELL, isBell);
-            bundle.putInt("totalCount", MiscUtils.getCount(dpAlarm == null ? 1 : dpAlarm.fileIndex));
+            bundle.putInt("totalCount", MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean)));
             IBaseFragment fragment = null;
             if (isPan) {
                 fragment = PanoramicViewFragment.newInstance(bundle);
@@ -400,7 +382,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         public int getCount() {
             //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
             if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
-            return MiscUtils.getCount(dpAlarm == null ? 1 : dpAlarm.fileIndex);
+            return MiscUtils.getCount(MiscUtils.getFileIndex(camMessageBean));
         }
 
         @Override
@@ -442,7 +424,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
         if (basePresenter != null)
-            basePresenter.saveImage(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg", alarmMsg.type));
+            basePresenter.saveImage(MiscUtils.getCamWarnUrl(uuid, camMessageBean, currentIndex + 1));
     }
 
 }

@@ -22,12 +22,12 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.io.File;
@@ -55,8 +55,8 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .map((Bitmap bMap) -> {
                     String fileName = System.currentTimeMillis() + ".png";
-                    String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
-                    BitmapUtils.saveBitmap2file(bMap, filePath);
+                    String filePath = JConstant.MEDIA_PATH + File.separator;
+                    BitmapUtils.saveBitmap2file(bMap, filePath + fileName);
                     MiscUtils.insertImage(filePath, fileName);
                     return true;
                 })
@@ -85,8 +85,8 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void unCollect(int index, long v) {//1492151447 1492151447
-        long finalVersion = v / 1000 + index + 1;
+    public void unCollect(int index, long v, CamMessageBean bean) {//1492151447 1492151447
+        long finalVersion = MiscUtils.getFinalVersion(bean, index + 1);
         Log.d("finalVersion", "unCollect finalVersion:" + finalVersion + ",index:" + index);
         check(finalVersion)
                 .filter(v602 -> {
@@ -145,8 +145,8 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void collect(int index, long version) {
-        long finalVersion = version / 1000 + index + 1;
+    public void collect(int index, long version, CamMessageBean bean) {
+        long finalVersion = MiscUtils.getFinalVersion(bean, index + 1);
         Log.d("finalVersion", "collect finalVersion:" + finalVersion + ",index:" + index);
         Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
@@ -154,10 +154,10 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             item.cid = uuid;
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
-            item.time = (int) finalVersion;
+            item.fileName = MiscUtils.getFileName(bean, index + 1);
+            item.time = (int) (finalVersion / 1000);
             FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                    .load(new JFGGlideURL(uuid, item.fileName, item.regionType))
+                    .load(MiscUtils.getCamWarnUrl(uuid, bean, index + 1))
                     .downloadOnly(100, 100);
             String filePath = null;
             try {
@@ -191,8 +191,8 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void checkCollection(long time, int index) {
-        long finalVersion = (time / 1000 + index + 1) * 1000L;
+    public void checkCollection(long time, int index, CamMessageBean bean) {
+        long finalVersion = MiscUtils.getFinalVersion(bean, index + 1); //time / 1000 + index + 1) * 1000L;
         Log.d("finalVersion", "check finalVersion:" + finalVersion + ",index:" + index);
         Subscription subscription = Observable.just(new DPEntity()
                 .setMsgId(511)
@@ -208,9 +208,9 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                 .subscribe(idpTaskResult -> {
                     DpMsgDefine.DPPrimary<Long> version = idpTaskResult.getResultResponse();
                     if (version != null && version.value != null) {
-                        int delta = (int) Math.abs(time - version.version) / 1000;
-                        mView.onItemCollectionCheckRsp(delta - 1 == index);
-                        AppLogger.d("当前index:" + delta);
+                        MiscUtils.getDelta(bean, version.version);
+                        mView.onItemCollectionCheckRsp(true);
+//                        AppLogger.d("当前index:" + delta);
                     } else {
                         mView.onItemCollectionCheckRsp(false);
                     }

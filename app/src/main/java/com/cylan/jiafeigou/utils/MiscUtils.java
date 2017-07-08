@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -135,6 +136,47 @@ public class MiscUtils {
             if ((sum >> i & 0x01) == 1) count++;
         }
         return count == 0 ? 1 : count;
+    }
+
+    public static String getFileName(CamMessageBean bean, int index) {
+        String fileName = null;
+        if (bean.alarmMsg != null) {
+            fileName = bean.alarmMsg.version / 1000 + "_" + index + ".jpg";
+        } else if (bean.bellCallRecord != null) {
+            if (bean.bellCallRecord.fileIndex == 0) {
+                //旧版本门铃呼叫记录,不带index
+                fileName = bean.bellCallRecord.time + ".jpg";
+            } else {
+                fileName = bean.bellCallRecord.time + "_" + index + ".jpg";
+            }
+        }
+        return fileName;
+    }
+
+    public static int getFileTime(CamMessageBean bean) {
+        return bean.alarmMsg != null ? bean.alarmMsg.time : bean.bellCallRecord != null ? bean.bellCallRecord.time : 0;
+    }
+
+    public static int getFileType(CamMessageBean bean) {
+        return bean.alarmMsg != null ? bean.alarmMsg.type : bean.bellCallRecord != null ? bean.bellCallRecord.type : 0;
+    }
+
+    public static CamWarnGlideURL getCamWarnUrl(String cid, CamMessageBean bean, int index) {
+        CamWarnGlideURL result = null;
+        if (bean.alarmMsg != null) {
+            result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.type);
+        } else if (bean.bellCallRecord != null) {
+            if (bean.bellCallRecord.fileIndex == 0) {
+                //旧版本门铃呼叫记录,不带index
+                result = new CamWarnGlideURL(cid, bean.bellCallRecord.time + ".jpg", bean.bellCallRecord.type);
+            } else {
+                result = new CamWarnGlideURL(cid, bean.bellCallRecord.time + "_" + index + ".jpg", bean.bellCallRecord.time, index, bean.bellCallRecord.type);
+            }
+        }
+        if (result == null) {
+            result = new CamWarnGlideURL("", "", 0);
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -498,6 +540,38 @@ public class MiscUtils {
                 .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         return list;
+    }
+
+    public static int getFileIndex(CamMessageBean camMessageBean) {
+        int index = 1;
+        if (camMessageBean.alarmMsg != null) {
+            index = camMessageBean.alarmMsg.fileIndex;
+        } else if (camMessageBean.bellCallRecord != null && camMessageBean.bellCallRecord.fileIndex != 0) {
+            index = camMessageBean.bellCallRecord.fileIndex;
+        }
+        return index;
+    }
+
+    public static long getVersion(CamMessageBean camMessageBean) {
+        return camMessageBean.alarmMsg != null ? camMessageBean.alarmMsg.version : camMessageBean.bellCallRecord != null ? camMessageBean.bellCallRecord.version : 0;
+    }
+
+    public static long getFinalVersion(CamMessageBean bean, int index) {
+        long finalVersion = 0;
+        if (bean.alarmMsg != null) {
+            finalVersion = (bean.alarmMsg.time + index) * 1000L;
+        } else if (bean.bellCallRecord != null) {
+            if (bean.bellCallRecord.fileIndex == 0) {
+                finalVersion = bean.bellCallRecord.time * 1000L;
+            } else {
+                finalVersion = (bean.bellCallRecord.time + index) * 1000L;
+            }
+        }
+        return finalVersion;
+    }
+
+    public static void getDelta(CamMessageBean bean, long version) {
+
     }
 
     public static class DPEntityBuilder {

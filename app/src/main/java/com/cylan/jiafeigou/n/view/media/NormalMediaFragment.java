@@ -16,13 +16,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
-import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -46,7 +45,7 @@ public class NormalMediaFragment extends IBaseFragment {
     @BindView(R.id.imv_back)
     ImageView imgBack;
     private Device device;
-    private boolean isBell;
+    private CamMessageBean bean;
 
 
     public NormalMediaFragment() {
@@ -88,12 +87,11 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        isBell = getArguments().getBoolean(JConstant.KEY_DEVICE_ITEM_IS_BELL);
         device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         int index = getArguments().getInt(KEY_INDEX);
-        DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
-        if (dpAlarm != null) {
-            loadBitmap(dpAlarm, index, uuid, isBell);
+        bean = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
+        if (bean != null) {
+            loadBitmap(bean, index, uuid);
         } else {
             Bitmap bitmap = getArguments().getParcelable(KEY_SHARE_ELEMENT_BYTE);
             loadBitmap(bitmap);
@@ -106,9 +104,9 @@ public class NormalMediaFragment extends IBaseFragment {
         });
     }
 
-    private void loadBitmap(DpMsgDefine.DPAlarm dpAlarm, int index, String uuid, boolean isBell) {
+    private void loadBitmap(CamMessageBean bean, int index, String uuid) {
         Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(uuid, dpAlarm.time + (isBell ? "" : "_" + (index + 1)) + ".jpg", dpAlarm.type))
+                .load(MiscUtils.getCamWarnUrl(uuid, bean, index + 1))
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -127,15 +125,15 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        try {
-            if (imgVShowPic != null) {
-                Bitmap bitmap = imgVShowPic.getVisibleRectangleBitmap();
-                if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
-                bitmap = imgVShowPic.getDrawingCache();
-                if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
-            }
-        } catch (Exception e) {
-            AppLogger.e("err:" + MiscUtils.getErr(e));
-        }
+//        try {
+//            if (imgVShowPic != null) {
+//                Bitmap bitmap = imgVShowPic.getVisibleRectangleBitmap();
+//                if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
+//                bitmap = imgVShowPic.getDrawingCache();
+//                if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
+//            }
+//        } catch (Exception e) {
+//            AppLogger.e("err:" + MiscUtils.getErr(e));
+//        }
     }
 }

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 
 /**
@@ -28,10 +29,10 @@ public interface CamMediaContract {
     interface Presenter extends BasePresenter {
         void saveImage(CamWarnGlideURL glideURL);
 
-        void collect(int index, long version);
+        void collect(int index, long version, CamMessageBean bean);
 
-        void unCollect(int index, long version);
+        void unCollect(int index, long version, CamMessageBean bean);
 
-        void checkCollection(long time, int index);
+        void checkCollection(long time, int index, CamMessageBean bean);
     }
 }

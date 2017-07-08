@@ -512,11 +512,13 @@ public class BaseDBHelper implements IDBHelper {
                     Device dpDevice = null;
                     JFGDevice dev;
                     List<Device> remove = buildDPDeviceQueryBuilder(account.getAccount(), getServer(), null, null, null, null).list();
+                    deviceDao.deleteInTx(remove);
                     if (remove == null) remove = new ArrayList<>();
                     for (int i = 0; i < device.length; i++) {
                         dev = device[i];
                         clearMsg(dev.uuid, null);
                         queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
+
                         dpDevice = queryBuilder.unique();
                         if (dpDevice == null) {
                             dpDevice = new Device();
@@ -535,8 +537,6 @@ public class BaseDBHelper implements IDBHelper {
                         dpDevice.setPropertyParser(propertyParser);
                         result.add(dpDevice);
                     }
-                    remove.removeAll(result);
-                    deviceDao.deleteInTx(remove);
                     deviceDao.insertOrReplaceInTx(result);
                     return result;
                 });
