@@ -28,7 +28,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         ButterKnife.bind(this);
         initTopBar();
         boolean show = getResources().getBoolean(R.bool.show_ruishi_interface);
-        findViewById(R.id.v_to_bind_rs_cam).setVisibility(show ? View.VISIBLE : View.GONE);
+        findViewById(R.id.v_to_bind_consumer_cam).setVisibility(show ? View.VISIBLE : View.GONE);
         findViewById(R.id.v_to_scan_qrcode).setVisibility(getResources()
                 .getBoolean(R.bool.show_scan_bind_interface) ? View.VISIBLE : View.GONE);
     }
@@ -56,7 +56,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     }
 
     @OnClick({R.id.v_to_scan_qrcode,
-            R.id.v_to_bind_rs_cam, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_panorama_camera})
+            R.id.v_to_bind_consumer_cam, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_panorama_camera})
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
@@ -72,7 +72,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 startActivity(intent);
                 break;
             }
-            case R.id.v_to_bind_rs_cam: {
+            case R.id.v_to_bind_consumer_cam: {
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindRsCamActivity.class);
                 startActivity(intent);
@@ -111,4 +111,19 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 //        }
     }
 
+    @OnClick({R.id.v_to_bind_camera_cloud, R.id.v_to_bind_consumer_cam, R.id.v_to_bind_bell_battery, R.id.v_to_bind_bell_no_battery, R.id.v_to_bind_cat_eye_cam})
+    public void onClickBind(View view) {
+        switch (view.getId()) {
+            case R.id.v_to_bind_camera_cloud:
+                break;
+            case R.id.v_to_bind_consumer_cam:
+                break;
+            case R.id.v_to_bind_bell_battery:
+                break;
+            case R.id.v_to_bind_bell_no_battery:
+                break;
+            case R.id.v_to_bind_cat_eye_cam:
+                break;
+        }
+    }
 }
