@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">timeout koneksi</string>
   <string name="Clear_Sdcard_tips6">Data kartu SD telah dihapus</string>
   <string name="ClearingTips">Kliring&#8230;</string>
+  <string name="Cloud_Camera">Kamera awan</string>
+  <string name="Consumer_Camera">Kamera konsumen</string>
   <string name="DEAL_FEEDBACK">Terima kasih untuk saran yang anda berikan</string>
   <string name="DELETE">Hapus</string>
   <string name="DELETED">Sudah dihapus</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Manajemen berbagi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+  <string name="Smart_bell_Battery">Smart Doorbell (Versi Baterai)</string>
+  <string name="Smart_bell_Power">Smart Doorbell (Versi Daya)</string>
   <string name="Start_Failed">Mulai gagal</string>
   <string name="Start_Hotspot">Mulai hotspot</string>
   <string name="Start_Hotspot_Note">Mulai hotspot dapat menyebabkan offline perangkat; Setelah dinyalakan, tunggu lampu biru menyala</string>

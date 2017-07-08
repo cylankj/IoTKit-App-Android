@@ -39,7 +39,7 @@
                 android:layout_marginBottom="@dimen/y42"
                 android:layout_marginEnd="@dimen/x30"
                 android:layout_marginStart="@dimen/x30"
-                android:layout_marginTop="@dimen/y30"
+                android:layout_marginTop="@dimen/y40"
                 android:background="@drawable/long_btn_bg_shape_white"
                 android:gravity="center"
                 android:padding="@dimen/x10"

@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">接続タイムアウト</string>
   <string name="Clear_Sdcard_tips6">SDカードのデータがクリアされています</string>
   <string name="ClearingTips">クリア&#8230;</string>
+  <string name="Cloud_Camera">クラウドカメラ</string>
+  <string name="Consumer_Camera">消費者のカメラ</string>
   <string name="DEAL_FEEDBACK">フィードバックありがとうございます</string>
   <string name="DELETE">削除</string>
   <string name="DELETED">すべてを削除しました!</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">共有管理</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">スマートキャッツアイ</string>
+  <string name="Smart_bell_Battery">インテリジェントドアベル（バッテリー版）</string>
+  <string name="Smart_bell_Power">（バッテリー版なし）インテリジェントドアベル</string>
   <string name="Start_Failed">オープンに失敗しました</string>
   <string name="Start_Hotspot">インターネットの共有をオンにします</string>
   <string name="Start_Hotspot_Note">インターネットの共有をオンにするとデバイスがオフライン状態になる可能性があります。オンにした後、デバイスの青いランプが点滅するまで待ってください。</string>

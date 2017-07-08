@@ -70,7 +70,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         super.onStart();
         final String defaultAlias = getIntent().getStringExtra(KEY_BIND_DEVICE);
         int bind_guide_res = R.raw.bind_guide;
-        if (TextUtils.equals(defaultAlias, getString(R.string.RuiShi_Name))) {
+        if (TextUtils.equals(defaultAlias, getString(R.string.Consumer_Camera))) {
             //rs cam,在cylan包中,bind_guide_rs是一个空文件.这算是一个渠道包,只有doby才有改入口.
             bind_guide_res = R.raw.bind_guide_rs;
             tvGuideMainContent.setText(getString(R.string.WIFI_SET_RS));

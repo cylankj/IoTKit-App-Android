@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">тайм&#8211;аут соединения</string>
   <string name="Clear_Sdcard_tips6">Данные карты SD были уничтожены</string>
   <string name="ClearingTips">Clearing &#8230;</string>
+  <string name="Cloud_Camera">Облачная камера</string>
+  <string name="Consumer_Camera">Потребительская камера</string>
   <string name="DEAL_FEEDBACK">Спасибо за ваш отзыв!</string>
   <string name="DELETE">Удалить</string>
   <string name="DELETED">Вся информация удалена!</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">совместное управление</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+  <string name="Smart_bell_Battery">Умный дверной звонок (версия батареи)</string>
+  <string name="Smart_bell_Power">Умный дверной звонок (версия питания)</string>
   <string name="Start_Failed">Ошибка запуска</string>
   <string name="Start_Hotspot">Открыть точку доступа</string>
   <string name="Start_Hotspot_Note">Открытие точки доступа может привести к обрыву связи устройства, откройте и подождите мигания синего света на устройстве</string>

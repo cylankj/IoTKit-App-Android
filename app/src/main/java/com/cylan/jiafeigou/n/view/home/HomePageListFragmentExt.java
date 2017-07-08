@@ -30,7 +30,10 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -53,6 +56,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
 import com.cylan.jiafeigou.widget.ImageViewTip;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
@@ -67,12 +71,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
-        FastAdapter.OnClickListener<HomeItem>, BaseDialog.BaseDialogAction {
+        FastAdapter.OnClickListener<HomeItem>, FastAdapter.OnLongClickListener<HomeItem>, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
@@ -213,6 +221,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         mItemAdapter = new ItemAdapter<>();
         FastAdapter<HomeItem> itemFastAdapter = new FastAdapter<>();
         itemFastAdapter.withOnClickListener(this);
+        itemFastAdapter.withOnLongClickListener(this);
         mItemAdapter.withComparator(null);
         rVDevicesList.setAdapter(mItemAdapter.wrap(itemFastAdapter));
         enableNestedScroll();
@@ -614,6 +623,30 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         } else {
             AppLogger.e("dis match position : " + position);
         }
+        return true;
+    }
+
+    @Override
+    public boolean onLongClick(View v, IAdapter<HomeItem> adapter, HomeItem item, int position) {
+        final String alias = ((TextView) v.findViewById(R.id.tv_device_alias)).getText().toString();
+        AlertDialogManager.getInstance().showDialog(getActivity(), "deleteItem",
+                getString(R.string.SURE_DELETE_1, alias), getString(R.string.OK), (dialog, which) -> {
+                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
+                    Subscription subscribe = Observable.just(new DPEntity()
+                            .setUuid(item.getUUid())
+                            .setAction(DBAction.UNBIND))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
+                            .flatMap(i -> BaseApplication.getAppComponent().getTaskDispatcher().perform(i))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(rsp -> ToastUtil.showToast(getString(R.string.DELETED_SUC)), e -> {
+                                ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+                                AppLogger.e("err: " + MiscUtils.getErr(e));
+                            }, () -> {
+                                LoadingDialog.dismissLoading(getFragmentManager());
+                            });
+                    basePresenter.addSubscription("unbind", subscribe);
+                }, getString(R.string.CANCEL), null);
         return true;
     }
 }

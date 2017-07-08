@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">bağlantı zaman aşımı</string>
   <string name="Clear_Sdcard_tips6">SD kart veri yok edildi</string>
   <string name="ClearingTips">Takas&#8230;</string>
+  <string name="Cloud_Camera">Bulut Kamerası</string>
+  <string name="Consumer_Camera">Tüketici Kamerası</string>
   <string name="DEAL_FEEDBACK">Geri dönüşünüz için teşekkür ederiz</string>
   <string name="DELETE">Sil</string>
   <string name="DELETED">Silindi</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Paylaşım yönetimi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Akıllı Kapı Görüntüleyicisi</string>
+  <string name="Smart_bell_Battery">Akıllı kapı zili (pil sürümü)</string>
+  <string name="Smart_bell_Power">Akıllı kapı zili (Güç Sürümü)</string>
   <string name="Start_Failed">Başarısız</string>
   <string name="Start_Hotspot">Etkin noktayı başlat</string>
   <string name="Start_Hotspot_Note">Başlangıç ​​hotspot, cihazın çevrimdışı olmasına neden olabilir; Cihaz açıldıktan sonra cihazın mavi ışığının yanıp sönmesini bekleyin</string>

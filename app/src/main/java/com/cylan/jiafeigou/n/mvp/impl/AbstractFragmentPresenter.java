@@ -49,6 +49,11 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
     }
 
     @Override
+    public void addSubscription(String tag, Subscription s) {
+        addSubscription(s, tag);
+    }
+
+    @Override
     public String getUuid() {
         return this.uuid;
     }

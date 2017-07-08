@@ -227,9 +227,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (judge()) {
             //显示按钮
         }
-        //        basePresenter.startPlay();
-        if (getUserVisibleHint())
-            camLiveControlLayer.showUseCase();
     }
 
     @Override
@@ -463,9 +460,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public boolean judge() {
         //待机模式
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
+        camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
         if (basePresenter.isDeviceStandby()) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
-            camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
             return false;
         }
         //全景,首次使用模式

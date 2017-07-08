@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">timeout di connessione</string>
   <string name="Clear_Sdcard_tips6">L\' SD card è stata cancellata</string>
   <string name="ClearingTips">Clearing&#8230;</string>
+  <string name="Cloud_Camera">Fotocamera Nuvola</string>
+  <string name="Consumer_Camera">Macchina fotografica del consumatore</string>
   <string name="DEAL_FEEDBACK">Grazie per la Tua opinione</string>
   <string name="DELETE">Cancella</string>
   <string name="DELETED">Sono stati eliminati</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Condivisione della gestione</string>
   <string name="Slogan">Sicurezza domestica? usa Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Visualizzatore Smart Door</string>
+  <string name="Smart_bell_Battery">Portabellante intelligente (versione della batteria)</string>
+  <string name="Smart_bell_Power">Portabellante intelligente (versione di potenza)</string>
   <string name="Start_Failed">Inizio non riuscito</string>
   <string name="Start_Hotspot">Apri hotspot</string>
   <string name="Start_Hotspot_Note">Il dispositivo potrebbe essere non in linea se apri hotspot, dopo aver aperto, ti preghiamo di aspettare il lampeggiamento della luce blu del dispositivo</string>

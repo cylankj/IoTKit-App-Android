@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">tempo limite de conexão</string>
   <string name="Clear_Sdcard_tips6">Dados de cartão SD foi apagado</string>
   <string name="ClearingTips">Clearing&#8230;</string>
+  <string name="Cloud_Camera">Câmera da nuvem</string>
+  <string name="Consumer_Camera">Câmera do consumidor</string>
   <string name="DEAL_FEEDBACK">Obrigado pelo seu feedback</string>
   <string name="DELETE">Excluir</string>
   <string name="DELETED">Excluído</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Gerenciamento de compartilhamento</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+  <string name="Smart_bell_Battery">Smart Doorbell (Battery Version)</string>
+  <string name="Smart_bell_Power">Smart Doorbell (Power Version)</string>
   <string name="Start_Failed">Iniciar falha</string>
   <string name="Start_Hotspot">Activar ponto quente</string>
   <string name="Start_Hotspot_Note">Activar ponto quente pode fazer que o dispositivo esteja offline, depois de activar, por favor espere até a luz azul do dispositivo piscar.</string>

@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">délai de connexion</string>
   <string name="Clear_Sdcard_tips6">Les données de la carte SD a été effacé</string>
   <string name="ClearingTips">Clairière&#8230;</string>
+  <string name="Cloud_Camera">Caméra nuage</string>
+  <string name="Consumer_Camera">Appareil photo consommateur</string>
   <string name="DEAL_FEEDBACK">Merci pour vos commentaires</string>
   <string name="DELETE">Supprimer</string>
   <string name="DELETED">Supprimé</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Partage de la gestion</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+  <string name="Smart_bell_Battery">Sonnette intelligente (version batterie)</string>
+  <string name="Smart_bell_Power">Sonnette intelligente (Power Version)</string>
   <string name="Start_Failed">Démarrage échoué</string>
   <string name="Start_Hotspot">Activer les points chauds</string>
   <string name="Start_Hotspot_Note">Activation du point chaud va mettre l\'appareil hors ligne, après avoir allumé, il faut attendre que le feu bleu du dispositif clignote</string>

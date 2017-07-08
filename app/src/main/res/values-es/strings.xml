@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">Tiempo de espera de conexión</string>
   <string name="Clear_Sdcard_tips6">Los datos de la tarjeta SD ha sido borrado</string>
   <string name="ClearingTips">Claro&#8230;</string>
+  <string name="Cloud_Camera">Cámara de nubes</string>
+  <string name="Consumer_Camera">Cámara del Consumidor</string>
   <string name="DEAL_FEEDBACK">Gracias por sus comentarios</string>
   <string name="DELETE">Borrar</string>
   <string name="DELETED">Borradura hecha</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">compartir la gestión</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Visor de puertas inteligentes</string>
+  <string name="Smart_bell_Battery">Timbre inteligente (versión de la batería)</string>
+  <string name="Smart_bell_Power">Timbre inteligente (versión eléctrica)</string>
   <string name="Start_Failed">Error de inicio</string>
   <string name="Start_Hotspot">Abrir punto de acceso</string>
   <string name="Start_Hotspot_Note">Al abrir punto de acceso podría hacer el dispositivo desconectarse, por favor espera que la luz azul del dispositivo parpadea después de abrir.</string>

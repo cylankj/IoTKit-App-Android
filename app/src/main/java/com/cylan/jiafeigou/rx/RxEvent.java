@@ -139,9 +139,15 @@ public class RxEvent {
      */
     public static final class ResultVerifyCode {
         public int code;
+        public JFGResult result;
 
         public ResultVerifyCode(int code) {
             this.code = code;
+        }
+
+        public ResultVerifyCode setResult(JFGResult result) {
+            this.result = result;
+            return this;
         }
     }
 
@@ -208,10 +214,17 @@ public class RxEvent {
 
     public static final class ForgetPwdByMail {
         public String account;
+        public int ret;
 
         public ForgetPwdByMail(String account) {
             this.account = account;
         }
+
+        public ForgetPwdByMail setRet(int ret) {
+            this.ret = ret;
+            return this;
+        }
+
     }
 
     public static final class PageScrolled {
