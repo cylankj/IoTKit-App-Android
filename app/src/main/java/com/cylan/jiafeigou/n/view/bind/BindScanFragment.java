@@ -156,7 +156,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.addViewMargins(customToolbar, 0, (int) getResources().getDimension(R.dimen.y9), 0, 0);
-        customToolbar.setVisibility(View.GONE);
         customToolbar.setBackAction(v -> {
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().popBackStack();

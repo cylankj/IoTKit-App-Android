@@ -512,8 +512,9 @@ public class BaseDBHelper implements IDBHelper {
                     Device dpDevice = null;
                     JFGDevice dev;
                     List<Device> remove = buildDPDeviceQueryBuilder(account.getAccount(), getServer(), null, null, null, null).list();
-                    deviceDao.deleteInTx(remove);
-                    if (remove == null) remove = new ArrayList<>();
+                    if (remove!=null) {
+                        deviceDao.deleteInTx(remove);
+                    }
                     for (int i = 0; i < device.length; i++) {
                         dev = device[i];
                         clearMsg(dev.uuid, null);

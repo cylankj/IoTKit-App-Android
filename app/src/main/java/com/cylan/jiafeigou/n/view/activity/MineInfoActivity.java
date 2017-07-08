@@ -18,6 +18,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -251,8 +254,19 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
         }
         Glide.with(this).load(url)
-                .placeholder(R.drawable.icon_mine_head_normal)
-                .error(R.drawable.icon_mine_head_normal)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        AppLogger.e("mineInfo:" + e.getMessage());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        AppLogger.e("mineInfo:success");
+                        return false;
+                    }
+                })
                 .into(homeMineInfoBinding.userImageHead);
         if (!TextUtils.isEmpty(account.getPhone())) {
             homeMineInfoBinding.tvMyId.setTvSubTitle(account.getPhone());

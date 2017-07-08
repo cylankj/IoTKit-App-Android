@@ -19,6 +19,7 @@
         layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
