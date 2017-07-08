@@ -1,20 +1,28 @@
 package com.cylan.jiafeigou.n.view.splash;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -22,6 +30,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -33,7 +42,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
@@ -156,5 +164,64 @@ public class BeforeLoginFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @OnClick(R.id.rLayout_before_login)
+    public void onClick(View v) {
+        if (clickEvent == null) clickEvent = new Event();
+        if (clickEvent.click(getContext())) {
+            clickEvent = null;
+            final EditText input = new EditText(getActivity());
+            input.setText(OptionsImpl.getServer());
+            input.setHint("服务器地址:yun.jfgou.com:443");
+            input.setHintTextColor(getResources().getColor(R.color.color_888888));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            input.setLayoutParams(lp);
+            AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivity());
+            builder.setView(input);
+            builder.setTitle("服务器地址");
+            builder.setPositiveButton(getResources().getString(R.string.OK), (dialog, which) -> {
+                if (!TextUtils.isEmpty(input.getText())) {
+                    OptionsImpl.setServer(input.getText().toString().trim().toLowerCase());
+                    Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(getActivity().getPackageName());
+                    PendingIntent restartIntent = PendingIntent.getActivity(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                    AlarmManager mgr = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 50, restartIntent);
+                    v.postDelayed(() -> android.os.Process.killProcess(android.os.Process.myPid()), 500);
+
+                }
+            }).setNegativeButton(getString(R.string.CANCEL), null);
+            builder.setCancelable(false);
+            builder.show();
+        }
+    }
+
+    private Event clickEvent;
+
+    /**
+     * 快速点击10次 弹出修改服务器域名
+     */
+    private static class Event {
+        private int count;
+        private long time;
+
+        private boolean click(Context context) {
+            if (time == 0) time = System.currentTimeMillis();
+            if (System.currentTimeMillis() - time > 1000) {
+                count = 0;
+                time = 0;
+            } else {
+                time = System.currentTimeMillis();
+                count++;
+            }
+            if (count > 9) {
+                time = 0;
+                count = 0;
+                return true;
+            }
+            return false;
+        }
     }
 }
