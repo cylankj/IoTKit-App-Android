@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -36,7 +37,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -52,7 +52,6 @@ import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 
 import static com.cylan.jiafeigou.misc.JFGRules.LANGUAGE_TYPE_SIMPLE_CHINESE;
-import static com.cylan.jiafeigou.misc.JResultEvent.JFG_RESULT_CHANGE_PASS;
 import static com.cylan.jiafeigou.rx.RxEvent.ResultEvent.JFG_RESULT_VERIFY_SMS;
 
 /**
@@ -425,9 +424,12 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         }
         initTitle(JConstant.TYPE_PHONE);
         if (vsSetAccountPwd.getChildCount() == 1) {//##103929
-            vsSetAccountPwd.addView(phoneNewPwdView);
+            vsSetAccountPwd.addView(phoneNewPwdView, 1);
+            vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
+            vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsSetAccountPwd.showNext();
         }
+        initNewPwdView(phoneNewPwdView);
     }
 
     /**
@@ -436,7 +438,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
      * @param phoneNewPwdView
      */
     private void initNewPwdView(View phoneNewPwdView) {
-        TextView sureBtn = (TextView) phoneNewPwdView.findViewById(R.id.tv_new_pwd_submit);
+        final TextView sureBtn = (TextView) phoneNewPwdView.findViewById(R.id.tv_new_pwd_submit);
         ImageView iv_Clear = (ImageView) phoneNewPwdView.findViewById(R.id.iv_new_clear_pwd);
         EditText et_newpass = (EditText) phoneNewPwdView.findViewById(R.id.et_new_pwd_input);
         CheckBox cb_pwd_visiable = (CheckBox) phoneNewPwdView.findViewById(R.id.cb_new_pwd_show);
@@ -454,9 +456,12 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
             @Override
             public void afterTextChanged(Editable s) {
-                iv_Clear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
-                iv_Clear.setClickable(true);
-                sureBtn.setEnabled(!TextUtils.isEmpty(s));
+                if (sureBtn != null)
+                    sureBtn.setEnabled(!TextUtils.isEmpty(s));
+                if (ivNewClearPwd != null) {
+                    ivNewClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+                    ivNewClearPwd.setClickable(true);
+                }
             }
         });
 
@@ -478,13 +483,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             ViewUtils.showPwd(et_newpass, isChecked);
             et_newpass.setSelection(et_newpass.length());
         });
-        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
-        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
-        vsSetAccountPwd.showNext();
     }
 
     @Override
-    public void onResult(int event, int errId) {
+    public void onResult(int event, final int errId) {
         if (!isAdded()) return;
         if (getView() != null) {
             getView().post(() -> {
@@ -494,27 +496,29 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                         prepareMailView();
                         break;
                     case JConstant.AUTHORIZE_PHONE:
-                        tvForgetPwdSubmit.setEnabled(true);
-                        preparePhoneView();
+                        if (errId == JError.ErrorOK) {
+                            tvForgetPwdSubmit.setEnabled(true);
+                            preparePhoneView();
+                        }
                         break;
                     case JConstant.GET_SMS_BACK:
                         if (errId == JError.ErrorOK)
                             start2HandleVerificationCode();
                         break;
                     case JFG_RESULT_VERIFY_SMS:
-                        if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT, "").equals(etForgetUsername.getText().toString().trim())) {
-                            ToastUtil.showToast(getContext().getResources().getString(R.string.Tap0_wrongcode));
-                            return;
-                        }
                         if (errId == 0) {
                             preparePhoneView();
                         }
                         break;
-                }
-                if (event == JFG_RESULT_CHANGE_PASS) {
-                    ToastUtil.showToast(getString(R.string.PWD_OK));
-                    RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
-                    ActivityUtils.justPop(getActivity());
+                    case JConstant.CHECK_TIMEOUT:
+                        ToastUtil.showToast(getString(R.string.Request_TimeOut));
+                        break;
+                    case JResultEvent.JFG_RESULT_CHANGE_PASS:
+                        if (errId == JError.ErrorOK) {
+                            ToastUtil.showToast(getString(R.string.PWD_OK));
+                            ActivityUtils.justPop(getActivity());
+                        }
+                        break;
                 }
             });
         }
@@ -525,16 +529,16 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         this.presenter = presenter;
     }
 
-    @Nullable
-    @OnTextChanged(R.id.et_new_pwd_input)
-    public void newPwdInputBoxChanged(CharSequence s, final int before, final int count, final int len) {
-        if (ivNewClearPwd != null) {
-            ivNewClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
-            ivNewClearPwd.setClickable(true);
-        }
-        if (tvNewPwdSubmit != null)
-            tvNewPwdSubmit.setEnabled(!TextUtils.isEmpty(s));
-    }
+//    @Nullable
+//    @OnTextChanged(R.id.et_new_pwd_input)
+//    public void newPwdInputBoxChanged(CharSequence s, final int before, final int count, final int len) {
+//        if (ivNewClearPwd != null) {
+//            ivNewClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+//            ivNewClearPwd.setClickable(true);
+//        }
+//        if (tvNewPwdSubmit != null)
+//            tvNewPwdSubmit.setEnabled(!TextUtils.isEmpty(s));
+//    }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
     public void onNewPwdCheckBoxState(CompoundButton view, boolean isChecked) {

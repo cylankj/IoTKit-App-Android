@@ -26,6 +26,7 @@ public class JConstant {
     public static final int AUTHORIZE_PHONE = 0x111110;
     public static final int AUTHORIZE_MAIL = 0x111111;
     public static final int GET_SMS_BACK = 0x111112;
+    public static final int CHECK_TIMEOUT = 0x111113;
     public static final int THIS_ACCOUNT_NOT_REGISTERED = -1;
 
     public static final String KEY_TIME_TICK_ = "key_time_tick";
@@ -74,8 +75,6 @@ public class JConstant {
     public static final String AUTO_LOGIN_ACCOUNT = "auto_login_account";
     public static final String AUTO_LOGIN_PWD = "auto_login_pwd";
 
-    public static final String SAVE_TEMP_ACCOUNT = "save_temp_account";
-    public static final String SAVE_TEMP_CODE = "save_temp_code";
     public static final String OPEN_LOGIN_TO_BIND_PHONE = "open_login_to_bind_phone";
     public static final String OPEN_LOGIN_USER_ICON = "open_login_user_icon";
     public static final String OPEN_LOGIN_USER_ALIAS = "open_login_user_alias";
