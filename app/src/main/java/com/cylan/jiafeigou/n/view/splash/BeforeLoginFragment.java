@@ -185,11 +185,13 @@ public class BeforeLoginFragment extends Fragment {
             builder.setPositiveButton(getResources().getString(R.string.OK), (dialog, which) -> {
                 if (!TextUtils.isEmpty(input.getText())) {
                     OptionsImpl.setServer(input.getText().toString().trim().toLowerCase());
-                    Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(getActivity().getPackageName());
-                    PendingIntent restartIntent = PendingIntent.getActivity(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-                    AlarmManager mgr = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 50, restartIntent);
-                    v.postDelayed(() -> android.os.Process.killProcess(android.os.Process.myPid()), 500);
+                    v.postDelayed(() -> {
+                        Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(getActivity().getPackageName());
+                        PendingIntent restartIntent = PendingIntent.getActivity(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                        AlarmManager mgr = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 50, restartIntent);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }, 500);
 
                 }
             }).setNegativeButton(getString(R.string.CANCEL), null);
