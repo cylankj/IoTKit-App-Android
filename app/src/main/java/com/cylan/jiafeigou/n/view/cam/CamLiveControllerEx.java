@@ -1005,6 +1005,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
+            layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
         }, 100);
     }
 

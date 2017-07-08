@@ -5,22 +5,21 @@ import android.util.Log;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 ;
@@ -31,34 +30,10 @@ import rx.schedulers.Schedulers;
 public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.View>
         implements ForgetPwdContract.Presenter {
 
-    private Subscription subscription;
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);
         view.setPresenter(this);
-    }
-
-    @Override
-    public void submitAccount(final String account) {
-        subscription = Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(s -> {
-                    final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
-                    if (isPhoneNum) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd()
-                                    .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), account);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, AppLogger::e);
     }
 
     //计数10分钟3次
@@ -92,101 +67,37 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
         }
     }
 
-    @Override
-    public void submitPhoneNumAndCode(final String account, final String code) {
-        subscription = Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(s -> {
-                    try {
-                        PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT, account);
-                        PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE, code);
-                        BaseApplication.getAppComponent().getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                }, AppLogger::e);
-    }
-
-    @Override
-    public void start() {
-        super.start();
-    }
-
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                getForgetPwdByMailSub(),
-                checkSmsCodeBack(),
-                resetPwdBack()};
-    }
-
-    private Subscription getForgetPwdByMailSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ForgetPwdByMail.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ForgetPwdByMail>() {
-                    @Override
-                    public void call(RxEvent.ForgetPwdByMail forgetPwdByMail) {
-                        RequestResetPwdBean bean = new RequestResetPwdBean();
-                        bean.ret = JConstant.AUTHORIZE_MAIL;
-                        bean.content = forgetPwdByMail.account;
-                        getView().submitResult(bean);
-                    }
-                }, AppLogger::e);
-    }
-
-    /**
-     * 短信验证码的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription checkSmsCodeBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null && mView.isAdded())
-                .subscribe(resultVerifyCode -> getView().checkSmsCodeResult(resultVerifyCode.code), AppLogger::e);
-    }
 
     /**
      * 重置密码
      *
      * @param newPassword
      */
-    @Override
-    public void resetPassword(String newPassword) {
+    public void submitNewPass(String newPassword) {
         rx.Observable.just(newPassword)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
                     try {
-                        BaseApplication.getAppComponent().getCmd().resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                        BaseApplication.getAppComponent()
+                                .getCmd()
+                                .resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                 }, AppLogger::e);
     }
 
-    /**
-     * 重置密码的回调
-     *
-     * @return
-     */
     @Override
-    public Subscription resetPwdBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResetPwdBack.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(resetPwdBack -> getView().resetPwdResult(resetPwdBack.jfgResult.code), AppLogger::e);
-    }
-
-    @Override
-    public void checkIsReg(String account) {
-        Subscription subscription = rx.Observable.just(account)
+    public void getVerifyCode(String phone) {
+        //获取验证码,1.校验手机号码,2.根据错误号显示
+        Subscription subscription = rx.Observable.just(phone)
                 .subscribeOn(Schedulers.newThread())
-                .delay(2, TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS)
                 .flatMap(s -> {
                     try {
                         long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
-                        Log.d("checkIsReg", "checkIsReg: " + req);
+                        Log.d(TAG, "校验手机号码: " + req);
                         return Observable.just(req);
                     } catch (JfgException e) {
                         return Observable.just(-1);
@@ -195,15 +106,118 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
                         .subscribeOn(Schedulers.newThread())
                         .delay(100, TimeUnit.MILLISECONDS))
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(ret -> mView != null && mView.isAdded())
-                .subscribe(s -> getView().checkIsRegReuslt(s.jfgResult.code), AppLogger::e);
-        addSubscription(subscription, "subscription");
+                .flatMap(ret -> {
+                    //手机号注册 情况
+                    if (ret.jfgResult.code == JError.ErrorOK) {
+                        Subscription s = RxBus.getCacheInstance()
+                                .toObservable(RxEvent.SmsCodeResult.class)
+                                .timeout(10, TimeUnit.SECONDS)
+                                .subscribe(result -> {
+                                    getView().onResult(JConstant.GET_SMS_BACK, result.error);
+                                    unSubscribe("ResultVerifyCode");
+                                }, AppLogger::e);
+                        addSubscription(s, "ResultVerifyCode");
+                        try {
+                            //获取验证码
+                            int seq = BaseApplication.getAppComponent().getCmd()
+                                    .sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                            if (seq != 0) s.unsubscribe();
+                            else AppLogger.d("手机号码 有效,开始获取验证码");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //返回错误码
+                        mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
+                    }
+                    return Observable.just(ret.jfgResult.code);
+                })
+                .subscribe(ret -> {
+                }, AppLogger::e);
+        addSubscription(subscription, "getVerifyCode");
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        unSubscribe(subscription);
+    public void submitPhoneAndCode(String phone, String code) {
+        //1.验证手机号码
+        Observable.just(phone)
+                .subscribeOn(Schedulers.io())
+                .flatMap(s -> {
+                    try {
+                        long req = BaseApplication.getAppComponent().getCmd()
+                                .checkAccountRegState(s);
+                        Log.d(TAG, "校验手机号码: " + req);
+                        return Observable.just(req);
+                    } catch (JfgException e) {
+                        return Observable.just(-1);
+                    }
+                })
+                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .delay(100, TimeUnit.MILLISECONDS))
+                //有效的手机号
+                .filter(ret -> ret.jfgResult.code == JError.ErrorOK)
+                .flatMap(s -> {
+//                    Subscription s = RxBus.getCacheInstance().toObservable()
+                    try {
+                        String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, code, token);
+                        AppLogger.d("验证 短信:" + token);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .subscribe(ret -> {
+                }, AppLogger::e);
+
     }
+
+    @Override
+    public void checkMailByAccount(String mail) {
+        //获取验证码,1.校验邮箱,2.根据错误号显示
+        Subscription subscription = rx.Observable.just(mail)
+                .subscribeOn(Schedulers.newThread())
+                .delay(1, TimeUnit.SECONDS)
+                .flatMap(s -> {
+                    try {
+                        long req = BaseApplication.getAppComponent()
+                                .getCmd().checkAccountRegState(s);
+                        Log.d(TAG, "校验邮箱: " + req);
+                        return Observable.just(req);
+                    } catch (JfgException e) {
+                        return Observable.just(-1);
+                    }
+                })
+                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .delay(100, TimeUnit.MILLISECONDS))
+                .flatMap(ret -> {
+                    if (ret.jfgResult.code == JError.ErrorOK) {
+                        Subscription s = RxBus.getCacheInstance()
+                                .toObservable(RxEvent.ForgetPwdByMail.class)
+                                .timeout(10, TimeUnit.SECONDS)
+                                .subscribe(code -> {
+                                    getView().onResult(JConstant.AUTHORIZE_MAIL, code.ret);
+                                    unSubscribe("MailChecker");
+                                }, AppLogger::e);
+                        addSubscription(s, "MailChecker");
+                        try {
+                            int seq = BaseApplication.getAppComponent().getCmd()
+                                    .forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), mail);
+                            if (seq != 0) s.unsubscribe();
+                            AppLogger.d("邮箱 忘记密码 ");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //返回错误码
+                        mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
+                    }
+                    return Observable.just(ret.jfgResult.code);
+                })
+                .subscribe();
+        addSubscription(subscription, "checkMailByAccount");
+    }
+
 }

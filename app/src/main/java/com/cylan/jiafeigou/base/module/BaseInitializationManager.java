@@ -125,8 +125,8 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
-        if (BuildConfig.DEBUG)
-            Debug.startMethodTracing(JConstant.ROOT_DIR + File.separator + "what.trace");
+//        if (BuildConfig.DEBUG)
+//            Debug.startMethodTracing(JConstant.ROOT_DIR + File.separator + "what.trace");
         Log.d("initialization", "initialization," + Thread.currentThread());
         PerformanceUtils.startTrace("initialization");
         hasInitFinished = false;
@@ -149,8 +149,8 @@ public final class BaseInitializationManager {
         RxBus.getCacheInstance().postSticky(RxEvent.GlobalInitFinishEvent.INSTANCE);
         PerformanceUtils.stopTrace("initialization");
         GlobalResetPwdSource.getInstance().register();
-        if (BuildConfig.DEBUG)
-            Debug.stopMethodTracing();
+//        if (BuildConfig.DEBUG)
+//            Debug.stopMethodTracing();
     }
 
     private void initOKGo() {
