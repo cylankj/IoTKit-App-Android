@@ -16,6 +16,7 @@ public class LiveShowCase {
     private static final String KEY_SHOW_CASE = "key_show_case";
 
     public static void show(Activity activity, View anchor0, View anchor1) {
+        if (!anchor0.isShown()) return;
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_CASE, true);
         PreferencesUtils.putBoolean(KEY_SHOW_CASE, false);
         if (result) {

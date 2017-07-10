@@ -52,6 +52,11 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         this.uuid = mView.getUuid();
     }
 
+    @Override
+    public void addSubscription(String tag, Subscription s) {
+        addSubscription(s, tag);
+    }
+
     public AbstractPresenter(T view, String uuid) {
         mView = view;
         this.uuid = uuid;

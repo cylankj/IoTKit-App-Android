@@ -1,102 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_f4f4f4"
+    android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.activity.BindDeviceActivity">
 
-    <LinearLayout
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_enable_theme="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_title="@string/DEVICES_TITLE"
+        hunt:ct_title_color="@color/color_white" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
-        <com.cylan.jiafeigou.widget.CustomToolbar
-            android:id="@+id/custom_toolbar"
-            layout="@layout/layout_default_custom_tool_bar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            hunt:ct_background_color="@color/color_0ba8cf"
-            hunt:ct_enable_shadow="true"
-            hunt:ct_enable_theme="true"
-            hunt:ct_fit_system_window="true"
-            hunt:ct_icon="@drawable/nav_icon_back_white"
-            hunt:ct_title="@string/DEVICES_TITLE"
-            hunt:ct_title_color="@color/color_white" />
+            android:orientation="vertical">
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/v_to_scan_qrcode"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y67"
-            android:background="@color/color_white"
-            hunt:leftDrawable="@drawable/icon_scan_code"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/Tap1_AddDevice_QR"
-            hunt:textColor="@color/color_383838"
-            hunt:textSize="@dimen/sp16" />
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_scan_qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/icon_scan_code"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/Tap1_AddDevice_QR"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/v_to_bind_camera"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y67"
-            android:layout_marginTop="@dimen/y25"
-            android:background="@color/color_white"
-            hunt:leftDrawable="@drawable/icon_home_camera_online"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/DOG_CAMERA_NAME"
-            hunt:textColor="@color/color_383838"
-            hunt:textSize="@dimen/sp16" />
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_camera"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:layout_marginTop="@dimen/y25"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/icon_home_camera_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/DOG_CAMERA_NAME"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/v_to_bind_rs_cam"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y67"
-            android:background="@color/color_white"
-            android:visibility="gone"
-            hunt:leftDrawable="@drawable/home_icon_rs_online"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/RuiShi_Name"
-            hunt:textColor="@color/color_383838"
-            hunt:textSize="@dimen/sp16" />
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_camera_cloud"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/home_icon_cloud_camera"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/Cloud_Camera"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/v_to_bind_panorama_camera"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y67"
-            android:background="@color/color_white"
-            hunt:leftDrawable="@drawable/home_icon_720camera_online"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/_720PanoramicCamera"
-            hunt:textColor="@color/color_383838"
-            hunt:textSize="@dimen/sp16" />
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_consumer_cam"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/home_icon_rs_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/Consumer_Camera"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:id="@+id/v_to_bind_doorbell"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y67"
-            android:background="@color/color_white"
-            hunt:leftDrawable="@drawable/icon_home_doorbell_online"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/CALL_CAMERA_NAME"
-            hunt:textColor="@color/color_383838"
-            hunt:textSize="@dimen/sp16" />
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_bell_battery"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/icon_home_doorbell_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/Smart_bell_Battery"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
 
-        <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
-        <!--android:msgId="@+msgId/v_to_bind_cloud_album"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/y67"-->
-        <!--android:background="@color/color_white"-->
-        <!--hunt:leftDrawable="@drawable/icon_home_album_online"-->
-        <!--hunt:rightDrawable="@drawable/icon_mine_arrow_next"-->
-        <!--hunt:text="云相框"-->
-        <!--hunt:textColor="@color/color_383838"-->
-        <!--hunt:textSize="@dimen/sp16" />-->
-    </LinearLayout>
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_bell_no_battery"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/icon_home_doorbell_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/Smart_bell_Power"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
 
-    <FrameLayout
-        android:id="@+id/fLayout_bind_device_fragment_container_id"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-</FrameLayout>
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_cat_eye_cam"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/home_icon_intelligent_eye"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/Smart_Door_Viewer"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
+
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_panorama_camera"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/home_icon_720camera_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/_720PanoramicCamera"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
+
+            <com.cylan.jiafeigou.widget.HomeMineItemView
+                android:id="@+id/v_to_bind_doorbell"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y67"
+                android:background="@color/color_white"
+                hunt:leftDrawable="@drawable/icon_home_doorbell_online"
+                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+                hunt:text="@string/CALL_CAMERA_NAME"
+                hunt:textColor="@color/color_383838"
+                hunt:textSize="@dimen/sp16" />
+
+            <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
+            <!--android:msgId="@+msgId/v_to_bind_cloud_album"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/y67"-->
+            <!--android:background="@color/color_white"-->
+            <!--hunt:leftDrawable="@drawable/icon_home_album_online"-->
+            <!--hunt:rightDrawable="@drawable/icon_mine_arrow_next"-->
+            <!--hunt:text="云相框"-->
+            <!--hunt:textColor="@color/color_383838"-->
+            <!--hunt:textSize="@dimen/sp16" />-->
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

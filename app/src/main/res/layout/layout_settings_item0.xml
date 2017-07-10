@@ -18,7 +18,7 @@
         android:id="@+id/tv_settings_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/y15"
+        android:layout_marginStart="@dimen/x15"
         android:gravity="center"
         android:text="@string/EQUIPMENT_INFO"
         android:textColor="@color/color_black"
@@ -30,15 +30,16 @@
 
     <TextView
         android:id="@+id/tv_settings_item_sub_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/y15"
+        android:layout_marginStart="@dimen/x15"
         android:layout_marginTop="@dimen/y3"
-        android:gravity="center"
         android:textColor="@color/color_8C8C8C"
         android:textSize="@dimen/sp13"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintEnd_toStartOf="@+id/btn_item_switch"
         app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title" />
 
     <com.cylan.jiafeigou.widget.SafeSwitchButton

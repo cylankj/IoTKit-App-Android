@@ -17,7 +17,7 @@
         hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_left_title="@string/Tap1_Camera_Messages"
+        hunt:ct_left_title="@string/Tap3_TitleName_Notice"
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_right_title="@string/DELETE"
         hunt:ct_right_title_color="@color/color_white" />

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -28,7 +29,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         ButterKnife.bind(this);
         initTopBar();
         boolean show = getResources().getBoolean(R.bool.show_ruishi_interface);
-        findViewById(R.id.v_to_bind_rs_cam).setVisibility(show ? View.VISIBLE : View.GONE);
+        findViewById(R.id.v_to_bind_consumer_cam).setVisibility(show ? View.VISIBLE : View.GONE);
         findViewById(R.id.v_to_scan_qrcode).setVisibility(getResources()
                 .getBoolean(R.bool.show_scan_bind_interface) ? View.VISIBLE : View.GONE);
     }
@@ -56,7 +57,10 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     }
 
     @OnClick({R.id.v_to_scan_qrcode,
-            R.id.v_to_bind_rs_cam, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_panorama_camera})
+            R.id.v_to_bind_consumer_cam,
+            R.id.v_to_bind_camera,
+            R.id.v_to_bind_doorbell,
+            R.id.v_to_bind_panorama_camera})
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
@@ -69,12 +73,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_camera: {
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindCamActivity.class);
-                startActivity(intent);
-                break;
-            }
-            case R.id.v_to_bind_rs_cam: {
-                ViewUtils.deBounceClick(view);
-                Intent intent = new Intent(this, BindRsCamActivity.class);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "");
                 startActivity(intent);
                 break;
             }
@@ -93,22 +92,43 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     private void jump2PanoramaCam(boolean animation) {
         startActivity(new Intent(this, BindPanoramaCamActivity.class));
         ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_panorama_camera));
-//        Bundle bundle = new Bundle();
-//        BindPanoramaCamera fragment = BindPanoramaCamera.newInstance(bundle);
-//        if (animation) {
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                            , R.anim.slide_in_left, R.anim.slide_out_right)
-//                    .add(android.R.id.content, fragment)
-//                    .addToBackStack("BindPanoramaCameraFragment")
-//                    .commit();
-//        } else {
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(android.R.id.content, fragment)
-//                    .commit();
-//        }
     }
 
+    @OnClick({R.id.v_to_bind_camera_cloud, R.id.v_to_bind_consumer_cam, R.id.v_to_bind_bell_battery, R.id.v_to_bind_bell_no_battery, R.id.v_to_bind_cat_eye_cam})
+    public void onClickBind(View view) {
+        Intent intent = new Intent(this, BindAnimationActivity.class);
+        switch (view.getId()) {
+            case R.id.v_to_bind_camera_cloud:
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Cloud_Camera));
+                break;
+            case R.id.v_to_bind_consumer_cam://原来睿视
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.bind_reset_rs);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide_rs);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
+                break;
+            case R.id.v_to_bind_bell_battery:
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_bell_Battery));
+                break;
+            case R.id.v_to_bind_bell_no_battery:
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_bell_Power));
+                break;
+            case R.id.v_to_bind_cat_eye_cam:
+                intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-");
+                intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_Door_Viewer));
+                break;
+        }
+        startActivity(intent);
+    }
 }

@@ -592,11 +592,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (code == JError.ErrorOK) {
             jump2NextPage();
         } else if (code == JError.ErrorSMSCodeTimeout) {
-            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+//在BaseJFGResultParser中弹
+            //            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         } else {
-            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
+//            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
         }
     }
 
@@ -616,15 +617,15 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         } else {
             if (code == JError.ErrorAccountNotExist) {
                 //账号未注册
-                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+//                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
             } else if (code == JError.ErrorLoginInvalidPass) {
-                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+//                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == JError.ErrorOpenLoginInvalidToken) {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
+//                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
             } else if (code == JError.ErrorConnect) {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
+//                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             } else if (code == JError.ErrorP2PSocket) {
-                ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+//                ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
             } else ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":" + code);
             resetView();
             AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "");

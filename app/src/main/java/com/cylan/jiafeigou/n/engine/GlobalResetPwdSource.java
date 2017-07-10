@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.engine;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
@@ -45,8 +46,9 @@ public class GlobalResetPwdSource {
         if (mSubscription == null) {
             mSubscription = new CompositeSubscription();
         }
+        long time = System.currentTimeMillis();
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.PwdHasResetEvent.class)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
                     AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground());
@@ -61,6 +63,7 @@ public class GlobalResetPwdSource {
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         mSubscription.add(subscribe);
+        Log.d("GlobalResetPwdSource", "GlobalResetPwdSource:" + (System.currentTimeMillis() - time) + ":ms");
     }
 
     public void unRegister() {

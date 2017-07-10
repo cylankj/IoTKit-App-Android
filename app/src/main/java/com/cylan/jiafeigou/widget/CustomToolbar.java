@@ -75,7 +75,7 @@ public class CustomToolbar extends LinearLayout implements ITheme {
             if (isInEditMode()) {
                 bgColor = R.color.color_0ba8cf;//这是方便在 xml 布局中显示
             } else {
-                bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_0ba8cf : R.color.color_23344e;
+                bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_17AFD1 : R.color.color_263954;
             }
             viewGroup.setBackgroundColor(getResources().getColor(bgColor));
         }

@@ -640,7 +640,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");
                     return "";
                 })
-                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .map(func1);
     }
 

@@ -262,6 +262,8 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void onStart() {
         super.onStart();
+        //刷新账号
+        JfgAppCmd.getInstance().getAccount();
     }
 
     private void initSwitchBtnListener() {

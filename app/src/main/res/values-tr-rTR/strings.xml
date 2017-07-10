@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">bağlantı zaman aşımı</string>
   <string name="Clear_Sdcard_tips6">SD kart veri yok edildi</string>
   <string name="ClearingTips">Takas&#8230;</string>
+  <string name="Cloud_Camera">Bulut Kamerası</string>
+  <string name="Consumer_Camera">Tüketici Kamerası</string>
   <string name="DEAL_FEEDBACK">Geri dönüşünüz için teşekkür ederiz</string>
   <string name="DELETE">Sil</string>
   <string name="DELETED">Silindi</string>
@@ -221,7 +223,7 @@
   <string name="FRI">Cuma</string>
   <string name="FRI_1">Cuma</string>
   <string name="FRI_2">Cuma</string>
-  <string name="FRI_Hisvideo_Timeselector">Cuma</string>
+  <string name="FRI_Hisvideo_Timeselector">Cum</string>
   <string name="FROME">den</string>
   <string name="Fail_Record">Kayıt başarısız</string>
   <string name="Feb">Feb.</string>
@@ -311,7 +313,7 @@
   <string name="MONTHS">ay</string>
   <string name="MON_1">Pazartesi</string>
   <string name="MON_2">Pazartesi</string>
-  <string name="MON_Hisvideo_Timeselector">Pazartesi</string>
+  <string name="MON_Hisvideo_Timeselector">Pzt</string>
   <string name="MSG_BIND">Cihaz başarılı bir şekilde eklendi</string>
   <string name="MSG_BOTTOM_LINE">Alttaki</string>
   <string name="MSG_DELETE_TITLE">Silindikten sonra geri çağrılamaz</string>
@@ -485,7 +487,7 @@
   <string name="SAT">Cumartesi</string>
   <string name="SAT_1">Cumartesi</string>
   <string name="SAT_2">Cumartesi</string>
-  <string name="SAT_Hisvideo_Timeselector">Cumartesi</string>
+  <string name="SAT_Hisvideo_Timeselector">Cut</string>
   <string name="SAVE">Yapıldı</string>
   <string name="SAVED_PHOTOS">Fotoğraflara kaydedildi</string>
   <string name="SCENE_ADDED">\"%s\" Başarılı bir şekilde eklendi</string>
@@ -554,7 +556,7 @@
   <string name="SUN">Pazar</string>
   <string name="SUN_1">Pazar</string>
   <string name="SUN_2">Pazar</string>
-  <string name="SUN_Hisvideo_Timeselector">Pazar</string>
+  <string name="SUN_Hisvideo_Timeselector">Paz</string>
   <string name="SURE">TAMAM</string>
   <string name="SURE_DELETE">Silmek istediğinizden emin misiniz?</string>
   <string name="SURE_DELETE_1">%s hesabını ve ilgili veriyi silmek istediğinizden emin misiniz?</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Paylaşım yönetimi</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Akıllı Kapı Görüntüleyicisi</string>
+  <string name="Smart_bell_Battery">Akıllı kapı zili (pil sürümü)</string>
+  <string name="Smart_bell_Power">Akıllı kapı zili (Güç Sürümü)</string>
   <string name="Start_Failed">Başarısız</string>
   <string name="Start_Hotspot">Etkin noktayı başlat</string>
   <string name="Start_Hotspot_Note">Başlangıç ​​hotspot, cihazın çevrimdışı olmasına neden olabilir; Cihaz açıldıktan sonra cihazın mavi ışığının yanıp sönmesini bekleyin</string>
@@ -594,7 +599,7 @@
   <string name="THU">Perşembe</string>
   <string name="THU_1">Perşembe</string>
   <string name="THU_2">Perşembe</string>
-  <string name="THU_Hisvideo_Timeselector">Perşembe</string>
+  <string name="THU_Hisvideo_Timeselector">Per</string>
   <string name="TIME">Zaman</string>
   <string name="TIMEOUT_TRY_AGIN">Bekleme&#8211;zamanaşımı \n lütfen tekrar deneyin</string>
   <string name="TIMEZONE_CHOOSE">Zaman bölgesi</string>
@@ -606,7 +611,7 @@
   <string name="TUE">Salı</string>
   <string name="TUE_1">Salı</string>
   <string name="TUE_2">Salı</string>
-  <string name="TUE_Hisvideo_Timeselector">Salı</string>
+  <string name="TUE_Hisvideo_Timeselector">Sal</string>
   <string name="TURN_ON_PROTECTION">Güvenlik Koruması açıkken hareket algılama otomatik olarak açılacaktır ve zaman aralığı ayarlamasına göre alarmlar gönderecektir.</string>
   <string name="Tap0_AlreadyEmailed">Için zaten e&#8211;postayla gönderildi</string>
   <string name="Tap0_Authorizationfailed">Yetki başarısız, lütfen tekrar deneyiniz</string>
@@ -937,7 +942,7 @@
   <string name="WED">Çarşamba</string>
   <string name="WED_1">Çarşamba</string>
   <string name="WED_2">Çarşamba</string>
-  <string name="WED_Hisvideo_Timeselector">Çarşamba</string>
+  <string name="WED_Hisvideo_Timeselector">Çar</string>
   <string name="WEEK">Her</string>
   <string name="WEEKDAYS">Haftaiçi</string>
   <string name="WEEKEND">Haftasonu</string>

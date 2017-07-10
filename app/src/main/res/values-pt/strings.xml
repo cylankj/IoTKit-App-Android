@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">tempo limite de conexão</string>
   <string name="Clear_Sdcard_tips6">Dados de cartão SD foi apagado</string>
   <string name="ClearingTips">Clearing&#8230;</string>
+  <string name="Cloud_Camera">Câmera da nuvem</string>
+  <string name="Consumer_Camera">Câmera do consumidor</string>
   <string name="DEAL_FEEDBACK">Obrigado pelo seu feedback</string>
   <string name="DELETE">Excluir</string>
   <string name="DELETED">Excluído</string>
@@ -221,7 +223,7 @@
   <string name="FRI">Sexta&#8211;feira</string>
   <string name="FRI_1">Sexta&#8211;feira</string>
   <string name="FRI_2">Sex</string>
-  <string name="FRI_Hisvideo_Timeselector">Sexta&#8211;feira</string>
+  <string name="FRI_Hisvideo_Timeselector">Sex</string>
   <string name="FROME">Hora de início</string>
   <string name="Fail_Record">Falha ao gravar</string>
   <string name="Feb">Feb.</string>
@@ -311,7 +313,7 @@
   <string name="MONTHS">mês</string>
   <string name="MON_1">Segunda&#8211;feira</string>
   <string name="MON_2">Seg</string>
-  <string name="MON_Hisvideo_Timeselector">Segunda&#8211;feira</string>
+  <string name="MON_Hisvideo_Timeselector">Seg</string>
   <string name="MSG_BIND">Dispositivo adicionado com sucesso</string>
   <string name="MSG_BOTTOM_LINE">Fundo</string>
   <string name="MSG_DELETE_TITLE">Depois de excluir, não poderá restaurar. Por favor confirme novamente.</string>
@@ -485,7 +487,7 @@
   <string name="SAT">Sábado</string>
   <string name="SAT_1">Sábado</string>
   <string name="SAT_2">Sáb</string>
-  <string name="SAT_Hisvideo_Timeselector">Sábado</string>
+  <string name="SAT_Hisvideo_Timeselector">Sáb</string>
   <string name="SAVE">Concluído</string>
   <string name="SAVED_PHOTOS">Salvo na galeria</string>
   <string name="SCENE_ADDED">\"%s\":Adicionado com sucesso</string>
@@ -554,7 +556,7 @@
   <string name="SUN">Domingo</string>
   <string name="SUN_1">Domingo</string>
   <string name="SUN_2">Dom</string>
-  <string name="SUN_Hisvideo_Timeselector">Domingo</string>
+  <string name="SUN_Hisvideo_Timeselector">Dom</string>
   <string name="SURE">OK</string>
   <string name="SURE_DELETE">Excluir todas as mensagens?</string>
   <string name="SURE_DELETE_1">Certeza de quer apagar \"%s\" e os dados da conta?</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Gerenciamento de compartilhamento</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Smart Door Viewer</string>
+  <string name="Smart_bell_Battery">Smart Doorbell (Battery Version)</string>
+  <string name="Smart_bell_Power">Smart Doorbell (Power Version)</string>
   <string name="Start_Failed">Iniciar falha</string>
   <string name="Start_Hotspot">Activar ponto quente</string>
   <string name="Start_Hotspot_Note">Activar ponto quente pode fazer que o dispositivo esteja offline, depois de activar, por favor espere até a luz azul do dispositivo piscar.</string>
@@ -594,7 +599,7 @@
   <string name="THU">Quinta&#8211;feira</string>
   <string name="THU_1">Quinta&#8211;feira</string>
   <string name="THU_2">Qui</string>
-  <string name="THU_Hisvideo_Timeselector">Quinta&#8211;feira</string>
+  <string name="THU_Hisvideo_Timeselector">Qui</string>
   <string name="TIME">Horário</string>
   <string name="TIMEOUT_TRY_AGIN">Conexão expirou \n Por favor tente novamente</string>
   <string name="TIMEZONE_CHOOSE">Selecione o fuso horário</string>
@@ -606,7 +611,7 @@
   <string name="TUE">Terça&#8211;feira</string>
   <string name="TUE_1">Terça&#8211;feira</string>
   <string name="TUE_2">Ter</string>
-  <string name="TUE_Hisvideo_Timeselector">Terça&#8211;feira</string>
+  <string name="TUE_Hisvideo_Timeselector">Ter</string>
   <string name="TURN_ON_PROTECTION">Quando selecionado, o sensor de movimento irá iniciar a gravação e enviará alertas assim que detectar movimento</string>
   <string name="Tap0_AlreadyEmailed">Sistema enviou um e&#8211;mail para</string>
   <string name="Tap0_Authorizationfailed">Falha na autorização. Por favor tente novamente</string>
@@ -937,7 +942,7 @@
   <string name="WED">Quarta&#8211;feira</string>
   <string name="WED_1">Quarta&#8211;feira</string>
   <string name="WED_2">Qua</string>
-  <string name="WED_Hisvideo_Timeselector">Quarta&#8211;feira</string>
+  <string name="WED_Hisvideo_Timeselector">Qua</string>
   <string name="WEEK">Semanal</string>
   <string name="WEEKDAYS">Dias úteis</string>
   <string name="WEEKEND">Fim de semana</string>

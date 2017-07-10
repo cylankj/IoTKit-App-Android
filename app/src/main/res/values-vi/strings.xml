@@ -88,6 +88,8 @@
   <string name="Clear_Sdcard_tips5">thời gian chờ kết nối</string>
   <string name="Clear_Sdcard_tips6">Dữ liệu của thẻ SD đã bị xóa</string>
   <string name="ClearingTips">Clearing&#8230;</string>
+  <string name="Cloud_Camera">Máy ảnh Đám mây</string>
+  <string name="Consumer_Camera">Máy ảnh người tiêu dùng</string>
   <string name="DEAL_FEEDBACK">Cảm ơn đóng góp ý kiến</string>
   <string name="DELETE">Xoá</string>
   <string name="DELETED">Đã xoá</string>
@@ -571,6 +573,9 @@
   <string name="Sharing_Management">Quản lý chia sẻ</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
+  <string name="Smart_Door_Viewer">Xem cửa thông minh</string>
+  <string name="Smart_bell_Battery">Chuông cửa thông minh (Phiên bản pin)</string>
+  <string name="Smart_bell_Power">Chuông cửa thông minh (Phiên bản nguồn)</string>
   <string name="Start_Failed">Bắt đầu không thành công</string>
   <string name="Start_Hotspot">Bắt đầu điểm phát sóng</string>
   <string name="Start_Hotspot_Note">Bắt đầu hotspot có thể gây ra ngoại tuyến của thiết bị; Sau khi bật, chờ đèn xanh lam nhấp nháy của thiết bị</string>

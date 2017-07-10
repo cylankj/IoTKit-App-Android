@@ -23,8 +23,10 @@ public class JConstant {
 
 
     public static final String KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID = "new_home_menu_id";
-    public static final int AUTHORIZE_PHONE = 0;
-    public static final int AUTHORIZE_MAIL = 1;
+    public static final int AUTHORIZE_PHONE = 0x111110;
+    public static final int AUTHORIZE_MAIL = 0x111111;
+    public static final int GET_SMS_BACK = 0x111112;
+    public static final int CHECK_TIMEOUT = 0x111113;
     public static final int THIS_ACCOUNT_NOT_REGISTERED = -1;
 
     public static final String KEY_TIME_TICK_ = "key_time_tick";
@@ -38,13 +40,13 @@ public class JConstant {
 
     public static final Pattern MAC_REG = Pattern.compile("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     public static final String EFAMILY_URL_PREFIX = "http://www.jfgou.com/app/download.html?";
-    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
-            "vid=[0-9a-zA-Z]{0,12}" +
-                    "&pid=\\d{0,12}" +
-                    "&sn=[0-9a-zA-Z]{0,64}");
-    public static final Pattern QR_CODE_REG = Pattern.compile(
-            "vid=[0-9a-zA-Z]{0,12}" +
-                    "&pid=\\d{0,12}");
+//    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
+//            "Vid=[0-9a-zA-Z]{0,12}" +
+//                    "&pid=\\d{0,12}" +
+//                    "&sn=[0-9a-zA-Z]{0,64}");
+//    public static final Pattern QR_CODE_REG = Pattern.compile(
+//            "Vid=[0-9a-zA-Z]{0,12}" +
+//                    "&pid=\\d{0,12}");
 
 
     //看JConstantTest单元测试
@@ -73,8 +75,6 @@ public class JConstant {
     public static final String AUTO_LOGIN_ACCOUNT = "auto_login_account";
     public static final String AUTO_LOGIN_PWD = "auto_login_pwd";
 
-    public static final String SAVE_TEMP_ACCOUNT = "save_temp_account";
-    public static final String SAVE_TEMP_CODE = "save_temp_code";
     public static final String OPEN_LOGIN_TO_BIND_PHONE = "open_login_to_bind_phone";
     public static final String OPEN_LOGIN_USER_ICON = "open_login_user_icon";
     public static final String OPEN_LOGIN_USER_ALIAS = "open_login_user_alias";
@@ -160,17 +160,6 @@ public class JConstant {
 
     public static final int INVALID_PROCESS = -1;
 
-    public static int getMessageIcon(int pid) {
-        if (JFGRules.isRS(pid)) return R.drawable.me_icon_head_camera_ruishi;
-        if (JFGRules.isBell(pid))
-            return R.drawable.me_icon_head_ring;
-        if (JFGRules.isPan720(pid))
-            return R.drawable.me_icon_head_720camera;
-        if (JFGRules.isCamera(pid))
-            return R.drawable.me_icon_head_camera;
-        AppLogger.e("bad pid: " + pid);
-        return R.mipmap.ic_launcher;
-    }
 
     public static class LOG_TAG {
         public static final String PERMISSION = "permission";
@@ -281,6 +270,18 @@ public class JConstant {
         }
     }
 
+    public static int getMessageIcon(int pid) {
+        if (JFGRules.isRS(pid)) return R.drawable.me_icon_head_camera_ruishi;
+        if (JFGRules.isBell(pid))
+            return R.drawable.me_icon_head_ring;
+        if (JFGRules.isPan720(pid))
+            return R.drawable.me_icon_head_720camera;
+        if (JFGRules.isCamera(pid))
+            return R.drawable.me_icon_head_camera;
+        AppLogger.e("bad pid: " + pid);
+        return R.mipmap.ic_launcher;
+    }
+
     public static int getOnlineIcon(int pid) {
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_online;
         if (JFGRules.isBell(pid))
@@ -291,36 +292,6 @@ public class JConstant {
             return R.drawable.icon_home_camera_online;
         AppLogger.e("bad pid: " + pid);
         return R.mipmap.ic_launcher;
-    }
-
-    public static int getOnlineIconByCid(String cid) {
-        if (TextUtils.isEmpty(cid)) {
-            return R.mipmap.ic_launcher;
-        }
-        if (cid.length() < 4) return R.mipmap.ic_launcher;
-        String substring = cid.substring(0, 4);
-        int parseInt = Integer.parseInt(substring);
-        switch (parseInt) {
-            case 2000:
-            case 2200:
-            case 2100:
-            case 3000:
-            case 2801:
-            case 2800:
-            case 2802:
-            case 2803:
-            case 6000:
-            case 6500:
-            case 2700:
-            case 6002:
-            case 6004:
-            case 6001:
-                return R.drawable.icon_home_camera_online;
-
-        }
-
-        return R.mipmap.ic_launcher;
-
     }
 
     public static int getOfflineIcon(int pid) {
@@ -433,4 +404,9 @@ public class JConstant {
     }
 
     public static String KEY_CURRENT_PLAY_VIEW = "";
+
+    public static final String KEY_ANIM_GIF = "ANIM_GIF";
+    public static final String KEY_CONNECT_AP_GIF = "CONNECT_AP_GIF";
+    public static final String KEY_SSID_PREFIX = "SSID_PREFIX";
+
 }

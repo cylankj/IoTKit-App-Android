@@ -296,7 +296,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
         AppLogger.d("OnForgetPassByEmailRsp :" + s);
-        RxBus.getCacheInstance().post(new RxEvent.ForgetPwdByMail(s));
+        RxBus.getCacheInstance().post(new RxEvent.ForgetPwdByMail(s).setRet(i));
     }
 
     @Override

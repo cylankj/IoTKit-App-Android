@@ -5,13 +5,16 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -21,6 +24,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -83,6 +87,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         //这是主进程
+
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             viewCount = 0;
             //设计师不需要这个固定通知栏.20170531
@@ -96,7 +101,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);
 //            startService(new Intent(this, DataSourceService.class));
-            GlobalResetPwdSource.getInstance().register();
+
             PerformanceUtils.stopTrace("appInit");
             PerformanceUtils.startTrace("app2SmartCall");
 //            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
@@ -108,7 +113,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onTerminate();
         AppLogger.d("进程已被销毁!!!!");
         appComponent.getInitializationManager().clean();
-        GlobalResetPwdSource.getInstance().unRegister();
+
 
     }
 

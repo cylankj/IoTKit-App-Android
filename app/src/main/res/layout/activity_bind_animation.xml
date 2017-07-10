@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cylan.jiafeigou.n.view.activity.BindAnimationActivity">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_gary" />
+
+    <TextView
+        android:id="@+id/tv_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y20"
+        android:gravity="center"
+        android:text="@string/Tap1_AddDevice_CameraTipsTitle"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp26"
+        hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+
+    <TextView
+        android:id="@+id/tv_sub_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y15"
+        android:gravity="center"
+        android:text="@string/Tap1_AddDevice_CameraTips"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp16"
+        hunt:layout_constraintTop_toBottomOf="@+id/tv_main_content" />
+
+    <ImageView
+        android:id="@+id/imv_gif_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/x20"
+        android:layout_marginStart="@dimen/x20"
+        android:layout_marginTop="@dimen/y20"
+        hunt:layout_constraintBottom_toTopOf="@+id/tv_next_step"
+        hunt:layout_constraintTop_toBottomOf="@+id/tv_sub_title" />
+
+    <TextView
+        android:id="@+id/tv_next_step"
+        style="@style/ripple_background"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y50"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/BLINKING"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp16"
+        hunt:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>

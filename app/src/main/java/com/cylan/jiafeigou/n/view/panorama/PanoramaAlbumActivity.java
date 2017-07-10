@@ -147,7 +147,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
