@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -53,10 +52,9 @@ public class History {
         return history;
     }
 
-    private Subscription sdFormatSub;
 
     private History() {
-        sdFormatSub = RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+        RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
                 .subscribeOn(Schedulers.io())
                 .map(setDataRsp -> {
                     int size = ListUtils.getSize(setDataRsp.rets);
@@ -81,7 +79,8 @@ public class History {
      * @return
      */
     public boolean queryHistory(Device device) {
-        if (device == null || TextUtils.isEmpty(device.uuid) || !TextUtils.isEmpty(device.shareAccount)) {
+        if (device == null || TextUtils.isEmpty(device.uuid)
+                || !TextUtils.isEmpty(device.shareAccount)) {
             AppLogger.d("go back:" + device);
             return false;
         }
@@ -117,14 +116,14 @@ public class History {
      */
 
     public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
-        if (historyVideo == null || historyVideo.list == null || historyVideo.list.size() == 0)
+        if (historyVideo == null || ListUtils.isEmpty(historyVideo.list)) {
             return;
+        }
         Observable.just(historyVideo)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> {
                     if (ListUtils.isEmpty(ret.list)) {
                         //清空
-
                         return false;
                     }
                     return true;
@@ -208,7 +207,7 @@ public class History {
                 dateMap.remove(key);
             }
 
-            BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(uuid,0,Integer.MAX_VALUE)
+            BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(uuid, 0, Integer.MAX_VALUE)
                     .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
                     }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

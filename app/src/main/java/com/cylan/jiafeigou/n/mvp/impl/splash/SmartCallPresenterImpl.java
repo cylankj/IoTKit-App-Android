@@ -51,7 +51,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public void selectNext(boolean showSplash) {
         PerformanceUtils.startTrace("selectNext");
         Subscription subscribe = Observable.just(showSplash)
-                .flatMap(show -> show ? Observable.just("正在显示 splash 页面,请等待2秒钟...").delay(2, TimeUnit.SECONDS) : Observable.just("不显示 splash 页面"))
+                .flatMap(show -> show ? Observable.just("正在显示 splash 页面,请等待2秒钟...").delay(1, TimeUnit.SECONDS) : Observable.just("不显示 splash 页面"))
                 .flatMap(msg -> RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(resultLogin -> {

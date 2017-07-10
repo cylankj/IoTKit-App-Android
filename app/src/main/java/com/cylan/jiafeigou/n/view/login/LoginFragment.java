@@ -30,7 +30,6 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -933,7 +932,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     return;
                 }
                 handleRegisterConfirm();
-                JCache.isSmsAction = true;
                 break;
             case R.id.tv_register_way_content:
                 handleRegisterByMail();

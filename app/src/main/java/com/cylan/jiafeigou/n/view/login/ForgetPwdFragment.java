@@ -22,7 +22,6 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -352,7 +351,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @OnClick(R.id.tv_forget_pwd_submit)
     public void forgetPwdCommit(View v) {
         ViewUtils.deBounceClick(v);
-        JCache.isSmsAction = false;
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             Toast.makeText(getContext(), getString(R.string.NO_NETWORK_4), Toast.LENGTH_SHORT).show();
             return;
