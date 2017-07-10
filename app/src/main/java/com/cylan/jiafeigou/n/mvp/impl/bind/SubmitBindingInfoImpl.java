@@ -1,7 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
@@ -18,6 +22,8 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -48,6 +54,20 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         view.setPresenter(this);
     }
 
+    @Override
+    protected String[] registerNetworkAction() {
+        return new String[]{ConnectivityManager.CONNECTIVITY_ACTION};
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        super.onNetworkChanged(context, intent);
+        int net = NetUtils.getJfgNetType();
+        if (net != 0) {
+            AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
+            BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+        }
+    }
 
     @Override
     public void clean() {
@@ -232,7 +252,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
 
         @Override
         public void actionDone() {
-            if (viewWeakReference.get() != null)viewWeakReference.get().bindState(bindState);
+            if (viewWeakReference.get() != null) viewWeakReference.get().bindState(bindState);
         }
 
         @Override
