@@ -78,6 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
                 android:layout_marginStart="@dimen/x6"
+                android:visibility="gone"
                 hunt:sv_title="@string/SETTING_SD"
                 hunt:sv_v_divider="true" />
 
@@ -148,16 +149,6 @@
                 android:layout_marginStart="@dimen/x6"
                 hunt:sv_sub_title=" "
                 hunt:sv_title="@string/MAC"
-                hunt:sv_v_divider="true" />
-            <!--ip地址-->
-            <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/tv_device_ip"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y72"
-                android:layout_marginStart="@dimen/x6"
-                android:visibility="gone"
-                hunt:sv_sub_title=" "
-                hunt:sv_title="Ip地址"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0

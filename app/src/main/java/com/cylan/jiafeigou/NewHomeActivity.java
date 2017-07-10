@@ -253,7 +253,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     @Override
     public void refreshHint(boolean show) {
-        AppLogger.e("显示? " + show);
+        AppLogger.d("显示? " + show);
         ((HintRadioButton) findViewById(R.id.btn_home_mine))
                 .showRedHint(show);
     }

@@ -50,6 +50,7 @@ public class XiaoMiHMSRegister extends IntentService implements IPushRegister {
         // 可以从DemoMessageReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
         Log.d("XiaoMiHMSRegister", "XiaoMiHMSRegister:AppId " + AppId);
         Log.d("XiaoMiHMSRegister", "XiaoMiHMSRegister:AppKey " + AppKey);
+        MiPushClient.unregisterPush(this);
         MiPushClient.registerPush(this, AppId, AppKey);
     }
 }
