@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -40,6 +41,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -69,7 +72,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -104,7 +110,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     //防护  |直播|时间|   |全屏|
     private View layoutD;
     //历史录像条
-    private View layoutE;
+    private ViewSwitcher layoutE;
     //|speaker|mic|capture|
     private View layoutF;
     //横屏 侧滑日历
@@ -154,7 +160,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutB = findViewById(R.id.layout_b);
         layoutC = (LiveControlView) findViewById(R.id.layout_c);
         layoutD = findViewById(R.id.layout_d);
-        layoutE = findViewById(R.id.layout_e);
+        layoutE = (ViewSwitcher) findViewById(R.id.layout_e);
         layoutF = findViewById(R.id.layout_f);
         layoutG = findViewById(R.id.layout_g);
         liveViewWithThumbnail = (LiveViewWithThumbnail) findViewById(R.id.v_live);
@@ -183,14 +189,36 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.findViewById(R.id.imgV_cam_zoom_to_full_screen)
                 .setOnClickListener(this);
         //e.
-        layoutE.findViewById(R.id.imgV_cam_live_land_play).setOnClickListener(this);
-        layoutE.findViewById(R.id.tv_live).setOnClickListener(this);
-//        ((FlipLayout) layoutE.findViewById(R.id.layout_land_flip)).setFlipListener(this);
+        View vLandPlay = layoutE.findViewById(R.id.imgV_cam_live_land_play);
+        if (vLandPlay != null) vLandPlay.setOnClickListener(this);
+        View tvLive = layoutE.findViewById(R.id.tv_live);
+        if (tvLive != null) tvLive.setOnClickListener(this);
         //f
         layoutF.findViewById(R.id.imgV_cam_switch_speaker).setOnClickListener(this);
         layoutF.findViewById(R.id.imgV_cam_trigger_mic).setOnClickListener(this);
         layoutF.findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(this);
-//        PerformanceUtils.stopTrace("initListener");
+        layoutE.findViewById(R.id.btn_load_history)
+                .setOnClickListener(v -> {
+                    AppLogger.d("点击加载历史视频");
+                    Subscription subscription = rx.Observable.just("get")
+                            .subscribeOn(Schedulers.io())
+                            .map(ret -> presenter.fetchHistoryDataList())
+                            .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
+                                    .first()
+                                    .timeout(5, TimeUnit.SECONDS))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(ret -> {
+                                AppLogger.d("加载成功");
+                                if (layoutE.getCurrentView() instanceof TextView) {
+                                    layoutE.showNext();
+                                }
+                            }, throwable -> {
+                                if (throwable instanceof TimeoutException) {
+                                    ToastUtil.showToast(layoutE.getContext().getResources().getString(R.string.Item_LoadFail));
+                                }
+                            });
+                    presenter.addSubscription("fetchHistoryBy", subscription);
+                });
     }
 
     @Override
@@ -546,7 +574,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         R.drawable.icon_landscape_stop_disable);
         findViewById(R.id.imgV_cam_live_land_play).setEnabled(isPlayHistory);
         //|直播| 按钮
-        layoutE.findViewById(R.id.tv_live).setEnabled(isPlayHistory);
+        View tvLive = layoutE.findViewById(R.id.tv_live);
+        if (tvLive != null) tvLive.setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
         //直播
@@ -577,8 +606,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode) {
         livePlayState = presenter.getPlayState();
         layoutB.setVisibility(GONE);
-        ((ImageView) layoutE.findViewById(R.id.imgV_cam_live_land_play))
-                .setImageResource(R.drawable.icon_landscape_stop);
+        View vLandPlay = layoutE.findViewById(R.id.imgV_cam_live_land_play);
+        if (vLandPlay != null)
+            ((ImageView) vLandPlay).setImageResource(R.drawable.icon_landscape_stop);
         findViewById(R.id.v_live).setEnabled(true);
         liveViewWithThumbnail.showFlowView(false, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);

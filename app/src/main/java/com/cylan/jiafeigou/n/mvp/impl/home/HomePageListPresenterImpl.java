@@ -225,7 +225,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private void subUuidList() {
         List<Device> list = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
-        Log.d("subUuidList", "subUuidList?" + ListUtils.getSize(list));
+        AppLogger.d("subUuidList?" + ListUtils.getSize(list));
         getView().onItemsRsp(list);
         getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
@@ -257,7 +257,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .map(o -> {
                     subUuidList();
-                    AppLogger.d("get list");
                     return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))

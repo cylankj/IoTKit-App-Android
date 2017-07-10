@@ -361,15 +361,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 });
     }
 
-    //    @Override
-    public void fetchHistoryDataList() {
+    @Override
+    public boolean fetchHistoryDataList() {
 //        test();
         if (ListUtils.isEmpty(History.getHistory().getDateList(uuid))) {
             if (historyDataProvider != null) historyDataProvider.clean();
         }
         if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
             AppLogger.d("有历史录像了.");
-            return;
+            return false;
         }
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
                 .subscribeOn(Schedulers.newThread())
@@ -382,10 +382,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .flatMap(rsp -> makeTimeDelayForList(rsp.historyFiles)))
                 .doOnUnsubscribe(() -> removeSubscription("getHistoryList"))
-                .subscribe(ret -> {
-                }, AppLogger::e);
+                .subscribe(ret -> RxBus.getCacheInstance().post(new RxEvent.HistoryBack()), AppLogger::e);
         removeSubscription("getHistoryList");
         addSubscription(subscription, "getHistoryList");
+        return true;
     }
 
     /**
@@ -474,10 +474,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             getView().onLivePrepare(TYPE_LIVE);
             return null;
         }).subscribe(objectObservable -> {
-            AppLogger.d("播放流程走通 done");
-            if (historyDataProvider == null || historyDataProvider.getDataCount() == 0) {
-                fetchHistoryDataList();//播放成功后,才拉取历史录像
-            }
+            AppLogger.d("播放流程走通 done,不在这个环节获取历史视频");
+//            if (historyDataProvider == null || historyDataProvider.getDataCount() == 0) {
+//                fetchHistoryDataList();//播放成功后,才拉取历史录像
+//            }
         }, AppLogger::e), "beforePlayObservable");
     }
 

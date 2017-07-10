@@ -426,7 +426,7 @@ public class RxEvent {
 //        }
 //    }
 
-
+public static final class HistoryBack{}
     /**
      * 历史录像数据响应
      */
