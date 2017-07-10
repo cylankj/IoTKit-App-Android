@@ -8,6 +8,9 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.engine.AfterLoginService;
+import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
+import com.cylan.jiafeigou.n.task.FetchFriendsTask;
+import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
 import com.cylan.jiafeigou.push.PushPickerIntentService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -113,6 +116,11 @@ BaseJFGResultParser {
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
             PushPickerIntentService.start();
+            Observable.just(new FetchFeedbackTask(),
+                    new FetchFriendsTask(),
+                    new SysUnreadCountTask())
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
         }
         if (BaseApplication.isBackground()) return;
         Observable.just(jfgResult.code)

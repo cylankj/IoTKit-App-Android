@@ -39,9 +39,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
-import com.cylan.jiafeigou.n.task.FetchFriendsTask;
-import com.cylan.jiafeigou.n.task.SysUnreadCountTask;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
@@ -1038,9 +1035,6 @@ public class DataSourceManager implements JFGSourceManager {
                     try {
                         AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
                         loginType = signType == null ? 0 : signType.type;
-                        Observable.just(new FetchFeedbackTask(), new FetchFriendsTask(), new SysUnreadCountTask())
-                                .subscribeOn(Schedulers.newThread())
-                                .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
                     } catch (Exception e) {
 
                     }

@@ -25,13 +25,13 @@ public class CustomBlockEvent implements OnBlockEventInterceptor {
     @Override
     public void onBlockEvent(Context context, final String timeStart, String blockContent, boolean needDisplay) {
         if (needDisplay) {
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(BlockCanaryContext.get().getContext()
-                            , TAG, Toast.LENGTH_SHORT).show();
-                }
-            });
+//            new Handler().post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Toast.makeText(BlockCanaryContext.get().getContext()
+//                            , TAG, Toast.LENGTH_SHORT).show();
+//                }
+//            });
         } else {
 //            MtaManager.customEvent(context, "blockContent", blockContent);
         }
