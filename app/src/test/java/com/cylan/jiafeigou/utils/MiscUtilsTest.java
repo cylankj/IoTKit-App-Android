@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by holy on 2017/3/22.
@@ -80,5 +82,11 @@ public class MiscUtilsTest {
 
     @Test
     public void testUrl() {
+        long time = 1499670801000l;
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMDD HH:mm:ss", Locale.getDefault());
+        format.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        System.out.println(format.format(new Date(time)));
+        format.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+        System.out.println(format.format(new Date(time)));
     }
 }

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -208,15 +209,21 @@ public class BeforeLoginFragment extends Fragment {
     private static class Event {
         private int count;
         private long time;
+        private Toast toast;
 
         private boolean click(Context context) {
             if (time == 0) time = System.currentTimeMillis();
             if (System.currentTimeMillis() - time > 1000) {
                 count = 0;
                 time = 0;
+                if (toast != null) toast.cancel();
             } else {
                 time = System.currentTimeMillis();
                 count++;
+                if (toast != null) toast.cancel();
+                if (count < 4) return false;
+                toast = Toast.makeText(context, String.format("现在只需再执行%s步操作即可", 10 - count), Toast.LENGTH_SHORT);
+                toast.show();
             }
             if (count > 9) {
                 time = 0;
