@@ -192,9 +192,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                             }, getString(R.string.CANCEL), null);
                 } else {
                     safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-                    DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(!safeIsOpen);
-                    basePresenter.updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
-                    camLiveControlLayer.setFlipped(safeIsOpen);
+                    if (safeIsOpen) {
+                        AlertDialogManager.getInstance().showDialog(getActivity(), "safeIsOpen", getString(R.string.SECURE_ALARM_CLOSE),
+                                getString(R.string.OK), (dialog, which) -> {
+                                    DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(false);
+                                    basePresenter.updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
+                                    camLiveControlLayer.setFlipped(true);
+                                }, getString(R.string.CANCEL), null, false);
+                    } else {
+                        DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(true);
+                        basePresenter.updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
+                        camLiveControlLayer.setFlipped(false);
+                    }
                 }
             }
         });

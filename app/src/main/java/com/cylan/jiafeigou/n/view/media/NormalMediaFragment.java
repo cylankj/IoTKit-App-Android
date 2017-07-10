@@ -98,7 +98,7 @@ public class NormalMediaFragment extends IBaseFragment {
         imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
             if (callBack != null) {
                 callBack.callBack(null);
-                callBack = null;
+//                callBack = null;//不能为null,下次就不执行了.
             }
         });
     }
