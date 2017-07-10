@@ -77,4 +77,8 @@ public class MiscUtilsTest {
         }
         return false;
     }
+
+    @Test
+    public void testUrl() {
+    }
 }

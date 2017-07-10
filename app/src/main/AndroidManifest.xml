@@ -620,13 +620,6 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".n.view.activity.BindRsCamActivity"
-            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/CamActivityTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
             android:name=".n.view.panorama.PanoramaDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
@@ -700,12 +693,19 @@
         <activity android:name=".support.splash.SplashActivity" />
         <activity android:name=".support.login.LoginActivity" />
         <activity android:name=".n.view.activity.BindDeviceActivityExt">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
+        <activity
+            android:name=".n.view.activity.BindAnimationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

@@ -36,8 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
-
 public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.imv_bind_guide)
     ImageView imvBindGuide;
@@ -68,21 +66,8 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final String defaultAlias = getIntent().getStringExtra(KEY_BIND_DEVICE);
-        int bind_guide_res = R.raw.bind_guide;
-        if (TextUtils.equals(defaultAlias, getString(R.string.Consumer_Camera))) {
-            //rs cam,在cylan包中,bind_guide_rs是一个空文件.这算是一个渠道包,只有doby才有改入口.
-            bind_guide_res = R.raw.bind_guide_rs;
-            tvGuideMainContent.setText(getString(R.string.WIFI_SET_RS));
-        } else if (TextUtils.equals(defaultAlias, getString(R.string._720PanoramicCamera))) {
-            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
-        } else if (TextUtils.equals(defaultAlias, getString(R.string.DOG_CAMERA_NAME))) {
-            //is cam
-            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
-        } else {
-            //default bell
-            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3_1));
-        }
+        int bind_guide_res = getIntent().getIntExtra(JConstant.KEY_SSID_PREFIX, -1);
+        tvGuideMainContent.setText(getString(R.string.WIFI_SET_COM, getIntent().getStringExtra(JConstant.KEY_SSID_PREFIX)));
         tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);

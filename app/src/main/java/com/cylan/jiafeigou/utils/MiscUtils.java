@@ -715,4 +715,9 @@ public class MiscUtils {
                 .subscribe(ret -> AppLogger.d(BIND_TAG + "vpn is on..." + NetUtils.isVPNOn()), AppLogger::e);
     }
 
+    public static String getValueFromUri(String url, String key) {
+//        String url = "http://127.0.0.1:8080/??sdf=s&&st=b=&&?sw?=%B9%FA+%BC%D2&tb=&st=9";
+        Uri uri = Uri.parse(url);
+        return uri.getQueryParameter(key);
+    }
 }

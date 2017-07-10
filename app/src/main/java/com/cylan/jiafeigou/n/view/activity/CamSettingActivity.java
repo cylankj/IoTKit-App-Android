@@ -259,7 +259,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 Intent intent;
                 if (JFGRules.isRS(device.pid)) {
                     //特殊设备优先
-                    intent = new Intent(this, BindRsCamActivity.class);
+                    intent = new Intent(this, BindAnimationActivity.class);
+                    intent.putExtra("ANIM_GIF", R.raw.bind_reset_rs);
+                    intent.putExtra("CONNECT_AP_GIF", R.raw.bind_guide_rs);
+                    intent.putExtra("SSID-PREFIX", "BELL-");
+                    intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
                 } else {
                     intent = new Intent(this, BindCamActivity.class);
                 }

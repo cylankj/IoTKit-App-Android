@@ -117,6 +117,7 @@ public class BindBellActivity extends BaseBindActivity {
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.CALL_CAMERA_NAME));
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
+        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
         startActivity(intent);
         stopPreFlipAnimation();
     }

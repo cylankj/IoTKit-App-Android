@@ -40,13 +40,13 @@ public class JConstant {
 
     public static final Pattern MAC_REG = Pattern.compile("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     public static final String EFAMILY_URL_PREFIX = "http://www.jfgou.com/app/download.html?";
-    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
-            "vid=[0-9a-zA-Z]{0,12}" +
-                    "&pid=\\d{0,12}" +
-                    "&sn=[0-9a-zA-Z]{0,64}");
-    public static final Pattern QR_CODE_REG = Pattern.compile(
-            "vid=[0-9a-zA-Z]{0,12}" +
-                    "&pid=\\d{0,12}");
+//    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
+//            "Vid=[0-9a-zA-Z]{0,12}" +
+//                    "&pid=\\d{0,12}" +
+//                    "&sn=[0-9a-zA-Z]{0,64}");
+//    public static final Pattern QR_CODE_REG = Pattern.compile(
+//            "Vid=[0-9a-zA-Z]{0,12}" +
+//                    "&pid=\\d{0,12}");
 
 
     //看JConstantTest单元测试
@@ -403,4 +403,9 @@ public class JConstant {
     }
 
     public static String KEY_CURRENT_PLAY_VIEW = "";
+
+    public static final String KEY_ANIM_GIF = "ANIM_GIF";
+    public static final String KEY_CONNECT_AP_GIF = "CONNECT_AP_GIF";
+    public static final String KEY_SSID_PREFIX = "SSID_PREFIX";
+
 }

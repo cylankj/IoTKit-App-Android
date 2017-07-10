@@ -965,9 +965,10 @@
   <string name="WIFI_SET_2">1.请检查设备WiFi灯是否蓝色闪烁,如果没有,请长按WiFi键约3秒\n2.打开iPhone的设置&#8211;>无线网络,选择\“%s\”WiFi加入,密码8个1</string>
   <string name="WIFI_SET_3">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;**&#8211;******”加入，密码8个1</string>
   <string name="WIFI_SET_3_1">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;ML&#8211;******”加入，密码8个1</string>
+  <string name="WIFI_SET_RS">请在系统设置&#8211;>无线局域网，选择“RS&#8211;CAM&#8211;******”加入，密码8个1</string>
+  <string name="WIFI_SET_COM">请在系统设置&#8211;>无线局域网，选择“%s******”加入，密码8个1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
-  <string name="WIFI_SET_RS">请在系统设置&#8211;>无线局域网，选择“RS&#8211;CAM&#8211;******”加入，密码8个1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
