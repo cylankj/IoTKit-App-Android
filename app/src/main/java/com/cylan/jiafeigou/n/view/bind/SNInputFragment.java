@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -73,7 +75,7 @@ public class SNInputFragment extends IBaseFragment {
     @OnTextChanged(R.id.et_input_box)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        if (flag || s.length() < 6) {
+        if (flag || s.length() < 13) {
             tvSubmit.setEnabled(false);
         } else if (!TextUtils.isEmpty(ViewUtils.getTextViewContent(etInputBox))) {
             tvSubmit.setEnabled(true);
@@ -87,6 +89,10 @@ public class SNInputFragment extends IBaseFragment {
                 etInputBox.setText("");
                 break;
             case R.id.tv_submit:
+                if (NetUtils.getJfgNetType() == 0) {
+                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                    return;
+                }
                 final String content = etInputBox.getText().toString().trim();
 
                 break;

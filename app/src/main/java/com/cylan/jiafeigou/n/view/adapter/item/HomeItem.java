@@ -165,7 +165,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         Log.d("handleState", "handleState: " + uuid + " " + net);
         int online = JConstant.getOnlineIcon(mDevice.pid);
         int offline = JConstant.getOfflineIcon(mDevice.pid);
-        String mac = mDevice.$(DpMsgMap.ID_202_MAC, "");
+//        String mac = mDevice.$(DpMsgMap.ID_202_MAC, "");
         boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
         int iconRes = (onLineState != 0 && onLineState != -1) || apMode ? online : offline;
         //昵称

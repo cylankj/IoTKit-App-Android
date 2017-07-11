@@ -33,6 +33,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         findViewById(R.id.v_to_bind_consumer_cam).setVisibility(show ? View.VISIBLE : View.GONE);
         findViewById(R.id.v_to_scan_qrcode).setVisibility(getResources()
                 .getBoolean(R.bool.show_scan_bind_interface) ? View.VISIBLE : View.GONE);
+        findViewById(R.id.v_to_bind_cat_eye_cam).setVisibility(getResources()
+                .getBoolean(R.bool.show_cat_eye_bind_interface) ? View.VISIBLE : View.GONE);
     }
 
 
