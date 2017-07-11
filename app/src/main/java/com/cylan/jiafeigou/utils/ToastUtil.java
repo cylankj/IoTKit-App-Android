@@ -14,6 +14,7 @@ import java.lang.ref.SoftReference;
 
 public class ToastUtil {
 
+    private static Toast toastUtil;
     private static SoftReference<TextView> toasterNormalView;
     private static SoftReference<TextView> toasterPosView;
     private static SoftReference<TextView> toasterNegView;
@@ -37,12 +38,13 @@ public class ToastUtil {
             if (toasterNormalView == null) {
                 toasterNormalView = new SoftReference<>(tv);
             }
-            final Toast toast = new Toast(cxt.getApplicationContext());
-            toast.setGravity(gravity, 0, 0);
-            toast.setDuration(duration);
+            if (toastUtil != null) toastUtil.cancel();
+            toastUtil = new Toast(cxt.getApplicationContext());
+            toastUtil.setGravity(gravity, 0, 0);
+            toastUtil.setDuration(duration);
             tv.setText(content);
-            toast.setView(tv);
-            toast.show();
+            toastUtil.setView(tv);
+            toastUtil.show();
         } catch (Exception e) {
             Log.d("hunt", "err: " + e);
         }

@@ -14,8 +14,8 @@ import com.cylan.jiafeigou.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.view.animation.Animation.INFINITE;
 
@@ -35,20 +35,12 @@ public class AddBtnView extends FrameLayout {
 
     public AddBtnView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        View v = new View(context);
-        v.setId("0".hashCode());
-        v.setBackground(getResources().getDrawable(R.drawable.white_circle));
-        addView(v, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        View v1 = new View(context);
-        v1.setId("1".hashCode());
-        v1.setBackground(getResources().getDrawable(R.drawable.white_circle));
-        addView(v1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ImageView im = new ImageView(context);
         FrameLayout.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.CENTER;
         im.setImageResource(R.drawable.btn_common_add);
         addView(im, lp);
-        startAnim();
+//        startAnim();
     }
 
     @Override
@@ -58,16 +50,38 @@ public class AddBtnView extends FrameLayout {
         setMeasuredDimension(height, height);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (findViewById("0".hashCode()) != null) {
+            ViewGroup.LayoutParams lp = findViewById("0".hashCode()).getLayoutParams();
+            lp.height = getWidth();
+            lp.width = getWidth();
+            updateViewLayout(findViewById("0".hashCode()), lp);
+            updateViewLayout(findViewById("1".hashCode()), lp);
+        }
+    }
+
     public void startAnim() {
-        View v = findViewById("0".hashCode());
+        View v = new View(getContext());
+        v.setId("0".hashCode());
+        v.setBackground(getResources().getDrawable(R.drawable.white_circle));
+        addView(v, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
         AnimatorSet set0 = prepareAnim(v);
-        set0.setDuration(800);
-        map.put(v, set0);
-        v = findViewById("1".hashCode());
-        AnimatorSet set1 = prepareAnim(v);
+        set0.setDuration(1500);
+        list.add(set0);
+
+        View v1 = new View(getContext());
+        v1.setId("1".hashCode());
+        v1.setBackground(getResources().getDrawable(R.drawable.white_circle));
+        addView(v1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        v1.setVisibility(VISIBLE);
+        AnimatorSet set1 = prepareAnim(v1);
         set1.setStartDelay(200);
-        set1.setDuration(800);
-        map.put(v, set1);
+        set1.setDuration(1500);
+        list.add(set1);
         set0.start();
         set1.start();
     }
@@ -75,21 +89,35 @@ public class AddBtnView extends FrameLayout {
     private AnimatorSet prepareAnim(View v) {
         AnimatorSet set = new AnimatorSet();
         ObjectAnimator animatorX = ObjectAnimator.ofFloat(v,
-                "scaleX", 0.8f, 1.0f, 0.8f);
-        animatorX.setRepeatMode(INFINITE);
+                "scaleX", 0.6f, 0.9f, 0.6f);
+        animatorX.setRepeatCount(INFINITE);
         ObjectAnimator animatorY = ObjectAnimator.ofFloat(v,
-                "scaleY", 0.8f, 1.0f, 0.8f);
-        animatorY.setRepeatMode(INFINITE);
+                "scaleY", 0.6f, 0.9f, 0.6f);
+        animatorY.setRepeatCount(INFINITE);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v,
-                "alpha", 1.0f, 0.5f, 1.0f);
-        alpha.setRepeatMode(INFINITE);
+                "alpha", 0.0f, 1.0f, 0.5f, 0.0f);
+        alpha.setRepeatCount(INFINITE);
         set.playTogether(animatorX, animatorY, alpha);
         return set;
     }
 
-    private Map<View, AnimatorSet> map = new HashMap<>();
+    private List<AnimatorSet> list = new ArrayList<>();
 
     public void dismissAnim() {
-
+        if (list != null) {
+            for (AnimatorSet set : list) {
+                if (set != null) set.cancel();
+            }
+        }
+        View v = findViewById("0".hashCode());
+        if (v != null) {
+            v.setVisibility(INVISIBLE);
+            removeView(v);
+        }
+        v = findViewById("1".hashCode());
+        if (v != null) {
+            v.setVisibility(INVISIBLE);
+            removeView(v);
+        }
     }
 }

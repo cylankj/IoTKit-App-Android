@@ -139,7 +139,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Subscription subscribe = Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .timeout(30, TimeUnit.SECONDS)
-                .delay(5, TimeUnit.SECONDS)
+                .delay(500, TimeUnit.MILLISECONDS)
                 .map(ret -> {
                     try {
                         return BaseApplication.getAppComponent().getCmd().checkAccountRegState(ret);

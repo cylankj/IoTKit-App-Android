@@ -45,12 +45,16 @@
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/sp20" />
 
-                    <com.cylan.jiafeigou.widget.AddBtnView
+                    <ImageView
                         android:id="@+id/imgV_add_devices"
                         style="@style/ripple_background_borderless"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/y48"
-                        android:layout_gravity="end|center_vertical" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginLeft="@dimen/x5"
+                        android:layout_marginRight="@dimen/x5"
+                        android:padding="@dimen/x10"
+                        android:src="@drawable/btn_common_add" />
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>
 

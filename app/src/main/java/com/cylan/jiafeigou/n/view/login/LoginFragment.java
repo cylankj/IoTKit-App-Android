@@ -1035,7 +1035,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 public void onTick(long millisUntilFinished) {
                     if (viewWeakReference.get() == null)
                         return;
-                    final String content = millisUntilFinished / 1000 + "account";
+                    final String content = millisUntilFinished / 1000 + "s";
                     viewWeakReference.get().setText(content);
                     viewWeakReference.get().setEnabled(false);
                 }

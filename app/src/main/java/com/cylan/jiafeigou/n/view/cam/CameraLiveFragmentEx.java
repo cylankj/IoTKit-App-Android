@@ -634,7 +634,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onBatteryDrainOut() {
-        if (!isAdded()) return;
+        //当前页面才显示
+        if (!isAdded() && isUserVisible()) return;
         AlertDialogManager.getInstance().showDialog(getActivity(),
                 "onBatteryDrainOut", getString(R.string.Tap1_LowPower),
                 getString(R.string.OK), null, false);

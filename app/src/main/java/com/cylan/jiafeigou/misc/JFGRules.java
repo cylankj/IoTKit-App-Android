@@ -102,7 +102,10 @@ public class JFGRules {
             Locale.GERMANY,
             Locale.ITALY,
             new Locale("tr", "TR"),
-            Locale.TRADITIONAL_CHINESE};
+            Locale.TRADITIONAL_CHINESE,
+            new Locale("vi", "VN"),
+            new Locale("in", "ID"),
+    };
 
     private static final Locale LOCALE_HK = new Locale("zh", "HK");
 
