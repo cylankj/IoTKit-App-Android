@@ -19,7 +19,7 @@ public interface MineFriendsContract {
 
         void hideLoading();
 
-        void onRequestExpired(FriendContextItem item);
+        void onRequestExpired(FriendContextItem item, boolean alert);
 
         /**
          * desc：长按删除添加请求条目
@@ -37,6 +37,8 @@ public interface MineFriendsContract {
     }
 
     interface Presenter extends BasePresenter {
+
+        boolean checkRequestAvailable(FriendContextItem bean);
 
         void initRequestAndFriendList();
 

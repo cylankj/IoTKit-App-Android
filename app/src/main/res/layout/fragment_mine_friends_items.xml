@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/tv_username"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/y15"
         android:layout_marginStart="@dimen/y15"
@@ -34,14 +34,14 @@
 
     <TextView
         android:id="@+id/tv_add_message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_username"
         android:layout_marginEnd="@dimen/y15"
         android:layout_marginStart="@dimen/y15"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="我是小姨"
+        android:text="我是小姨AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         android:textColor="@color/color_8c8c8c"
         android:textSize="@dimen/sp12"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -116,9 +116,12 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         FriendContextItem friendContextItem = (FriendContextItem) item;
         Bundle bundle = new Bundle();
         if (friendContextItem.friendRequest != null) {
-            basePresenter.deleteFriendRequest(friendContextItem, false);
-            friendContextItem.friendRequest.sayHi = null;
-            friendContextItem.friendRequest.time = System.currentTimeMillis();
+            if (!basePresenter.checkRequestAvailable(friendContextItem)) {
+                AppLogger.d("请求已过期,将删除过期请求");
+                basePresenter.deleteFriendRequest(friendContextItem, false);
+                friendContextItem.friendRequest.sayHi = null;
+                friendContextItem.friendRequest.time = System.currentTimeMillis();
+            }
         }
         bundle.putParcelable("friendItem", friendContextItem);
         friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
@@ -164,11 +167,12 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     }
 
     @Override
-    public void onRequestExpired(FriendContextItem item) {
+    public void onRequestExpired(FriendContextItem item, boolean alert) {
         //请求过期
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
         builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), (dialog, which) -> {
+            basePresenter.deleteFriendRequest(item, true);
             dialog.dismiss();
             Bundle bundle = new Bundle();
             bundle.putParcelable("friendItem", item);
@@ -176,7 +180,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), informationFragment, android.R.id.content);
         });
         builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> {
-            basePresenter.deleteFriendRequest(item, true);
+            basePresenter.deleteFriendRequest(item, alert);
             dialog.dismiss();
         }).show();
     }
@@ -233,6 +237,9 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 break;
             case 240:
                 ToastUtil.showToast(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST));
+                break;
+            case JError.ErrorFriendInvalidRequest:
+                onRequestExpired(item, false);
                 break;
         }
     }

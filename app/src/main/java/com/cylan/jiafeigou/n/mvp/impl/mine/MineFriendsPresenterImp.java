@@ -59,6 +59,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
 
+    @Override
     public boolean checkRequestAvailable(FriendContextItem bean) {
         long oneMonth = 30 * 24 * 60 * 60 * 1000L;
         long current = System.currentTimeMillis();
@@ -171,7 +172,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         pass = false;
                         getView().onNetStateChanged(0);
                     } else if (!(pass = checkRequestAvailable(item))) {
-                        getView().onRequestExpired(item);
+                        getView().onRequestExpired(item, true);
                     }
                     return pass;
                 })

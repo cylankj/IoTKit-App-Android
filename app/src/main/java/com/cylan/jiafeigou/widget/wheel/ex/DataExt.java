@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.n.view.cam.LiveShowCase;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by cylan-hunt on 16-12-19.
@@ -78,6 +81,7 @@ public class DataExt implements IData {
                 time -= 10 * 60 * 1000L;
             }
         }
+
     }
 
     /**

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/history_wheel_tips_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0.6"
+    android:background="#000000"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/y18"
+        android:src="@drawable/icon_hand"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tips"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/y24"
+        android:text="左右查看时间轴可查看历史录像"
+        android:textColor="@color/color_cecece"
+        android:textSize="@dimen/sp15"
+        app:layout_constraintBottom_toTopOf="@+id/btn_ok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <Button
+        android:id="@+id/btn_ok"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_width="@dimen/y95"
+        android:layout_height="@dimen/y36"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/y118"
+        android:layout_marginTop="@dimen/y38"
+        android:background="@drawable/border_button_bg"
+        android:gravity="center"
+        android:text="@string/OK"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp17"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

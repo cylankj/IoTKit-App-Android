@@ -217,6 +217,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     layoutE.showNext();
                                 }
                                 LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
+
+                                LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
                                     ToastUtil.showToast(layoutE.getContext().getResources().getString(R.string.Item_LoadFail));
@@ -315,6 +317,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 postDelayed(portHideRunnable, 3000);
             }
         });
+
+        //just for test
+//        LiveShowCase.showHistoryWheelCase((Activity) getContext(), liveViewWithThumbnail);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -442,7 +447,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         if (!show) {
             layoutE.setVisibility(INVISIBLE);
-        } else layoutE.setVisibility(VISIBLE);
+        } else {
+            layoutE.setVisibility(VISIBLE);
+        }
     }
 
     @Override
@@ -1047,7 +1054,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
-            showUseCase();
+//            showUseCase();
         }, 100);
     }
 
@@ -1206,6 +1213,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     if (handler != null) {
                         handler.setupHistoryData(iData);
                         handler.setNav2Time(timeTarget);
+                        LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                         setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
                         AppLogger.d("目标历史录像时间?" + timeTarget);
                     }

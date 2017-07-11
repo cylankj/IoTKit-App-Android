@@ -150,6 +150,7 @@ public class JConstant {
     public static final java.lang.String FRIEND_LAST_VISABLE_TIME = "friend_last_visiable_time";
     public static final String KEY_DEVICE_ITEM_IS_BELL = "key_device_item_is_bell";
     public static final java.lang.String NEED_SHOW_BIND_ANIMATION = "need_show_bind_animation";
+    public static final java.lang.String KEY_SHOW_HISTORY_WHEEL_CASE = "key_show_history_wheel_case";
 
 
     /**
