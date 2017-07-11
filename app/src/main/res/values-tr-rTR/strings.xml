@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Tekrar gönder</string>
   <string name="AT_HOME">Evde</string>
   <string name="AUDIBLE_ALERT">Hareket seçildiğinde çalınacak olan Sesli alarmı seçiniz</string>
+  <string name="Add_Device_ENTER_SN">Lütfen S/N eya CID kodunu giriniz</string>
+  <string name="Add_Device_SN">Giriş S/N kodu</string>
+  <string name="Add_Device_Scan_QR">QR kodu tara</string>
   <string name="Added_successfully">Başarıyla bind</string>
   <string name="Alarm_WeChat">WeChet üzerinden alarm</string>
   <string name="Alarm_WeChat_NoBindTips">Bu işlevi kullanmak, önce e&#8211;postayı bağlamak zorundadır.</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">Normal</string>
   <string name="DOG_CAMERA_NAME">Kamera</string>
   <string name="DOG_MAGNETISM_NAME">Manyetometre</string>
+  <string name="DOORBELL_BLUE_BLINKING">Açık mavi</string>
   <string name="DOOR_ANSWERING">Bağlanılıyor&#8230;</string>
   <string name="DOOR_BELL">Kapı zilim</string>
   <string name="DOOR_BELL_LOOK">Bak</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">İçerik yok</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Paylaşımı silinsin mi?</string>
+  <string name="Detection_Pop">Kapanırsanız artık algılama alarmı mesajı çıkmayacaktır, emin kapatma?</string>
   <string name="Device_Disconnected">Bağlantısız</string>
   <string name="Dont_Show_Again">Tekrar gösterme</string>
   <string name="Download_Then_Share">Lütfen videoyu indirin ve ardından paylaşın</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Cihaz bilgisi</string>
   <string name="EQUIPMENT_NAME">Cihaz adı</string>
   <string name="EQUIPMENT_NAME_1">Cihaz adı:</string>
+  <string name="ERROR_SN">Hata S/N</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Tüm gün</string>
   <string name="EXPECT">Lütfen bekleyin!</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Geçmiş video okunamadı</string>
   <string name="Historical_No">Hiçbir tarihi video yok</string>
   <string name="Historical_Read">Geçmiş video okundu</string>
+  <string name="History_video">Geçmiş videosu</string>
+  <string name="History_video_Firstly">Lütfen önce geçmişi video edin</string>
   <string name="IGNORE">Yoksay</string>
   <string name="IMAGE_ERR">Yükleme başarısız, resim çok büyük</string>
   <string name="INVALID_ACCOUNT">Geçersiz hesap</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Tekrar ekle</string>
   <string name="RE_ADD_LABEL">Tüm güncellemeler tamalandığında</string>
   <string name="RIGN_SUC">Başarılı bir şekilde kaydedildi</string>
+  <string name="Record_Descript">Açıldıktan sonra gerçek zamanlı videolar kaydedilebilir</string>
   <string name="Record_Operate">Kayıt sırasında çalışılamıyor</string>
+  <string name="Record_Video">Kayıt</string>
   <string name="Request_TimeOut">Zaman aşımı</string>
   <string name="Reset_Suc">Zaten kırmızı çaktı</string>
   <string name="RuiShi_Guide">3s için RESET düğmesine uzun basmak için iğne kullanın</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Paylaşım yönetimi</string>
+  <string name="Sliding_Timeline">Yükleme başarılı, geçmişi video izlemek için zaman çizelgesini kaydırma</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Akıllı Kapı Görüntüleyicisi</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Lütfen şifreyi unuttum gibi bağlamak için Zeki köpek e&#8211;posta hesabını giriniz, lütfen Zeki köpek müşterisine geri dönün.</string>
   <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen doğrudan moda geçin</string>
   <string name="Switch_Mode_Pop">Lütfen geçerli şebeke çekim içeriğini doğrudan moda geçirin</string>
+  <string name="Switch_Off">Her zaman kapalı</string>
+  <string name="Switch_On">her zaman</string>
   <string name="TAKE_PHOTO">Fotoğraf çek</string>
   <string name="TERM_OF_USE">Şartlar ve gizlilik</string>
   <string name="THEME_DELETED">%s silindi</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Kısa süreli basma 1s WiFi düğmesi</string>
   <string name="Tap1_AddDevice_CameraTips">Gösterge mavi titremesine bekleyin</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Uzun süreli basma 3s WiFi düğmesi</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Göstergenin mavi renkte kalmasını bekle</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">Açılıştan sonra ve 3 saniye için WiFi düğmesine uzunca basın</string>
   <string name="Tap1_AddDevice_ConnectWifi">Wi&#8211;Fi ağına bağlan</string>
   <string name="Tap1_AddDevice_DoorbellTips">göstergesi kırmızı tutmak için bekleyin</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">3s için yeniden başlatma ve uzun basın WiFi düğmesine</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">%s e geri dön</string>
   <string name="WIFI_SET_5GTIPS">İpuçları:5Ghz WiFi sinyali şu an izinsiz</string>
   <string name="WIFI_SET_RS">Lütfen Ayarlamalar&#8211;>WLAN aracaılığıyla RS&#8211;CAM&#8211;****** yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
+  <string name="WIFI_SET_VER">Lütfen Ayarlamalar&#8211;>WLAN aracaılığıyla %s yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
   <string name="WONDER_TODAY_H_M">Bugün HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Dün HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Çoğaltılmış</string>
   <string name="has_not_sdcard">Mikro SD kartı bulamadık</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Kızılötesi gece görüşü</string>
+  <string name="infrared_night_vision_Descript">Kızılötesi gece görüşü ile karanlık ortamda net video elde edebilirsiniz</string>
   <string name="isStorageLow">SD kartınızda yeterli yer yok</string>
   <string name="is_connecting_video">Bağlanılıyor</string>
   <string name="is_creating">Ekleniyor</string>

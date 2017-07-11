@@ -297,7 +297,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.onResume();
         Log.d("isResumed", "isResumed: " + getUserVisibleHint());
         camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
-                .getSourceManager().getDevice(getUuid()));
+                .getSourceManager().getDevice(getUuid()), isUserVisible());
         if (basePresenter != null) {
             if (!judge() || basePresenter.getLiveStream().playState == PLAY_STATE_STOP)
                 return;//还没开始播放
@@ -634,7 +634,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onBatteryDrainOut() {
-        if (!isAdded()) return;
+        //当前页面才显示
+        if (!isAdded() && isUserVisible()) return;
         AlertDialogManager.getInstance().showDialog(getActivity(),
                 "onBatteryDrainOut", getString(R.string.Tap1_LowPower),
                 getString(R.string.OK), null, false);

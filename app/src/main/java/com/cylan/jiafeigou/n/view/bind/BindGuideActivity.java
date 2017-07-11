@@ -66,11 +66,11 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        int bind_guide_res = getIntent().getIntExtra(JConstant.KEY_SSID_PREFIX, -1);
-        tvGuideMainContent.setText(getString(R.string.WIFI_SET_COM, getIntent().getStringExtra(JConstant.KEY_SSID_PREFIX)));
+        int bind_guide_res = getIntent().getIntExtra(JConstant.KEY_CONNECT_AP_GIF, -1);
+        String content = getIntent().getStringExtra(JConstant.KEY_SSID_PREFIX);
+        tvGuideMainContent.setText(getString(R.string.WIFI_SET_VER, content));
         tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
-        GlideDrawableImageViewTarget imageViewTarget =
-                new GlideDrawableImageViewTarget(imvBindGuide);
+        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(imvBindGuide);
         Glide.with(this).load(bind_guide_res).into(imageViewTarget);
         customToolbar.setBackAction((View v) -> finishExt());
     }

@@ -203,7 +203,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutE.findViewById(R.id.btn_load_history)
                 .setOnClickListener(v -> {
                     AppLogger.d("点击加载历史视频");
-                    LoadingDialog.showLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager(), getResources().getString(R.string.LOADING), false, null);
+                    setLoadingState(PLAY_STATE_PREPARE, getResources().getString(R.string.LOADING));
                     Subscription subscription = rx.Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
@@ -221,9 +221,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
-                                    ToastUtil.showToast(layoutE.getContext().getResources().getString(R.string.Item_LoadFail));
+                                    setLoadingState(PLAY_STATE_LOADING_FAILED, getResources().getString(R.string.Item_LoadFail));
                                 }
-                                LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
                             });
                     presenter.addSubscription("fetchHistoryBy", subscription);
                 });
@@ -317,9 +316,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 postDelayed(portHideRunnable, 3000);
             }
         });
-
-        //just for test
-//        LiveShowCase.showHistoryWheelCase((Activity) getContext(), liveViewWithThumbnail);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -447,9 +443,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         if (!show) {
             layoutE.setVisibility(INVISIBLE);
-        } else {
-            layoutE.setVisibility(VISIBLE);
-        }
+        } else layoutE.setVisibility(VISIBLE);
     }
 
     @Override
@@ -1047,7 +1041,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onActivityResume(CamLiveContract.Presenter presenter, Device device) {
+    public void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible) {
         final boolean judge = !isSightShow() && !isStandBy();
         Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
@@ -1055,6 +1049,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
 //            showUseCase();
+            if (!isUserVisible) return;
+            showUseCase();
         }, 100);
     }
 
@@ -1213,7 +1209,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     if (handler != null) {
                         handler.setupHistoryData(iData);
                         handler.setNav2Time(timeTarget);
-                        LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                         setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
                         AppLogger.d("目标历史录像时间?" + timeTarget);
                     }

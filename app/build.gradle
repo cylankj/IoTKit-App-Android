@@ -328,43 +328,15 @@ dependencies {
     compile files('libs/mid-sdk-2.3.jar')
     testCompile files('libs/javassist.jar')
 
-    //不需要指定aar名字
-
-    //进程保活
-
-    //    compile(name: 'LibMarsdaemon-release', ext: 'aar')
-
-    //    compile file('libs/LibMarsdaemon-release.aar')
-
-    //    compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
-
-    //    compile fileTree(dir: 'libs', include: '*.aar')
-
     fileTree(dir: 'libs', include: '**/*.aar')
-
             .each { File file ->
-
-        //        println("aar-libs-"+file.getName())
-
-        //        String compileWay = file.getName().contains("debug") ? "debugCompile" : (
-
-        //                file.getName().contains("release") ? "releaseCompile" : "compile")
-
         dependencies.add("compile", [
-
                 name: file.name.lastIndexOf('.').with {
-
                     it != -1 ? file.name[0..<it] : file.name
-
                 },
-
                 ext : 'aar'
-
         ])
-
     }
-
-    //    compile 'com.cylan.iot.sdk:sdkLib:+'
 
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')

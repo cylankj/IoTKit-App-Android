@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Envoyer à nouveau</string>
   <string name="AT_HOME">A la maison</string>
   <string name="AUDIBLE_ALERT">Choisir l\'alerte sonore à jouer lorsqu\'un mouvement est détecté</string>
+  <string name="Add_Device_ENTER_SN">Entrez le code S/N ou CID</string>
+  <string name="Add_Device_SN">S/N code d\'entrée</string>
+  <string name="Add_Device_Scan_QR">Numériser le code QR</string>
   <string name="Added_successfully">Liez réussi</string>
   <string name="Alarm_WeChat">Wechat va recevoir le message d\'avertissement</string>
   <string name="Alarm_WeChat_NoBindTips">Cette fonction doit lier email en premier.</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">Par défaut (normal)</string>
   <string name="DOG_CAMERA_NAME">Caméra</string>
   <string name="DOG_MAGNETISM_NAME">Détecteur d\'ouverture</string>
+  <string name="DOORBELL_BLUE_BLINKING">Bleu Clair</string>
   <string name="DOOR_ANSWERING">Connexion en cours&#8230;</string>
   <string name="DOOR_BELL">Mon visiophone</string>
   <string name="DOOR_BELL_LOOK">Regarder</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">Pas content</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Supprimer partager?</string>
+  <string name="Detection_Pop">Arrêter ne poussera plus le message d\'alarme de détection, fermez&#8211;vous la fermeture?</string>
   <string name="Device_Disconnected">Débranché</string>
   <string name="Dont_Show_Again">Ne plus afficher</string>
   <string name="Download_Then_Share">Téléchargez la vidéo puis partagez</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Informations sur l\'appareil</string>
   <string name="EQUIPMENT_NAME">Nom appareil</string>
   <string name="EQUIPMENT_NAME_1">Nom appareil:</string>
+  <string name="ERROR_SN">Erreur S/N</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Tous les jours</string>
   <string name="EXPECT">Attendre</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Les lectures vidéo historiques ont échoué</string>
   <string name="Historical_No">Il n\'y a pas de vidéo historique</string>
   <string name="Historical_Read">La vidéo historique a été lue</string>
+  <string name="History_video">Vidéo d\'histoire</string>
+  <string name="History_video_Firstly">Veuillez d\'abord obtenir la vidéo d\'historique</string>
   <string name="IGNORE">Ignorer</string>
   <string name="IMAGE_ERR">Échec du transfert, l\'image est trop grande</string>
   <string name="INVALID_ACCOUNT">Compte inconnu</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Ajouter de nouveau</string>
   <string name="RE_ADD_LABEL">Mise à jour du logiciel est terminée</string>
   <string name="RIGN_SUC">Inscription réussie</string>
+  <string name="Record_Descript">Après l\'ouverture, la vidéo en temps réel peut être enregistrée</string>
   <string name="Record_Operate">Ne peut pas fonctionner pendant l\'enregistrement</string>
+  <string name="Record_Video">Record</string>
   <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Déjà clignotaient en rouge</string>
   <string name="RuiShi_Guide">Utilisez l\'aiguille pour appuyer longuement sur le bouton RESET pour 3s</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Partage de la gestion</string>
+  <string name="Sliding_Timeline">Chargement réussi, glisser le calendrier pour afficher la vidéo de l\'historique</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Entrez le compte de courrier électronique intelligent de Chipper pour lier, par exemple, oubliez le mot de passe, allez chez le client de chien intelligent.</string>
   <string name="Switch_Mode">Passez en mode direct pour afficher le contenu de la prise de vue</string>
   <string name="Switch_Mode_Pop">Passez le contenu actuel de la prise de vue réseau au mode direct</string>
+  <string name="Switch_Off">toujours désactivé</string>
+  <string name="Switch_On">Toujours sur</string>
   <string name="TAKE_PHOTO">Prendre une photo</string>
   <string name="TERM_OF_USE">Conditions et confidentialité</string>
   <string name="THEME_DELETED">%s a été supprimé</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Appuyez brièvement sur le bouton WiFi pour 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Attendez que l\'indicateur de scintillement en bleu</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">appuyez longuement sur le bouton WiFi pour 3s</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Attendez que l\'indicateur soit en bleu</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">Après le démarrage et appuyez longuement sur le bouton WiFi pour 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Se connecter au réseau Wi&#8211;Fi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Attendez que le voyant de garder en rouge</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Redémarrer et appuyez longuement sur la touche WiFi pour 3s</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">Retour à %s</string>
   <string name="WIFI_SET_5GTIPS">Note:Ne supporte pas le WiFi 5G</string>
   <string name="WIFI_SET_RS">Sur l\'phone via Réglages&#8211;>WLAN, se connecter à RS&#8211;CAM&#8211;******, mot de passe 11111111</string>
+  <string name="WIFI_SET_VER">Sur l\'phone via Réglages&#8211;>WLAN, se connecter à %s, mot de passe 11111111</string>
   <string name="WONDER_TODAY_H_M">Aujourd\'hui HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Hier HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Dupliqué</string>
   <string name="has_not_sdcard">Carte Micro SD non détectée</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Vision nocturne infrarouge</string>
+  <string name="infrared_night_vision_Descript">Vous pouvez obtenir une vidéo claire dans l\'obscurité par vision nocturne infrarouge</string>
   <string name="isStorageLow">Mémoire insuffisante sur la carte Micro SD</string>
   <string name="is_connecting_video">Connexion en cours</string>
   <string name="is_creating">Création</string>
