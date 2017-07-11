@@ -52,7 +52,6 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                         }
                         AppLogger.d("shareDeviceToFriend: cid:" + cid + accounts[0]);
                         BaseApplication.getAppComponent().getCmd().multiShareDevices(new String[]{cid}, accounts);
-                        BaseApplication.getAppComponent().getCmd().multiShareDevices(accounts, new String[]{cid});
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

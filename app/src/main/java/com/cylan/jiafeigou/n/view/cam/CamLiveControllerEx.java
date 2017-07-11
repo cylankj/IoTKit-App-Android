@@ -30,6 +30,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -277,9 +278,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.setLiveView(videoView);
         initSightSetting(presenter);
         //分享用户不显示
-        boolean showFlip = !presenter.isShareDevice();
+        boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid);
         View flipPort = findViewById(R.id.layout_port_flip);
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
+        //要根据设备属性表决定是否显示加载历史视频的按钮
+        View btn = findViewById(R.id.btn_load_history);
+        btn.setVisibility(JFGRules.hasHistory(device.pid) ? VISIBLE : GONE);
+
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         //是否显示清晰度切换
@@ -735,7 +740,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutA.setVisibility(isLand ? VISIBLE : INVISIBLE);
         layoutF.setVisibility(isLand ? INVISIBLE : VISIBLE);
         //历史录像显示
-        boolean showFlip = !presenter.isShareDevice();
+        boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid);
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : GONE);
 //        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
@@ -763,13 +768,19 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             float ratio = isNormalView ? presenter.getVideoPortHeightRatio() : 1.0f;
             updateLiveViewRectHeight(ratio);
             //有条件的.
-            if (presenter.getPlayState() == PLAY_STATE_PLAYING)
+            if (presenter.getPlayState() == PLAY_STATE_PLAYING) {
+                //需要根据设备属性表来决定是否显示或隐藏 portFlip
                 findViewById(R.id.layout_port_flip).setVisibility(showFlip ? VISIBLE : INVISIBLE);
+            }
             layoutD.setBackgroundResource(R.drawable.camera_sahdow);
             layoutE.setBackgroundResource(android.R.color.transparent);
             layoutG.setVisibility(GONE);
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
+
+        //需要根据设备属性表来决定是否显示和隐藏加载历史视频的按钮
+        View btn = findViewById(R.id.btn_load_history);
+        btn.setVisibility(JFGRules.hasHistory(device.pid) ? VISIBLE : GONE);
         layoutE.setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }
@@ -1042,7 +1053,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void showUseCase() {
         if (presenter.isDeviceStandby()) return;
-        LiveShowCase.show((Activity) getContext(), layoutD, findViewById(R.id.imgV_cam_zoom_to_full_screen));
+
+
+        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        Device device = sourceManager.getDevice(uuid);
+        if (JFGRules.hasHistory(device.pid)) {
+            LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
+        }
+        if (JFGRules.hasProtection(device.pid)) {
+            LiveShowCase.showSafeCase((Activity) getContext(), layoutD);
+        }
     }
 
     @Override

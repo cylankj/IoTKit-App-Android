@@ -54,7 +54,7 @@
                         android:layout_marginLeft="@dimen/x5"
                         android:layout_marginRight="@dimen/x5"
                         android:padding="@dimen/x10"
-                        android:src="@drawable/btn_common_add" />
+                        android:src="@drawable/icon_add_to" />
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>
 

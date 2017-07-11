@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -339,6 +340,16 @@ public class JFGRules {
 
     public static boolean isRuiShiCam(int pid) {
         return false;
+    }
+
+    public static boolean hasProtection(int pid) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        return productProperty.hasProperty(pid, "PROTECTION");
+    }
+
+    public static boolean hasHistory(int pid) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        return productProperty.hasProperty(pid, "AUTORECORD");
     }
 
     public static class PlayErr {

@@ -7,7 +7,7 @@
     android:paddingStart="@dimen/y15">
 
 
-    <com.cylan.jiafeigou.support.photoselect.CircleImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_userhead"
         android:layout_width="@dimen/y50"
         android:layout_height="@dimen/y50"

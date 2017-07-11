@@ -70,6 +70,7 @@ import rx.schedulers.Schedulers;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_IS_BELL;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
@@ -381,6 +382,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             //freeCam直接进入
             Intent intent = new Intent(this, BindCamActivity.class);
             intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+
+            startActivity(intent);
+        } else if (JFGRules.isBell(device.pid)) {
+            Intent intent = new Intent(this, BindBellActivity.class);
+            intent.putExtra("SSID-PREFIX", "BELL-");
+            intent.putExtra(JUST_SEND_INFO, uuid);
             startActivity(intent);
         } else {
             DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
