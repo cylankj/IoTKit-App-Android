@@ -116,13 +116,11 @@ public class History {
      */
 
     public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
-        if (historyVideo == null || ListUtils.isEmpty(historyVideo.list)) {
-            return;
-        }
         Observable.just(historyVideo)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> {
                     if (ListUtils.isEmpty(ret.list)) {
+                        RxBus.getCacheInstance().post(new RxEvent.HistoryEmpty());
                         //清空
                         return false;
                     }

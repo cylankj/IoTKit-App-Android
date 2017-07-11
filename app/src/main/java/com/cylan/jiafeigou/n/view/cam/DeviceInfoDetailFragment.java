@@ -153,7 +153,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             tvDeviceTimeZone.setVisibility(View.GONE);
             tvDeviceSdcardState.setVisibility(View.GONE);
             rlHardwareUpdate.setVisibility(View.GONE);
-            getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
+//            getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
         }
         //是否显示固件升级
 

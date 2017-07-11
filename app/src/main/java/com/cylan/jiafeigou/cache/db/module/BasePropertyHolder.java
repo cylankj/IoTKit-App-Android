@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 
@@ -31,7 +32,8 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
             DPEntity entity = getProperty(msgId);
             V result = entity == null ? null : entity.getValue(defaultValue);
             return result == null ? defaultValue : result;
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
+            AppLogger.e("unpack err::" + msgId);
             return defaultValue;
         }
     }
