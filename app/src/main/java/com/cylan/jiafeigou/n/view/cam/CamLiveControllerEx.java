@@ -230,8 +230,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     layoutE.showNext();
                                     AppLogger.d("需要展示 遮罩");
                                 }
-                                LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
-
                                 LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
