@@ -32,4 +32,36 @@ public class LiveShowCase {
             });
         }
     }
+
+    public static void showHistoryCase(Activity activity, View anchor) {
+        if (!anchor.isShown()) return;
+        boolean result = PreferencesUtils.getBoolean(KEY_SHOW_CASE, true);
+        PreferencesUtils.putBoolean(KEY_SHOW_CASE, false);
+        if (result) {
+            anchor.post(() -> {
+                SimplePopupWindow left = new SimplePopupWindow(activity, R.drawable.collect_tips_left,
+                        R.string.Tap1_Camera_SetProtectionTips);
+                left.showOnAnchor(anchor, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_LEFT, 20, -anchor.getHeight());
+            });
+        }
+    }
+
+    public static void showSafeCase(Activity activity, View anchor) {
+        if (!anchor.isShown()) return;
+        boolean result = PreferencesUtils.getBoolean(KEY_SHOW_CASE, true);
+        PreferencesUtils.putBoolean(KEY_SHOW_CASE, false);
+        if (result) {
+            anchor.post(() -> {
+                SimplePopupWindow right = new SimplePopupWindow(activity, R.drawable.collect_tips,
+                        R.string.Tap1_Camera_BackLiveTips);
+                right.showOnAnchor(anchor, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT);
+            });
+        }
+    }
+
+    public static void showHistoryWheelCase(Activity activity) {
+
+    }
 }

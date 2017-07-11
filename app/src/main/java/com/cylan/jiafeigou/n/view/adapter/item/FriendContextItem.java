@@ -13,7 +13,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.JFGAccountURL;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -21,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**

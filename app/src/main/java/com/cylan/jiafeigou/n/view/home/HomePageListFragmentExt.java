@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,7 +32,9 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -45,7 +50,6 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
-import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -114,6 +118,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     FrameLayout fLayoutHeaderBg;
     private ItemAdapter<HomeItem> mItemAdapter;
     private boolean refreshFinish = true;
+    private AnimatorSet set;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
@@ -141,25 +146,47 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void need2ShowUseCase() {
-        boolean show = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
-        if (show) {
-            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
-            imgBtnAddDevices.post(() -> getActivity().getSupportFragmentManager()
-                    .beginTransaction().add(android.R.id.content, new HomePageCoverFragment())
-                    .addToBackStack("HomePageCoverFragment")
-                    .commitAllowingStateLoss());
-//            imgBtnAddDevices.post(() -> {
-//                SimplePopupWindow popupWindow = new SimplePopupWindow(getActivity(), R.drawable.add_device_bg_tips, R.string.Tap1_Add_Tips);
-//                popupWindow.showOnAnchor(imgBtnAddDevices, RelativePopupWindow.VerticalPosition.BELOW,
-//                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x10), 0);
-//            });
+        boolean showUserCase = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
+        boolean showTipAnimation = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_ANIMATION, true);
+        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        Account account = sourceManager.getAccount();
+        if (account != null && account.isAvailable()) {
+            if (showUserCase) {
+                PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
+                imgBtnAddDevices.post(() -> getActivity().getSupportFragmentManager()
+                        .beginTransaction().add(android.R.id.content, new HomePageCoverFragment())
+                        .addToBackStack("HomePageCoverFragment")
+                        .commitAllowingStateLoss());
+            }
+
+            if (showTipAnimation) {
+                // TODO: 2017/7/11 先放着
+                set = new AnimatorSet();
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleX", 1.0f, 1.2f, 1.0f);
+                scaleX.setDuration(2000);
+                scaleX.setRepeatMode(ValueAnimator.REVERSE);
+                scaleX.setRepeatCount(ValueAnimator.INFINITE);
+                ObjectAnimator scaleY = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleY", 1.0f, 1.2f, 1.0f);
+                scaleY.setDuration(2000);
+                scaleY.setRepeatMode(ValueAnimator.REVERSE);
+                scaleY.setRepeatCount(ValueAnimator.INFINITE);
+                ObjectAnimator alpha = ObjectAnimator.ofFloat(imgBtnAddDevices, "alpha", 1.0f, 0.5f, 1.0f);
+                alpha.setDuration(2000);
+                alpha.setRepeatMode(ValueAnimator.REVERSE);
+                alpha.setRepeatCount(ValueAnimator.INFINITE);
+                set.playTogether(scaleX, scaleY, alpha);
+                set.start();
+            }
         }
+
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         initWaveAnimation();
+        need2ShowUseCase();
         onTimeTick(JFGRules.getTimeRule());
         PerformanceUtils.stopTrace("NewHomeActivityStart");
     }
@@ -189,7 +216,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initListAdapter();
         initProgressBarColor();
         initSomeViewMargin();
-        need2ShowUseCase();
 //        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
 //        if (ListUtils.isEmpty(devices)) emptyViewState.setVisibility(View.VISIBLE);
         onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
@@ -255,6 +281,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
+        PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_ANIMATION, false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),
@@ -272,6 +299,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onStop() {
         super.onStop();
+        if (set != null) {
+            set.cancel();
+            set = null;
+            imgBtnAddDevices.setAlpha(1.0f);
+            imgBtnAddDevices.setScaleX(1.0f);
+            imgBtnAddDevices.setScaleY(1.0f);
+        }
     }
 
     @Override
@@ -583,7 +617,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
             if (JFGRules.isPan720(device.pid)) {
                 startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            } else /**/if (JFGRules.isCamera(device.pid))/**/ {
+            } else /**if (JFGRules.isCamera(device.pid))/**/ {
                 Intent in = new Intent(getActivity(), CameraLiveActivity.class);
                 View tip = itemView.findViewById(R.id.img_device_icon);
                 if (tip != null && tip instanceof ImageViewTip) {
@@ -592,10 +626,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 }
                 in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
                 startActivity(in);
-            } else if (JFGRules.isBell(device.pid)) {
-                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             }
+//            else if (JFGRules.isBell(device.pid)) {
+//                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
+//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+//            }
         }
     }
 
