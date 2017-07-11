@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.n.view.bind;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,8 @@ public class SNInputFragment extends IBaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         customToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
+        InputFilter filter = (source, start, end, dest, dstart, dend) -> source.toString().trim();
+        etInputBox.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(20)});
     }
 
     @Override
@@ -93,9 +96,19 @@ public class SNInputFragment extends IBaseFragment {
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                final String content = etInputBox.getText().toString().trim();
-
+                handleJump(etInputBox.getText().toString().trim());
                 break;
+        }
+    }
+
+    private void handleJump(String sn) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .remove(this)
+                .commit();
+        if (sn.startsWith("2600")) {
+            //云相机
+        } else if (sn.startsWith("")) {
+
         }
     }
 }

@@ -263,45 +263,46 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
-        if (AppLogger.permissionGranted) return;
+//        if (AppLogger.permissionGranted) return;
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
-        if (initSub != null && !initSub.isUnsubscribed()) return;
-        initSub = Observable.just("init")
-                .observeOn(Schedulers.io())
-                .map(cmd -> {
-                    BaseApplication.getAppComponent().getInitializationManager().initialization();
-                    return cmd;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rettt -> {
-                    //检查广告的有效性
-                    boolean fromLogout = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
-                    if (basePresenter != null && showOnceInCircle && !fromLogout) {
-                        showOnceInCircle = false;
-                        basePresenter.showAds()
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .flatMap(ret -> {
-                                    goAheadAfterPermissionGranted();
-                                    if (ret != null) {
-                                        //需要显示广告.
-                                        AppLogger.d("显示广告");
-                                        Intent intent = new Intent(SmartcallActivity.this, AdsActivity.class);
-                                        intent.putExtra(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), ret);
-                                        startActivityForResult(intent, JConstant.CODE_AD_FINISH);
-                                    } else {
-                                        //跳过广告
-                                    }
-                                    return null;
-                                })
-                                .subscribe(ret -> {
-                                }, AppLogger::e);
-                    } else if (fromLogout) goAheadAfterPermissionGranted();
-                    if (basePresenter != null) {
-                        basePresenter.reEnableSmartcallLog();
-                    }
+        if (initSub == null || initSub.isUnsubscribed()) {
+            initSub = Observable.just("init")
+                    .observeOn(Schedulers.io())
+                    .map(cmd -> {
+                        BaseApplication.getAppComponent().getInitializationManager().initialization();
+                        return cmd;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(rettt -> {
+                        //检查广告的有效性
+                        boolean fromLogout = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
+                        if (basePresenter != null && showOnceInCircle && !fromLogout) {
+                            showOnceInCircle = false;
+                            basePresenter.showAds()
+                                    .subscribeOn(AndroidSchedulers.mainThread())
+                                    .flatMap(ret -> {
+                                        goAheadAfterPermissionGranted();
+                                        if (ret != null) {
+                                            //需要显示广告.
+                                            AppLogger.d("显示广告");
+                                            Intent intent = new Intent(SmartcallActivity.this, AdsActivity.class);
+                                            intent.putExtra(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), ret);
+                                            startActivityForResult(intent, JConstant.CODE_AD_FINISH);
+                                        } else {
+                                            //跳过广告
+                                        }
+                                        return null;
+                                    })
+                                    .subscribe(ret -> {
+                                    }, AppLogger::e);
+                        } else if (fromLogout) goAheadAfterPermissionGranted();
+                        if (basePresenter != null) {
+                            basePresenter.reEnableSmartcallLog();
+                        }
 
-                });
+                    });
+        }
 
     }
 
