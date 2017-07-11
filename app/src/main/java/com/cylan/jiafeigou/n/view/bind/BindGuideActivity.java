@@ -89,7 +89,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     @OnClick(R.id.tv_bind_guide_next)
     public void onClick() {
         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-        if (autoBack == null) autoBack = new AutoBack(this);
+        if (autoBack == null) autoBack = new AutoBack(this, getIntent());
         autoBack.run();
     }
 
@@ -105,9 +105,11 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         private Br br;
         private WifiManager wifiManager;
         private WeakReference<BindGuideActivity> weakReference;
+        private Intent intent;
 
-        public AutoBack(BindGuideActivity activity) {
+        public AutoBack(BindGuideActivity activity, Intent intent) {
             weakReference = new WeakReference<>(activity);
+            this.intent = intent;
             wifiManager = NetUtils.getWifiManager(ContextUtils.getContext());
         }
 
@@ -120,9 +122,14 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
                     Log.d("bbbbb", "name:" + NetUtils.getNetName(context));
                     if (ApFilter.accept(ssidName)) {
                         if (weakReference.get() != null) {
-                            Intent toIntent = new Intent(weakReference.get(),
-                                    BindGuideActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            Intent toIntent = null;
+                            if (intent == null) {
+                                toIntent = new Intent(weakReference.get(),
+                                        BindGuideActivity.class);
+                            } else {
+                                toIntent = intent;
+                            }
+                            toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             weakReference.get().startActivity(toIntent);
                         } else {
                             //start with context

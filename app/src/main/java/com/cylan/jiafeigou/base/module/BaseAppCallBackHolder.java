@@ -468,6 +468,11 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.VersionRsp().setUuid(cid).setVersion(version));
     }
 
+    @Override
+    public void OnUniversalDataRsp(long l, int i, byte[] bytes) {
+
+    }
+
 //    private ArrayList<DevUpgradeInfo> testList() {
 //        ArrayList<DevUpgradeInfo> list = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {

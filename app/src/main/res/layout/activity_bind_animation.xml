@@ -58,7 +58,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/color_888888" />
+            android:background="@color/color_d8d8d8" />
 
         <TextView
             android:id="@+id/tv_next_step"
