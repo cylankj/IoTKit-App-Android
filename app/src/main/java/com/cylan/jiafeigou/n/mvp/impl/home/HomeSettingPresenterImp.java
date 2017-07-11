@@ -1,3 +1,19 @@
+//
+//                                     ******
+//                                    ******
+//                                   ******  *
+//     ***********  *****    @***** ******  **************   ***** **********
+//    *************  *****  ****** ****** ****************  *****************
+//   *************** ****** *****  *****            ******  *****      ******
+//   *****            **********  ******  ********  *****  *****       ******
+//   *****             ********* ******  ********** ***** ******      ******
+//  *****              ******** ******  ***************** ******      *****   *
+//  ******************  ****** ******  ***************** ******      ************
+//  *****************   *****  *****   ****************  *****      ****** ******
+//   ***************   *****  *****     *************** ******      ******  ****
+//                    ******
+//                  *******
+//
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.content.Context;
@@ -30,7 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * 作者：zsl
+ * 作者：
  * 创建时间：2016/9/7
  * 描述：
  */
@@ -119,9 +135,9 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         if (getView() != null) {
             getView().showLoadCacheSizeProgress();
         }
-        addSubscription(rx.Observable.just(null)
+        Subscription subscription = rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .map(o -> {
+                .flatMap(o -> {
                     long cacheSize = 0l;
                     //getContent 更换
                     File directory = getCacheDirectory(ContextUtils.getContext(), "");
@@ -134,13 +150,14 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                     } else {
                         cacheSize = 0l;
                     }
-                    return FormatFileSize(cacheSize);
+                    return Observable.just(FormatFileSize(cacheSize));
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(size -> {
                     getView().hideLoadCacheSizeProgress();
                     getView().setCacheSize(size);
-                }, AppLogger::e), "calculateCacheSize");
+                }, AppLogger::e);
+        addSubscription(subscription, "calculateCacheSize");
     }
 
     @Override

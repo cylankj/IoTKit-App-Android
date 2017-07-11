@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">重新發送</string>
   <string name="AT_HOME">回家模式</string>
   <string name="AUDIBLE_ALERT">偵測到異常時，設備將播放聲音</string>
+  <string name="Add_Device_ENTER_SN">請輸入12位S/N(CID)號</string>
+  <string name="Add_Device_SN">S/N碼添加</string>
+  <string name="Add_Device_Scan_QR">掃碼添加</string>
   <string name="Added_successfully">綁定成功</string>
   <string name="Alarm_WeChat">微信接收報警消息</string>
   <string name="Alarm_WeChat_NoBindTips">使用此功能需要綁定郵箱</string>
@@ -123,12 +126,13 @@
   <string name="DIRECTION_NORMAL">默認（正常）</string>
   <string name="DOG_CAMERA_NAME">智能攝像機</string>
   <string name="DOG_MAGNETISM_NAME">門磁</string>
+  <string name="DOORBELL_BLUE_BLINKING">藍燈已長亮</string>
   <string name="DOOR_ANSWERING">連接中&#8230;</string>
   <string name="DOOR_BELL">我家門鈴</string>
   <string name="DOOR_BELL_LOOK">查看</string>
   <string name="DOOR_BETTERYMESG">建議使用5V/1A的充電器；\n充電過程中狀態指示燈呈綠色，充滿電後會自動熄滅</string>
   <string name="DOOR_BIND">恭喜您！新增成功~\n現在可以隨時瞭解門外的情況</string>
-  <string name="DOOR_BLINKING">紅燈已常亮</string>
+  <string name="DOOR_BLINKING">紅燈已長亮</string>
   <string name="DOOR_BLUE_BLINKING">設備指示燈應該紅色常亮，如果沒有,請重新開機，再長按WiFi鍵約3秒，等待紅色常亮</string>
   <string name="DOOR_CALL">已接聽</string>
   <string name="DOOR_CALL_RECORD">暫無呼叫記錄</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">暫無精彩內容</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">是否刪除分享</string>
+  <string name="Detection_Pop">關閉後將不再推送偵測報警消息，確定關閉？</string>
   <string name="Device_Disconnected">對端斷開</string>
   <string name="Dont_Show_Again">不再提示</string>
   <string name="Download_Then_Share">請先下載視頻再分享</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">設備資訊</string>
   <string name="EQUIPMENT_NAME">設備名稱</string>
   <string name="EQUIPMENT_NAME_1">設備名稱：</string>
+  <string name="ERROR_SN">S/N碼輸入錯誤</string>
   <string name="ERR_CODE">錯誤碼</string>
   <string name="EVERY_DAY">每天</string>
   <string name="EXPECT">即將推出，敬請期待</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">歷史錄像讀取失敗</string>
   <string name="Historical_No">沒有這段歷史視頻</string>
   <string name="Historical_Read">歷史錄像已讀完</string>
+  <string name="History_video">歷史錄像</string>
+  <string name="History_video_Firstly">請先獲取歷史錄像</string>
   <string name="IGNORE">忽略未讀</string>
   <string name="IMAGE_ERR">圖片太大，請重新選擇</string>
   <string name="INVALID_ACCOUNT">此帳號尚未註冊</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">重新添加</string>
   <string name="RE_ADD_LABEL">設備軟體更新完成</string>
   <string name="RIGN_SUC">註冊成功</string>
+  <string name="Record_Descript">開啟後，查看實時監控將生成錄像</string>
   <string name="Record_Operate">錄像中不能進行其他操作</string>
+  <string name="Record_Video">查看時錄像</string>
   <string name="Request_TimeOut">請求超時</string>
   <string name="Reset_Suc">復位成功</string>
   <string name="RuiShi_Guide">使用取卡針長按重置鍵3秒</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">分享管理</string>
+  <string name="Sliding_Timeline">加載成功，左右滑動下方時間軸可查看歷史錄像</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
   <string name="Smart_Door_Viewer">智能貓眼</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
   <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
   <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至直連模式查看</string>
+  <string name="Switch_Off">始終關閉</string>
+  <string name="Switch_On">始終開啟</string>
   <string name="TAKE_PHOTO">拍照</string>
   <string name="TERM_OF_USE">用戶使用協議</string>
   <string name="THEME_DELETED">位置\“%s\”已被刪除</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">短按無線鍵1秒</string>
   <string name="Tap1_AddDevice_CameraTips">等待藍燈閃爍</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">長按無線鍵3秒</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">等待藍燈長亮</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">開機後，長按WiFi鍵3秒</string>
   <string name="Tap1_AddDevice_ConnectWifi">連接Wi&#8211;Fi網路</string>
   <string name="Tap1_AddDevice_DoorbellTips">等待紅燈常亮</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">重新開機，長按無線鍵3秒</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暫不支持5GHz的WiFi信號</string>
   <string name="WIFI_SET_RS">請在系統設置&#8211;>無線區域網，選擇“RS&#8211;CAM&#8211;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_VER">請在系統設置&#8211;>無線區域網，選擇“%s”加入，密碼8個1</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">已複製</string>
   <string name="has_not_sdcard">未發現Micro SD卡</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">紅外夜視</string>
+  <string name="infrared_night_vision_Descript">開啟紅外夜視可在光線較暗的環境下得到清晰的視頻畫面</string>
   <string name="isStorageLow">Micro SD卡存儲空間不足，無法下載。</string>
   <string name="is_connecting_video">正在連接攝影機</string>
   <string name="is_creating">正在新增</string>

@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">再送</string>
   <string name="AT_HOME">帰宅モード</string>
   <string name="AUDIBLE_ALERT">異常を検出した場合、サウンドで知らせる</string>
+  <string name="Add_Device_ENTER_SN">S / NコードまたはCIDコードを入力してください</string>
+  <string name="Add_Device_SN">入力S / Nコード</string>
+  <string name="Add_Device_Scan_QR">QRコードのスキャン</string>
   <string name="Added_successfully">バインドうまく</string>
   <string name="Alarm_WeChat">警報を微信で受信</string>
   <string name="Alarm_WeChat_NoBindTips">この関数を使用すると、電子メールを最初にバインドする必要があります。</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">デフォルト（正面）</string>
   <string name="DOG_CAMERA_NAME">カメラ</string>
   <string name="DOG_MAGNETISM_NAME">電磁式ドアセンサー</string>
+  <string name="DOORBELL_BLUE_BLINKING">ライトの青色の定常</string>
   <string name="DOOR_ANSWERING">接続中&#8230;</string>
   <string name="DOOR_BELL">わが家のドアベル</string>
   <string name="DOOR_BELL_LOOK">見る</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">コンテンツなし</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">共有を削除しますか？</string>
+  <string name="Detection_Pop">シャットダウンは、もはや検出アラームメッセージを押すことはありません。</string>
   <string name="Device_Disconnected">接続が切断されました</string>
   <string name="Dont_Show_Again">再度表示しない</string>
   <string name="Download_Then_Share">動画をダウンロードして共有してください</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">デバイス情報</string>
   <string name="EQUIPMENT_NAME">デバイス名</string>
   <string name="EQUIPMENT_NAME_1">デバイス名：</string>
+  <string name="ERROR_SN">エラーS / N</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">毎日</string>
   <string name="EXPECT">間もなく更新されます、お楽しみに！</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">履歴ビデオの読み込みに失敗しました</string>
   <string name="Historical_No">歴史的なビデオはありません</string>
   <string name="Historical_Read">履歴ビデオが読み込まれました</string>
+  <string name="History_video">履歴ビデオ</string>
+  <string name="History_video_Firstly">まず歴史ビデオを入手してください</string>
   <string name="IGNORE">未読無視</string>
   <string name="IMAGE_ERR">選択した画像のサイズが大きすぎます。再度選択してください。</string>
   <string name="INVALID_ACCOUNT">このアカウントは登録されていません</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">再度追加</string>
   <string name="RE_ADD_LABEL">ソフトウェアのアップデートが完了しました</string>
   <string name="RIGN_SUC">登録完了</string>
+  <string name="Record_Descript">開いた後、リアルタイムのビデオを表示することができます</string>
   <string name="Record_Operate">録音中は操作できません</string>
+  <string name="Record_Video">記録</string>
   <string name="Request_TimeOut">タイムアウト</string>
   <string name="Reset_Suc">既に赤に点滅</string>
   <string name="RuiShi_Guide">ニードルを使用してRESETボタンを3秒間押し続けます</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">共有管理</string>
+  <string name="Sliding_Timeline">読み込みに成功し、タイムラインをスライドさせて履歴ビデオを表示する</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">スマートキャッツアイ</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">パスワードを忘れるなど、賢い犬の電話/メールアカウントを入力してください。賢い犬のクライアントに戻ってください。</string>
   <string name="Switch_Mode">撮影内容を見るにはダイレクトモードに切り替えてください</string>
   <string name="Switch_Mode_Pop">現在のネットワークの撮影コンテンツをダイレクトモードに切り替えてください</string>
+  <string name="Switch_Off">常にオフ</string>
+  <string name="Switch_On">常にオン</string>
   <string name="TAKE_PHOTO">一枚写真を撮る</string>
   <string name="TERM_OF_USE">ユーザー使用契約書</string>
   <string name="THEME_DELETED">位置\"%s\"削除しました</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">短押し1秒のためのWiFiボタン</string>
   <string name="Tap1_AddDevice_CameraTips">インジケータが青色で点滅されるまで待ち</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">長押し3秒のためのWiFiボタン</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">インジケーターが青色になるのを待ちます</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">起動後、WiFiボタンを長押しして3秒間</string>
   <string name="Tap1_AddDevice_ConnectWifi">WI&#8211;FIネットワークを接続します</string>
   <string name="Tap1_AddDevice_DoorbellTips">表示が赤色に維持するのを待ち</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">3Sのため再起動して、長押しのWiFiボタン</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">戻る%s</string>
   <string name="WIFI_SET_5GTIPS">注意：ただいま5GHz式のWi&#8211;Fi電波が適用されません</string>
   <string name="WIFI_SET_RS">システム設定&#8211;> WiFiにRS&#8211;CAM &#8211;******を選択し追加してください,パスワード11111111</string>
+  <string name="WIFI_SET_VER">システム設定&#8211;> WiFiに %s を選択し追加してください,パスワード11111111</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">Micro SDカードを検出できません</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">赤外線ナイトビジョン</string>
+  <string name="infrared_night_vision_Descript">赤外線暗視で暗闇の中で鮮明な映像を得ることができます</string>
   <string name="isStorageLow">Micro SDカードが使用できるスペースがない場合、古い動画を順番に削除する</string>
   <string name="is_connecting_video">接続中</string>
   <string name="is_creating">保存中</string>

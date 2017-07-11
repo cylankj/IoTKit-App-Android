@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Enviar novamente</string>
   <string name="AT_HOME">Em casa</string>
   <string name="AUDIBLE_ALERT">Ao detectar anormalidade, o dispositivo irá soar</string>
+  <string name="Add_Device_ENTER_SN">Digite o código S/N ou CID</string>
+  <string name="Add_Device_SN">Código S/N de entrada</string>
+  <string name="Add_Device_Scan_QR">Escanear código QR</string>
   <string name="Added_successfully">Bind com sucesso</string>
   <string name="Alarm_WeChat">O Wechat pode receber a notícia de alarme.</string>
   <string name="Alarm_WeChat_NoBindTips">Usando esta função precisa ligar o email primeiro.</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">Padrão</string>
   <string name="DOG_CAMERA_NAME">Câmera</string>
   <string name="DOG_MAGNETISM_NAME">Sensor magnético</string>
+  <string name="DOORBELL_BLUE_BLINKING">Azul claro</string>
   <string name="DOOR_ANSWERING">Conectando&#8230;</string>
   <string name="DOOR_BELL">Minha campainha</string>
   <string name="DOOR_BELL_LOOK">Visualizar</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">Sem conteúdo</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Excluir compartilhamento?</string>
+  <string name="Detection_Pop">O desligamento deixará de pressionar a mensagem de alarme de detecção, assegurando o fechamento?</string>
   <string name="Device_Disconnected">Desconectado</string>
   <string name="Dont_Show_Again">Não mostrar novamente</string>
   <string name="Download_Then_Share">Faça o download do vídeo e compartilhe</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Informações sobre o dispositivo</string>
   <string name="EQUIPMENT_NAME">Nome do dispositivo</string>
   <string name="EQUIPMENT_NAME_1">Nome do dispositivo:</string>
+  <string name="ERROR_SN">Erro S/N</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Todos os dias</string>
   <string name="EXPECT">Aguarde um instante</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Histórico de vídeo lido falhou</string>
   <string name="Historical_No">Não há vídeo histórico</string>
   <string name="Historical_Read">O vídeo histórico foi lido</string>
+  <string name="History_video">Vídeo de história</string>
+  <string name="History_video_Firstly">Por favor, pegue o vídeo da história em primeiro lugar</string>
   <string name="IGNORE">Ignorar</string>
   <string name="IMAGE_ERR">Falha ao carregar. A imagem é muito grande</string>
   <string name="INVALID_ACCOUNT">Conta não registrada</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Adicionar novamente</string>
   <string name="RE_ADD_LABEL">Atualização do dispositivo concluída</string>
   <string name="RIGN_SUC">Registrado com sucesso</string>
+  <string name="Record_Descript">Após a abertura, ver o vídeo em tempo real pode ser gravado</string>
   <string name="Record_Operate">Não é possível operar durante a gravação</string>
+  <string name="Record_Video">Registro</string>
   <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Já brilhou em vermelho</string>
   <string name="RuiShi_Guide">Use a agulha para pressionar o botão RESET durante 3 segundos</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Gerenciamento de compartilhamento</string>
+  <string name="Sliding_Timeline">Carregando bem sucedido, deslizando a linha de tempo para ver o vídeo da história</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Digite a conta de e&#8211;mail do telefone inteligente para se ligar, como esquecer a senha, vá para o cliente do cão inteligente, de volta</string>
   <string name="Switch_Mode">Mude para o modo direto para ver o conteúdo de filmagem</string>
   <string name="Switch_Mode_Pop">Mude o conteúdo atual da filmagem de rede para o modo direto</string>
+  <string name="Switch_Off">Sempre fora</string>
+  <string name="Switch_On">sempre</string>
   <string name="TAKE_PHOTO">Tirar foto</string>
   <string name="TERM_OF_USE">Termos e privacidade</string>
   <string name="THEME_DELETED">A localização %s já foi apagada</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Pressione brevemente o botão Wi&#8211;Fi para 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Aguarde até que o indicador a piscar em azul</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">prima o botão Wi&#8211;Fi para 3s</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Aguarde até que o indicador fique em azul</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">Após a inicialização e aperte o botão WiFi por 3s</string>
   <string name="Tap1_AddDevice_ConnectWifi">Conectar à rede Wi&#8211;Fi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Aguarde até que o indicador de manter em vermelho</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Reinicie o computador e prima o botão Wi&#8211;Fi para 3s</string>
@@ -887,7 +902,7 @@
   <string name="Tap3_ShareDevice_ExceedTips">Compartilhe com até 5 amigos</string>
   <string name="Tap3_ShareDevice_FailTips">Falha ao compartilhar</string>
   <string name="Tap3_ShareDevice_Friends">Compartilhar com amigos</string>
-  <string name="Tap3_ShareDevice_Friends_FailTips">usuários%d não compartilham</string>
+  <string name="Tap3_ShareDevice_Friends_FailTips">usuário%sd não compartilham</string>
   <string name="Tap3_ShareDevice_NoDevice">Nenhum dispositivo ainda</string>
   <string name="Tap3_ShareDevice_NoShare">Not sido compartilhadas</string>
   <string name="Tap3_ShareDevice_NoneFriends">Nenhum</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">Retorne para o %s</string>
   <string name="WIFI_SET_5GTIPS">Nota:Wi&#8211;Fi em 5GHz não é suportado</string>
   <string name="WIFI_SET_RS">Por favor, selecione \"RS&#8211;CAM******\" na definições de Wi&#8211;Fi. Se precisar de senha, digite 11111111</string>
+  <string name="WIFI_SET_VER">Por favor, selecione \"%s\" na definições de Wi&#8211;Fi. Se precisar de senha, digite 11111111</string>
   <string name="WONDER_TODAY_H_M">Hoje HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ontem HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Copiado</string>
   <string name="has_not_sdcard">Cartão microSD não detectado</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Visão noturna infravermelha</string>
+  <string name="infrared_night_vision_Descript">Você pode obter um vídeo claro no escuro por visão noturna infravermelha</string>
   <string name="isStorageLow">microSD sem espaço disponível</string>
   <string name="is_connecting_video">Conectando</string>
   <string name="is_creating">Adicionando</string>

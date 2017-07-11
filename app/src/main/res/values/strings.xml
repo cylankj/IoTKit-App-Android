@@ -26,6 +26,9 @@
     <string name="ANEW_SEND">Resend</string>
     <string name="AT_HOME">At home</string>
     <string name="AUDIBLE_ALERT">Choose the Audio alert to be played when motion is detected</string>
+    <string name="Add_Device_ENTER_SN">Please enter the S/N or CID code</string>
+    <string name="Add_Device_SN">Input S/N code</string>
+    <string name="Add_Device_Scan_QR">Scan QR code</string>
     <string name="Added_successfully">Bind successfully</string>
     <string name="Alarm_WeChat">Alarm via WeChat</string>
     <string name="Alarm_WeChat_NoBindTips">Using this function needs to bind email first.</string>
@@ -123,6 +126,7 @@
     <string name="DIRECTION_NORMAL">Defualt</string>
     <string name="DOG_CAMERA_NAME">Camera</string>
     <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
+    <string name="DOORBELL_BLUE_BLINKING">Light\'s blue steady</string>
     <string name="DOOR_ANSWERING">Connecting&#8230;</string>
     <string name="DOOR_BELL">My doorbell</string>
     <string name="DOOR_BELL_LOOK">View</string>
@@ -155,6 +159,7 @@
     <string name="Daily_Great_NO_CONTENTS">No content</string>
     <string name="Dec">Dec.</string>
     <string name="Delete_Share">Delete share?</string>
+    <string name="Detection_Pop">Shut down will no longer push detection alarm message, sure closing?</string>
     <string name="Device_Disconnected">Disconnected</string>
     <string name="Dont_Show_Again">Don\'t show again</string>
     <string name="Download_Then_Share">Please download the video and then share</string>
@@ -206,6 +211,7 @@
     <string name="EQUIPMENT_INFO">Device info</string>
     <string name="EQUIPMENT_NAME">Device Name</string>
     <string name="EQUIPMENT_NAME_1">Device Name:</string>
+    <string name="ERROR_SN">Error S/N</string>
     <string name="ERR_CODE">Error code</string>
     <string name="EVERY_DAY">Everyday</string>
     <string name="EXPECT">Coming soon, please expect.</string>
@@ -251,6 +257,8 @@
     <string name="Historical_Failed">Historical video reads failed</string>
     <string name="Historical_No">There\'s no historical video</string>
     <string name="Historical_Read">The historical video has been read</string>
+    <string name="History_video">History video</string>
+    <string name="History_video_Firstly">Please get the history video firstly</string>
     <string name="IGNORE">Ignore the unread</string>
     <string name="IMAGE_ERR">Upload to failed,the picture is too big</string>
     <string name="INVALID_ACCOUNT">Invalid account</string>
@@ -479,7 +487,9 @@
     <string name="RE_ADD_BUTTONG">Re&#8211;add</string>
     <string name="RE_ADD_LABEL">Update completed</string>
     <string name="RIGN_SUC">Registered Successfully</string>
+    <string name="Record_Descript">After opening, view real&#8211;time video can be recorded</string>
     <string name="Record_Operate">Can not operate while recording</string>
+    <string name="Record_Video">Record</string>
     <string name="Request_TimeOut">Timeout</string>
     <string name="Reset_Suc">Already flickered in red</string>
     <string name="RuiShi_Guide">Use needle to long press the RESET button for 3s</string>
@@ -571,6 +581,7 @@
     <string name="ShareTo">Share to %s</string>
     <string name="SharedTo">Share to</string>
     <string name="Sharing_Management">Sharing Management</string>
+    <string name="Sliding_Timeline">Loading successful, sliding the timeline to view history video</string>
     <string name="Slogan">Homesick, Use Clever Dog</string>
     <string name="Slogan_Zhongxing">Smart Home, for better life</string>
     <string name="Smart_Door_Viewer">Smart Door Viewer</string>
@@ -593,6 +604,8 @@
     <string name="Start_instructions_I">Please enter the Clever dog email account to bind, such as forget the password please go to the Clever dog client back</string>
     <string name="Switch_Mode">please switch to direct mode to view shooting content</string>
     <string name="Switch_Mode_Pop">please switch current network shooting content to direct mode</string>
+    <string name="Switch_Off">always off</string>
+    <string name="Switch_On">always on</string>
     <string name="TAKE_PHOTO">Take a Photo</string>
     <string name="TERM_OF_USE">User agreement</string>
     <string name="THEME_DELETED">%s has been deleted</string>
@@ -636,6 +649,8 @@
     <string name="Tap1_AddDevice_CameraTipShort">Short press the WiFi button for 1s</string>
     <string name="Tap1_AddDevice_CameraTips">until the light is blinking blue</string>
     <string name="Tap1_AddDevice_CameraTipsTitle">Press and hold the wifi button for 3s</string>
+    <string name="Tap1_AddDevice_CloudcameraTips">Wait for the indicator to keep in blue</string>
+    <string name="Tap1_AddDevice_CloudcameraTitle">After boot and long press the WiFi button for 3s</string>
     <string name="Tap1_AddDevice_ConnectWifi">Connect WiFi</string>
     <string name="Tap1_AddDevice_DoorbellTips">Wait for the indicator to keep in red</string>
     <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot and Press and hold the wifi button for 3s</string>
@@ -968,6 +983,7 @@
     <string name="WIFI_SET_4">Return to %s</string>
     <string name="WIFI_SET_5GTIPS">Note: This device does not support 5G WIFI currently</string>
     <string name="WIFI_SET_RS">Please via \"Settings\"&#8211;>\"WLAN\", choose \"RS&#8211;CAM&#8211;******\" join on your phone, password 11111111</string>
+    <string name="WIFI_SET_VER">Please via \"Settings\"&#8211;>\"WLAN\", choose \"%s\" join on your phone, password 11111111</string>
     <string name="WONDER_TODAY_H_M">Today HH:mm</string>
     <string name="WONDER_YESTERDAY_H_M">Yesterday HH:mm</string>
     <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
     <string name="has_copy">Replicated</string>
     <string name="has_not_sdcard">Not find Micro SD card</string>
     <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+    <string name="infrared_night_vision">infrared night vision</string>
+    <string name="infrared_night_vision_Descript">You can obtain clear video in the dark by infrared night vision</string>
     <string name="isStorageLow">Your SD card is no enough space</string>
     <string name="is_connecting_video">Connecting</string>
     <string name="is_creating">Adding</string>
@@ -1038,4 +1056,7 @@
     <string name="web">http://www.cleverdog.com.cn/</string>
     <string name="wifi_authentication">Verify %s WiFi connection</string>
     <string name="wifi_hasnot">Not find this WIFI</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

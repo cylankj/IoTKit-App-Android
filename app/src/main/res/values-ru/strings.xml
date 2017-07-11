@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Отправить</string>
   <string name="AT_HOME">Вернуться</string>
   <string name="AUDIBLE_ALERT">Выберите звуковой сигнал, который будет воспроизводиться при обнаружении движения</string>
+  <string name="Add_Device_ENTER_SN">Введите код S/N ли CID</string>
+  <string name="Add_Device_SN">Код ввода S/N</string>
+  <string name="Add_Device_Scan_QR">Скан QR кода</string>
   <string name="Added_successfully">Привязать успешно</string>
   <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
   <string name="Alarm_WeChat_NoBindTips">С помощью этой функции необходимо связать электронную почту в первую очередь.</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">По умолчанию</string>
   <string name="DOG_CAMERA_NAME">Камера</string>
   <string name="DOG_MAGNETISM_NAME">Магнитный датчик</string>
+  <string name="DOORBELL_BLUE_BLINKING">Голубой свет</string>
   <string name="DOOR_ANSWERING">Идет вызов&#8230;</string>
   <string name="DOOR_BELL">Мой дверной звонок</string>
   <string name="DOOR_BELL_LOOK">Проверка</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">Без содержания</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Удалить общий доступ?</string>
+  <string name="Detection_Pop">Завершение работы больше не будет выводить сообщение об обнаружении тревоги, обязательно закрытие?</string>
   <string name="Device_Disconnected">Отключен</string>
   <string name="Dont_Show_Again">Больше не показывать</string>
   <string name="Download_Then_Share">Загрузите видео, а затем отправьте его</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Сведения об оборудовании</string>
   <string name="EQUIPMENT_NAME">Имя</string>
   <string name="EQUIPMENT_NAME_1">Имя:</string>
+  <string name="ERROR_SN">Ошибка S/N</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Каждый день</string>
   <string name="EXPECT">В ближайшее время ожидается выход новой версии, следите за обновлениями</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Не удалось прочитать видео</string>
   <string name="Historical_No">Исторического видео нет</string>
   <string name="Historical_Read">Историческое видео было прочитано</string>
+  <string name="History_video">История видео</string>
+  <string name="History_video_Firstly">Сначала возьмите видео с историей</string>
   <string name="IGNORE">Игнорировать</string>
   <string name="IMAGE_ERR">Изображение слишком большое</string>
   <string name="INVALID_ACCOUNT">Данный аккаунт еще не зарегистрирован</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Добавить снова</string>
   <string name="RE_ADD_LABEL">Обновление программного обеспечения завершено</string>
   <string name="RIGN_SUC">Регистрация прошла успешно</string>
+  <string name="Record_Descript">После открытия можно просматривать видео в реальном времени.</string>
   <string name="Record_Operate">Не может работать во время записи</string>
+  <string name="Record_Video">запись</string>
   <string name="Request_TimeOut">Таймаут</string>
   <string name="Reset_Suc">Уже мелькали в красном</string>
   <string name="RuiShi_Guide">Используйте иглу для длительного нажатия кнопки RESET в течение 3 с</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">совместное управление</string>
+  <string name="Sliding_Timeline">Загрузка успешно, сдвигая шкалу времени, чтобы просмотреть историю видео</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Пожалуйста, введите Умный телефон электронной почты для привязки, например, забудьте пароль, пожалуйста, перейдите к клиенту Clever dog back</string>
   <string name="Switch_Mode">Перейдите в режим прямого просмотра для просмотра</string>
   <string name="Switch_Mode_Pop">Переключите текущий сетевой видеоконтент на прямой режим</string>
+  <string name="Switch_Off">Всегда выключен</string>
+  <string name="Switch_On">всегда включен</string>
   <string name="TAKE_PHOTO">Сделать фото</string>
   <string name="TERM_OF_USE">Условия и конфиденциальность</string>
   <string name="THEME_DELETED">Местоположение %s удалено</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Короткое нажатие кнопки WiFi в течение 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Подождите, пока индикатор мерцать синим цветом</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Длительное нажатие кнопки WiFi в течение 3s</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Подождите, пока индикатор не станет синим</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">После загрузки и длительного нажатия кнопки WiFi на 3 секунды</string>
   <string name="Tap1_AddDevice_ConnectWifi">Подключиться к сети Wi&#8211;Fi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Подождите, пока индикатор держать в красном цвете</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Перезагрузка и длительное нажатие на кнопку WiFi в течение 3 секунд</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">Вернитесь к %s</string>
   <string name="WIFI_SET_5GTIPS">Примечание:5ГГц WiFi сигнал не включен сейчас</string>
   <string name="WIFI_SET_RS">Зайдите в телефоне в настройки&#8211;>сети WLAN, выберите \"RS&#8211;CAM******\", подключиться. Пароль:11111111</string>
+  <string name="WIFI_SET_VER">Зайдите в телефоне в настройки&#8211;>сети WLAN, выберите \"%s\", подключиться. Пароль:11111111</string>
   <string name="WONDER_TODAY_H_M">Сегодня HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Вчера HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Скопировано</string>
   <string name="has_not_sdcard">карта памяти microSD не найдена</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Инфракрасное ночное видение</string>
+  <string name="infrared_night_vision_Descript">Вы можете получать четкое видео в темноте инфракрасным ночным видением</string>
   <string name="isStorageLow">На Вашей карте памяти microSD не хватает места</string>
   <string name="is_connecting_video">Подключение к камере</string>
   <string name="is_creating">Добавление</string>

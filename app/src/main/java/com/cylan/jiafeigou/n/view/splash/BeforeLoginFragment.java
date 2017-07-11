@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
@@ -170,7 +171,7 @@ public class BeforeLoginFragment extends Fragment {
     @OnClick(R.id.rLayout_before_login)
     public void onClick(View v) {
         if (clickEvent == null) clickEvent = new Event();
-        if (clickEvent.click(getContext())) {
+        if (clickEvent.click(getContext()) && BuildConfig.DEBUG) {
             clickEvent = null;
             final EditText input = new EditText(getActivity());
             input.setText(OptionsImpl.getServer());
