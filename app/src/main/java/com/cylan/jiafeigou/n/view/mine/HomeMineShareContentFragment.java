@@ -134,7 +134,12 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
                     dialog.dismiss();
                     AppLogger.d("正在取消分享");
-                    presenter.unShareContent(items, selection);
+                    if (NetUtils.getNetType(getContext()) == -1) {
+                        //114228
+                        ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                    } else {
+                        presenter.unShareContent(items, selection);
+                    }
                 })
                 .setNegativeButton(R.string.CANCEL, null)
                 .show();

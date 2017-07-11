@@ -3,16 +3,13 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -25,8 +22,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.TimeZone;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -231,6 +226,10 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     };
 
     private DatePickerListener datePickerListener;
+
+    public boolean isDragging() {
+        return false;
+    }
 
     /**
      * 选择日期,滚动条变化.都要通知.
