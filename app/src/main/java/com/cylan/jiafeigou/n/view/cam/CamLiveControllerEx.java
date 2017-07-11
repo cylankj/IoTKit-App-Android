@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -208,17 +209,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
-                            .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
-                                            .first()
+                            .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
                                             .timeout(5, TimeUnit.SECONDS),
-                                    RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-                                            .first()
+                                    RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
                                             .timeout(5, TimeUnit.SECONDS))
                                     .first())
                             .flatMap(o -> Observable.just(o instanceof RxEvent.HistoryEmpty ? 2 : -1))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(ret -> {
-                                AppLogger.d("加载成功");
+                                AppLogger.d("加载成功:" + ret);
                                 layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
                                 if (ret == 2) {
                                     ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
@@ -226,7 +225,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     setLoadingState(PLAY_STATE_STOP, null);
                                     return;
                                 }
-                                if (layoutE.getCurrentView() instanceof TextView) {
+                                if (layoutE.getCurrentView() instanceof ViewGroup) {
                                     layoutE.showNext();
                                     AppLogger.d("需要展示 遮罩");
                                 }

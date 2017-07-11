@@ -470,24 +470,14 @@ public class RxBusTest {
 
     @Test
     public void testTimeout1() throws InterruptedException {
-        long time = System.currentTimeMillis() / 10000;
-        long ret = System.currentTimeMillis() / time;
-        System.out.println(ret);
 
-        Subscription subscription = Observable.interval(20, TimeUnit.MILLISECONDS)
-                .filter(i -> i > 10)
-                .subscribe(aLong -> System.out.println("..." + aLong));
-        subscription.unsubscribe();
-//        Observable.just(Observable.interval(20, TimeUnit.MILLISECONDS))
-//                .takeUntil(longObservable -> {
-//                    count++;
-//                    return count > 10;
-//                })
-//                .flatMap((Func1<Observable<Long>, Observable<?>>) longObservable -> {
-//                    System.out.println("good: " + count);
-//                    return longObservable;
-//                })
-//                .subscribe(System.out::println);
+        Observable.concat(RxBus.getCacheInstance().toObservable(Integer.class),
+                RxBus.getCacheInstance().toObservable(String.class)
+                        .timeout(500, TimeUnit.MILLISECONDS))
+                .subscribe(ret -> {
+                    System.out.println("wa:" + ret);
+                });
+        RxBus.getCacheInstance().post(20);
         RxBus.getCacheInstance().post("1110000");
         RxBus.getCacheInstance().post("111");
         Thread.sleep(500);
