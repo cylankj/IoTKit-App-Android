@@ -78,7 +78,8 @@ public interface ICamLiveLayer {
     void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected);
 
     void onActivityStart(CamLiveContract.Presenter presenter, Device device);
-    void onActivityResume(CamLiveContract.Presenter presenter, Device device);
+
+    void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible);
 
 //    void setCaptureListener(View.OnClickListener captureListener);
 

@@ -140,7 +140,7 @@ BaseJFGResultParser {
                             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
                             break;
                         case ErrorAccountNotExist:
-                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
+//                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
                             break;
                         case JError.ErrorLoginInvalidPass:
                             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));

@@ -203,7 +203,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutE.findViewById(R.id.btn_load_history)
                 .setOnClickListener(v -> {
                     AppLogger.d("点击加载历史视频");
-                    LoadingDialog.showLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager(), getResources().getString(R.string.LOADING), false, null);
+                    setLoadingState(PLAY_STATE_PREPARE, getResources().getString(R.string.LOADING));
                     Subscription subscription = rx.Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
@@ -216,12 +216,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 if (layoutE.getCurrentView() instanceof TextView) {
                                     layoutE.showNext();
                                 }
-                                LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
-                                    ToastUtil.showToast(layoutE.getContext().getResources().getString(R.string.Item_LoadFail));
+                                    setLoadingState(PLAY_STATE_LOADING_FAILED, getResources().getString(R.string.Item_LoadFail));
                                 }
-                                LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
                             });
                     presenter.addSubscription("fetchHistoryBy", subscription);
                 });
@@ -1040,13 +1038,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onActivityResume(CamLiveContract.Presenter presenter, Device device) {
+    public void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible) {
         final boolean judge = !isSightShow() && !isStandBy();
         Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
+            if (!isUserVisible) return;
             showUseCase();
         }, 100);
     }

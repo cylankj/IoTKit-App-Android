@@ -89,6 +89,8 @@ public class JFGRules {
     public static final int LANGUAGE_TYPE_ITALIAN = 8;
     public static final int LANGUAGE_TYPE_TURKISH = 9;
     public static final int LANGUAGE_TYPE_TRA_CHINESE = 10;
+    public static final int LANGUAGE_TYPE_VI = 11;
+    public static final int LANGUAGE_TYPE_IN_ = 12;
 
     public static final Locale[] CONST_LOCALE = {
             Locale.SIMPLIFIED_CHINESE,
@@ -101,7 +103,10 @@ public class JFGRules {
             Locale.GERMANY,
             Locale.ITALY,
             new Locale("tr", "TR"),
-            Locale.TRADITIONAL_CHINESE};
+            Locale.TRADITIONAL_CHINESE,
+            new Locale("vi", "VN"),
+            new Locale("in", "ID"),
+    };
 
     private static final Locale LOCALE_HK = new Locale("zh", "HK");
 

@@ -120,7 +120,6 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         View view = inflater.inflate(R.layout.fragment_home_mine_setting, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        basePresenter.calculateCacheSize();
         return view;
     }
 
@@ -130,6 +129,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         updateHint();
         svHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
         customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
+        svHomeSettingClear.setTvSubTitle(basePresenter.calculateCacheSize());
     }
 
     private void initPresenter() {
@@ -223,7 +223,8 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void clearFinish() {
-        if (isDetached()) return;
+        if (!isAdded()) return;
+        svHomeSettingClear.setTvSubTitle("0.0M");
         ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }
 

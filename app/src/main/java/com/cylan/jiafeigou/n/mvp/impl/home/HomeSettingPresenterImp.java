@@ -131,33 +131,20 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
     @Override
-    public void calculateCacheSize() {
-        if (getView() != null) {
-            getView().showLoadCacheSizeProgress();
+    public String calculateCacheSize() {
+        long cacheSize = 0l;
+        //getContent 更换
+        File directory = getCacheDirectory(ContextUtils.getContext(), "");
+        if (directory.exists()) {
+            try {
+                cacheSize = getFolderSize(directory);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            cacheSize = 0l;
         }
-        Subscription subscription = rx.Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .flatMap(o -> {
-                    long cacheSize = 0l;
-                    //getContent 更换
-                    File directory = getCacheDirectory(ContextUtils.getContext(), "");
-                    if (directory.exists()) {
-                        try {
-                            cacheSize = getFolderSize(directory);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        cacheSize = 0l;
-                    }
-                    return Observable.just(FormatFileSize(cacheSize));
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(size -> {
-                    getView().hideLoadCacheSizeProgress();
-                    getView().setCacheSize(size);
-                }, AppLogger::e);
-        addSubscription(subscription, "calculateCacheSize");
+        return FormatFileSize(cacheSize);
     }
 
     @Override
@@ -239,21 +226,29 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
 
+    private static final int BYTE = 1024;
+    private static final int MEGA_BYTE = 1024 * 1024;
+    private static final int GIGA_BYTE = 1024 * 1024 * 1024;
+
     /**
      * desc:转换文件的大小
      *
-     * @param fileS
+     * @param byteData
      * @return
      */
-    public String FormatFileSize(long fileS) {
+    public String FormatFileSize(long byteData) {
         DecimalFormat df = new DecimalFormat("0.0");
         String fileSizeString = "";
-        if (fileS == 0) {
-            fileSizeString = "0.0M";
-        } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "M";
-        } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "G";
+        if (byteData < BYTE)
+            return byteData + "KB";
+        if (byteData >= BYTE && byteData < MEGA_BYTE) {
+            return df.format((double) (byteData >>> 10)) + "M";
+        }
+        if (byteData >= MEGA_BYTE && byteData < GIGA_BYTE) {
+            return df.format((double) (byteData >>> 20)) + "G";
+        }
+        if (byteData >= GIGA_BYTE && byteData < 1024L * GIGA_BYTE) {
+            return df.format((double) (byteData >>> 30)) + "T";
         }
         return fileSizeString;
     }

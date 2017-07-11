@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -20,7 +21,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomePageCoverFragment extends Fragment {
+public class HomePageCoverFragment extends IBaseFragment {
 
     Unbinder unbinder;
     @BindView(R.id.v_guide)

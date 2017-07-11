@@ -153,13 +153,22 @@
         android:layout_height="@dimen/y52"
         android:layout_below="@+id/v_guide">
 
-        <TextView
-            android:id="@+id/btn_load_history"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="点击加载历史视频" />
+            android:background="@color/color_F7F8FA"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btn_load_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/MSG_RECORD"
+                android:textColor="@color/common_btn_color_state"
+                android:textSize="@dimen/sp15" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
