@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,6 +53,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.AddBtnView;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -85,7 +85,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
     @BindView(R.id.imgV_add_devices)
-    ImageView imgBtnAddDevices;
+    AddBtnView imgBtnAddDevices;
     @BindView(R.id.rV_devices_list)
     RecyclerView rVDevicesList;//设备列表
     @BindView(R.id.vWaveAnimation)

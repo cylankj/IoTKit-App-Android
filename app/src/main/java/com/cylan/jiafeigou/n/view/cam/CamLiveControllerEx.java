@@ -1029,13 +1029,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onActivityResume(CamLiveContract.Presenter presenter, Device device) {
+    public void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible) {
         final boolean judge = !isSightShow() && !isStandBy();
         Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
+            if (!isUserVisible) return;
             showUseCase();
         }, 100);
     }

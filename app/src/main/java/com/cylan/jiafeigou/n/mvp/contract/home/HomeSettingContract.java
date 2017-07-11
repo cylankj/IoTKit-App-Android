@@ -44,7 +44,7 @@ public interface HomeSettingContract {
         /**
          * 计算缓存的大小
          */
-        void calculateCacheSize();
+        String calculateCacheSize();
 
         /**
          * 取反

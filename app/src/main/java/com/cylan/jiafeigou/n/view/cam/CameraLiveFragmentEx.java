@@ -297,7 +297,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.onResume();
         Log.d("isResumed", "isResumed: " + getUserVisibleHint());
         camLiveControlLayer.onActivityResume(basePresenter, BaseApplication.getAppComponent()
-                .getSourceManager().getDevice(getUuid()));
+                .getSourceManager().getDevice(getUuid()), isUserVisible());
         if (basePresenter != null) {
             if (!judge() || basePresenter.getLiveStream().playState == PLAY_STATE_STOP)
                 return;//还没开始播放
