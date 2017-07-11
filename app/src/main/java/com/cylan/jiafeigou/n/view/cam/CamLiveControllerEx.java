@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -54,7 +53,6 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.Switcher;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
@@ -77,6 +75,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -202,22 +201,40 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutE.findViewById(R.id.btn_load_history)
                 .setOnClickListener(v -> {
                     AppLogger.d("点击加载历史视频");
-                    setLoadingState(PLAY_STATE_PREPARE, getResources().getString(R.string.LOADING));
-                    Subscription subscription = rx.Observable.just("get")
+                    layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
+                    livePlayState = PLAY_STATE_PREPARE;
+                    setLoadingState(null, getResources().getString(R.string.LOADING));
+                    Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
-                            .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-                                    .first()
-                                    .timeout(5, TimeUnit.SECONDS))
+                            .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
+                                            .first()
+                                            .timeout(5, TimeUnit.SECONDS),
+                                    RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
+                                            .first()
+                                            .timeout(5, TimeUnit.SECONDS))
+                                    .first())
+                            .flatMap(o -> Observable.just(o instanceof RxEvent.HistoryEmpty ? 2 : -1))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(ret -> {
                                 AppLogger.d("加载成功");
+                                layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
+                                if (ret == 2) {
+                                    ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
+                                    livePlayState = PLAY_STATE_STOP;
+                                    setLoadingState(PLAY_STATE_STOP, null);
+                                    return;
+                                }
                                 if (layoutE.getCurrentView() instanceof TextView) {
                                     layoutE.showNext();
+                                    AppLogger.d("需要展示 遮罩");
                                 }
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
-                                    setLoadingState(PLAY_STATE_LOADING_FAILED, getResources().getString(R.string.Item_LoadFail));
+                                    layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
+                                    livePlayState = PLAY_STATE_STOP;
+                                    setLoadingState(PLAY_STATE_STOP, null);
+                                    ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                                 }
                             });
                     presenter.addSubscription("fetchHistoryBy", subscription);

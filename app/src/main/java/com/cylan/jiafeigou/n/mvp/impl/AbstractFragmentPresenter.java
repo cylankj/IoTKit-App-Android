@@ -144,7 +144,7 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
             refCacheMap.remove(tag);
     }
 
-    protected boolean unSubscribe(String tag) {
+    public boolean unSubscribe(String tag) {
         refCacheMap.remove(tag);
         return true;
     }

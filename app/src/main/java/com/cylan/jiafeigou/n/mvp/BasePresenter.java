@@ -26,4 +26,6 @@ public interface BasePresenter {
     void stop();
 
     void addSubscription(String tag, Subscription s);
+
+    boolean unSubscribe(String tag);
 }

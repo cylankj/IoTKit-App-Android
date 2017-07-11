@@ -147,7 +147,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
             refCacheMap.add(subscription, tag);
     }
 
-    protected boolean unSubscribe(String tag) {
+    public boolean unSubscribe(String tag) {
         refCacheMap.remove(tag);
         return true;
     }

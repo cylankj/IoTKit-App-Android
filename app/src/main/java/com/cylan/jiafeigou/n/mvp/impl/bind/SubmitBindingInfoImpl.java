@@ -65,6 +65,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         int net = NetUtils.getJfgNetType();
         if (net != 0) {
             AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
+            BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
             BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
         }
     }
