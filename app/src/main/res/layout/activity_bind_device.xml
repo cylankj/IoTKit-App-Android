@@ -21,6 +21,35 @@
         hunt:ct_title="@string/DEVICES_TITLE"
         hunt:ct_title_color="@color/color_white" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y124"
+        android:background="@color/color_white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/v_to_scan_qrcode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/y5"
+            android:drawableTop="@drawable/icon_scan"
+            android:gravity="center"
+            android:text="@string/Tap3_FriendsAdd_QR" />
+
+        <TextView
+            android:id="@+id/v_to_input_sn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/y5"
+            android:drawableTop="@drawable/icon_sn"
+            android:gravity="center"
+            android:text="@string/Add_Device_SN" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,16 +60,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.cylan.jiafeigou.widget.HomeMineItemView
-                android:id="@+id/v_to_scan_qrcode"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y67"
-                android:background="@color/color_white"
-                hunt:leftDrawable="@drawable/icon_scan_code"
-                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-                hunt:text="@string/Tap1_AddDevice_QR"
-                hunt:textColor="@color/color_383838"
-                hunt:textSize="@dimen/sp16" />
+            <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
+            <!--android:id="@+id/v_to_scan_qrcode"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/y67"-->
+            <!--android:background="@color/color_white"-->
+            <!--hunt:leftDrawable="@drawable/icon_scan_code"-->
+            <!--hunt:rightDrawable="@drawable/icon_mine_arrow_next"-->
+            <!--hunt:text="@string/Tap1_AddDevice_QR"-->
+            <!--hunt:textColor="@color/color_383838"-->
+            <!--hunt:textSize="@dimen/sp16" />-->
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/v_to_bind_camera"

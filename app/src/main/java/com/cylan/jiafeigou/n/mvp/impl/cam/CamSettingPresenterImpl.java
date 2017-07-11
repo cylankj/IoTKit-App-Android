@@ -143,10 +143,10 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public String getDetailsSubTitle(Context context, boolean hasSdcard, int err) {
         //sd卡状态
-        if (hasSdcard && err != 0) {
-            //sd初始化失败时候显示
-            return context.getString(R.string.SD_INIT_ERR, err);
-        }
+//        if (hasSdcard && err != 0) {
+//            //sd初始化失败时候显示
+//            return context.getString(R.string.SD_INIT_ERR, err);
+//        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
                 device.uuid : (device != null ? device.alias : "");

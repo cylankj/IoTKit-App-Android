@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Inviare di nuovo</string>
   <string name="AT_HOME">A casa</string>
   <string name="AUDIBLE_ALERT">Scegli l\'avviso audio da riprodurre quando viene rilevato un movimento</string>
+  <string name="Add_Device_ENTER_SN">Inserisci il codice S/N o CID</string>
+  <string name="Add_Device_SN">Immettere il codice S/N</string>
+  <string name="Add_Device_Scan_QR">Scansiona QR Code</string>
   <string name="Added_successfully">Aggiunto con successo</string>
   <string name="Alarm_WeChat">Ricevi il messaggio di allarme con Wechat</string>
   <string name="Alarm_WeChat_NoBindTips">Utilizzando questa funzione deve binding e&#8211;mail prima.</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">Normale</string>
   <string name="DOG_CAMERA_NAME">Camera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
+  <string name="DOORBELL_BLUE_BLINKING">Azzurro</string>
   <string name="DOOR_ANSWERING">Connessione&#8230;</string>
   <string name="DOOR_BELL">Il mio campanello</string>
   <string name="DOOR_BELL_LOOK">Vedi</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">Nessun contenuto</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Elimina condivisione?</string>
+  <string name="Detection_Pop">Spegni non spingerà più il messaggio di allarme di rilevazione, chiudendo definitivamente?</string>
   <string name="Device_Disconnected">Disconnessa</string>
   <string name="Dont_Show_Again">Non mostrarlo più</string>
   <string name="Download_Then_Share">Scarica il video e poi condividi</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Informazioni sul dispositivo</string>
   <string name="EQUIPMENT_NAME">Nome</string>
   <string name="EQUIPMENT_NAME_1">Nome:</string>
+  <string name="ERROR_SN">Errore S/N</string>
   <string name="ERR_CODE">Codice di errore</string>
   <string name="EVERY_DAY">Tutti giorni</string>
   <string name="EXPECT">Si prega di aspettare</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Le letture video storiche non sono riuscite</string>
   <string name="Historical_No">Non ci sono video storici</string>
   <string name="Historical_Read">Il video storico è stato letto</string>
+  <string name="History_video">Video della storia</string>
+  <string name="History_video_Firstly">Prendi in primo luogo il video della storia</string>
   <string name="IGNORE">Ignora</string>
   <string name="IMAGE_ERR">Caricamento fallito, l\'immagine è troppo grande</string>
   <string name="INVALID_ACCOUNT">Email errata</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Riaggiungere</string>
   <string name="RE_ADD_LABEL">Aggiornamento completato</string>
   <string name="RIGN_SUC">Registrazione eseguita</string>
+  <string name="Record_Descript">Dopo l\'apertura, è possibile registrare video in tempo reale</string>
   <string name="Record_Operate">Impossibile operare durante la registrazione</string>
+  <string name="Record_Video">Disco</string>
   <string name="Request_TimeOut">Tempo scaduto</string>
   <string name="Reset_Suc">Reset effettuato</string>
   <string name="RuiShi_Guide">Usare l\'ago per premere a lungo il pulsante RESET per 3s</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Condivisione della gestione</string>
+  <string name="Sliding_Timeline">Il caricamento è riuscito, scorrendo la timeline per visualizzare il video della cronologia</string>
   <string name="Slogan">Sicurezza domestica? usa Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Visualizzatore Smart Door</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Si prega di inserire Clever dog email per legare, come dimenticare la password, vai al client Clever Dog Back</string>
   <string name="Switch_Mode">Si prega di passare alla modalità diretta per visualizzare i contenuti di ripresa</string>
   <string name="Switch_Mode_Pop">Si prega di passare i contenuti di ripresa in rete corrente alla modalità diretta</string>
+  <string name="Switch_Off">Sempre fuori</string>
+  <string name="Switch_On">sempre acceso</string>
   <string name="TAKE_PHOTO">Scatta immagine</string>
   <string name="TERM_OF_USE">Area legale e privacy</string>
   <string name="THEME_DELETED">%s è stato cancellato</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Premere brevemente il pulsante Wi&#8211;Fi per 1 secondi</string>
   <string name="Tap1_AddDevice_CameraTips">Attendere che l\'indicatore lampeggi in blu</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Premere il pulsante Wi&#8211;Fi per 3 secondi</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Attendere che l\'indicatore rimanga in blu</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">Dopo l\'avvio e premere a lungo il pulsante WiFi per 3 secondi</string>
   <string name="Tap1_AddDevice_ConnectWifi">Connettersi con WiFi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Attendere che l\'indicatore diventi rosso</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Riavviare e premere il pulsante Wi&#8211;Fi per 3 secondi</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">Tornare a %s</string>
   <string name="WIFI_SET_5GTIPS">Nota: il segnale WiFi 5Ghz non è ancora supportato</string>
   <string name="WIFI_SET_RS">Andare in \"Settings\"&#8211;>\"WLAN\",scegliere \"RS&#8211;CAM&#8211;******\" collegare il telefono,password è 11111111</string>
+  <string name="WIFI_SET_VER">Andare in \"Settings\"&#8211;>\"WLAN\",scegliere \"%s\" collegare il telefono,password è 11111111</string>
   <string name="WONDER_TODAY_H_M">Oggi HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ieri HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Replicato</string>
   <string name="has_not_sdcard">Scheda SD non trovata</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Visione notturna a infrarossi</string>
+  <string name="infrared_night_vision_Descript">È possibile ottenere un video chiaro al buio dalla visione notturna a infrarossi</string>
   <string name="isStorageLow">Sulla scheda SD non c\'è abbastanza spazio</string>
   <string name="is_connecting_video">Connessione in corso</string>
   <string name="is_creating">Salvataggio&#8230;</string>

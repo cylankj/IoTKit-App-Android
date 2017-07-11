@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">重新发送</string>
   <string name="AT_HOME">回家模式</string>
   <string name="AUDIBLE_ALERT">侦测到异常时，设备将播放声音</string>
+  <string name="Add_Device_ENTER_SN">请输入12位S/N(CID)号</string>
+  <string name="Add_Device_SN">S/N码添加</string>
+  <string name="Add_Device_Scan_QR">扫码添加</string>
   <string name="Added_successfully">绑定成功</string>
   <string name="Alarm_WeChat">微信接收报警消息</string>
   <string name="Alarm_WeChat_NoBindTips">使用此功能需要绑定手机/邮箱</string>
@@ -123,12 +126,13 @@
   <string name="DIRECTION_NORMAL">默认(正向)</string>
   <string name="DOG_CAMERA_NAME">智能摄像头</string>
   <string name="DOG_MAGNETISM_NAME">门磁</string>
+  <string name="DOORBELL_BLUE_BLINKING">蓝灯已长亮</string>
   <string name="DOOR_ANSWERING">连接中&#8230;</string>
   <string name="DOOR_BELL">我家门铃</string>
   <string name="DOOR_BELL_LOOK">查看</string>
   <string name="DOOR_BETTERYMESG">建议使用5V/1A的充电器； \n充电过程中指示灯绿色常亮，充满电后会自动熄灭</string>
   <string name="DOOR_BIND">恭喜你！添加成功~\n现在可以随时了解门外的情况啦</string>
-  <string name="DOOR_BLINKING">红灯已常亮</string>
+  <string name="DOOR_BLINKING">红灯已长亮</string>
   <string name="DOOR_BLUE_BLINKING">设备指示灯没有“红色常亮”时，请重新开机，再长按WiFi键约3秒，等待红色常亮</string>
   <string name="DOOR_CALL">已接听</string>
   <string name="DOOR_CALL_RECORD">暂无呼叫记录</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">暂无精彩内容</string>
   <string name="Dec">12月</string>
   <string name="Delete_Share">是否删除分享</string>
+  <string name="Detection_Pop">关闭后将不再推送侦测报警消息，确定关闭？</string>
   <string name="Device_Disconnected">对端断开</string>
   <string name="Dont_Show_Again">不再提示</string>
   <string name="Download_Then_Share">请先下载视频再分享</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">设备信息</string>
   <string name="EQUIPMENT_NAME">设备名称</string>
   <string name="EQUIPMENT_NAME_1">设备名称：</string>
+  <string name="ERROR_SN">S/N码输入错误</string>
   <string name="ERR_CODE">错误码</string>
   <string name="EVERY_DAY">每天</string>
   <string name="EXPECT">即将推出，敬请期待</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">历史录像读取失败</string>
   <string name="Historical_No">没有这段历史视频</string>
   <string name="Historical_Read">历史录像已读完</string>
+  <string name="History_video">历史录像</string>
+  <string name="History_video_Firstly">请先获取历史录像</string>
   <string name="IGNORE">忽略未读</string>
   <string name="IMAGE_ERR">图片太大，请重新选择</string>
   <string name="INVALID_ACCOUNT">此账号还没有注册</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">重新添加</string>
   <string name="RE_ADD_LABEL">设备软件更新完成</string>
   <string name="RIGN_SUC">注册成功</string>
+  <string name="Record_Descript">开启后，查看实时监控将生成录像</string>
   <string name="Record_Operate">录像中不能进行其他操作</string>
+  <string name="Record_Video">查看时录像</string>
   <string name="Request_TimeOut">请求超时</string>
   <string name="Reset_Suc">复位成功</string>
   <string name="RuiShi_Guide">使用取卡针长按重置键3秒</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">分享到%s</string>
   <string name="SharedTo">分享到</string>
   <string name="Sharing_Management">分享管理</string>
+  <string name="Sliding_Timeline">加载成功，左右滑动下方时间轴可查看历史录像</string>
   <string name="Slogan">想家，就用加菲狗</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
   <string name="Smart_Door_Viewer">智能猫眼</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">请输入加菲狗手机/邮箱账号进行绑定，如忘记密码请到加菲狗客户端找回</string>
   <string name="Switch_Mode">拍摄内容请切换至直连模式查看</string>
   <string name="Switch_Mode_Pop">当前网络拍摄内容请切换至直连模式查看</string>
+  <string name="Switch_Off">始终关闭</string>
+  <string name="Switch_On">始终开启</string>
   <string name="TAKE_PHOTO">拍一张</string>
   <string name="TERM_OF_USE">用户使用协议</string>
   <string name="THEME_DELETED">位置\“%s\”已删除</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">短按WiFi键1秒</string>
   <string name="Tap1_AddDevice_CameraTips">等待蓝灯闪烁</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">长按WiFi键3秒</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">等待蓝灯长亮</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">开机后，长按WiFi键3秒</string>
   <string name="Tap1_AddDevice_ConnectWifi">连接Wi&#8211;Fi网络</string>
   <string name="Tap1_AddDevice_DoorbellTips">等待红灯常亮</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">重新开机，长按WiFi键3秒</string>
@@ -965,10 +980,10 @@
   <string name="WIFI_SET_2">1.请检查设备WiFi灯是否蓝色闪烁,如果没有,请长按WiFi键约3秒\n2.打开iPhone的设置&#8211;>无线网络,选择\“%s\”WiFi加入,密码8个1</string>
   <string name="WIFI_SET_3">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;**&#8211;******”加入，密码8个1</string>
   <string name="WIFI_SET_3_1">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;ML&#8211;******”加入，密码8个1</string>
-  <string name="WIFI_SET_RS">请在系统设置&#8211;>无线局域网，选择“RS&#8211;CAM&#8211;******”加入，密码8个1</string>
-  <string name="WIFI_SET_COM">请在系统设置&#8211;>无线局域网，选择“%s******”加入，密码8个1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
+  <string name="WIFI_SET_RS">请在系统设置&#8211;>无线局域网，选择“RS&#8211;CAM&#8211;******”加入，密码8个1</string>
+  <string name="WIFI_SET_VER">请在系统设置&#8211;>无线局域网，选择“%s”加入，密码8个1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1009,6 +1024,8 @@
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">未发现Micro SD卡</string>
   <string name="help_url">https://%1$s:8081/helps/zh&#8211;rCN%2$s.html</string>
+  <string name="infrared_night_vision">红外夜视</string>
+  <string name="infrared_night_vision_Descript">开启红外夜视可在光线较暗的环境下得到清晰的视频画面</string>
   <string name="isStorageLow">Micro SD卡存储空间不足，无法下载。</string>
   <string name="is_connecting_video">正在连接设备</string>
   <string name="is_creating">正在保存</string>

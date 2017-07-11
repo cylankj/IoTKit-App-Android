@@ -701,12 +701,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     }, getString(R.string.CANCEL), null, false);
         });
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        if (productProperty.hasProperty(device.pid, "VIDEO")) {
-            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
-
-        } else {
-            svSettingDeviceAutoRecord.setVisibility(View.GONE);
-        }
         //SD 卡的显示与隐藏
         if (productProperty.hasProperty(device.pid, "SD")) {
             svSettingDeviceSDCard.setVisibility(View.VISIBLE);
@@ -722,7 +716,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 
         //录像设置
-        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+        if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
             svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
             // TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
             svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);

@@ -45,18 +45,30 @@
         android:layout_marginEnd="@dimen/x20"
         android:layout_marginStart="@dimen/x20"
         android:layout_marginTop="@dimen/y20"
-        hunt:layout_constraintBottom_toTopOf="@+id/tv_next_step"
+        hunt:layout_constraintBottom_toTopOf="@+id/layout_next_step"
         hunt:layout_constraintTop_toBottomOf="@+id/tv_sub_title" />
 
-    <TextView
-        android:id="@+id/tv_next_step"
-        style="@style/ripple_background"
+    <LinearLayout
+        android:id="@+id/layout_next_step"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y50"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:text="@string/BLINKING"
-        android:textColor="@color/color_4b9fd5"
-        android:textSize="@dimen/sp16"
-        hunt:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        hunt:layout_constraintBottom_toBottomOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_888888" />
+
+        <TextView
+            android:id="@+id/tv_next_step"
+            style="@style/ripple_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y50"
+            android:gravity="center"
+            android:text="@string/BLINKING"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp16" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

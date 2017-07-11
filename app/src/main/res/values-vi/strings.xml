@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Gửi lại</string>
   <string name="AT_HOME">At Home</string>
   <string name="AUDIBLE_ALERT">Chọn Báo âm thanh để thực hiện khi phát hiện chuyển động</string>
+  <string name="Add_Device_ENTER_SN">Vui lòng nhập mã S/N oặc CID</string>
+  <string name="Add_Device_SN">Nhập mã S/N</string>
+  <string name="Add_Device_Scan_QR">Quét mã QR</string>
   <string name="Added_successfully">Hãy cột thành công</string>
   <string name="Alarm_WeChat">Báo thức qua WeChet</string>
   <string name="Alarm_WeChat_NoBindTips">Sử dụng chức năng này cần để ràng buộc email đầu tiên.</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">Bình thường</string>
   <string name="DOG_CAMERA_NAME">Camera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
+  <string name="DOORBELL_BLUE_BLINKING">Xanh nhạt</string>
   <string name="DOOR_ANSWERING">Đang kết nối&#8230;</string>
   <string name="DOOR_BELL">Chuông cửa của tôi</string>
   <string name="DOOR_BELL_LOOK">Hãy nhìn</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">Không có nội dung</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Xóa chia sẻ?</string>
+  <string name="Detection_Pop">Đóng cửa sẽ không còn đẩy phát hiện thông báo cảnh báo, chắc chắn đóng?</string>
   <string name="Device_Disconnected">Đã ngắt kết nối</string>
   <string name="Dont_Show_Again">Không hiển thị lại</string>
   <string name="Download_Then_Share">Vui lòng tải video xuống và chia sẻ</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Thông tin</string>
   <string name="EQUIPMENT_NAME">Tên thiết bị</string>
   <string name="EQUIPMENT_NAME_1">Tên thiết bị:</string>
+  <string name="ERROR_SN">Lỗi S/N</string>
   <string name="ERR_CODE">Mã lỗi</string>
   <string name="EVERY_DAY">Cả ngày</string>
   <string name="EXPECT">Hãy mong đợi!</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Video lịch sử đã đọc thất bại</string>
   <string name="Historical_No">Không có video lịch sử nào</string>
   <string name="Historical_Read">Video lịch sử đã được đọc</string>
+  <string name="History_video">Video lịch sử</string>
+  <string name="History_video_Firstly">Trước tiên hãy tải video về lịch sử</string>
   <string name="IGNORE">Bỏ qua</string>
   <string name="IMAGE_ERR">Tải lên lỗi, kích thước ảnh quá lớn</string>
   <string name="INVALID_ACCOUNT">Tài khoản không tồn tại</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Thêm lại</string>
   <string name="RE_ADD_LABEL">Khi tất cả cập nhật hoàn thành</string>
   <string name="RIGN_SUC">Đăng ký thành công</string>
+  <string name="Record_Descript">Sau khi mở, xem video thời gian thực có thể được ghi lại</string>
   <string name="Record_Operate">Không thể hoạt động trong khi ghi âm</string>
+  <string name="Record_Video">Ghi lại</string>
   <string name="Request_TimeOut">Hết giờ</string>
   <string name="Reset_Suc">Đã chập chờn trong màu đỏ</string>
   <string name="RuiShi_Guide">Sử dụng kim để nhấn và giữ nút RESET trong 3 giây</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Quản lý chia sẻ</string>
+  <string name="Sliding_Timeline">Tải thành công, trượt tuyến thời gian để xem video lịch sử</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Xem cửa thông minh</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Vui lòng nhập tài khoản điện tài khoản Clever dog để ràng buộc, chẳng hạn như quên mật khẩu, hãy chuyển đến khách hàng của Clever dog</string>
   <string name="Switch_Mode">Hãy chuyển sang chế độ trực tiếp để xem nội dung chụp</string>
   <string name="Switch_Mode_Pop">Vui lòng chuyển đổi nội dung chụp mạng hiện tại sang chế độ trực tiếp</string>
+  <string name="Switch_Off">Luôn luôn tắt</string>
+  <string name="Switch_On">luôn luôn</string>
   <string name="TAKE_PHOTO">Chụp ảnh</string>
   <string name="TERM_OF_USE">Điều khoản và quyền riêng tư</string>
   <string name="THEME_DELETED">%s đã xoá</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Short nhấn nút WiFi cho 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Chờ cho chỉ số nhấp nháy màu xanh lam</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Long nhấn nút WiFi cho 3s</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Đợi cho chỉ thị giữ màu xanh</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">Sau khi khởi động và nhấn nút WiFi cho 3 giây</string>
   <string name="Tap1_AddDevice_ConnectWifi">Kết nối Wi&#8211;Fi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Chờ cho chỉ số để giữ cho màu đỏ</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Khởi động lại và dài bấm nút WiFi cho 3s</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">Trở lại %s</string>
   <string name="WIFI_SET_5GTIPS">Lưu ý:5G Wi&#8211;Fi chưa được bật</string>
   <string name="WIFI_SET_RS">Trong mục \"Cài đặt\"&#8211;>\"WLAN\", chọn \"RS&#8211;CAM&#8211;*****\" kết nối iPhone, Mật khẩu 11111111</string>
+  <string name="WIFI_SET_VER">Trong mục \"Cài đặt\"&#8211;>\"WLAN\", chọn \"%s\" kết nối iPhone, Mật khẩu 11111111</string>
   <string name="WONDER_TODAY_H_M">Hôm nay HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Hôm qua HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Đã nhân bản</string>
   <string name="has_not_sdcard">Không tìm thấy SD card</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Tầm nhìn đêm hồng ngoại</string>
+  <string name="infrared_night_vision_Descript">Bạn có thể có được video rõ ràng trong bóng tối bằng tầm nhìn ban đêm hồng ngoại</string>
   <string name="isStorageLow">Thẻ SD không còn đủ dung lượng</string>
   <string name="is_connecting_video">Đang kết nối</string>
   <string name="is_creating">Đang thêm vào&#8230;</string>

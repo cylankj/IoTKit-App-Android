@@ -26,6 +26,9 @@
   <string name="ANEW_SEND">Mengirim ulang</string>
   <string name="AT_HOME">Di rumah</string>
   <string name="AUDIBLE_ALERT">Pilih sebuah sinyal Audio untuk diputar ketika sensor gerakan terdeteksi</string>
+  <string name="Add_Device_ENTER_SN">Harap masukkan kode S/N atau CID</string>
+  <string name="Add_Device_SN">Masukkan kode S/N</string>
+  <string name="Add_Device_Scan_QR">Pindai Kode QR</string>
   <string name="Added_successfully">Bind berhasil</string>
   <string name="Alarm_WeChat">Alarm via WeChet</string>
   <string name="Alarm_WeChat_NoBindTips">Menggunakan fungsi ini perlu untuk mengikat email</string>
@@ -123,6 +126,7 @@
   <string name="DIRECTION_NORMAL">Normal</string>
   <string name="DOG_CAMERA_NAME">Kamera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
+  <string name="DOORBELL_BLUE_BLINKING">Biru muda</string>
   <string name="DOOR_ANSWERING">Sedang menyambungkan&#8230;</string>
   <string name="DOOR_BELL">Doorbell saya</string>
   <string name="DOOR_BELL_LOOK">Lihat</string>
@@ -155,6 +159,7 @@
   <string name="Daily_Great_NO_CONTENTS">Tidak ada isi</string>
   <string name="Dec">Dec.</string>
   <string name="Delete_Share">Hapus berbagi?</string>
+  <string name="Detection_Pop">Matikan tidak akan lagi push detection pesan alarm, pasti menutup?</string>
   <string name="Device_Disconnected">Terputus</string>
   <string name="Dont_Show_Again">Jangan tampilkan lagi</string>
   <string name="Download_Then_Share">Silahkan download video dan kemudian bagikan</string>
@@ -206,6 +211,7 @@
   <string name="EQUIPMENT_INFO">Info Perangkat</string>
   <string name="EQUIPMENT_NAME">Nama Perangkat</string>
   <string name="EQUIPMENT_NAME_1">Nama Perangkat:</string>
+  <string name="ERROR_SN">Kesalahan S/N</string>
   <string name="ERR_CODE">Kode Kesalahan</string>
   <string name="EVERY_DAY">Setiap hari</string>
   <string name="EXPECT">Segera hadir</string>
@@ -251,6 +257,8 @@
   <string name="Historical_Failed">Video historis terbaca gagal</string>
   <string name="Historical_No">Tidak ada video historis</string>
   <string name="Historical_Read">Video historis telah dibaca</string>
+  <string name="History_video">Video sejarah</string>
+  <string name="History_video_Firstly">Silahkan dapatkan video sejarahnya terlebih dahulu</string>
   <string name="IGNORE">Mengabaikan</string>
   <string name="IMAGE_ERR">Upload gagal, gambar terlalu besar</string>
   <string name="INVALID_ACCOUNT">Akun salah</string>
@@ -479,7 +487,9 @@
   <string name="RE_ADD_BUTTONG">Menambahkan ulang</string>
   <string name="RE_ADD_LABEL">Ketika semua perbaruan sudah selesai</string>
   <string name="RIGN_SUC">Berhasil mendaftarkan</string>
+  <string name="Record_Descript">Setelah dibuka, melihat video real&#8211;time bisa direkam</string>
   <string name="Record_Operate">Tidak bisa beroperasi saat merekam</string>
+  <string name="Record_Video">Merekam</string>
   <string name="Request_TimeOut">Time out</string>
   <string name="Reset_Suc">Sudah berkedip&#8211;kedip merah</string>
   <string name="RuiShi_Guide">Gunakan jarum untuk lama menekan tombol RESET selama 3 detik</string>
@@ -571,6 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Manajemen berbagi</string>
+  <string name="Sliding_Timeline">Memuat berhasil, geser garis waktu untuk melihat video riwayat</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>
@@ -593,6 +604,8 @@
   <string name="Start_instructions_I">Harap masukkan akun email anjing Pintar untuk mengikat, seperti lupa kata sandi, tolong masuk ke klien anjing Pintar</string>
   <string name="Switch_Mode">Silahkan beralih ke mode langsung untuk melihat konten pemotretan</string>
   <string name="Switch_Mode_Pop">Tolong aktifkan konten pemotretan jaringan ke mode langsung</string>
+  <string name="Switch_Off">Selalu pergi</string>
+  <string name="Switch_On">Selalu aktif</string>
   <string name="TAKE_PHOTO">Ambil Foto</string>
   <string name="TERM_OF_USE">Syarat dan privasi</string>
   <string name="THEME_DELETED">%s sudah dihapus</string>
@@ -636,6 +649,8 @@
   <string name="Tap1_AddDevice_CameraTipShort">Tekan sebentar lama tombol WiFi untuk 1s</string>
   <string name="Tap1_AddDevice_CameraTips">Tunggu indikator berkedip biru</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">tekan lama tombol WiFi untuk 3s</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">Tunggu indikator tetap biru</string>
+  <string name="Tap1_AddDevice_CloudcameraTitle">Setelah boot dan tekan lama tombol WiFi selama 3 detik</string>
   <string name="Tap1_AddDevice_ConnectWifi">Sambung WiFi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Tunggu indikator untuk tetap merah</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Reboot dan tekan lama tombol WiFi untuk 3s</string>
@@ -968,6 +983,7 @@
   <string name="WIFI_SET_4">Kembali ke %s</string>
   <string name="WIFI_SET_5GTIPS">Tips:Sinyal 5G WIFI tidak memungkinkan sekarang</string>
   <string name="WIFI_SET_RS">Silahkan melalui \"Pengaturan\"&#8211;>\"WLAN\", pilih \"RS&#8211;CAM&#8211;******\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
+  <string name="WIFI_SET_VER">Silahkan melalui \"Pengaturan\"&#8211;>\"WLAN\", pilih \"%s\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
   <string name="WONDER_TODAY_H_M">Hari ini HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Kemarin HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1008,6 +1024,8 @@
   <string name="has_copy">Direplikasi</string>
   <string name="has_not_sdcard">Tidak dapat menemukan Kartu SD</string>
   <string name="help_url">https://%1$s:8081/helps/en%2$s.html</string>
+  <string name="infrared_night_vision">Visi malam inframerah</string>
+  <string name="infrared_night_vision_Descript">Anda bisa mendapatkan video yang jernih dalam kegelapan dengan penglihatan malam inframerah</string>
   <string name="isStorageLow">Kartu SD anda tidak cukup ruang</string>
   <string name="is_connecting_video">Sedang menyambungkan&#8230;</string>
   <string name="is_creating">Sedang menambahkan</string>
