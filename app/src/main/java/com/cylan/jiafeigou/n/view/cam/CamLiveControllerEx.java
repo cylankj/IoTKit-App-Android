@@ -231,6 +231,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 }
                                 if (layoutE.getCurrentView() instanceof ViewGroup) {
                                     layoutE.showNext();
+                                    if (livePlayState == PLAY_STATE_PLAYING || livePlayState == PLAY_STATE_PREPARE)
+                                        return;
                                     livePlayState = PLAY_STATE_STOP;
                                     setLoadingState(PLAY_STATE_STOP, null);
                                     AppLogger.d("需要展示 遮罩");
