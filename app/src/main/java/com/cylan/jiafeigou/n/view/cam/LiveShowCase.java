@@ -67,9 +67,10 @@ public class LiveShowCase {
     public static void showHistoryWheelCase(Activity activity, View handAnchor) {
         boolean result = PreferencesUtils.getBoolean(JConstant.KEY_SHOW_HISTORY_WHEEL_CASE, true);
         PreferencesUtils.putBoolean(JConstant.KEY_SHOW_HISTORY_WHEEL_CASE, false);
-        if (result) {
+        if (result /*|| true*/) {
             HistoryWheelShowCaseFragment fragment = new HistoryWheelShowCaseFragment();
             if (activity instanceof FragmentActivity) {
+                fragment.setAnchor(handAnchor);
                 ((FragmentActivity) activity).getSupportFragmentManager()
                         .beginTransaction()
                         .add(android.R.id.content, fragment)

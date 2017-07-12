@@ -223,7 +223,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         int count = 0;
         if (item.alarmMsg != null) {
             count = MiscUtils.getCount(item.alarmMsg.fileIndex);
-        } else if (item.bellCallRecord != null) {
+        } else if (item.bellCallRecord != null && item.bellCallRecord.fileIndex != -1) {
             count = MiscUtils.getCount(item.bellCallRecord.fileIndex);
         }
         count = Math.max(count, 1);//最小为1

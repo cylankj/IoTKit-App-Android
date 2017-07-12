@@ -652,7 +652,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getUserVisibleHint() && isResumed() && getActivity() != null) {
             //这里是个异步的,显示的条件是当前 fragment 可见
             AppLogger.d(" //这里是个异步的,显示的条件是当前 fragment 可见");
-            LiveShowCase.showHistoryWheelCase(getActivity(), null);
+            LiveShowCase.showHistoryWheelCase(getActivity(), camLiveControlLayer.findViewById(R.id.layout_e));
         }
     }
 

@@ -9,26 +9,34 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <ImageView
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/y18"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0" />
+
+    <ImageView
+        android:id="@+id/iv_hand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/icon_hand"
-        app:layout_constraintBottom_toTopOf="@+id/tv_tips"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/tv_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/y24"
-        android:text="左右查看时间轴可查看历史录像"
+        android:layout_marginTop="@dimen/y18"
+        android:text="@string/Sliding_Timeline"
         android:textColor="@color/color_cecece"
         android:textSize="@dimen/sp15"
-        app:layout_constraintBottom_toTopOf="@+id/btn_ok"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_hand" />
 
 
     <Button
@@ -37,15 +45,15 @@
         android:layout_width="@dimen/y95"
         android:layout_height="@dimen/y36"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/y118"
-        android:layout_marginTop="@dimen/y38"
+        android:layout_marginTop="@dimen/y24"
         android:background="@drawable/border_button_bg"
         android:gravity="center"
         android:text="@string/OK"
         android:textColor="@color/color_white"
         android:textSize="@dimen/sp17"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_tips" />
+
 
 </android.support.constraint.ConstraintLayout>

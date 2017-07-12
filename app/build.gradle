@@ -381,4 +381,4 @@ dependencies {
 }
 
 //谷歌推送
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

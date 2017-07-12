@@ -172,7 +172,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private void updateRedHint() {
         if (imgVCameraTitleTopSetting != null) {
-            TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(this.getClass().getSimpleName());
+
 
 //            if (JFGRules.hasProtection(device.pid)) {
 //                //说明当前设备支持安全防护
@@ -182,14 +182,19 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 //                //说明当前设备支持自动录像
 //
 //            }
-            // TODO: 2017/7/12 因为当前 TreeHelper 把当前类当做了父类,因此需要先特殊处理,以后再完善
-            boolean newNode = false;
-            if (JFGRules.hasHistory(device.pid) && JFGRules.hasProtection(device.pid)) {
-                newNode = node != null && node.getTraversalCount() > 0;
+            // TODO: 2017/7/12 因为当前 TreeHelper 把当前类当做了父类,因此需要先特殊处理,以后再完善,共享账号
+            if (this.device != null && this.device.available() && TextUtils.isEmpty(this.device.shareAccount)) {
+                TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(this.getClass().getSimpleName());
+                boolean result = hasNewFirmware();
+                boolean newNode = false;
+                if (JFGRules.hasHistory(this.device.pid) && JFGRules.hasProtection(this.device.pid)) {
+                    newNode = node != null && node.getTraversalCount() > 0;
+                }
+                //延时摄影，暂时隐藏。
+                imgVCameraTitleTopSetting.setShowDot(result || newNode);
+            } else {
+                imgVCameraTitleTopSetting.setShowDot(false);//说明是共享账号,则不需要弹出 showDot
             }
-            boolean result = hasNewFirmware();
-            //延时摄影，暂时隐藏。
-            imgVCameraTitleTopSetting.setShowDot(result || newNode);
         }
     }
 
@@ -379,7 +384,7 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
     public int getCount() {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         String shareAccount = device == null ? "" : device.shareAccount;
-        return !TextUtils.isEmpty(shareAccount) && JFGRules.isCamera(device.pid) ? 1 : 2;
+        return !TextUtils.isEmpty(shareAccount) && device != null && JFGRules.isCamera(device.pid) ? 1 : 2;
     }
 
 
