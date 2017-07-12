@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SnPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -77,6 +78,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
 //        customToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         InputFilter filter = (source, start, end, dest, dstart, dend) -> source.toString().trim();
         etInputBox.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(20)});
+        view.setOnClickListener(v -> IMEUtils.hide(getActivity()));
     }
 
     @Override

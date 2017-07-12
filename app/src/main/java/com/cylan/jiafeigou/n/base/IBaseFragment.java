@@ -47,7 +47,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.setOnClickListener(v -> IMEUtils.hide(getActivity()));
+
     }
 
     @Override
