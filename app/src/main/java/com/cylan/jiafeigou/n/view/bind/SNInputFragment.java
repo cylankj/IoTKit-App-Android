@@ -87,7 +87,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
     @OnTextChanged(R.id.et_input_box)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        if (flag || s.length() < 13) {
+        if (flag || s.length() < 12) {
             tvSubmit.setEnabled(false);
         } else if (!TextUtils.isEmpty(ViewUtils.getTextViewContent(etInputBox))) {
             tvSubmit.setEnabled(true);
