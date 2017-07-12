@@ -14,7 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
+import com.cylan.jiafeigou.n.mvp.impl.bind.SnPresenter;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -29,7 +32,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SNInputFragment extends IBaseFragment {
+public class SNInputFragment extends IBaseFragment<SnContract.Presenter> implements SnContract.View {
 
 
     @BindView(R.id.custom_toolbar)
@@ -51,6 +54,11 @@ public class SNInputFragment extends IBaseFragment {
         return new SNInputFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        basePresenter = new SnPresenter(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,19 +104,37 @@ public class SNInputFragment extends IBaseFragment {
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                handleJump(etInputBox.getText().toString().trim());
+                basePresenter.getPid(etInputBox.getText().toString().trim());
                 break;
         }
     }
 
-    private void handleJump(String sn) {
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .remove(this)
+    @Override
+    public void getPidRsp(int pid) {
+        if (!isAdded()) return;
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this)
                 .commit();
-        if (sn.startsWith("2600")) {
-            //云相机
-        } else if (sn.startsWith("")) {
-
+        if (JFGRules.isConsumerCam(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_consumer_cam)
+                    .performClick();
+        } else if (JFGRules.isCloudCam(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_camera_cloud)
+                    .performClick();
+        } else if (JFGRules.isPanoramicCam(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_panorama_camera)
+                    .performClick();
+        } else if (JFGRules.isCamera(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_camera)
+                    .performClick();
+        } else if (JFGRules.isCatEeyBell(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_cat_eye_cam)
+                    .performClick();
+        } else if (JFGRules.isNoPowerBell(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_bell_no_battery)
+                    .performClick();
+        } else if (JFGRules.isBell(pid)) {
+            getActivity().findViewById(R.id.v_to_bind_bell_battery)
+                    .performClick();
         }
     }
 }

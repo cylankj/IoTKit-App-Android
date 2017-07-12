@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.n.base;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -39,6 +42,12 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
 
     public Device getDevice() {
         return BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.setOnClickListener(v -> IMEUtils.hide(getActivity()));
     }
 
     @Override

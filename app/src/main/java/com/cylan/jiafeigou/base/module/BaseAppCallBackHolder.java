@@ -470,7 +470,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUniversalDataRsp(long l, int i, byte[] bytes) {
-
+        RxBus.getCacheInstance().post(new RxEvent.UniversalDataRsp(l, i, bytes));
     }
 
 //    private ArrayList<DevUpgradeInfo> testList() {

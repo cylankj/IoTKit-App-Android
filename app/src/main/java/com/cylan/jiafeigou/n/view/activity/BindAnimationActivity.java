@@ -50,7 +50,6 @@ public class BindAnimationActivity extends BaseBindActivity {
         ViewUtils.deBounceClick(view);
         Intent intent = getIntent();//需要一路传下去.
         intent.setClass(this, BindGuideActivity.class);
-        intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME));
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
     }

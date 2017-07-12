@@ -149,16 +149,16 @@
                 hunt:textColor="@color/color_383838"
                 hunt:textSize="@dimen/sp16" />
 
-            <com.cylan.jiafeigou.widget.HomeMineItemView
-                android:id="@+id/v_to_bind_doorbell"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y67"
-                android:background="@color/color_white"
-                hunt:leftDrawable="@drawable/icon_home_doorbell_online"
-                hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-                hunt:text="@string/CALL_CAMERA_NAME"
-                hunt:textColor="@color/color_383838"
-                hunt:textSize="@dimen/sp16" />
+            <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
+                <!--android:id="@+id/v_to_bind_doorbell"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/y67"-->
+                <!--android:background="@color/color_white"-->
+                <!--hunt:leftDrawable="@drawable/icon_home_doorbell_online"-->
+                <!--hunt:rightDrawable="@drawable/icon_mine_arrow_next"-->
+                <!--hunt:text="@string/CALL_CAMERA_NAME"-->
+                <!--hunt:textColor="@color/color_383838"-->
+                <!--hunt:textSize="@dimen/sp16" />-->
 
             <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
             <!--android:msgId="@+msgId/v_to_bind_cloud_album"-->

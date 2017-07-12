@@ -131,7 +131,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription getBatterySub() {
         //按照
-        if (JFGRules.showBattery(getDevice().pid)) {
+        if (JFGRules.popPowerDrainOut(getDevice().pid)) {
             Observable.just("getBatterySub")
                     .subscribeOn(Schedulers.newThread())
                     .filter(ret -> NetUtils.getJfgNetType() > 0)//在线
