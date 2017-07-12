@@ -161,68 +161,6 @@
         }
       }
     },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:985304692675:android:80cfe1117ca520ab",
-        "android_client_info": {
-          "package_name": "com.cleverdog.new"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:985304692675:android:128a30bed2c6fdb0",
-        "android_client_info": {
-          "package_name": "com.cleverdog.new.doby"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "985304692675-g88597eecjhpu5b3cn16b2s8f817rush.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCBsFo_pFpzjGv1oKgMtJ2HFIUJegFLXKM"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    }
   ],
   "configuration_version": "1"
 }

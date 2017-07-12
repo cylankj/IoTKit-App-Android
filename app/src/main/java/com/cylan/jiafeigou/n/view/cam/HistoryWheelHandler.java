@@ -174,6 +174,10 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         superWheelExt.post(() -> superWheelExt.setPositionByTime(time));
     }
 
+    public boolean isBusy() {
+        return superWheelExt.isBusy();
+    }
+
     public void setupHistoryData(IData dataProvider) {
         final long time = System.currentTimeMillis();
         superWheelExt.setDataProvider(dataProvider);
