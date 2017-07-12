@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -140,7 +139,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     /**
      * 设备的时区
      */
-//    private TimeZone mDeviceTimezone;
     private SimpleDateFormat liveTimeDateFormat;
 
     public CamLiveControllerEx(Context context) {
@@ -227,7 +225,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 }
                                 if (layoutE.getCurrentView() instanceof ViewGroup) {
                                     layoutE.showNext();
-                                    AppLogger.d("需要展示 遮罩");
+                                    AppLogger.d("需要展示 遮罩?需要判断 userVisible状态");
                                 }
                                 LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                             }, throwable -> {
@@ -867,6 +865,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
                     return;
                 }
+                if (historyWheelHandler == null || presenter.getHistoryDataProvider() == null ||
+                        presenter.getHistoryDataProvider().getDataCount() == 0) {
+                    ToastUtil.showToast(getResources().getString(R.string.History_video_Firstly));
+                    return;
+                }
                 if (historyWheelHandler != null) {
                     ViewUtils.deBounceClick(v);
                     historyWheelHandler.showDatePicker(MiscUtils.isLand());
@@ -1076,6 +1079,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Device device = sourceManager.getDevice(uuid);
         if (JFGRules.hasHistory(device.pid)) {
             LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
+            //是否显示 历史视频使用引导 "遮罩"
         }
         if (JFGRules.hasProtection(device.pid)) {
             LiveShowCase.showSafeCase((Activity) getContext(), layoutD);

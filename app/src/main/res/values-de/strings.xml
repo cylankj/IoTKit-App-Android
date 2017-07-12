@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Nochmals senden</string>
   <string name="AT_HOME">Zurück</string>
   <string name="AUDIBLE_ALERT">Wenn Ungewöhnliches erkannt wird, tönt das Gerät</string>
-  <string name="Add_Device_ENTER_SN">Bitte geben Sie den S/N Coder CID&#8211;Code ein</string>
-  <string name="Add_Device_SN">Eingabe S/N Code</string>
+  <string name="Add_Device_ENTER_SN">Bitte geben Sie die (S/N)CID</string>
+  <string name="Add_Device_SN">Eingabe (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Scannen</string>
   <string name="Added_successfully">Binden erfolgreich</string>
   <string name="Alarm_WeChat">Alarmmeldungen per Wechat erhalten</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Im Uhrzeigersinn</string>
   <string name="DOG_CAMERA_NAME">Camera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
-  <string name="DOORBELL_BLUE_BLINKING">Hellblau</string>
   <string name="DOOR_ANSWERING">In Verbindung&#8230;</string>
   <string name="DOOR_BELL">Smart Home Klingel</string>
   <string name="DOOR_BELL_LOOK">Nachschauen</string>
   <string name="DOOR_BETTERYMESG">Wir empfehlen Ihnen, die 5V / 1A Ladegerät, Ladeanzeige leuchtet grün</string>
   <string name="DOOR_BIND">Herzlichen Glückwunsch! ~\n erfolgreich hinzugefügt. Sie können jederzeit sich über die Situation draußen vor der Tür informieren</string>
   <string name="DOOR_BLINKING">Es leuchtet ständig rot</string>
-  <string name="DOOR_BLUE_BLINKING">Wenn das Licht nicht \"solid rot\", bitte neu starten, und drücken Sie dann WLAN&#8211;Taste für etwa drei Sekunden nach der Freigabe, bis durchgehend rot.</string>
+  <string name="DOOR_BLUE_BLINKING">Hellblau</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Wenn das Licht nicht \"solid rot\", bitte neu starten, und drücken Sie dann WLAN&#8211;Taste für etwa drei Sekunden nach der Freigabe, bis durchgehend rot.</string>
   <string name="DOOR_CALL">Angenommen</string>
   <string name="DOOR_CALL_RECORD">Keine Anrufe</string>
   <string name="DOOR_CAMERA">Screenshot</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Gerätsinformation</string>
   <string name="EQUIPMENT_NAME">Name des Geräts</string>
   <string name="EQUIPMENT_NAME_1">Geräts:</string>
-  <string name="ERROR_SN">Fehler S/N</string>
+  <string name="ERROR_SN">Fehler (S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Täglich</string>
   <string name="EXPECT">Sie erwarten!</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Teilen Management</string>
-  <string name="Sliding_Timeline">Laden Sie erfolgreich und schieben Sie die Zeitleiste, um das Verlaufsvideo anzuzeigen</string>
+  <string name="Sliding_Timeline">Schieben der Zeitleiste zum Anzeigen von Verlaufsvideos</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>

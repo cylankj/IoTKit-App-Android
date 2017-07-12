@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 public interface SnContract {
 
     interface View extends BaseFragmentView<Presenter> {
-        void getPidRsp(int pid);
+        void getPidRsp(int err, int pid);
     }
 
     interface Presenter extends BasePresenter {

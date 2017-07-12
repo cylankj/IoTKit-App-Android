@@ -41,10 +41,10 @@ public class HomePageCoverFragment extends IBaseFragment {
         return view;
     }
 
-    @OnClick(R.id.v_home_cover)
-    public void click2Dismiss() {
-        getActivity().getSupportFragmentManager().popBackStack();
-    }
+//    @OnClick(R.id.v_home_cover,R.id.v_guide)
+//    public void click2Dismiss() {
+//        getActivity().getSupportFragmentManager().popBackStack();
+//    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -56,5 +56,17 @@ public class HomePageCoverFragment extends IBaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick({R.id.tv_pop_content, R.id.v_home_cover})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_pop_content:
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+            case R.id.v_home_cover:
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+        }
     }
 }

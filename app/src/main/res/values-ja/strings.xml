@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">再送</string>
   <string name="AT_HOME">帰宅モード</string>
   <string name="AUDIBLE_ALERT">異常を検出した場合、サウンドで知らせる</string>
-  <string name="Add_Device_ENTER_SN">S / NコードまたはCIDコードを入力してください</string>
-  <string name="Add_Device_SN">入力S / Nコード</string>
+  <string name="Add_Device_ENTER_SN">(S/N)CIDを入力してください</string>
+  <string name="Add_Device_SN">入力(S/N)CID</string>
   <string name="Add_Device_Scan_QR">QRコードのスキャン</string>
   <string name="Added_successfully">バインドうまく</string>
   <string name="Alarm_WeChat">警報を微信で受信</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">デフォルト（正面）</string>
   <string name="DOG_CAMERA_NAME">カメラ</string>
   <string name="DOG_MAGNETISM_NAME">電磁式ドアセンサー</string>
-  <string name="DOORBELL_BLUE_BLINKING">ライトの青色の定常</string>
   <string name="DOOR_ANSWERING">接続中&#8230;</string>
   <string name="DOOR_BELL">わが家のドアベル</string>
   <string name="DOOR_BELL_LOOK">見る</string>
   <string name="DOOR_BETTERYMESG">5V/ 1Aの充電器をお勧めします。\n充電中に緑のインジケーターが点灯し、充電完了後自動的に消えます。</string>
   <string name="DOOR_BIND">追加完了しました~\nドアの外の状況を確認できます</string>
   <string name="DOOR_BLINKING">赤色定常光</string>
-  <string name="DOOR_BLUE_BLINKING">インジケーターランプが赤く点灯していない場合、再起動し、点灯するまで、約3秒間WiFiボタンを押し続けてください。</string>
+  <string name="DOOR_BLUE_BLINKING">ライトの青色の定常</string>
+  <string name="DOOR_BLUE_BLINKING_EX">インジケーターランプが赤く点灯していない場合、再起動し、点灯するまで、約3秒間WiFiボタンを押し続けてください。</string>
   <string name="DOOR_CALL">応答完了</string>
   <string name="DOOR_CALL_RECORD">通話履歴がありません</string>
   <string name="DOOR_CAMERA">写真を撮る</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">デバイス情報</string>
   <string name="EQUIPMENT_NAME">デバイス名</string>
   <string name="EQUIPMENT_NAME_1">デバイス名：</string>
-  <string name="ERROR_SN">エラーS / N</string>
+  <string name="ERROR_SN">エラー(S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">毎日</string>
   <string name="EXPECT">間もなく更新されます、お楽しみに！</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">共有管理</string>
-  <string name="Sliding_Timeline">読み込みに成功し、タイムラインをスライドさせて履歴ビデオを表示する</string>
+  <string name="Sliding_Timeline">タイムラインをスライドさせて履歴ビデオを表示する</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">スマートキャッツアイ</string>

@@ -299,7 +299,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         boolean BizProfile = jfgAccount != null && jfgAccount.getWxPush() == 1 && !TextUtils.isEmpty(jfgAccount.getWXOpenID());
         svHomeSettingWechat.setChecked(BizProfile);
         //更换微信号
-        svSettingWechatSwitch.setVisibility(BizProfile ? View.VISIBLE : View.GONE);
+        svSettingWechatSwitch.setVisibility(BizProfile && getResources().getBoolean(R.bool.show_wechat_entrance) ? View.VISIBLE : View.GONE);
         svSettingWechatSwitch.setOnClickListener(v -> getAlertDialogManager().showDialog(getActivity(), "qiehuan", getString(R.string.SETTINGS_Wechat_Switch_Open),
                 getString(R.string.I_KNOW), (dialog, which) -> dialog.dismiss()));
         //开关 微信推送通知

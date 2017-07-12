@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Inviare di nuovo</string>
   <string name="AT_HOME">A casa</string>
   <string name="AUDIBLE_ALERT">Scegli l\'avviso audio da riprodurre quando viene rilevato un movimento</string>
-  <string name="Add_Device_ENTER_SN">Inserisci il codice S/N o CID</string>
-  <string name="Add_Device_SN">Immettere il codice S/N</string>
+  <string name="Add_Device_ENTER_SN">Si prega di inserire la (S/N)CID</string>
+  <string name="Add_Device_SN">Ingresso (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Scansiona QR Code</string>
   <string name="Added_successfully">Aggiunto con successo</string>
   <string name="Alarm_WeChat">Ricevi il messaggio di allarme con Wechat</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Normale</string>
   <string name="DOG_CAMERA_NAME">Camera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
-  <string name="DOORBELL_BLUE_BLINKING">Azzurro</string>
   <string name="DOOR_ANSWERING">Connessione&#8230;</string>
   <string name="DOOR_BELL">Il mio campanello</string>
   <string name="DOOR_BELL_LOOK">Vedi</string>
   <string name="DOOR_BETTERYMESG">Si suggerisce di usare l\'adattatore 5V / 1A, la luce è verde durante la Scorri per rispondere</string>
   <string name="DOOR_BIND">Aggiunto con successo</string>
   <string name="DOOR_BLINKING">Luce rossa</string>
-  <string name="DOOR_BLUE_BLINKING">La luce di stato dovrebbe esere rossa costante, altrimenti, riaccendere il dispositivo e premere il bottone WiFi per 3 secondi e attendere che la luce diventi rossa.</string>
+  <string name="DOOR_BLUE_BLINKING">Azzurro</string>
+  <string name="DOOR_BLUE_BLINKING_EX">La luce di stato dovrebbe esere rossa costante, altrimenti, riaccendere il dispositivo e premere il bottone WiFi per 3 secondi e attendere che la luce diventi rossa.</string>
   <string name="DOOR_CALL">Rispondi</string>
   <string name="DOOR_CALL_RECORD">Nessuna chiamata</string>
   <string name="DOOR_CAMERA">Immagine</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Informazioni sul dispositivo</string>
   <string name="EQUIPMENT_NAME">Nome</string>
   <string name="EQUIPMENT_NAME_1">Nome:</string>
-  <string name="ERROR_SN">Errore S/N</string>
+  <string name="ERROR_SN">Errore (S/N)CID</string>
   <string name="ERR_CODE">Codice di errore</string>
   <string name="EVERY_DAY">Tutti giorni</string>
   <string name="EXPECT">Si prega di aspettare</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Condivisione della gestione</string>
-  <string name="Sliding_Timeline">Il caricamento è riuscito, scorrendo la timeline per visualizzare il video della cronologia</string>
+  <string name="Sliding_Timeline">Scorre la timeline per visualizzare il video della cronologia</string>
   <string name="Slogan">Sicurezza domestica? usa Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Visualizzatore Smart Door</string>

@@ -187,7 +187,7 @@ android {
             ]
         }
         _doby {
-            applicationId "com.cylan.jiafeigou.zhongxing"
+            applicationId "com.cleverdog.new.doby"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
@@ -391,8 +391,7 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.cylan.library:iotsdk:1.0-SNAPSHOT'
-
+    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20170712.050453-1', ext: 'aar')
 }
 
 //谷歌推送

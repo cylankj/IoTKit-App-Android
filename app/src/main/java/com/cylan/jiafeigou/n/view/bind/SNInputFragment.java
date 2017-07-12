@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,7 +73,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        customToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
+//        customToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         InputFilter filter = (source, start, end, dest, dstart, dend) -> source.toString().trim();
         etInputBox.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(20)});
     }
@@ -93,25 +94,34 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
         }
     }
 
-    @OnClick({R.id.et_input_box, R.id.iv_clear, R.id.tv_submit})
+    @OnClick({R.id.et_input_box, R.id.iv_clear, R.id.tv_submit, R.id.tv_toolbar_icon})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_clear:
                 etInputBox.setText("");
+                break;
+            case R.id.tv_toolbar_icon:
+                getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.tv_submit:
                 if (NetUtils.getJfgNetType() == 0) {
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
+                LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                 basePresenter.getPid(etInputBox.getText().toString().trim());
                 break;
         }
     }
 
     @Override
-    public void getPidRsp(int pid) {
+    public void getPidRsp(int err, int pid) {
         if (!isAdded()) return;
+        LoadingDialog.dismissLoading(getFragmentManager());
+        if (err != 0) {
+            ToastUtil.showToast(getString(R.string.ADD_FAILED));
+            return;
+        }
         getActivity().getSupportFragmentManager().beginTransaction().remove(this)
                 .commit();
         if (JFGRules.isConsumerCam(pid)) {

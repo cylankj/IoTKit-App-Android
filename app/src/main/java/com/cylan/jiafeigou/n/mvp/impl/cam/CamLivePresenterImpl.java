@@ -152,12 +152,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }
                     }, AppLogger::e);
         } else {
-            Device device = getDevice();
-            Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
-            DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-            if (battery < 20 && net.net > 0) {
-                mView.onBatteryDrainOut();
-            }
+//            Device device = getDevice();
+//            Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
+//            DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+//            if (battery < 20 && net.net > 0) {
+//                mView.onBatteryDrainOut();
+//            }
         }
         return null;
     }

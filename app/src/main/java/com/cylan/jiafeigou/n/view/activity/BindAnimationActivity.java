@@ -28,6 +28,8 @@ public class BindAnimationActivity extends BaseBindActivity {
     TextView tvSubTitle;
     @BindView(R.id.imv_gif_container)
     ImageView imvGifContainer;
+    @BindView(R.id.tv_next_step)
+    TextView tvNextStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,9 @@ public class BindAnimationActivity extends BaseBindActivity {
                 new GlideDrawableImageViewTarget(imvGifContainer);
         Glide.with(this).load(gifId).into(imageViewTarget);
         customToolbar.setBackAction(v -> finishExt());
+        tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));
+        tvSubTitle.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_SUB_TITLE));
+        tvNextStep.setText(getIntent().getStringExtra(JConstant.KEY_NEXT_STEP));
     }
 
     protected int[] getOverridePendingTransition() {

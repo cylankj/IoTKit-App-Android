@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Gửi lại</string>
   <string name="AT_HOME">At Home</string>
   <string name="AUDIBLE_ALERT">Chọn Báo âm thanh để thực hiện khi phát hiện chuyển động</string>
-  <string name="Add_Device_ENTER_SN">Vui lòng nhập mã S/N oặc CID</string>
-  <string name="Add_Device_SN">Nhập mã S/N</string>
+  <string name="Add_Device_ENTER_SN">Xin vui lòng nhập (S/N)CID</string>
+  <string name="Add_Device_SN">Đầu vào (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Quét mã QR</string>
   <string name="Added_successfully">Hãy cột thành công</string>
   <string name="Alarm_WeChat">Báo thức qua WeChet</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Bình thường</string>
   <string name="DOG_CAMERA_NAME">Camera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
-  <string name="DOORBELL_BLUE_BLINKING">Xanh nhạt</string>
   <string name="DOOR_ANSWERING">Đang kết nối&#8230;</string>
   <string name="DOOR_BELL">Chuông cửa của tôi</string>
   <string name="DOOR_BELL_LOOK">Hãy nhìn</string>
   <string name="DOOR_BETTERYMESG">Đề nghị dụng 5V/1A adaptor, đèn báo sẽ sáng xanh lá cây khi sạc</string>
   <string name="DOOR_BIND">Thêm thành công \n</string>
   <string name="DOOR_BLINKING">Đèn đỏ</string>
-  <string name="DOOR_BLUE_BLINKING">Đèn báo cần phải là màu đỏ, nếu chưa, hãy khởi động lại thiết bị, sau đó giữ nút Wi&#8211;Fi trong 3 giây và đợi chuyển sang đỏ</string>
+  <string name="DOOR_BLUE_BLINKING">Xanh nhạt</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Đèn báo cần phải là màu đỏ, nếu chưa, hãy khởi động lại thiết bị, sau đó giữ nút Wi&#8211;Fi trong 3 giây và đợi chuyển sang đỏ</string>
   <string name="DOOR_CALL">Đang gọi</string>
   <string name="DOOR_CALL_RECORD">Không có nhật ký cuộc gọi</string>
   <string name="DOOR_CAMERA">Hình</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Thông tin</string>
   <string name="EQUIPMENT_NAME">Tên thiết bị</string>
   <string name="EQUIPMENT_NAME_1">Tên thiết bị:</string>
-  <string name="ERROR_SN">Lỗi S/N</string>
+  <string name="ERROR_SN">Lỗi (S/N)CID</string>
   <string name="ERR_CODE">Mã lỗi</string>
   <string name="EVERY_DAY">Cả ngày</string>
   <string name="EXPECT">Hãy mong đợi!</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Quản lý chia sẻ</string>
-  <string name="Sliding_Timeline">Tải thành công, trượt tuyến thời gian để xem video lịch sử</string>
+  <string name="Sliding_Timeline">Lướt theo thời gian để xem video lịch sử</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Xem cửa thông minh</string>

@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">重新发送</string>
   <string name="AT_HOME">回家模式</string>
   <string name="AUDIBLE_ALERT">侦测到异常时，设备将播放声音</string>
-  <string name="Add_Device_ENTER_SN">请输入12位S/N(CID)号</string>
-  <string name="Add_Device_SN">S/N码添加</string>
+  <string name="Add_Device_ENTER_SN">请输入(S/N)CID号</string>
+  <string name="Add_Device_SN">(S/N)CID添加</string>
   <string name="Add_Device_Scan_QR">扫码添加</string>
   <string name="Added_successfully">绑定成功</string>
   <string name="Alarm_WeChat">微信接收报警消息</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">默认(正向)</string>
   <string name="DOG_CAMERA_NAME">智能摄像头</string>
   <string name="DOG_MAGNETISM_NAME">门磁</string>
-  <string name="DOORBELL_BLUE_BLINKING">蓝灯已长亮</string>
   <string name="DOOR_ANSWERING">连接中&#8230;</string>
   <string name="DOOR_BELL">我家门铃</string>
   <string name="DOOR_BELL_LOOK">查看</string>
   <string name="DOOR_BETTERYMESG">建议使用5V/1A的充电器； \n充电过程中指示灯绿色常亮，充满电后会自动熄灭</string>
   <string name="DOOR_BIND">恭喜你！添加成功~\n现在可以随时了解门外的情况啦</string>
-  <string name="DOOR_BLINKING">红灯已长亮</string>
-  <string name="DOOR_BLUE_BLINKING">设备指示灯没有“红色常亮”时，请重新开机，再长按WiFi键约3秒，等待红色常亮</string>
+  <string name="DOOR_BLINKING">红灯已常亮</string>
+  <string name="DOOR_BLUE_BLINKING">蓝灯已常亮</string>
+  <string name="DOOR_BLUE_BLINKING_EX">设备指示灯没有“红色常亮”时，请重新开机，再长按WiFi键约3秒，等待红色常亮</string>
   <string name="DOOR_CALL">已接听</string>
   <string name="DOOR_CALL_RECORD">暂无呼叫记录</string>
   <string name="DOOR_CAMERA">拍照</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">设备信息</string>
   <string name="EQUIPMENT_NAME">设备名称</string>
   <string name="EQUIPMENT_NAME_1">设备名称：</string>
-  <string name="ERROR_SN">S/N码输入错误</string>
+  <string name="ERROR_SN">(S/N)CID输入错误</string>
   <string name="ERR_CODE">错误码</string>
   <string name="EVERY_DAY">每天</string>
   <string name="EXPECT">即将推出，敬请期待</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">分享到%s</string>
   <string name="SharedTo">分享到</string>
   <string name="Sharing_Management">分享管理</string>
-  <string name="Sliding_Timeline">加载成功，左右滑动下方时间轴可查看历史录像</string>
+  <string name="Sliding_Timeline">左右滑动时间轴可查看历史录像</string>
   <string name="Slogan">想家，就用加菲狗</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
   <string name="Smart_Door_Viewer">智能猫眼</string>
@@ -649,7 +649,7 @@
   <string name="Tap1_AddDevice_CameraTipShort">短按WiFi键1秒</string>
   <string name="Tap1_AddDevice_CameraTips">等待蓝灯闪烁</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">长按WiFi键3秒</string>
-  <string name="Tap1_AddDevice_CloudcameraTips">等待蓝灯长亮</string>
+  <string name="Tap1_AddDevice_CloudcameraTips">等待蓝灯常亮</string>
   <string name="Tap1_AddDevice_CloudcameraTitle">开机后，长按WiFi键3秒</string>
   <string name="Tap1_AddDevice_ConnectWifi">连接Wi&#8211;Fi网络</string>
   <string name="Tap1_AddDevice_DoorbellTips">等待红灯常亮</string>

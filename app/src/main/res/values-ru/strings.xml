@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Отправить</string>
   <string name="AT_HOME">Вернуться</string>
   <string name="AUDIBLE_ALERT">Выберите звуковой сигнал, который будет воспроизводиться при обнаружении движения</string>
-  <string name="Add_Device_ENTER_SN">Введите код S/N ли CID</string>
-  <string name="Add_Device_SN">Код ввода S/N</string>
+  <string name="Add_Device_ENTER_SN">Введите (S/N)CID</string>
+  <string name="Add_Device_SN">Входной сигнал (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Скан QR кода</string>
   <string name="Added_successfully">Привязать успешно</string>
   <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">По умолчанию</string>
   <string name="DOG_CAMERA_NAME">Камера</string>
   <string name="DOG_MAGNETISM_NAME">Магнитный датчик</string>
-  <string name="DOORBELL_BLUE_BLINKING">Голубой свет</string>
   <string name="DOOR_ANSWERING">Идет вызов&#8230;</string>
   <string name="DOOR_BELL">Мой дверной звонок</string>
   <string name="DOOR_BELL_LOOK">Проверка</string>
   <string name="DOOR_BETTERYMESG">Мы рекомендуем вам использовать 5V / 1A зарядное устройство, во время зарядки индикатор горит зеленым</string>
   <string name="DOOR_BIND">Оборудование успешно установлено</string>
   <string name="DOOR_BLINKING">Красный свет</string>
-  <string name="DOOR_BLUE_BLINKING">Индикатор состояния должен быть красным постоянно, если нет, пожалуйста, перезагрузите устройство, затем удерживайте кнопку WiFi около трёх секунд и подождите пока загорится красная лампочка</string>
+  <string name="DOOR_BLUE_BLINKING">Голубой свет</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Индикатор состояния должен быть красным постоянно, если нет, пожалуйста, перезагрузите устройство, затем удерживайте кнопку WiFi около трёх секунд и подождите пока загорится красная лампочка</string>
   <string name="DOOR_CALL">Входящие</string>
   <string name="DOOR_CALL_RECORD">Нет звонков</string>
   <string name="DOOR_CAMERA">Камера</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Сведения об оборудовании</string>
   <string name="EQUIPMENT_NAME">Имя</string>
   <string name="EQUIPMENT_NAME_1">Имя:</string>
-  <string name="ERROR_SN">Ошибка S/N</string>
+  <string name="ERROR_SN">Ошибка (S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Каждый день</string>
   <string name="EXPECT">В ближайшее время ожидается выход новой версии, следите за обновлениями</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">совместное управление</string>
-  <string name="Sliding_Timeline">Загрузка успешно, сдвигая шкалу времени, чтобы просмотреть историю видео</string>
+  <string name="Sliding_Timeline">Сдвиг временной шкалы для просмотра истории видео</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>
