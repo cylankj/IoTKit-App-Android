@@ -124,9 +124,9 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
-                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTitle));
-                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
-                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.Tap1_Tosetup));
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.RuiShi_Guide));
+                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
                 break;
             case R.id.v_to_bind_bell_battery:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);

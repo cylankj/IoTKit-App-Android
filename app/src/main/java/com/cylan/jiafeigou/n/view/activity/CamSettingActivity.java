@@ -41,6 +41,7 @@ import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -383,7 +384,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             //freeCam直接进入
             Intent intent = new Intent(this, BindCamActivity.class);
             intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
-
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+            intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipsTitle));
+            intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+            intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
             startActivity(intent);
         } else if (JFGRules.isBell(device.pid)) {
             Intent intent = new Intent(this, BindBellActivity.class);
@@ -394,17 +398,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
             if (!JFGRules.isDeviceOnline(net)) {
                 //设备离线
-                Intent intent;
-                if (JFGRules.isRS(device.pid)) {
-                    //特殊设备优先
-                    intent = new Intent(this, BindAnimationActivity.class);
-                    intent.putExtra("ANIM_GIF", R.raw.bind_reset_rs);
-                    intent.putExtra("CONNECT_AP_GIF", R.raw.bind_guide);
-                    intent.putExtra("SSID-PREFIX", "BELL-");
-                    intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
-                } else {
-                    intent = new Intent(this, BindCamActivity.class);
-                }
+                Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
+                intent.setClass(getContext(), BindAnimationActivity.class);
                 intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
                 startActivity(intent);
             } else {
