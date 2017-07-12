@@ -196,7 +196,7 @@ public class PanoramicViewFragment extends IBaseFragment {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.e("load failed: " + e.getLocalizedMessage());
+                        AppLogger.e(e);
                         loadBitmap(lastLoadIndex);
                         showLoading(false);
                     }

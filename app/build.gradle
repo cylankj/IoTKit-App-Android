@@ -30,13 +30,6 @@ def boolean hasSignKey() {
     return false
 }
 
-task findBugs(type: Exec) {
-    println 'FindBugs 正在执行代码分析'
-    commandLine 'java', '-jar', './libs/findbugs.jar'
-    println execResult
-}
-
-
 
 android {
     compileOptions {
@@ -187,7 +180,7 @@ android {
             ]
         }
         _doby {
-            applicationId "com.cleverdog.new.doby"
+            applicationId "com.cylan.jiafeigou.doby"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
@@ -354,13 +347,7 @@ dependencies {
     //可以单独使用，不需要依赖下方的扩展包
 
     //RxJava扩展支持，根据需要添加
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     annotationProcessor project(':processor')
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
@@ -384,7 +371,7 @@ dependencies {
     compile 'com.lzy.net:okgo:2.1.4'
     compile 'com.lzy.net:okrx:0.1.2'
     compile 'com.lzy.net:okserver:1.1.3'
-    compile 'org.jsoup:jsoup:1.9.2'
+    compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.romandanylyk:pageindicatorview:0.2.0'
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.9'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'

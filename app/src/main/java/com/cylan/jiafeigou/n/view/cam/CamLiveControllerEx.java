@@ -201,10 +201,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutF.findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(this);
         layoutE.findViewById(R.id.btn_load_history)
                 .setOnClickListener(v -> {
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                    DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+                    if (!status.hasSdcard) {
+                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
+                        return;
+                    }
                     AppLogger.d("点击加载历史视频");
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
                     livePlayState = PLAY_STATE_PREPARE;
-                    setLoadingState(null, getResources().getString(R.string.LOADING));
+                    setLoadingState(getResources().getString(R.string.LOADING), null);
                     Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
@@ -296,7 +302,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         //要根据设备属性表决定是否显示加载历史视频的按钮
         View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.hasHistory(device.pid) ? VISIBLE : GONE);
+        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);
 
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
@@ -791,9 +797,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
 
-        //需要根据设备属性表来决定是否显示和隐藏加载历史视频的按钮
+//        //需要根据设备属性表来决定是否显示和隐藏加载历史视频的按钮
         View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.hasHistory(device.pid) ? VISIBLE : GONE);
+        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);
         layoutE.setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }
@@ -1065,7 +1071,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
-//            showUseCase();
+            layoutE.findViewById(R.id.btn_load_history).setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : INVISIBLE);
+            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
+                    ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
             showUseCase();
         }, 100);
@@ -1214,7 +1222,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
-        long timeStart = TimeUtils.getSpecificDayStartTime(timeTarget);
         //先loading吧.
         presenter.startPlayHistory(timeTarget);
         presenter.assembleTheDay()

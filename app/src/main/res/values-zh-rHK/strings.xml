@@ -603,7 +603,7 @@
   <string name="Start_instructions_H">綁定賬號</string>
   <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
   <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
-  <string name="Switch_Mode_Pop">當前網絡拍攝內容請切換至直連模式查看</string>
+  <string name="Switch_Mode_Pop">當前網絡拍攝內容請到設置切換至直連模式查看</string>
   <string name="Switch_Off">始終關閉</string>
   <string name="Switch_On">始終開啟</string>
   <string name="TAKE_PHOTO">拍照</string>
