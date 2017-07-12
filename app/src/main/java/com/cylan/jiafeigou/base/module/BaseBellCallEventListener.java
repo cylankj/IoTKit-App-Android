@@ -87,4 +87,5 @@ public class BaseBellCallEventListener {
     public void canNewCall(boolean newCall) {
         this.canNewCall = newCall;
     }
+
 }

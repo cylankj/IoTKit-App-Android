@@ -371,6 +371,14 @@ public class JFGRules {
         return productProperty.hasProperty(pid, "AUTORECORD");
     }
 
+    public static boolean hasBatteryNotify(int pid) {
+        return true;
+    }
+
+    public static boolean hasAutoRecord(int pid) {
+        return true;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

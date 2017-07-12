@@ -93,7 +93,7 @@ public class DpMsgDefine {
          * |NET_5G      |  5 | #5G网络  |
          */
         @Index(0)
-        public int net = -1;
+        public int net = 0;
         @Index(1)
         public String ssid;
 

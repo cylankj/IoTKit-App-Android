@@ -173,7 +173,20 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private void updateRedHint() {
         if (imgVCameraTitleTopSetting != null) {
             TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(this.getClass().getSimpleName());
-            boolean newNode = node != null && node.getTraversalCount() > 0;
+
+//            if (JFGRules.hasProtection(device.pid)) {
+//                //说明当前设备支持安全防护
+//
+//            }
+//            if (JFGRules.hasHistory(device.pid)) {
+//                //说明当前设备支持自动录像
+//
+//            }
+            // TODO: 2017/7/12 因为当前 TreeHelper 把当前类当做了父类,因此需要先特殊处理,以后再完善
+            boolean newNode = false;
+            if (JFGRules.hasHistory(device.pid) && JFGRules.hasProtection(device.pid)) {
+                newNode = node != null && node.getTraversalCount() > 0;
+            }
             boolean result = hasNewFirmware();
             //延时摄影，暂时隐藏。
             imgVCameraTitleTopSetting.setShowDot(result || newNode);
@@ -185,6 +198,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      *
      * @return
      */
+
     private boolean hasNewFirmware() {
         try {
             final String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());

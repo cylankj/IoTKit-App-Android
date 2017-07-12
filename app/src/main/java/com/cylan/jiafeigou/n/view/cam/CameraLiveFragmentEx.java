@@ -27,6 +27,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -98,6 +99,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         fragment.setArguments(bundle);
         return fragment;
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -636,11 +638,23 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onBatteryDrainOut() {
         //当前页面才显示
         if (!isAdded() && isUserVisible()) return;
-        AlertDialogManager.getInstance().showDialog(getActivity(),
-                "onBatteryDrainOut", getString(R.string.Tap1_LowPower),
-                getString(R.string.OK), null, false);
+        String uuid = "";
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        if (device.available() && JFGRules.hasBatteryNotify(device.pid)) {
+            AlertDialogManager.getInstance().showDialog(getActivity(),
+                    "onBatteryDrainOut", getString(R.string.Tap1_LowPower),
+                    getString(R.string.OK), null, false);
+        }
     }
 
+    @Override
+    public void onHistoryLoadFinished() {
+        if (getUserVisibleHint() && isResumed() && getActivity() != null) {
+            //这里是个异步的,显示的条件是当前 fragment 可见
+            AppLogger.d(" //这里是个异步的,显示的条件是当前 fragment 可见");
+            LiveShowCase.showHistoryWheelCase(getActivity(), null);
+        }
+    }
 
 //    @Override
 //    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
