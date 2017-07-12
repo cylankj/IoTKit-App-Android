@@ -518,6 +518,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                         }
                         break;
                 }
+                switch (errId) {
+                    case JError.ErrorAccountNotExist:
+                        ToastUtil.showToast(getString(R.string.INVALID_ACCOUNT));
+                        break;
+                }
             });
         }
     }

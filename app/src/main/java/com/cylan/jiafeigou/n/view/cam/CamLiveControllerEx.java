@@ -1071,7 +1071,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
-            layoutE.setVisibility(!judge || JFGRules.isShareDevice(device) ? INVISIBLE : VISIBLE);
+            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
+                    ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
             showUseCase();
         }, 100);
@@ -1220,7 +1221,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
-        long timeStart = TimeUtils.getSpecificDayStartTime(timeTarget);
         //先loading吧.
         presenter.startPlayHistory(timeTarget);
         presenter.assembleTheDay()

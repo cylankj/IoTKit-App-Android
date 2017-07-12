@@ -147,6 +147,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     } else {
                         //返回错误码
                         mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
+                        unSubscribeAllTag();
                     }
                     return Observable.just(ret.jfgResult.code);
                 })
