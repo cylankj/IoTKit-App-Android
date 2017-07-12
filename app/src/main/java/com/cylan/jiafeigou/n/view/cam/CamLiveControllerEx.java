@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -55,7 +54,6 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.Switcher;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
@@ -1081,7 +1079,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (JFGRules.hasHistory(device.pid) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
             LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
             if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
-                LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
+                LiveShowCase.showHistoryWheelCase((Activity) getContext(), findViewById(R.id.layout_e));
             }
         }
         if (JFGRules.hasProtection(device.pid) && TextUtils.isEmpty(device.shareAccount)) {

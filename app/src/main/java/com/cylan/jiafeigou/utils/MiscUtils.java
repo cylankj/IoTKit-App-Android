@@ -166,7 +166,7 @@ public class MiscUtils {
         if (bean.alarmMsg != null) {
             result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.type);
         } else if (bean.bellCallRecord != null) {
-            if (bean.bellCallRecord.fileIndex == 0) {
+            if (bean.bellCallRecord.fileIndex == -1) {
                 //旧版本门铃呼叫记录,不带index
                 result = new CamWarnGlideURL(cid, bean.bellCallRecord.time + ".jpg", bean.bellCallRecord.type);
             } else {

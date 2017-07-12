@@ -390,14 +390,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-<<<<<<< HEAD
-    compile(group: 'com.cylan.library', name: 'iotsdk', version: '1.0-20170712.050453-1', ext: 'aar')
-=======
-//    compile 'com.cylan.library:iotsdk:1.0-SNAPSHOT'
-
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
->>>>>>> 3.2.2
 }
 
 //谷歌推送
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

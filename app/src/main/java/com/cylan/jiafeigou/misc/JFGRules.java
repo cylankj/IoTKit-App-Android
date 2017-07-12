@@ -214,12 +214,17 @@ public class JFGRules {
         return pid == 1089 || pid == 21;
     }
 
-
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showSight(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "VIEWANGLE");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showRotate(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "hangup");
@@ -275,12 +280,17 @@ public class JFGRules {
                 .flatMap(bytes -> Observable.just(true));
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showStandbyItem(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "standby");
     }
 
-
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showSdHd(int pid, String version) {
         boolean has = BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "SD/HD");
         String minVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "MinVersion");
@@ -289,16 +299,20 @@ public class JFGRules {
         return BindUtils.versionCompare(version, minVersion) >= 0 && has;
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showBattery(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "battery");
     }
 
     /**
-     * 非常坑
+     * 非常坑    /**
      *
      * @param pid
      * @return
+     * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean popPowerDrainOut(int pid) {
         return isCloudCam(pid) ||
@@ -309,10 +323,17 @@ public class JFGRules {
 
 
     //freeCam 海思 wifi
+
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showMobileNet(int pid) {
         return is3GCam(pid);
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showLedIndicator(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "led");
@@ -320,7 +341,8 @@ public class JFGRules {
 
     /**
      * 内部会 自动转成大写
-     *
+     *    /**
+     * @deprecated 需要一并传入是否为共享账号
      * @param pid
      * @return
      */
@@ -329,30 +351,48 @@ public class JFGRules {
                 "IP");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showWiredMode(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "wired");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showEnableAp(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "enableAP");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showFirmware(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "fu");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showSoftWare(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "softVersion");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showTimeZone(int pid) {
         return !JFGRules.isPanoramicCam(pid);
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean isNeedNormalRadio(int pid) {
         return isRS(pid) || !JFGRules.isNeedPanoramicView(pid);
     }
@@ -361,20 +401,33 @@ public class JFGRules {
         return false;
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean hasProtection(int pid) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
         return productProperty.hasProperty(pid, "PROTECTION");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean hasHistory(int pid) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
         return productProperty.hasProperty(pid, "AUTORECORD");
     }
 
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean hasBatteryNotify(int pid) {
         return true;
     }
 
+
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean hasAutoRecord(int pid) {
         return true;
     }

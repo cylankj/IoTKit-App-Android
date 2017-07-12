@@ -830,7 +830,7 @@ public class DpMsgDefine {
         public int isRecording;
         @Index(5)
         @Optional
-        public int fileIndex;
+        public int fileIndex = -1;//默认为-1 ,因为听说新版本默认为零
 
         @Ignore
         public static DPBellCallRecord empty = new DPBellCallRecord();
