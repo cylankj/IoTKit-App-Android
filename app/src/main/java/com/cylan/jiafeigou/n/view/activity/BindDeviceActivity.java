@@ -121,7 +121,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             case R.id.v_to_bind_consumer_cam://原来睿视
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.bind_reset_rs);
-                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide_rs);
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTitle));

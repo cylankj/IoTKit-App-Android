@@ -196,8 +196,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     private void handleScanResult(String url) {
         String vid = MiscUtils.getValueFromUri(url, "Vid");
         String sn = MiscUtils.getValueFromUri(url, "sn");
-        String pid = MiscUtils.getValueFromUri(url, "pid");
-        if (TextUtils.isEmpty(vid) || TextUtils.isEmpty(pid) || TextUtils.isEmpty(sn)) {
+        String sPid = MiscUtils.getValueFromUri(url, "pid");
+        if (TextUtils.isEmpty(vid) || TextUtils.isEmpty(sPid) || TextUtils.isEmpty(sn)) {
             ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
             return;
         }
@@ -218,32 +218,33 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                     zxVScan.stop();
                 }, 2000);
             } else {
-                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                        .commitAllowingStateLoss();//不需要动画.
-                int iPid = Integer.parseInt(pid);
-                if (JFGRules.isRS(iPid)) {
-                    if (getActivity() != null) {
-                        Intent intent = new Intent(getActivity(), BindAnimationActivity.class);
-                        intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.bind_reset_rs);
-                        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide_rs);
-                        intent.putExtra(JConstant.KEY_SSID_PREFIX, "RS-");
-                        intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
-                        startActivity(intent);
-                    }
-                } else if (JFGRules.isPan720(iPid)) {
-                    if (getActivity() != null)
-                        startActivity(new Intent(getActivity(), BindPanoramaCamActivity.class));
-                } else if (JFGRules.isCamera(iPid)) {
-                    if (getActivity() != null)
-                        startActivity(new Intent(getActivity(), BindCamActivity.class));
-                } else if (JFGRules.isBell(iPid)) {
-                    if (getActivity() != null)
-                        startActivity(new Intent(getActivity(), BindBellActivity.class));
-                } else {
-                    AppLogger.d("不支持的设备类型");
-                    ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_QR_Fail));
-                }
                 zxVScan.stop();
+                int pid = Integer.parseInt(sPid);
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
+                        .commit();
+                if (JFGRules.isConsumerCam(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_consumer_cam)
+                            .performClick();
+                } else if (JFGRules.isCloudCam(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_camera_cloud)
+                            .performClick();
+                } else if (JFGRules.isPanoramicCam(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_panorama_camera)
+                            .performClick();
+                } else if (JFGRules.isCamera(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_camera)
+                            .performClick();
+                } else if (JFGRules.isCatEeyBell(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_cat_eye_cam)
+                            .performClick();
+                } else if (JFGRules.isNoPowerBell(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_bell_no_battery)
+                            .performClick();
+                } else if (JFGRules.isBell(pid)) {
+                    getActivity().findViewById(R.id.v_to_bind_bell_battery)
+                            .performClick();
+                }
+
             }
         } catch (Exception e) {
 
