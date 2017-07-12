@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SnPresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -118,6 +119,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
     public void getPidRsp(int err, int pid) {
         if (!isAdded()) return;
         LoadingDialog.dismissLoading(getFragmentManager());
+        AppLogger.d("err:" + err + ",pid:" + pid);
         if (err != 0) {
             ToastUtil.showToast(getString(R.string.ADD_FAILED));
             return;

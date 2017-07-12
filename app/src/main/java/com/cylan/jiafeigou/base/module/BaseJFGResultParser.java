@@ -143,7 +143,7 @@ BaseJFGResultParser {
 //                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
                             break;
                         case JError.ErrorLoginInvalidPass:
-                            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+//                            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
                             break;
                         case JError.ErrorOpenLoginInvalidToken:
                             ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
