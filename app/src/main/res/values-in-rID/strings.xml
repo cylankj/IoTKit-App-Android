@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Mengirim ulang</string>
   <string name="AT_HOME">Di rumah</string>
   <string name="AUDIBLE_ALERT">Pilih sebuah sinyal Audio untuk diputar ketika sensor gerakan terdeteksi</string>
-  <string name="Add_Device_ENTER_SN">Harap masukkan kode S/N atau CID</string>
-  <string name="Add_Device_SN">Masukkan kode S/N</string>
+  <string name="Add_Device_ENTER_SN">Masukkan (S/N)CID</string>
+  <string name="Add_Device_SN">Input (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Pindai Kode QR</string>
   <string name="Added_successfully">Bind berhasil</string>
   <string name="Alarm_WeChat">Alarm via WeChet</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Normal</string>
   <string name="DOG_CAMERA_NAME">Kamera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
-  <string name="DOORBELL_BLUE_BLINKING">Biru muda</string>
   <string name="DOOR_ANSWERING">Sedang menyambungkan&#8230;</string>
   <string name="DOOR_BELL">Doorbell saya</string>
   <string name="DOOR_BELL_LOOK">Lihat</string>
   <string name="DOOR_BETTERYMESG">Disarankan menggunakan adaptor 5V/1A , lampu stat akan berwarna hijau saat mengisi</string>
   <string name="DOOR_BIND">Berhasil ditambahkan</string>
   <string name="DOOR_BLINKING">Lampu merah</string>
-  <string name="DOOR_BLUE_BLINKING">Indikator lampu status harus merah terus&#8211;menerus, jika tidak , silahkan restart perangkat, kemudian tahan tombol wifi 3 detik dan menunggu lampu berubah menjadi merah .</string>
+  <string name="DOOR_BLUE_BLINKING">Biru muda</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Indikator lampu status harus merah terus&#8211;menerus, jika tidak , silahkan restart perangkat, kemudian tahan tombol wifi 3 detik dan menunggu lampu berubah menjadi merah .</string>
   <string name="DOOR_CALL">Sedang datang</string>
   <string name="DOOR_CALL_RECORD">Tidak ada Laporan panggilan</string>
   <string name="DOOR_CAMERA">Gambar</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Info Perangkat</string>
   <string name="EQUIPMENT_NAME">Nama Perangkat</string>
   <string name="EQUIPMENT_NAME_1">Nama Perangkat:</string>
-  <string name="ERROR_SN">Kesalahan S/N</string>
+  <string name="ERROR_SN">Kesalahan (S/N)CID</string>
   <string name="ERR_CODE">Kode Kesalahan</string>
   <string name="EVERY_DAY">Setiap hari</string>
   <string name="EXPECT">Segera hadir</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Manajemen berbagi</string>
-  <string name="Sliding_Timeline">Memuat berhasil, geser garis waktu untuk melihat video riwayat</string>
+  <string name="Sliding_Timeline">Meluncur garis waktu untuk melihat video riwayat</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>

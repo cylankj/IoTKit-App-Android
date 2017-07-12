@@ -410,5 +410,8 @@ public class JConstant {
     public static final String KEY_ANIM_GIF = "ANIM_GIF";
     public static final String KEY_CONNECT_AP_GIF = "CONNECT_AP_GIF";
     public static final String KEY_SSID_PREFIX = "SSID_PREFIX";
+    public static final String KEY_ANIM_TITLE = "KEY_ANIM_TITLE";
+    public static final String KEY_ANIM_SUB_TITLE = "KEY_ANIM_SUB_TITLE";
+    public static final String KEY_NEXT_STEP = "NEXT_STEP";
 
 }

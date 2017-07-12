@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Enviar novamente</string>
   <string name="AT_HOME">Em casa</string>
   <string name="AUDIBLE_ALERT">Ao detectar anormalidade, o dispositivo irá soar</string>
-  <string name="Add_Device_ENTER_SN">Digite o código S/N ou CID</string>
-  <string name="Add_Device_SN">Código S/N de entrada</string>
+  <string name="Add_Device_ENTER_SN">Digite o (S/N)CID</string>
+  <string name="Add_Device_SN">Entrada (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Escanear código QR</string>
   <string name="Added_successfully">Bind com sucesso</string>
   <string name="Alarm_WeChat">O Wechat pode receber a notícia de alarme.</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Padrão</string>
   <string name="DOG_CAMERA_NAME">Câmera</string>
   <string name="DOG_MAGNETISM_NAME">Sensor magnético</string>
-  <string name="DOORBELL_BLUE_BLINKING">Azul claro</string>
   <string name="DOOR_ANSWERING">Conectando&#8230;</string>
   <string name="DOOR_BELL">Minha campainha</string>
   <string name="DOOR_BELL_LOOK">Visualizar</string>
   <string name="DOOR_BETTERYMESG">Recomendamos que use um carregador 5V/1A \n A luz fica verde ao recarregar</string>
   <string name="DOOR_BIND">Adicionado com sucesso</string>
   <string name="DOOR_BLINKING">Luz vermelha</string>
-  <string name="DOOR_BLUE_BLINKING">A luz indicativa deve estar vermelha sem piscar. Se não estiver, por favor reinicie o dispositivo e pressione o botão Wi&#8211;Fi por 3 segundos</string>
+  <string name="DOOR_BLUE_BLINKING">Azul claro</string>
+  <string name="DOOR_BLUE_BLINKING_EX">A luz indicativa deve estar vermelha sem piscar. Se não estiver, por favor reinicie o dispositivo e pressione o botão Wi&#8211;Fi por 3 segundos</string>
   <string name="DOOR_CALL">Atendido</string>
   <string name="DOOR_CALL_RECORD">Não há registros de chamadas</string>
   <string name="DOOR_CAMERA">Fotos</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Informações sobre o dispositivo</string>
   <string name="EQUIPMENT_NAME">Nome do dispositivo</string>
   <string name="EQUIPMENT_NAME_1">Nome do dispositivo:</string>
-  <string name="ERROR_SN">Erro S/N</string>
+  <string name="ERROR_SN">Erro (S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Todos os dias</string>
   <string name="EXPECT">Aguarde um instante</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Gerenciamento de compartilhamento</string>
-  <string name="Sliding_Timeline">Carregando bem sucedido, deslizando a linha de tempo para ver o vídeo da história</string>
+  <string name="Sliding_Timeline">Deslizando a linha de tempo para ver o vídeo da história</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>
@@ -902,7 +902,7 @@
   <string name="Tap3_ShareDevice_ExceedTips">Compartilhe com até 5 amigos</string>
   <string name="Tap3_ShareDevice_FailTips">Falha ao compartilhar</string>
   <string name="Tap3_ShareDevice_Friends">Compartilhar com amigos</string>
-  <string name="Tap3_ShareDevice_Friends_FailTips">usuário%sd não compartilham</string>
+  <string name="Tap3_ShareDevice_Friends_FailTips">usuários%d não compartilham</string>
   <string name="Tap3_ShareDevice_NoDevice">Nenhum dispositivo ainda</string>
   <string name="Tap3_ShareDevice_NoShare">Not sido compartilhadas</string>
   <string name="Tap3_ShareDevice_NoneFriends">Nenhum</string>

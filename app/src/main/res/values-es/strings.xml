@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Repetir</string>
   <string name="AT_HOME">Regresar a casa</string>
   <string name="AUDIBLE_ALERT">Emite sonidos el dispositivo al detectar estado anormal</string>
-  <string name="Add_Device_ENTER_SN">Introduzca el código S/N o CID</string>
-  <string name="Add_Device_SN">Código S/N de entrada</string>
+  <string name="Add_Device_ENTER_SN">Introduzca el (S/N)CID</string>
+  <string name="Add_Device_SN">Entrada (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Escanear código QR</string>
   <string name="Added_successfully">enlazar con éxito</string>
   <string name="Alarm_WeChat">Mensaje de advertencia recibido por WeChat</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Defecto</string>
   <string name="DOG_CAMERA_NAME">Camera</string>
   <string name="DOG_MAGNETISM_NAME">Magnetometer</string>
-  <string name="DOORBELL_BLUE_BLINKING">Azul claro</string>
   <string name="DOOR_ANSWERING">Conectando&#8230;</string>
   <string name="DOOR_BELL">Timbre de mi casa</string>
   <string name="DOOR_BELL_LOOK">Revisar</string>
   <string name="DOOR_BETTERYMESG">Le recomendamos que utilice el cargador 5V / 1A, cobrando luces indicadoras verde</string>
   <string name="DOOR_BIND">¡Enhorabuena! Ha logrado añadir \n se puede mantener enterando a todas horas de lo que pasa fuera de la pueta</string>
   <string name="DOOR_BLINKING">Luz roja</string>
-  <string name="DOOR_BLUE_BLINKING">Cuando la luz no es \"sólido rojo\", por favor re&#8211;arranque, a continuación, pulse el botón Wi&#8211;Fi durante unos tres segundos después del lanzamiento, hasta el rojo sólido.</string>
+  <string name="DOOR_BLUE_BLINKING">Azul claro</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Cuando la luz no es \"sólido rojo\", por favor re&#8211;arranque, a continuación, pulse el botón Wi&#8211;Fi durante unos tres segundos después del lanzamiento, hasta el rojo sólido.</string>
   <string name="DOOR_CALL">Se ha contestado</string>
   <string name="DOOR_CALL_RECORD">No hay récord de llamada</string>
   <string name="DOOR_CAMERA">Tomar fotos</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Información del dispositivo</string>
   <string name="EQUIPMENT_NAME">Nombre del dispositivo</string>
   <string name="EQUIPMENT_NAME_1">Nombre del dispositivo:</string>
-  <string name="ERROR_SN">Error S/N</string>
+  <string name="ERROR_SN">Error (S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Cada día</string>
   <string name="EXPECT">Estrena pronto, espere por favor</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">compartir la gestión</string>
-  <string name="Sliding_Timeline">Cargando con éxito, deslizando la línea de tiempo para ver el video de la historia</string>
+  <string name="Sliding_Timeline">Deslizando la línea de tiempo para ver el video de la historia</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Visor de puertas inteligentes</string>

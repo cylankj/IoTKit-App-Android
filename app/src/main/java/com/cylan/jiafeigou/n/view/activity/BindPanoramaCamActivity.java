@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.ApFilter;
@@ -43,6 +44,12 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
     ImageView expainGray;
     @BindView(R.id.imgv_camera_wifi_light_flash_bg)
     View bg;
+    @BindView(R.id.tv_main_content)
+    TextView tvMainContent;
+    @BindView(R.id.tv_description)
+    TextView tvDescription;
+    @BindView(R.id.tv_bind_camera_tip)
+    TextView tvBindCameraTip;
     private AnimatorSet animator;
 
     @Override
@@ -64,6 +71,9 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
             ButterKnife.bind(this);
             customToolbar.setBackAction(v -> finishExt());
             initAnimation();
+            tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));
+            tvDescription.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_SUB_TITLE));
+            tvBindCameraTip.setText(getIntent().getStringExtra(JConstant.KEY_NEXT_STEP));
         }
     }
 
@@ -139,6 +149,8 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string._720PanoramicCamera));
         intent.putExtra(JConstant.KEY_BIND_DEVICE_ALIAS, getString(R.string._720PanoramicCamera));
+        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+        intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
 

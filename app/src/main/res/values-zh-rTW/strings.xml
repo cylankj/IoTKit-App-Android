@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">重新發送</string>
   <string name="AT_HOME">回家模式</string>
   <string name="AUDIBLE_ALERT">偵測到異常時，設備將播放聲音</string>
-  <string name="Add_Device_ENTER_SN">請輸入12位S/N(CID)號</string>
-  <string name="Add_Device_SN">S/N碼添加</string>
+  <string name="Add_Device_ENTER_SN">請輸入(S/N)CID號</string>
+  <string name="Add_Device_SN">(S/N)CID添加</string>
   <string name="Add_Device_Scan_QR">掃碼添加</string>
   <string name="Added_successfully">綁定成功</string>
   <string name="Alarm_WeChat">微信接收報警消息</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">默認（正常）</string>
   <string name="DOG_CAMERA_NAME">智能攝像機</string>
   <string name="DOG_MAGNETISM_NAME">門磁</string>
-  <string name="DOORBELL_BLUE_BLINKING">藍燈已長亮</string>
   <string name="DOOR_ANSWERING">連接中&#8230;</string>
   <string name="DOOR_BELL">我家門鈴</string>
   <string name="DOOR_BELL_LOOK">查看</string>
   <string name="DOOR_BETTERYMESG">建議使用5V/1A的充電器；\n充電過程中狀態指示燈呈綠色，充滿電後會自動熄滅</string>
   <string name="DOOR_BIND">恭喜您！新增成功~\n現在可以隨時瞭解門外的情況</string>
   <string name="DOOR_BLINKING">紅燈已長亮</string>
-  <string name="DOOR_BLUE_BLINKING">設備指示燈應該紅色常亮，如果沒有,請重新開機，再長按WiFi鍵約3秒，等待紅色常亮</string>
+  <string name="DOOR_BLUE_BLINKING">藍燈已長亮</string>
+  <string name="DOOR_BLUE_BLINKING_EX">設備指示燈應該紅色常亮，如果沒有,請重新開機，再長按WiFi鍵約3秒，等待紅色常亮</string>
   <string name="DOOR_CALL">已接聽</string>
   <string name="DOOR_CALL_RECORD">暫無呼叫記錄</string>
   <string name="DOOR_CAMERA">拍照</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">設備資訊</string>
   <string name="EQUIPMENT_NAME">設備名稱</string>
   <string name="EQUIPMENT_NAME_1">設備名稱：</string>
-  <string name="ERROR_SN">S/N碼輸入錯誤</string>
+  <string name="ERROR_SN">(S/N)CID輸入錯誤</string>
   <string name="ERR_CODE">錯誤碼</string>
   <string name="EVERY_DAY">每天</string>
   <string name="EXPECT">即將推出，敬請期待</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">分享管理</string>
-  <string name="Sliding_Timeline">加載成功，左右滑動下方時間軸可查看歷史錄像</string>
+  <string name="Sliding_Timeline">左右滑動時間軸可查看歷史錄像</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">美好生活 智能家居</string>
   <string name="Smart_Door_Viewer">智能貓眼</string>

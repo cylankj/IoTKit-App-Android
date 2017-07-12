@@ -32,9 +32,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -148,36 +146,37 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private void need2ShowUseCase() {
         boolean showUserCase = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
         boolean showTipAnimation = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_ANIMATION, true);
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
-        Account account = sourceManager.getAccount();
-        if (account != null && account.isAvailable()) {
-            if (showUserCase) {
-                PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
-                imgBtnAddDevices.post(() -> getActivity().getSupportFragmentManager()
-                        .beginTransaction().add(android.R.id.content, new HomePageCoverFragment())
-                        .addToBackStack("HomePageCoverFragment")
-                        .commitAllowingStateLoss());
-            }
-
-            if (showTipAnimation) {
-                // TODO: 2017/7/11 先放着
-                set = new AnimatorSet();
-                ObjectAnimator scaleX = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleX", 1.0f, 1.2f, 1.0f);
-                scaleX.setDuration(2000);
-                scaleX.setRepeatMode(ValueAnimator.REVERSE);
-                scaleX.setRepeatCount(ValueAnimator.INFINITE);
-                ObjectAnimator scaleY = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleY", 1.0f, 1.2f, 1.0f);
-                scaleY.setDuration(2000);
-                scaleY.setRepeatMode(ValueAnimator.REVERSE);
-                scaleY.setRepeatCount(ValueAnimator.INFINITE);
-                ObjectAnimator alpha = ObjectAnimator.ofFloat(imgBtnAddDevices, "alpha", 1.0f, 0.5f, 1.0f);
-                alpha.setDuration(2000);
-                alpha.setRepeatMode(ValueAnimator.REVERSE);
-                alpha.setRepeatCount(ValueAnimator.INFINITE);
-                set.playTogether(scaleX, scaleY, alpha);
-                set.start();
-            }
+//        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+//        Account account = sourceManager.getAccount();
+//        if (account != null && account.isAvailable()) {
+        if (showUserCase) {
+            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
+            HomePageCoverFragment fragment = new HomePageCoverFragment();
+            imgBtnAddDevices.post(() -> getActivity().getSupportFragmentManager()
+                    .beginTransaction().add(android.R.id.content, fragment)
+                    .addToBackStack("HomePageCoverFragment")
+                    .commitAllowingStateLoss());
         }
+
+        if (showTipAnimation) {
+            // TODO: 2017/7/11 先放着
+            set = new AnimatorSet();
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleX", 1.0f, 1.2f, 1.0f);
+            scaleX.setDuration(2000);
+            scaleX.setRepeatMode(ValueAnimator.REVERSE);
+            scaleX.setRepeatCount(ValueAnimator.INFINITE);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleY", 1.0f, 1.2f, 1.0f);
+            scaleY.setDuration(2000);
+            scaleY.setRepeatMode(ValueAnimator.REVERSE);
+            scaleY.setRepeatCount(ValueAnimator.INFINITE);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(imgBtnAddDevices, "alpha", 1.0f, 0.5f, 1.0f);
+            alpha.setDuration(2000);
+            alpha.setRepeatMode(ValueAnimator.REVERSE);
+            alpha.setRepeatCount(ValueAnimator.INFINITE);
+            set.playTogether(scaleX, scaleY, alpha);
+            set.start();
+        }
+//        }
 
     }
 

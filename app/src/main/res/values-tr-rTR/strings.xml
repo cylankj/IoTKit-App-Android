@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Tekrar gönder</string>
   <string name="AT_HOME">Evde</string>
   <string name="AUDIBLE_ALERT">Hareket seçildiğinde çalınacak olan Sesli alarmı seçiniz</string>
-  <string name="Add_Device_ENTER_SN">Lütfen S/N eya CID kodunu giriniz</string>
-  <string name="Add_Device_SN">Giriş S/N kodu</string>
+  <string name="Add_Device_ENTER_SN">Lütfen (S/N)CID değerini giriniz</string>
+  <string name="Add_Device_SN">Giriş (S/N)CID</string>
   <string name="Add_Device_Scan_QR">QR kodu tara</string>
   <string name="Added_successfully">Başarıyla bind</string>
   <string name="Alarm_WeChat">WeChet üzerinden alarm</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Normal</string>
   <string name="DOG_CAMERA_NAME">Kamera</string>
   <string name="DOG_MAGNETISM_NAME">Manyetometre</string>
-  <string name="DOORBELL_BLUE_BLINKING">Açık mavi</string>
   <string name="DOOR_ANSWERING">Bağlanılıyor&#8230;</string>
   <string name="DOOR_BELL">Kapı zilim</string>
   <string name="DOOR_BELL_LOOK">Bak</string>
   <string name="DOOR_BETTERYMESG">5V/ 1A adaptör kullanımını öner, Durum ışığı şarj olurken sürekli yeşil</string>
   <string name="DOOR_BIND">Başarılı bir şekilde eklendi</string>
   <string name="DOOR_BLINKING">Kırmızı ışık</string>
-  <string name="DOOR_BLUE_BLINKING">Durum gösterge lambası sabit olarak kırmızı yanmalı, değilse lütfen cihazı yeniden başlatın, ondan sonra WiFi butonunu 3 saniye bastırın ve ışığın kırmızıya dönmesini bekleyin.</string>
+  <string name="DOOR_BLUE_BLINKING">Açık mavi</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Durum gösterge lambası sabit olarak kırmızı yanmalı, değilse lütfen cihazı yeniden başlatın, ondan sonra WiFi butonunu 3 saniye bastırın ve ışığın kırmızıya dönmesini bekleyin.</string>
   <string name="DOOR_CALL">Gelen</string>
   <string name="DOOR_CALL_RECORD">Çağrı kaydı yok</string>
   <string name="DOOR_CAMERA">Resim</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Cihaz bilgisi</string>
   <string name="EQUIPMENT_NAME">Cihaz adı</string>
   <string name="EQUIPMENT_NAME_1">Cihaz adı:</string>
-  <string name="ERROR_SN">Hata S/N</string>
+  <string name="ERROR_SN">Hata (S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Tüm gün</string>
   <string name="EXPECT">Lütfen bekleyin!</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Paylaşım yönetimi</string>
-  <string name="Sliding_Timeline">Yükleme başarılı, geçmişi video izlemek için zaman çizelgesini kaydırma</string>
+  <string name="Sliding_Timeline">Geçmiş videolarını izlemek için zaman çizelgesini kaydırma</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Akıllı Kapı Görüntüleyicisi</string>

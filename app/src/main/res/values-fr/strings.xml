@@ -26,8 +26,8 @@
   <string name="ANEW_SEND">Envoyer à nouveau</string>
   <string name="AT_HOME">A la maison</string>
   <string name="AUDIBLE_ALERT">Choisir l\'alerte sonore à jouer lorsqu\'un mouvement est détecté</string>
-  <string name="Add_Device_ENTER_SN">Entrez le code S/N ou CID</string>
-  <string name="Add_Device_SN">S/N code d\'entrée</string>
+  <string name="Add_Device_ENTER_SN">Entrez le (S/N)CID</string>
+  <string name="Add_Device_SN">Entrée (S/N)CID</string>
   <string name="Add_Device_Scan_QR">Numériser le code QR</string>
   <string name="Added_successfully">Liez réussi</string>
   <string name="Alarm_WeChat">Wechat va recevoir le message d\'avertissement</string>
@@ -126,14 +126,14 @@
   <string name="DIRECTION_NORMAL">Par défaut (normal)</string>
   <string name="DOG_CAMERA_NAME">Caméra</string>
   <string name="DOG_MAGNETISM_NAME">Détecteur d\'ouverture</string>
-  <string name="DOORBELL_BLUE_BLINKING">Bleu Clair</string>
   <string name="DOOR_ANSWERING">Connexion en cours&#8230;</string>
   <string name="DOOR_BELL">Mon visiophone</string>
   <string name="DOOR_BELL_LOOK">Regarder</string>
   <string name="DOOR_BETTERYMESG">Utiliser le chargeur 5V / 1A, le voyant d\'état est vert pendant la charge</string>
   <string name="DOOR_BIND">Rajout réussi</string>
   <string name="DOOR_BLINKING">Voyant rouge</string>
-  <string name="DOOR_BLUE_BLINKING">Le voyant devrait être rouge fixe; si non, redémarrer l\'appareil, appuyer et maintenir la touche WiFi enfoncée jusqu\'à ce que le voyant soit rouge fixe.</string>
+  <string name="DOOR_BLUE_BLINKING">Bleu Clair</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Le voyant devrait être rouge fixe; si non, redémarrer l\'appareil, appuyer et maintenir la touche WiFi enfoncée jusqu\'à ce que le voyant soit rouge fixe.</string>
   <string name="DOOR_CALL">Entrant</string>
   <string name="DOOR_CALL_RECORD">Appel entrant</string>
   <string name="DOOR_CAMERA">Prendre Une Photo</string>
@@ -211,7 +211,7 @@
   <string name="EQUIPMENT_INFO">Informations sur l\'appareil</string>
   <string name="EQUIPMENT_NAME">Nom appareil</string>
   <string name="EQUIPMENT_NAME_1">Nom appareil:</string>
-  <string name="ERROR_SN">Erreur S/N</string>
+  <string name="ERROR_SN">Erreur (S/N)CID</string>
   <string name="ERR_CODE">Error code</string>
   <string name="EVERY_DAY">Tous les jours</string>
   <string name="EXPECT">Attendre</string>
@@ -581,7 +581,7 @@
   <string name="ShareTo">Share to %s</string>
   <string name="SharedTo">Share to</string>
   <string name="Sharing_Management">Partage de la gestion</string>
-  <string name="Sliding_Timeline">Chargement réussi, glisser le calendrier pour afficher la vidéo de l\'historique</string>
+  <string name="Sliding_Timeline">Glisser le calendrier pour afficher la vidéo de l\'historique</string>
   <string name="Slogan">Homesick, Use Clever Dog</string>
   <string name="Slogan_Zhongxing">Smart Home, for better life</string>
   <string name="Smart_Door_Viewer">Smart Door Viewer</string>

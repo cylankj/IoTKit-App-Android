@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -30,6 +32,16 @@ public class BindCamActivity extends BaseBindActivity {
     ImageView imgVCameraHand;
     @BindView(R.id.imgV_camera_red_dot)
     ImageView imgVCameraRedDot;
+    @BindView(R.id.tv_main_content)
+    TextView tvMainContent;
+    @BindView(R.id.tv_sub_title)
+    TextView tvSubTitle;
+    @BindView(R.id.fLayout_hand)
+    FrameLayout fLayoutHand;
+    @BindView(R.id.tv_bind_camera_tip)
+    TextView tvBindCameraTip;
+    @BindView(R.id.fLayout_bind_device_list_fragment_container)
+    FrameLayout fLayoutBindDeviceListFragmentContainer;
     private AnimationDrawable animationDrawable;
     private AnimatorSet handFlash;
 
@@ -41,6 +53,9 @@ public class BindCamActivity extends BaseBindActivity {
 //        ViewUtils.addViewMargins(customToolbar, 0, (int) getResources().getDimension(R.dimen.y9), 0, 0);
         customToolbar.setBackAction(v -> finishExt());
         customToolbar.post(this::initAnimation);
+        tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));
+        tvSubTitle.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_SUB_TITLE));
+        tvBindCameraTip.setText(getIntent().getStringExtra(JConstant.KEY_NEXT_STEP));
     }
 
     protected int[] getOverridePendingTransition() {

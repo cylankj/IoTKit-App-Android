@@ -103,6 +103,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void getVerifyCode(String phone) {
+        unSubscribeAllTag();
         //获取验证码,1.校验手机号码,2.根据错误号显示
         account = phone;
         Subscription subscription = rx.Observable.just(phone)
@@ -157,6 +158,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void submitPhoneAndCode(String phone, String code) {
+        unSubscribeAllTag();
         //1.验证手机号码
         account = phone;
         Observable.just(phone)
@@ -202,6 +204,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     @Override
     public void checkMailByAccount(String mail) {
         //获取验证码,1.校验邮箱,2.根据错误号显示
+        unSubscribeAllTag();
         account = mail;
         Subscription subscription = rx.Observable.just(mail)
                 .subscribeOn(Schedulers.newThread())

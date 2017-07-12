@@ -152,6 +152,10 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         return true;
     }
 
+    public void unSubscribeAllTag() {
+        refCacheMap.clear();
+    }
+
     @CallSuper
     @Override
     public void stop() {

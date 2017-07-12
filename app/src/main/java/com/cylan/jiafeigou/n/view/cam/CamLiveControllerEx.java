@@ -142,7 +142,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     /**
      * 设备的时区
      */
-//    private TimeZone mDeviceTimezone;
     private SimpleDateFormat liveTimeDateFormat;
 
     public CamLiveControllerEx(Context context) {
@@ -230,8 +229,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 if (layoutE.getCurrentView() instanceof ViewGroup) {
                                     layoutE.showNext();
                                     AppLogger.d("需要展示 遮罩");
-
-                                    LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
                                 }
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
@@ -868,6 +865,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 }
                 if (!status.hasSdcard || status.err != 0) {
                     ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
+                    return;
+                }
+                if (historyWheelHandler == null || presenter.getHistoryDataProvider() == null ||
+                        presenter.getHistoryDataProvider().getDataCount() == 0) {
+                    ToastUtil.showToast(getResources().getString(R.string.History_video_Firstly));
                     return;
                 }
                 if (historyWheelHandler != null) {
