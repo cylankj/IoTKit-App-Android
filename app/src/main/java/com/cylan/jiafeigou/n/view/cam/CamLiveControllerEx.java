@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -55,7 +54,6 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.Switcher;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
@@ -203,10 +201,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutF.findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(this);
         layoutE.findViewById(R.id.btn_load_history)
                 .setOnClickListener(v -> {
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                    DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+                    if (!status.hasSdcard) {
+                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
+                        return;
+                    }
                     AppLogger.d("点击加载历史视频");
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
                     livePlayState = PLAY_STATE_PREPARE;
-                    setLoadingState(null, getResources().getString(R.string.LOADING));
+                    setLoadingState(getResources().getString(R.string.LOADING), null);
                     Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
@@ -1067,7 +1071,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
-//            showUseCase();
+            layoutE.setVisibility(!judge || JFGRules.isShareDevice(device) ? INVISIBLE : VISIBLE);
             if (!isUserVisible) return;
             showUseCase();
         }, 100);
