@@ -171,7 +171,8 @@ public class BeforeLoginFragment extends Fragment {
     @OnClick(R.id.rLayout_before_login)
     public void onClick(View v) {
         if (clickEvent == null) clickEvent = new Event();
-        if (clickEvent.click(getContext()) && BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) return;
+        if (clickEvent.click(getContext())) {
             clickEvent = null;
             final EditText input = new EditText(getActivity());
             input.setText(OptionsImpl.getServer());

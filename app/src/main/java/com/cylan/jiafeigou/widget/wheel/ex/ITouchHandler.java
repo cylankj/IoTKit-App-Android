@@ -77,6 +77,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
     int moveDirection = -1;//-1 nothing ,0:left ,1:right
 
     private boolean isActionUp = false;
+    private boolean isTouchDonw = false;
     private
     @DragOrFling
     int dragOrFling = -1;//-1 nothing ,0:drag ,1:fling
@@ -89,6 +90,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         if (mask == MotionEvent.ACTION_CANCEL || mask == MotionEvent.ACTION_UP) {
             // Release the drag.
             isActionUp = true;
+            isTouchDonw = false;
             mActivePointerId = INVALID_POINTER;
             if (scrollState != SCROLL_STATE_SETTLING) {
                 if (scroller.isFinished()) {
@@ -102,6 +104,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         switch (mask) {
             case MotionEvent.ACTION_DOWN:
                 isActionUp = false;
+                isTouchDonw = true;
                 if (!scroller.isFinished())
                     scroller.abortAnimation();
                 moveDirection = MoveDirection.NONE;
@@ -226,7 +229,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
     }
 
     public boolean isTouchDown() {
-        return !isActionUp;
+        return isTouchDonw;
     }
 
 }
