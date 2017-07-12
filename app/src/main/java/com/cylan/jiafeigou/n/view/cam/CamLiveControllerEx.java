@@ -215,9 +215,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
                             .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-                                            .timeout(5, TimeUnit.SECONDS),
+                                            .timeout(30, TimeUnit.SECONDS),
                                     RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
-                                            .timeout(5, TimeUnit.SECONDS))
+                                            .timeout(30, TimeUnit.SECONDS))
                                     .first())
                             .flatMap(o -> Observable.just(o instanceof RxEvent.HistoryEmpty ? 2 : -1))
                             .observeOn(AndroidSchedulers.mainThread())
