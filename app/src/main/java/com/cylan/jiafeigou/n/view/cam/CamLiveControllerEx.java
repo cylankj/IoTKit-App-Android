@@ -1074,16 +1074,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void showUseCase() {
         if (presenter.isDeviceStandby()) return;
 
-
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         Device device = sourceManager.getDevice(uuid);
-        if (JFGRules.hasHistory(device.pid)) {
+        if (JFGRules.hasHistory(device.pid) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
             LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
             if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
                 LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
             }
         }
-        if (JFGRules.hasProtection(device.pid)) {
+        if (JFGRules.hasProtection(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
             LiveShowCase.showSafeCase((Activity) getContext(), layoutD);
         }
     }
