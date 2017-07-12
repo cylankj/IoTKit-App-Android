@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoImpl;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
@@ -95,7 +96,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     @Override
     public void bindState(int state) {
-        runOnUiThread(()->{
+        runOnUiThread(() -> {
             if (state == BindUtils.BIND_FAILED) {//失败
                 vsLayoutSwitch.showNext();
                 ivExplainGray.setVisibility(View.VISIBLE);
@@ -156,7 +157,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     public void onBindNext() {
         final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(this, className));
+        intent.setComponent(new ComponentName(this, BindDeviceActivity.class));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finishExt();

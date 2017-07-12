@@ -23,8 +23,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-;
-
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -119,11 +117,13 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     }
                 })
                 .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                        .first()
                         .subscribeOn(Schedulers.newThread())
                         .timeout(10, TimeUnit.SECONDS)
                         .delay(100, TimeUnit.MILLISECONDS))
                 .flatMap(ret -> {
                     //手机号注册 情况
+                    AppLogger.d("code:" + ret.jfgResult.code + "," + ret.jfgResult.event);
                     if (ret.jfgResult.code == JError.ErrorOK) {
                         Subscription s = RxBus.getCacheInstance()
                                 .toObservable(RxEvent.SmsCodeResult.class)
@@ -149,9 +149,14 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
                         unSubscribeAllTag();
                     }
-                    return Observable.just(ret.jfgResult.code);
+                    throw new RxEvent.HelperBreaker();
+//                    return Observable.just(ret.jfgResult.code);
                 })
-                .doOnError(throwable -> mView.onResult(JConstant.CHECK_TIMEOUT, 0))
+                .doOnError(throwable -> {
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+
+                    } else mView.onResult(JConstant.CHECK_TIMEOUT, 0);
+                })
                 .subscribe(ret -> {
                 }, AppLogger::e);
         addSubscription(subscription, "getVerifyCode");

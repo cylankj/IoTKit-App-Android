@@ -128,16 +128,16 @@ BaseJFGResultParser {
                 .subscribe(ret -> {
                     switch (jfgResult.code) {
                         case JError.ErrorSMSCodeTimeout:
-                            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+//                            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
                             break;
                         case JError.ErrorSMSCodeNotMatch:
                             ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
                             break;
                         case JError.ErrorInvalidPass:
-                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
+//                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
                             break;
                         case JError.ErrorSamePass:
-                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
+//                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
                             break;
                         case ErrorAccountNotExist:
 //                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
@@ -146,7 +146,7 @@ BaseJFGResultParser {
 //                            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
                             break;
                         case JError.ErrorOpenLoginInvalidToken:
-                            ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
+//                            ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
                             break;
                         case JError.ErrorConnect:
                             ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
@@ -155,7 +155,7 @@ BaseJFGResultParser {
                             ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
                             break;
                         case JError.ErrorGetCodeTooFrequent:
-                            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+//                            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                             break;
                     }
                 }, AppLogger::e);
