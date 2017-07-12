@@ -371,6 +371,11 @@ public class JFGRules {
         return productProperty.hasProperty(pid, "AUTORECORD");
     }
 
+    public static boolean showHistoryBtn(Device device) {
+        //1.sd卡 2.非分享用户
+        return !JFGRules.isShareDevice(device) && hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()));
+    }
+
     public static boolean hasBatteryNotify(int pid) {
         return true;
     }
