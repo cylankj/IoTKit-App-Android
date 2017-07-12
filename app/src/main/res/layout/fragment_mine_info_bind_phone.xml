@@ -94,7 +94,7 @@
                     android:textSize="@dimen/sp16" />
 
                 <TextView
-                    android:id="@+id/tv_meter_get_code"
+                    android:id="@+id/Tap0_BindEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"

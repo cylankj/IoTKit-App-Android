@@ -116,21 +116,13 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void checkPhoneIsBind(String phone) {
         rx.Observable.just(phone)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("checkphoneisbind" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -229,21 +221,13 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void CheckVerifyCode(String phone, final String inputCode, String code) {
         rx.Observable.just(code)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String code) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(code1 -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code1);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("CheckVerifyCode" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     @Override
