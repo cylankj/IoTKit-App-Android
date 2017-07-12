@@ -35,6 +35,7 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/cylan/Iot'
         }
+        maven { url "http://192.168.100.221:8081/artifactory/libs-snapshot-local" }
 
 
     }

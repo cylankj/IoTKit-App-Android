@@ -391,6 +391,8 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.cylan.library:iotsdk:1.0-SNAPSHOT'
+
 }
 
 //谷歌推送
