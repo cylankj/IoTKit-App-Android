@@ -373,6 +373,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.EMAIL);
         else if (ret == JConstant.TYPE_PHONE) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.NEW_PWD);
+            if (vsSetAccountPwd.getCurrentView().getId() == R.id.layout_get_code)
+                vsSetAccountPwd.showNext();
         } else if (ret == JConstant.TYPE_EMAIL_VERIFY) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.Tap0_register_EmailVerification);
         }
@@ -521,6 +523,12 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 switch (errId) {
                     case JError.ErrorAccountNotExist:
                         ToastUtil.showToast(getString(R.string.INVALID_ACCOUNT));
+                        break;
+                    case JError.ErrorGetCodeTooFrequent:
+                        ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                        break;
+                    case JError.ErrorSamePass:
+                        ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
                         break;
                 }
             });

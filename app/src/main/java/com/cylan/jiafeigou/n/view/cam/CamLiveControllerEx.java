@@ -50,7 +50,6 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
@@ -1250,6 +1249,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.showMobileDataInterface(v -> {
             presenter.startPlay();
         });
+    }
+
+    @Override
+    public void updateLiveRect(Rect rect) {
+        if (liveViewWithThumbnail != null)
+            liveViewWithThumbnail.post(() -> {
+                liveViewWithThumbnail.getLocalVisibleRect(rect);
+                AppLogger.d("rect: " + rect);
+            });
     }
 
     @Override

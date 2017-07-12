@@ -570,6 +570,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         camLiveControlLayer.onResolutionRsp(resolution);
+        camLiveControlLayer.updateLiveRect(mLiveViewRectInWindow);
     }
 
     @Override

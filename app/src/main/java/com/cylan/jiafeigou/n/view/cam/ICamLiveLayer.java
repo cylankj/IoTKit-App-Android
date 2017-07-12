@@ -110,4 +110,6 @@ public interface ICamLiveLayer {
     void reAssembleHistory(CamLiveContract.Presenter presenter, long timeTarget);
 
     void showMobileDataCover(CamLiveContract.Presenter presenter);
+
+    void updateLiveRect(Rect rect);
 }
