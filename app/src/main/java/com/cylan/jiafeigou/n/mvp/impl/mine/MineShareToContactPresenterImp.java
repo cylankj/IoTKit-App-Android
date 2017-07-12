@@ -12,6 +12,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -58,6 +59,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     ArrayList<ShareContactItem> result = new ArrayList<>();
                     ContentResolver contentResolver = getView().getContext().getContentResolver();
                     Cursor phoneQuery = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY);
+                    Account account = DataSourceManager.getInstance().getAccount();
                     //向下移动光标
                     ShareContactItem shareContactItem;
                     while (phoneQuery != null && phoneQuery.moveToNext()) {
@@ -77,6 +79,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                             }
                         }
                         shareContactItem.phone = phoneNumber;
+                        if (TextUtils.equals(phoneNumber, account.getAccount())) {
+                            //说明是自己
+                            shareContactItem.shared = true;
+                        }
                         AppLogger.d("添加电话联系人:" + new Gson().toJson(shareContactItem));
                     }
                     if (phoneQuery != null) phoneQuery.close();
@@ -89,6 +95,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         shareContactItem.contactType = contactType;
                         shareContactItem.email = emailAddress;
                         result.add(shareContactItem);
+                        if (TextUtils.equals(emailAddress, account.getAccount())) {
+                            //说明是自己
+                            shareContactItem.shared = true;
+                        }
                         AppLogger.d("添加邮箱联系人:" + new Gson().toJson(shareContactItem));
                     }
                     if (emailQuery != null) emailQuery.close();
