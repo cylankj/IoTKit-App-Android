@@ -205,7 +205,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
 //                                    2iYjQr
         if (TextUtils.isEmpty(clientCheckVersion.result))
             return;
-        final String result = clientCheckVersion.result.replace("http://yun.app8h.com/account?id=", "");
+        final String result = clientCheckVersion.result.replace("http://yun.app8h.com/s?id=", "");
         final String finalUrl = JConstant.assembleUrl(result, ContextUtils.getContext().getPackageName());
         Request.Builder requestBuilder = new Request.Builder().url(finalUrl);
         requestBuilder.method("GET", null);

@@ -7,8 +7,8 @@
     <bool name="show_about_logo">true</bool>
     <bool name="show_official_website">true</bool>
     <bool name="show_official_hot_line">true</bool>
-    <bool name="show_ruishi_interface">false</bool>
-    <bool name="show_cat_eye_bind_interface">false</bool>
+    <bool name="show_ruishi_interface">true</bool>
+    <bool name="show_cat_eye_bind_interface">true</bool>
     <bool name="show_scan_bind_interface">true</bool>
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>

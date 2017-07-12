@@ -146,6 +146,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private void initProductLayout(Device device) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
         svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
         svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
         svSettingDeviceAutoRecord.setVisibility(productProperty.hasProperty(device.pid, "AUTORECORD") ? View.VISIBLE : View.GONE);

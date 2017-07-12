@@ -63,7 +63,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             R.id.v_to_bind_consumer_cam,
             R.id.v_to_bind_camera,
             R.id.v_to_input_sn,
-            R.id.v_to_bind_doorbell,
+//            R.id.v_to_bind_doorbell,
             R.id.v_to_bind_panorama_camera})
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -91,11 +91,11 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 jump2PanoramaCam(true);
                 break;
             }
-            case R.id.v_to_bind_doorbell: {
-                Intent intent = new Intent(this, BindBellActivity.class);
-                startActivity(intent);
-                break;
-            }
+//            case R.id.v_to_bind_doorbell: {
+//                Intent intent = new Intent(this, BindBellActivity.class);
+//                startActivity(intent);
+//                break;
+//            }
         }
     }
 

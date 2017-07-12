@@ -294,6 +294,13 @@ public class JFGRules {
                 "battery");
     }
 
+    public static boolean popPowerDrainOut(int pid) {
+//        return pid == 1008 || pid == 26//云相机
+//                ||
+        return false;
+    }
+
+
     //freeCam 海思 wifi
     public static boolean showMobileNet(int pid) {
         return is3GCam(pid);

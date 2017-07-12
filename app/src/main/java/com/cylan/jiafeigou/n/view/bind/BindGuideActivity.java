@@ -105,11 +105,11 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         private Br br;
         private WifiManager wifiManager;
         private WeakReference<BindGuideActivity> weakReference;
-        private Intent intent;
+        private Intent activityIntent;
 
         public AutoBack(BindGuideActivity activity, Intent intent) {
             weakReference = new WeakReference<>(activity);
-            this.intent = intent;
+            this.activityIntent = intent;
             wifiManager = NetUtils.getWifiManager(ContextUtils.getContext());
         }
 
@@ -123,11 +123,13 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
                     if (ApFilter.accept(ssidName)) {
                         if (weakReference.get() != null) {
                             Intent toIntent = null;
-                            if (intent == null) {
+                            if (activityIntent == null) {
                                 toIntent = new Intent(weakReference.get(),
                                         BindGuideActivity.class);
                             } else {
-                                toIntent = intent;
+                                toIntent = activityIntent;
+                                toIntent.setClass(weakReference.get(),
+                                        BindGuideActivity.class);
                             }
                             toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             weakReference.get().startActivity(toIntent);

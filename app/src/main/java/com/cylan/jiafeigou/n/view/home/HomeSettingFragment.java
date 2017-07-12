@@ -313,7 +313,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
                 }
                 //第三方账号需要绑定手机/邮箱
                 int type = BaseApplication.getAppComponent().getSourceManager().getLoginType();
-                if (type > 3 && account != null) {
+                if (type >= 3 && account != null) {
                     //字符串相加
                     if (TextUtils.isEmpty(account.getEmail() + account.getPhone())) {
                         final String content = getString(type >= 6 ? R.string.Tap3_Friends_NoBindTips
