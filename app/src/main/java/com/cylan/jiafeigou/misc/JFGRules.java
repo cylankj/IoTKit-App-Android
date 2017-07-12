@@ -294,10 +294,17 @@ public class JFGRules {
                 "battery");
     }
 
+    /**
+     * 非常坑
+     *
+     * @param pid
+     * @return
+     */
     public static boolean popPowerDrainOut(int pid) {
-//        return pid == 1008 || pid == 26//云相机
-//                ||
-        return false;
+        return isCloudCam(pid) ||
+                isNoPowerBell(pid) ||
+                isCatEeyBell(pid) ||
+                isRsBell(pid);
     }
 
 
@@ -491,5 +498,29 @@ public class JFGRules {
             pid = 1160;
         }
         return pid;
+    }
+
+    public static boolean isConsumerCam(int pid) {
+        return pid == 39 || pid == 1285
+                || 49 == pid || 1348 == pid
+                || 38 == pid || 1284 == pid;
+    }
+
+    public static boolean isCloudCam(int pid) {
+        return pid == 26 || pid == 1088;
+    }
+
+    public static boolean isCatEeyBell(int pid) {
+        return pid == 27 || pid == 1160 ||
+                pid == 22;
+    }
+
+    public static boolean isNoPowerBell(int pid) {
+        return pid == 52 || pid == 1379 ||
+                pid == 15 || pid == 1159;
+    }
+
+    public static boolean isRsBell(int pid) {
+        return pid == 50 || pid == 1378;
     }
 }

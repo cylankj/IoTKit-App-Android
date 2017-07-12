@@ -507,7 +507,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                     } else {
                         Intent intent = new Intent(getActivity(), CamSettingActivity.class);
                         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                        intent.putExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, true);
+//                        intent.putExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, true);
                         startActivityForResult(intent, REQUEST_CODE,
                                 ActivityOptionsCompat.makeCustomAnimation(getActivity(),
                                         R.anim.slide_in_right, R.anim.slide_out_left).toBundle());

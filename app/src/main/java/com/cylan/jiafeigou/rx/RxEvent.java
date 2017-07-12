@@ -1406,6 +1406,17 @@ public class RxEvent {
         public static final InitFrom2x INSTANCE = new InitFrom2x();
     }
 
+    public static class UniversalDataRsp {
+        public long seq;
+        public int ret;
+        public byte[] data;
+
+        public UniversalDataRsp(long seq, int ret, byte[] data) {
+            this.seq = seq;
+            this.ret = ret;
+            this.data = data;
+        }
+    }
 }
 
 
