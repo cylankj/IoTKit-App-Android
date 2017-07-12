@@ -225,5 +225,8 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         int FLING = 1;
     }
 
+    public boolean isTouchDown() {
+        return !isActionUp;
+    }
 
 }

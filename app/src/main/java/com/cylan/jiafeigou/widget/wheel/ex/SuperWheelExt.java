@@ -151,6 +151,9 @@ public class SuperWheelExt extends View {
         getFullScreenItemsCount();
     }
 
+    public boolean isBusy() {
+        return touchHandler != null && touchHandler.isTouchDown();
+    }
 
     /**
      * 一次最多绘制N条
