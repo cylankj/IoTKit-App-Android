@@ -51,7 +51,9 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     //只是把设置的 dataPointValue 返回回去,避免频繁 parse
     public <V> V getValue(V defaultValue) {
         if (this.dataPointValue == null) {
-            dataPointValue = propertyParser.parser(msgId, bytes, version);
+            if (bytes != null) {
+                dataPointValue = propertyParser.parser(msgId, bytes, version);
+            }
         }
         if (this.dataPointValue == null) {
             return defaultValue;

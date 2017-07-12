@@ -113,6 +113,8 @@ public interface CamLiveContract {
         void onAudioPermissionCheck();
 
         void onBatteryDrainOut();
+
+        void onHistoryLoadFinished();
     }
 
     interface Presenter extends BasePresenter {

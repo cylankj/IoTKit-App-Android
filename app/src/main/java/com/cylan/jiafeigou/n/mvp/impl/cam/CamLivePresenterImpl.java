@@ -382,7 +382,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .flatMap(rsp -> makeTimeDelayForList(rsp.historyFiles)))
                 .doOnUnsubscribe(() -> removeSubscription("getHistoryList"))
-                .subscribe(ret -> RxBus.getCacheInstance().post(new RxEvent.HistoryBack()), AppLogger::e);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    mView.onHistoryLoadFinished();
+                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack());
+                }, AppLogger::e);
         removeSubscription("getHistoryList");
         addSubscription(subscription, "getHistoryList");
         return true;
@@ -465,6 +469,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 }
                 AppLogger.d("play video ret 0:" + ret + "," + switchInterface);
+
+                // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
+//                if (JFGRules.isBell(getDevice().pid)) {
+                BaseBellCallEventListener.getInstance().canNewCall(false);//查看直播时禁止呼叫
+//                }
                 getHotSeatStateMaintainer().saveRestore();
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
@@ -577,7 +586,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .map(resolution -> {
                     removeTimeoutSub();
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
-                    BaseBellCallEventListener.getInstance().canNewCall(false);
+
                     //注册监听耳机
                     registerHeadSetObservable();
                     //正向,抛异常
@@ -726,6 +735,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     getHotSeatStateMaintainer().saveRestore();
                     ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 }
+
+                //说明现在是在查看历史录像了,泽允许进行门铃呼叫
+                BaseBellCallEventListener.getInstance().canNewCall(true);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {

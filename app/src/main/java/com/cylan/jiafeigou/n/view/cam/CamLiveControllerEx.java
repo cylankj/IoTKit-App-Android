@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -41,6 +40,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -55,6 +55,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.Switcher;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
@@ -64,6 +65,7 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
 import com.daimajia.androidanimations.library.Techniques;
@@ -228,8 +230,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 if (layoutE.getCurrentView() instanceof ViewGroup) {
                                     layoutE.showNext();
                                     AppLogger.d("需要展示 遮罩");
+
+                                    LoadingDialog.dismissLoading(((CameraLiveActivity) getContext()).getSupportFragmentManager());
                                 }
-                                LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
                                     layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
@@ -1076,6 +1079,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Device device = sourceManager.getDevice(uuid);
         if (JFGRules.hasHistory(device.pid)) {
             LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
+            if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
+                LiveShowCase.showHistoryWheelCase((Activity) getContext(), null);
+            }
         }
         if (JFGRules.hasProtection(device.pid)) {
             LiveShowCase.showSafeCase((Activity) getContext(), layoutD);

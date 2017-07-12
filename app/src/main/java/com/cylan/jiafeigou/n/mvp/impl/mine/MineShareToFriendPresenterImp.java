@@ -50,8 +50,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                         for (int i = 0; i < friendItems.size(); i++) {
                             accounts[i] = friendItems.get(i).friendAccount.account;
                         }
-                        AppLogger.d("shareDeviceToFriend: cid:" + cid + accounts[0]);
+                        // TODO: 2017/7/12 现在是先传 account 数组,再传 cid 数组,目前是可行的
                         BaseApplication.getAppComponent().getCmd().multiShareDevices(new String[]{cid}, accounts);
+                        AppLogger.d(": cid:" + cid + ",:" + accounts[0]);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
