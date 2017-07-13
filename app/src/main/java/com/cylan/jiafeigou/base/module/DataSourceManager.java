@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.base.module;
 
-
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -318,6 +317,7 @@ public class DataSourceManager implements JFGSourceManager {
         ArrayList<String> uuidList = new ArrayList<>();
         if (mCachedDeviceMap.size() == 0) return;
         HashMap<String, JFGDPMsg[]> map = new HashMap<>();
+        int totalCount = 0;
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             Device device = mCachedDeviceMap.get(entry.getKey());
             //非分享设备需要一些属性
@@ -332,10 +332,14 @@ public class DataSourceManager implements JFGSourceManager {
             JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
             for (int i = 0; i < parameters.size(); i++) {
                 array[i] = parameters.get(i);
+                totalCount++;
             }
             map.put(uuid, array);
         }
         try {
+            if (totalCount > 500) {
+                throw new IllegalArgumentException("设备太多了,jni reference table 溢出,需要拆分");
+            }
             appCmd.robotGetMultiData(map, 1, false, 0);
             AppLogger.d("多查询");
         } catch (Exception e) {
