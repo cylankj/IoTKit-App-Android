@@ -715,7 +715,7 @@ public class MiscUtils {
                 })
                 .flatMap(s -> {
                     try {
-                        String newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + "com.cylan.jiafeigou" + "&hl=en")
+                        String newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + ContextUtils.getContext().getPackageName() + "&hl=en")
                                 .timeout(10000)
                                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                                 .referrer("http://www.google.com")
@@ -776,7 +776,7 @@ public class MiscUtils {
                     List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
                     for (ApplicationInfo packageInfo : packages) {
                         final String pname = packageInfo.packageName;
-                        if (!TextUtils.isEmpty(pname) && pname.contains("com.cylan.jiafeigou")) {
+                        if (!TextUtils.isEmpty(pname) && pname.contains("com.cylan")) {
                             AppLogger.e(BIND_TAG + pname);
                         }
                     }

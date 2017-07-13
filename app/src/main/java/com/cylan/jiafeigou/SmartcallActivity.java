@@ -67,7 +67,7 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.splash_screen));
+//        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.splash_screen));
         PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.util.Locale;
@@ -42,5 +43,11 @@ public class LinkManager {
                 context.getString(R.string.share_to_friends_link,
                         context.getPackageName()),
                 context.getResources().getString(R.string.app_name)); // 正文
+    }
+
+    public static String getHelpWebUrl() {
+        return ContextUtils.getContext().getString(R.string.help_url,
+                OptionsImpl.getServer().split(":")[0],
+                ContextUtils.getContext().getString(R.string.agreementSuffix));
     }
 }
