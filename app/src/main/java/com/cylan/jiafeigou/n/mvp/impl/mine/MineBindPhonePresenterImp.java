@@ -142,13 +142,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public Subscription getCheckPhoneCallback() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
-                    @Override
-                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null) {
-                            if (getView() != null) {
-                                getView().handlerCheckPhoneResult(checkAccountCallback);
-                            }
+                .subscribe(checkAccountCallback -> {
+                    if (checkAccountCallback != null) {
+                        if (getView() != null) {
+                            AppLogger.d("正在验证用户是否存在!!!!!!");
+                            getView().handlerCheckPhoneResult(checkAccountCallback);
                         }
                     }
                 }, e -> AppLogger.d("getCheckPhoneCallback" + e.getMessage()));
@@ -161,26 +159,18 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void sendChangePhoneReq(String newPhone, String token) {
         rx.Observable.just(jfgAccount)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<JFGAccount>() {
-                    @Override
-                    public void call(JFGAccount account) {
-                        try {
-                            account.resetFlag();
-                            account.setPhone(newPhone, token);
-                            int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
-                            sendReq = true;
-                            AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
-                        } catch (JfgException e) {
-                            AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
+                .subscribe(account -> {
+                    try {
+                        account.resetFlag();
+                        account.setPhone(newPhone, token);
+                        int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
+                        sendReq = true;
+                        AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
+                    } catch (JfgException e) {
+                        AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendChangePhoneReq" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("sendChangePhoneReq" + throwable.getLocalizedMessage()));
     }
 
     /**
@@ -249,16 +239,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        } else {
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getAccountCallBack());
-            compositeSubscription.add(getCheckPhoneCallback());
-            compositeSubscription.add(checkVerifyCodeCallBack());
-            compositeSubscription.add(changeAccountBack());
-            compositeSubscription.add(getCheckCodeCallback());
-        }
+        addSubscription(getAccountCallBack());
+        addSubscription(getCheckPhoneCallback());
+        addSubscription(checkVerifyCodeCallBack());
+        addSubscription(changeAccountBack());
+        addSubscription(getCheckCodeCallback());
         registerNetworkMonitor();
     }
 

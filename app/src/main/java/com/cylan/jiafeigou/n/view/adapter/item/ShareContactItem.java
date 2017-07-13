@@ -51,6 +51,6 @@ public class ShareContactItem extends AbstractItem<ShareContactItem, AbstractBin
         viewDataBinding.tvContactshare.setText(contactType == 1 ? R.string.Button_Add : shared ? R.string.Tap3_ShareDevice_Shared : R.string.Tap3_ShareDevice_Button);
         viewDataBinding.tvContactshare.setBackgroundResource(contactType == 1 ? R.drawable.btn_accept_add_request_shape : shared ? 0 : R.drawable.btn_accept_add_request_shape);
         viewDataBinding.tvContactshare.setTextColor(contactType == 1 ? Color.parseColor("#4b9fd5") : shared ? Color.parseColor("#ADADAD") : Color.parseColor("#4b9fd5"));
-        viewDataBinding.tvContactshare.setEnabled(!shared);
+        viewDataBinding.tvContactshare.setEnabled(contactType == 1 || !shared);//如果是添加,则自己也不应该禁用掉,
     }
 }

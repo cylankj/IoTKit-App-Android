@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +29,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * 作者：zsl
@@ -115,13 +111,6 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         MineFriendAddFriendsFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (permissions.length == 1) {
-            if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
-//                MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
-            } else if (TextUtils.equals(permissions[0], READ_CONTACTS) && grantResults[0] > -1) {
-                MineFriendAddFriendsFragmentPermissionsDispatcher.onContactsPermissionWithCheck(this);
-            }
-        }
     }
 
 

@@ -189,6 +189,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_meter_get_code, R.id.iv_mine_bind_phone_clear, R.id.tv_toolbar_right})
     public void onClick(View view) {
+        ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
                 if (!BaseApplication.getAppComponent().getSourceManager().isOnline()) {
