@@ -67,10 +67,9 @@ public class AgreementFragment extends Fragment {
     }
 
     private void loadWeb() {
-        final String packageNameSuffix = ContextUtils.getContext().getPackageName()
-                .replace("com.cylan.jiafeigou", "").replace(".", "");
+        //用户协议
         final String agreementUrl = getString(R.string.Treaty_url,
-                packageNameSuffix.length() == 0 ? "" : "_" + packageNameSuffix);
+                getString(R.string.agreementSuffix));
         WebSettings settings = webview.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);

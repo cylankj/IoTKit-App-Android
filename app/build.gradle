@@ -148,7 +148,7 @@ android {
         _yun {
             //vid vkey已经搬到Security.java
             //官方运营
-            applicationId "com.cylan.jiafeigou"
+            applicationId "com.cylan.cleverdog"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.wxapi;
+package com.cylan.cleverdog.wxapi;
 
 
 //import com.umeng.weixin.callback.WXCallbackActivity;

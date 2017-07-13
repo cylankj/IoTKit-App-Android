@@ -15,11 +15,11 @@ import android.widget.ProgressBar;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.LinkManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
@@ -33,7 +33,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.schedulers.Schedulers;
 
 /**
  * 创建者     谢坤
@@ -103,15 +102,7 @@ public class HomeMineHelpFragment extends IBaseFragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        final String packageNameSuffix = ContextUtils.getContext().getPackageName().replace("com.cylan.jiafeigou", "")
-                .replace(".", "");
-        String agreementUrl = getString(R.string.help_url, OptionsImpl.getServer().split(":")[0],
-                packageNameSuffix.length() == 0 ? "" : "_" + packageNameSuffix);
-        if (agreementUrl.contains("–")) {
-            agreementUrl = agreementUrl.replace("–", "-");
-        }
-        final String url = agreementUrl;
-        if (getView() != null) getView().post(() -> initWebView(url));
+        if (getView() != null) getView().post(() -> initWebView(LinkManager.getHelpWebUrl()));
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
@@ -139,7 +130,7 @@ public class HomeMineHelpFragment extends IBaseFragment {
         mWvHelp.getSettings().setAppCacheEnabled(true);
         mWvHelp.getSettings().setJavaScriptEnabled(true);
         mWvHelp.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); // load online by default
-        if (NetUtils.getJfgNetType()!=0) { // loading offline
+        if (NetUtils.getJfgNetType() != 0) { // loading offline
             mWvHelp.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
         try {
