@@ -34,7 +34,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
 import java.util.List;
@@ -58,7 +58,9 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     private FragmentHomeMineFriendsBinding mineFriendsBinding;
     private ObservableBoolean empty = new ObservableBoolean(false);
 
-    private FastItemAdapter friendsAdapter;
+    private FastAdapter fastAdapter;
+    private ItemAdapter friendRequestAdapter;
+    private ItemAdapter friendAccountAdapter;
 
 
     public static MineFriendsFragment newInstance() {
@@ -82,14 +84,30 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        friendsAdapter = new FastItemAdapter();
+        fastAdapter = new FastAdapter();
         mineFriendsBinding.setEmpty(empty);
-        mineFriendsBinding.friends.setAdapter(friendsAdapter);
         mineFriendsBinding.friends.setLayoutManager(new LinearLayoutManager(getContext()));
+        friendRequestAdapter = new ItemAdapter() {
+            @Override
+            public int getOrder() {
+                return 1500;
+            }
+        };
+        friendRequestAdapter.withUseIdDistributor(true);
+        friendRequestAdapter.wrap(fastAdapter);
 
-        friendsAdapter.withOnLongClickListener(this::onFriendItemLongClick);
-        friendsAdapter.withOnClickListener(this::onFriendItemClick);
-        friendsAdapter.withEventHook(new ClickEventHook() {
+        friendAccountAdapter = new ItemAdapter() {
+            @Override
+            public int getOrder() {
+                return 3000;
+            }
+        };
+        friendAccountAdapter.withUseIdDistributor(true);
+        friendAccountAdapter.wrap(friendRequestAdapter);
+
+        fastAdapter.withOnLongClickListener(this::onFriendItemLongClick);
+        fastAdapter.withOnClickListener(this::onFriendItemClick);
+        fastAdapter.withEventHook(new ClickEventHook() {
             @Override
             public void onClick(View v, int position, FastAdapter fastAdapter, IItem item) {
                 if (item instanceof FriendContextItem) {
@@ -107,8 +125,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 return super.onBind(viewHolder);
             }
         });
-
-
+        mineFriendsBinding.friends.setAdapter(friendAccountAdapter);
     }
 
     private boolean onFriendItemClick(View view, IAdapter iAdapter, IItem item, int position) {
@@ -126,7 +143,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
         bundle.putParcelable("friendItem", friendContextItem);
         friendInformationFragment = MineFriendInformationFragment.newInstance(bundle);
         friendInformationFragment.setFriendEventCallback(this);
-        friendInformationFragment.setCallBack(t -> friendsAdapter.notifyDataSetChanged());
+        friendInformationFragment.setCallBack(t -> fastAdapter.notifyDataSetChanged());
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), friendInformationFragment,
                 android.R.id.content);
         return true;
@@ -188,16 +205,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     @Override
     public void deleteItemRsp(FriendContextItem item, int code, boolean alert) {
         if (code == JError.ErrorOK) {
-            FriendContextHeader parent = item.parent;
-            if (parent != null && parent.children != null) {
-                parent.children.remove(item);
-                if (parent.children.size() == 0) {
-                    int position = friendsAdapter.getPosition(parent);
-                    friendsAdapter.remove(position);
-                }
-            }
-            int position = friendsAdapter.getPosition(item);
-            friendsAdapter.remove(position);
+            modifyAdapter(item, 1);
             if (alert) {
                 ToastUtil.showToast(getString(R.string.DELETED_SUC));
             }
@@ -209,7 +217,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
             }
         }
-        empty.set(friendsAdapter.getItemCount() == 0);
+        empty.set(fastAdapter.getItemCount() == 0);
     }
 
     @Override
@@ -219,20 +227,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                 ToastUtil.showToast(getString(R.string.Request_TimeOut));
                 break;
             case JError.ErrorOK:
-                FriendContextHeader parent = item.parent;
-                if (parent != null && parent.children != null) {
-                    parent.children.remove(item);
-                    if (parent.children.size() == 0) {
-                        int position = friendsAdapter.getPosition(parent);
-                        friendsAdapter.remove(position);
-                    }
-                }
-                item.friendAccount = new JFGFriendAccount(item.friendRequest.account, null, item.friendRequest.alias);
-                item.childType = 1;
-                item.friendRequest = null;
-                int position = friendsAdapter.getPosition(item);
-                friendsAdapter.notifyItemChanged(position);
-                friendsAdapter.move(position, friendsAdapter.getItemCount() - 1);
+                modifyAdapter(item, 0);
                 ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Success));
                 break;
             case 240:
@@ -260,22 +255,20 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 
     @Override
     public void onInitRequestAndFriendList(List<FriendContextItem> request, List<FriendContextItem> friends) {
-        friendsAdapter.clear();
+        friendRequestAdapter.clear();
+        friendAccountAdapter.clear();
         if (request != null && request.size() > 0) {
             FriendContextHeader requestHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsAdd_Request));
-            requestHeader.withChildren(request);
-            friendsAdapter.add(requestHeader);
-            friendsAdapter.add(request);
+            friendRequestAdapter.add(requestHeader);
+            friendRequestAdapter.add(request);
         }
 
         if (friends != null && friends.size() > 0) {
             FriendContextHeader friendHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsList));
-            friendHeader.withChildren(friends);
-            friendsAdapter.add(friendHeader);
-            friendsAdapter.add(friends);
+            friendAccountAdapter.add(friendHeader);
+            friendAccountAdapter.add(friends);
         }
-
-        empty.set(friendsAdapter.getItemCount() == 0);
+        empty.set(fastAdapter.getItemCount() == 0);
     }
 
     private void initPresenter() {
@@ -325,17 +318,55 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 
     @Override
     public void onDeleteFriend(FriendContextItem friendItem) {
-        deleteItemRsp(friendItem, 0, false);
+        modifyAdapter(friendItem, 2);
     }
 
     @Override
     public void onAddFriend(FriendContextItem friendItem) {
-        acceptItemRsp(friendItem, 0);
+        modifyAdapter(friendItem, 0);
+    }
+
+    /**
+     * @param modifyType 0:acceptRequest;1:deleteRequest;2:deleteFriend
+     */
+    private void modifyAdapter(FriendContextItem item, int modifyType) {//0:accept;1:deleteRequest;2:deleteFriend;
+        switch (modifyType) {
+            case 0:
+                friendRequestAdapter.remove(friendRequestAdapter.getAdapterPosition(item));
+                if (friendRequestAdapter.getAdapterItemCount() == 1) {//说明只剩下 header 了
+                    friendRequestAdapter.clear();
+                }
+                FriendContextItem friendContextItem = new FriendContextItem(new JFGFriendAccount(item.friendRequest.account, null, item.friendRequest.alias));
+                if (friendAccountAdapter.getAdapterItemCount() == 0) {
+                    FriendContextHeader friendHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsList));
+                    friendAccountAdapter.add(friendHeader);
+                }
+                friendAccountAdapter.add(friendContextItem);
+                break;
+            case 1:
+                friendRequestAdapter.remove(friendRequestAdapter.getAdapterPosition(item));
+                if (friendRequestAdapter.getAdapterItemCount() == 1) {//说明只剩下 header 了
+                    friendRequestAdapter.clear();
+                }
+                break;
+            case 2:
+                friendAccountAdapter.remove(friendAccountAdapter.getAdapterPosition(item));
+                if (friendAccountAdapter.getAdapterItemCount() == 1) {
+                    friendAccountAdapter.clear();
+                }
+                break;
+        }
+        empty.set(fastAdapter.getItemCount() == 0);
     }
 
     @Override
     public void onModifyMarkName(FriendContextItem friendItem) {
-        friendsAdapter.notifyItemChanged(friendsAdapter.getPosition(friendItem));
+        int position = fastAdapter.getPosition(friendItem);
+        IItem item = fastAdapter.getItem(position);
+        if (item instanceof FriendContextItem && ((FriendContextItem) item).friendAccount != null) {
+            ((FriendContextItem) item).friendAccount.markName = friendItem.friendAccount.markName;
+            fastAdapter.notifyItemChanged(position);
+        }
     }
 
 }

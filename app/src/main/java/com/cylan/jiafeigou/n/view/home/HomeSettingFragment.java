@@ -240,18 +240,17 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void initSwitchState(final RxEvent.AccountArrived accountArrived) {
-        boolean enable = accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
-        svHomeSettingAccessMes.setChecked(enable, false);
-        boolean off = !accountArrived.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
-        if (off) {
-            svSoundContainer.setVisibility(View.GONE);
-            svVibrateContainer.setVisibility(View.GONE);
-        } else {
-            svSoundContainer.setChecked(accountArrived.jfgAccount.isEnableSound(), false);
-            svVibrateContainer.setChecked(accountArrived.jfgAccount.isEnableVibrate(), false);
-        }
-        svSoundContainer.setVisibility(off ? View.GONE : View.VISIBLE);
-        svVibrateContainer.setVisibility(off ? View.GONE : View.VISIBLE);
+        boolean systemNotificationEnable = NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+        boolean appPushEnable = accountArrived.jfgAccount.isEnablePush() && systemNotificationEnable;
+        boolean appSoundEnable = accountArrived.jfgAccount.isEnableSound() && systemNotificationEnable;
+        boolean appVibrateEnable = accountArrived.jfgAccount.isEnableVibrate() && systemNotificationEnable;
+
+        svHomeSettingAccessMes.setChecked(appPushEnable, false);
+        svSoundContainer.setVisibility(appPushEnable ? View.VISIBLE : View.GONE);
+        svVibrateContainer.setVisibility(appPushEnable ? View.VISIBLE : View.GONE);
+        svSoundContainer.setChecked(appSoundEnable, false);
+        svVibrateContainer.setChecked(appVibrateEnable, false);
+
         initSwitchBtnListener();
     }
 

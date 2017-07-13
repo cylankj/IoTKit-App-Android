@@ -23,7 +23,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.databinding.FragmentHomeMineInfoBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -51,7 +50,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
 
 import java.io.File;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -246,12 +244,10 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
 
     @Override
     public void initPersonalInformation(Account account) {
+        JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         String url = null;
-        try {
-            url = basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(DataSourceManager.getInstance().getStorageType(), String.format(Locale.getDefault(), "/image/%s.jpg", account.getAccount()));
-
-        } catch (Exception e) {
-            AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
+        if (jfgAccount != null) {
+            url = isDefaultPhoto(jfgAccount.getPhotoUrl()) && basePresenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : jfgAccount.getPhotoUrl();
         }
         Glide.with(this).load(url)
                 .listener(new RequestListener<String, GlideDrawable>() {

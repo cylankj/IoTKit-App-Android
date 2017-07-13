@@ -270,12 +270,12 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      * @param checkAccountCallback
      */
     @Override
-    public void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (getInputPhone().equals(checkAccountCallback.account)) {
-            ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
-        } else {
-            //发送验证码
+    public void handlerCheckPhoneResult(RxEvent.CheckRegisterBack checkAccountCallback) {
+        if (checkAccountCallback.jfgResult.code == JError.ErrorAccountNotExist) {
             basePresenter.getCheckCode(getInputPhone());
+        } else if (checkAccountCallback.jfgResult.code == JError.ErrorOK) {
+            ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
+            //发送验证码
         }
     }
 

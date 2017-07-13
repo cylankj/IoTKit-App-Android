@@ -18,6 +18,7 @@ import android.widget.EditText;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.databinding.FragmentMineFriendAddByNumBinding;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendSearchContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
@@ -88,7 +89,9 @@ public class MineFriendSearchFragment extends Fragment implements MineFriendSear
         etAddByNumber.setOnKeyListener((v, keyCode, event) -> {
             if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
                 String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
-                if (TextUtils.isEmpty(getInputNum())) {
+                if (TextUtils.isEmpty(getInputNum())
+                        || (!JConstant.PHONE_REG.matcher(getInputNum()).matches()
+                        && !JConstant.EMAIL_REG.matcher(getInputNum()).matches())) {
                     ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
                 } else if (getInputNum().equals(account)) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));

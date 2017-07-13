@@ -121,12 +121,14 @@ public class FriendContextItem extends AbstractItem<FriendContextItem, FriendCon
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.mIdentifier);
         dest.writeSerializable(this.friendRequest);
         dest.writeSerializable(this.friendAccount);
         dest.writeInt(this.childType);
     }
 
     protected FriendContextItem(Parcel in) {
+        this.mIdentifier = in.readLong();
         this.friendRequest = (JFGFriendRequest) in.readSerializable();
         this.friendAccount = (JFGFriendAccount) in.readSerializable();
         this.childType = in.readInt();

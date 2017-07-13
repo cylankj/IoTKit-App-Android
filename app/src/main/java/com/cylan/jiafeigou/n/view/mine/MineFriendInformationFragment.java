@@ -235,6 +235,7 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
         mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(bundle);
         mineSetRemarkNameFragment.setOnSetRemarkNameListener(name -> {
             friendDetailBinding.setAlias(name);
+            friendItem.friendAccount.markName = name;
             if (eventCallback != null) {
                 eventCallback.onModifyMarkName(friendItem);
             }

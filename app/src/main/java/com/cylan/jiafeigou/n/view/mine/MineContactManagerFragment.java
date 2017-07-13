@@ -102,16 +102,17 @@ public class MineContactManagerFragment extends Fragment implements MineShareToC
             @Override
             public void onClick(View v, int position, FastAdapter<ShareContactItem> fastAdapter, ShareContactItem item) {
                 AppLogger.d("点击了联系人");
+                Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+                if (account != null && TextUtils.equals(account.getAccount(), item.getAccount())) {
+                    ToastUtil.showToast(contactType == 0 ? getString(R.string.Tap3_ShareDevice_NotYourself) : getString(R.string.Tap3_FriendsAdd_NotYourself));
+                    return;
+                }
                 if (contactType == 0) {//分享联系人
                     showShareDeviceDialog(item);
                 } else if (contactType == 1) {//添加联系人
-                    Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-                    if (account != null && TextUtils.equals(account.getAccount(), item.getAccount())) {
-                        //不能添加自己为好友
-                        showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
-                    } else {
-                        presenter.checkFriendAccount(item);
-                    }
+                    //不能添加自己为好友
+//                        showPersonOverDialog(getString(R.string.Tap3_FriendsAdd_NotYourself));
+                    presenter.checkFriendAccount(item);
                 }
             }
 

@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 public class FriendContextHeader extends AbstractItem<FriendContextHeader, FriendContextHeader.ViewHolder> {
     public String header;
     public List<FriendContextItem> children;
+    public int headerType;
 
     public FriendContextHeader withHeader(String header) {
         this.header = header;
@@ -31,10 +32,17 @@ public class FriendContextHeader extends AbstractItem<FriendContextHeader, Frien
         if (children != null) {
             for (FriendContextItem child : children) {
                 child.withParent(this);
+                withHeaderType(child.childType);
             }
         }
         return this;
     }
+
+    public FriendContextHeader withHeaderType(int headerType) {
+        this.headerType = headerType;
+        return this;
+    }
+
 
     @Override
     public ViewHolder getViewHolder(View v) {

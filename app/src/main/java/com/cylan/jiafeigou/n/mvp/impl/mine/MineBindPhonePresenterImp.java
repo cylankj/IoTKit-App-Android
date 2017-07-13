@@ -114,8 +114,9 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public void checkPhoneIsBind(String phone) {
-        rx.Observable.just(phone)
-                .subscribeOn(Schedulers.newThread())
+        Observable.just("checkPhoneIsBind")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
@@ -132,7 +133,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public Subscription getCheckPhoneCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(checkAccountCallback -> {
                     if (checkAccountCallback != null) {
