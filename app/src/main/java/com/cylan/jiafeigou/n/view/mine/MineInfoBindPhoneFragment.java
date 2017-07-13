@@ -291,9 +291,9 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
             basePresenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
             hideLoadingDialog();
-            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
         } else {
-            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
+            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
         }
     }
 

@@ -30,7 +30,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -39,10 +38,10 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneContract.View> implements MineBindPhoneContract.Presenter {
 
-    private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
     private Network network;
     private boolean sendReq;
+    private String smsToken;
 
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
@@ -61,6 +60,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(smsCodeResult -> {
                     if (smsCodeResult != null) {
                         if (smsCodeResult.error == JError.ErrorOK) {
+                            this.smsToken = smsCodeResult.token;
                             AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
                             getView().startCountTime();
                         } else {
@@ -96,6 +96,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     @Override
                     public void call(String s) {
                         try {
+                            smsToken = null;
                             BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -114,12 +115,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public void checkPhoneIsBind(String phone) {
-        Observable.just("checkPhoneIsBind")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
+        rx.Observable.just(phone)
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -135,11 +135,14 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public Subscription getCheckPhoneCallback() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(checkAccountCallback -> {
-                    if (checkAccountCallback != null) {
-                        if (getView() != null) {
-                            AppLogger.d("正在验证用户是否存在!!!!!!");
-                            getView().handlerCheckPhoneResult(checkAccountCallback);
+                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                    @Override
+                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
+                        if (checkAccountCallback != null) {
+                            if (getView() != null) {
+                                AppLogger.d("getCheckPhoneCallback");
+                                getView().handlerCheckPhoneResult(checkAccountCallback);
+                            }
                         }
                     }
                 }, e -> AppLogger.d("getCheckPhoneCallback" + e.getMessage()));
@@ -152,18 +155,26 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void sendChangePhoneReq(String newPhone, String token) {
         rx.Observable.just(jfgAccount)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(account -> {
-                    try {
-                        account.resetFlag();
-                        account.setPhone(newPhone, token);
-                        int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
-                        sendReq = true;
-                        AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
-                    } catch (JfgException e) {
-                        AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
-                        e.printStackTrace();
+                .subscribe(new Action1<JFGAccount>() {
+                    @Override
+                    public void call(JFGAccount account) {
+                        try {
+                            account.resetFlag();
+                            account.setPhone(newPhone, token);
+                            int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
+                            sendReq = true;
+                            AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
+                        } catch (JfgException e) {
+                            AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
+                            e.printStackTrace();
+                        }
                     }
-                }, throwable -> AppLogger.e("sendChangePhoneReq" + throwable.getLocalizedMessage()));
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendChangePhoneReq" + throwable.getLocalizedMessage());
+                    }
+                });
     }
 
     /**
@@ -214,6 +225,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(code1 -> {
                     try {
+                        AppLogger.d("CheckVerifyCode");
                         BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code1);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -225,8 +237,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void start() {
         super.start();
         addSubscription(getAccountCallBack());
-        addSubscription(getCheckPhoneCallback());
         addSubscription(checkVerifyCodeCallBack());
+        addSubscription(getCheckPhoneCallback());
         addSubscription(changeAccountBack());
         addSubscription(getCheckCodeCallback());
         registerNetworkMonitor();
@@ -235,9 +247,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public void stop() {
         super.stop();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        }
         unregisterNetworkMonitor();
     }
 
