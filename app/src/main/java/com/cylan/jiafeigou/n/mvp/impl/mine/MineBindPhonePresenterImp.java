@@ -133,7 +133,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     @Override
     public Subscription getCheckPhoneCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(checkAccountCallback -> {
                     if (checkAccountCallback != null) {

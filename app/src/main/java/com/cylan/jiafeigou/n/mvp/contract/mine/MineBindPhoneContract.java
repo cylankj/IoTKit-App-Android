@@ -39,7 +39,7 @@ public interface MineBindPhoneContract {
          *
          * @param checkAccountCallback
          */
-        void handlerCheckPhoneResult(RxEvent.CheckRegisterBack checkAccountCallback);
+        void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback);
 
         /**
          * 校验短信验证码的结果
