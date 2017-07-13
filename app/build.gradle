@@ -40,7 +40,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        applicationId "com.cylan.jiafeigou"
+        applicationId "com.cylan.cleverdog"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         dataBinding.enabled true
@@ -151,7 +151,7 @@ android {
             applicationId "com.cylan.cleverdog"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 10515998",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
@@ -181,10 +181,10 @@ android {
             ]
         }
         _doby {
-            applicationId "com.cylan.jiafeigou.zhongxing"
+            applicationId "com.cylan.doby"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.doby.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 100005405",
                                     "VID"                : "\\ 0002",
                                     "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
@@ -213,10 +213,10 @@ android {
             ]
         }
         _cell_c {
-            applicationId "com.cylan.jiafeigou.cell_c"
+            applicationId "com.cylan.cleverdog.cell_c"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider",
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.cell_c.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 100005405",
                                     "VID"                : "\\ 0060",
                                     "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
