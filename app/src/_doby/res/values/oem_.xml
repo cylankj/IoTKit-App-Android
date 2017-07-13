@@ -19,4 +19,5 @@
     <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s&amp;g_f=991653</string>
     <string name="facebook_app_id">fb1770285686596084</string>
     <string name="agreementSuffix">"_zhongxing"</string>
+    <string name="log">"Doby"</string>
 </resources>

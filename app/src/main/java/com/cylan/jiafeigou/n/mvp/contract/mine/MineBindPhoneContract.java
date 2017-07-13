@@ -15,6 +15,10 @@ import rx.Subscription;
 public interface MineBindPhoneContract {
 
     interface View extends BaseView<Presenter> {
+
+        void onResult(int event, int errId);
+
+
         /**
          * 修改标题
          */
@@ -37,9 +41,9 @@ public interface MineBindPhoneContract {
         /**
          * 检测账号的是否已经注册的结果
          *
-         * @param checkAccountCallback
+         * @param registerBack
          */
-        void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback);
+        void handlerCheckPhoneResult(RxEvent.CheckRegisterBack registerBack);
 
         /**
          * 校验短信验证码的结果
@@ -75,6 +79,9 @@ public interface MineBindPhoneContract {
     }
 
     interface Presenter extends BasePresenter {
+
+        void getVerifyCode(String phone);
+
         /**
          * 判断是绑定还是修改
          *
@@ -86,18 +93,11 @@ public interface MineBindPhoneContract {
          * 获取到验证码
          */
         void getCheckCode(String phone);
-
-        /**
-         * 检测账号是否已经注册
-         */
-        void checkPhoneIsBind(String phone);
-
-        /**
-         * 获取到检测账号的回调
-         *
-         * @return
-         */
-        Subscription getCheckPhoneCallback();
+//
+//        /**
+//         * 检测账号是否已经注册
+//         */
+//        void checkPhoneIsBind(String phone);
 
         /**
          * 发送修改手机号请求
@@ -125,16 +125,6 @@ public interface MineBindPhoneContract {
          * @return
          */
         Subscription checkVerifyCodeCallBack();
-
-        /**
-         * 注册网络监听
-         */
-        void registerNetworkMonitor();
-
-        /**
-         * 移除网络监听
-         */
-        void unregisterNetworkMonitor();
 
 
         /**
