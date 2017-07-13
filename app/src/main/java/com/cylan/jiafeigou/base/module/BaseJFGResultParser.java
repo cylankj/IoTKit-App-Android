@@ -131,7 +131,7 @@ BaseJFGResultParser {
 //                            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
                             break;
                         case JError.ErrorSMSCodeNotMatch:
-                            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
+//                            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
                             break;
                         case JError.ErrorInvalidPass:
 //                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));

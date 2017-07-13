@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -90,6 +91,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     while (emailQuery != null && emailQuery.moveToNext()) {
                         String displayName = emailQuery.getString(emailQuery.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
                         String emailAddress = emailQuery.getString(emailQuery.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+                        if (!JConstant.EMAIL_REG.matcher(emailAddress).find()) {
+                            continue;//不符合的邮箱不显示
+                        }
                         shareContactItem = new ShareContactItem();
                         shareContactItem.name = displayName;
                         shareContactItem.contactType = contactType;

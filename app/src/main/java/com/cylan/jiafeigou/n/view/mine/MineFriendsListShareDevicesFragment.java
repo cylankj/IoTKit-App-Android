@@ -126,7 +126,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     public void initTitleView(FriendContextItem friendItem) {
-        if (TextUtils.isEmpty(friendItem.friendAccount.markName.trim())) {
+        if (TextUtils.isEmpty(friendItem.friendAccount.markName) || TextUtils.isEmpty(friendItem.friendAccount.markName.trim())) {
             shareDevicesBinding.customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.alias)));
         } else {
             shareDevicesBinding.customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), friendItem.friendAccount.markName)));

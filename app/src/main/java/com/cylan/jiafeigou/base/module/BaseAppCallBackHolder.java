@@ -259,7 +259,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnCheckFriendAccountRsp :");
         RxBus.getCacheInstance().post(new RxEvent.CheckAccountCallback(i, s, s1, b));
     }
 
