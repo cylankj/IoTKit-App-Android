@@ -79,6 +79,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawable(getResources().getDrawable(android.R.color.white));
         super.onCreate(savedInstanceState);
         PerformanceUtils.startTrace("NewHomeActivityStart");
         IMEUtils.fixFocusedViewLeak(getApplication());

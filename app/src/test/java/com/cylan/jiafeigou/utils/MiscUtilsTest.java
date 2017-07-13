@@ -88,5 +88,10 @@ public class MiscUtilsTest {
         System.out.println(format.format(new Date(time)));
         format.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
         System.out.println(format.format(new Date(time)));
+
+        System.out.println(MiscUtils.getSum(100, 200));
+        System.out.println(MiscUtils.getSum(199, 200));
+        System.out.println(MiscUtils.getSum(200, 200));
+        System.out.println(MiscUtils.getSum(201, 200));
     }
 }

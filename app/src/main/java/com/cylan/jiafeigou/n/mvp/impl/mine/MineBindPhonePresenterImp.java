@@ -1,17 +1,17 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -24,12 +24,13 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -38,10 +39,8 @@ import rx.schedulers.Schedulers;
  */
 public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneContract.View> implements MineBindPhoneContract.Presenter {
 
+    private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
-    private Network network;
-    private boolean sendReq;
-    private String smsToken;
 
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
@@ -58,16 +57,75 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
         return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(smsCodeResult -> {
-                    if (smsCodeResult != null) {
-                        if (smsCodeResult.error == JError.ErrorOK) {
-                            this.smsToken = smsCodeResult.token;
-                            AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
-                            getView().startCountTime();
-                        } else {
-                            getView().getSmsCodeResult(smsCodeResult.error);
-                        }
+                    if (smsCodeResult.error == JError.ErrorOK) {
+                        AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
+                        getView().startCountTime();
+                    } else {
+                        getView().getSmsCodeResult(smsCodeResult.error);
                     }
                 }, AppLogger::e);
+    }
+
+    @Override
+    public void getVerifyCode(String phone) {
+        //获取验证码,1.校验手机号码,2.根据错误号显示
+        //保存上次获取验证码的时间,以免退出页面重置.
+        Subscription subscription = rx.Observable.just(phone)
+                .subscribeOn(Schedulers.newThread())
+                .delay(1, TimeUnit.SECONDS)
+                .flatMap(s -> {
+                    try {
+                        long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                        Log.d(TAG, "校验手机号码: " + req);
+                        return Observable.just(req);
+                    } catch (JfgException e) {
+                        return Observable.just(-1);
+                    }
+                })
+                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                        .first()
+                        .subscribeOn(Schedulers.newThread())
+                        .timeout(10, TimeUnit.SECONDS)
+                        .delay(100, TimeUnit.MILLISECONDS))
+                .flatMap(ret -> {
+                    //手机号注册 情况
+                    AppLogger.d("code:" + ret.jfgResult.code + "," + ret.jfgResult.event);
+                    if (ret.jfgResult.code == JError.ErrorAccountNotExist) {
+                        Subscription s = RxBus.getCacheInstance()
+                                .toObservable(RxEvent.SmsCodeResult.class)
+                                .timeout(10, TimeUnit.SECONDS)
+                                .filter(r -> mView != null)
+                                .subscribe(result -> {
+                                    mView.onResult(JConstant.GET_SMS_BACK, result.error);
+                                    unSubscribe("ResultVerifyCode");
+                                    unSubscribe("getVerifyCode");
+                                }, AppLogger::e);
+                        addSubscription(s, "ResultVerifyCode");
+                        try {
+                            //获取验证码
+                            int seq = BaseApplication.getAppComponent().getCmd()
+                                    .sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                            if (seq != 0) s.unsubscribe();
+                            else AppLogger.d("手机号码 有效,开始获取验证码");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //返回错误码
+                        mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
+                        unSubscribeAllTag();
+                    }
+                    throw new RxEvent.HelperBreaker();
+//                    return Observable.just(ret.jfgResult.code);
+                })
+                .doOnError(throwable -> {
+                    if (throwable instanceof RxEvent.HelperBreaker) {
+
+                    } else mView.onResult(JConstant.CHECK_TIMEOUT, 0);
+                })
+                .subscribe(ret -> {
+                }, AppLogger::e);
+        addSubscription(subscription, "getVerifyCode");
     }
 
     @Override
@@ -92,61 +150,45 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void getCheckCode(final String phone) {
         rx.Observable.just(phone)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            smsToken = null;
-                            BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getcheckcode" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    /**
-     * 检测账号是否已经注册
-     */
-    @Override
-    public void checkPhoneIsBind(String phone) {
-        rx.Observable.just(phone)
-                .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
+                        BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                 }, AppLogger::e);
     }
 
-    /**
-     * 获取到检测账号的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription getCheckPhoneCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
-                    @Override
-                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null) {
-                            if (getView() != null) {
-                                AppLogger.d("getCheckPhoneCallback");
-                                getView().handlerCheckPhoneResult(checkAccountCallback);
-                            }
-                        }
-                    }
-                }, e -> AppLogger.d("getCheckPhoneCallback" + e.getMessage()));
-    }
+//    /**
+//     * 检测账号是否已经注册
+//     */
+//    @Override
+//    public void checkPhoneIsBind(String phone) {
+//        rx.Observable.just(phone)
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe(s -> {
+//                    try {
+//                        BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+//                    } catch (JfgException e) {
+//                        e.printStackTrace();
+//                    }
+//                }, AppLogger::e);
+//    }
+
+//    /**
+//     * 获取到检测账号的回调
+//     *
+//     * @return
+//     */
+//    public Subscription getCheckPhoneCallback() {
+//        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(checkAccountCallback -> {
+//                    if (getView() != null) {
+//                        getView().handlerCheckPhoneResult(checkAccountCallback);
+//                    }
+//                }, e -> AppLogger.d("getCheckPhoneCallback" + e.getMessage()));
+//    }
 
     /**
      * 发送修改phone的请求
@@ -155,26 +197,17 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public void sendChangePhoneReq(String newPhone, String token) {
         rx.Observable.just(jfgAccount)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<JFGAccount>() {
-                    @Override
-                    public void call(JFGAccount account) {
-                        try {
-                            account.resetFlag();
-                            account.setPhone(newPhone, token);
-                            int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
-                            sendReq = true;
-                            AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
-                        } catch (JfgException e) {
-                            AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
+                .subscribe(account -> {
+                    try {
+                        account.resetFlag();
+                        account.setPhone(newPhone, token);
+                        int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
+                        AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
+                    } catch (JfgException e) {
+                        AppLogger.d("sendChangePhoneReq:" + e.getLocalizedMessage());
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendChangePhoneReq" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -202,14 +235,9 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public Subscription checkVerifyCodeCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
-                    @Override
-                    public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (resultVerifyCode != null) {
-                            if (getView() != null) {
-                                getView().handlerCheckCodeResult(resultVerifyCode);
-                            }
-                        }
+                .subscribe(resultVerifyCode -> {
+                    if (getView() != null) {
+                        getView().handlerCheckCodeResult(resultVerifyCode);
                     }
                 }, e -> AppLogger.d(e.getMessage()));
     }
@@ -225,7 +253,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(code1 -> {
                     try {
-                        AppLogger.d("CheckVerifyCode");
                         BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code1);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -236,43 +263,35 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public void start() {
         super.start();
-        addSubscription(getAccountCallBack());
-        addSubscription(checkVerifyCodeCallBack());
-        addSubscription(getCheckPhoneCallback());
-        addSubscription(changeAccountBack());
-        addSubscription(getCheckCodeCallback());
-        registerNetworkMonitor();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
+        } else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAccountCallBack());
+            compositeSubscription.add(changeAccountBack());
+            compositeSubscription.add(getCheckCodeCallback());
+        }
     }
 
     @Override
     public void stop() {
         super.stop();
-        unregisterNetworkMonitor();
-    }
-
-    @Override
-    public void registerNetworkMonitor() {
-        try {
-            if (network == null) {
-                network = new Network();
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-                filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                ContextUtils.getContext().registerReceiver(network, filter);
-            }
-        } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
         }
     }
 
     @Override
-    public void unregisterNetworkMonitor() {
-        if (network != null) {
-            ContextUtils.getContext().unregisterReceiver(network);
-            network = null;
-        }
+    protected String[] registerNetworkAction() {
+        return new String[]{ConnectivityManager.CONNECTIVITY_ACTION,
+                WifiManager.NETWORK_STATE_CHANGED_ACTION};
     }
 
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+        updateConnectivityStatus(status.state);
+    }
 
     /**
      * 是否三方登录
@@ -290,26 +309,9 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp != null) {
-                        if (sendReq) {
-                            getView().handlerResetPhoneResult(rsp.jfgResult.code);
-                            sendReq = false;
-                        }
+                        getView().handlerResetPhoneResult(rsp.jfgResult.code);
                     }
                 }, e -> AppLogger.d(e.getMessage()));
-    }
-
-    /**
-     * 监听网络状态
-     */
-    private class Network extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
-                updateConnectivityStatus(status.state);
-            }
-        }
     }
 
     /**
@@ -317,18 +319,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      */
     private void updateConnectivityStatus(int network) {
         Observable.just(network)
-                .filter(new Func1<Integer, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer) {
-                        return getView() != null;
-                    }
-                })
+                .filter(integer -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        getView().onNetStateChanged(integer);
-                    }
-                }, e -> AppLogger.d(e.getMessage()));
+                .subscribe(integer -> getView().onNetStateChanged(integer), e -> AppLogger.d(e.getMessage()));
     }
 }

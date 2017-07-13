@@ -16,4 +16,5 @@
     <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
     <string name="share_to_friends_link">https://play.google.com/store/apps/details?id=%s</string>
     <string name="agreementSuffix">"cell_c"</string>
+    <string name="log">"Cellc"</string>
 </resources>

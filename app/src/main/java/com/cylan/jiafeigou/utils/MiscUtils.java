@@ -794,4 +794,13 @@ public class MiscUtils {
         Uri uri = Uri.parse(url);
         return uri.getQueryParameter(key);
     }
+
+    public static int getSum(int num, int base) {
+        float ret = (float) num / base;
+        int count = num / base;
+        if (ret > count) {
+            return count + 1;
+        }
+        return 0;
+    }
 }
