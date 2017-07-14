@@ -46,9 +46,7 @@ import com.cylan.jiafeigou.support.badge.TreeHelper;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
@@ -189,7 +187,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
                     getString(R.string.Tap2_Index_Open_NoDeviceOption),
                     (DialogInterface dialog, int which) -> {
-                        basePresenter.loginType();
+                        Bundle bundle = new Bundle();
+                        MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
                     }, getString(R.string.CANCEL), null, false);
         }
     }
@@ -217,14 +217,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
-
-//        if (basePresenter.checkOpenLogIn()) {
-//            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
-//                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
-//                showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
-//                return;
-//            }
-//        }
 //
 //        MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
 //        getActivity().getSupportFragmentManager().beginTransaction()

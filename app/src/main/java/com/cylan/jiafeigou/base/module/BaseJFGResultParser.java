@@ -59,10 +59,12 @@ BaseJFGResultParser {
                 break;
             case 1:
                 login = jfgResult.code == JError.ErrorOK;//注册成功
+
                 RxBus.getCacheInstance().post(new RxEvent.ResultRegister(jfgResult.code));
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
+                AppLogger.d("登录成功了");
                 BaseApplication.getAppComponent().getCmd().getAccount();
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);

@@ -36,9 +36,6 @@ import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
  */
 public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContract.View> implements SdCardInfoContract.Presenter {
 
-    private static final long TIMEOUT = 2 * 60L;
-
-
     public static class Event {
     }
 
@@ -88,6 +85,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                                 if (!hasSDCard) {
                                     mView.showSdPopDialog();
                                 }
+                                mView.initSdUseDetailRsp(status, false);
                                 break;
                             } else if (msg.id == 222) {
                                 DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);

@@ -79,7 +79,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                     AutoSignIn.getInstance().autoLogout();
                     NotifyManager.getNotifyManager().clearAll();
                     RxBus.getCacheInstance().removeAllStickyEvents();
-                    AutoSignIn.getInstance().autoSave(retAccount.getAccount(), 1, "");
+                    AutoSignIn.getInstance().clearPsw();
                     //emit failed event.
                     //是三方登录获取绑定的手机或者邮箱用于登录页回显
                     if (isOpenLogin) {

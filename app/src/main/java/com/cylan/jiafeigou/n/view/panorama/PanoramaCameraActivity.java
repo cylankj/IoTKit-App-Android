@@ -56,6 +56,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -434,7 +435,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         updateHint();
         setting.setEnabled(true);
         int netType = NetUtils.getNetType(this);
-        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
         if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
             onRefreshConnectionMode(alertMobile ? 1 : -2);
         }
@@ -578,7 +579,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         AppLogger.d("clickedSettingMenu");
         hideVideoModePop();
         presenter.dismiss();
-        startActivity(new Intent(this, PanoramaSettingActivity.class));
+        startActivity(new Intent(this, CamSettingActivity.class));
     }
 
     @Override

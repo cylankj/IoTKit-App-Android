@@ -54,7 +54,20 @@
                 hunt:sv_title="@string/EQUIPMENT_INFO"
                 hunt:sv_v_divider="false" />
 
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_logo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                hunt:sv_image_src="@drawable/setting_icon_logo"
+                hunt:sv_title="@string/Tap1_LogoSelect"
+                hunt:sv_v_divider="false" />
+
             <TextView
+                android:id="@+id/network_setting_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/y15"
@@ -107,6 +120,24 @@
                 android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp15" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_home_mode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:clickable="true"
+                hunt:sv_image_src="@drawable/setting_icon_wifi"
+                hunt:sv_title="@string/Tap1_HomeMode"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_direct_mode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:clickable="true"
+                hunt:sv_image_src="@drawable/setting_icon_ap"
+                hunt:sv_title="@string/Tap1_OutdoorMode"
+                hunt:sv_v_divider="false" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_safe_protection"

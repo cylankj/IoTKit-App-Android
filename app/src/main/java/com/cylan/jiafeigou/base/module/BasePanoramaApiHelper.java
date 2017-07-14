@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.base.module;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -43,7 +44,6 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class BasePanoramaApiHelper {
     private IHttpApi httpApi;
-    private BaseForwardHelper forwardHelper;
     private DeviceInformation deviceInformation;
     private static BasePanoramaApiHelper apiHelper;
     private String uuid;
@@ -85,7 +85,6 @@ public class BasePanoramaApiHelper {
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_HTTP);
                         } else {
 //                            if (BaseApplication.isOnline()) {
-                            forwardHelper = BaseForwardHelper.getInstance();
                             deviceInformation = null;
                             RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
 //                            } else {
@@ -114,10 +113,14 @@ public class BasePanoramaApiHelper {
     /**
      * 使用这个类之前必须调用这个方法进行初始化,否则会出异常
      */
-    public void init(String uuid) {
+    public void init(String uuid, boolean http) {
         this.uuid = uuid;
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);
-        BaseDeviceInformationFetcher.getInstance().init(uuid);
+        if (http) {
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.PanoramaApiAvailable.class);
+            BaseDeviceInformationFetcher.getInstance().init(uuid);
+        } else {
+            RxBus.getCacheInstance().postSticky(RxEvent.PanoramaApiAvailable.API_FORWARD);
+        }
     }
 
     public Observable<String> loadPicture(String origin) {
@@ -140,20 +143,21 @@ public class BasePanoramaApiHelper {
     }
 
     private Observable<RxEvent.PanoramaApiAvailable> getAvailableApi() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
-                .first(panoramaApiAvailable -> {
-                    AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
-                    return panoramaApiAvailable.ApiType >= 0;
-                })
-                .timeout(5, TimeUnit.SECONDS, Observable.just(null))
-                .filter(ret -> {
-                    if (ret == null) {
-                        AppLogger.d("正在初始化");
-                        BaseDeviceInformationFetcher.getInstance().init(uuid);
-                    }
-                    return ret != null;
-                })
-                .observeOn(Schedulers.io());
+        return TextUtils.isEmpty(uuid) ? Observable.just(RxEvent.PanoramaApiAvailable.API_FORWARD) :
+                RxBus.getCacheInstance().toObservableSticky(RxEvent.PanoramaApiAvailable.class)
+                        .first(panoramaApiAvailable -> {
+                            AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
+                            return panoramaApiAvailable.ApiType >= 0;
+                        })
+                        .timeout(5, TimeUnit.SECONDS, Observable.just(null))
+                        .filter(ret -> {
+                            if (ret == null) {
+                                AppLogger.d("正在初始化");
+                                BaseDeviceInformationFetcher.getInstance().init(uuid);
+                            }
+                            return ret != null;
+                        })
+                        .observeOn(Schedulers.io());
     }
 
     public void download(String fileName, DownloadPercent.DownloadListener listener) {
@@ -165,27 +169,27 @@ public class BasePanoramaApiHelper {
      */
 
     public Observable<PanoramaEvent.MsgFileRsp> delete(int deleteType, List<String> files) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.delete(deleteType, files) : forwardHelper.sendForward(uuid, 3, new PanoramaEvent.MsgFileReq(files, deleteType)));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.delete(deleteType, files) : BaseForwardHelper.getInstance().sendForward(uuid, 3, new PanoramaEvent.MsgFileReq(files, deleteType)));
     }
 
     public Observable<PanoramaEvent.MsgFileListRsp> getFileList(int beginTime, int endTime, int count) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : forwardHelper.sendForward(uuid, 5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : BaseForwardHelper.getInstance().sendForward(uuid, 5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> snapShot() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.snapShot() : forwardHelper.sendForward(uuid, 7, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.snapShot() : BaseForwardHelper.getInstance().sendForward(uuid, 7, null));
     }
 
     public Observable<PanoramaEvent.MsgRsp> startRec(int videoType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType) : forwardHelper.sendForward(uuid, 9, videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.startRec(videoType) : BaseForwardHelper.getInstance().sendForward(uuid, 9, videoType));
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> stopRec(int videoType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType) : forwardHelper.sendForward(uuid, 11, videoType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.stopRec(videoType) : BaseForwardHelper.getInstance().sendForward(uuid, 11, videoType));
     }
 
     public Observable<PanoramaEvent.MsgVideoStatusRsp> getRecStatus() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus() : forwardHelper.sendForward(uuid, 13, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getRecStatus() : BaseForwardHelper.getInstance().sendForward(uuid, 13, null));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat(String deviceUuid) {
@@ -206,7 +210,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(204, property);
             }
             return ret;
-        }) : forwardHelper.setDataPoint(deviceUuid, 218, 0));
+        }) : BaseForwardHelper.getInstance().setDataPoint(deviceUuid, 218, 0));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> sdFormat() {
@@ -227,7 +231,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(204, property);
             }
             return ret;
-        }) : forwardHelper.setDataPoint(uuid, 218, 0));
+        }) : BaseForwardHelper.getInstance().setDataPoint(uuid, 218, 0));
     }
 
     public Observable<PanoramaEvent.MsgSdInfoRsp> getSdInfo() {
@@ -248,7 +252,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(204, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(uuid, 204, 1));
+        }) : BaseForwardHelper.getInstance().sendDataPoint(uuid, 204, 1));
     }
 
     public Observable<PanoramaEvent.MsgPowerLineRsp> getPowerLine() {
@@ -264,7 +268,7 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(205, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(uuid, 205, 1));
+        }) : BaseForwardHelper.getInstance().sendDataPoint(uuid, 205, 1));
     }
 
     public Observable<PanoramaEvent.MsgBatteryRsp> getBattery() {
@@ -280,26 +284,26 @@ public class BasePanoramaApiHelper {
                 device.updateProperty(206, property);
             }
             return ret;
-        }) : forwardHelper.sendDataPoint(uuid, 206, 1));
+        }) : BaseForwardHelper.getInstance().sendDataPoint(uuid, 206, 1));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setLogo(int logType) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setLogo(logType) : forwardHelper.sendForward(uuid, 15, logType));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setLogo(logType) : BaseForwardHelper.getInstance().sendForward(uuid, 15, logType));
     }
 
     public Observable<PanoramaEvent.MsgRsp> setResolution(int videoStandard) {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setResolution(videoStandard) : forwardHelper.sendForward(uuid, 17, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.setResolution(videoStandard) : BaseForwardHelper.getInstance().sendForward(uuid, 17, null));
     }
 
     public Observable<PanoramaEvent.MsgLogoRsp> getLogo() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getLogo() : forwardHelper.sendForward(uuid, 16, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getLogo() : BaseForwardHelper.getInstance().sendForward(uuid, 16, null));
     }
 
     public Observable<PanoramaEvent.MsgResolutionRsp> getResolution() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getResolution() : forwardHelper.sendForward(uuid, 21, null));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getResolution() : BaseForwardHelper.getInstance().sendForward(uuid, 21, null));
     }
 
     public Observable<PanoramaEvent.MsgUpgradeStatusRsp> getUpgradeStatus() {
-        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : forwardHelper.sendDataPoint(uuid, 228, 1));
+        return getAvailableApi().flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getUpgradeStatus() : BaseForwardHelper.getInstance().sendDataPoint(uuid, 228, 1));
     }
 }

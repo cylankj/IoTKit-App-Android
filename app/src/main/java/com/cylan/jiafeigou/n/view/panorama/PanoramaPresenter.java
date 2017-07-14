@@ -59,7 +59,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStart() {
         super.onStart();
-        BasePanoramaApiHelper.getInstance().init(uuid);
+        BasePanoramaApiHelper.getInstance().init(uuid, true);
     }
 
     @Override

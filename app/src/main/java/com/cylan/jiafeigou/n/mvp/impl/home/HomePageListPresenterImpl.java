@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -82,7 +81,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 }
             }
             if (apDirect) {
-                BasePanoramaApiHelper.getInstance().init(uuid);
+                BasePanoramaApiHelper.getInstance().init(uuid, true);
                 Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus().subscribe(ret -> {
                     if (recordSub != null && recordSub.isUnsubscribed()) {
                         recordSub.unsubscribe();

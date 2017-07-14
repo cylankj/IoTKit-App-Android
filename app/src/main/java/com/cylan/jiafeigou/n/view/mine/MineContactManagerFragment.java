@@ -69,7 +69,7 @@ public class MineContactManagerFragment extends Fragment implements MineShareToC
     private FastItemAdapter<ShareContactItem> shareFriendItemItemAdapter;
     private FragmentMineShareToContactBinding shareToContactBinding;
     private String uuid;
-    private ObservableBoolean empty = new ObservableBoolean(false);
+    private ObservableBoolean empty = new ObservableBoolean(true);
     private boolean searchMode = false;
     //Custom Toolbar Views
     @BindView(R.id.iv_mine_share_to_contact_search)

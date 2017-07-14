@@ -25,7 +25,7 @@ public class MiscUtilsTest {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        List<JFGDPMsg> list = MiscUtils.getCamDateVersionList(calendar.getTimeInMillis());
+        List<JFGDPMsg> list = MiscUtils.getCamDateVersionList(calendar.getTimeInMillis(), 15);
         for (int i = 0; i < 45; i++)
             System.out.println("" + format.format(new Date(list.get(i).version)));
     }

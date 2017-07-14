@@ -30,4 +30,7 @@
     <item name="adapter_item_tag_key" type="id" />
     <item name="fab_label" type="id" />
     <item name="custom_toolbar" type="id" />
+    <item name="rb_motion" type="id" />
+    <item name="rb_never" type="id" />
+    <item name="rb_24_hours" type="id" />
 </resources>

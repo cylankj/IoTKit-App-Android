@@ -211,9 +211,9 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_panorama_explain_blue_blink_charge" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline"
         android:orientation="vertical"
         app:layout_constraintGuide_end="371dp" />
 </android.support.constraint.ConstraintLayout>

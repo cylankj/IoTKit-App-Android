@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -64,11 +66,6 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         return null;
     }
 
-    @Override
-    public void showMailHasBindDialog() {
-        ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_EMAIL));
-    }
-
     /**
      * 显示请求发送结果
      */
@@ -76,7 +73,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     public void showSendReqResult(int code) {
         if (!isAdded()) return;
         if (!TextUtils.isEmpty(getEditText())) {
-            hideSendReqHint();
+            hideLoading();
             if (code == JError.ErrorOK) {
                 //区分第三方登录
                 if (basePresenter.isOpenLogin()) {
@@ -92,22 +89,12 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
                     //绑定成功
                     jump2MailConnectFragment();
                 }
+            } else if (code == JError.ErrorEmailExist) {
+                //邮箱已经被绑定
+                ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_EMAIL));
             } else {
                 //绑定失败
                 ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
-            }
-        }
-    }
-
-    /**
-     * 拿到账号
-     */
-    @Override
-    public void getUserAccountData(JFGAccount userinfo) {
-        if (userinfo != null) {
-            if (TextUtils.isEmpty(userinfo.getEmail()) || userinfo.getEmail() == null) {
-            } else {
-                customToolbar.setToolbarLeftTitle(getString(R.string.CHANGE_EMAIL));
             }
         }
     }
@@ -118,10 +105,6 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onStart() {
@@ -159,8 +142,11 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setChineseExclude(mETMailBox, 65);
-        initKeyListener();
         initMailEdit();
+        Account account = basePresenter.getUserAccount();
+        if (account != null) {
+            customToolbar.setToolbarLeftTitle(TextUtils.isEmpty(account.getEmail()) ? getString(R.string.Tap0_BindEmail) : getString(R.string.CHANGE_EMAIL));
+        }
     }
 
     private void initMailEdit() {
@@ -169,22 +155,6 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
             mETMailBox.setText(jfgAccount.getEmail());
     }
 
-    private void initKeyListener() {
-//        mETMailBox.setOnKeyListener((v, keyCode, event) -> {
-//            if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-//                mailBox = getEditText();
-//                if (TextUtils.isEmpty(mailBox)) {
-//                    return false;
-//                } else if (!basePresenter.checkEmail(mailBox)) {
-//                    ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
-//                    return false;
-//                } else {
-//                    basePresenter.isEmailBind(mailBox);
-//                }
-//            }
-//            return false;
-//        });
-    }
 
     private void initPresenter() {
         basePresenter = new BindMailPresenterImpl(this);
@@ -218,7 +188,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
             //返回上一个fragment
             case R.id.tv_toolbar_icon:
                 IMEUtils.hide((Activity) getContext());
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack("bindMailStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
             //绑定邮箱
             case R.id.tv_toolbar_right:
@@ -235,23 +205,11 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         }
     }
 
-
-    @Override
-    public void showSendReqHint() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.upload));
-    }
-
-    @Override
-    public void hideSendReqHint() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
-    }
-
     /**
      * 获取到输入的内容
      *
      * @return
      */
-    @Override
     public String getEditText() {
         return mETMailBox.getText().toString();
     }
@@ -266,13 +224,27 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         if (!isAdded() || getView() == null) return;
         getView().post(() -> {
             if (state == 0) {
-                hideSendReqHint();
+                hideLoading();
                 ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
             }
         });
     }
 
     @Override
+    public void showLoading(int resId, Object... args) {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, args));
+    }
+
+    @Override
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+    }
+
+    @Override
+    public void onAccountArrived(JFGAccount jfgAccount) {
+
+    }
+
     public void jump2MailConnectFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(MineReSetMailTip.KEY_MAIL, getEditText());
@@ -291,7 +263,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         bundle.putString("token", "");
         MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, android.R.id.content);
+                fragment, android.R.id.content, "bindMailStack");
     }
 
 }

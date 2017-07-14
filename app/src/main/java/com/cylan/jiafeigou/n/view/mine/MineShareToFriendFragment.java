@@ -41,7 +41,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private ItemAdapter<ShareFriendItem> shareToFriendsAdapter;
     private String uuid;
     private FragmentMineShareToFriendBinding shareToFriendBinding;
-    private ObservableBoolean empty = new ObservableBoolean(false);
+    private ObservableBoolean empty = new ObservableBoolean(true);
     private ObservableInt sharedNumber = new ObservableInt();
     private Runnable callback;
     private JFGShareListInfo shareListInfo;

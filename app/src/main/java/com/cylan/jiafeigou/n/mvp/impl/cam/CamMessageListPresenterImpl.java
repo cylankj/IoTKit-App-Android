@@ -7,12 +7,14 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -278,8 +280,18 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private Observable<IDPTaskResult> getDateListQuery() {
         DPEntity entity = new DPEntity();
         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         entity.setAccount(account == null ? "" : account.getAccount());
         entity.setUuid(uuid);
+        if (device.available()) {
+            if (JFGRules.isBell(device.pid)) {
+                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_30_DAYS);
+            } else if (JFGRules.isCamera(device.pid)) {
+                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.CAMERA_15_DAYS);
+            }
+        } else {
+            entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.CAMERA_15_DAYS);
+        }
         entity.setAction(DBAction.CAM_DATE_QUERY);
         try {
             return BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);

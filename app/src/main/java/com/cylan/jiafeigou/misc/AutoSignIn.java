@@ -170,6 +170,18 @@ public class AutoSignIn {
         return null;
     }
 
+    public String getSignAccount() {
+        try {
+            //1.account的aes
+            String string = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+            String decrypt = AESUtil.decrypt(string);
+            return new Gson().fromJson(decrypt, SignType.class).account;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void savePwdMd5(String accountAes, String pwd) {
         try {
             //2.保存密码,md5
