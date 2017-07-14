@@ -482,28 +482,6 @@ public class JFGRules {
         return !TextUtils.isEmpty(device.shareAccount);
     }
 
-    /**
-     * 基于安全考虑
-     * com.cylan.jiafeigou.xx
-     *
-     * @return xx 可以为空:表示官方包名
-     */
-    public static String getTrimPackageName() {
-        final String packageName = ContextUtils.getContext().getPackageName();
-        try {
-            return packageName.substring(19, packageName.length()).replace(".", "");
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    public static void main(String[] args) {
-        String t = "com.cylan.jiafeigou.xx";
-        System.out.println(t.substring(19, t.length()));
-        System.out.println(1 & 255);
-
-    }
-
     public static float getDefaultPortHeightRatio(int pid) {
         boolean normal = !isPanoramicCam(pid);
         return normal ? 0.75f : 1.0f;

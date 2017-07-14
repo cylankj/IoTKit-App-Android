@@ -1,13 +1,13 @@
 package com.cylan.jiafeigou.misc;
 
 import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Patterns;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
 import java.util.Locale;
@@ -179,10 +179,7 @@ public class JConstant {
     public static final String KEY_DEVICE_NEW_VERSION = "key_DEVICE_NEW_VERSION";
 
     public static String getRoot() {
-        String content = JFGRules.getTrimPackageName();
-        if (TextUtils.equals(content, "cell_c") || TextUtils.equals(content, "zhongxing"))
-            return content;
-        return "Smarthome";
+        return ContextUtils.getContext().getString(R.string.log);
     }
 
     /**

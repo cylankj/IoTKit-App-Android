@@ -21,4 +21,5 @@
     <string name="share_default_title">@string/Tap1_Shared_Title</string>
     <string name="facebook_app_id">fb1866682200216878</string>
     <string name="agreementSuffix">""</string>
+    <string name="log">"Smarthome"</string>
 </resources>
