@@ -37,8 +37,6 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoSetPassWordFragment;
 import com.cylan.jiafeigou.n.view.mine.MineSetUserAliasFragment;
 import com.cylan.jiafeigou.n.view.mine.MineUserInfoLookBigHeadFragment;
 import com.cylan.jiafeigou.n.view.mine.MyQRCodeDialog;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
@@ -69,6 +67,17 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     private Uri outPutUri;
     private File tempFile;
     private FragmentHomeMineInfoBinding homeMineInfoBinding;
+    private int jumpTo = -1;
+
+    public interface BackInterface {
+        boolean onBack();
+    }
+
+    private BackInterface backInterface;
+
+    public void setBackInterface(BackInterface backInterface) {
+        this.backInterface = backInterface;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +86,31 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         ButterKnife.bind(this);
         basePresenter = new MineInfoPresenterImpl(this, getContext());
         createCameraTempFile(savedInstanceState);
-        homeMineInfoBinding.changePsw.setVisibility(RxBus.getCacheInstance().hasStickyEvent(RxEvent.ThirdLoginTab.class) ? View.VISIBLE : View.INVISIBLE);
+        initInformationLayout();
+    }
+
+    private void initInformationLayout() {
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        if (account != null && account.isAvailable()) {
+            if (account.getLoginType() >= 3) {
+                //openlogin
+                if (TextUtils.isEmpty(account.getEmail()) && TextUtils.isEmpty(account.getPhone())) {
+                    homeMineInfoBinding.changePsw.setVisibility(View.GONE);
+                }
+            } else {
+                homeMineInfoBinding.changePsw.setVisibility(View.VISIBLE);
+            }
+
+
+        }
+
     }
 
     @Override
     public void onBackPressed() {
+        if (backInterface != null && backInterface.onBack()) {
+            return;
+        }
         if (checkExtraChildFragment()) {
             return;
         } else if (checkExtraFragment())
@@ -305,7 +334,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         Bundle bundle = new Bundle();
         BindMailFragment mailBoxFragment = BindMailFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                mailBoxFragment, android.R.id.content);
+                mailBoxFragment, android.R.id.content, "bindMailStack");
     }
 
     public void showSetPwd(boolean isVisible) {
@@ -350,6 +379,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
     public void setPresenter(MineInfoContract.Presenter basePresenter) {
 
     }
+
 
     @Override
     public String getUuid() {
@@ -459,4 +489,5 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         settingIntent.setData(Uri.parse("package:" + getPackageName()));
         startActivity(settingIntent);
     }
+
 }

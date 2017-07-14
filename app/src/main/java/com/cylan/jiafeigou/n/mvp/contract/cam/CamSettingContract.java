@@ -22,6 +22,8 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
+        void attributeUpdate();
+
         void showLoading();
 
         void hideLoading();

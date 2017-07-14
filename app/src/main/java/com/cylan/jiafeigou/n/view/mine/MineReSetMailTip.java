@@ -5,12 +5,14 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.view.activity.MineInfoActivity;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -22,7 +24,7 @@ import butterknife.OnClick;
  * 创建时间：2017/2/20
  * 描述：
  */
-public class MineReSetMailTip extends Fragment {
+public class MineReSetMailTip extends Fragment implements MineInfoActivity.BackInterface {
 
     public static final String KEY_MAIL = "useraccount";
     @BindView(R.id.custom_toolbar)
@@ -38,6 +40,17 @@ public class MineReSetMailTip extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mailToVerify = getArguments().getString(KEY_MAIL);
+        if (getActivity() instanceof MineInfoActivity) {
+            ((MineInfoActivity) getActivity()).setBackInterface(this);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (getActivity() instanceof MineInfoActivity) {
+            ((MineInfoActivity) getActivity()).setBackInterface(this);
+        }
     }
 
     public static MineReSetMailTip newInstance(Bundle bundle) {
@@ -65,13 +78,22 @@ public class MineReSetMailTip extends Fragment {
         });
     }
 
+
     @OnClick(R.id.tv_mail_connect_submit)
     public void onClick() {
         jump2MineInfoFragment();
     }
 
     public void jump2MineInfoFragment() {
-        if (getActivity() != null && !getActivity().isFinishing())
-            getActivity().finish();
+        getActivity().getSupportFragmentManager().popBackStack("bindMailStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    @Override
+    public boolean onBack() {
+        if (isDetached() || getActivity() == null) {
+            return false;
+        }
+        jump2MineInfoFragment();
+        return true;
     }
 }

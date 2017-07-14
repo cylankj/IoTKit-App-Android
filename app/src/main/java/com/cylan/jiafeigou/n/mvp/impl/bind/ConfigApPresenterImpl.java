@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import permissions.dispatcher.PermissionUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -209,20 +211,27 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
      * wifi列表
      */
     private void updateWifiResults() {
-        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        List<ScanResult> scanResults = wifiManager.getScanResults();
-        Subscription subscription = Observable.just(scanResults)
-                //别那么频繁
-                .throttleFirst(200, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .filter((List<ScanResult> s) -> {
-                    //非空返回,如果空,下面的map是不会有结果.
-                    return getView() != null;
-                })
-                .map((List<ScanResult> s) -> ScanResultListFilter.extractPretty(scanResults, false))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((List<ScanResult> s) -> getView().onWiFiResult(s), new RxHelper.EmptyException("resultList call"));
-        addSubscription(subscription, "updateWifiResults");
+        boolean hasSelfPermissions = PermissionUtils.hasSelfPermissions(getView().getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if (hasSelfPermissions) {
+            WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            List<ScanResult> scanResults = wifiManager.getScanResults();
+            Subscription subscription = Observable.just(scanResults)
+                    //别那么频繁
+                    .throttleFirst(200, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .filter((List<ScanResult> s) -> {
+                        //非空返回,如果空,下面的map是不会有结果.
+                        return getView() != null;
+                    })
+                    .map((List<ScanResult> s) -> ScanResultListFilter.extractPretty(scanResults, false))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe((List<ScanResult> s) -> getView().onWiFiResult(s), new RxHelper.EmptyException("resultList call"));
+            addSubscription(subscription, "updateWifiResults");
+        } else {
+            AppLogger.d("当前无法获取 WiFi 列表,请先开启位置权限再试");
+            AndroidSchedulers.mainThread().createWorker().schedule(() -> getView().onAccessLocationPermissionRejected());
+        }
     }
 
     /**

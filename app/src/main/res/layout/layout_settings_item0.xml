@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/y72">
 
@@ -16,14 +17,15 @@
 
     <TextView
         android:id="@+id/tv_settings_item_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/x15"
-        android:gravity="center"
+        android:gravity="center|start"
         android:text="@string/EQUIPMENT_INFO"
         android:textColor="@color/color_black"
         android:textSize="@dimen/sp16"
         app:layout_constraintBottom_toTopOf="@+id/tv_settings_item_sub_title"
+        app:layout_constraintEnd_toStartOf="@+id/option_container"
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -31,28 +33,45 @@
     <TextView
         android:id="@+id/tv_settings_item_sub_title"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="21dp"
         android:layout_marginStart="@dimen/x15"
         android:layout_marginTop="@dimen/y3"
         android:textColor="@color/color_8C8C8C"
         android:textSize="@dimen/sp13"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/option_container"
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintEnd_toStartOf="@+id/btn_item_switch"
-        app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title" />
+        tools:layout_editor_absoluteY="36dp" />
 
-    <com.cylan.jiafeigou.widget.SafeSwitchButton
-        android:id="@+id/btn_item_switch"
-        style="@style/SwitchButtonStyleMD"
+    <FrameLayout
+        android:id="@+id/option_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:paddingEnd="0dp"
-        android:paddingStart="@dimen/y20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y72"
+            android:layout_gravity="end|center_vertical"
+            android:clickable="false"
+            android:theme="@style/RadioButtonStyle"
+            android:visibility="invisible" />
+
+        <com.cylan.jiafeigou.widget.SafeSwitchButton
+            android:id="@+id/btn_item_switch"
+            style="@style/SwitchButtonStyleMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="end"
+            android:paddingEnd="0dp"
+            android:paddingStart="@dimen/y20" />
+    </FrameLayout>
+
 
     <ImageView
         android:id="@+id/imv_item_red_hint"

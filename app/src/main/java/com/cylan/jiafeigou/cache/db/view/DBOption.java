@@ -102,4 +102,16 @@ public interface DBOption {
             this.rawDeviceOrder = order;
         }
     }
+
+    class CamMultiDateOption extends BaseDBOption {
+        public int days;
+
+        public CamMultiDateOption(int days) {
+            this.days = days;
+        }
+
+        public static final CamMultiDateOption CAMERA_15_DAYS = new CamMultiDateOption(15);
+
+        public static final CamMultiDateOption BELL_30_DAYS = new CamMultiDateOption(30);
+    }
 }

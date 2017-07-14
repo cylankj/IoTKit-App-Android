@@ -50,6 +50,8 @@ public interface ConfigApContract {
         void pingFailed();
 
         void onDeviceAlreadyExist();
+
+        void onAccessLocationPermissionRejected();
     }
 
     interface Presenter extends BasePresenter {

@@ -119,6 +119,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svSettingDeviceClearRecord;
     @BindView(R.id.sbtn_setting_pir)
     SettingItemView0 svSettingDevicePIR;
+    @BindView(R.id.sv_setting_device_home_mode)
+    SettingItemView0 svSettingDeviceHomeMode;
+    @BindView(R.id.sv_setting_direct_mode)
+    SettingItemView0 svSettingDeviceDirectMode;
+    @BindView(R.id.network_setting_title)
+    TextView tvNetWorkSettingTitle;
+    @BindView(R.id.sv_setting_device_logo)
+    SettingItemView0 svSettingDeviceLogo;
+
     private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -211,7 +220,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_device_wifi,
             R.id.sbtn_setting_sight,
             R.id.sv_setting_device_sd_card,
-            R.id.sv_setting_device_clear_record
+            R.id.sv_setting_device_clear_record,
+            R.id.sv_setting_device_home_mode,
+            R.id.sv_setting_direct_mode
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -316,6 +327,37 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 });
                 mClearRecordFragment.show(getSupportFragmentManager(), "ClearBellRecordFragment");
                 break;
+
+            case R.id.sv_setting_device_home_mode:
+                Intent homeModeIntent = new Intent(this, BindPanoramaCamActivity.class);
+                homeModeIntent.putExtra("PanoramaConfigure", "Family");
+                homeModeIntent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                startActivity(homeModeIntent);
+                break;
+            case R.id.sv_setting_direct_mode:
+                Intent directModeIntent = new Intent(this, BindPanoramaCamActivity.class);
+                directModeIntent.putExtra("PanoramaConfigure", "OutDoor");
+                directModeIntent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                startActivity(directModeIntent);
+                break;
+        }
+    }
+
+    @Override
+    public void attributeUpdate() {
+        Device mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        boolean isAp = JFGRules.isAPDirect(mDevice.uuid, mDevice.$(202, ""));
+        if (isAp) {
+            svSettingDeviceHomeMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            svSettingDeviceDirectMode.setTvSubTitle(getString(R.string.Tap1_OutdoorMode_Opened));
+        } else {
+            svSettingDeviceDirectMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
+            if (JFGRules.isDeviceOnline(net)) {
+                svSettingDeviceHomeMode.setTvSubTitle(net.ssid);
+            } else {
+                svSettingDeviceHomeMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            }
         }
     }
 
@@ -565,6 +607,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         boolean isMobileNet = net.net > 1;
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
+        tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
         svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
@@ -732,6 +775,29 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDevicePIR.setVisibility(View.VISIBLE);
         } else {
             svSettingDevicePIR.setVisibility(View.GONE);
+        }
+
+        //ap直连
+        if (productProperty.hasProperty(device.pid, "APCONNECTTING")) {
+            svSettingDeviceDirectMode.setVisibility(View.VISIBLE);
+            svSettingDeviceHomeMode.setVisibility(View.VISIBLE);
+            //家居模式和 WiFi 配置重复了
+            svSettingDeviceWifi.setVisibility(View.GONE);
+            tvNetWorkSettingTitle.setVisibility(View.GONE);
+            attributeUpdate();
+        } else {
+            svSettingDeviceDirectMode.setVisibility(View.GONE);
+            svSettingDeviceHomeMode.setVisibility(View.GONE);
+            //家居模式和 WiFi 配置重复了
+            svSettingDeviceWifi.setVisibility(View.VISIBLE);
+            tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
+        }
+
+        if (productProperty.hasProperty(device.pid, "LOGO 设置")) {
+            //暂定为 LoGo 设置
+            svSettingDeviceLogo.setVisibility(View.VISIBLE);
+        } else {
+            svSettingDeviceLogo.setVisibility(View.GONE);
         }
     }
 

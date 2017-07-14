@@ -1,18 +1,25 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.FragmentMineShareManagerBinding;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.view.activity.MineInfoActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -93,10 +100,32 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
                 sharedContent();
                 break;
             case R.id.sharedDevice:
+                DataSourceManager manager = DataSourceManager.getInstance();
+
+                if (manager.getLoginType() >= 3 && TextUtils.isEmpty(sourceManager.getAccount().getEmail()) &&
+                        TextUtils.isEmpty(sourceManager.getAccount().getPhone())) {
+                    showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
+                    return;
+                }
                 sharedDevice();
                 break;
         }
     }
+
+    /**
+     * 弹出绑定手机或者邮箱的提示框
+     */
+    private void showBindPhoneOrEmailDialog(String title) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("bindphone");
+        if (f == null) {
+            AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
+                    getString(R.string.Tap2_Index_Open_NoDeviceOption),
+                    (DialogInterface dialog, int which) -> {
+                        startActivity(new Intent(getContext(), MineInfoActivity.class));
+                    }, getString(R.string.CANCEL), null, false);
+        }
+    }
+
 
     private void sharedContent() {
         HomeMineShareContentFragment mineShareDeviceFragment = HomeMineShareContentFragment.newInstance(null);

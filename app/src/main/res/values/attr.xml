@@ -164,6 +164,8 @@
             <flag name="start" value="8388611" />
             <flag name="top" value="48" />
         </attr>
+        <attr name="sv_radio_button_id" format="reference|integer" />
+        <attr name="sv_show_radio_button" format="boolean|reference" />
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">

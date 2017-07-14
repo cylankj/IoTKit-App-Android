@@ -21,7 +21,7 @@ public interface SdCardInfoContract {
 
         void clearSdResult(int code);
 
-        void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus);
+        void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus, boolean alert);
 
         void showSdPopDialog();
 

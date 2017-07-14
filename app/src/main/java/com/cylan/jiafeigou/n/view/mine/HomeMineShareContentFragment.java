@@ -48,7 +48,7 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private LinearLayoutManager manager;
     private ObservableBoolean editMode = new ObservableBoolean(false);
     private ObservableInt selectNumber = new ObservableInt(0);
-    private ObservableBoolean empty = new ObservableBoolean(false);
+    private ObservableBoolean empty = new ObservableBoolean(true);
 
     @Override
     protected void setFragmentComponent(FragmentComponent fragmentComponent) {

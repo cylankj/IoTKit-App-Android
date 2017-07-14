@@ -8,6 +8,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -44,8 +45,13 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .subscribeOn(Schedulers.io())
                 .flatMap(s -> {
                     long startTime = TimeUtils.getTodayStartTime();//当前时间
+                    DBOption.CamMultiDateOption option = entity.option(DBOption.CamMultiDateOption.class);
+                    int queryDays = 15;
+                    if (option != null) {
+                        queryDays = option.days;
+                    }
                     List<Long> will = new ArrayList<>();
-                    for (int i = 0; i < 15; i++) {
+                    for (int i = 0; i < queryDays; i++) {
                         will.add(startTime - i * 24 * 3600 * 1000L);
                     }
                     return Observable.from(will);
@@ -77,9 +83,14 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(result -> {
                     //已经是降序
                     long startTime = TimeUtils.getTodayStartTime();//今天凌晨时间戳
-                    ArrayList<WonderIndicatorWheelView.WheelItem> finalList = new ArrayList<>();
+                    DBOption.CamMultiDateOption option = entity.option(DBOption.CamMultiDateOption.class);
+                    int queryDays = 15;
+                    if (option != null) {
+                        queryDays = option.days;
+                    }
+                    ArrayList<WonderIndicatorWheelView.WheelItem> finalList = new ArrayList<>(queryDays);
                     if (result != null) {
-                        for (int i = 0; i < 15; i++) {
+                        for (int i = 0; i < queryDays; i++) {
                             DPEntity entity = result.get(i);
                             WonderIndicatorWheelView.WheelItem item = new WonderIndicatorWheelView.WheelItem();
                             item.time = entity == null ? (startTime - i * 3600 * 24 * 1000L) : entity.getVersion();
@@ -103,7 +114,12 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(s -> {
                     //今天凌晨时间戳。
                     long todayTimeStamp = TimeUtils.getTodayStartTime();
-                    ArrayList<JFGDPMsg> list = (ArrayList<JFGDPMsg>) MiscUtils.getCamDateVersionList(todayTimeStamp);
+                    DBOption.CamMultiDateOption option = entity.option(DBOption.CamMultiDateOption.class);
+                    int queryDays = 15;
+                    if (option != null) {
+                        queryDays = option.days;
+                    }
+                    ArrayList<JFGDPMsg> list = (ArrayList<JFGDPMsg>) MiscUtils.getCamDateVersionList(todayTimeStamp, queryDays);
                     try {
                         long ret = appCmd.robotGetData(entity.getUuid(), list, 1, true, 0);
                         return Observable.just(ret);

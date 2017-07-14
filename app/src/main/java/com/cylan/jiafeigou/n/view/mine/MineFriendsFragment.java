@@ -56,7 +56,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
     TextView addFriend;
     private MineFriendInformationFragment friendInformationFragment;
     private FragmentHomeMineFriendsBinding mineFriendsBinding;
-    private ObservableBoolean empty = new ObservableBoolean(false);
+    private ObservableBoolean empty = new ObservableBoolean(true);
 
     private FastAdapter fastAdapter;
     private ItemAdapter friendRequestAdapter;
@@ -341,7 +341,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                     FriendContextHeader friendHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsList));
                     friendAccountAdapter.add(friendHeader);
                 }
-                friendAccountAdapter.add(friendContextItem);
+                friendAccountAdapter.add(1, friendContextItem);
                 break;
             case 1:
                 friendRequestAdapter.remove(friendRequestAdapter.getAdapterPosition(item));

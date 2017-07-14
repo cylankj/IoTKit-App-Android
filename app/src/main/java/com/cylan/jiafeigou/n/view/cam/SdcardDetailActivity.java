@@ -65,12 +65,15 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         basePresenter = new SdCardInfoPresenterImpl(this, uuid);
         customToolbar.setBackAction(o -> onBackPressed());
         initDetailData();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        boolean http = JFGRules.isPan720(device.pid);
+        BasePanoramaApiHelper.getInstance().init(uuid, http);
         subscription = BasePanoramaApiHelper.getInstance().getSdInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> initSdUseDetailRsp(null), throwable -> {
+                .subscribe(ret -> initSdUseDetailRsp(null, false), throwable -> {
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
-                    initSdUseDetailRsp(null);
+                    initSdUseDetailRsp(null, false);
                 });
     }
 
@@ -159,7 +162,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                 ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-                initSdUseDetailRsp(status);
+                initSdUseDetailRsp(status, true);
                 break;
             case 1:
                 ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
@@ -171,21 +174,21 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     }
 
     @Override
-    public void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus) {
+    public void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus, boolean alert) {
         if (sdStatus == null) {
             sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
                     .$(204, new DpMsgDefine.DPSdStatus());
         }
-        if (sdStatus == null) {
+        if (sdStatus == null && alert) {
             ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
             return;
         }
-        if (sdStatus.err == 0 && sdStatus.hasSdcard) {
+        if (sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard) {
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
             float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
             sdUseDetail(MiscUtils.FormatSdCardSizeSpec(sdcardUsedCapacity, "M") + "/" + MiscUtils.FormatSdCardSizeSpec(sdcardTotalCapacity, "M"), v);
-        } else {
+        } else if (sdStatus == null) {
             showSdPopDialog();
         }
     }

@@ -476,9 +476,9 @@ public class MiscUtils {
         }
     }
 
-    public static List<JFGDPMsg> getCamDateVersionList(long startTime) {
+    public static List<JFGDPMsg> getCamDateVersionList(long startTime, int days) {
         ArrayList<JFGDPMsg> list = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < days; i++) {
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222));
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505));
             list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512));

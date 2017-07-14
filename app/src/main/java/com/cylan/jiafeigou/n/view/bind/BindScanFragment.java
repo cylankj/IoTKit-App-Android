@@ -4,7 +4,9 @@ package com.cylan.jiafeigou.n.view.bind;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,11 +25,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
-import com.cylan.jiafeigou.n.view.activity.BindAnimationActivity;
-import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
-import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
-import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
@@ -91,11 +89,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         BindScanFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-//        if (permissions.length == 1) {
-//            if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
-//                BindScanFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
-//            }
-//        }
     }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
@@ -111,7 +104,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.permission_auth, getString(R.string.CAMERA)),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                    intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+                    startActivityForResult(intent, 0);
                 },
                 getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
