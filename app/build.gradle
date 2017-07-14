@@ -150,7 +150,7 @@ android {
             //官方运营
             applicationId "com.cylan.cleverdog"
             versionName vName
-            versionCode vCode
+            versionCode vCode//0002,ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 10515998",
                                     "VID"                : "\\ 0001",
@@ -187,7 +187,7 @@ android {
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.doby.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 100005405",
                                     "VID"                : "\\ 0002",
-                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
                                     "qqAppId"            : "\\ 1104534926",
                                     "qqAppKey"           : "eePT24ZjUbNtk15J",
                                     "twitterAppKey"      : "gSbX9IzCQ4w4xaE1igwAqrX6M",

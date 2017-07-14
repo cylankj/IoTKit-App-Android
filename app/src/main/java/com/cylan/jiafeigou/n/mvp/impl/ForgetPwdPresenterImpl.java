@@ -190,7 +190,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             .timeout(10, TimeUnit.SECONDS)
                             .filter(ret -> mView != null)
                             .doOnError(throwable -> mView.onResult(JConstant.CHECK_TIMEOUT, 0))
-                            .subscribe(ret -> mView.onResult(JConstant.AUTHORIZE_PHONE, ret.result.code), AppLogger::e);
+                            .subscribe(ret -> mView.onResult(JConstant.AUTHORIZE_PHONE_SMS, ret.result.code), AppLogger::e);
                     addSubscription(codeResultSub, "codeResultSub");
                     try {
                         String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");

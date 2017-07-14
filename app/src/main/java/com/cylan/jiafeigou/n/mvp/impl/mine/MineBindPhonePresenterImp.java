@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -47,27 +48,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
         view.setPresenter(this);
     }
 
-    /**
-     * 获取到验证码的回调
-     *
-     * @return
-     */
-
-    public Subscription getCheckCodeCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(smsCodeResult -> {
-                    if (smsCodeResult.error == JError.ErrorOK) {
-                        AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
-                        getView().startCountTime();
-                    } else {
-                        getView().getSmsCodeResult(smsCodeResult.error);
-                    }
-                }, AppLogger::e);
-    }
-
     @Override
-    public void getVerifyCode(String phone) {
+    public void getVerifyCode(final String phone) {
         //获取验证码,1.校验手机号码,2.根据错误号显示
         //保存上次获取验证码的时间,以免退出页面重置.
         Subscription subscription = rx.Observable.just(phone)
@@ -75,26 +57,31 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .delay(1, TimeUnit.SECONDS)
                 .flatMap(s -> {
                     try {
-                        long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                        long req = BaseApplication.getAppComponent()
+                                .getCmd().checkFriendAccount(s);
                         Log.d(TAG, "校验手机号码: " + req);
                         return Observable.just(req);
                     } catch (JfgException e) {
                         return Observable.just(-1);
                     }
                 })
-                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                         .first()
                         .subscribeOn(Schedulers.newThread())
                         .timeout(10, TimeUnit.SECONDS)
                         .delay(100, TimeUnit.MILLISECONDS))
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(ret -> {
                     //手机号注册 情况
-                    AppLogger.d("code:" + ret.jfgResult.code + "," + ret.jfgResult.event);
-                    if (ret.jfgResult.code == JError.ErrorAccountNotExist) {
+                    final String inputAccount = mView.getInputPhone();
+                    if (TextUtils.isEmpty(ret.account) && TextUtils.equals(inputAccount, phone)) {
+                        //此账号不存在.这里不考虑页面频繁更换手机号码
+                        //去获取验证码
                         Subscription s = RxBus.getCacheInstance()
                                 .toObservable(RxEvent.SmsCodeResult.class)
                                 .timeout(10, TimeUnit.SECONDS)
                                 .filter(r -> mView != null)
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(result -> {
                                     mView.onResult(JConstant.GET_SMS_BACK, result.error);
                                     unSubscribe("ResultVerifyCode");
@@ -104,19 +91,21 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                         try {
                             //获取验证码
                             int seq = BaseApplication.getAppComponent().getCmd()
-                                    .sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                                    .sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()),
+                                            JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                             if (seq != 0) s.unsubscribe();
                             else AppLogger.d("手机号码 有效,开始获取验证码");
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
-                    } else {
+                    } else if (!TextUtils.isEmpty(ret.account)
+                            && TextUtils.equals(phone, ret.account)) {
+                        //与当前号码一致.此号码已经被注册
                         //返回错误码
-                        mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
+                        mView.onResult(JConstant.CHECK_ACCOUNT, JError.ErrorAccountAlreadyExist);
                         unSubscribeAllTag();
                     }
                     throw new RxEvent.HelperBreaker();
-//                    return Observable.just(ret.jfgResult.code);
                 })
                 .doOnError(throwable -> {
                     if (throwable instanceof RxEvent.HelperBreaker) {
@@ -245,18 +234,35 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     /**
      * 校验短信验证码
      *
-     * @param code
+     * @param inputCode
      */
     @Override
-    public void CheckVerifyCode(String phone, final String inputCode, String code) {
-        rx.Observable.just(code)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(code1 -> {
+    public void CheckVerifyCode(String phone, final String inputCode) {
+        unSubscribeAllTag();
+        Observable.just(phone)
+                .subscribeOn(Schedulers.io())
+                .flatMap(s -> {
+                    Subscription codeResultSub = RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
+                            .first()
+                            .timeout(10, TimeUnit.SECONDS)
+                            .filter(ret -> mView != null)
+                            .doOnError(throwable -> mView.onResult(JConstant.CHECK_TIMEOUT, 0))
+                            .subscribe(ret -> {
+                                mView.onResult(JConstant.AUTHORIZE_PHONE_SMS, ret.result.code);
+                                throw new RxEvent.HelperBreaker("");
+                            }, AppLogger::e);
+                    addSubscription(codeResultSub, "codeResultSub");
                     try {
-                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code1);
+                        String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, token);
+                        AppLogger.d("验证 短信:" + token);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
+                    return null;
+                })
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(ret -> {
                 }, AppLogger::e);
     }
 
@@ -269,7 +275,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(changeAccountBack());
-            compositeSubscription.add(getCheckCodeCallback());
         }
     }
 

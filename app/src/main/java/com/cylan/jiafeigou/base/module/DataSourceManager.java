@@ -316,6 +316,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (mCachedDeviceMap.size() == 0) return;
         ArrayList<String> uuidList = new ArrayList<>();
         if (mCachedDeviceMap.size() == 0) return;
+        List<HashMap<String, JFGDPMsg[]>> list = new ArrayList<>();
         HashMap<String, JFGDPMsg[]> map = new HashMap<>();
         int totalCount = 0;
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
@@ -333,6 +334,8 @@ public class DataSourceManager implements JFGSourceManager {
             for (int i = 0; i < parameters.size(); i++) {
                 array[i] = parameters.get(i);
                 totalCount++;
+                if (totalCount > 500) {
+                }
             }
             map.put(uuid, array);
         }
