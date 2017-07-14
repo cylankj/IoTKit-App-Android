@@ -283,5 +283,8 @@ public class JError {
     // 历史录像卡读取失败,同 public static final int ErrorSDRead
     public static final int ErrorSDIO = 2032;
 
+    public static void fireToast(int errId) {
+
+    }
 
 }

@@ -495,7 +495,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     case JConstant.AUTHORIZE_MAIL:
                         prepareMailView();
                         break;
-                    case JConstant.AUTHORIZE_PHONE:
+                    case JConstant.AUTHORIZE_PHONE_SMS:
                         if (errId == JError.ErrorOK) {
                             tvForgetPwdSubmit.setEnabled(true);
                             preparePhoneView();

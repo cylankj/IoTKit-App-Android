@@ -75,7 +75,6 @@ public interface MineBindPhoneContract {
          */
         void getSmsCodeResult(int code);
 
-        void startCountTime();
     }
 
     interface Presenter extends BasePresenter {
@@ -115,9 +114,9 @@ public interface MineBindPhoneContract {
         /**
          * 校验短信验证码
          *
-         * @param code
+         * @param vCode
          */
-        void CheckVerifyCode(String phone, String inputcode, String code);
+        void CheckVerifyCode(String phone, String vCode);
 
         /**
          * 校验短信验证码的回调

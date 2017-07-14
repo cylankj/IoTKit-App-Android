@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,25 +46,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
         view.setPresenter(this);
-    }
-
-    /**
-     * 获取到验证码的回调
-     *
-     * @return
-     */
-
-    public Subscription getCheckCodeCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(smsCodeResult -> {
-                    if (smsCodeResult.error == JError.ErrorOK) {
-                        AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
-                        getView().startCountTime();
-                    } else {
-                        getView().getSmsCodeResult(smsCodeResult.error);
-                    }
-                }, AppLogger::e);
     }
 
     @Override
@@ -99,6 +81,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                                 .toObservable(RxEvent.SmsCodeResult.class)
                                 .timeout(10, TimeUnit.SECONDS)
                                 .filter(r -> mView != null)
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(result -> {
                                     mView.onResult(JConstant.GET_SMS_BACK, result.error);
                                     unSubscribe("ResultVerifyCode");
@@ -251,18 +234,35 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     /**
      * 校验短信验证码
      *
-     * @param code
+     * @param inputCode
      */
     @Override
-    public void CheckVerifyCode(String phone, final String inputCode, String code) {
-        rx.Observable.just(code)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(code1 -> {
+    public void CheckVerifyCode(String phone, final String inputCode) {
+        unSubscribeAllTag();
+        Observable.just(phone)
+                .subscribeOn(Schedulers.io())
+                .flatMap(s -> {
+                    Subscription codeResultSub = RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
+                            .first()
+                            .timeout(10, TimeUnit.SECONDS)
+                            .filter(ret -> mView != null)
+                            .doOnError(throwable -> mView.onResult(JConstant.CHECK_TIMEOUT, 0))
+                            .subscribe(ret -> {
+                                mView.onResult(JConstant.AUTHORIZE_PHONE_SMS, ret.result.code);
+                                throw new RxEvent.HelperBreaker("");
+                            }, AppLogger::e);
+                    addSubscription(codeResultSub, "codeResultSub");
                     try {
-                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code1);
+                        String token = PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, token);
+                        AppLogger.d("验证 短信:" + token);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
+                    return null;
+                })
+                .timeout(10, TimeUnit.SECONDS)
+                .subscribe(ret -> {
                 }, AppLogger::e);
     }
 
@@ -275,7 +275,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(changeAccountBack());
-            compositeSubscription.add(getCheckCodeCallback());
         }
     }
 

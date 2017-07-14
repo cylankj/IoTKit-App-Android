@@ -36,6 +36,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+
+import static com.cylan.jiafeigou.misc.JError.ErrorAccountNotExist;
 
 /**
  * 作者：zsl
@@ -104,8 +108,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @OnTextChanged(R.id.et_verification_input)
     public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
-
-        if (s.length() == 6 && getInputPhone().length() == 11) {
+        if (s.length() == 6 && JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
             customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
             customToolbar.setTvToolbarRightEnable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
@@ -184,26 +187,6 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
             tvMeterGetCode.setText(getString(R.string.GET_CODE));
             tvMeterGetCode.setEnabled(false);
         }
-        //        if (s.length() == 0) {
-//            tvMeterGetCode.setEnabled(false);
-//            ivMineBindPhoneClear.setVisibility(View.INVISIBLE);
-//            viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#f2f2f2"));
-//        } else {
-//            tvMeterGetCode.setEnabled(true);
-//            ivMineBindPhoneClear.setVisibility(View.VISIBLE);
-//            viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#36bdff"));
-//        }
-//
-//        if (s.length() == 11 && getInputCheckCode().length() == 6) {
-//            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
-//            customToolbar.setTvToolbarRightEnable(true);
-//            vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
-//        } else {
-//            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
-//            customToolbar.setTvToolbarRightEnable(false);
-//            vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
-//        }
-
     }
 
     @Override
@@ -232,17 +215,15 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 //获取验证码点击
                 if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                     AppLogger.d("暂时去掉");
-//                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-//                    if (jfgAccount != null && (TextUtils.equals(jfgAccount.getPhone(), getInputPhone()) ||
-//                            TextUtils.equals(jfgAccount.getAccount(), getInputPhone()))) {
-//                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
-//                        return;
-//                    }
-//                    basePresenter.getVerifyCode(getInputPhone());
+                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                    if (jfgAccount != null && (TextUtils.equals(jfgAccount.getPhone(), getInputPhone()) ||
+                            TextUtils.equals(jfgAccount.getAccount(), getInputPhone()))) {
+                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
+                        return;
+                    }
+                    basePresenter.getVerifyCode(getInputPhone());
                     vCode = new VCode();
                     vCode.account = getInputPhone();
-                    vCode.startTime = System.currentTimeMillis();
-                    initCountDownTime(TIME_OUT);
                     LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                 } else {
                     ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
@@ -255,7 +236,6 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
             case R.id.iv_mine_bind_phone_clear:
                 etMineBindPhone.setText("");
                 break;
-
             case R.id.tv_toolbar_right:
                 //点击完成
                 if (!JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
@@ -265,17 +245,13 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 if (getInputCheckCode().length() != 6) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
                 } else {
-                    basePresenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(), getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    basePresenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(),
+                            getInputCheckCode());
+                    showLoadingDialog();
                 }
                 break;
         }
 
-    }
-
-    private void updateVCode(String account) {
-        if (vCode == null) vCode = new VCode();
-        vCode.account = account;
-        vCode.startTime = System.currentTimeMillis();
     }
 
     /**
@@ -294,20 +270,60 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         LoadingDialog.dismissLoading(getFragmentManager());
         switch (event) {
             case JConstant.GET_SMS_BACK:
-                vCode.startTime = System.currentTimeMillis();
-                initCountDownTime(TIME_OUT);
+                if (errId == JError.ErrorOK) {
+                    vCode.startTime = System.currentTimeMillis();
+                    initCountDownTime(TIME_OUT);
+                    return;
+                }
                 break;
             case JResultEvent.JFG_RESULT_CHECK_REGISTER:
                 if (errId == JError.ErrorOK) {
                     ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
+                    return;
                 }
                 break;
             case JConstant.CHECK_ACCOUNT:
                 if (errId == JError.ErrorAccountAlreadyExist) {
                     ToastUtil.showToast(getString(R.string.REGISTERED));
+                    return;
+                }
+            case JConstant.AUTHORIZE_PHONE_SMS:
+                if (errId == JError.ErrorOK) {
+                    jump2SetPWDFragment(getInputPhone());
+                    return;
                 }
                 break;
+            case JConstant.CHECK_TIMEOUT:
+                ToastUtil.showToast(getString(R.string.Request_TimeOut));
+                return;
         }
+        Observable.just(errId)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    switch (ret) {
+                        case JError.ErrorSMSCodeTimeout:
+                            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+                            break;
+                        case JError.ErrorSMSCodeNotMatch:
+                            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
+                            break;
+                        case JError.ErrorInvalidPass:
+//                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
+                            break;
+                        case ErrorAccountNotExist:
+//                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
+                            break;
+                        case JError.ErrorConnect:
+                            ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
+                            break;
+                        case JError.ErrorP2PSocket:
+                            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+                            break;
+                        case JError.ErrorGetCodeTooFrequent:
+                            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                            break;
+                    }
+                }, AppLogger::e);
     }
 
     @Override
@@ -436,14 +452,6 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         } else {
             ToastUtil.showNegativeToast("error:" + code);
         }
-    }
-
-    @Override
-    public void startCountTime() {
-        //显示倒计时
-        fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
-        countDownTimer.start();
-        tvMeterGetCode.setEnabled(false);
     }
 
     @Override
