@@ -67,7 +67,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     }
 
     @Override
-    public void getVerifyCode(String phone) {
+    public void getVerifyCode(final String phone) {
         //获取验证码,1.校验手机号码,2.根据错误号显示
         //保存上次获取验证码的时间,以免退出页面重置.
         Subscription subscription = rx.Observable.just(phone)
@@ -75,22 +75,26 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .delay(1, TimeUnit.SECONDS)
                 .flatMap(s -> {
                     try {
-                        long req = BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
+                        long req = BaseApplication.getAppComponent()
+                                .getCmd().checkFriendAccount(s);
                         Log.d(TAG, "校验手机号码: " + req);
                         return Observable.just(req);
                     } catch (JfgException e) {
                         return Observable.just(-1);
                     }
                 })
-                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckRegisterBack.class)
+                .flatMap(number -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                         .first()
                         .subscribeOn(Schedulers.newThread())
                         .timeout(10, TimeUnit.SECONDS)
                         .delay(100, TimeUnit.MILLISECONDS))
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(ret -> {
                     //手机号注册 情况
-                    AppLogger.d("code:" + ret.jfgResult.code + "," + ret.jfgResult.event);
-                    if (ret.jfgResult.code == JError.ErrorAccountNotExist) {
+                    final String inputAccount = mView.getInputPhone();
+                    if (TextUtils.isEmpty(ret.account) && TextUtils.equals(inputAccount, phone)) {
+                        //此账号不存在.这里不考虑页面频繁更换手机号码
+                        //去获取验证码
                         Subscription s = RxBus.getCacheInstance()
                                 .toObservable(RxEvent.SmsCodeResult.class)
                                 .timeout(10, TimeUnit.SECONDS)
@@ -104,19 +108,21 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                         try {
                             //获取验证码
                             int seq = BaseApplication.getAppComponent().getCmd()
-                                    .sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                                    .sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()),
+                                            JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                             if (seq != 0) s.unsubscribe();
                             else AppLogger.d("手机号码 有效,开始获取验证码");
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
-                    } else {
+                    } else if (!TextUtils.isEmpty(ret.account)
+                            && TextUtils.equals(phone, ret.account)) {
+                        //与当前号码一致.此号码已经被注册
                         //返回错误码
-                        mView.onResult(ret.jfgResult.event, ret.jfgResult.code);
+                        mView.onResult(JConstant.CHECK_ACCOUNT, JError.ErrorAccountAlreadyExist);
                         unSubscribeAllTag();
                     }
                     throw new RxEvent.HelperBreaker();
-//                    return Observable.just(ret.jfgResult.code);
                 })
                 .doOnError(throwable -> {
                     if (throwable instanceof RxEvent.HelperBreaker) {

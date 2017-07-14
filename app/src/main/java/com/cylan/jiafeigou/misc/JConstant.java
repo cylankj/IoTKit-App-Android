@@ -27,6 +27,7 @@ public class JConstant {
     public static final int AUTHORIZE_MAIL = 0x111111;
     public static final int GET_SMS_BACK = 0x111112;
     public static final int CHECK_TIMEOUT = 0x111113;
+    public static final int CHECK_ACCOUNT = 0x111114;
     public static final int THIS_ACCOUNT_NOT_REGISTERED = -1;
 
     public static final String KEY_TIME_TICK_ = "key_time_tick";

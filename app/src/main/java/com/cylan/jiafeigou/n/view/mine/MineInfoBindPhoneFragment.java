@@ -44,6 +44,8 @@ import butterknife.OnTextChanged;
  */
 public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContract.Presenter> implements MineBindPhoneContract.View {
 
+
+    private static final long TIME_OUT = 180 * 1000;
     @BindView(R.id.et_mine_bind_phone)
     EditText etMineBindPhone;
     @BindView(R.id.iv_mine_bind_phone_clear)
@@ -115,12 +117,14 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     }
 
     private void initCountDownTime(long countDown) {
+        if (countDown <= 0) countDown = 1;
         countDownTimer = new CountDownTimer(countDown, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 final String content = millisUntilFinished / 1000 + "s";
                 tvMeterGetCode.setText(content);
-                if (vCode != null) vCode.time += 1000;
+                tvMeterGetCode.setEnabled(false);
+                if (vCode != null) vCode.millisUntilFinished = millisUntilFinished;
             }
 
             @Override
@@ -131,24 +135,27 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 }
             }
         };
-        if (countDown != 90 * 1000) {
+        if (countDown <= TIME_OUT) {
+            countDownTimer.cancel();
             countDownTimer.start();
             tvMeterGetCode.setEnabled(false);
         } else tvMeterGetCode.setEnabled(true);
     }
 
     private void initCountDownTime() {
-        long countDown = 90 * 1000;
+        long countDown = TIME_OUT;
         if (vCode != null) {
             if (!TextUtils.isEmpty(vCode.account)) {
                 etMineBindPhone.setText(vCode.account);
             }
-            if (System.currentTimeMillis() - vCode.time < 90 * 1000) {
-                countDown = System.currentTimeMillis() - vCode.time;
+            if (System.currentTimeMillis() - vCode.startTime < TIME_OUT) {
+                countDown = vCode.millisUntilFinished;
             }
+            initCountDownTime(countDown);
+        } else {
+            tvMeterGetCode.setEnabled(false);
+            tvMeterGetCode.setText(getString(R.string.GET_CODE));
         }
-        initCountDownTime(countDown);
-
     }
 
     /**
@@ -159,19 +166,23 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         boolean isValidPhone = JConstant.PHONE_REG.matcher(s).find();
         if (isValidPhone) {
             if (vCode != null && TextUtils.equals(vCode.account, s)) {
-                if (System.currentTimeMillis() - vCode.time > 90 * 1000) {
+                if (System.currentTimeMillis() - vCode.startTime > TIME_OUT) {
                     //是否超时
                     tvMeterGetCode.setEnabled(true);
                     tvMeterGetCode.setText(getString(R.string.GET_CODE));
                 } else {//没超时
-                    initCountDownTime(System.currentTimeMillis() - vCode.time);
+                    initCountDownTime(TIME_OUT - (System.currentTimeMillis() - vCode.startTime));
                 }
             } else {
                 tvMeterGetCode.setEnabled(true);
                 tvMeterGetCode.setText(getString(R.string.GET_CODE));
             }
         } else {
-            if (countDownTimer != null) countDownTimer.cancel();
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+            }
+            tvMeterGetCode.setText(getString(R.string.GET_CODE));
+            tvMeterGetCode.setEnabled(false);
         }
         //        if (s.length() == 0) {
 //            tvMeterGetCode.setEnabled(false);
@@ -227,13 +238,15 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 //                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
 //                        return;
 //                    }
-                    basePresenter.getVerifyCode(getInputPhone());
+//                    basePresenter.getVerifyCode(getInputPhone());
                     vCode = new VCode();
                     vCode.account = getInputPhone();
+                    vCode.startTime = System.currentTimeMillis();
+                    initCountDownTime(TIME_OUT);
+                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                 } else {
                     ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
                 }
-                LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                 break;
             case R.id.tv_toolbar_icon:
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -262,7 +275,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     private void updateVCode(String account) {
         if (vCode == null) vCode = new VCode();
         vCode.account = account;
-        vCode.time = System.currentTimeMillis();
+        vCode.startTime = System.currentTimeMillis();
     }
 
     /**
@@ -281,12 +294,17 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         LoadingDialog.dismissLoading(getFragmentManager());
         switch (event) {
             case JConstant.GET_SMS_BACK:
-                vCode.time = System.currentTimeMillis();
-                initCountDownTime();
+                vCode.startTime = System.currentTimeMillis();
+                initCountDownTime(TIME_OUT);
                 break;
             case JResultEvent.JFG_RESULT_CHECK_REGISTER:
                 if (errId == JError.ErrorOK) {
                     ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
+                }
+                break;
+            case JConstant.CHECK_ACCOUNT:
+                if (errId == JError.ErrorAccountAlreadyExist) {
+                    ToastUtil.showToast(getString(R.string.REGISTERED));
                 }
                 break;
         }
@@ -439,6 +457,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 
     private static class VCode {
         private String account;
-        private long time;
+        private long startTime;
+        private long millisUntilFinished = TIME_OUT;
     }
 }
