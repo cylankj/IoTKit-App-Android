@@ -1268,7 +1268,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .flatMap(ret -> {
                             //当前状态,remoteSpeaker = localMic ,remoteMic=localSpeaker
                             boolean tmpNextMic = !micOn;
-                            boolean tmpSpeaker = tmpNextMic || speakerOn;
+//                            boolean tmpSpeaker = tmpNextMic || speakerOn;
+                            boolean tmpSpeaker = speakerOn;
                             //设置客户端声音
                             boolean result = setupLocalAudio(tmpNextMic, tmpSpeaker,
                                     tmpSpeaker, tmpNextMic);
@@ -1286,7 +1287,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> viewWeakReference.get() != null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
-                                    viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
+                                    viewWeakReference.get().switchHotSeat(speakerOn, /*micOn*/presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                             micOn,
                                             presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                             captureOn, true);
@@ -1303,8 +1304,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .flatMap(ret -> {
                             //操作speaker的时候,本地的mic是关闭的.
                             boolean tmpSpeaker = !speakerOn;
-                            boolean result = setupLocalAudio(micOn, tmpSpeaker,
-                                    tmpSpeaker, micOn);
+                            boolean result = setupLocalAudio(micOn, tmpSpeaker, tmpSpeaker, micOn);
                             if (result) {
                                 //设置设备的声音
                                 setupRemoteAudio(micOn, tmpSpeaker,

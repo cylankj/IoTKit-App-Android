@@ -102,7 +102,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             && TextUtils.equals(phone, ret.account)) {
                         //与当前号码一致.此号码已经被注册
                         //返回错误码
-                        mView.onResult(JConstant.CHECK_ACCOUNT, JError.ErrorAccountAlreadyExist);
+                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onResult(JConstant.CHECK_ACCOUNT, JError.ErrorAccountAlreadyExist));//需要在主线程
                         unSubscribeAllTag();
                     }
                     throw new RxEvent.HelperBreaker();
@@ -110,7 +110,9 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .doOnError(throwable -> {
                     if (throwable instanceof RxEvent.HelperBreaker) {
 
-                    } else mView.onResult(JConstant.CHECK_TIMEOUT, 0);
+                    } else {
+                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onResult(JConstant.CHECK_TIMEOUT, 0));//需要在主线程
+                    }
                 })
                 .subscribe(ret -> {
                 }, AppLogger::e);

@@ -189,7 +189,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     (DialogInterface dialog, int which) -> {
                         Bundle bundle = new Bundle();
                         MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
-                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content, "bindPhoneStack");
                     }, getString(R.string.CANCEL), null, false);
         }
     }
