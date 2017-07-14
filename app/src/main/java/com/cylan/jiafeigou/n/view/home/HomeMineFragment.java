@@ -187,7 +187,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
                     getString(R.string.Tap2_Index_Open_NoDeviceOption),
                     (DialogInterface dialog, int which) -> {
-                        startActivity(new Intent(getContext(), MineInfoActivity.class));
+                        Bundle bundle = new Bundle();
+                        MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
                     }, getString(R.string.CANCEL), null, false);
         }
     }

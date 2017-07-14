@@ -75,8 +75,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                     initSdUseDetailRsp(null, false);
                 });
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        initSdUseDetailRsp(device.$(204, new DpMsgDefine.DPSdStatus()));
+        initSdUseDetailRsp(device.$(204, new DpMsgDefine.DPSdStatus()), false);
     }
 
     @Override

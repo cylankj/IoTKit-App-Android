@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +18,6 @@ import com.cylan.jiafeigou.databinding.FragmentMineShareManagerBinding;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.view.activity.MineInfoActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -121,7 +119,9 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
             AlertDialogManager.getInstance().showDialog(getActivity(), title, title,
                     getString(R.string.Tap2_Index_Open_NoDeviceOption),
                     (DialogInterface dialog, int which) -> {
-                        startActivity(new Intent(getContext(), MineInfoActivity.class));
+                        Bundle bundle = new Bundle();
+                        MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
                     }, getString(R.string.CANCEL), null, false);
         }
     }
