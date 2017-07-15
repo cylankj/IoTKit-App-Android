@@ -388,7 +388,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Passwort</string>
   <string name="PASSWORD_BIT">Neues Passwort erstellen</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Bitte ein 6 bis 12&#8211;stelliges Passwort eingeben</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Bitte ein 6 bis 32&#8211;stelliges Passwort eingeben</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Handynummer</string>
   <string name="PHONE_NUMBER_1">Handynummer</string>

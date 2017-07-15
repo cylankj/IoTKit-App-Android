@@ -388,7 +388,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Senha</string>
   <string name="PASSWORD_BIT">Nova senha</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Insira uma senha de 6 a 12 caracteres</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Insira uma senha de 6 a 32 caracteres</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Número de celular</string>
   <string name="PHONE_NUMBER_1">Número de celular</string>

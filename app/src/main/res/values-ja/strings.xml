@@ -388,7 +388,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">パスワード</string>
   <string name="PASSWORD_BIT">新しいパスワードを設定してください</string>
-  <string name="PASSWORD_LESSTHAN_SIX">6~12文字でパスワードを入力してください</string>
+  <string name="PASSWORD_LESSTHAN_SIX">6~32文字でパスワードを入力してください</string>
   <string name="PHONE_EMAIL">Eメール</string>
   <string name="PHONE_NUMBER">携帯電話番号</string>
   <string name="PHONE_NUMBER_1">携帯電話番号</string>

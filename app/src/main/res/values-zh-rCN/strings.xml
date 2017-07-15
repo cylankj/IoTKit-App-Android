@@ -388,7 +388,7 @@
     <string name="Oct">10月</string>
     <string name="PASSWORD">密码</string>
     <string name="PASSWORD_BIT">设置新密码</string>
-    <string name="PASSWORD_LESSTHAN_SIX">请输入6~12位密码</string>
+    <string name="PASSWORD_LESSTHAN_SIX">请输入6~32位密码</string>
     <string name="PHONE_EMAIL">手机号/邮箱</string>
     <string name="PHONE_NUMBER">手机号码</string>
     <string name="PHONE_NUMBER_1">手机号码</string>

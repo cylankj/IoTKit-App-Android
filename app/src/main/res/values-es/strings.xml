@@ -388,7 +388,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Contraseña</string>
   <string name="PASSWORD_BIT">Nueva Contraseña</string>
-  <string name="PASSWORD_LESSTHAN_SIX">La contraseña debe tener de 6 a 12 dígitos</string>
+  <string name="PASSWORD_LESSTHAN_SIX">La contraseña debe tener de 6 a 32 dígitos</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Número de teléfono</string>
   <string name="PHONE_NUMBER_1">Número de teléfono</string>

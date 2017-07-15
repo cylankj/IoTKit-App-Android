@@ -388,7 +388,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">密碼</string>
   <string name="PASSWORD_BIT">設置新密碼</string>
-  <string name="PASSWORD_LESSTHAN_SIX">請輸入6~12位密碼</string>
+  <string name="PASSWORD_LESSTHAN_SIX">請輸入6~32位密碼</string>
   <string name="PHONE_EMAIL">電子郵件</string>
   <string name="PHONE_NUMBER">手機號碼</string>
   <string name="PHONE_NUMBER_1">手機號碼</string>

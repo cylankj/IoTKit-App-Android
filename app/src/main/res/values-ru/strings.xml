@@ -388,7 +388,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Пароль</string>
   <string name="PASSWORD_BIT">Новый пароль</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Пожалуйста, введите пароль от 6 до 12 символов</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Пожалуйста, введите пароль от 6 до 32 символов</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Номер телефона</string>
   <string name="PHONE_NUMBER_1">Номер телефона</string>
