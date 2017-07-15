@@ -29,7 +29,8 @@
         app:layout_constraintEnd_toStartOf="@+id/option_container"
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:layout_editor_absoluteY="19dp" />
 
     <TextView
         android:id="@+id/tv_settings_item_sub_title"
@@ -44,7 +45,7 @@
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
         app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title"
         app:layout_constraintVertical_bias="0"
-        tools:layout_editor_absoluteY="44dp" />
+        tools:layout_editor_absoluteY="42dp" />
 
     <FrameLayout
         android:id="@+id/option_container"
@@ -91,7 +92,6 @@
         android:id="@+id/v_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
-        android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/y10"
         android:layout_marginStart="@dimen/y10"
         android:background="@color/color_e8e8e8"
