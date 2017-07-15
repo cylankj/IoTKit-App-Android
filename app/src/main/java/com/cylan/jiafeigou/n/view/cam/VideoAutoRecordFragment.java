@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
@@ -122,8 +123,9 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         rbMotion.setChecked(oldOption == 0);
         rb24Hours.setChecked(oldOption == 1);
         rbNever.setChecked(oldOption == 2);
+        IProperty property = BaseApplication.getAppComponent().getProductProperty();
 
-        if (isBell) {
+        if (property.hasProperty(device.pid, "VIDEO")) {
             rlAlarmSettingContainer.setVisibility(View.GONE);
             rlWatchVideoContainer.setVisibility(View.VISIBLE);
         } else {

@@ -29,7 +29,6 @@
                 android:gravity="center"
                 android:hint="@string/ENTER_PWD_1"
                 android:inputType="textPassword"
-                android:maxLength="12"
                 android:paddingLeft="@dimen/x40"
                 android:paddingRight="@dimen/x40"
                 android:textColor="@color/color_666666"

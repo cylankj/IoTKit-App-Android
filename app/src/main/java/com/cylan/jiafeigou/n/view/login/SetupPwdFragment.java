@@ -12,9 +12,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -58,7 +58,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     @BindView(R.id.vs_set_account_pwd)
     ViewSwitcher vsSetAccountPwd;
     @BindView(R.id.fl_input_container)
-    FrameLayout flInputContainer;
+    RelativeLayout flInputContainer;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.ll_input_pwd_container)

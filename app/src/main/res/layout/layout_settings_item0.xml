@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/y72">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/y72">
 
     <ImageView
         android:id="@+id/imgv_item_icon"
@@ -33,7 +34,7 @@
     <TextView
         android:id="@+id/tv_settings_item_sub_title"
         android:layout_width="0dp"
-        android:layout_height="21dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/x15"
         android:layout_marginTop="@dimen/y3"
         android:textColor="@color/color_8C8C8C"
@@ -43,7 +44,7 @@
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
         app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title"
         app:layout_constraintVertical_bias="0"
-        tools:layout_editor_absoluteY="36dp" />
+        tools:layout_editor_absoluteY="44dp" />
 
     <FrameLayout
         android:id="@+id/option_container"
@@ -54,6 +55,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
+            android:id="@+id/radio_place_holder"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y72"
             android:layout_gravity="end|center_vertical"

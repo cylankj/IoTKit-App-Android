@@ -166,6 +166,7 @@
         </attr>
         <attr name="sv_radio_button_id" format="reference|integer" />
         <attr name="sv_show_radio_button" format="boolean|reference" />
+        <attr name="sv_has_radio_place_holder" format="boolean|reference" />
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">

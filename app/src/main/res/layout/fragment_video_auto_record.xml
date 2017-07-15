@@ -101,9 +101,9 @@
             android:id="@+id/siv_watch_video_switcher"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
-            hunt:sv_sub_title="开启后，查看实时监控将生成历史录像"
+            hunt:sv_sub_title="@string/Record_Descript"
             hunt:sv_switch_visibility="true"
-            hunt:sv_title="监看录像" />
+            hunt:sv_title="@string/Record_Video" />
 
     </RelativeLayout>
 </LinearLayout>

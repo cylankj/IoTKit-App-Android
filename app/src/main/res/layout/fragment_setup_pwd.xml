@@ -15,8 +15,8 @@
         android:layout_height="@dimen/y33" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_title_color="@color/color_black" />
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
+            <RelativeLayout
                 android:id="@+id/fl_input_container"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
@@ -51,21 +51,22 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/y5"
                     android:layout_marginTop="@dimen/y5"
+                    android:layout_toStartOf="@+id/clare_option"
                     android:background="@null"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:gravity="center"
                     android:inputType="textPassword"
-                    android:paddingLeft="@dimen/x40"
-                    android:paddingRight="@dimen/x40"
                     android:textColor="@color/color_666666"
                     android:textColorHint="@color/color_cecece"
                     android:textCursorDrawable="@drawable/bg_common_cursor"
                     android:textSize="@dimen/sp15" />
 
                 <LinearLayout
+                    android:id="@+id/clare_option"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
                     android:layout_gravity="end|center_vertical"
                     android:orientation="horizontal">
 
@@ -74,7 +75,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:paddingLeft="@dimen/x15"
                         android:paddingRight="@dimen/x7"
                         android:src="@drawable/icon_clear_text"
                         android:visibility="gone" />
@@ -93,10 +93,10 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
-                    android:layout_gravity="bottom"
+                    android:layout_alignParentBottom="true"
                     android:background="@color/color_f2f2f2" />
 
-            </FrameLayout>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_register_pwd_submit"

@@ -79,8 +79,8 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ViewUtils.setChineseExclude(etMinePersonalInformationOldPassword, 12);
-        ViewUtils.setChineseExclude(etMinePersonalInformationNewPassword, 12);
+        ViewUtils.setChineseExclude(etMinePersonalInformationOldPassword, getResources().getInteger(R.integer.max_password_length));
+        ViewUtils.setChineseExclude(etMinePersonalInformationNewPassword, getResources().getInteger(R.integer.max_password_length));
         customToolbar.setTvToolbarRightEnable(false);
     }
 

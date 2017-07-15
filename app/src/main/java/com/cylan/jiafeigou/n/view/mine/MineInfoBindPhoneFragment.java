@@ -49,7 +49,7 @@ import static com.cylan.jiafeigou.misc.JError.ErrorAccountNotExist;
 public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContract.Presenter> implements MineBindPhoneContract.View {
 
 
-    private static final long TIME_OUT = 180 * 1000;
+    private static final long TIME_OUT = 90 * 1000;
     @BindView(R.id.et_mine_bind_phone)
     EditText etMineBindPhone;
     @BindView(R.id.iv_mine_bind_phone_clear)
@@ -69,7 +69,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 
     private CountDownTimer countDownTimer;
 
-    private static VCode vCode;
+    private VCode vCode;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -263,7 +263,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         bundle.putString("useraccount", account);
         bundle.putString("token", PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                MineInfoSetNewPwdFragment.newInstance(bundle), android.R.id.content,"bindPhoneStack");
+                MineInfoSetNewPwdFragment.newInstance(bundle), android.R.id.content, "bindPhoneStack");
     }
 
     @Override

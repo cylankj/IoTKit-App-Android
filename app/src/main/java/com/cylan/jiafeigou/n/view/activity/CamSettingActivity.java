@@ -72,7 +72,6 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_IS_BELL;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
@@ -248,11 +247,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.sv_setting_device_auto_record: {
                 Device device = DataSourceManager.getInstance().getDevice(uuid);
 
-
                 initVideoAutoRecordFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-                bundle.putBoolean(KEY_DEVICE_ITEM_IS_BELL, JFGRules.isBell(device.pid));
                 VideoAutoRecordFragment fragment = videoAutoRecordFragmentWeakReference.get();
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);

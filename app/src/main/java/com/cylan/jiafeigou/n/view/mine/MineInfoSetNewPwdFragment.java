@@ -75,7 +75,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setChineseExclude(etMineSetNewpwd, 12);
+        ViewUtils.setChineseExclude(etMineSetNewpwd,  getResources().getInteger(R.integer.max_password_length));
     }
 
     @Override
