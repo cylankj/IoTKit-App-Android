@@ -26,6 +26,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -655,6 +656,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             AppLogger.d(" //这里是个异步的,显示的条件是当前 fragment 可见");
             LiveShowCase.showHistoryWheelCase(getActivity(), camLiveControlLayer.findViewById(R.id.layout_e));
         }
+    }
+
+    @Override
+    public void onDeviceUnBind() {
+        AppLogger.d("当前设备已解绑");
+        basePresenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+        }, AppLogger::e);
+        AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
+                getString(R.string.OK), (dialog, which) -> {
+                    getActivity().finish();
+                    Intent intent = new Intent(getContext(), NewHomeActivity.class);
+                    startActivity(intent);
+                }, false);
     }
 
 //    @Override

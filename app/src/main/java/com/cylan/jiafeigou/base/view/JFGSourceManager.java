@@ -119,7 +119,7 @@ public interface JFGSourceManager {
 
     Observable<Account> logout();
 
-    Observable<Device> unBindDevice(String uuid);
+    Observable<String> unBindDevice(String uuid);
 
     ArrayList<Long> getHisDateList(String uuid);
 

@@ -115,6 +115,8 @@ public interface CamLiveContract {
         void onBatteryDrainOut();
 
         void onHistoryLoadFinished();
+
+        void onDeviceUnBind();
     }
 
     interface Presenter extends BasePresenter {

@@ -120,8 +120,20 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         super.start();
         addSubscription(getBatterySub());
         addSubscription(getDeviceSyncSub());
+        addSubscription(getDeviceUnBindSub());
     }
 
+    private Subscription getDeviceUnBindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(event -> TextUtils.equals(event.uuid, uuid))
+                .subscribe(event -> {
+                    if (mView != null) {
+                        mView.onDeviceUnBind();
+                    }
+                }, e -> AppLogger.d(e.getMessage()));
+    }
 
     /**
      * 1.需要获取设备电量并且,一天一次提醒弹窗.

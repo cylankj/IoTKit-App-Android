@@ -388,8 +388,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public Observable<Device> unBindDevice(String uuid) {
-
+    public Observable<String> unBindDevice(String uuid) {
         return unBindDevices(Collections.singletonList(uuid))
                 .filter(devices -> devices != null && devices.iterator().hasNext())
                 .flatMap(devices -> Observable.just(devices.iterator().next()));
@@ -416,25 +415,29 @@ public class DataSourceManager implements JFGSourceManager {
         this.appCmd = appCmd;
     }
 
-    private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
-        return dbHelper.unBindDeviceWithConfirm(uuids)
+    private Observable<Iterable<String>> unBindDevices(Iterable<String> uuids) {
+        return Observable.just(uuids)
                 .map(devices -> {
-                    for (Device uuid : devices) {
+                    for (String uuid : devices) {
                         AppLogger.d("设备已解绑:" + uuid);
-                        mCachedDeviceMap.remove(uuid.uuid);
-                        String mac = uuid.$(DpMsgMap.ID_202_MAC, "");
-                        if (TextUtils.isEmpty(mac)) {
-                            mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid.uuid);
+                        Device device = mCachedDeviceMap.get(uuid);
+                        mCachedDeviceMap.remove(uuid);
+                        String mac = null;
+                        if (device != null && device.available()) {
+                            mac = device.$(DpMsgMap.ID_202_MAC, "");
                         }
-                        JFGRules.switchApModel(mac, uuid.uuid, 1).subscribe(ret -> {
+                        if (TextUtils.isEmpty(mac)) {
+                            mac = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
+                        }
+                        JFGRules.switchApModel(mac, uuid, 1).subscribe(ret -> {
                             if (ret) {
                                 AppLogger.d("睿视删除设备起 AP 成功了!");
                             }
                         }, e -> {
                             AppLogger.e("unBindDevices,Error:" + e.getMessage());
                         });
-                        FileUtils.deleteFile(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid.uuid);
-                        getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid.uuid));
+                        FileUtils.deleteFile(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
+                        getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid));
                     }
                     return devices;
                 });
@@ -761,6 +764,9 @@ public class DataSourceManager implements JFGSourceManager {
                         result.remove(device.uuid);
                     }
                     AppLogger.d("已删除的设备数:" + result.size());
+                    for (String uuid : result) {
+
+                    }
                     return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
