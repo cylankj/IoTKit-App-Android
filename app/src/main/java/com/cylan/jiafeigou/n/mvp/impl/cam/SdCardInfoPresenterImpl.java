@@ -85,6 +85,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                                 if (!hasSDCard) {
                                     mView.showSdPopDialog();
                                 }
+                                AppLogger.d("正在更新 SD 卡的属性");
                                 mView.initSdUseDetailRsp(status, false);
                                 break;
                             } else if (msg.id == 222) {

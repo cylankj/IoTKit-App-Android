@@ -1312,7 +1312,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 //说明已经有权限,并且设置成功
                                 speakerOn = tmpSpeaker;
                                 dump("switchSpeaker");
-                                viewWeakReference.get().switchHotSeat(speakerOn, !micOn,
+                                viewWeakReference.get().switchHotSeat(speakerOn, /*!micOn*/presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                         micOn,
                                         presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                         captureOn, true);

@@ -67,7 +67,7 @@ public class SettingItemView0 extends RelativeLayout {
         int subTitleGravity = ta.getInt(R.styleable.SettingItemViewStyle_sv_sub_title_gravity, -1);
         tvSubTitle.setGravity(subTitleGravity);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, false)
-                ? VISIBLE : INVISIBLE);
+                ? VISIBLE : GONE);
         v_divider = findViewById(R.id.v_divider);
         v_divider.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
                 ? VISIBLE : GONE);

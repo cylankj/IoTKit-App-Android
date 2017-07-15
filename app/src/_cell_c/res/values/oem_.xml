@@ -17,4 +17,5 @@
     <string name="share_to_friends_link">https://play.google.com/store/apps/details?id=%s</string>
     <string name="agreementSuffix">"cell_c"</string>
     <string name="log">"Cellc"</string>
+    <integer name="max_password_length">32</integer>
 </resources>

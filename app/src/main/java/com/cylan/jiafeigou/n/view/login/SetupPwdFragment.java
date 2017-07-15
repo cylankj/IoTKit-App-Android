@@ -131,7 +131,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         editText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         ViewUtils.setChineseExclude(editText, JConstant.PWD_LEN_MAX);
         ViewUtils.showPwd(etInputBox, checkBox.isChecked());
-        ViewUtils.setChineseExclude(etInputBox, 12);
+        ViewUtils.setChineseExclude(etInputBox, getResources().getInteger(R.integer.max_password_length));
     }
 
     @OnTextChanged(R.id.et_input_box)

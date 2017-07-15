@@ -310,8 +310,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         fLayoutThird.setVisibility(getResources().getBoolean(R.bool.show_third_login) ? View.VISIBLE : View.GONE);
         lLayoutAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.GONE);
         ViewUtils.setChineseExclude(etLoginUsername, 65);
-        ViewUtils.setChineseExclude(etLoginPwd, 12);
-        ViewUtils.setChineseExclude(etRegisterInputBox, LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? 11 : 65);
+        ViewUtils.setChineseExclude(etLoginPwd, getResources().getInteger(R.integer.max_password_length));
+        ViewUtils.setChineseExclude(etRegisterInputBox, LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? getResources().getInteger(R.integer.max_password_length) : 65);
         ViewUtils.setChineseExclude(etVerificationInput, 6);
         rLayoutLoginToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");

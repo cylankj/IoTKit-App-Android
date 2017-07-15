@@ -220,7 +220,15 @@ public class AutoSignIn {
         }
     }
 
+    public void autoClearPassWord() {
+        SignType signType = getSignType();
+        if (signType != null) {
+            savePwdMd5(saveAccountAes(signType), "");
+        }
+    }
+
     public void clearPsw() {
+        autoClearPassWord();
         FileUtils.writeFile(ContextUtils.getContext().getFilesDir() + File.separator + PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY) + ".dat", "");
         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
         PreferencesUtils.putString(JConstant.SESSIONID, "");
