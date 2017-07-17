@@ -104,6 +104,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
 
+
     public CamMessageListFragment() {
         // Required empty public constructor
     }
@@ -192,9 +193,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         super.onStart();
         //从通知栏跳进来
         if (getActivity() != null && getActivity().getIntent() != null) {
-            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {
+            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE) || isUserVisible()) {//需要每次进来都刷新数据,
+                //客户端绑定门铃一代设备之后，门铃按呼叫键呼叫生成呼叫记录；
+                //客户端进入“功能设置”界面点击“清空呼叫记录”，之后返回门铃的“消息”界面，呼叫记录依旧存在；iOS客户端的呼叫记录已经被清空；
+
                 Intent intent = getActivity().getIntent();
                 if (intent != null) intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
+                AppLogger.d("刷新数据中...");
                 startRequest(true);
             }
         }
@@ -204,9 +209,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         //刚刚进入页面，尽量少点加载
+
         if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
-            if (camMessageListAdapter.getCount() == 0)
-                startRequest(true);
+//            if (camMessageListAdapter.getCount() == 0)
+            startRequest(true);//需要每次刷新,而不是第一次刷新
         }
     }
 
@@ -503,7 +509,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //                            long time = bean.alarmMsg.version;//1498194000
                             long time = MiscUtils.getVersion(bean);
                             bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, time);
-                            bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL,true);
+                            bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL, true);
                             ((CameraLiveActivity) activity).addPutBundle(bundle);
                         }
                         AppLogger.d("alarm: " + bean);

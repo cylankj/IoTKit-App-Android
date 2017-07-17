@@ -317,7 +317,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
             getView().findViewById(R.id.tv_toolbar_right).setVisibility(View.VISIBLE);
-        ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
+//        ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
         //大陆用户显示 第三方登陆
         rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
         rLayoutLoginThirdPartyAbroad.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.GONE : View.VISIBLE);

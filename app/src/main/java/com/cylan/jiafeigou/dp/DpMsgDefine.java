@@ -1258,4 +1258,45 @@ public class DpMsgDefine {
             }
         };
     }
+
+    @Message
+    public static class DPAutoRecordWatcher extends BaseDataPoint {
+        @Index(0)
+        public boolean recordEnable;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeByte(this.recordEnable ? (byte) 1 : (byte) 0);
+        }
+
+        public DPAutoRecordWatcher() {
+        }
+
+        public DPAutoRecordWatcher(boolean recordEnable) {
+            this.recordEnable = recordEnable;
+        }
+
+        protected DPAutoRecordWatcher(Parcel in) {
+            super(in);
+            this.recordEnable = in.readByte() != 0;
+        }
+
+        public static final Creator<DPAutoRecordWatcher> CREATOR = new Creator<DPAutoRecordWatcher>() {
+            @Override
+            public DPAutoRecordWatcher createFromParcel(Parcel source) {
+                return new DPAutoRecordWatcher(source);
+            }
+
+            @Override
+            public DPAutoRecordWatcher[] newArray(int size) {
+                return new DPAutoRecordWatcher[size];
+            }
+        };
+    }
 }

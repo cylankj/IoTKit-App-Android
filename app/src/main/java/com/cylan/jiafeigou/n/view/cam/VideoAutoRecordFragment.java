@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -142,8 +143,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (checked && !status.hasSdcard) {
             ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
             button.setChecked(false);
-
+            return;
         }
+        AppLogger.d("开启自动录像:" + checked);
+        basePresenter.updateInfoReq(new DpMsgDefine.DPAutoRecordWatcher(checked), 305);
     }
 
     @Override

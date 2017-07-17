@@ -86,6 +86,7 @@ public class History {
         }
         try {
             BaseApplication.getAppComponent().getCmd().getVideoList(device.uuid);
+            AppLogger.d("getVideoList");
             return true;
         } catch (JfgException e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());

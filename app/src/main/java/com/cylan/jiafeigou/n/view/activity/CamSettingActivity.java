@@ -148,7 +148,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
-        initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
+//        initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         AppLogger.d("检查升级包");
     }

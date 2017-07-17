@@ -23,10 +23,14 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 import rx.Observable;
@@ -222,6 +226,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         }
         tvLiveFlow.setLayoutParams(lp);
         videoView.detectOrientationChanged();
+
     }
 
     @Override

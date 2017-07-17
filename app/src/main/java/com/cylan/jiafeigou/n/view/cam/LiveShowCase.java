@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
@@ -73,9 +74,18 @@ public class LiveShowCase {
                 fragment.setAnchor(handAnchor);
                 ((FragmentActivity) activity).getSupportFragmentManager()
                         .beginTransaction()
-                        .add(android.R.id.content, fragment)
+                        .add(android.R.id.content, fragment, HistoryWheelShowCaseFragment.class.getSimpleName())
                         .addToBackStack(HistoryWheelShowCaseFragment.class.getSimpleName())
                         .commit();
+            }
+        }
+    }
+
+    public static void hideHistoryWheelCase(Activity activity) {
+        if (activity instanceof FragmentActivity) {
+            Fragment fragmentByTag = ((FragmentActivity) activity).getSupportFragmentManager().findFragmentByTag(HistoryWheelShowCaseFragment.class.getSimpleName());
+            if (fragmentByTag != null) {
+                ((FragmentActivity) activity).getSupportFragmentManager().beginTransaction().remove(fragmentByTag).commit();
             }
         }
     }

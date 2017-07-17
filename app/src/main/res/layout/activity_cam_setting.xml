@@ -217,7 +217,7 @@
                 android:layout_height="@dimen/y72"
                 hunt:sv_image_src="@drawable/setting_icon_ntsc"
                 hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
-                hunt:sv_title="红外夜视"
+                hunt:sv_title="@string/infrared_night_vision"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
