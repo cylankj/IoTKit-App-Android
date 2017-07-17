@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -494,13 +495,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.tv_jump_next: {
                 try {
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
-                    boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
+                    boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null || bean.bellCallRecord != null;
                     if (jumpNext) {
                         Activity activity = getActivity();
                         if (activity != null && activity instanceof CameraLiveActivity) {
                             Bundle bundle = new Bundle();
-                            long time = bean.alarmMsg.version;//1498194000
+//                            long time = bean.alarmMsg.version;//1498194000
+                            long time = MiscUtils.getVersion(bean);
                             bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, time);
+                            bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL,true);
                             ((CameraLiveActivity) activity).addPutBundle(bundle);
                         }
                         AppLogger.d("alarm: " + bean);

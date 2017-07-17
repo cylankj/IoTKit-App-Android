@@ -152,6 +152,7 @@ public class JConstant {
     public static final String KEY_DEVICE_ITEM_IS_BELL = "key_device_item_is_bell";
     public static final java.lang.String NEED_SHOW_BIND_ANIMATION = "need_show_bind_animation";
     public static final java.lang.String KEY_SHOW_HISTORY_WHEEL_CASE = "key_show_history_wheel_case";
+    public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL = "key_cam_live_page_play_history_init_wheel";
 
 
     /**

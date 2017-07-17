@@ -892,6 +892,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void setLiveRectTime(int type, long timestamp) {
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
+        historyWheelHandler = getHistoryWheelHandler(presenter);
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
         Log.d("setLiveRectTime", "isBusy?" + isWheelBusy);
         if (isWheelBusy) return;
@@ -1230,21 +1231,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
         //先loading吧.
         presenter.startPlayHistory(timeTarget);
-        presenter.assembleTheDay()
-                .subscribeOn(Schedulers.io())
-                .filter(iData -> iData != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
-                .subscribe(iData -> {
-                    HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-                    AppLogger.d("历史录像导航条空?" + (handler == null));
-                    if (handler != null) {
-                        handler.setupHistoryData(iData);
-                        handler.setNav2Time(timeTarget);
-                        setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-                        AppLogger.d("目标历史录像时间?" + timeTarget);
-                    }
-                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        presenter.fetchHistoryDataList();
+//                .subscribeOn(Schedulers.io())
+//                .filter(iData -> iData != null)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
+//                .subscribe(iData -> {
+//                    HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
+//                    AppLogger.d("历史录像导航条空?" + (handler == null));
+//                    if (handler != null) {
+//                        handler.setupHistoryData(iData);
+//                        handler.setNav2Time(timeTarget);
+//                        setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
+//                        AppLogger.d("目标历史录像时间?" + timeTarget);
+//                    }
+//                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override
