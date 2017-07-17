@@ -388,15 +388,16 @@ public class MiscUtils {
     public static String FormatSdCardSizeSpec(long fileS, String unit) {
         switch (unit) {
             case "B":
-                if (fileS < 1024) return new DecimalFormat("#######0").format((double) fileS) + "B";
+                if (fileS < 1024)
+                    return new DecimalFormat("#######0").format((int) fileS) + "B";//取整
             case "K":
                 if (fileS < 1048576)
-                    return new DecimalFormat("#######0").format((double) fileS / 1024) + "K";
+                    return new DecimalFormat("#######0").format((int) fileS / 1024) + "K";//取整
             case "M":
                 if (fileS < 1073741824)
-                    return new DecimalFormat("#######0").format((double) fileS / 1048576) + "M";
+                    return new DecimalFormat("#######0").format((int) fileS / 1048576) + "M";//取整
             case "G":
-                return new DecimalFormat("#######0.00").format((double) fileS / 1073741824) + "G";
+                return new DecimalFormat("#######0.00").format((double) fileS / 1073741824) + "G";//有两位小数点,所以用 double
             default:
                 return "";
         }

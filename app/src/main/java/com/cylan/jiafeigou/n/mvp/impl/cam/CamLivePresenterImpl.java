@@ -1281,7 +1281,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             //当前状态,remoteSpeaker = localMic ,remoteMic=localSpeaker
                             boolean tmpNextMic = !micOn;
 //                            boolean tmpSpeaker = tmpNextMic || speakerOn;
-                            boolean tmpSpeaker = speakerOn;
+//                            boolean tmpSpeaker = speakerOn;
+                            boolean tmpSpeaker = tmpNextMic;
                             //设置客户端声音
                             boolean result = setupLocalAudio(tmpNextMic, tmpSpeaker,
                                     tmpSpeaker, tmpNextMic);
@@ -1299,7 +1300,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> viewWeakReference.get() != null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
-                                    viewWeakReference.get().switchHotSeat(speakerOn, /*micOn*/presenterWeakReference.get().getPlayType() == TYPE_LIVE,
+                                    viewWeakReference.get().switchHotSeat(speakerOn, !micOn/*presenterWeakReference.get().getPlayType() == TYPE_LIVE*/,
                                             micOn,
                                             presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                             captureOn, true);
@@ -1324,7 +1325,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 //说明已经有权限,并且设置成功
                                 speakerOn = tmpSpeaker;
                                 dump("switchSpeaker");
-                                viewWeakReference.get().switchHotSeat(speakerOn, /*!micOn*/presenterWeakReference.get().getPlayType() == TYPE_LIVE,
+                                viewWeakReference.get().switchHotSeat(speakerOn, !micOn/*presenterWeakReference.get().getPlayType() == TYPE_LIVE*/,
                                         micOn,
                                         presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                         captureOn, true);

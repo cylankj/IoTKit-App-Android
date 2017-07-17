@@ -403,7 +403,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             getActivity().getSupportFragmentManager().popBackStack();
             RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
         });
-        vsSetAccountPwd.addView(mailView);
+        if (vsSetAccountPwd.getChildCount() < 2) {
+            vsSetAccountPwd.addView(mailView);
+        }
         vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
         vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
         vsSetAccountPwd.showNext();
@@ -530,6 +532,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     case JError.ErrorSamePass:
                         ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
                         break;
+                    case JError.ErrorSMSCodeTimeout: {
+                        ToastUtil.showToast(getString(R.string.INVALID_CODE));
+                        break;
+                    }
                 }
             });
         }
