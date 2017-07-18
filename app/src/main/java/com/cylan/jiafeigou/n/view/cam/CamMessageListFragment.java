@@ -23,11 +23,14 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -500,6 +503,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.tv_jump_next: {
                 try {
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                    boolean isOnline = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
+                    if (!isOnline) {
+                        ToastUtil.showToast(getString(R.string.NOT_ONLINE));
+                        return;
+                    }
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
                     boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null || bean.bellCallRecord != null;
                     if (jumpNext) {

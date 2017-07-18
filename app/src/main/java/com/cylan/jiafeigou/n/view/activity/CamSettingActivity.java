@@ -148,7 +148,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
-//        initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
+        initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         AppLogger.d("检查升级包");
     }
@@ -430,7 +430,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             startActivity(intent);
         } else if (JFGRules.isBell(device.pid)) {
             Intent intent = new Intent(this, BindBellActivity.class);
-            intent.putExtra("SSID-PREFIX", "BELL-");
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
             intent.putExtra(JUST_SEND_INFO, uuid);
             startActivity(intent);
         } else {
