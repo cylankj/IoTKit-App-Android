@@ -767,10 +767,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());
             if (layoutE.getCurrentView() instanceof FrameLayout) {
                 layoutE.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(android.R.color.transparent));
             }
         } else {
             if (layoutE.getCurrentView() instanceof FrameLayout) {
                 layoutE.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
+                findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
             }
         }
         //历史录像显示
