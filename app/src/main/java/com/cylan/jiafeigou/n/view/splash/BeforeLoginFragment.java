@@ -171,7 +171,7 @@ public class BeforeLoginFragment extends Fragment {
     @OnClick(R.id.rLayout_before_login)
     public void onClick(View v) {
         if (clickEvent == null) clickEvent = new Event();
-        if (!BuildConfig.DEBUG) return;
+        if (!BuildConfig.DEBUG && OptionsImpl.getServer().contains("yun")) return;
         if (clickEvent.click(getContext())) {
             clickEvent = null;
             final EditText input = new EditText(getActivity());
