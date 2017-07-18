@@ -169,8 +169,8 @@ public final class BaseInitializationManager {
         PlatformConfig.setSinaWeibo(PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"),
                 PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppSecret"),
                 "https://api.weibo.com/oauth2/default.html");
-        PlatformConfig.setTwitter(PackageUtils.getMetaString(ContextUtils.getContext(), "twitterAppKey"),
-                PackageUtils.getMetaString(ContextUtils.getContext(), "twitterAppSecret"));
+        PlatformConfig.setTwitter(PackageUtils.getMetaString(ContextUtils.getContext(), "TWITTER_APP_KEY"),
+                PackageUtils.getMetaString(ContextUtils.getContext(), "TWITTER_APP_SECRET"));
         UMShareConfig config = new UMShareConfig();
         config.isNeedAuthOnGetUserInfo(true);
         config.isOpenShareEditActivity(true);

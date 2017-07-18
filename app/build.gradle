@@ -152,31 +152,26 @@ android {
             versionName vName
             versionCode vCode//0002,ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 10515998",
-                                    "VID"                : "\\ 0001",
-                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
-                                    "qqAppId"            : "\\ 1103156296",
-                                    "qqAppKey"           : "lfQJHRh8dDCJtwHu",
-
-                                    "twitterAppKey"      : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
-                                    "twitterAppSecret"   : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
-
+                                    "HW_APP_ID"          : "\\ 100044173",
+                                    "VID"                : "\\ 0002",
+                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "qqAppId"            : "\\ 1106287288",
+                                    "qqAppKey"           : "yNsvacSiQTzArpTg",
                                     "mtaAppKey"          : "Aqc1103156296",
-
                                     "weChatAppId"        : "wx3081bcdae8a842cf",
                                     "weChatAppSecret"    : "d93676ab7db1876c06800dee3f33fbc2",
-                                    "sinaAppKey"         : "\\ 1315129656",
-                                    "sinaAppSecret"      : "5feab23e093b43f220bccf7fbab8f6c5",
+                                    "sinaAppKey"         : "\\ 2656168776",
+                                    "sinaAppSecret"      : "f7f61f712dd94d538514799c462d2083",
                                     "SERVER"             : "yun.jfgou.com:443",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "\\ 5241757040488",
-                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw==",
-                                    "BUGLY_APPID"        : "2e94bf542f",
+                                    "XiaoMiAppId"        : "\\ 5881759615576",
+                                    "XiaoMiAppKey"       : "MTB5DeGP/CMKSgAiQsUIuw==",
+                                    "BUGLY_APPID"        : "718847e7d5",
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "cylan",
-                                    "TWITTER_APP_KEY"    : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
-                                    "TWITTER_APP_SECRET" : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
+                                    "TWITTER_APP_KEY"    : "kvWyAC3sYGxaEmfkKDVWrKFa7",
+                                    "TWITTER_APP_SECRET" : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
                                     "FACEBOOK_APP_KEY"   : "1866682200216878"
             ]
         }
@@ -185,31 +180,28 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.doby.hms.update.provider",
-                                    "HW_APP_ID"          : "\\ 100005405",
+                                    "HW_APP_ID"          : "\\ 100043669",
                                     "VID"                : "\\ 0002",
-                                    "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
-                                    "qqAppId"            : "\\ 1104534926",
-                                    "qqAppKey"           : "eePT24ZjUbNtk15J",
-                                    "twitterAppKey"      : "gSbX9IzCQ4w4xaE1igwAqrX6M",
-                                    "twitterAppSecret"   : "85wI4lQRuZiLr7WMtfy1brkHtciw0T9648EbuVyr7hfFC9EIk9",
-
+                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "qqAppId"            : "\\ 1106279832",
+                                    "qqAppKey"           : "vqSXNT11dsbu24io",
                                     "mtaAppKey"          : "ATQ1JV694AKT",
                                     "weChatAppId"        : "wx382033a16e5cc4a5",
                                     "weChatAppSecret"    : "185c2c53948ec8de6866022940e2ef29",
-                                    "sinaAppKey"         : "\\ 1821035549",
-                                    "sinaAppSecret"      : "3f3e34599b21854eea2ee7e6e23108cf",
+                                    "sinaAppKey"         : "\\ 2444488421",
+                                    "sinaAppSecret"      : "dfba216fe44f0d6613cdda1557790a31",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "\\ 5721736791425",
-                                    "XiaoMiAppKey"       : "ICRz/WmxDXeT4XGEWT2aBQ==",
-                                    "BUGLY_APPID"        : "2e94bf542f",
+                                    "XiaoMiAppId"        : "\\ 5981759669387",
+                                    "XiaoMiAppKey"       : "AFtTDKfrkO6y1WpxoGDbCw==",
+                                    "BUGLY_APPID"        : "718847e7d5",
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "doby",
-                                    "TWITTER_APP_KEY"    : "gSbX9IzCQ4w4xaE1igwAqrX6M",
-                                    "TWITTER_APP_SECRET" : "85wI4lQRuZiLr7WMtfy1brkHtciw0T9648EbuVyr7hfFC9EIk9",
-                                    "FACEBOOK_APP_KEY"   : "1770285686596084"
+                                    "TWITTER_APP_KEY"    : "yP4mZddIEumAsk7OnzNWpcrQy8",
+                                    "TWITTER_APP_SECRET" : "1T5Pg7UBRVkq6OSvOs9EBEGiMXVLYmAeOdW3HPTazuqjWyzRAm",
+                                    "FACEBOOK_APP_KEY"   : "1698182270477390"
+
             ]
         }
         _cell_c {
@@ -224,14 +216,12 @@ android {
                                     "qqAppKey"           : "lfQJHRh8dDCJtwHu",
                                     "twitterAppKey"      : "kCEeFDWzz5xHi8Ej9Wx6FWqRL",
                                     "twitterAppSecret"   : "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5",
-
                                     "mtaAppKey"          : "ATQ1JV694AKT",
                                     "weChatAppId"        : "wx382033a16e5cc4a5",
                                     "weChatAppSecret"    : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1821035549",
                                     "sinaAppSecret"      : "",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "\\ 1866682200216878",
                                     "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
                                     "XiaoMiAppId"        : "\\ 5721736791425",

@@ -135,12 +135,6 @@
             android:name="weChatAppId"
             android:value="${weChatAppId}" />
         <meta-data
-            android:name="twitterAppKey"
-            android:value="${twitterAppKey}" />
-        <meta-data
-            android:name="twitterAppSecret"
-            android:value="${twitterAppSecret}" />
-        <meta-data
             android:name="weChatAppSecret"
             android:value="${weChatAppSecret}" />
         <meta-data

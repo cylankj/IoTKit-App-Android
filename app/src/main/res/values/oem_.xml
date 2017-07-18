@@ -7,8 +7,8 @@
     <bool name="show_about_logo">true</bool>
     <bool name="show_official_website">true</bool>
     <bool name="show_official_hot_line">true</bool>
-    <bool name="show_ruishi_interface">true</bool>
-    <bool name="show_cat_eye_bind_interface">true</bool>
+    <bool name="show_ruishi_interface">false</bool>
+    <bool name="show_cat_eye_bind_interface">false</bool>
     <bool name="show_scan_bind_interface">true</bool>
     <bool name="show_third_login">true</bool>
     <bool name="show_share_btn">true</bool>
@@ -19,7 +19,7 @@
         @string/Tap1_Shared_Description
     </item>
     <string name="share_default_title">@string/Tap1_Shared_Title</string>
-    <string name="facebook_app_id">fb1866682200216878</string>
+    <string name="facebook_app_id">fb444251309281886</string>
     <string name="agreementSuffix">""</string>
     <string name="log">"Smarthome"</string>
     <integer name="max_password_length">32</integer>
