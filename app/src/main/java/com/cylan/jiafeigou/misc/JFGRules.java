@@ -143,8 +143,9 @@ public class JFGRules {
     }
 
     public static boolean isPanoramicCam(int pid) {
-        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
-                "ViewAngle");
+        final String p = BaseApplication.getAppComponent().getProductProperty().property(pid,
+                "DEVICE");
+        return p != null && p.contains("DOG-5W");
     }
 
     public static boolean showNTSCVLayout(int pid) {
@@ -341,10 +342,11 @@ public class JFGRules {
 
     /**
      * 内部会 自动转成大写
-     *    /**
-     * @deprecated 需要一并传入是否为共享账号
+     * /**
+     *
      * @param pid
      * @return
+     * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showIp(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
