@@ -54,12 +54,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
+        <!--android:layout_marginStart="@dimen/y68"-->
         <RadioButton
             android:id="@+id/radio_place_holder"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/y72"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
+
             android:clickable="false"
             android:theme="@style/RadioButtonStyle"
             android:visibility="invisible" />
@@ -69,7 +70,7 @@
             style="@style/SwitchButtonStyleMD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical|end"
             android:gravity="end"
             android:paddingEnd="0dp"
             android:paddingStart="@dimen/y20" />

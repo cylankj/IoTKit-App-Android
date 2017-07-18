@@ -175,6 +175,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             alpha.setRepeatCount(ValueAnimator.INFINITE);
             set.playTogether(scaleX, scaleY, alpha);
             set.start();
+        } else {
+            imgBtnAddDevices.setImageResource(R.drawable.btn_common_add);
         }
 //        }
 

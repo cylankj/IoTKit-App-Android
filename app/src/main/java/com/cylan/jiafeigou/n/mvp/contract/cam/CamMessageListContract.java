@@ -46,8 +46,9 @@ public interface CamMessageListContract {
     interface Presenter extends BasePresenter {
         /**
          * @param timeStart
+         * @param refresh
          */
-        void fetchMessageList(long timeStart, boolean asc);
+        void fetchMessageList(long timeStart, boolean asc, boolean refresh);
 
 
         void removeItems(ArrayList<CamMessageBean> beanList);

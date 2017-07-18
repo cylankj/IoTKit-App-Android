@@ -341,10 +341,11 @@ public class JFGRules {
 
     /**
      * 内部会 自动转成大写
-     *    /**
-     * @deprecated 需要一并传入是否为共享账号
+     * /**
+     *
      * @param pid
      * @return
+     * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showIp(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
@@ -435,6 +436,14 @@ public class JFGRules {
      */
     public static boolean hasAutoRecord(int pid) {
         return true;
+    }
+
+    public static long getCallTimeOut(Device device) {
+        long timeOut = 30;//default is 30
+        if (isCatEeyBell(device.pid)) {
+            timeOut = 20;//猫眼呼叫时20 秒超时
+        }
+        return timeOut;
     }
 
     public static class PlayErr {

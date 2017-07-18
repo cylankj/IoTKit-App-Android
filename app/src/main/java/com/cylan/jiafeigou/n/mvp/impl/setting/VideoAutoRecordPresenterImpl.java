@@ -72,6 +72,11 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                                     getView().onSDCardSync(status);
                                 }
 
+                            } else if (msg.id == 305) {
+                                DpMsgDefine.DPAutoRecordWatcher recordWatcher = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPAutoRecordWatcher.class);
+                                if (recordWatcher != null) {
+                                    getView().onRecordWatcherSync(recordWatcher);
+                                }
                             }
                         }
                     } catch (IOException e) {

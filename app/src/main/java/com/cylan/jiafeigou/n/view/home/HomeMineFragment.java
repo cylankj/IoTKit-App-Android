@@ -162,6 +162,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
 
+//        if (true) {//just for test
+//            showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
+//            return;
+//        }
+
         if (basePresenter.checkOpenLogIn()) {
             if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
                     TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {

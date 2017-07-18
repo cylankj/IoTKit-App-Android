@@ -23,11 +23,13 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -231,7 +233,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (camMessageListAdapter.getCount() > 0)
                 time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version;
         }
-        if (basePresenter != null) basePresenter.fetchMessageList(time, asc);
+        if (basePresenter != null) basePresenter.fetchMessageList(time, asc, false);
     }
 
     /**
@@ -256,7 +258,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         fLayoutCamMessageListTimeline.setListener(time -> {
             AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
             if (basePresenter != null)
-                basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false);
+                basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false, false);
             camMessageListAdapter.clear();
             LoadingDialog.showLoading(getFragmentManager());
             boolean isToday = TimeUtils.isToday(time);
@@ -308,6 +310,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
         });
     }
+
+
 
     @Override
     public ArrayList<CamMessageBean> getList() {
@@ -500,6 +504,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.tv_jump_next: {
                 try {
+                    if (!online()) {
+                        ToastUtil.showToast(getString(R.string.NOT_ONLINE));
+                        return;
+                    }
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
                     boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null || bean.bellCallRecord != null;
                     if (jumpNext) {
@@ -554,5 +562,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @OnClick(R.id.tv_msg_delete)
     public void onClick() {
+    }
+
+    private boolean online() {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        return net != null && net.net > 0;
     }
 }
