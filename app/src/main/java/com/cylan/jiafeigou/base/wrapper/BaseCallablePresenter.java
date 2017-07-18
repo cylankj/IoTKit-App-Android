@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -89,7 +90,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 })
                 )
                 .first()
-                .timeout(30, TimeUnit.SECONDS)
+                .timeout(JFGRules.getCallTimeOut(sourceManager.getDevice(uuid)), TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(answer -> {
                     if (!answer.self) {//说明不是自己接听的

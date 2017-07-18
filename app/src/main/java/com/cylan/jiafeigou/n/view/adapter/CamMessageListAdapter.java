@@ -261,7 +261,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
-        holder.setEnabled(R.id.tv_jump_next, online());
+//        holder.setEnabled(R.id.tv_jump_next, online());
     }
 
 

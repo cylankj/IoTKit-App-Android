@@ -129,12 +129,14 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (property.hasProperty(device.pid, "VIDEO")) {
             rlAlarmSettingContainer.setVisibility(View.GONE);
             rlWatchVideoContainer.setVisibility(View.VISIBLE);
+            DpMsgDefine.DPAutoRecordWatcher recordWatcher = device.$(305, new DpMsgDefine.DPAutoRecordWatcher(false));
+            onRecordWatcherSync(recordWatcher);
         } else {
             rlAlarmSettingContainer.setVisibility(View.VISIBLE);
             rlWatchVideoContainer.setVisibility(View.GONE);
         }
-        sivWatchVideoSwitcher.setOnCheckedChangeListener(this::clickWatchVideoSwitcher);
         onSDCardSync(status);
+        sivWatchVideoSwitcher.setOnCheckedChangeListener(this::clickWatchVideoSwitcher);
     }
 
     private void clickWatchVideoSwitcher(CompoundButton button, boolean checked) {
@@ -268,5 +270,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             sivWatchVideoSwitcher.setChecked(false, false);
 //            sivWatchVideoSwitcher.setCheckEnable(false);
         }
+    }
+
+    @Override
+    public void onRecordWatcherSync(DpMsgDefine.DPAutoRecordWatcher recordWatcher) {
+        sivWatchVideoSwitcher.setChecked(recordWatcher.recordEnable);
     }
 }

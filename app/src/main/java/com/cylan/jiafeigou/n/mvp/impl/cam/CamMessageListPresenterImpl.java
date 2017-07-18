@@ -143,7 +143,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchMessageList(long timeStart, boolean asc) {
+    public void fetchMessageList(long timeStart, boolean asc, boolean refresh) {
         //1.timeStart==0->服务器，本地
         //服务器：1.日历。2.偏移到最靠近有数据的一天。开始查。以后，点击开始查。
         //本地，查出日历。
@@ -199,7 +199,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null && ret != null)
                 .map(result -> {
-                    if (result.second) {
+//                    if (refresh) {
+//                        mView.onListInsert(result.first, 0);
+//                    } else
+                        if (result.second) {
                         mView.onListAppend(result.first);
                     } else mView.onListInsert(result.first, 0);
                     return result;
@@ -332,7 +335,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         AppLogger.d("Max dateList timeHit before:" + timeHit);
                         timeHit = TimeUtils.getSpecificDayEndTime(timeHit);
                         AppLogger.d("Max dateList timeHit:" + timeHit);
-                        fetchMessageList(timeHit, false);
+                        fetchMessageList(timeHit, false, false);
                     }
                     if (theItem != null) {
                         int index = dateItemList.indexOf(theItem);

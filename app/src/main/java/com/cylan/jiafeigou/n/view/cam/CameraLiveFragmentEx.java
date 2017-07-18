@@ -181,7 +181,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 DpMsgDefine.DPSdStatus dpSdStatus = device.$(204, new DpMsgDefine.DPSdStatus());
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
                 boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-                //无卡不需要显示
+
+
+                //先判断是否关闭了自动录像,关闭了提示 :若关闭，“侦测到异常时”将不启用录像
+
+                //若自动录像未关闭 则提示:关闭“移动侦测”，将停止“侦测报警录像”
+
+
+                //无卡不需要显示 //oldOption 不等于2 说明没有关闭自动录像则提示:关闭“移动侦测”，将停止“侦测报警录像”
                 if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard && dpSdStatus.err == 0) {
                     AlertDialogManager.getInstance().showDialog(getActivity(),
                             getString(R.string.Tap1_Camera_MotionDetection_OffTips),
@@ -196,7 +203,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 } else {
                     safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
                     if (safeIsOpen) {
-                        AlertDialogManager.getInstance().showDialog(getActivity(), "safeIsOpen", getString(R.string.SECURE_ALARM_CLOSE),
+                        AlertDialogManager.getInstance().showDialog(getActivity(), "safeIsOpen", getString(R.string.Detection_Pop),
                                 getString(R.string.OK), (dialog, which) -> {
                                     DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(false);
                                     basePresenter.updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);

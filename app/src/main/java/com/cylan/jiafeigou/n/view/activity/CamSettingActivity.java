@@ -592,14 +592,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             svSettingDeviceLedIndicator.setVisibility(View.GONE);
         }
-        ////////////////////////////alarm////////////////////////////////////////
-        svSettingSafeProtection.setEnabled(!dpStandby.standby);
-        svSettingSafeProtection.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
-        svSettingSafeProtection.setTvSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
-        ////////////////////////////autoRecord////////////////////////////////////////
-        svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
-        svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
-        svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+
+
         ////////////////////////////net////////////////////////////////////////
 
         boolean isMobileNet = net.net > 1;
@@ -652,12 +646,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceDelayCapture.setVisibility(View.GONE);
         }
 
-        ////////////////////////显示红点//////////////////////////////////////////////
-        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
-        svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
-        node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
-        svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
-        node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(DelayRecordActivity.class.getSimpleName());
+
+        TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(DelayRecordActivity.class.getSimpleName());
         svSettingDeviceDelayCapture.showRedHint(node != null && node.getNodeCount() > 0);
 
         sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid) ? View.VISIBLE : View.GONE);
@@ -758,14 +748,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceSDCard.setVisibility(View.GONE);
         }
 
-        //录像设置
-//        if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
-//            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
-////             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-////            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
-//        } else {
-//            svSettingDeviceAutoRecord.setVisibility(View.GONE);
-//        }
 
         //PIR 设置
         if (productProperty.hasProperty(device.pid, "INFRAREDVISION")) {
@@ -796,6 +778,49 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             svSettingDeviceLogo.setVisibility(View.GONE);
         }
+
+
+        //////////////////////////////////////////////////////安全防护////////////////////////////////////////////////////
+        node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
+        svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
+        svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
+        svSettingSafeProtection.setEnabled(!dpStandby.standby);
+        svSettingSafeProtection.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
+        svSettingSafeProtection.setTvSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
+
+        /////////////////////////////////////////////////////录像设置//////////////////////////////////////////////////////
+        if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
+            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+//             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
+            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+            ////////////////////////显示红点//////////////////////////////////////////////
+            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
+            ////////////////////////////autoRecord////////////////////////////////////////
+            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
+            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
+            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
+        } else {
+            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+        }
+
+
+        //清空呼叫记录设置 ,只有门铃才有清空呼叫记录
+        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.GONE);
+
+//        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
+//        svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
+//
+//        svSettingDevicePIR.setVisibility(productProperty.hasProperty(device.pid, "INFRAREDVISION") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceSDCard.setVisibility(productProperty.hasProperty(device.pid, "SD") ? View.VISIBLE : View.GONE);
+//        sbtnSetting110v.setVisibility(productProperty.hasProperty(device.pid, "NTSC") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceRotate.setVisibility(productProperty.hasProperty(device.pid, "HANGUP") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceStandbyMode.setVisibility(productProperty.hasProperty(device.pid, "STANDBY") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceLedIndicator.setVisibility(productProperty.hasProperty(device.pid, "LED") ? View.VISIBLE : View.GONE);
+////        svSettingDeviceMobileNetwork.setVisibility(productProperty.hasProperty(device.pid, "") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceSoftAp.setVisibility(productProperty.hasProperty(device.pid, "AP") ? View.VISIBLE : View.GONE);
+//        svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
+//        sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
     }
 
     @Override

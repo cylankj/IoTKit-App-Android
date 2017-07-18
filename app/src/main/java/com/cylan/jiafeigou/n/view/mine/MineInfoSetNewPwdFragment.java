@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setChineseExclude(etMineSetNewpwd,  getResources().getInteger(R.integer.max_password_length));
+        ViewUtils.setChineseExclude(etMineSetNewpwd, getResources().getInteger(R.integer.max_password_length));
     }
 
     @Override
@@ -148,6 +149,8 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     @Override
     public void registerResult(int code) {
         AppLogger.d("open_bind:" + code);
+        //just for test
+//        code = JError.ErrorOK;
         if (code == JError.ErrorOK) {
             IMEUtils.hide(getActivity());
             if (TextUtils.isEmpty(token)) {
@@ -173,7 +176,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "MineReSetMailTip")
+                .add(android.R.id.content, fragment, "bindPhoneStack")
 //                .addToBackStack("personalInformationFragment")
                 .commit();
     }
@@ -188,12 +191,13 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     }
 
     public void jump2MineInfoFragment() {
-        if (getActivity() != null) {
-            int count = getActivity().getSupportFragmentManager().getBackStackEntryCount();
-            for (int i = 0; i < count; i++) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        }
+//        if (getActivity() != null) {
+//            int count = getActivity().getSupportFragmentManager().getBackStackEntryCount();
+//            for (int i = 0; i < count; i++) {
+//                getActivity().getSupportFragmentManager().popBackStack();
+//            }
+//        }
+        getActivity().getSupportFragmentManager().popBackStack("bindPhoneStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 //        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
 //        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
 //        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");
