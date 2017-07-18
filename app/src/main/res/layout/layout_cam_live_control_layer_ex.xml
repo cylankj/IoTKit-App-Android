@@ -153,9 +153,10 @@
         android:layout_height="@dimen/y52"
         android:layout_below="@+id/v_guide">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/color_F7F8FA"
             android:orientation="vertical">
 
             <TextView
@@ -167,7 +168,13 @@
                 android:text="@string/MSG_RECORD"
                 android:textColor="@color/common_btn_color_state"
                 android:textSize="@dimen/sp15" />
-        </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@color/color_f2f2f2" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -194,7 +201,6 @@
                     android:id="@+id/sw_cam_live_wheel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toStartOf="@+id/tv_cam_live_land_bottom"
                     android:clickable="true"
                     app:sw_lineColor="@color/color_FFDEDEDE"
                     app:sw_markerColor="@color/color_36BDFF"
@@ -363,9 +369,8 @@
     </com.cylan.jiafeigou.widget.Switcher>
 
 
-
     <!--<include-->
-        <!--layout="@layout/view_camera_wheel_case"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
+    <!--layout="@layout/view_camera_wheel_case"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 </com.cylan.jiafeigou.n.view.cam.CamLiveControllerEx>

@@ -60,7 +60,7 @@ public class LiveShowCase {
                 SimplePopupWindow left = new SimplePopupWindow(activity, R.drawable.collect_tips_left,
                         R.string.Tap1_Camera_SetProtectionTips);
                 left.showOnAnchor(anchor, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
-                        RelativePopupWindow.HorizontalPosition.ALIGN_LEFT, 20, -anchor.getHeight());
+                        RelativePopupWindow.HorizontalPosition.ALIGN_LEFT, 20, -anchor.getHeight() + 10);
             });
         }
     }

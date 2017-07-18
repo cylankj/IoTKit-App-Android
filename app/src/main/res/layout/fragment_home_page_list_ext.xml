@@ -51,8 +51,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
-                        android:layout_marginLeft="@dimen/x5"
-                        android:layout_marginRight="@dimen/x5"
                         android:padding="@dimen/x10"
                         android:src="@drawable/icon_add_to" />
                 </FrameLayout>

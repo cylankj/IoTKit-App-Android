@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -764,6 +765,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (isLand) {
             //隐藏所有的 showcase
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());
+            if (layoutE.getCurrentView() instanceof FrameLayout) {
+                layoutE.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            }
+        } else {
+            if (layoutE.getCurrentView() instanceof FrameLayout) {
+                layoutE.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
+            }
         }
         //历史录像显示
         boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid);
@@ -1263,7 +1271,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         setLoadingState(PLAY_STATE_STOP, null);
                         return;
                     }
-                    if (layoutE.getCurrentView() instanceof ViewGroup) {
+                    if (layoutE.getCurrentView() instanceof FrameLayout) {
                         layoutE.showNext();
                         if (livePlayState == PLAY_STATE_PREPARE) {
                             livePlayState = PLAY_STATE_STOP;

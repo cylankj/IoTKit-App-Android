@@ -182,7 +182,7 @@ android {
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.doby.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 100043669",
                                     "VID"                : "\\ 0002",
-                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
                                     "qqAppId"            : "\\ 1106279832",
                                     "qqAppKey"           : "vqSXNT11dsbu24io",
                                     "mtaAppKey"          : "ATQ1JV694AKT",

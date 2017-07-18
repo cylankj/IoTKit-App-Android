@@ -102,7 +102,7 @@ public class SuperWheelExt extends View {
         LINE_HEIGHT_1 = dp2px(LINE_HEIGHT_1);
         dateTextSize = dp2px(dateTextSize);
         //1s多少像素
-        pixelsInSecond = 0.06f;
+        pixelsInSecond = 0.04f;
         lineIntervalPx = pixelsInSecond * 10 * 60;
         TypedArray at = context.obtainStyledAttributes(attrs, R.styleable.SWheelViewStyle);
         int markerColor = at.getColor(R.styleable.SWheelViewStyle_sw_markerColor, Color.BLUE);
