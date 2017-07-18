@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 public class LiveShowCase {
     private static final String KEY_SHOW_HISTORY_CASE = "key_show_history_case";
     private static final String KEY_SHOW_SAFE_CASE = "key_show_safe_case";
+    private static SimplePopupWindow right;
 
     public static void show(Activity activity, View anchor0, View anchor1) {
         if (!anchor0.isShown()) return;
@@ -43,7 +44,7 @@ public class LiveShowCase {
         PreferencesUtils.putBoolean(KEY_SHOW_HISTORY_CASE, false);
         if (result) {
             anchor.post(() -> {
-                SimplePopupWindow right = new SimplePopupWindow(activity, R.drawable.collect_tips,
+                right = new SimplePopupWindow(activity, R.drawable.collect_tips,
                         R.string.Tap1_Camera_BackLiveTips);
                 right.showOnAnchor(anchor, RelativePopupWindow.VerticalPosition.ALIGN_TOP,
                         RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT);
@@ -52,7 +53,7 @@ public class LiveShowCase {
     }
 
     public static void showSafeCase(Activity activity, View anchor) {
-//        if (true) return;//不再显示 安全防护 tips
+        if (true) return;//不再显示 安全防护 tips
         if (!anchor.isShown()) return;
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_SAFE_CASE, true);
         PreferencesUtils.putBoolean(KEY_SHOW_SAFE_CASE, false);
@@ -89,5 +90,10 @@ public class LiveShowCase {
                 ((FragmentActivity) activity).getSupportFragmentManager().beginTransaction().remove(fragmentByTag).commit();
             }
         }
+    }
+
+    public static void hideHistoryCase(Activity context) {
+        if (right != null) right.dismiss();
+
     }
 }

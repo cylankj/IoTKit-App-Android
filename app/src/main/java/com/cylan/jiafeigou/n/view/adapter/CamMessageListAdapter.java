@@ -319,7 +319,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private String getFinalTimeContentSD(CamMessageBean bean) {
         long id = bean.id;
-        String tContent = TimeUtils.getHH_MM(bean.version);
+        String tContent = TimeUtils.getHH_MM(bean.version) + " ";
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG || id == DpMsgMap.ID_401_BELL_CALL_STATE) {
             return tContent + getContext().getString(R.string.MSG_WARNING);
         }

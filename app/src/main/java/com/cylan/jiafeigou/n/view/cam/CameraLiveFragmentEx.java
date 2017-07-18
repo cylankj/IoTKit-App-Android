@@ -266,7 +266,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (basePresenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
-            camLiveControlLayer.showUseCase();
+//            camLiveControlLayer.showUseCase();
             Device device = basePresenter.getDevice();
             DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
             if (standby.standby) return;
@@ -662,6 +662,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             //这里是个异步的,显示的条件是当前 fragment 可见
             AppLogger.d(" //这里是个异步的,显示的条件是当前 fragment 可见");
             LiveShowCase.showHistoryWheelCase(getActivity(), camLiveControlLayer.findViewById(R.id.layout_e));
+            LiveShowCase.showHistoryCase((Activity) getContext(), camLiveControlLayer.findViewById(R.id.imgV_cam_zoom_to_full_screen));
         }
     }
 

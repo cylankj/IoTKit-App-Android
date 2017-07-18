@@ -285,8 +285,10 @@ public class JConstant {
 
     public static int getOnlineIcon(int pid) {
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_online;
-        if (JFGRules.isBell(pid))
+        if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
             return R.drawable.icon_home_doorbell_online;
+        if (JFGRules.isCatEeyBell(pid))
+            return R.drawable.home_icon_intelligent_eye;
         if (JFGRules.isPan720(pid))
             return R.drawable.home_icon_720camera_online;
         if (JFGRules.isCamera(pid))
@@ -297,8 +299,10 @@ public class JConstant {
 
     public static int getOfflineIcon(int pid) {
         if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_offline;
-        if (JFGRules.isBell(pid))
+        if (JFGRules.isBell(pid)&&!JFGRules.isCatEeyBell(pid))
             return R.drawable.icon_home_doorbell_offline;
+        if (JFGRules.isCatEeyBell(pid))
+            return R.drawable.home_icon_intelligent_eye_disable;
         if (JFGRules.isPan720(pid))
             return R.drawable.home_icon_720camera_offline;
         if (JFGRules.isCamera(pid))

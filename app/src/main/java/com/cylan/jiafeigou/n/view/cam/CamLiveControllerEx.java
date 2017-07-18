@@ -765,6 +765,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (isLand) {
             //隐藏所有的 showcase
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());
+            LiveShowCase.hideHistoryCase((Activity)getContext());
             if (layoutE.getCurrentView() instanceof FrameLayout) {
                 layoutE.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -1106,7 +1107,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
-            showUseCase();
+//            showUseCase();
         }, 100);
     }
 
