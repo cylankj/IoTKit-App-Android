@@ -105,12 +105,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void submitResult(RxEvent.ResultRegister register) {
         if (!isAdded() && getView() != null) {
-            getView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    switchResult(register);
-                }
-            }, 100);
+            getView().postDelayed(() -> switchResult(register), 100);
         } else {
             switchResult(register);
         }
@@ -119,7 +114,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
     private void switchResult(RxEvent.ResultRegister register) {
         switch (register.code) {
             case JError.ErrorAccountAlreadyExist:
-                ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
+//                ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
+                autoLogin();//#115668 手机注册 在设置密码页面输入密码点击确定后，轻提示注册成功，应进入到首页
                 break;
             case JError.ErrorSMSCodeNotMatch:
                 ToastUtil.showToast(getString(R.string.CODE_ERR));

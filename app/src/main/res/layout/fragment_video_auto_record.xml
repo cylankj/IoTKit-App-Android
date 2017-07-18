@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -73,6 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
                 android:clickable="false"
+                android:focusable="false"
                 android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
@@ -81,6 +83,7 @@
                 android:layout_height="@dimen/y72"
                 android:layout_gravity="end"
                 android:clickable="false"
+                android:focusable="false"
                 android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
@@ -88,6 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y72"
                 android:clickable="false"
+                android:focusable="false"
                 android:theme="@style/RadioButtonStyle" />
         </RadioGroup>
     </RelativeLayout>
@@ -95,7 +99,9 @@
     <RelativeLayout
         android:id="@+id/rl_watch_video_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10">
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/siv_watch_video_switcher"

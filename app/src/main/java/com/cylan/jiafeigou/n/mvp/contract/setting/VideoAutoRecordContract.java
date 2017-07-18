@@ -14,6 +14,8 @@ public interface VideoAutoRecordContract {
     interface View extends BaseView<Presenter> {
 
         void onSDCardSync(DpMsgDefine.DPSdStatus status);
+
+        void onRecordWatcherSync(DpMsgDefine.DPAutoRecordWatcher recordWatcher);
     }
 
     interface Presenter extends BasePresenter {

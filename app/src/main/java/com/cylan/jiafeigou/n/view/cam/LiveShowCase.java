@@ -52,6 +52,7 @@ public class LiveShowCase {
     }
 
     public static void showSafeCase(Activity activity, View anchor) {
+//        if (true) return;//不再显示 安全防护 tips
         if (!anchor.isShown()) return;
         boolean result = PreferencesUtils.getBoolean(KEY_SHOW_SAFE_CASE, true);
         PreferencesUtils.putBoolean(KEY_SHOW_SAFE_CASE, false);

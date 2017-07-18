@@ -100,6 +100,11 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
             case R.id.sharedDevice:
                 DataSourceManager manager = DataSourceManager.getInstance();
 
+//                if (true) {//just for test
+//                    showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
+//                    return;
+//                }
+
                 if (manager.getLoginType() >= 3 && TextUtils.isEmpty(sourceManager.getAccount().getEmail()) &&
                         TextUtils.isEmpty(sourceManager.getAccount().getPhone())) {
                     showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
@@ -121,7 +126,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
                     (DialogInterface dialog, int which) -> {
                         Bundle bundle = new Bundle();
                         MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
-                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content, "bindPhoneStack");
                     }, getString(R.string.CANCEL), null, false);
         }
     }

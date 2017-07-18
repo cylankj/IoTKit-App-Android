@@ -269,6 +269,11 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     @Override
     public void onResult(int event, int errId) {
         LoadingDialog.dismissLoading(getFragmentManager());
+
+//        //just for test
+//        event = JConstant.AUTHORIZE_PHONE_SMS;
+//        errId = JError.ErrorOK;
+
         switch (event) {
             case JConstant.GET_SMS_BACK:
                 if (errId == JError.ErrorOK) {

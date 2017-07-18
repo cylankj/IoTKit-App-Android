@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -234,7 +235,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (camMessageListAdapter.getCount() > 0)
                 time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version;
         }
-        if (basePresenter != null) basePresenter.fetchMessageList(time, asc);
+        if (basePresenter != null) basePresenter.fetchMessageList(time, asc, false);
     }
 
     /**
@@ -259,7 +260,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         fLayoutCamMessageListTimeline.setListener(time -> {
             AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
             if (basePresenter != null)
-                basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false);
+                basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false, false);
             camMessageListAdapter.clear();
             LoadingDialog.showLoading(getFragmentManager());
             boolean isToday = TimeUtils.isToday(time);
@@ -311,6 +312,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
         });
     }
+
+
 
     @Override
     public ArrayList<CamMessageBean> getList() {
@@ -503,9 +506,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.tv_jump_next: {
                 try {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    boolean isOnline = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
-                    if (!isOnline) {
+                    if (!online()) {
                         ToastUtil.showToast(getString(R.string.NOT_ONLINE));
                         return;
                     }
@@ -563,5 +564,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @OnClick(R.id.tv_msg_delete)
     public void onClick() {
+    }
+
+    private boolean online() {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        return net != null && net.net > 0;
     }
 }

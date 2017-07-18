@@ -439,6 +439,14 @@ public class JFGRules {
         return true;
     }
 
+    public static long getCallTimeOut(Device device) {
+        long timeOut = 30;//default is 30
+        if (isCatEeyBell(device.pid)) {
+            timeOut = 20;//猫眼呼叫时20 秒超时
+        }
+        return timeOut;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;
