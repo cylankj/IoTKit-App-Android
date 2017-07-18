@@ -38,15 +38,21 @@
         android:textSize="@dimen/sp16"
         hunt:layout_constraintTop_toBottomOf="@+id/tv_main_content" />
 
-    <ImageView
-        android:id="@+id/imv_gif_container"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/x20"
         android:layout_marginStart="@dimen/x20"
-        android:layout_marginTop="@dimen/y20"
+        android:layout_marginTop="@dimen/y57"
         hunt:layout_constraintBottom_toTopOf="@+id/layout_next_step"
-        hunt:layout_constraintTop_toBottomOf="@+id/tv_sub_title" />
+        hunt:layout_constraintTop_toBottomOf="@+id/tv_sub_title"
+        hunt:layout_constraintVertical_bias="0">
+
+        <ImageView
+            android:id="@+id/imv_gif_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/layout_next_step"
