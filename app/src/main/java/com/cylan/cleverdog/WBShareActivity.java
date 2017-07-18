@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou;
+package com.cylan.cleverdog;
 
 //import com.umeng.socialize.media.WBShareCallBackActivity;
 

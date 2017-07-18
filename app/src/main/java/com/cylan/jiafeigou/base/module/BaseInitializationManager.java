@@ -166,6 +166,8 @@ public final class BaseInitializationManager {
                 PackageUtils.getMetaString(ContextUtils.getContext(), "weChatAppSecret"));
         PlatformConfig.setQQZone(PackageUtils.getMetaString(ContextUtils.getContext(), "qqAppId"),
                 PackageUtils.getMetaString(ContextUtils.getContext(), "qqAppKey"));
+        AppLogger.d("sina:" + PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"));
+        AppLogger.d("sina:" + PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppSecret"));
         PlatformConfig.setSinaWeibo(PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppKey"),
                 PackageUtils.getMetaString(ContextUtils.getContext(), "sinaAppSecret"),
                 "https://api.weibo.com/oauth2/default.html");

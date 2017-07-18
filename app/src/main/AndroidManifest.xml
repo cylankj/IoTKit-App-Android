@@ -655,7 +655,7 @@
             android:theme="@style/share_style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".WBShareActivity"
+            android:name="${ApplicationId}.WBShareActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
