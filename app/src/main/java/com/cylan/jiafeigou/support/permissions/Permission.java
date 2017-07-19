@@ -14,7 +14,7 @@ public class Permission {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Permission that = (Permission) o;
+        Permission that = (Permission) o;http://yf.cylan.com.cn:82/Garfield/zhongxing/Android/2017071917-5416/
 
         if (granted != that.granted) return false;
         return name.equals(that.name);

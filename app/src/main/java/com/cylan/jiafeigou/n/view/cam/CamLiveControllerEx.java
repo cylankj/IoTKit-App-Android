@@ -66,6 +66,7 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
+import com.cylan.utils.JfgUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 

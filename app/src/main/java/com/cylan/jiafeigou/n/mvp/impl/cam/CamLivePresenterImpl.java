@@ -63,6 +63,7 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -463,12 +464,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 int ret;
                 boolean switchInterface = false;
                 if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PLAYING) {
-                    ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(true, 0);
+//                    ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(true, 0);
+                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);  // 先停止播放
                     switchInterface = true;
+                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+
                 } else {
                     ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 }
-                AppLogger.d("play video ret 0:" + ret + "," + switchInterface);
+                AppLogger.d("play video ret :" + ret + "," + switchInterface);
 
                 // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
 //                if (JFGRules.isBell(getDevice().pid)) {
@@ -723,14 +727,23 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //此处表明拖动历史录像时间轴.
                 int ret;
                 boolean switchInterface = false;
-                if (getLiveStream().type == TYPE_HISTORY
+                if(getLiveStream().type ==TYPE_LIVE &&  (getLiveStream().playState == PLAY_STATE_PREPARE
+                    || getLiveStream().playState == PLAY_STATE_PLAYING)){
+                        BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid,time);
+                    getHotSeatStateMaintainer().saveRestore();
+                    switchInterface = true;
+                    AppLogger.i("停止播放 live 并开始播放Histtory: "+ JfgUtils.date2String(JfgUtils.DetailedDateFormat,time*1000));
+                }
+                /*else if (getLiveStream().type == TYPE_HISTORY
                         && (getLiveStream().playState == PLAY_STATE_PREPARE
                         || getLiveStream().playState == PLAY_STATE_PLAYING)) {//前一刻是,历史录像而且是playing
                     AppLogger.d("不需要 停止播放历史视频");
                     getHotSeatStateMaintainer().saveRestore();
                     ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(false, time);
                     switchInterface = true;
-                } else {
+                }*/
+                else {
                     AppLogger.i("play history state? " + getLiveStream().playState);
                     getHotSeatStateMaintainer().saveRestore();
                     ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
@@ -739,7 +752,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().canNewCall(true);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i(String.format("play history video:%s,%s ", uuid, time) + " " + ret + ",switchInterface:" + switchInterface);
+                AppLogger.i(String.format("play history video:%s,%s ", uuid, JfgUtils.date2String(JfgUtils.DetailedDateFormat,time*1000)) + " " + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
