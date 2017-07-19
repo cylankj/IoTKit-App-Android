@@ -822,7 +822,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceClearRecord.setVisibility(productProperty.hasProperty(device.pid, "EMPTIED") ? View.VISIBLE : View.GONE);
 
         if (productProperty.hasProperty(device.pid, "VIDEO")) {
-            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+//            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
 //             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
             svSettingDeviceAutoRecord.setVisibility(View.GONE);
 //            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
@@ -833,9 +833,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 //            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
 //            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
 //            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
-        } else {
-            svSettingDeviceAutoRecord.setVisibility(View.GONE);
         }
+//        else {
+//            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+//        }
 
 //        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
 //        svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);
