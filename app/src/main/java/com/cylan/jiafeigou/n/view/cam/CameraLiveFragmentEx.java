@@ -197,6 +197,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                                 DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                                 wFlag.value = false;
                                 basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+
+//                                //关闭移动侦测的同时也关闭自动录像
+//                                DpMsgDefine.DPPrimary<Integer> record = new DpMsgDefine.DPPrimary<>(2);
+//                                basePresenter.updateInfoReq(record, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+
                                 camLiveControlLayer.setFlipped(true);
                                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                             }, getString(R.string.CANCEL), null);
@@ -429,6 +434,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }
             }
         });
+        
     }
 
     @Override
@@ -661,8 +667,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getUserVisibleHint() && isResumed() && getActivity() != null) {
             //这里是个异步的,显示的条件是当前 fragment 可见
             AppLogger.d(" //这里是个异步的,显示的条件是当前 fragment 可见");
-            LiveShowCase.showHistoryWheelCase(getActivity(), camLiveControlLayer.findViewById(R.id.layout_e));
-            LiveShowCase.showHistoryCase((Activity) getContext(), camLiveControlLayer.findViewById(R.id.imgV_cam_zoom_to_full_screen));
+            if (!MiscUtils.isLand()) {
+                LiveShowCase.showHistoryWheelCase(getActivity(), camLiveControlLayer.findViewById(R.id.layout_e));
+                LiveShowCase.showHistoryCase((Activity) getContext(), camLiveControlLayer.findViewById(R.id.imgV_cam_zoom_to_full_screen));
+            }
+            basePresenter.startPlay();
         }
     }
 

@@ -288,7 +288,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         entity.setUuid(uuid);
         if (device.available()) {
             if (JFGRules.isBell(device.pid)) {
-                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_30_DAYS);
+                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
             } else if (JFGRules.isCamera(device.pid)) {
                 entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.CAMERA_15_DAYS);
             }

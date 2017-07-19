@@ -89,4 +89,19 @@ public class PropertiesLoader implements IProperty {
         return list != null && list.contains(pidOrOs);
     }
 
+    public int getOSType(String cid) {
+        if (propertyFile == null) return 0;
+        //效率比较低,有待优化
+        final int count = ListUtils.getSize(propertyFile.getpList());
+        for (int i = 0; i < count; i++) {
+            Map<String, String> map = propertyFile.getpList().get(i);
+            final String cidprefix = map.get("CIDPREFIX");
+            if (cid.startsWith(cidprefix)) {
+                return Integer.parseInt(map.get("OS"));
+            }
+        }
+        return 0;
+
+    }
+
 }

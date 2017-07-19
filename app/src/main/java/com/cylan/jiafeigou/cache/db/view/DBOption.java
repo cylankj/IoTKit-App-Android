@@ -112,6 +112,6 @@ public interface DBOption {
 
         public static final CamMultiDateOption CAMERA_15_DAYS = new CamMultiDateOption(15);
 
-        public static final CamMultiDateOption BELL_30_DAYS = new CamMultiDateOption(30);
+        public static final CamMultiDateOption BELL_7_DAYS = new CamMultiDateOption(7);
     }
 }

@@ -44,15 +44,15 @@
                         android:text="@string/Tap1_TitleName"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/sp20" />
-
+                    <!--android:padding="@dimen/x10"-->
                     <ImageView
                         android:id="@+id/imgV_add_devices"
                         style="@style/ripple_background_borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
-                        android:padding="@dimen/x10"
-                        android:src="@drawable/icon_add_to" />
+                        android:padding="@dimen/y10"
+                        android:src="@drawable/btn_common_add" />
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>
 

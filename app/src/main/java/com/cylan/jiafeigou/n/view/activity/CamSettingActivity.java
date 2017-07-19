@@ -428,6 +428,19 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
             startActivity(intent);
+        } else if (JFGRules.isCatEeyBell(device.pid)) {//猫眼门铃特殊处理
+            Intent intent = new Intent(this, BindBellActivity.class);
+            intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
+            intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_bell);
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
+            intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_Door_Viewer));
+            intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
+            intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+            intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+            intent.putExtra(JUST_SEND_INFO, uuid);
+
+            startActivity(intent);
+
         } else if (JFGRules.isBell(device.pid)) {
             Intent intent = new Intent(this, BindBellActivity.class);
             intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
@@ -504,7 +517,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private void initFirmwareHint(Device device) {
         try {
-            if (JFGRules.isPanoramicCam(device.pid)) return;
+            if (JFGRules.isPanoramaCamera(device.pid)) return;
             if (JFGRules.isShareDevice(device)) return;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
             svSettingDeviceDetail.showRedHint(!TextUtils.isEmpty(content));
@@ -806,7 +819,23 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
 
         //清空呼叫记录设置 ,只有门铃才有清空呼叫记录
-        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.GONE);
+        svSettingDeviceClearRecord.setVisibility(productProperty.hasProperty(device.pid, "EMPTIED") ? View.VISIBLE : View.GONE);
+
+        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+//             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
+            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+//            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+//            ////////////////////////显示红点//////////////////////////////////////////////
+//            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
+//            ////////////////////////////autoRecord////////////////////////////////////////
+//            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
+//            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
+//            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+//            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
+        } else {
+            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+        }
 
 //        svSettingDeviceClearRecord.setVisibility(productProperty.isSerial("BELL", device.pid) ? View.VISIBLE : View.INVISIBLE);
 //        svSettingDeviceWifi.setVisibility(productProperty.hasProperty(device.pid, "WIFI") ? View.VISIBLE : View.GONE);

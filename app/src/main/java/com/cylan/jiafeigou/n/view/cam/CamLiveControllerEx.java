@@ -305,7 +305,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         //要根据设备属性表决定是否显示加载历史视频的按钮
         View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);
+        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);//115762 ,无网络不显示历史录像按钮
 
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
@@ -337,6 +337,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 postDelayed(portHideRunnable, 3000);
             }
         });
+        layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -401,8 +402,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 post(portHideRunnable);
                 return;
             }
-            //只有播放的时候才能操作//loading的时候 不能点击
-            if (livePlayState == PLAY_STATE_PLAYING || livePlayState == PLAY_STATE_STOP) {
+            //只有播放的时候才能操作//loading的时候 不能点击|| livePlayState == PLAY_STATE_STOP
+            if (livePlayState == PLAY_STATE_PLAYING) {
 //                layoutA.setTranslationY(0);
 //                layoutD.setTranslationY(0);
 //                layoutE.setTranslationY(0);
@@ -511,7 +512,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable portShowRunnable = new Runnable() {
         @Override
         public void run() {
-            layoutD.setVisibility(VISIBLE);
+            layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             if (layoutD.getAlpha() == 0.0f)
                 YoYo.with(Techniques.FadeIn)
                         .duration(200)
@@ -560,7 +561,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);
-            if (!layoutD.isShown()) layoutD.setVisibility(VISIBLE);//
+            if (!layoutD.isShown())
+                layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);//
             YoYo.with(Techniques.SlideInUp)
                     .duration(250)
                     .playOn(layoutD);
@@ -606,6 +608,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //        findViewById(R.id.imgV_cam_live_land_play).setEnabled(isPlayHistory);//直播也可以暂停,所以不能设置为禁用状态
         //|直播| 按钮
         View tvLive = layoutE.findViewById(R.id.tv_live);
+        post(portShowRunnable);
+        post(() -> removeCallbacks(portHideRunnable));
         if (tvLive != null) tvLive.setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
@@ -650,6 +654,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         liveViewWithThumbnail.onLiveStop();
+        layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
     }
 
     /**
@@ -765,7 +770,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (isLand) {
             //隐藏所有的 showcase
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());
-            LiveShowCase.hideHistoryCase((Activity)getContext());
+            LiveShowCase.hideHistoryCase((Activity) getContext());
             if (layoutE.getCurrentView() instanceof FrameLayout) {
                 layoutE.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -783,6 +788,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
 
         if (presenter.getPlayState() != PLAY_STATE_PLAYING) {//显示缩略图
+
             Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
             if (bitmap == null || bitmap.isRecycled()) {
                 File file = new File(presenter.getThumbnailKey());
@@ -859,11 +865,18 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(landShowRunnable);
             postDelayed(landHideRunnable, 3000);//3s后隐藏
         } else {
-            layoutD.setVisibility(VISIBLE);
+            //只有播放是才显示 LayoutD
+            layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             removeCallbacks(portHideRunnable);
             removeCallbacks(landHideRunnable);
             removeCallbacks(landShowRunnable);
             post(portShowRunnable);
+            if (livePlayState != PLAY_STATE_PLAYING) {//暂停或 idle 不隐藏
+                post(() -> {
+                    removeCallbacks(portHideRunnable);
+                    removeCallbacks(landHideRunnable);
+                });
+            }
 //            postDelayed(portHideRunnable, 3000);
         }
     }
@@ -875,7 +888,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.showFlowView(true, flow);
         //分享账号不显示啊.
         if (JFGRules.isShareDevice(uuid)) return;
+//        if (!getHistoryWheelHandler(presenter).isBusy()) {//拖动时间轴时屏蔽 rtcp 时间更新,防止显示异常
         setLiveRectTime(livePlayType, rtcp.timestamp);
+//        }
         //点击事件
         if (liveTimeRectListener == null) {
             liveTimeRectListener = v -> {
@@ -1102,7 +1117,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
-            layoutD.setVisibility(!judge ? INVISIBLE : VISIBLE);
+            layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutE.findViewById(R.id.btn_load_history).setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : INVISIBLE);
             layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
                     ? VISIBLE : INVISIBLE);

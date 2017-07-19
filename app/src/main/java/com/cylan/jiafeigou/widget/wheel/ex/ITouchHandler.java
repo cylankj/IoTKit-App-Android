@@ -11,8 +11,12 @@ import android.view.ViewConfiguration;
 import android.view.animation.OvershootInterpolator;
 import android.widget.OverScroller;
 
+import com.cylan.jiafeigou.utils.ContextUtils;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import rx.Observable;
 
 /**
  * Created by cylan-hunt on 16-6-18.
@@ -90,6 +94,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         if (mask == MotionEvent.ACTION_CANCEL || mask == MotionEvent.ACTION_UP) {
             // Release the drag.
             isActionUp = true;
+            
             isTouchDonw = false;
             mActivePointerId = INVALID_POINTER;
             if (scrollState != SCROLL_STATE_SETTLING) {

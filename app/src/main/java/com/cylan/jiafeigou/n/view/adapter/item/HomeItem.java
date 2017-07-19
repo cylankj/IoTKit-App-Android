@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -252,7 +251,10 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             String warnContent = getLastWarnContent(pair, mDevice.pid, uuid);
             holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
             //时间
-            holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
+            long time = entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0;
+            if (time != 0) {//服务器返回的数据是错的,过滤掉
+                holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, time));
+            }
             ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
         }
     }

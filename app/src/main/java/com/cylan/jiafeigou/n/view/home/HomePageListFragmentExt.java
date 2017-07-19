@@ -160,6 +160,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
         if (showTipAnimation) {
             // TODO: 2017/7/11 先放着
+            imgBtnAddDevices.setImageResource(R.drawable.icon_add_to);
+            if (set != null) {
+                set.cancel();
+            }
             set = new AnimatorSet();
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(imgBtnAddDevices, "scaleX", 1.0f, 1.2f, 1.0f);
             scaleX.setDuration(2000);
@@ -176,6 +180,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             set.playTogether(scaleX, scaleY, alpha);
             set.start();
         } else {
+            imgBtnAddDevices.setScaleY(1);
+            imgBtnAddDevices.setScaleX(1);
             imgBtnAddDevices.setImageResource(R.drawable.btn_common_add);
         }
 //        }

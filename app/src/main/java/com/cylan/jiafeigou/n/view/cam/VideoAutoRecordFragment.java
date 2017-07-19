@@ -113,13 +113,16 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             rb24Hours.setVisibility(View.GONE);
             view.findViewById(R.id.lLayout_mode_24_hours).setVisibility(View.GONE);
         }
+        DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean isRs = JFGRules.isRS(device.pid);
         oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
+
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        if (!alarm) oldOption = -1;
 
         rbMotion.setChecked(oldOption == 0);
         rb24Hours.setChecked(oldOption == 1);

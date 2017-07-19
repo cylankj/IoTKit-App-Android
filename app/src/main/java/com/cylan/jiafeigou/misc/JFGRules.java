@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -142,7 +143,7 @@ public class JFGRules {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "AP");
     }
 
-    public static boolean isPanoramicCam(int pid) {
+    public static boolean isPanoramaCamera(int pid) {
         final String p = BaseApplication.getAppComponent().getProductProperty().property(pid,
                 "DEVICE");
         return p != null && p.contains("DOG-5W");
@@ -186,7 +187,7 @@ public class JFGRules {
 
     public static boolean isRS(int pid) {
         final String value = BaseApplication.getAppComponent().getProductProperty().property(pid, "value");
-        return !TextUtils.isEmpty(value) && value.contains("RS_");
+        return !TextUtils.isEmpty(value) && value.contains("RS");//不是下划线,直接去掉
     }
 
     /**
@@ -208,8 +209,9 @@ public class JFGRules {
      * @return
      */
     public static boolean isNeedPanoramicView(int pid) {
-        return isPanoramicCam(pid);
+        return isRoundRadio(pid);
     }
+
 
     public static boolean isPan720(int pid) {
         return pid == 1089 || pid == 21;
@@ -319,7 +321,7 @@ public class JFGRules {
         return isCloudCam(pid) ||
                 isNoPowerBell(pid) ||
                 isCatEeyBell(pid) ||
-                isRsBell(pid);
+                isRsBell(pid) || isBell(pid);
     }
 
 
@@ -389,14 +391,14 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showTimeZone(int pid) {
-        return !JFGRules.isPanoramicCam(pid);
+        return !JFGRules.isPanoramaCamera(pid);
     }
 
     /**
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean isNeedNormalRadio(int pid) {
-        return isRS(pid) || !JFGRules.isNeedPanoramicView(pid);
+        return isRS(pid) || !JFGRules.isRoundRadio(pid);
     }
 
     public static boolean isRuiShiCam(int pid) {
@@ -423,8 +425,12 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showHistoryBtn(Device device) {
-        //1.sd卡 2.非分享用户
-        return !JFGRules.isShareDevice(device) && hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()));
+        //1.sd卡 2.非分享用户 3.设备在线 4.设备没有待机 5.手机不是无网络状态
+        return !JFGRules.isShareDevice(device) &&
+                hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus())) &&
+                device.$(201, new DpMsgDefine.DPNet()).net > 0 &&
+                !device.$(508, new DpMsgDefine.DPStandby()).standby &&
+                NetUtils.getNetType(ContextUtils.getContext()) != -1;
     }
 
     public static boolean hasBatteryNotify(int pid) {
@@ -445,6 +451,11 @@ public class JFGRules {
             timeOut = 20;//猫眼呼叫时20 秒超时
         }
         return timeOut;
+    }
+
+    public static int getOSType(String content) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        return productProperty.getOSType(content);
     }
 
     public static class PlayErr {
@@ -493,8 +504,14 @@ public class JFGRules {
     }
 
     public static float getDefaultPortHeightRatio(int pid) {
-        boolean normal = !isPanoramicCam(pid);
+        boolean normal = !isRoundRadio(pid);
         return normal ? 0.75f : 1.0f;
+    }
+
+    public static boolean isRoundRadio(int pid) {
+        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        String view = property.property(pid, "VIEW");
+        return TextUtils.equals(view, "圆形");
     }
 
 

@@ -159,8 +159,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 option.lastLowBatteryTime = System.currentTimeMillis();
                                 device.setOption(option);
                                 BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
-                                mView.onBatteryDrainOut();
+//                                mView.onBatteryDrainOut();
                             }
+                            mView.onBatteryDrainOut();
                         }
                     }, AppLogger::e);
         } else {
@@ -1292,7 +1293,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                         tmpSpeaker, tmpNextMic);
                                 //设置成功
                                 micOn = tmpNextMic;
-                                speakerOn = tmpSpeaker;
+//                                speakerOn = tmpSpeaker;
                             }
                             return Observable.just(result);
                         })
@@ -1300,7 +1301,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(ret -> viewWeakReference.get() != null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
-                                    viewWeakReference.get().switchHotSeat(speakerOn, !micOn/*presenterWeakReference.get().getPlayType() == TYPE_LIVE*/,
+                                    viewWeakReference.get().switchHotSeat(micOn || speakerOn, !micOn/*presenterWeakReference.get().getPlayType() == TYPE_LIVE*/,
                                             micOn,
                                             presenterWeakReference.get().getPlayType() == TYPE_LIVE,
                                             captureOn, true);

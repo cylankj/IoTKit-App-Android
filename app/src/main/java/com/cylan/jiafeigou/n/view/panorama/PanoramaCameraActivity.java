@@ -444,7 +444,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private void updateHint() {
         try {
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-            if (JFGRules.isPanoramicCam(device.pid)) return;
+            if (JFGRules.isPanoramaCamera(device.pid)) return;
             if (JFGRules.isShareDevice(device)) return;
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid);
             RxEvent.CheckVersionRsp description = new Gson().fromJson(content, RxEvent.CheckVersionRsp.class);

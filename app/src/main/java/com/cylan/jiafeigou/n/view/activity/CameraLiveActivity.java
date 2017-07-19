@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -384,7 +385,8 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
     public int getCount() {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         String shareAccount = device == null ? "" : device.shareAccount;
-        return !TextUtils.isEmpty(shareAccount) && device != null && JFGRules.isCamera(device.pid) ? 1 : 2;//共享门铃需要显示消息吗
+        return TextUtils.isEmpty(shareAccount) ? 2 : 1;
+//        return !TextUtils.isEmpty(shareAccount) && device != null && JFGRules.isCamera(device.pid) ? 1 : 2;//共享门铃需要显示消息吗
     }
 
 

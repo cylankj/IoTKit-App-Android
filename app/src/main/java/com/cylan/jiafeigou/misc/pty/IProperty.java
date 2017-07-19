@@ -30,4 +30,6 @@ public interface IProperty {
      * @return
      */
     boolean isSerial(final String serial, final int pidOrOs);
+
+    int getOSType(String cid);
 }

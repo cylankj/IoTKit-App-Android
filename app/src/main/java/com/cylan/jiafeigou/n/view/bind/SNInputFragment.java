@@ -134,7 +134,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
         } else if (JFGRules.isCloudCam(pid)) {
             getActivity().findViewById(R.id.v_to_bind_camera_cloud)
                     .performClick();
-        } else if (JFGRules.isPanoramicCam(pid)) {
+        } else if (JFGRules.isPanoramaCamera(pid)) {
             getActivity().findViewById(R.id.v_to_bind_panorama_camera)
                     .performClick();
         } else if (JFGRules.isCamera(pid)) {

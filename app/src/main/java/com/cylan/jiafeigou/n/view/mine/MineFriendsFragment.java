@@ -341,7 +341,7 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
                     FriendContextHeader friendHeader = new FriendContextHeader().withHeader(getString(R.string.Tap3_FriendsList));
                     friendAccountAdapter.add(friendHeader);
                 }
-                friendAccountAdapter.add(1, friendContextItem);
+                friendAccountAdapter.add(friendAccountAdapter.getGlobalPosition(1), friendContextItem);
                 break;
             case 1:
                 friendRequestAdapter.remove(friendRequestAdapter.getAdapterPosition(item));
