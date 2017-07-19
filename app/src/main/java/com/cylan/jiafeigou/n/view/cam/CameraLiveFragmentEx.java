@@ -653,8 +653,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onBatteryDrainOut() {
         //当前页面才显示
         if (!isAdded() && isUserVisible()) return;
-        String uuid = "";
-        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(getUuid());
         if (device.available() && JFGRules.hasBatteryNotify(device.pid)) {
             AlertDialogManager.getInstance().showDialog(getActivity(),
                     "onBatteryDrainOut", getString(R.string.Tap1_LowPower),

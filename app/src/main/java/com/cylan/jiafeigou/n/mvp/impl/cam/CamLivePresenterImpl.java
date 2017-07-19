@@ -63,7 +63,6 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -740,13 +739,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //此处表明拖动历史录像时间轴.
                 int ret;
                 boolean switchInterface = false;
-                if(getLiveStream().type ==TYPE_LIVE &&  (getLiveStream().playState == PLAY_STATE_PREPARE
-                    || getLiveStream().playState == PLAY_STATE_PLAYING)){
-                        BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid,time);
+                if (getLiveStream().type == TYPE_LIVE && (getLiveStream().playState == PLAY_STATE_PREPARE
+                        || getLiveStream().playState == PLAY_STATE_PLAYING)) {
+                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                     getHotSeatStateMaintainer().saveRestore();
                     switchInterface = true;
-                    AppLogger.i("停止播放 live 并开始播放Histtory: "+ JfgUtils.date2String(JfgUtils.DetailedDateFormat,time*1000));
+                    AppLogger.i("停止播放 live 并开始播放Histtory: " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, time * 1000));
                 }
                 /*else if (getLiveStream().type == TYPE_HISTORY
                         && (getLiveStream().playState == PLAY_STATE_PREPARE
@@ -765,7 +764,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().canNewCall(true);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i(String.format("play history video:%s,%s ", uuid, JfgUtils.date2String(JfgUtils.DetailedDateFormat,time*1000)) + " " + ret + ",switchInterface:" + switchInterface);
+                AppLogger.i(String.format("play history video:%s,%s ", uuid, JfgUtils.date2String(JfgUtils.DetailedDateFormat, time * 1000)) + " " + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
@@ -1298,8 +1297,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                            boolean tmpSpeaker = speakerOn;
                             boolean tmpSpeaker = tmpNextMic;
                             //设置客户端声音
-                            boolean result = setupLocalAudio(tmpNextMic, tmpSpeaker,
-                                    tmpSpeaker, tmpNextMic);
+                            boolean result = setupLocalAudio(tmpNextMic, tmpSpeaker || speakerOn,
+                                    tmpSpeaker || speakerOn, tmpNextMic);
                             if (result) {
                                 //设置设备的声音
                                 setupRemoteAudio(tmpNextMic, tmpSpeaker,

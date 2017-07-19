@@ -66,7 +66,6 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
-import com.cylan.utils.JfgUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
@@ -610,7 +609,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //|直播| 按钮
         View tvLive = layoutE.findViewById(R.id.tv_live);
         post(portShowRunnable);
-        post(() -> removeCallbacks(portHideRunnable));
+//        post(() -> removeCallbacks(portHideRunnable));
         if (tvLive != null) tvLive.setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
@@ -890,8 +889,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //分享账号不显示啊.
         if (JFGRules.isShareDevice(uuid)) return;
 //        if (!getHistoryWheelHandler(presenter).isBusy()) {//拖动时间轴时屏蔽 rtcp 时间更新,防止显示异常
-        setLiveRectTime(livePlayType, rtcp.timestamp);
-//        }
+        boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
+        Log.d("setLiveRectTime", "isBusy?" + isWheelBusy);
+        if (!isWheelBusy) {
+            setLiveRectTime(livePlayType, rtcp.timestamp);
+        }
         //点击事件
         if (liveTimeRectListener == null) {
             liveTimeRectListener = v -> {
@@ -934,9 +936,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-        boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
-        Log.d("setLiveRectTime", "isBusy?" + isWheelBusy);
-        if (isWheelBusy) return;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
