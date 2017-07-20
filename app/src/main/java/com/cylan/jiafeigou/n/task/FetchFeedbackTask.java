@@ -17,7 +17,7 @@ public class FetchFeedbackTask implements Action1<Object> {
     public void call(Object o) {
         Observable.create(subscriber -> {
             try {
-                subscriber.onNext(null);
+                subscriber.onNext("good");
                 subscriber.onCompleted();
             } catch (Exception e) {
                 subscriber.onError(e);

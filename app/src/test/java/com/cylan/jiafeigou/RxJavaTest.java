@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou;
 
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.junit.Test;
 
@@ -178,4 +180,19 @@ public class RxJavaTest {
         void taskSuccess(R r);
     }
 
+    @Test
+    public void testNull(){
+        Observable.create(subscriber -> {
+            try {
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        }).subscribe(ret->{
+            System.out.println("result:"+ret);
+        }, AppLogger::e);
+
+
+    }
 }
