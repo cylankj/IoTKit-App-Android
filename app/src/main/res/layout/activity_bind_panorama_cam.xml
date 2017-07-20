@@ -58,7 +58,7 @@
         android:layout_height="@dimen/y234"
         android:layout_above="@+id/bottom_line"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/y141"
+        android:layout_marginBottom="@dimen/y120"
         android:background="@drawable/add_image_panoramic_camera">
 
         <FrameLayout

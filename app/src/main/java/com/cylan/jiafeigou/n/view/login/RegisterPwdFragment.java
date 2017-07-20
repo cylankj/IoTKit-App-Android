@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -138,7 +139,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
     private void autoLogin() {
         LoginAccountBean login = new LoginAccountBean();
         login.userName = PreferencesUtils.getString(JConstant.AUTO_LOGIN_ACCOUNT);
-        login.pwd = PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD);
+        login.pwd = MD5Util.lowerCaseMD5(PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD));
         boolean validEmailNum = JConstant.EMAIL_REG.matcher(login.userName).find();
         if (validEmailNum) {
             //发送验证邮件
@@ -150,13 +151,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
             if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
                 ToastUtil.showToast(getString(R.string.RIGN_SUC));
                 pwdPresenter.executeLogin(login);
-                //账号和密码
-                try {
-                    AutoSignIn.getInstance().autoSave(login.userName, 1, login.pwd);
-                    AppLogger.e("AutoSignIn:" + login.userName + ":" + login.pwd);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
             }
