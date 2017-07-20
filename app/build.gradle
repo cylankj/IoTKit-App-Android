@@ -153,8 +153,8 @@ android {
             versionCode vCode//0002,ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.cleverdog.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 100044173",
-                                    "VID"                : "\\ 0002",
-                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
+                                    "VID"                : "\\ 0001",
+                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppId"            : "\\ 1106287288",
                                     "qqAppKey"           : "yNsvacSiQTzArpTg",
                                     "mtaAppKey"          : "Aqc1103156296",
