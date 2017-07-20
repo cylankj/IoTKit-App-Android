@@ -233,7 +233,7 @@ public class BindUtils {
         } else if (JFGRules.isCatEeyBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.Smart_Door_Viewer));
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
@@ -242,7 +242,7 @@ public class BindUtils {
         } else if (JFGRules.isNoPowerBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_bell);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.Smart_bell_Power));
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTips));
