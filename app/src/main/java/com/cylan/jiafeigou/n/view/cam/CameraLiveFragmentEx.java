@@ -334,6 +334,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
             if (!sdStatus.hasSdcard) {
                 AppLogger.d("sdcard 被拔出");
+                camLiveControlLayer.hideHistoryWheel();
                 if (!getUserVisibleHint() || basePresenter.isShareDevice()) {
                     AppLogger.d("隐藏了，sd卡更新");
                     return;
@@ -434,7 +435,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }
             }
         });
-        
+
     }
 
     @Override
@@ -577,7 +578,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
-        AppLogger.d( "onRtcp: " + new Gson().toJson(rtcp));
+        AppLogger.d("onRtcp: " + new Gson().toJson(rtcp));
         camLiveControlLayer.onRtcpCallback(basePresenter.getPlayType(), rtcp);
     }
 
@@ -652,7 +653,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onBatteryDrainOut() {
         //当前页面才显示
-        if (!isAdded() && isUserVisible()) return;
+        if (!isAdded() || !isUserVisible()) return;
         Device device = DataSourceManager.getInstance().getDevice(getUuid());
         if (device.available() && JFGRules.hasBatteryNotify(device.pid)) {
             AlertDialogManager.getInstance().showDialog(getActivity(),

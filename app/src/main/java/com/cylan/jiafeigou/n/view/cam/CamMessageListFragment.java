@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -182,6 +181,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         });
         camMessageListAdapter.setOnclickListener(this);
+        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) ? View.INVISIBLE : View.VISIBLE);
+
     }
 
     private void setupFootView() {
@@ -197,7 +198,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         super.onStart();
         //从通知栏跳进来
         if (getActivity() != null && getActivity().getIntent() != null) {
-            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE) || isUserVisible()) {//需要每次进来都刷新数据,
+            if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {//需要每次进来都刷新数据,
                 //客户端绑定门铃一代设备之后，门铃按呼叫键呼叫生成呼叫记录；
                 //客户端进入“功能设置”界面点击“清空呼叫记录”，之后返回门铃的“消息”界面，呼叫记录依旧存在；iOS客户端的呼叫记录已经被清空；
 
@@ -312,7 +313,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
         });
     }
-
 
 
     @Override

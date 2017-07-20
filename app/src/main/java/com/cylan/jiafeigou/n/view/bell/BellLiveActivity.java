@@ -281,8 +281,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.setVolume(0, 0);
             mediaPlayer.stop();
@@ -292,11 +292,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
-            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
             AppLogger.d("finish manually");
         }
+
         muteAudio(false);
         presenter.cancelViewer();
+        finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
     }
 
     private void clearHeadSetEventReceiver() {

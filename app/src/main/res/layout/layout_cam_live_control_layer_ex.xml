@@ -202,6 +202,7 @@
                     android:id="@+id/sw_cam_live_wheel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_toStartOf="@+id/tv_cam_live_land_bottom"
                     android:clickable="true"
                     app:sw_lineColor="@color/color_FFDEDEDE"
                     app:sw_markerColor="@color/color_36BDFF"

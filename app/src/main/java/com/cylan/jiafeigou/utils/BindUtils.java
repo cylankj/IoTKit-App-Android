@@ -11,6 +11,9 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.view.activity.BindAnimationActivity;
+import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
+import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -206,6 +209,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.RuiShi_Guide));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isCloudCam(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
@@ -214,15 +218,18 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.DOOR_BLUE_BLINKING));
+            intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isPanoramaCamera(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTipShort));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.setClass(context, BindPanoramaCamActivity.class);
         } else if (JFGRules.isCamera(pid)) {
             intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.setClass(context, BindCamActivity.class);
         } else if (JFGRules.isCatEeyBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
@@ -231,6 +238,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isNoPowerBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_bell);
@@ -239,14 +247,16 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CloudcameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.DOOR_BLUE_BLINKING));
+            intent.setClass(context, BindAnimationActivity.class);
         } else if (JFGRules.isBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.Smart_bell_Battery));
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.DOOR_BLUE_BLINKING));
+            intent.setClass(context, BindAnimationActivity.class);
         }
         return intent;
     }

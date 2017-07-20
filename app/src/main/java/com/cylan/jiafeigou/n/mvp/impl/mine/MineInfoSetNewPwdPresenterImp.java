@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -28,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSetNewPwdContract.View> implements MineInfoSetNewPwdContract.Presenter {
 
     private CompositeSubscription subscription;
-    private boolean isOverTime;
+    private boolean isOverTime = false;
 
     public MineInfoSetNewPwdPresenterImp(MineInfoSetNewPwdContract.View view) {
         super(view);
@@ -43,23 +42,18 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
      */
     @Override
     public void openLoginRegister(String account, String pwd, String token) {
-        rx.Observable.just(null)
+        Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            if (!TextUtils.isEmpty(token)) {
-//                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, JConstant.TYPE_PHONE, "");
-                                int req = BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_PHONE, token);
-                                AppLogger.d("openLogin_bind_phone:" + req + " token:" + token);
-                            } else {
-//                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, JConstant.TYPE_EMAIL, "");
-                                BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_EMAIL, "");
-                            }
-                        } catch (JfgException e) {
-                            e.printStackTrace();
+                .subscribe(o -> {
+                    try {
+                        if (!TextUtils.isEmpty(token)) {
+                            int req = BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_PHONE, token);
+                            AppLogger.d("openLogin_bind_phone:" + req + " token:" + token);
+                        } else {
+                            BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_EMAIL, "");
                         }
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 }, throwable -> {
                     AppLogger.e("openLoginRegister" + throwable.getLocalizedMessage());
@@ -87,8 +81,6 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
     public Subscription timeOverCount() {
         return Observable.just(null)
                 .delay(5, TimeUnit.MINUTES)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
                     isOverTime = true;
                 }, throwable -> {

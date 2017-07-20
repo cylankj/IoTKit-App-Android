@@ -272,8 +272,9 @@ public class JConstant {
     }
 
     public static int getMessageIcon(int pid) {
-        if (JFGRules.isRS(pid)) return R.drawable.me_icon_head_camera_ruishi;
-        if (JFGRules.isCatEeyBell(pid)) return R.drawable.home_icon_intelligent_eye;
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid))
+            return R.drawable.me_icon_head_camera_ruishi;
+        if (JFGRules.isCatEeyBell(pid)) return R.drawable.me_icon_head_magnetometer;
         if (JFGRules.isBell(pid)) return R.drawable.me_icon_head_ring;
         if (JFGRules.isPan720(pid)) return R.drawable.me_icon_head_720camera;
         if (JFGRules.isCamera(pid)) return R.drawable.me_icon_head_camera;
@@ -282,7 +283,7 @@ public class JConstant {
     }
 
     public static int getOnlineIcon(int pid) {
-        if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_online;
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) return R.drawable.home_icon_rs_online;
         if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
             return R.drawable.icon_home_doorbell_online;
         if (JFGRules.isCatEeyBell(pid))
@@ -296,7 +297,7 @@ public class JConstant {
     }
 
     public static int getOfflineIcon(int pid) {
-        if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_offline;
+        if (JFGRules.isRS(pid) && !JFGRules.isBell(pid)) return R.drawable.home_icon_rs_offline;
         if (JFGRules.isBell(pid) && !JFGRules.isCatEeyBell(pid))
             return R.drawable.icon_home_doorbell_offline;
         if (JFGRules.isCatEeyBell(pid))

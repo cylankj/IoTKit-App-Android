@@ -230,20 +230,26 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     @OnClick({R.id.tv_dialog_btn_left, R.id.tv_dialog_btn_right})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_dialog_btn_right:
-                dismiss();
-                final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(tmp));
-                break;
-            case R.id.tv_dialog_btn_left:
-                dismiss();
-                final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(finalTime));
-                if (action != null && finalTime != timeFocus) {
-                    action.onDialogAction(view.getId(), finalTime);
-                }
-                break;
+        try {
+            switch (view.getId()) {
+                case R.id.tv_dialog_btn_right:
+                    dismiss();
+
+                    final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
+                    Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(tmp));
+                    break;
+                case R.id.tv_dialog_btn_left:
+                    dismiss();
+
+                    final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
+                    Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(finalTime));
+                    if (action != null && finalTime != timeFocus) {
+                        action.onDialogAction(view.getId(), finalTime);
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            AppLogger.e(e.getMessage());
         }
     }
 

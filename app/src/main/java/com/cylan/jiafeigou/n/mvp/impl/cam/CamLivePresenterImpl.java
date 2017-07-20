@@ -191,6 +191,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 }
 
                             }
+                            mView.onDeviceInfoChanged(msg);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

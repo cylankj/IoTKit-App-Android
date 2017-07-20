@@ -429,16 +429,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
             startActivity(intent);
         } else if (JFGRules.isCatEeyBell(device.pid)) {//猫眼门铃特殊处理
-            Intent intent = new Intent(this, BindBellActivity.class);
-            intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
-            intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_bell);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
-            intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_Door_Viewer));
-            intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
-            intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
-            intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+            Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
+            intent.setClass(getContext(), BindAnimationActivity.class);
             intent.putExtra(JUST_SEND_INFO, uuid);
-
             startActivity(intent);
 
         } else if (JFGRules.isBell(device.pid)) {
@@ -451,7 +444,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (!JFGRules.isDeviceOnline(net)) {
                 //设备离线
                 Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
-                intent.setClass(getContext(), BindAnimationActivity.class);
                 intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
                 startActivity(intent);
             } else {
