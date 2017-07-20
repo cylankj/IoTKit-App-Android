@@ -442,30 +442,26 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutE.setVisibility(INVISIBLE);
             return;
         }
-        //3.没有历史录像
-        if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
-            //显示
-        } else {
-//            layoutE.setVisibility(INVISIBLE);
-            return;
-        }
         //4.被分享用户不显示
         if (JFGRules.isShareDevice(device)) {
+            AppLogger.d("is share device");
             layoutE.setVisibility(INVISIBLE);
+            return;
         }
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            AppLogger.d("isDeviceOnline false");
             layoutE.setVisibility(INVISIBLE);
+            return;
         }
         //3.没有历史录像
         if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
             //显示
+            AppLogger.d("has history video");
             layoutE.setVisibility(VISIBLE);
             return;
         }
-        if (!show) {
-            layoutE.setVisibility(INVISIBLE);
-        } else layoutE.setVisibility(VISIBLE);
+        layoutE.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
     @Override
@@ -1081,12 +1077,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
-        if (!connected) {
-            post(() -> {
+        post(() -> {
+            if (!connected) {
                 showHistoryWheel(false);
                 handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
-            });
-        }
+            } else {
+                showHistoryWheel(true);
+            }
+        });
     }
 
     @Override
