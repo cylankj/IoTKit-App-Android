@@ -84,6 +84,7 @@ public class PropertiesLoader implements IProperty {
     @Override
     public boolean isSerial(String serial, int pidOrOs) {
         serial = serial.toUpperCase();
+        if (propertyFile == null) return false;
         Map<String, List<Integer>> map = propertyFile.getSerialMap();
         List<Integer> list = map == null ? null : map.get(serial);
         return list != null && list.contains(pidOrOs);

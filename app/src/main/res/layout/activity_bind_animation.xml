@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/x20"
         android:layout_marginStart="@dimen/x20"
-        android:layout_marginTop="@dimen/y57"
+        android:layout_marginTop="-20dp"
         hunt:layout_constraintBottom_toTopOf="@+id/layout_next_step"
         hunt:layout_constraintTop_toBottomOf="@+id/tv_sub_title"
         hunt:layout_constraintVertical_bias="0">
