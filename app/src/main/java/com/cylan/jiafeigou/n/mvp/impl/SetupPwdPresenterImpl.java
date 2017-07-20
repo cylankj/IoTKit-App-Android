@@ -63,9 +63,6 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .map(o -> {
                     try {
-//                        BaseApplication.getAppComponent()
-//                                .getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),
-//                                o.userName, o.pwd);
                         AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd);
                         AutoSignIn.getInstance().autoLogin();
                     } catch (Exception e) {
