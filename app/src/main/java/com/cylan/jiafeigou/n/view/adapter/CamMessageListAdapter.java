@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -50,6 +52,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private final int pic_container_width;//宽度是固定的，需要调整高度。
     private Map<Integer, Integer> selectedMap = new HashMap<>();
 
+    private boolean isSharedDevice = false;
+
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -57,9 +61,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        this.isSharedDevice = device != null && device.available() && !TextUtils.isEmpty(device.shareAccount);
     }
 
-    /**
+    /*
      * 是否有卡,不检查卡的读写失败
      *
      * @return
@@ -163,6 +169,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             holder.setOnClickListener(R.id.lLayout_cam_msg_container, onClickListener);
         if (onClickListener != null)
             holder.setOnClickListener(R.id.tv_cam_message_item_delete, onClickListener);
+        //设置删除可见性,共享设备不可删除消息
+        if (isSharedDevice) {
+            holder.setVisibility(R.id.tv_cam_message_item_delete, View.INVISIBLE);
+        }
+
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);
         holder.setVisibility(R.id.fLayout_cam_message_item_bottom, !isEditMode() ? View.VISIBLE : View.INVISIBLE);
@@ -178,7 +189,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
 
     private boolean showLiveBtn(long time) {
-        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard();
+        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard() && !isSharedDevice;
     }
 
     private boolean textShowSdBtn(CamMessageBean item) {
@@ -187,7 +198,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             if (!item.sdcardSummary.hasSdcard) return false;
         }
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        return status.hasSdcard && status.err != 0;
+        return status.hasSdcard && status.err != 0 && !isSharedDevice;
     }
 
     /**
@@ -212,7 +223,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContentSD(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        holder.setVisibility(R.id.tv_jump_next, textShowSdBtn(item) ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.tv_jump_next, textShowSdBtn(item) ? View.VISIBLE : View.GONE);
         if (onClickListener != null)
             holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }
@@ -256,7 +267,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
-        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.GONE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);

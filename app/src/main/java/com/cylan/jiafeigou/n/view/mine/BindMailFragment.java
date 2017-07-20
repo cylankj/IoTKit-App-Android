@@ -263,7 +263,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         bundle.putString("token", "");
         MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, android.R.id.content, "bindMailStack");
+                fragment, android.R.id.content, "bindPhoneStack");
     }
 
 }

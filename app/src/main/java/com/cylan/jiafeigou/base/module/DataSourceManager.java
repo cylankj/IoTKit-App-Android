@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
-import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -993,8 +992,9 @@ public class DataSourceManager implements JFGSourceManager {
                                         return;
                                     Device dd = getDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                    Intent intent = new Intent(ContextUtils.getContext(), DoorBellHomeActivity.class);
+                                    final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
                                     int count = entity.getValue(0);
                                     final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :
                                             String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));

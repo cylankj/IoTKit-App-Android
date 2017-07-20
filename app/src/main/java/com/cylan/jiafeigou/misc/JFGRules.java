@@ -495,7 +495,7 @@ public class JFGRules {
     public static boolean isShareDevice(String uuid) {
         if (TextUtils.isEmpty(uuid)) return false;
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        return device != null && !TextUtils.isEmpty(device.shareAccount);
+        return device != null && device.available() && !TextUtils.isEmpty(device.shareAccount);
     }
 
     public static boolean isShareDevice(Device device) {

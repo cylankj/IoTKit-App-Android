@@ -137,6 +137,7 @@ public class SuperWheelExt extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         return touchHandler.onTouchEvent(event);
     }
 
@@ -152,7 +153,7 @@ public class SuperWheelExt extends View {
     }
 
     public boolean isBusy() {
-        return touchHandler != null && touchHandler.isTouchDown();
+        return touchHandler != null && touchHandler.isTouchDown() || !touchHandler.isFinished();
     }
 
     /**
@@ -361,7 +362,7 @@ public class SuperWheelExt extends View {
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
                 setPositionByTime(timeTarget);
                 if (wheelRollListener != null)
-                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
+                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);//回调的应该是 target 的
             } else {
                 if (notifyAlways && !idle && (wheelRollListener != null)) {
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);

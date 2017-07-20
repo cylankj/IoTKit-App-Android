@@ -33,7 +33,6 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +143,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         autoReplyBean.setContent(getString(R.string.Tap3_Feedback_AutoReply));
         autoReplyBean.setMsgTime(System.currentTimeMillis());
         suggestionAdapter.add(autoReplyBean);
+        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
         presenter.saveIntoDb(autoReplyBean);
     }
 

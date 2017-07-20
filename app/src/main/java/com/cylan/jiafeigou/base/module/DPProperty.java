@@ -9,8 +9,8 @@ import java.util.List;
 
 public class DPProperty {
     public static final int LEVEL_DEFAULT = 0x00;
-    public static final int LEVEL_TOP = 0x01;
-    public static final int LEVEL_HOME = 0x02;//首页,有限刷新
+    public static final int LEVEL_HOME = 1;//首页,有限刷新
+    public static final int LEVEL_TOP = 1 << 1;
     private Class<?> type;
     private List<DPDevice> devices;
     //级别,高优先级的,表是在主页刷新

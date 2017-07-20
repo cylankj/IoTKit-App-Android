@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -64,6 +65,7 @@ import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
+import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
 import com.daimajia.androidanimations.library.Techniques;
@@ -193,6 +195,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         View vLandPlay = layoutE.findViewById(R.id.imgV_cam_live_land_play);
         if (vLandPlay != null) vLandPlay.setOnClickListener(this);
         View tvLive = layoutE.findViewById(R.id.tv_live);
+        tvLive.setBackgroundColor(isLand() ? Color.TRANSPARENT : Color.WHITE);
         if (tvLive != null) tvLive.setOnClickListener(this);
         //f
         layoutF.findViewById(R.id.imgV_cam_switch_speaker).setOnClickListener(this);
@@ -442,30 +445,26 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutE.setVisibility(INVISIBLE);
             return;
         }
-        //3.没有历史录像
-        if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
-            //显示
-        } else {
-//            layoutE.setVisibility(INVISIBLE);
-            return;
-        }
         //4.被分享用户不显示
         if (JFGRules.isShareDevice(device)) {
+            AppLogger.d("is share device");
             layoutE.setVisibility(INVISIBLE);
+            return;
         }
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
+            AppLogger.d("isDeviceOnline false");
             layoutE.setVisibility(INVISIBLE);
+            return;
         }
         //3.没有历史录像
         if (superWheelExt.getDataProvider() != null && superWheelExt.getDataProvider().getDataCount() > 0) {
             //显示
+            AppLogger.d("has history video");
             layoutE.setVisibility(VISIBLE);
             return;
         }
-        if (!show) {
-            layoutE.setVisibility(INVISIBLE);
-        } else layoutE.setVisibility(VISIBLE);
+        layoutE.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
     @Override
@@ -554,7 +553,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         public void run() {
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
-                layoutC.setVisibility(VISIBLE);
+                layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
             streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING &&
                     JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
@@ -767,6 +766,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isLand = isLand();
         layoutA.setVisibility(isLand ? VISIBLE : INVISIBLE);
         layoutF.setVisibility(isLand ? INVISIBLE : VISIBLE);
+        layoutE.findViewById(R.id.tv_live).setBackgroundColor(isLand ? Color.TRANSPARENT : Color.WHITE);
         if (isLand) {
             //隐藏所有的 showcase
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());
@@ -776,7 +776,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(android.R.color.transparent));
             }
         } else {
-            if (layoutE.getCurrentView() instanceof FrameLayout) {
+            IData dataProvider = presenter.getHistoryDataProvider();
+            if (dataProvider != null && dataProvider.getDataCount() != 0) {
+                if (layoutE.getDisplayedChild() == 0) {
+                    layoutE.setVisibility(VISIBLE);
+                    layoutE.showNext();
+                }
+            } else if (layoutE.getCurrentView() instanceof FrameLayout) {
                 layoutE.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
             }
@@ -1081,12 +1087,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
-        if (!connected) {
-            post(() -> {
+        post(() -> {
+            if (!connected) {
                 showHistoryWheel(false);
                 handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
-            });
-        }
+            } else {
+                showHistoryWheel(true);
+            }
+        });
     }
 
     @Override
@@ -1406,4 +1414,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         this.liveTextClick = liveTextClick;
     }
 
+    public void hideHistoryWheel() {
+        presenter.getHistoryDataProvider().clean();
+        historyWheelHandler.dateUpdate();
+        layoutE.setVisibility(INVISIBLE);
+    }
 }

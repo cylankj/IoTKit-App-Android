@@ -2,6 +2,9 @@ package com.cylan.jiafeigou.base.module;
 
 import android.support.annotation.IntDef;
 
+import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,6 +16,10 @@ import java.util.List;
  * Created by yanzhendong on 2017/3/25.
  */
 
+/**
+ *使用 productProperty
+ * */
+@Deprecated
 public enum DPDevice {
     CAMERA(4, 5, 7, 8, 10, 17, 18, 19, 20, 21, 23, 26, 36, 37, 38, 39, 47, 48, 49, 1071, 1088, 1089,
             1090, 1091, 1092, 1152, 1158, 1346, 1347, 1348),
@@ -37,9 +44,11 @@ public enum DPDevice {
     }
 
     public static DPDevice belong(int pid) {
-        for (DPDevice device : DPDevice.values()) {
-            if (device.accept(pid)) return device;
+        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        DPDevice result = CAMERA;
+        if (property != null) {
+            result = property.isSerial("BELL", pid) ? DOORBELL : CAMERA;
         }
-        return null;
+        return result;//default is camera;
     }
 }

@@ -147,6 +147,7 @@ android {
     productFlavors {
         _yun {
             //vid vkey已经搬到Security.java
+
             //官方运营
             applicationId "com.cylan.cleverdog"
             versionName vName
@@ -158,8 +159,8 @@ android {
                                     "qqAppId"            : "\\ 1106287288",
                                     "qqAppKey"           : "yNsvacSiQTzArpTg",
                                     "mtaAppKey"          : "Aqc1103156296",
-                                    "weChatAppId"        : "wx3081bcdae8a842cf",
-                                    "weChatAppSecret"    : "d93676ab7db1876c06800dee3f33fbc2",
+                                    "weChatAppId"        : "wx401c2537655ba462",
+                                    "weChatAppSecret"    : "fbb7b851f057882b1f8d3b9fb20506ab",
                                     "sinaAppKey"         : "\\ 2656168776",
                                     "sinaAppSecret"      : "f7f61f712dd94d538514799c462d2083",
                                     "SERVER"             : "yun.jfgou.com:443",
@@ -173,6 +174,7 @@ android {
                                     "TWITTER_APP_KEY"    : "kvWyAC3sYGxaEmfkKDVWrKFa7",
                                     "TWITTER_APP_SECRET" : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
                                     "FACEBOOK_APP_KEY"   : "1866682200216878"
+
             ]
         }
         _doby {
@@ -182,12 +184,12 @@ android {
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.doby.hms.update.provider",
                                     "HW_APP_ID"          : "\\ 100043669",
                                     "VID"                : "\\ 0002",
-                                    "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
+                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
                                     "qqAppId"            : "\\ 1106279832",
                                     "qqAppKey"           : "vqSXNT11dsbu24io",
                                     "mtaAppKey"          : "ATQ1JV694AKT",
-                                    "weChatAppId"        : "wx382033a16e5cc4a5",
-                                    "weChatAppSecret"    : "185c2c53948ec8de6866022940e2ef29",
+                                    "weChatAppId"        : "wx292ae57e5ab2316d",
+                                    "weChatAppSecret"    : "8d99286b4f23ca56fa60c5f1defd6116",
                                     "sinaAppKey"         : "\\ 2444488421",
                                     "sinaAppSecret"      : "dfba216fe44f0d6613cdda1557790a31",
                                     "SERVER"             : "yun.jfgou.com:443",
