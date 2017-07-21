@@ -596,7 +596,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         } else {
-//            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
+            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
         }
     }
 
@@ -612,6 +612,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 //                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
                 return;
             }
+            getActivity().finish();
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         } else {
             if (code == JError.ErrorAccountNotExist) {

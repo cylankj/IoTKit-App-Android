@@ -144,8 +144,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 return;
             case R.id.v_to_bind_bell_no_battery:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
-                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_bell);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
+                intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_bell_Power));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
