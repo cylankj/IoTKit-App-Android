@@ -8,7 +8,6 @@ buildscript {
     }
     dependencies {
         //要对应java1.8，2.2.0才能使用unit测试。idea/misc.xml
-//        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
@@ -27,7 +26,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url 'http://192.168.100.221:8081/artifactory/libs-snapshot-local'}
+
         maven {
 //              审核通过之后,可以注释掉
             url 'https://dl.bintray.com/cylan/maven/'
