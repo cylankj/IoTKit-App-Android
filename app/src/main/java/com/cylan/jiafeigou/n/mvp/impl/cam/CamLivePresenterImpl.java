@@ -777,7 +777,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public Observable<Boolean> stopPlayVideo(int reasonOrState) {
-        AppLogger.d("pre play state: " + liveStream);
+        AppLogger.w("pre play state: " + liveStream);
         if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
                 || liveStream.playState == PLAY_STATE_STOP)
             return Observable.just(false);
@@ -803,7 +803,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         getView().onLiveStop(getLiveStream().type, reasonOrState);
                     return Observable.just(true);
                 })
-                .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+                .doOnError(throwable -> AppLogger.e("stop play err" + throwable.getLocalizedMessage()));
     }
 
     @Override

@@ -420,19 +420,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 });
         camLiveControlLayer.setPlayBtnListener(v -> {
             CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
-            if (prePlayType.type == TYPE_LIVE) return;
-            if (basePresenter.getPlayState() == PLAY_STATE_PREPARE)
-                return;
-            if (basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+            if (prePlayType.playState == PLAY_STATE_PLAYING) {
+                // 暂停
                 basePresenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
                 }, AppLogger::e);
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
-                camLiveControlLayer.setLoadingState(PLAY_STATE_STOP, null);
-            } else if (prePlayType.type == TYPE_HISTORY) {
-                if (accept()) {
+            } else {
+                AppLogger.i("start play!!1");
+                if (prePlayType.type == TYPE_HISTORY) {
                     basePresenter.startPlayHistory(prePlayType.time * 1000L);
-                    ((ImageView) v).setImageResource(R.drawable.icon_landscape_playing);
+                } else {
+                    basePresenter.startPlay();
                 }
+                ((ImageView) v).setImageResource(R.drawable.icon_landscape_playing);
             }
         });
 
