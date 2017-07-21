@@ -334,7 +334,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         Bundle bundle = new Bundle();
         BindMailFragment mailBoxFragment = BindMailFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                mailBoxFragment, android.R.id.content, "bindMailStack");
+                mailBoxFragment, android.R.id.content, "bindStack");
     }
 
     public void showSetPwd(boolean isVisible) {

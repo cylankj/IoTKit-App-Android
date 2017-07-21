@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.utils.JFGGlideURL;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,9 +48,9 @@ public class BaseBellCallEventListener {
 
     public Subscription initSubscription() {
         return RxBus.getCacheInstance().toObservable(RxEvent.BellCallEvent.class)
-                .groupBy(ret -> ret.caller.cid)//通过cid来分组,但是有个bug.如果局域网的先来,公网的截图就收不到.
-                .flatMap(groupResult -> groupResult.throttleFirst(25, TimeUnit.SECONDS)
-                        .map(result -> result))
+//                .groupBy(ret -> ret.caller.cid)//通过cid来分组,但是有个bug.如果局域网的先来,公网的截图就收不到.
+//                .flatMap(groupResult -> groupResult.throttleFirst(25, TimeUnit.SECONDS)
+//                        .map(result -> result))
                 .subscribeOn(Schedulers.io())
                 .retry((i, e) -> true)
                 .subscribe(this::makeNewCall, AppLogger::e);

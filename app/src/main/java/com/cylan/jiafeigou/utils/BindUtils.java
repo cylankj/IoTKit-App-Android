@@ -169,6 +169,15 @@ public class BindUtils {
      * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
      */
     public static int versionCompare(String str1, String str2) {
+        if (str1 == null) str1 = "";
+        if (str2 == null) str2 = "";
+
+        for (char item : str1.toCharArray()) {
+
+        }
+        for (char item : str2.toCharArray()) {
+
+        }
         String[] vals1 = str1.split("\\.");
         String[] vals2 = str2.split("\\.");
         int i = 0;

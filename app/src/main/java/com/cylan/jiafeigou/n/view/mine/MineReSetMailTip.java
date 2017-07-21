@@ -85,7 +85,7 @@ public class MineReSetMailTip extends Fragment implements MineInfoActivity.BackI
     }
 
     public void jump2MineInfoFragment() {
-        getActivity().getSupportFragmentManager().popBackStack("bindMailStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getActivity().getSupportFragmentManager().popBackStack("bindStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override
