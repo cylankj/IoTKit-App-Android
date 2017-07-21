@@ -121,7 +121,7 @@ public class History {
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> {
                     if (ListUtils.isEmpty(ret.list)) {
-                        RxBus.getCacheInstance().post(new RxEvent.HistoryEmpty());
+                        RxBus.getCacheInstance().post(new RxEvent.HistoryBack(true));
                         //清空
                         return false;
                     }

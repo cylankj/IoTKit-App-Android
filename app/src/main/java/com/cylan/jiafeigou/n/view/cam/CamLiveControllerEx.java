@@ -187,8 +187,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //c.loading
         (layoutC).setAction(this.action);
         //d.time
-//        ((FlipLayout) layoutD.findViewById(R.id.layout_port_flip))
-//                .setFlipListener(this);
         layoutD.findViewById(R.id.imgV_cam_zoom_to_full_screen)
                 .setOnClickListener(this);
         //e.
@@ -216,17 +214,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
-                            .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-                                            .timeout(30, TimeUnit.SECONDS),
-                                    RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
-                                            .timeout(30, TimeUnit.SECONDS))
-                                    .first())
-                            .flatMap(o -> Observable.just(o instanceof RxEvent.HistoryEmpty ? 2 : -1))
+                            .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
+                                    .timeout(30, TimeUnit.SECONDS).first())
+                            .flatMap(o -> Observable.just(o.isEmpty))
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(ret -> {
-                                AppLogger.d("加载成功:" + ret);
+                            .subscribe(isEmpty -> {
+                                AppLogger.d("加载成功:" + isEmpty);
                                 layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-                                if (ret == 2) {
+                                if (isEmpty) {
                                     ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
                                     livePlayState = PLAY_STATE_STOP;
                                     setLoadingState(PLAY_STATE_STOP, null);
@@ -313,8 +308,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         //是否显示清晰度切换
-//        findViewById(R.id.sv_switch_stream)
-//                .setVisibility(JFGRules.showSdHd(device.pid, cVersion) ? VISIBLE : GONE);
         streamSwitcher = ((Switcher) findViewById(R.id.sv_switch_stream));
         int mode = device.$(513, 0);
         streamSwitcher.setMode(mode);
@@ -946,7 +939,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
-        if (type == TYPE_HISTORY && timestamp != 0 && presenter != null && presenter.getPlayState() == PLAY_STATE_PLAYING) {
+        if (type == TYPE_HISTORY && timestamp != 0
+                && presenter != null
+                && presenter.getPlayState() == PLAY_STATE_PLAYING) {
             //移动导航条
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(timestamp * 1000);
@@ -1127,6 +1122,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutE.findViewById(R.id.btn_load_history).setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : INVISIBLE);
+            layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
             layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
@@ -1281,17 +1277,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         Subscription subscription = Observable.just("get")
                 .subscribeOn(Schedulers.io())
                 .map(ret -> presenter.fetchHistoryDataList())
-                .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-                                .timeout(30, TimeUnit.SECONDS),
-                        RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
-                                .timeout(30, TimeUnit.SECONDS))
-                        .first())
-                .flatMap(o -> Observable.just(o instanceof RxEvent.HistoryEmpty ? 2 : -1))
+                .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
+                        .timeout(30, TimeUnit.SECONDS).first())
+                .flatMap(o -> Observable.just(o.isEmpty))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    AppLogger.d("加载成功:" + ret);
+                .subscribe(isEmpty -> {
+                    AppLogger.d("加载成功:" + isEmpty);
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-                    if (ret == 2) {
+                    if (isEmpty) {
                         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);

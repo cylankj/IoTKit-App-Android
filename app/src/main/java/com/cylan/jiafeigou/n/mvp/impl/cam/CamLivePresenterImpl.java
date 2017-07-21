@@ -383,6 +383,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
             AppLogger.d("有历史录像了.");
+            RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
             return false;
         }
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
@@ -399,7 +400,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onHistoryLoadFinished();
-                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack());
+                    RxBus.getCacheInstance().post(new RxEvent.HistoryBack(false));
                 }, AppLogger::e);
         removeSubscription("getHistoryList");
         addSubscription(subscription, "getHistoryList");

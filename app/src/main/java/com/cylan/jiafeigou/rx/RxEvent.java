@@ -427,9 +427,11 @@ public class RxEvent {
 //    }
 
     public static final class HistoryBack {
-    }
+        public boolean isEmpty = false;
 
-    public static final class HistoryEmpty {
+        public HistoryBack(boolean isEmpty) {
+            this.isEmpty = isEmpty;
+        }
     }
 
     /**
