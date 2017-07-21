@@ -118,6 +118,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public void start() {
         super.start();
+        BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
         addSubscription(getBatterySub());
         addSubscription(getDeviceSyncSub());
         addSubscription(getDeviceUnBindSub());

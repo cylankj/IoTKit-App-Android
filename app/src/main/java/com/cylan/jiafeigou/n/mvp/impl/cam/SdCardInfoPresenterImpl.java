@@ -48,6 +48,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     public void start() {
         super.start();
+        BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
         addSubscription(getSDCardStateMonitor());
     }
 

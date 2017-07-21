@@ -43,13 +43,19 @@ public interface JFGSourceManager {
 
     void syncDeviceProperty(String uuid);
 
-//    void getDevicePropertyByIds(String uuid, long... id);
+    /**
+     * 获取某几个
+     *
+     * @param uuid
+     * @param pids
+     */
+    void syncDeviceProperty(String uuid, int... pids);
 
     /**
      * 刷新设备属性，首页需要
      * ,手动刷
      */
-    void syncAllDevicePropertyManually();
+    void syncAllProperty();
 
     void syncHomeProperty();
 
