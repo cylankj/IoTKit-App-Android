@@ -191,9 +191,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 v.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         }
-        if (show && device != null && JFGRules.isFreeCam(device.pid)) {
-            fLayoutProtectionWarnEffect.setVisibility(View.GONE);
-        }
+        fLayoutProtectionWarnEffect.setVisibility(JFGRules.hasWarmSound(device.pid)?View.VISIBLE:View.GONE);
+//        if (show && device != null && JFGRules.hasWarmSound(device.pid)) {
+//        }
     }
 
     @Override

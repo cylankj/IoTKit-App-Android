@@ -296,7 +296,7 @@ public class JFGRules {
      */
     public static boolean showSdHd(int pid, String version) {
         String propertyVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
-        return BindUtils.versionCompare(version, propertyVersion) >= 0;
+        return BindUtils.versionCompare(propertyVersion, version) >= 0;
     }
 
     /**
@@ -453,6 +453,11 @@ public class JFGRules {
     public static int getOSType(String content) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
         return productProperty.getOSType(content);
+    }
+
+    public static boolean hasWarmSound(int pid) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        return productProperty.hasProperty(pid,"WARMSOUND");
     }
 
     public static class PlayErr {
