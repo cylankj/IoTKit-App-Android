@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/icon_landscape_playing" android:state_checked="true" />
+    <item android:drawable="@drawable/icon_landscape_stop" android:state_checked="false" />
+    <item android:drawable="@drawable/icon_landscape_stop_disable" android:state_enabled="false" />
+</selector>

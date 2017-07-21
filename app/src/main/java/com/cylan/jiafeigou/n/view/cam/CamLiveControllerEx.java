@@ -114,7 +114,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     //防护  |直播|时间|   |全屏|
     private View layoutD;
     //历史录像条
-    private ViewSwitcher layoutE;
+    private View layoutE;
+    private ViewSwitcher vsLayoutWheel;
     //|speaker|mic|capture|
     private View layoutF;
     //横屏 侧滑日历
@@ -163,7 +164,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutB = findViewById(R.id.layout_b);
         layoutC = (LiveControlView) findViewById(R.id.layout_c);
         layoutD = findViewById(R.id.layout_d);
-        layoutE = (ViewSwitcher) findViewById(R.id.layout_e);
+        layoutE = findViewById(R.id.layout_e);
+        vsLayoutWheel = (ViewSwitcher) findViewById(R.id.vs_wheel);
         layoutF = findViewById(R.id.layout_f);
         layoutG = findViewById(R.id.layout_g);
         liveViewWithThumbnail = (LiveViewWithThumbnail) findViewById(R.id.v_live);
@@ -190,6 +192,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.findViewById(R.id.imgV_cam_zoom_to_full_screen)
                 .setOnClickListener(this);
         //e.
+        if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+            findViewById(R.id.tv_live).setVisibility(GONE);
+            findViewById(R.id.v_flag).setVisibility(GONE);
+        }
         View vLandPlay = layoutE.findViewById(R.id.imgV_cam_live_land_play);
         if (vLandPlay != null) vLandPlay.setOnClickListener(this);
         View tvLive = layoutE.findViewById(R.id.tv_live);
@@ -227,12 +233,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     setLoadingState(PLAY_STATE_STOP, null);
                                     return;
                                 }
-                                if (layoutE.getCurrentView() instanceof ViewGroup) {
-                                    layoutE.showNext();
-                                    if (livePlayState == PLAY_STATE_PREPARE) {
-                                        livePlayState = PLAY_STATE_STOP;
-                                        setLoadingState(PLAY_STATE_STOP, null);
-                                    }
+                                if (vsLayoutWheel.getCurrentView() instanceof ViewGroup) {
+                                    vsLayoutWheel.showNext();
+                                    livePlayState = PLAY_STATE_STOP;
+                                    setLoadingState(PLAY_STATE_STOP, null);
                                     AppLogger.d("需要展示 遮罩");
                                 }
                             }, throwable -> {
@@ -764,19 +768,27 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             //隐藏所有的 showcase
             LiveShowCase.hideHistoryWheelCase((Activity) getContext());
             LiveShowCase.hideHistoryCase((Activity) getContext());
-            if (layoutE.getCurrentView() instanceof FrameLayout) {
-                layoutE.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
-                findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+                vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            }
+            findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+                findViewById(R.id.tv_live).setVisibility(VISIBLE);
+                findViewById(R.id.v_flag).setVisibility(VISIBLE);
             }
         } else {
+            if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+                findViewById(R.id.tv_live).setVisibility(GONE);
+                findViewById(R.id.v_flag).setVisibility(GONE);
+            }
             IData dataProvider = presenter.getHistoryDataProvider();
             if (dataProvider != null && dataProvider.getDataCount() != 0) {
-                if (layoutE.getDisplayedChild() == 0) {
-                    layoutE.setVisibility(VISIBLE);
-                    layoutE.showNext();
+                if (vsLayoutWheel.getDisplayedChild() == 0) {
+                    vsLayoutWheel.setVisibility(VISIBLE);
+                    vsLayoutWheel.showNext();
                 }
-            } else if (layoutE.getCurrentView() instanceof FrameLayout) {
-                layoutE.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
+            } else if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+                vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
             }
         }
@@ -1290,12 +1302,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         setLoadingState(PLAY_STATE_STOP, null);
                         return;
                     }
-                    if (layoutE.getCurrentView() instanceof FrameLayout) {
-                        layoutE.showNext();
-                        if (livePlayState == PLAY_STATE_PREPARE) {
-                            livePlayState = PLAY_STATE_STOP;
-                            setLoadingState(PLAY_STATE_STOP, null);
-                        }
+                    if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+                        vsLayoutWheel.showNext();
+                        livePlayState = PLAY_STATE_STOP;
+                        setLoadingState(PLAY_STATE_STOP, null);
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);

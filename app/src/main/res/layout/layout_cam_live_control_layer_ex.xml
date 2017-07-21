@@ -147,122 +147,126 @@
         </LinearLayout>
     </FrameLayout>
 
-    <ViewSwitcher
+    <RelativeLayout
         android:id="@+id/layout_e"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y52"
         android:layout_below="@+id/v_guide">
 
-        <FrameLayout
+
+        <ImageView
+            android:id="@+id/imgV_cam_live_land_play"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="@dimen/x38"
+            android:paddingRight="@dimen/x38"
+            android:src="@drawable/icon_landscape_stop"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/rLayout_cam_live_land_bottom_second"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_F7F8FA"
-            android:orientation="vertical">
+            android:layout_gravity="bottom"
+            android:layout_toEndOf="@+id/imgV_cam_live_land_play"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/btn_load_history"
+            <ViewSwitcher
+                android:id="@+id/vs_wheel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/MSG_RECORD"
-                android:textColor="@color/common_btn_color_state"
-                android:textSize="@dimen/sp15" />
+                android:layout_toStartOf="@+id/tv_cam_live_land_bottom">
 
-            <View
-                android:id="@+id/v_line"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_gravity="bottom"
-                android:background="@color/color_f2f2f2" />
-        </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_F7F8FA"
+                    android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y52">
-
-            <ImageView
-                android:id="@+id/imgV_cam_live_land_play"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/x38"
-                android:paddingRight="@dimen/x38"
-                android:src="@drawable/icon_landscape_stop"
-                android:visibility="gone" />
-
-            <RelativeLayout
-                android:id="@+id/rLayout_cam_live_land_bottom_second"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:orientation="horizontal">
-
+                    <TextView
+                        android:id="@+id/btn_load_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/MSG_RECORD"
+                        android:textColor="@color/common_btn_color_state"
+                        android:textSize="@dimen/sp15" />
+                </FrameLayout>
 
                 <com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt
                     android:id="@+id/sw_cam_live_wheel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toStartOf="@+id/tv_cam_live_land_bottom"
                     android:clickable="true"
                     app:sw_lineColor="@color/color_FFDEDEDE"
                     app:sw_markerColor="@color/color_36BDFF"
                     app:sw_maskColor="@color/color_4036BDFF"
                     app:sw_textColor="@color/color_FFAAAAAA" />
+            </ViewSwitcher>
 
-                <LinearLayout
-                    android:id="@+id/tv_cam_live_land_bottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/layout_land_flip"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
+            <LinearLayout
+                android:id="@+id/tv_cam_live_land_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/layout_land_flip"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
-                    <View
-                        android:id="@+id/v_flag"
-                        android:layout_width="@dimen/x3"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/y5"
-                        android:layout_marginTop="@dimen/y5"
-                        android:background="@drawable/little_shape_horizontal" />
-
-                    <TextView
-                        android:id="@+id/tv_live"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/y52"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/x10"
-                        android:paddingRight="@dimen/x10"
-                        android:text="@string/Tap1_Camera_VideoLive"
-                        android:textColor="@color/common_btn_color_state" />
-
-                    <View
-                        android:id="@+id/v_divider"
-                        android:layout_width="@dimen/x2"
-                        android:layout_height="match_parent"
-                        android:background="@color/color_adadad"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-
-                <com.cylan.jiafeigou.widget.flip.FlipLayout
-                    android:id="@+id/layout_land_flip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/x5"
-                    android:layout_marginStart="@dimen/x5"
-                    android:layout_toStartOf="@+id/v_stander"
-                    android:visibility="gone" />
-                <!--标杆view-->
                 <View
-                    android:id="@+id/v_stander"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_alignParentEnd="true" />
-            </RelativeLayout>
-        </LinearLayout>
+                    android:id="@+id/v_flag"
+                    android:layout_width="@dimen/x3"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/y5"
+                    android:layout_marginTop="@dimen/y5"
+                    android:background="@drawable/little_shape_horizontal" />
 
-    </ViewSwitcher>
+                <TextView
+                    android:id="@+id/tv_live"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y52"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
+                    android:text="@string/Tap1_Camera_VideoLive"
+                    android:textColor="@color/common_btn_color_state" />
+
+                <View
+                    android:id="@+id/v_divider"
+                    android:layout_width="@dimen/x2"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_adadad"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+            <com.cylan.jiafeigou.widget.flip.FlipLayout
+                android:id="@+id/layout_land_flip"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/x5"
+                android:layout_marginStart="@dimen/x5"
+                android:layout_toStartOf="@+id/v_stander"
+                android:visibility="gone" />
+            <!--标杆view-->
+            <View
+                android:id="@+id/v_stander"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/v_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="@color/color_f2f2f2" />
+    </RelativeLayout>
+
 
     <FrameLayout
         android:id="@+id/layout_f"
