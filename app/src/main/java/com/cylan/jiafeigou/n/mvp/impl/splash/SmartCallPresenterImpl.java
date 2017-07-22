@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -51,6 +52,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public void selectNext(boolean showSplash) {
         PerformanceUtils.startTrace("selectNext");
         Subscription subscribe = Observable.just(showSplash)
+                .timeout(4, TimeUnit.SECONDS)
                 .flatMap(show -> show ? Observable.just("正在显示 splash 页面,请等待2秒钟...").delay(1, TimeUnit.SECONDS) : Observable.just("不显示 splash 页面"))
                 .flatMap(msg -> RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class).first())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +75,13 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     getView().loginSuccess();
                     PerformanceUtils.stopTrace("ResultLogin");
                     PerformanceUtils.stopTrace("selectNext");
-                }, AppLogger::e);
+                    throw new RxEvent.HelperBreaker("主动结束");
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        AppLogger.d("超时");
+                        getView().loginSuccess();
+                    }
+                });
         addSubscription(subscribe);
     }
 

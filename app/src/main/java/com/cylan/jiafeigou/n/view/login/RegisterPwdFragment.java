@@ -217,10 +217,9 @@ public class RegisterPwdFragment extends SetupPwdFragment
         if (code == JError.ErrorOK) {
             if ((getActivity() instanceof NewHomeActivity)) {
                 getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().finish();
             }
+            getActivity().finish();
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, "");
         } else {

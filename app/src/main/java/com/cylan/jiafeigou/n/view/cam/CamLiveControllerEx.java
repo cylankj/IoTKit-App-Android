@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
@@ -213,6 +214,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
                         return;
                     }
+                    if (status.err != 0) {
+                        ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
+                        return;
+                    }
                     AppLogger.d("点击加载历史视频");
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
                     livePlayState = PLAY_STATE_PREPARE;
@@ -308,9 +313,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         View flipPort = findViewById(R.id.layout_port_flip);
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         //要根据设备属性表决定是否显示加载历史视频的按钮
-        View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);//115762 ,无网络不显示历史录像按钮
-
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         //是否显示清晰度切换
@@ -602,12 +604,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isPlayHistory = livePlayType == TYPE_HISTORY;
         //左下角直播,竖屏下:左下角按钮已经隐藏
         ((ImageView) findViewById(R.id.imgV_cam_live_land_play)).setImageResource(R.drawable.icon_landscape_playing);
-
-//        findViewById(R.id.imgV_cam_live_land_play).setEnabled(isPlayHistory);//直播也可以暂停,所以不能设置为禁用状态
         //|直播| 按钮
         View tvLive = layoutE.findViewById(R.id.tv_live);
         post(portShowRunnable);
-//        post(() -> removeCallbacks(portHideRunnable));
         if (tvLive != null) tvLive.setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
@@ -617,7 +616,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         //暂时隐藏吧,用户不喜欢
         post(portHideRunnable);
-//        post(portShowRunnable);//正在查看历史视频时， 拖动时间轴视频画面不显示暂停的按钮
     }
 
 
@@ -844,9 +842,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
 
-//        //需要根据设备属性表来决定是否显示和隐藏加载历史视频的按钮
-        View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);
         layoutE.setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }
@@ -890,7 +885,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     removeCallbacks(landHideRunnable);
                 });
             }
-//            postDelayed(portHideRunnable, 3000);
         }
     }
 
@@ -959,7 +953,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
             //移动导航条
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
-            historyWheelHandler.setNav2Time(timestamp * 1000);
+            historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
         }
     }
 
@@ -1009,10 +1003,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
-            post(() -> {
-                setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+            setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
 //                prepareLayoutDAnimation(state == STATE_FINISH);//正在查看历史视频时， 拖动时间轴视频画面不显示暂停的按钮
-            });
         });
         findViewById(R.id.tv_cam_live_land_bottom).setVisibility(VISIBLE);
     }
@@ -1098,13 +1090,23 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
         post(() -> {
+            changeViewState();
             if (!connected) {
-                showHistoryWheel(false);
+//                showHistoryWheel(false);
+                removeCallbacks(landHideRunnable);  // 取消播放后延时显示的任务
+                removeCallbacks(portHideRunnable);  //取消播放后延时显示的任务
                 handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
             } else {
-                showHistoryWheel(true);
+//                showHistoryWheel(true);
             }
         });
+    }
+
+    private void changeViewState() {
+        layoutD.setVisibility(GONE);
+        liveViewWithThumbnail.showFlowView(false,null);
+        liveViewWithThumbnail.setThumbnail();
+        setHotSeatState(-1,false,false,false,false,false,false);
     }
 
     @Override
@@ -1136,12 +1138,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
-            layoutE.findViewById(R.id.btn_load_history).setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : INVISIBLE);
             layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
+            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.showSdcard(device.pid)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
-//            showUseCase();
         }, 100);
     }
 
@@ -1425,6 +1425,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void hideHistoryWheel() {
         presenter.getHistoryDataProvider().clean();
         historyWheelHandler.dateUpdate();
-        layoutE.setVisibility(INVISIBLE);
+//        layoutE.setVisibility(INVISIBLE);
     }
 }

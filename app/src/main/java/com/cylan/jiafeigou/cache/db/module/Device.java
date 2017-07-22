@@ -285,10 +285,10 @@ public class Device extends BasePropertyHolder<Device> {
         return this.pid;
     }
 
-    @Override
-    public <V> V $(int msgId, V defaultValue) {
-        return super.$(msgId, defaultValue);
-    }
+//    @Override
+//    public <V> V $(int msgId, V defaultValue) {
+//        return super.$(msgId, defaultValue);
+//    }
 
     @Override
     protected String uuid() {

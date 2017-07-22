@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
     protected transient IPropertyParser propertyParser;
     protected transient SparseArray<DPEntity> properties = new SparseArray<>();
+    private static final Object lock = new Object();
 
     protected abstract int pid();
 
@@ -28,13 +29,19 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      * @return
      */
     public <V> V $(int msgId, V defaultValue) {
-        try {
-            DPEntity entity = getProperty(msgId);
-            V result = entity == null ? null : entity.getValue(defaultValue);
-            return result == null ? defaultValue : result;
-        } catch (Exception e) {
-            AppLogger.e("unpack err::" + msgId);
-            return defaultValue;
+        synchronized (lock) {
+            try {
+                DPEntity entity = getProperty(msgId);
+                V result = entity == null ? null : entity.getValue(defaultValue);
+                result = result == null ? defaultValue : result;
+                if (result != null && defaultValue != null && defaultValue.getClass().isInstance(result)) {
+                    return result;
+                }
+                return defaultValue;
+            } catch (Throwable e) {
+                AppLogger.e("unpack err::" + msgId);
+                return defaultValue;
+            }
         }
     }
 

@@ -137,12 +137,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
                         CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
-                        if (prePlayType.type == TYPE_HISTORY) {
-                            if (accept()) {
+                        if (accept()) {  // 减少if 层次
+                            if (prePlayType.type == TYPE_HISTORY) {
                                 basePresenter.startPlayHistory(prePlayType.time * 1000L);
-                            }
-                        } else if (prePlayType.type == TYPE_LIVE) {
-                            if (accept()) {
+                            } else if (prePlayType.type == TYPE_LIVE) {
                                 basePresenter.startPlay();
                             }
                         }
@@ -231,12 +229,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     private void initTvTextClick() {
         camLiveControlLayer.setLiveTextClick(v -> {
             CamLiveContract.LiveStream type = basePresenter.getLiveStream();
-            if (type.type == TYPE_HISTORY) {
+            if (type.type == TYPE_HISTORY && accept()) {
                 type.type = TYPE_LIVE;
                 basePresenter.updateLiveStream(type);
-                if (accept()) {
-                    basePresenter.startPlay();
-                }
+                AppLogger.i("TextView click start play!");
+                basePresenter.startPlay();
             }
         });
     }
@@ -364,13 +361,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 if (basePresenter.getLiveStream().playState != JConstant.PLAY_STATE_PLAYING) {
                     CamLiveContract.LiveStream stream = basePresenter.getLiveStream();
                     //恢复播放
-                    if (stream.type == TYPE_HISTORY) {
-                        if (accept()) {
-                            basePresenter.startPlayHistory(stream.time);
-                        }
-                    } else {
-                        if (accept()) {
+                    if (accept()) { // 简化if else 代码 // modify lxh
+                        if (stream.type == TYPE_LIVE) {
                             basePresenter.startPlay();
+                        } else {
+                            basePresenter.startPlayHistory(stream.time);
                         }
                     }
                 }
@@ -426,7 +421,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }, AppLogger::e);
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
             } else {
-                AppLogger.i("start play!!1");
+                AppLogger.i("start play!!");
                 if (prePlayType.type == TYPE_HISTORY) {
                     basePresenter.startPlayHistory(prePlayType.time * 1000L);
                 } else {

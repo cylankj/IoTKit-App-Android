@@ -23,9 +23,11 @@ import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,7 +174,18 @@ public class DatePickerDialogFragment extends BaseDialog {
         if (dateList == null || dateList.size() == 0) return;
         AppLogger.i("count:" + (dateList.size()));
         long time = System.currentTimeMillis();
-        dateStartList = new ArrayList<>(dateList);
+        //去重
+        ArrayList<Long> tmpList = new ArrayList<>(dateList);
+        ArrayList<Long> removeList = new ArrayList<>();
+        HashMap<String, String> map = new HashMap<>();
+        for (Long ll : tmpList) {
+            final String date = TimeUtils.getSpecifiedDate(ll);
+            if (!map.containsKey(date)) {
+                map.put(date, date);
+            } else removeList.add(ll);
+        }
+        tmpList.removeAll(removeList);
+        dateStartList = new ArrayList<>(new TreeSet<>(tmpList));
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         Log.d("setDateList", "setDateList performance: " + (System.currentTimeMillis() - time));
     }
@@ -236,13 +249,13 @@ public class DatePickerDialogFragment extends BaseDialog {
                     dismiss();
 
                     final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(tmp));
+                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(tmp));
                     break;
                 case R.id.tv_dialog_btn_left:
                     dismiss();
 
                     final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(finalTime));
+                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(finalTime));
                     if (action != null && finalTime != timeFocus) {
                         action.onDialogAction(view.getId(), finalTime);
                     }
