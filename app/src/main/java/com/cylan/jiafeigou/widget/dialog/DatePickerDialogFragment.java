@@ -20,9 +20,11 @@ import com.cylan.jiafeigou.widget.pick.OnWheelChangedListener;
 import com.cylan.jiafeigou.widget.pick.WheelVerticalView;
 import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -168,7 +170,10 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+        simpleDateFormat.setTimeZone(timeZone);
     }
+
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public void setDateList(ArrayList<Long> dateList) {
         if (dateList == null || dateList.size() == 0) return;
@@ -179,7 +184,7 @@ public class DatePickerDialogFragment extends BaseDialog {
         ArrayList<Long> removeList = new ArrayList<>();
         HashMap<String, String> map = new HashMap<>();
         for (Long ll : tmpList) {
-            final String date = TimeUtils.getSpecifiedDate(ll);
+            final String date = simpleDateFormat.format(new Date(TimeUtils.wrapToLong(ll)));
             if (!map.containsKey(date)) {
                 map.put(date, date);
             } else removeList.add(ll);
@@ -187,7 +192,8 @@ public class DatePickerDialogFragment extends BaseDialog {
         tmpList.removeAll(removeList);
         dateStartList = new ArrayList<>(new TreeSet<>(tmpList));
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
-        Log.d("setDateList", "setDateList performance: " + (System.currentTimeMillis() - time));
+        for (int i = 0; i < dateStartList.size(); i++)
+            Log.d("setDateList", "setDateList " + simpleDateFormat.format(new Date(TimeUtils.wrapToLong(dateStartList.get(i)))));
     }
 
     private static final int[] weekRes = {

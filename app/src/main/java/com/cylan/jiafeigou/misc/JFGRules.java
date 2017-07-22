@@ -220,6 +220,14 @@ public class JFGRules {
     /**
      * @deprecated 需要一并传入是否为共享账号
      */
+    public static boolean showSdcard(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "SD");
+    }
+
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showSight(int pid, boolean share) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "VIEWANGLE", share);
