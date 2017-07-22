@@ -948,6 +948,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
+        if (livePlayState == PLAY_STATE_PREPARE) return;
         if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
                 && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
