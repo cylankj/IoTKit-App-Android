@@ -176,7 +176,7 @@ public class DatePickerDialogFragment extends BaseDialog {
         long time = System.currentTimeMillis();
         //去重
         ArrayList<Long> tmpList = new ArrayList<>(dateList);
-        ArrayList<Long> removeList = new ArrayList<>(dateList);
+        ArrayList<Long> removeList = new ArrayList<>();
         HashMap<String, String> map = new HashMap<>();
         for (Long ll : tmpList) {
             final String date = TimeUtils.getSpecifiedDate(ll);
