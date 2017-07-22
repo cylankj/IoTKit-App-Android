@@ -1104,9 +1104,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void changeViewState() {
         layoutD.setVisibility(GONE);
-        liveViewWithThumbnail.showFlowView(false,null);
+        liveViewWithThumbnail.showFlowView(false, null);
         liveViewWithThumbnail.setThumbnail();
-        setHotSeatState(-1,false,false,false,false,false,false);
+        setHotSeatState(-1, false, false, false, false, false, false);
     }
 
     @Override
@@ -1139,7 +1139,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.showSdcard(device.pid)
+            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);
