@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.google.gson.Gson;
 
 import org.junit.Test;
@@ -197,6 +198,24 @@ public class DP {
         String ss = "eohgoewhgoewhgoewhgoehgoh";
         String s = ss.substring(3, ss.length() - 3);
         System.out.println(s);
+    }
+
+    @Test
+    public void patternTest() {
+        System.out.println(BindUtils.versionCompare("", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("(3.1.0.1011)", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.3.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("2.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "(3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.3.1011", "(3.0.0.1011)"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+        System.out.println(Integer.parseInt(""));
     }
 
 }

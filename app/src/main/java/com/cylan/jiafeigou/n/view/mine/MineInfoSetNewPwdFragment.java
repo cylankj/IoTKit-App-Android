@@ -77,6 +77,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setChineseExclude(etMineSetNewpwd, getResources().getInteger(R.integer.max_password_length));
+        etMineSetNewpwd.requestFocus();//默认为可输入状态
     }
 
     @Override
@@ -176,8 +177,8 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "bindPhoneStack")
-//                .addToBackStack("personalInformationFragment")
+                .add(android.R.id.content, fragment, "bindStack")
+                .addToBackStack("bindStack")
                 .commit();
     }
 
@@ -197,7 +198,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
 //                getActivity().getSupportFragmentManager().popBackStack();
 //            }
 //        }
-        getActivity().getSupportFragmentManager().popBackStack("bindPhoneStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getActivity().getSupportFragmentManager().popBackStack("bindStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 //        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
 //        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
 //        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");

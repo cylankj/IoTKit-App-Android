@@ -263,7 +263,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
         bundle.putString("useraccount", account);
         bundle.putString("token", PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                MineInfoSetNewPwdFragment.newInstance(bundle), android.R.id.content, "bindPhoneStack");
+                MineInfoSetNewPwdFragment.newInstance(bundle), android.R.id.content, "bindStack");
     }
 
     @Override

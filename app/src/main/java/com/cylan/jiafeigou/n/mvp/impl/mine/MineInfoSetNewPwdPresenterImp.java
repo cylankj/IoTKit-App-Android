@@ -17,7 +17,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -26,7 +25,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSetNewPwdContract.View> implements MineInfoSetNewPwdContract.Presenter {
 
-    private CompositeSubscription subscription;
     private boolean isOverTime = false;
 
     public MineInfoSetNewPwdPresenterImp(MineInfoSetNewPwdContract.View view) {
@@ -96,21 +94,13 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
     @Override
     public void start() {
         super.start();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        } else {
-            subscription = new CompositeSubscription();
-            subscription.add(registerBack());
-            subscription.add(timeOverCount());
-        }
+        addSubscription(registerBack());
+        addSubscription(timeOverCount());
     }
 
     @Override
     public void stop() {
         super.stop();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
     }
 
 }

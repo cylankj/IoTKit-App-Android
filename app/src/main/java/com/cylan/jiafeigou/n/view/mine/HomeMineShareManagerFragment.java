@@ -126,7 +126,7 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
                     (DialogInterface dialog, int which) -> {
                         Bundle bundle = new Bundle();
                         MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
-                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content, "bindPhoneStack");
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content, "bindStack");
                     }, getString(R.string.CANCEL), null, false);
         }
     }

@@ -237,6 +237,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     vsLayoutWheel.showNext();
                                     livePlayState = PLAY_STATE_STOP;
                                     setLoadingState(PLAY_STATE_STOP, null);
+                                    findViewById(R.id.tv_live).setVisibility(VISIBLE);
+                                    findViewById(R.id.v_flag).setVisibility(VISIBLE);
                                     AppLogger.d("需要展示 遮罩");
                                 }
                             }, throwable -> {
@@ -951,7 +953,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
-        if (type == TYPE_HISTORY && timestamp != 0
+        boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
+        if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
                 && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
             //移动导航条
@@ -1313,6 +1316,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         vsLayoutWheel.showNext();
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);
+                        findViewById(R.id.tv_live).setVisibility(VISIBLE);
+                        findViewById(R.id.v_flag).setVisibility(VISIBLE);
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);

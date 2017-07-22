@@ -870,6 +870,39 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
                 //	0 未知, 1 没卡, 2 user'account PIN, 3 user'account PUK, 4 network PIN, 5 正常
                 break;
+            case DpMsgMap.ID_204_SDCARD_STORAGE:
+                DpMsgDefine.DPSdStatus status = null;
+                DpMsgDefine.DPSdStatusInt statusInt = null;
+                try {
+                    status = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        statusInt = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                if (status == null && statusInt != null) {
+                    status = new DpMsgDefine.DPSdStatus();
+                    status.hasSdcard = statusInt.hasSdcard == 1;
+                    status.err = statusInt.err;
+                    status.used = statusInt.used;
+                    status.total = statusInt.total;
+                }
+                if (status == null) {
+                    status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
+                            .$(204, new DpMsgDefine.DPSdStatus());
+                }
+                if (status == null) status = new DpMsgDefine.DPSdStatus();
+                String detailInfo = basePresenter.getDetailsSubTitle(getContext(), status.hasSdcard, status.err);
+                if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
+                    svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
+                } else
+                    svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
+                LoadingDialog.dismissLoading(getSupportFragmentManager());
+                break;
         }
     }
 

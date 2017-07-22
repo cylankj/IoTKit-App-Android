@@ -295,11 +295,8 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSdHd(int pid, String version) {
-        boolean has = BaseApplication.getAppComponent().getProductProperty().hasProperty(pid, "SD/HD");
-        String minVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "MinVersion");
-        if (TextUtils.isEmpty(minVersion)) minVersion = "1.0.0.0";
-        if (TextUtils.isEmpty(version)) version = "1.0.0.1";
-        return BindUtils.versionCompare(version, minVersion) >= 0 && has;
+        String propertyVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
+        return BindUtils.versionCompare(propertyVersion, version) >= 0;
     }
 
     /**
@@ -456,6 +453,11 @@ public class JFGRules {
     public static int getOSType(String content) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
         return productProperty.getOSType(content);
+    }
+
+    public static boolean hasWarmSound(int pid) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        return productProperty.hasProperty(pid,"WARMSOUND");
     }
 
     public static class PlayErr {

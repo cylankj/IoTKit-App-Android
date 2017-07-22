@@ -230,7 +230,7 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     @OnClick({R.id.tv_dialog_btn_left, R.id.tv_dialog_btn_right})
     public void onClick(View view) {
-        try {
+        try {//#115932 可能会有 indexOutOf 异常,这里直接 catch 掉,以免崩溃
             switch (view.getId()) {
                 case R.id.tv_dialog_btn_right:
                     dismiss();

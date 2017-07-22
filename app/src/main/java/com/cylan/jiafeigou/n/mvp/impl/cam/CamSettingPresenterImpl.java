@@ -338,7 +338,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         if (rsp != null && rsp.dpList.size() > 0) {
                             for (JFGDPMsg dp : rsp.dpList) {
                                 try {
-                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.uuid)) {
+                                    if (dp.id == 204 && TextUtils.equals(uuid, rsp.uuid)) {
                                         DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
                                         return Observable.just(sdStatus);
                                     }

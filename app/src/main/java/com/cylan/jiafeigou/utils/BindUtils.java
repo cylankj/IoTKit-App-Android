@@ -19,6 +19,7 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotExist;
@@ -169,21 +170,44 @@ public class BindUtils {
      * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
      */
     public static int versionCompare(String str1, String str2) {
-        String[] vals1 = str1.split("\\.");
-        String[] vals2 = str2.split("\\.");
-        int i = 0;
-        // set index to first non-equal ordinal or length of shortest version string
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
-            i++;
+        if (str1 == null) str1 = "0";
+        if (str2 == null) str2 = "0";
+        Pattern pattern = Pattern.compile("\\d+");
+        List<String> str1Result = new ArrayList<>();
+        List<String> str2Result = new ArrayList<>();
+        Matcher matcher = pattern.matcher(str1);
+        while (matcher.find()) {
+            str1Result.add(matcher.group());
         }
-        // compare first non-equal ordinal number
-        if (i < vals1.length && i < vals2.length) {
-            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
-            return Integer.signum(diff);
+        matcher = pattern.matcher(str2);
+        while (matcher.find()) {
+            str2Result.add(matcher.group());
         }
-        // the strings are equal or one string is a substring of the other
-        // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
-        return Integer.signum(vals1.length - vals2.length);
+        if (str1Result.size() == 0) return -1;
+        for (int i = 0; i < str1Result.size(); i++) {
+            if (str2Result.size() < i || str2Result.size() == 0) return 1;
+            int version1 = Integer.parseInt(str1Result.get(i));
+            int version2 = Integer.parseInt(str2Result.get(i));
+            if (version1 == version2) continue;
+            return Integer.signum(version1 - version2);
+        }
+        return 0;
+////        pattern.matcher(str1).find()
+//        String[] vals1 = str1.split("\\.");
+//        String[] vals2 = str2.split("\\.");
+//        int i = 0;
+//        // set index to first non-equal ordinal or length of shortest version string
+//        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+//            i++;
+//        }
+//        // compare first non-equal ordinal number
+//        if (i < vals1.length && i < vals2.length) {
+//            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
+//            return Integer.signum(diff);
+//        }
+//        // the strings are equal or one string is a substring of the other
+//        // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
+//        return Integer.signum(vals1.length - vals2.length);
     }
 
     //setDevice by hunt 2016-08-05

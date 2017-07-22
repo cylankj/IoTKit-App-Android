@@ -1,12 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,7 +62,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public boolean checkNewPasswordLength(String newPass) {
-        return (newPass.length() < 6 || newPass.length() > 12);
+        return (newPass.length() < 6 || newPass.length() > ContextUtils.getContext().getResources().getInteger(R.integer.max_password_length));
     }
 
     /**

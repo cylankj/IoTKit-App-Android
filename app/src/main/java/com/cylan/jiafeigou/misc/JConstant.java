@@ -274,7 +274,7 @@ public class JConstant {
     public static int getMessageIcon(int pid) {
         if (JFGRules.isRS(pid) && !JFGRules.isBell(pid))
             return R.drawable.me_icon_head_camera_ruishi;
-        if (JFGRules.isCatEeyBell(pid)) return R.drawable.me_icon_head_magnetometer;
+        if (JFGRules.isCatEeyBell(pid)) return R.drawable.me_icon_intelligent_eye;
         if (JFGRules.isBell(pid)) return R.drawable.me_icon_head_ring;
         if (JFGRules.isPan720(pid)) return R.drawable.me_icon_head_720camera;
         if (JFGRules.isCamera(pid)) return R.drawable.me_icon_head_camera;

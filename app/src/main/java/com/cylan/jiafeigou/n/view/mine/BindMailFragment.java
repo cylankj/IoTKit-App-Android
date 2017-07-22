@@ -147,6 +147,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         if (account != null) {
             customToolbar.setToolbarLeftTitle(TextUtils.isEmpty(account.getEmail()) ? getString(R.string.Tap0_BindEmail) : getString(R.string.CHANGE_EMAIL));
         }
+        mETMailBox.requestFocus();
     }
 
     private void initMailEdit() {
@@ -188,7 +189,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
             //返回上一个fragment
             case R.id.tv_toolbar_icon:
                 IMEUtils.hide((Activity) getContext());
-                getActivity().getSupportFragmentManager().popBackStack("bindMailStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getActivity().getSupportFragmentManager().popBackStack("bindStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
             //绑定邮箱
             case R.id.tv_toolbar_right:
@@ -250,7 +251,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         bundle.putString(MineReSetMailTip.KEY_MAIL, getEditText());
         MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, android.R.id.content);
+                fragment, android.R.id.content, "bindStack");
         IMEUtils.hide(getActivity());
     }
 
@@ -263,7 +264,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         bundle.putString("token", "");
         MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, android.R.id.content, "bindPhoneStack");
+                fragment, android.R.id.content, "bindStack");
     }
 
 }

@@ -281,24 +281,48 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        hideStatusBar();
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
+        muteAudio(true);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        muteAudio(false);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.setVolume(0, 0);
             mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
-
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
             AppLogger.d("finish manually");
+            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
         }
 
-        muteAudio(false);
+
         presenter.cancelViewer();
-        finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+
     }
+
 
     private void clearHeadSetEventReceiver() {
         if (headsetPlugReceiver != null) {
@@ -352,11 +376,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onBackPressed();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        hideStatusBar();
-    }
 
     /**
      * 初始化 Layer层view，横屏全屏时候，需要在上层
@@ -385,14 +404,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onRelease(int side) {
         if (side == 0) {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            if (mediaPlayer != null) {
                 mediaPlayer.setVolume(0, 0);
                 mediaPlayer.stop();
             }
             presenter.dismiss();
         } else {
-            if (mediaPlayer != null && mediaPlayer.isPlaying())
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.setVolume(0, 0);
                 mediaPlayer.stop();
+            }
             presenter.pickup();
         }
     }
