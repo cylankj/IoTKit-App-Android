@@ -63,12 +63,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.d("OnReportJfgDevices" + gson.toJson(jfgDevices));
-        for (JFGDevice device : jfgDevices) {
-            if (device.uuid.contains("0209")) {
-                device.alias = "hunt";
-                device.pid = 50;
-            }
-        }
+//        for (JFGDevice device : jfgDevices) {
+//            if (device.uuid.contains("0839")) {
+//                device.alias = "hunt";
+//                device.pid = 50;
+//            }
+//        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
     }
 
@@ -181,7 +181,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnResult(JFGResult jfgResult) {
         RxBus.getCacheInstance().post(jfgResult);
-        AppLogger.i("jfgResult ["+jfgResult.event +":"+ jfgResult.code+"]");
+        AppLogger.i("jfgResult [" + jfgResult.event + ":" + jfgResult.code + "]");
     }
 
     @Override

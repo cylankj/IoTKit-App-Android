@@ -1139,7 +1139,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.showSdcard(device.pid)
+            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);

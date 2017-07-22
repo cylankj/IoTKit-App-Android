@@ -295,8 +295,14 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSdHd(int pid, String version, boolean share) {
-        String propertyVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD", share);
-        return BindUtils.versionCompare(propertyVersion, version) >= 0;
+        String sdContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
+        if (TextUtils.isEmpty(sdContent) || TextUtils.equals(sdContent, "0"))
+            return false;
+        if (TextUtils.equals("1", sdContent)) return true;
+        sdContent = sdContent.replace("（", "")
+                .replace("）", "").replace(" ", "");
+        if (!sdContent.contains(".")) return false;
+        return BindUtils.versionCompare(version, sdContent) >= 0;
     }
 
     /**
@@ -409,7 +415,7 @@ public class JFGRules {
      */
     public static boolean hasProtection(int pid, boolean share) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        return productProperty.hasProperty(pid, "PROTECTION",false);
+        return productProperty.hasProperty(pid, "PROTECTION", false);
     }
 
     /**
@@ -417,7 +423,7 @@ public class JFGRules {
      */
     public static boolean hasHistory(int pid, boolean share) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        return productProperty.hasProperty(pid, "AUTORECORD",share);
+        return productProperty.hasProperty(pid, "AUTORECORD", share);
     }
 
     /**
