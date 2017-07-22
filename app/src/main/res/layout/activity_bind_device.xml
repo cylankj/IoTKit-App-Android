@@ -148,7 +148,7 @@
                 hunt:leftDrawable="@drawable/home_icon_intelligent_eye"
                 hunt:rightDrawable="@drawable/icon_mine_arrow_next"
                 hunt:text="@string/Smart_Door_Viewer"
-                hunt:textColor="@color/color_383838"
+                hunt:textColor="@color/color_666666"
                 hunt:textSize="@dimen/sp16" />
 
 
