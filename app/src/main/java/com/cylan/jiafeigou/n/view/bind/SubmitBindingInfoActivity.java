@@ -58,7 +58,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         this.basePresenter = new SubmitBindingInfoImpl(this, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
         adjustViewSize();
         customToolbar.setBackAction(v -> {
-            onBackPressed();
+//            onBackPressed();
         });
         if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
                 && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
