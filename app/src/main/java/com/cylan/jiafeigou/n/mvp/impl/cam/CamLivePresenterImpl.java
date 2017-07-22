@@ -749,16 +749,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     getHotSeatStateMaintainer().saveRestore();
                     switchInterface = true;
                     AppLogger.i("停止播放 live 并开始播放Histtory: " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, time * 1000));
-                }
-                /*else if (getLiveStream().type == TYPE_HISTORY
-                        && (getLiveStream().playState == PLAY_STATE_PREPARE
-                        || getLiveStream().playState == PLAY_STATE_PLAYING)) {//前一刻是,历史录像而且是playing
-                    AppLogger.d("不需要 停止播放历史视频");
-                    getHotSeatStateMaintainer().saveRestore();
-                    ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(false, time);
-                    switchInterface = true;
-                }*/
-                else {
+                } else {
                     AppLogger.i("play history state? " + getLiveStream().playState);
                     getHotSeatStateMaintainer().saveRestore();
                     ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
