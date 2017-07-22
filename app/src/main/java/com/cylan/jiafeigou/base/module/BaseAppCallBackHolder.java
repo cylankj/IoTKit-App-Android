@@ -64,7 +64,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.d("OnReportJfgDevices" + gson.toJson(jfgDevices));
 //        for (JFGDevice device : jfgDevices) {
-//            if (device.uuid.contains("0839")) {
+//            if (device.uuid.contains("0209")) {
 //                device.alias = "hunt";
 //                device.pid = 50;
 //            }
