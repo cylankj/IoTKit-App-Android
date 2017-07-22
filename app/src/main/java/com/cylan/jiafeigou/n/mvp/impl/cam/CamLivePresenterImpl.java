@@ -747,13 +747,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     switchInterface = true;
                     AppLogger.i("stop play live !");
                 }
-                AppLogger.i("play history  " +JfgUtils.date2String(JfgUtils.DetailedDateFormat,getLiveStream().time*1000));
+                AppLogger.i("play history  " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, getLiveStream().time * 1000));
                 getHotSeatStateMaintainer().saveRestore();
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().canNewCall(true);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i("play history video: "+ uuid + " ret:" + ret + ",switchInterface:" + switchInterface);
+                AppLogger.i("play history video: " + uuid + " ret:" + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
@@ -777,8 +777,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.newThread())
                 .flatMap((String s) -> {
                     try {
-                        getHotSeatStateMaintainer().reset();
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
+                        getHotSeatStateMaintainer().reset();
                         updateLiveStream(getLiveStream().type, -1, reasonOrState);
                         BaseBellCallEventListener.getInstance().canNewCall(true);
                         AppLogger.i("stopPlayVideo:" + s);
@@ -1211,7 +1211,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          */
         private void disableAudio() {
             dump("disableAudio");
-            setupLocalAudio(false, false, false, false);
+            setupLocalAudio(false, false);
 //            Observable.just("reset")
 //                    .subscribeOn(Schedulers.io())
 //                    .subscribe(ret -> {
@@ -1238,17 +1238,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                     if (playType == TYPE_HISTORY)
                                         micOn = false;
                                     //设置客户端声音
-                                    boolean result = setupLocalAudio(micOn, micOn || speakerOn,
-                                            micOn || speakerOn, micOn);
+                                    boolean result = setupLocalAudio(micOn, micOn || speakerOn);
                                     if (result) {
                                         //设置设备的声音
-                                        setupRemoteAudio(micOn, micOn || speakerOn,
-                                                micOn, micOn);
+                                        setupRemoteAudio(micOn, micOn || speakerOn);
                                         //设置成功
                                     } else {
                                         micOn = false;
-                                        setupRemoteAudio(micOn, micOn || speakerOn,
-                                                micOn, micOn);
+                                        setupRemoteAudio(micOn, micOn || speakerOn);
                                     }
                                     dump("restore?" + result);
                                     if (result || (!micOn && !speakerOn)) {
@@ -1287,18 +1284,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             micOn = !micOn;
 
                             //设置客户端声音
-                            boolean result = setupLocalAudio(micOn, micOn || speakerOn,
-                                    micOn || speakerOn, micOn);
+                            boolean result = setupLocalAudio(micOn, micOn || speakerOn);
                             if (result) {
                                 //设置设备的声音
-                                setupRemoteAudio(micOn, micOn || speakerOn,
-                                        micOn, micOn);
+                                setupRemoteAudio(micOn, micOn || speakerOn);
                                 //设置成功
 //                                speakerOn = tmpSpeaker;
                             } else {
                                 micOn = false;
-                                setupRemoteAudio(micOn, micOn || speakerOn,
-                                        micOn, micOn);
+                                setupRemoteAudio(micOn, micOn || speakerOn);
                             }
                             return Observable.just(result);
                         })
@@ -1323,11 +1317,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .flatMap(ret -> {
                             //操作speaker的时候,本地的mic是关闭的.
                             speakerOn = !speakerOn;
-                            boolean result = setupLocalAudio(micOn, speakerOn, speakerOn, micOn);
+                            boolean result = setupLocalAudio(micOn, speakerOn);
                             if (result) {
                                 //设置设备的声音
-                                setupRemoteAudio(micOn, speakerOn,
-                                        speakerOn, micOn);
+                                setupRemoteAudio(micOn, speakerOn);
                                 //说明已经有权限,并且设置成功
                                 dump("switchSpeaker");
                                 viewWeakReference.get().switchHotSeat(speakerOn, !micOn/*presenterWeakReference.get().getPlayType() == TYPE_LIVE*/,
@@ -1344,13 +1337,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             }
         }
 
-        private void setupRemoteAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
-            BaseApplication.getAppComponent().getCmd().setAudio(false, localSpeaker, localMic);
-            AppLogger.d(String.format(Locale.getDefault(), "remoteMic:%s,remoteSpeaker:%s", localSpeaker, localMic));
-            AppLogger.d("切换远程:mic:" + localSpeaker + ",speaker:" + localMic);
+
+        // 参数与实际调用不一定是正确的 // modify
+        private void setupRemoteAudio(boolean mic, boolean speaker) {
+            if (presenterWeakReference.get().getLiveStream().playState == PLAY_STATE_PLAYING) {
+                BaseApplication.getAppComponent().getCmd().setAudio(false, speaker, mic);
+                AppLogger.d(String.format(Locale.getDefault(), "remoteMic:%s,remoteSpeaker:%s", speaker, mic));
+                AppLogger.d("切换远程:mic:" + speaker + ",speaker:" + mic);
+            }
         }
 
-        private boolean setupLocalAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
+        private boolean setupLocalAudio(boolean localMic, boolean localSpeaker) {
             AppLogger.d(String.format(Locale.getDefault(), "localMic:%s,localSpeaker:%s", localMic, localSpeaker));
             MediaRecorder mRecorder = null;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {//这是为了兼容魅族4.4的权限
