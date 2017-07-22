@@ -1095,6 +1095,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
         post(() -> {
+            changeViewState();
             if (!connected) {
                 showHistoryWheel(false);
                 handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
@@ -1102,6 +1103,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 showHistoryWheel(true);
             }
         });
+    }
+
+    private void changeViewState(){
+        layoutD.setVisibility(GONE);
+        liveViewWithThumbnail.showFlowView(false,null);
+        setHotSeatState(-1,false,false,false,false,false,false);
     }
 
     @Override
