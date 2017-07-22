@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -174,7 +175,17 @@ public class DatePickerDialogFragment extends BaseDialog {
         AppLogger.i("count:" + (dateList.size()));
         long time = System.currentTimeMillis();
         //去重
-        dateStartList = new ArrayList<>(new TreeSet<>(dateList));
+        ArrayList<Long> tmpList = new ArrayList<>(dateList);
+        ArrayList<Long> removeList = new ArrayList<>(dateList);
+        HashMap<String, String> map = new HashMap<>();
+        for (Long ll : tmpList) {
+            final String date = TimeUtils.getSpecifiedDate(ll);
+            if (!map.containsKey(date)) {
+                map.put(date, date);
+            } else removeList.add(ll);
+        }
+        tmpList.removeAll(removeList);
+        dateStartList = new ArrayList<>(new TreeSet<>(tmpList));
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         Log.d("setDateList", "setDateList performance: " + (System.currentTimeMillis() - time));
     }
