@@ -1104,8 +1104,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void changeViewState() {
         layoutD.setVisibility(GONE);
-        liveViewWithThumbnail.showFlowView(false, null);
-        setHotSeatState(-1, false, false, false, false, false, false);
+        liveViewWithThumbnail.showFlowView(false,null);
+        liveViewWithThumbnail.setThumbnail();
+        setHotSeatState(-1,false,false,false,false,false,false);
     }
 
     @Override
