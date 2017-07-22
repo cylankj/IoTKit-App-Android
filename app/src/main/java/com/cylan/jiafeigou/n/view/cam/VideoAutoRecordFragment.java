@@ -208,7 +208,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         basePresenter = presenter;
     }
 
-    @OnClick({R.id.rb_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
+    @OnClick({R.id.lLayout_mode_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.lLayout_mode_motion: {
