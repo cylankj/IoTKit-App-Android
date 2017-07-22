@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget.video;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -152,6 +153,16 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
                         throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+    }
+
+
+    /**
+     * 显示黑色块。
+     */
+    public void setThumbnail(){
+        imgThumbnail.setVisibility(VISIBLE);
+        imgThumbnail.setImageResource(0);
+        imgThumbnail.setBackgroundColor(Color.BLACK);
     }
 
     @Override
