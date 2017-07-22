@@ -47,7 +47,12 @@ BaseJFGResultParser {
         return RxBus.getCacheInstance().toObservable(JFGResult.class)
                 .subscribeOn(Schedulers.io())
                 .retry((integer, throwable) -> true)
-                .subscribe(this::parserResult, AppLogger::e);
+                .subscribe(ret -> {
+                    try {
+                        parserResult(ret);
+                    } catch (Throwable throwable) {
+                    }
+                }, AppLogger::e);
     }
 
 

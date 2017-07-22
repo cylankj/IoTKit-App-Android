@@ -302,6 +302,14 @@ public class JFGRules {
     /**
      * @deprecated 需要一并传入是否为共享账号
      */
+    public static boolean showSdcard(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "SD");
+    }
+
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showBattery(int pid) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "battery");
@@ -457,7 +465,7 @@ public class JFGRules {
 
     public static boolean hasWarmSound(int pid) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        return productProperty.hasProperty(pid,"WARMSOUND");
+        return productProperty.hasProperty(pid, "WARMSOUND");
     }
 
     public static class PlayErr {

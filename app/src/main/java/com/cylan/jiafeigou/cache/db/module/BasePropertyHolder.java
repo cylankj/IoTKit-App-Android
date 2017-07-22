@@ -32,7 +32,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
             DPEntity entity = getProperty(msgId);
             V result = entity == null ? null : entity.getValue(defaultValue);
             return result == null ? defaultValue : result;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             AppLogger.e("unpack err::" + msgId);
             return defaultValue;
         }
