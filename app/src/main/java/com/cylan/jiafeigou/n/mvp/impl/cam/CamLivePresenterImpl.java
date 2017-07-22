@@ -478,15 +478,17 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             try {
                 int ret;
                 boolean switchInterface = false;
-                if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PLAYING) {
-//                    ret = BaseApplication.getAppComponent().getCmd().switchVideoMode(true, 0);
+                if (getLiveStream().playState == PLAY_STATE_PLAYING && getLiveStream().type == TYPE_LIVE) {
+                    return null; // 直播中了，你还点什么？
+                }
+
+                // 历史播放中，需要停止
+                if (getLiveStream().playState == PLAY_STATE_PLAYING && getLiveStream().type == TYPE_HISTORY) {
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);  // 先停止播放
                     switchInterface = true;
-                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
-
-                } else {
-                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 }
+                ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+
                 AppLogger.d("play video ret :" + ret + "," + switchInterface);
 
                 // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
@@ -503,9 +505,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return null;
         }).subscribe(objectObservable -> {
             AppLogger.d("播放流程走通 done,不在这个环节获取历史视频");
-//            if (historyDataProvider == null || historyDataProvider.getDataCount() == 0) {
-//                fetchHistoryDataList();//播放成功后,才拉取历史录像
-//            }
         }, AppLogger::e), "beforePlayObservable");
     }
 
@@ -745,20 +744,16 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (getLiveStream().type == TYPE_LIVE && (getLiveStream().playState == PLAY_STATE_PREPARE
                         || getLiveStream().playState == PLAY_STATE_PLAYING)) {
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
-                    getHotSeatStateMaintainer().saveRestore();
                     switchInterface = true;
-                    AppLogger.i("停止播放 live 并开始播放Histtory: " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, time * 1000));
-                } else {
-                    AppLogger.i("play history state? " + getLiveStream().playState);
-                    getHotSeatStateMaintainer().saveRestore();
-                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
+                    AppLogger.i("stop play live !");
                 }
-
+                AppLogger.i("play history  " +JfgUtils.date2String(JfgUtils.DetailedDateFormat,getLiveStream().time*1000));
+                getHotSeatStateMaintainer().saveRestore();
+                ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().canNewCall(true);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i(String.format("play history video:%s,%s ", uuid, JfgUtils.date2String(JfgUtils.DetailedDateFormat, time * 1000)) + " " + ret + ",switchInterface:" + switchInterface);
+                AppLogger.i("play history video: "+ uuid + " ret:" + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
@@ -769,7 +764,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     public Observable<Boolean> stopPlayVideo(int reasonOrState) {
-        AppLogger.w("pre play state: " + liveStream);
+        AppLogger.d("pre play state: " + liveStream);
         if (liveStream == null || liveStream.playState == PLAY_STATE_IDLE
                 || liveStream.playState == PLAY_STATE_STOP)
             return Observable.just(false);
