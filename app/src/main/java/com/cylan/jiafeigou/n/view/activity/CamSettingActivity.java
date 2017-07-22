@@ -55,7 +55,6 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -128,8 +127,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svSettingDeviceLogo;
 
     private String uuid;
-    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
-    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
+//    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
+//    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
     private SimpleDialogFragment mClearRecordFragment;
 
     @Override
@@ -193,8 +192,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
 
     private void jumpDetail(boolean animation) {
-        initInfoDetailFragment();
-        DeviceInfoDetailFragment fragment = informationWeakReference.get();
+
+        DeviceInfoDetailFragment fragment = DeviceInfoDetailFragment.newInstance(null);
         fragment.setCallBack((Object t) -> {
             deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
         });
@@ -247,10 +246,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.sv_setting_device_auto_record: {
                 Device device = DataSourceManager.getInstance().getDevice(uuid);
 
-                initVideoAutoRecordFragment();
+//                initVideoAutoRecordFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-                VideoAutoRecordFragment fragment = videoAutoRecordFragmentWeakReference.get();
+                VideoAutoRecordFragment fragment = VideoAutoRecordFragment.newInstance(bundle);
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
@@ -492,20 +491,20 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
 
-    private void initInfoDetailFragment() {
-        //should load
-        if (informationWeakReference == null || informationWeakReference.get() == null) {
-            informationWeakReference = new WeakReference<>(DeviceInfoDetailFragment.newInstance(null));
-        }
-    }
+//    private void initInfoDetailFragment() {
+//        //should load
+//        if (informationWeakReference == null || informationWeakReference.get() == null) {
+//            informationWeakReference = new WeakReference<>(DeviceInfoDetailFragment.newInstance(null));
+//        }
+//    }
 
 
-    private void initVideoAutoRecordFragment() {
-        //should load
-        if (videoAutoRecordFragmentWeakReference == null || videoAutoRecordFragmentWeakReference.get() == null) {
-            videoAutoRecordFragmentWeakReference = new WeakReference<>(VideoAutoRecordFragment.newInstance(null));
-        }
-    }
+//    private void initVideoAutoRecordFragment() {
+//        //should load
+//        if (videoAutoRecordFragmentWeakReference == null || videoAutoRecordFragmentWeakReference.get() == null) {
+//            videoAutoRecordFragmentWeakReference = new WeakReference<>(VideoAutoRecordFragment.newInstance(null));
+//        }
+//    }
 
     private void initFirmwareHint(Device device) {
         try {
@@ -542,7 +541,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
         ////////////////////////standby////////////////////////////////////////////
         DpMsgDefine.DPStandby dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
-        if (!JFGRules.showStandbyItem(device.pid)) {
+        if (!JFGRules.showStandbyItem(device.pid, false)) {
             svSettingDeviceStandbyMode.setVisibility(View.GONE);
         } else {
             svSettingDeviceStandbyMode.setChecked(dpStandby.standby);
@@ -580,7 +579,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             });
         }
         /////////////////////////////led/////////////////////////////////////
-        if (JFGRules.showLedIndicator(device.pid)) {
+        if (JFGRules.showLedIndicator(device.pid, false)) {
             if (!dpStandby.standby) {
                 boolean ledTrigger = device.$(209, false);
                 svSettingDeviceLedIndicator.setChecked(ledTrigger);
@@ -606,7 +605,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
-        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileNet(device.pid, false) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
@@ -620,7 +619,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             });
         }
         /////////////////////////////////110v//////////////////////////////////
-        if (JFGRules.showNTSCVLayout(device.pid)) {
+        if (JFGRules.showNTSCVLayout(device.pid, false)) {
             boolean state = device.$(216, false);
             sbtnSetting110v.setChecked(state);
             sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -632,7 +631,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSetting110v.setVisibility(View.GONE);
 
         /////////////////////////旋转/////////////////////////////////////////
-        if (!JFGRules.showRotate(device.pid)) {
+        if (!JFGRules.showRotate(device.pid, false)) {
             svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
             int state = device.$(DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
@@ -655,13 +654,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(DelayRecordActivity.class.getSimpleName());
         svSettingDeviceDelayCapture.showRedHint(node != null && node.getNodeCount() > 0);
 
-        sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid) ? View.VISIBLE : View.GONE);
+        sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid, false) ? View.VISIBLE : View.GONE);
         try {
             String dpPrimary = device.$(509, "1");
             sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
         } catch (Exception e) {
         }
-        if (JFGRules.showSight(device.pid)) {
+        if (JFGRules.showSight(device.pid, false)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
             try {
                 String dpPrimary = device.$(509, "1");
@@ -675,7 +674,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
 
         //有线模式
-        svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid) ? View.VISIBLE : View.GONE);
+        svSettingDeviceWiredMode.setVisibility(JFGRules.showWiredMode(device.pid, false) ? View.VISIBLE : View.GONE);
         boolean wiredModeEnable = device.$(225, 0) == 1;
         svSettingDeviceWiredMode.setEnabled(wiredModeEnable);
         boolean wiredModeOnline = device.$(226, 0) == 1;
@@ -704,7 +703,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             //wifi配置开启,,关闭
             svSettingDeviceWifi.setEnabled(false);
         });
-        svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid) ? View.VISIBLE : View.GONE);
+        svSettingDeviceSoftAp.setVisibility(JFGRules.showSoftAp(device.pid, false) ? View.VISIBLE : View.GONE);
         //总的条件:相同的ssid名字
         if (JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             //待机不可用

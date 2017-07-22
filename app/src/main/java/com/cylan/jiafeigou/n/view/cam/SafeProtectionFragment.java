@@ -13,14 +13,17 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
@@ -61,6 +64,8 @@ import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Presenter>
         implements SafeInfoContract.View {
 
+    @BindView(R.id.tv_motion_detection_title)
+    TextView tvMotionDetectionTitle;
     @BindView(R.id.sw_motion_detection)
     SettingItemView1 swMotionDetection;
     @BindView(R.id.lLayout_safe_container)
@@ -77,6 +82,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView0 fLayoutProtectionEndTime;
     @BindView(R.id.fLayout_protection_repeat_period)
     SettingItemView0 fLayoutProtectionRepeatPeriod;
+    @BindView(R.id.fl_protection_title)
+    FrameLayout flProtectionTitle;
+    @BindView(R.id.ll_24_record_container)
+    LinearLayout ll24RecordContainer;
     private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     //    private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
@@ -173,6 +182,25 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         });
     }
 
+    /**
+     * @Deprecated 需要根据设备属性表
+     */
+    private void showDetail(boolean show) {
+        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        boolean protection = property.hasProperty(device.pid, "PROTECTION");
+        boolean warmsound = property.hasProperty(device.pid, "WARMSOUND");
+
+        tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
+        flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);
+
+        swMotionDetection.setVisibility(protection ? View.VISIBLE : View.GONE);
+        fLayoutProtectionSensitivity.setVisibility(protection && show ? View.VISIBLE : View.GONE);
+        fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
+
+        ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -180,20 +208,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         View view = inflater.inflate(R.layout.fragment_safe_protection, container, false);
         ButterKnife.bind(this, view);
         return view;
-    }
-
-    private void showDetail(boolean show) {
-        final int count = lLayoutSafeContainer.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = lLayoutSafeContainer.getChildAt(i);
-            if (v.getId() == R.id.sw_motion_detection) continue;//不要隐藏自己了
-            if (v instanceof SettingItemView0 || v instanceof FrameLayout) {
-                v.setVisibility(show ? View.VISIBLE : View.GONE);
-            }
-        }
-        fLayoutProtectionWarnEffect.setVisibility(JFGRules.hasWarmSound(device.pid)?View.VISIBLE:View.GONE);
-//        if (show && device != null && JFGRules.hasWarmSound(device.pid)) {
-//        }
     }
 
     @Override

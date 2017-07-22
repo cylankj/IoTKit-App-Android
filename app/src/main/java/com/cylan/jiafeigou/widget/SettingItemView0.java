@@ -101,6 +101,10 @@ public class SettingItemView0 extends RelativeLayout {
         switchButton.setChecked(state);
     }
 
+    public void setSwitcherVisibility(int visibility) {
+        switchButton.setVisibility(visibility);
+    }
+
     public CharSequence getSubTitle() {
         return tvSubTitle.getText();
     }
@@ -118,9 +122,9 @@ public class SettingItemView0 extends RelativeLayout {
     }
 
     public void setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener listener) {
-        if (listener != null) {
-            switchButton.setOnCheckedChangeListener(listener);
-        }
+//        if (listener != null) {
+        switchButton.setOnCheckedChangeListener(listener);
+//        }
     }
 
     public void setChecked(boolean checked) {

@@ -21,7 +21,11 @@ public interface IProperty {
      */
     boolean hasProperty(int pidOrOs, String tag);
 
+    boolean hasProperty(int pidOrOs, String tag, boolean share);
+
     String property(int pidOrOs, String tag);
+
+    String property(int pidOrOs, String tag, boolean share);
 
     /**
      * cam or bell

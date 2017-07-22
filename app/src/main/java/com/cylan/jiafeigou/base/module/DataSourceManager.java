@@ -706,8 +706,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public int getLoginState() {
-        JFGAccount account = this.getJFGAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) {
+        JFGAccount account = this.getJFGAccount();if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return 0;//无账号
         } else {
             return PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, 0);

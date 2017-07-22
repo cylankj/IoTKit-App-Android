@@ -31,7 +31,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
     public boolean checkCondition() {
         if (portrait == null) throw new IllegalArgumentException("portrait == null 报错");
         //不支持固件升级
-        if (!JFGRules.showFirmware(portrait.getPid())) return false;
+        if (!JFGRules.showFirmware(portrait.getPid(), false)) return false;
         //分享设备
         if (JFGRules.isShareDevice(portrait.getCid())) return false;
         //当前网络不行

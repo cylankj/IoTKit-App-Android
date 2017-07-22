@@ -304,7 +304,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.setLiveView(videoView);
         initSightSetting(presenter);
         //分享用户不显示
-        boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid);
+        boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid, false);
         View flipPort = findViewById(R.id.layout_port_flip);
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         //要根据设备属性表决定是否显示加载历史视频的按钮
@@ -519,7 +519,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
-            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
+            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, cVersion, false) ? VISIBLE : GONE);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
@@ -555,7 +555,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
             streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING &&
-                    JFGRules.showSdHd(pid, cVersion) ? VISIBLE : GONE);
+                    JFGRules.showSdHd(pid, cVersion, false) ? VISIBLE : GONE);
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);
@@ -795,7 +795,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
         }
         //历史录像显示
-        boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid);
+        boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid, false);
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && isLand ? VISIBLE : GONE);
 //        findViewById(R.id.v_divider).setVisibility(showFlip && isLand ? VISIBLE : INVISIBLE);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
@@ -1150,13 +1150,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         Device device = sourceManager.getDevice(uuid);
-        if (JFGRules.hasHistory(device.pid) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
+        if (JFGRules.hasHistory(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
             LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
             if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
                 LiveShowCase.showHistoryWheelCase((Activity) getContext(), findViewById(R.id.layout_e));
             }
         }
-        if (JFGRules.hasProtection(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
+        if (JFGRules.hasProtection(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {
             LiveShowCase.showSafeCase((Activity) getContext(), layoutD);
         }
     }

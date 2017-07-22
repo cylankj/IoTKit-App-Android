@@ -11,8 +11,8 @@
 
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
@@ -25,6 +25,7 @@
         hunt:ct_title_color="@color/color_white" />
 
     <TextView
+        android:id="@+id/tv_motion_detection_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/x20"
@@ -61,6 +62,7 @@
         hunt:sv_title="@string/SOUNDS" />
 
     <FrameLayout
+        android:id="@+id/fl_protection_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -75,31 +77,37 @@
             android:textSize="@dimen/sp15" />
     </FrameLayout>
 
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/fLayout_protection_start_time"
+    <LinearLayout
+        android:id="@+id/ll_24_record_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        hunt:sv_title="@string/FROME"
-        hunt:sv_v_divider="true" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/fLayout_protection_end_time"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        hunt:sv_title="@string/TO"
-        hunt:sv_v_divider="true" />
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/fLayout_protection_start_time"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y54"
+            android:layout_marginLeft="@dimen/x10"
+            android:layout_marginRight="@dimen/x10"
+            hunt:sv_title="@string/FROME"
+            hunt:sv_v_divider="true" />
 
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/fLayout_protection_repeat_period"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        hunt:sv_title="@string/REPEAT" />
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/fLayout_protection_end_time"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y54"
+            android:layout_marginLeft="@dimen/x10"
+            android:layout_marginRight="@dimen/x10"
+            hunt:sv_title="@string/TO"
+            hunt:sv_v_divider="true" />
 
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/fLayout_protection_repeat_period"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y54"
+            android:layout_marginLeft="@dimen/x10"
+            android:layout_marginRight="@dimen/x10"
+            hunt:sv_title="@string/REPEAT" />
 
+    </LinearLayout>
 </LinearLayout>

@@ -107,7 +107,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             }
         }
         //2 电量
-        if (mDevice != null && JFGRules.isDeviceOnline(net) && JFGRules.showBattery(mDevice.pid)) {//设备在线才显示电量
+        if (mDevice != null && JFGRules.isDeviceOnline(net) && JFGRules.showBattery(mDevice.pid, false)) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
             if (battery < 20 && (JFGRules.isBell(mDevice.pid) || JFGRules.isFreeCam(mDevice.pid))) {//门铃和freeCam 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
@@ -200,7 +200,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         }
         //2 电量
 //        DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        if (mDevice != null && JFGRules.showBattery(mDevice.pid) && JFGRules.isDeviceOnline(mDevice.$(201,
+        if (mDevice != null && JFGRules.showBattery(mDevice.pid, false) && JFGRules.isDeviceOnline(mDevice.$(201,
                 new DpMsgDefine.DPNet()))) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
             if (battery < 20) {//电量低于20%在线显示

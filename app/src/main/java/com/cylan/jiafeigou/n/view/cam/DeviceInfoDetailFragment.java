@@ -126,15 +126,20 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean showBattery = JFGRules.showBattery(device != null ? device.pid : 0);
+        boolean showBattery = JFGRules.showBattery(device != null ? device.pid : 0, false);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
         //全景不显示固件升级 显示软件版本
-        tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid) ? View.VISIBLE : View.GONE);
-        boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0);
+        tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid, false) ? View.VISIBLE : View.GONE);
+        boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0, false);
         //固件升级,分享设备不显示
         rlHardwareUpdate.setVisibility(showFU ? View.VISIBLE : View.GONE);
-        tvDeviceIp.setVisibility(JFGRules.showIp(device.pid) ? View.VISIBLE : View.GONE);
+        tvDeviceIp.setVisibility(JFGRules.showIp(device.pid, false) ? View.VISIBLE : View.GONE);
+
+
+        //控制时区显示与隐藏
+        tvDeviceTimeZone.setVisibility(JFGRules.showTimeZone(device != null ? device.pid : 0, false) ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
@@ -160,10 +165,12 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
         //是否显示移动网络
         boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
-        tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid) ? View.VISIBLE : View.GONE);
+        tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid, false) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
-        boolean showTimezone = getArguments().getBoolean(JConstant.KEY_SHOW_TIME_ZONE, true);
+
+        //控制时区显示与隐藏
+        boolean showTimezone = JFGRules.showTimeZone(device.pid, false);
         if (showTimezone) {
             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
             if (zone != null)
@@ -214,6 +221,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceSoftwareVersion.setTvSubTitle(softWare);
         //ip地址
         tvDeviceIp.setTvSubTitle(JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet())) ? device.$(227, "") : "");
+
+
     }
 
     private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {

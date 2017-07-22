@@ -187,7 +187,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(this.getClass().getSimpleName());
                 boolean result = hasNewFirmware();
                 boolean newNode = false;
-                if (JFGRules.hasHistory(this.device.pid) && JFGRules.hasProtection(this.device.pid)) {
+                if (JFGRules.hasHistory(this.device.pid, false) && JFGRules.hasProtection(this.device.pid, false)) {
                     newNode = node != null && node.getTraversalCount() > 0;
                 }
                 //延时摄影，暂时隐藏。

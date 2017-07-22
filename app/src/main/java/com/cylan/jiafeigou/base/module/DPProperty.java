@@ -24,10 +24,18 @@ public class DPProperty {
         return propertyLevel;
     }
 
+    @Deprecated
     public boolean accept(DPDevice device) {
         if (devices == null) return false;
         return devices.contains(device);//以后有时间在搞
     }
+
+//    public boolean accept(int pidOrOs) {
+//        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+//
+//        return property.hasProperty(pidOrOs,)
+//    }
+
 
     public DPProperty(Class<?> type, int propertyLevel, DPDevice... devices) {
         this.type = type;

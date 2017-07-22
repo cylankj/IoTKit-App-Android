@@ -60,6 +60,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     RadioButton rbNever;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.lLayout_mode_motion)
+    SettingItemView0 siv_mode_motion;
+    @BindView(R.id.lLayout_mode_24_hours)
+    SettingItemView0 siv_mode_24_hours;
+    @BindView(R.id.lLayout_mode_never)
+    SettingItemView0 siv_mode_never;
     private String uuid;
     private int oldOption;
 
@@ -109,26 +115,38 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (JFGRules.isFreeCam(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid))) {
-            rb24Hours.setVisibility(View.GONE);
-            view.findViewById(R.id.lLayout_mode_24_hours).setVisibility(View.GONE);
-        }
+        IProperty property = BaseApplication.getAppComponent().getProductProperty();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        boolean record24 = property.hasProperty(device.pid, "24RECORD");
+
+        rb24Hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_24_hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
+
+        boolean isRSBell = JFGRules.isRsBell(device.pid);
+        siv_mode_never.setVisibility(isRSBell ? View.GONE : View.VISIBLE);
+        rbNever.setVisibility(isRSBell ? View.GONE : View.VISIBLE);
+        siv_mode_motion.setSwitcherVisibility(isRSBell ? View.VISIBLE : View.GONE);
+
+        rbMotion.setVisibility(isRSBell ? View.GONE : View.VISIBLE);
+
         DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean isRs = JFGRules.isRS(device.pid);
-        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
+        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs && !isRSBell ? 2 : -1);
 
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!alarm) oldOption = -1;
-
-        rbMotion.setChecked(oldOption == 0);
-        rb24Hours.setChecked(oldOption == 1);
-        rbNever.setChecked(oldOption == 2);
-        IProperty property = BaseApplication.getAppComponent().getProductProperty();
-
+        if (!isRSBell) {
+            rbMotion.setChecked(oldOption == 0);
+            rb24Hours.setChecked(oldOption == 1);
+            rbNever.setChecked(oldOption == 2);
+        }
+        AppLogger.d("");
+        siv_mode_motion.setOnCheckedChangeListener(null);
+        siv_mode_motion.setChecked(oldOption == 0);
+        siv_mode_motion.setOnCheckedChangeListener(this::onSwitcherModeMotion);
         if (property.hasProperty(device.pid, "VIDEO")) {
             rlAlarmSettingContainer.setVisibility(View.GONE);
             rlWatchVideoContainer.setVisibility(View.VISIBLE);
@@ -140,6 +158,26 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         }
         onSDCardSync(status);
         sivWatchVideoSwitcher.setOnCheckedChangeListener(this::clickWatchVideoSwitcher);
+    }
+
+    private void onSwitcherModeMotion(CompoundButton button, boolean checked) {
+        AppLogger.d("Aaaaaaaaaaaaaaaaa");
+        if (checked) {
+            if (!hasSdcard()) {//先提示没有 sd卡再提示关闭移动侦测
+                ToastUtil.showToast(getString(R.string.has_not_sdcard));
+                siv_mode_motion.setChecked(false);
+                return;
+            }
+            if (!alarmDisable()) {
+                siv_mode_motion.setChecked(false);
+                openAlarm(0);
+                return;
+            }
+        }
+        DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+        oldOption = flag.value = checked ? 0 : -1;
+        if (oldOption == -1) oldOption = 2;
+        basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
     }
 
     private void clickWatchVideoSwitcher(CompoundButton button, boolean checked) {
@@ -170,7 +208,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         basePresenter = presenter;
     }
 
-    @OnClick({R.id.lLayout_mode_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
+    @OnClick({R.id.rb_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.lLayout_mode_motion: {
@@ -232,7 +270,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     if (index == 1)
                         rb24Hours.setChecked(true);
-                    else rbMotion.setChecked(true);
+                    else {
+                        rbMotion.setChecked(true);
+                        siv_mode_motion.setChecked(true);
+                    }
                     DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                     flag.value = index;
                     basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);

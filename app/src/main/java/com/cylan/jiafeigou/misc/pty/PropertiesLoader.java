@@ -26,6 +26,7 @@ public class PropertiesLoader implements IProperty {
     }
 
     private PropertyFile propertyFile;
+    private PropertyFile sharePropertyFile;
 
     @Override
     public void initialize() {
@@ -38,47 +39,104 @@ public class PropertiesLoader implements IProperty {
             AppLogger.e("initialize failed: " + e.getLocalizedMessage());
             throw new IllegalArgumentException("properties.json文件有错");
         }
+        final String shareContent = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
+                "properties.json");
+        try {
+            sharePropertyFile = new Gson().fromJson(shareContent, PropertyFile.class);
+            AppLogger.d("load properties: " + content.length() + "," + sharePropertyFile.getVersion());
+        } catch (Exception e) {
+            AppLogger.e("initialize failed: " + e.getLocalizedMessage());
+            throw new IllegalArgumentException("properties.json文件有错");
+        }
     }
 
     @Override
     public boolean hasProperty(int pidOrOs, String tag) {
+        return hasProperty(pidOrOs, tag, false);
+    }
+
+    @Override
+    public boolean hasProperty(int pidOrOs, String tag, boolean share) {
         tag = tag.toUpperCase();
-        if (propertyFile == null) return false;
-        final int count = ListUtils.getSize(propertyFile.getpList());
-        //每次遍历,效率比较低,有待优化
-        for (int i = 0; i < count; i++) {
-            Map<String, String> map = propertyFile.getpList().get(i);
-            final String pid = map.get("PID");
-            final String os = map.get("OS");
-            if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
-                final String tagValue = map.get(tag);
-                return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+        if (share) {
+            if (sharePropertyFile == null) return false;
+            final int count = ListUtils.getSize(sharePropertyFile.getpList());
+            //每次遍历,效率比较低,有待优化
+            for (int i = 0; i < count; i++) {
+                Map<String, String> map = propertyFile.getpList().get(i);
+                final String pid = map.get("PID");
+                final String os = map.get("OS");
+                if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
+                    final String tagValue = map.get(tag);
+                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                }
+                if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + "")) {
+                    final String tagValue = map.get(tag);
+                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                }
             }
-            if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + "")) {
-                final String tagValue = map.get(tag);
-                return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+            return false;
+        } else {
+            if (propertyFile == null) return false;
+            final int count = ListUtils.getSize(propertyFile.getpList());
+            //每次遍历,效率比较低,有待优化
+            for (int i = 0; i < count; i++) {
+                Map<String, String> map = propertyFile.getpList().get(i);
+                final String pid = map.get("PID");
+                final String os = map.get("OS");
+                if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
+                    final String tagValue = map.get(tag);
+                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                }
+                if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + "")) {
+                    final String tagValue = map.get(tag);
+                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                }
             }
+            return false;
         }
-        return false;
     }
 
     @Override
     public String property(int pidOrOs, String tag) {
-        tag = tag.toUpperCase();
-        if (propertyFile == null) return "";
-        final int count = ListUtils.getSize(propertyFile.getpList());
-        //效率比较低,有待优化
-        for (int i = 0; i < count; i++) {
-            Map<String, String> map = propertyFile.getpList().get(i);
-            final String pid = map.get("PID");
-            final String os = map.get("OS");
-            if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
-                return map.get(tag);
+        return property(pidOrOs, tag, false);
+    }
+
+    @Override
+    public String property(int pidOrOs, String tag, boolean share) {
+        if (share) {
+            tag = tag.toUpperCase();
+            if (sharePropertyFile == null) return "";
+            final int count = ListUtils.getSize(sharePropertyFile.getpList());
+            //效率比较低,有待优化
+            for (int i = 0; i < count; i++) {
+                Map<String, String> map = sharePropertyFile.getpList().get(i);
+                final String pid = map.get("PID");
+                final String os = map.get("OS");
+                if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
+                    return map.get(tag);
+                }
+                if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + ""))
+                    return map.get(tag);
             }
-            if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + ""))
-                return map.get(tag);
+            return "";
+        } else {
+            tag = tag.toUpperCase();
+            if (propertyFile == null) return "";
+            final int count = ListUtils.getSize(propertyFile.getpList());
+            //效率比较低,有待优化
+            for (int i = 0; i < count; i++) {
+                Map<String, String> map = propertyFile.getpList().get(i);
+                final String pid = map.get("PID");
+                final String os = map.get("OS");
+                if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
+                    return map.get(tag);
+                }
+                if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + ""))
+                    return map.get(tag);
+            }
+            return "";
         }
-        return "";
     }
 
     @Override
@@ -105,5 +163,4 @@ public class PropertiesLoader implements IProperty {
         return 0;
 
     }
-
 }
