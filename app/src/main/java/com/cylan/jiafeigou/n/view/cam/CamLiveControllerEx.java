@@ -1092,12 +1092,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         post(() -> {
             changeViewState();
             if (!connected) {
-                showHistoryWheel(false);
+//                showHistoryWheel(false);
                 removeCallbacks(landHideRunnable);  // 取消播放后延时显示的任务
                 removeCallbacks(portHideRunnable);  //取消播放后延时显示的任务
                 handlePlayErr(presenter, JFGRules.PlayErr.ERR_NETWORK);
             } else {
-                showHistoryWheel(true);
+//                showHistoryWheel(true);
             }
         });
     }
@@ -1425,6 +1425,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void hideHistoryWheel() {
         presenter.getHistoryDataProvider().clean();
         historyWheelHandler.dateUpdate();
-        layoutE.setVisibility(INVISIBLE);
+//        layoutE.setVisibility(INVISIBLE);
     }
 }

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.splash;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -197,7 +199,8 @@ public class BeforeLoginFragment extends Fragment {
                     }, 500);
 
                 }
-            }).setNegativeButton(getString(R.string.CANCEL), null);
+                IMEUtils.hide(getActivity());
+            }).setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> IMEUtils.hide(getActivity()));
             builder.setCancelable(false);
             builder.show();
         }
