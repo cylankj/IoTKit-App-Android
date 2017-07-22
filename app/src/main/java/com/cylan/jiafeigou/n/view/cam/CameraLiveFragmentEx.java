@@ -232,6 +232,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (type.type == TYPE_HISTORY && accept()) {
                 type.type = TYPE_LIVE;
                 basePresenter.updateLiveStream(type);
+                AppLogger.i("TextView click start play!");
                 basePresenter.startPlay();
             }
         });
@@ -420,7 +421,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }, AppLogger::e);
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
             } else {
-                AppLogger.i("start play!!1");
+                AppLogger.i("start play!!");
                 if (prePlayType.type == TYPE_HISTORY) {
                     basePresenter.startPlayHistory(prePlayType.time * 1000L);
                 } else {

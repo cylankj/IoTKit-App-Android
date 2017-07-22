@@ -478,12 +478,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             try {
                 int ret;
                 boolean switchInterface = false;
-                if (getLiveStream().playState == PLAY_STATE_PLAYING && getLiveStream().type == TYPE_LIVE) {
-                    return null; // 直播中了，你还点什么？
-                }
-
-                // 历史播放中，需要停止
-                if (getLiveStream().playState == PLAY_STATE_PLAYING && getLiveStream().type == TYPE_HISTORY) {
+                // 历史播放中，需要停止,不能保证上次是播放的是历史还是直播，所以直接断开。
+                if (getLiveStream().playState == PLAY_STATE_PLAYING) {
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);  // 先停止播放
                     switchInterface = true;
                 }
