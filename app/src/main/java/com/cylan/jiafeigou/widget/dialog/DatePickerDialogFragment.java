@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,7 +173,8 @@ public class DatePickerDialogFragment extends BaseDialog {
         if (dateList == null || dateList.size() == 0) return;
         AppLogger.i("count:" + (dateList.size()));
         long time = System.currentTimeMillis();
-        dateStartList = new ArrayList<>(dateList);
+        //去重
+        dateStartList = new ArrayList<>(new TreeSet<>(dateList));
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         Log.d("setDateList", "setDateList performance: " + (System.currentTimeMillis() - time));
     }
@@ -236,13 +238,13 @@ public class DatePickerDialogFragment extends BaseDialog {
                     dismiss();
 
                     final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(tmp));
+                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(tmp));
                     break;
                 case R.id.tv_dialog_btn_left:
                     dismiss();
 
                     final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    Log.d("finalTime", "finalTime: " + TimeUtils.getTimeSpecial(finalTime));
+                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(finalTime));
                     if (action != null && finalTime != timeFocus) {
                         action.onDialogAction(view.getId(), finalTime);
                     }

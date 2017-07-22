@@ -295,8 +295,22 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean showSdHd(int pid, String version) {
-        String propertyVersion = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
-        return BindUtils.versionCompare(propertyVersion, version) >= 0;
+        String sdContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "SD/HD");
+        if (TextUtils.isEmpty(sdContent) || TextUtils.equals(sdContent, "0"))
+            return false;
+        if (TextUtils.equals("1", sdContent)) return true;
+        sdContent = sdContent.replace("（", "")
+                .replace("）", "").replace(" ", "");
+        if (!sdContent.contains(".")) return false;
+        return BindUtils.versionCompare(version, sdContent) >= 0;
+    }
+
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
+    public static boolean showSdcard(int pid) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
+                "SD");
     }
 
     /**
@@ -457,7 +471,7 @@ public class JFGRules {
 
     public static boolean hasWarmSound(int pid) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        return productProperty.hasProperty(pid,"WARMSOUND");
+        return productProperty.hasProperty(pid, "WARMSOUND");
     }
 
     public static class PlayErr {

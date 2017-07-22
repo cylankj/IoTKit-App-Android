@@ -471,12 +471,25 @@ public class RxBusTest {
     @Test
     public void testTimeout1() throws InterruptedException {
 
+        RxBus.getCacheInstance().toObservable(String.class)
+                .timeout(20, TimeUnit.MILLISECONDS)
+                .flatMap(new Func1<String, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(String s) {
+                        return Observable.just(s);
+                    }
+                })
+                .subscribe(ret -> {
+                    System.out.println("w:" + ret);
+                });
+
         Observable.concat(RxBus.getCacheInstance().toObservable(Integer.class),
                 RxBus.getCacheInstance().toObservable(String.class)
                         .timeout(500, TimeUnit.MILLISECONDS))
                 .subscribe(ret -> {
                     System.out.println("wa:" + ret);
                 });
+        Thread.sleep(500);
         RxBus.getCacheInstance().post(20);
         RxBus.getCacheInstance().post("1110000");
         RxBus.getCacheInstance().post("111");

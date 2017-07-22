@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
@@ -213,6 +214,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
                         return;
                     }
+                    if (status.err != 0) {
+                        ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
+                        return;
+                    }
                     AppLogger.d("点击加载历史视频");
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
                     livePlayState = PLAY_STATE_PREPARE;
@@ -308,9 +313,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         View flipPort = findViewById(R.id.layout_port_flip);
         flipPort.setVisibility(showFlip ? VISIBLE : INVISIBLE);
         //要根据设备属性表决定是否显示加载历史视频的按钮
-        View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);//115762 ,无网络不显示历史录像按钮
-
         findViewById(R.id.layout_land_flip).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(showFlip && MiscUtils.isLand() ? VISIBLE : GONE);
         //是否显示清晰度切换
@@ -840,9 +842,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
 
-//        //需要根据设备属性表来决定是否显示和隐藏加载历史视频的按钮
-        View btn = findViewById(R.id.btn_load_history);
-        btn.setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : GONE);
         layoutE.setLayoutParams(lp);
         resetAndPrepareNextAnimation(isLand);
     }
@@ -954,7 +953,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
             //移动导航条
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
-            historyWheelHandler.setNav2Time(timestamp * 1000);
+            historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
         }
     }
 
@@ -1004,10 +1003,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
-            post(() -> {
-                setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+            setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
 //                prepareLayoutDAnimation(state == STATE_FINISH);//正在查看历史视频时， 拖动时间轴视频画面不显示暂停的按钮
-            });
         });
         findViewById(R.id.tv_cam_live_land_bottom).setVisibility(VISIBLE);
     }
@@ -1105,7 +1102,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         });
     }
 
-    private void changeViewState(){
+    private void changeViewState() {
         layoutD.setVisibility(GONE);
         liveViewWithThumbnail.showFlowView(false,null);
         liveViewWithThumbnail.setThumbnail();
@@ -1141,12 +1138,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
-            layoutE.findViewById(R.id.btn_load_history).setVisibility(JFGRules.showHistoryBtn(device) ? VISIBLE : INVISIBLE);
             layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.hasSdcard(device.$(204, new DpMsgDefine.DPSdStatus()))
+            layoutE.setVisibility(judge && !JFGRules.isShareDevice(device) && JFGRules.showSdcard(device.pid)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
-//            showUseCase();
         }, 100);
     }
 

@@ -649,8 +649,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     if (dpStandby.standby) return false;//待机模式
                     if (NetUtils.getJfgNetType() == 0) {
                         //客户端断网了
-                        stopPlayVideo(ERR_NETWORK).subscribe(ret -> {
-                        }, AppLogger::e);
+                        stopPlayVideo(ERR_NETWORK)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .filter(ret -> mView != null)
+                                .subscribe(ret -> mView.onLiveStop(getLiveStream().type, ERR_NETWORK), AppLogger::e);
                         AppLogger.i("stop play  video for err network");
                         return false;
                     }

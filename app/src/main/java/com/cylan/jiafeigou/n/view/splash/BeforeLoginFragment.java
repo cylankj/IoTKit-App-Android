@@ -223,11 +223,11 @@ public class BeforeLoginFragment extends Fragment {
                 time = System.currentTimeMillis();
                 count++;
                 if (toast != null) toast.cancel();
-                if (count < 4) return false;
+                if (count < 6) return false;
                 toast = Toast.makeText(context, String.format("现在只需再执行%s步操作即可", 10 - count), Toast.LENGTH_SHORT);
-                toast.show();
+//                toast.show();
             }
-            if (count > 9) {
+            if (count > 15) {
                 time = 0;
                 count = 0;
                 return true;

@@ -422,7 +422,9 @@ public class TimeUtils {
     }
 
     public static long wrapToLong(long time) {
-        return time * 1000L;
+        if (time == 0) return 0;
+        long ret = System.currentTimeMillis() / time;
+        return ret * time;
     }
 
 }

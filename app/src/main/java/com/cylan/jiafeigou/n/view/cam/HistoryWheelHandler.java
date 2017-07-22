@@ -131,7 +131,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                         ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
                         return;
                     }
-                    AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate((Long) value) + "," + value);
+                    AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
                     if (datePickerListener != null)
                         datePickerListener.onPickDate((Long) value, STATE_FINISH);
                     loadSelectedDay((Long) value);
@@ -171,7 +171,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     public void setNav2Time(long time) {
-        superWheelExt.post(() -> superWheelExt.setPositionByTime(time));
+        superWheelExt.post(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time)));
     }
 
     public boolean isBusy() {
