@@ -371,8 +371,6 @@ public class DataSourceManager implements JFGSourceManager {
         ArrayList<JFGDPMsg> parameters = device.getQueryParams();
         JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
         for (int i = 0; i < parameters.size(); i++) {
-            //非常丑的方式过滤掉 实时dp
-            if (parameters.get(i).id == 204) parameters.get(i).id = 201;
             array[i] = parameters.get(i);
         }
         map.put(uuid, array);
