@@ -785,6 +785,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 findViewById(R.id.tv_live).setVisibility(VISIBLE);
                 findViewById(R.id.v_flag).setVisibility(VISIBLE);
             }
+            if (device != null && JFGRules.isShareDevice(device)) {
+                vsLayoutWheel.setVisibility(INVISIBLE);
+            }
         } else {
             if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
                 findViewById(R.id.tv_live).setVisibility(GONE);
