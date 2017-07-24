@@ -194,7 +194,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
                 superWheelExt.removeCallbacks(dragRunnable);
-                superWheelExt.postDelayed(dragRunnable, 400);
+//                superWheelExt.postDelayed(dragRunnable, 400);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
