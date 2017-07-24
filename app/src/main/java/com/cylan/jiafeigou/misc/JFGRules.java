@@ -228,6 +228,14 @@ public class JFGRules {
     /**
      * @deprecated 需要一并传入是否为共享账号
      */
+    public static boolean showSdcard(Device device) {
+        return BaseApplication.getAppComponent().getProductProperty().hasProperty(device.pid,
+                "SD") && !JFGRules.isShareDevice(device);
+    }
+
+    /**
+     * @deprecated 需要一并传入是否为共享账号
+     */
     public static boolean showSight(int pid, boolean share) {
         return BaseApplication.getAppComponent().getProductProperty().hasProperty(pid,
                 "VIEWANGLE", share);
@@ -417,7 +425,7 @@ public class JFGRules {
      */
     public static boolean hasProtection(int pid, boolean share) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        return productProperty.hasProperty(pid, "PROTECTION",false);
+        return productProperty.hasProperty(pid, "PROTECTION", false);
     }
 
     /**
@@ -425,7 +433,7 @@ public class JFGRules {
      */
     public static boolean hasHistory(int pid, boolean share) {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
-        return productProperty.hasProperty(pid, "AUTORECORD",share);
+        return productProperty.hasProperty(pid, "AUTORECORD", share);
     }
 
     /**

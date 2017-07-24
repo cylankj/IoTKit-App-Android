@@ -877,6 +877,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 Toast.makeText(getActivity(), getString(R.string.EMAIL_2), Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (fLayoutVerificationCodeInputBox.isShown()) {
+                ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
+                return;
+            }
         }
         //检测账号是否注册
         if (basePresenter != null)
@@ -923,6 +927,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onClickRegister(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
+                final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
+                if (!validPhoneNum) {
+                    ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
+                    return;
+                }
                 isRegetCode = true;
                 if (basePresenter != null)
                     basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));

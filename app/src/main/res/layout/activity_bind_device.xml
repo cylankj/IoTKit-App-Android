@@ -47,7 +47,7 @@
                     android:drawablePadding="@dimen/y5"
                     android:drawableTop="@drawable/icon_scan"
                     android:gravity="center"
-                    android:text="@string/Tap3_FriendsAdd_QR"
+                    android:text="@string/Add_Device_Scan_QR"
                     android:textColor="@color/color_333333" />
 
                 <TextView
