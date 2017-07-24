@@ -567,6 +567,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .duration(250)
                     .playOn(layoutD);
             if (!layoutE.isShown()) layoutE.setVisibility(VISIBLE);//
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            if (device != null && JFGRules.isShareDevice(device)) {
+                layoutE.setVisibility(INVISIBLE);
+            }
             YoYo.with(Techniques.SlideInUp)
                     .duration(250)
                     .playOn(layoutE);
