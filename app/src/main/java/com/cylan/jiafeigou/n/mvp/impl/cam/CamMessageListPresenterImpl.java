@@ -290,10 +290,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             if (JFGRules.isBell(device.pid)) {
                 entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
             } else if (JFGRules.isCamera(device.pid)) {
-                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.CAMERA_15_DAYS);
+                entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
             }
         } else {
-            entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.CAMERA_15_DAYS);
+            entity.setOption(DBOption.BaseDBOption.CamMultiDateOption.BELL_7_DAYS);
         }
         entity.setAction(DBAction.CAM_DATE_QUERY);
         try {

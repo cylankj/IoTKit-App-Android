@@ -33,6 +33,8 @@ import rx.schedulers.Schedulers;
 
 public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
 
+    private static final int DAYS = 7;
+
     public DPCamDateQueryTask() {
         if (sourceManager == null)
             sourceManager = BaseApplication.getAppComponent().getSourceManager();
@@ -46,7 +48,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(s -> {
                     long startTime = TimeUtils.getTodayStartTime();//当前时间
                     DBOption.CamMultiDateOption option = entity.option(DBOption.CamMultiDateOption.class);
-                    int queryDays = 15;
+                    int queryDays = DAYS;
                     if (option != null) {
                         queryDays = option.days;
                     }
@@ -84,7 +86,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     //已经是降序
                     long startTime = TimeUtils.getTodayStartTime();//今天凌晨时间戳
                     DBOption.CamMultiDateOption option = entity.option(DBOption.CamMultiDateOption.class);
-                    int queryDays = 15;
+                    int queryDays = DAYS;
                     if (option != null) {
                         queryDays = option.days;
                     }
@@ -115,7 +117,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     //今天凌晨时间戳。
                     long todayTimeStamp = TimeUtils.getTodayStartTime();
                     DBOption.CamMultiDateOption option = entity.option(DBOption.CamMultiDateOption.class);
-                    int queryDays = 15;
+                    int queryDays = DAYS;
                     if (option != null) {
                         queryDays = option.days;
                     }

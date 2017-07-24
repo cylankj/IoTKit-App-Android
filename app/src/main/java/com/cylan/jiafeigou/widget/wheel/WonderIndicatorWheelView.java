@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
@@ -86,6 +87,12 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                 Log.d("onBind", "onBind: " + layoutPosition);
             }
         };
+        mIndicatorList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.right = 50;
+            }
+        });
         mIndicatorList.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(this);
     }
