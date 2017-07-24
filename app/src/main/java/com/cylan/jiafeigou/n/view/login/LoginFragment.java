@@ -587,12 +587,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void verifyCodeResult(int code) {
         if (!isVisible())
             return;
-//        Toast.makeText(getActivity(), code == 0 ? "good" : "无效验证码", Toast.LENGTH_SHORT).show();
         if (code == JError.ErrorOK) {
             jump2NextPage();
         } else if (code == JError.ErrorSMSCodeTimeout) {
-//在BaseJFGResultParser中弹
-            //            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         } else {
@@ -788,6 +786,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (callback.jfgResult.code != 0) {
             boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
+
             if (registerWay == JConstant.REGISTER_BY_EMAIL) {
                 jump2NextPage();
                 AppLogger.d("jump_time:" + System.currentTimeMillis());
@@ -985,11 +984,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onDestroy() {
         super.onDestroy();
         clearSomeThing();
-////        SinaLogin.release();
-//        TencentInstance.release();
-//        TwitterInstance.release();
-//        FacebookInstance.release();
-////        OpenLoginHelper.release();
     }
 
     @Override

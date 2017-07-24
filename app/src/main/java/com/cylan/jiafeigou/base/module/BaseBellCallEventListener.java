@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -30,7 +31,7 @@ public class BaseBellCallEventListener {
     private Context appContext;
     private Map<String, String> urlMap = new HashMap<>();
     private static BaseBellCallEventListener instance;
-    private boolean canNewCall = true;
+    private String caller = null;
 
     public static BaseBellCallEventListener getInstance() {
         return instance;
@@ -58,7 +59,7 @@ public class BaseBellCallEventListener {
 
     private void makeNewCall(RxEvent.BellCallEvent callEvent) {
         //2、在直播界面查看直播时不拉起呼叫页面，在查看历史录像时拉起呼叫页面。
-        if (!canNewCall) return;
+        if (TextUtils.equals(callEvent.caller.cid, caller)) return;
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, callEvent.caller.cid);
@@ -83,8 +84,8 @@ public class BaseBellCallEventListener {
         return urlMap.get(cid);
     }
 
-    public void canNewCall(boolean newCall) {
-        this.canNewCall = newCall;
+    public void currentCaller(String caller) {
+        this.caller = caller;
     }
 
 }

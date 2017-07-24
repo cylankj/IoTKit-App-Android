@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.cache.db.module;
 
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -40,15 +41,7 @@ public class FeedBackBean implements Comparable<FeedBackBean> {
 
         FeedBackBean that = (FeedBackBean) o;
 
-        if (msgTime != that.msgTime) return false;
-        return content != null ? content.equals(that.content) : that.content == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = content != null ? content.hashCode() : 0;
-        result = 31 * result + (int) (msgTime ^ (msgTime >>> 32));
-        return result;
+        return msgTime == that.msgTime && TextUtils.equals(content, that.content) && viewType == that.viewType;
     }
 
     @Generated(hash = 270960145)

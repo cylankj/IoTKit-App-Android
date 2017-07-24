@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -87,6 +88,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
         JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -169,7 +171,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateRedHint();
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        if (device == null || !device.available()) {
+            finish();//设备已经不存在了
+        } else {
+            this.device = device;
+            updateRedHint();
+        }
     }
 
     private void updateRedHint() {
@@ -356,48 +364,49 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
         }
     }
-}
 
-class SimpleAdapterPager extends FragmentPagerAdapter {
 
-    private String uuid;
-    private boolean justJump = false;
+    class SimpleAdapterPager extends FragmentPagerAdapter {
 
-    public SimpleAdapterPager(FragmentManager fm, String uuid) {
-        super(fm);
-        this.uuid = uuid;
-    }
+        private String uuid;
+        private boolean justJump = false;
 
-    @Override
-    public Fragment getItem(int position) {
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        if (position == 0) {
-            return CameraLiveFragmentEx.newInstance(bundle);
-        } else {
-            return CamMessageListFragment.newInstance(bundle);
+
+        public SimpleAdapterPager(FragmentManager fm, String uuid) {
+            super(fm);
+            this.uuid = uuid;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            if (position == 0) {
+                return CameraLiveFragmentEx.newInstance(bundle);
+            } else {
+                return CamMessageListFragment.newInstance(bundle);
+            }
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+        }
+
+        @Override
+        public int getCount() {
+            String shareAccount = device == null ? "" : device.shareAccount;
+            return !TextUtils.isEmpty(shareAccount) && device != null && JFGRules.isCamera(device.pid) ? 1 : 2;//共享门铃需要显示消息吗,115833
+        }
+
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) : ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
+        }
+
+        public void justJump(boolean jumpToMessage) {
+            this.justJump = jumpToMessage;
         }
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-    }
-
-    @Override
-    public int getCount() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        String shareAccount = device == null ? "" : device.shareAccount;
-//        return TextUtils.isEmpty(shareAccount) ? 2 : 1;
-        return !TextUtils.isEmpty(shareAccount) && device != null && JFGRules.isCamera(device.pid) ? 1 : 2;//共享门铃需要显示消息吗,115833
-    }
-
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) : ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
-    }
-
-    public void justJump(boolean jumpToMessage) {
-        this.justJump = jumpToMessage;
-    }
 }

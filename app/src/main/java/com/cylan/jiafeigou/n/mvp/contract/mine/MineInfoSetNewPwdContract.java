@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
-import rx.Subscription;
-
 /**
  * 作者：zsl
  * 创建时间：2016/12/28
@@ -28,17 +26,5 @@ public interface MineInfoSetNewPwdContract {
          * @param pwd
          */
         void openLoginRegister(String mail, String pwd, String token);
-
-        /**
-         * 注册回调
-         *
-         * @return
-         */
-        Subscription registerBack();
-
-        Subscription timeOverCount();
-
-        boolean checkIsOverTime();
-
     }
 }

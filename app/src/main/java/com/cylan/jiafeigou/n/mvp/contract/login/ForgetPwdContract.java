@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.login;
 
 import com.cylan.jiafeigou.n.mvp.BaseFragmentView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -14,6 +13,9 @@ public interface ForgetPwdContract {
 
         void onResult(int event, int errId);
 
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends BasePresenter {

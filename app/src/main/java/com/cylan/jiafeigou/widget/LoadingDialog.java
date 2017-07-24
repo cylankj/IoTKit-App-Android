@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.ButterKnife;
-import permissions.dispatcher.PermissionUtils;
 
 /**
  * Created by cylan-hunt on 16-10-27.

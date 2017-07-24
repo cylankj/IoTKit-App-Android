@@ -12,15 +12,12 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 ;
@@ -68,9 +65,6 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
-                    //非三方登录的标记
-                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                     return o;
                 })
                 .subscribe(ret -> {

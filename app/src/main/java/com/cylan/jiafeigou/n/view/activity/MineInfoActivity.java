@@ -370,7 +370,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         Bundle bundle = new Bundle();
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                bindPhoneFragment, android.R.id.content);
+                bindPhoneFragment, android.R.id.content, "bindStack");
         bindPhoneFragment.setOnChangePhoneListener(phone -> homeMineInfoBinding.svPhone.setTvSubTitle(phone));
     }
 

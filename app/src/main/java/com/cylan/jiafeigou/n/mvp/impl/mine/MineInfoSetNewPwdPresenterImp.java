@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -24,8 +23,6 @@ import rx.schedulers.Schedulers;
  * 描述：
  */
 public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSetNewPwdContract.View> implements MineInfoSetNewPwdContract.Presenter {
-
-    private boolean isOverTime = false;
 
     public MineInfoSetNewPwdPresenterImp(MineInfoSetNewPwdContract.View view) {
         super(view);
@@ -40,67 +37,27 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
      */
     @Override
     public void openLoginRegister(String account, String pwd, String token) {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
+        addSubscription(Observable.just("openLoginRegister")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
                     try {
-                        if (!TextUtils.isEmpty(token)) {
-                            int req = BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_PHONE, token);
-                            AppLogger.d("openLogin_bind_phone:" + req + " token:" + token);
-                        } else {
-                            BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_EMAIL, "");
-                        }
+                        AppLogger.d("openLoginRegister:" + token);
+                        int bindType = TextUtils.isEmpty(token) ? JConstant.TYPE_EMAIL : JConstant.TYPE_PHONE;
+                        String bindToken = TextUtils.isEmpty(token) ? "" : token;
+                        BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, bindType, bindToken);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                }, throwable -> {
-                    AppLogger.e("openLoginRegister" + throwable.getLocalizedMessage());
-                });
-    }
-
-    /**
-     * 注册回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription registerBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.OpenLogInSetPwdBack.class)
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.OpenLogInSetPwdBack.class).first())
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(openLogInSetPwdBack -> {
-                    if (openLogInSetPwdBack != null) {
-                        if (getView() != null)
-                            getView().registerResult(openLogInSetPwdBack.jfgResult.code);
-                    }
-                }, AppLogger::e);
+                .subscribe(result -> {
+                    getView().registerResult(result == null ? -1 : result.jfgResult.code);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                }));
     }
-
-    @Override
-    public Subscription timeOverCount() {
-        return Observable.just(null)
-                .delay(5, TimeUnit.MINUTES)
-                .subscribe(o -> {
-                    isOverTime = true;
-                }, throwable -> {
-                    AppLogger.e("timeOverCount_erro" + throwable.getLocalizedMessage());
-                });
-    }
-
-    @Override
-    public boolean checkIsOverTime() {
-        return isOverTime;
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        addSubscription(registerBack());
-        addSubscription(timeOverCount());
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-    }
-
 }
