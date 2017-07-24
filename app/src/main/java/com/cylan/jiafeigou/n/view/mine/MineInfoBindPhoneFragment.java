@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.misc.JError.ErrorAccountNotExist;
 
@@ -216,16 +215,16 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 //获取验证码点击
                 if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                     AppLogger.d("暂时去掉");
-                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                    if (jfgAccount != null && (TextUtils.equals(jfgAccount.getPhone(), getInputPhone()) ||
-                            TextUtils.equals(jfgAccount.getAccount(), getInputPhone()))) {
-                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
-                        return;
-                    }
+                    // TODO: 2017/7/24 以下这个判断有 bug
+//                    JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+//                    if (jfgAccount != null && (TextUtils.equals(jfgAccount.getPhone(), getInputPhone()) ||
+//                            TextUtils.equals(jfgAccount.getAccount(), getInputPhone()))) {
+//                        ToastUtil.showToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
+//                        return;
+//                    }
                     basePresenter.getVerifyCode(getInputPhone());
                     vCode = new VCode();
                     vCode.account = getInputPhone();
-                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                 } else {
                     ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
                 }
@@ -248,7 +247,6 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 } else {
                     basePresenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(),
                             getInputCheckCode());
-                    showLoadingDialog();
                 }
                 break;
         }
@@ -268,7 +266,6 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 
     @Override
     public void onResult(int event, int errId) {
-        LoadingDialog.dismissLoading(getFragmentManager());
         switch (event) {
             case JConstant.GET_SMS_BACK:
                 if (errId == JError.ErrorOK) {
@@ -298,33 +295,30 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
                 ToastUtil.showToast(getString(R.string.Request_TimeOut));
                 return;
         }
-        Observable.just(errId)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    switch (ret) {
-                        case JError.ErrorSMSCodeTimeout:
-                            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-                            break;
-                        case JError.ErrorSMSCodeNotMatch:
-                            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
-                            break;
-                        case JError.ErrorInvalidPass:
+
+        switch (errId) {
+            case JError.ErrorSMSCodeTimeout:
+                ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+                break;
+            case JError.ErrorSMSCodeNotMatch:
+                ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
+                break;
+            case JError.ErrorInvalidPass:
 //                            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
-                            break;
-                        case ErrorAccountNotExist:
+                break;
+            case ErrorAccountNotExist:
 //                            ToastUtil.showToast(getString(R.string.RET_ESHARE_ACCOUNT_NOT_EXIT));
-                            break;
-                        case JError.ErrorConnect:
-                            ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
-                            break;
-                        case JError.ErrorP2PSocket:
-                            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
-                            break;
-                        case JError.ErrorGetCodeTooFrequent:
-                            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
-                            break;
-                    }
-                }, AppLogger::e);
+                break;
+            case JError.ErrorConnect:
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
+                break;
+            case JError.ErrorP2PSocket:
+                ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+                break;
+            case JError.ErrorGetCodeTooFrequent:
+                ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                break;
+        }
     }
 
     @Override
@@ -352,23 +346,8 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
 
     @Override
     public void handlerCheckPhoneResult(RxEvent.CheckRegisterBack registerBack) {
-//        if (getInputPhone().equals(registerBack.account)) {
-//            ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
-//        } else {
-//            //发送验证码
-//            basePresenter.getCheckCode(getInputPhone());
-//        }
     }
 
-//    /**
-//     * 检测账号是否已经注册的结果
-//     *
-//     * @param checkAccountCallback
-//     */
-//    @Override
-//    public void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-//
-//    }
 
     /**
      * 校验短信验证码的结果
@@ -377,9 +356,10 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @Override
     public void handlerCheckCodeResult(RxEvent.ResultVerifyCode resultVerifyCode) {
-        if (resultVerifyCode.code == JError.ErrorOK) {
-            showLoadingDialog();
-            basePresenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+        if (resultVerifyCode == null) {
+            ToastUtil.showToast(getString(R.string.Request_TimeOut));
+        } else if (resultVerifyCode.code == JError.ErrorOK) {
+//            basePresenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
             hideLoadingDialog();
             ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
@@ -395,21 +375,20 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @Override
     public void handlerResetPhoneResult(int code) {
-        hideLoadingDialog();
         JFGAccount userinfo = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
         if (userinfo != null && !TextUtils.isEmpty(getInputPhone())) {
             if (code == JError.ErrorOK) {
-//                    if (basePresenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
-//                        //是三方登录
-//                        jump2SetPWDFragment(userinfo.getAccount());
-//                        return;
-//                    }
+                if (basePresenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
+                    //是三方登录
+                    jump2SetPWDFragment(userinfo.getAccount());
+                    return;
+                }
                 ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
                 if (getView() != null) {
                     if (changeAccListener != null) {
                         changeAccListener.onChange(getInputPhone());
                     }
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack("bindStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.SUBMIT_FAIL));

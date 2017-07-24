@@ -81,16 +81,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void setPresenter(MineInfoSetNewPwdContract.Presenter presenter) {
 
     }
@@ -120,13 +110,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
-
-                if (basePresenter.checkIsOverTime()) {
-                    ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
-                    //跳转到个人信息页
-                    jump2MineInfoFragment();
-                    return;
-                }
                 basePresenter.openLoginRegister(userAccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
@@ -150,8 +133,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     @Override
     public void registerResult(int code) {
         AppLogger.d("open_bind:" + code);
-        //just for test
-//        code = JError.ErrorOK;
         if (code == JError.ErrorOK) {
             IMEUtils.hide(getActivity());
             if (TextUtils.isEmpty(token)) {
@@ -192,47 +173,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment<MineInfoSetNewPwdCo
     }
 
     public void jump2MineInfoFragment() {
-//        if (getActivity() != null) {
-//            int count = getActivity().getSupportFragmentManager().getBackStackEntryCount();
-//            for (int i = 0; i < count; i++) {
-//                getActivity().getSupportFragmentManager().popBackStack();
-//            }
-//        }
         getActivity().getSupportFragmentManager().popBackStack("bindStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getActivity().getSupportFragmentManager().findFragmentByTag("personalInformationFragment");
-//        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
-//        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bindPhoneFragment");
-//        BindMailFragment mailBoxFragment = (BindMailFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mailBoxFragment");
-//
-//        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//        if (personalInfoFragment != null) {
-//            AppLogger.d("infoFrag不为空");
-//            if (setNewPwdFragment != null) {
-//                ft.remove(setNewPwdFragment);
-//            }
-//            if (mailBoxFragment != null) {
-//                ft.remove(mailBoxFragment);
-//                mailBoxFragment.getActivity().getSupportFragmentManager().popBackStack();
-//            }
-//            if (bindPhoneFragment != null) {
-//                ft.remove(bindPhoneFragment);
-//                bindPhoneFragment.getActivity().getSupportFragmentManager().popBackStack();
-//            }
-//            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                    , R.anim.slide_in_left, R.anim.slide_out_right)
-//                    .show(personalInfoFragment)
-//                    .commit();
-//        } else {
-//            AppLogger.d("infoFrag为空");
-//            HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
-//            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                    , R.anim.slide_in_left, R.anim.slide_out_right)
-//                    .add(android.R.id.content, fragment, "mineReSetMailTip")
-//                    .addToBackStack("personalInformationFragment")
-//                    .commit();
-//        }
-//        if (setNewPwdFragment != null) {
-//            ft.remove(setNewPwdFragment);
-//        }
+
     }
 }

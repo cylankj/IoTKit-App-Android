@@ -246,7 +246,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    BaseBellCallEventListener.getInstance().canNewCall(true);
+                    BaseBellCallEventListener.getInstance().currentCaller(null);
                     updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
                     getView().onLiveStop(getLiveStream().type, ret.code);
 //                    feedRtcp.stop();
@@ -457,7 +457,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
                 // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
 //                if (JFGRules.isBell(getDevice().pid)) {
-                BaseBellCallEventListener.getInstance().canNewCall(false);//查看直播时禁止呼叫
+                BaseBellCallEventListener.getInstance().currentCaller(uuid);//查看直播时禁止呼叫
 //                }
                 getHotSeatStateMaintainer().saveRestore();
                 AppLogger.i("play video: " + uuid + " " + ret);
@@ -551,7 +551,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .timeout(30, TimeUnit.SECONDS)
                 .doOnError(ret -> AppLogger.e("30s 超时了"))
                 .subscribe(ret -> {
-                    BaseBellCallEventListener.getInstance().canNewCall(true);
+                    BaseBellCallEventListener.getInstance().currentCaller(null);
                 }, AppLogger::e);
     }
 
@@ -718,7 +718,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 getHotSeatStateMaintainer().saveRestore();
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
-                BaseBellCallEventListener.getInstance().canNewCall(true);
+                BaseBellCallEventListener.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
                 AppLogger.i("play history video: " + uuid + " ret:" + ret + ",switchInterface:" + switchInterface);
             } catch (JfgException e) {
@@ -747,7 +747,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
                         getHotSeatStateMaintainer().reset();
                         updateLiveStream(getLiveStream().type, -1, reasonOrState);
-                        BaseBellCallEventListener.getInstance().canNewCall(true);
+                        BaseBellCallEventListener.getInstance().currentCaller(null);
                         AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());

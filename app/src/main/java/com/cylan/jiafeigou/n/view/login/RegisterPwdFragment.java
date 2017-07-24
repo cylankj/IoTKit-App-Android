@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -22,7 +21,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -139,7 +137,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
     private void autoLogin() {
         LoginAccountBean login = new LoginAccountBean();
         login.userName = PreferencesUtils.getString(JConstant.AUTO_LOGIN_ACCOUNT);
-        login.pwd = MD5Util.lowerCaseMD5(PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD));
+        login.pwd = PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD);//为什么要 MD5?存的时候没有 MD5
         boolean validEmailNum = JConstant.EMAIL_REG.matcher(login.userName).find();
         if (validEmailNum) {
             //发送验证邮件

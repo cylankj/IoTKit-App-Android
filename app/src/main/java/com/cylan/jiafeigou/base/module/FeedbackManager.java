@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -112,7 +113,7 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
                 .flatMap(feedBackBeans -> {
                     //排序过
                     if (feedBackBeans != null) {
-                        ArrayList<FeedBackBean> list = new ArrayList<>(new TreeSet<>(feedBackBeans));
+                        ArrayList<FeedBackBean> list = new ArrayList<>(new TreeSet<>(new HashSet<>(feedBackBeans)));
                         Collections.sort(list);
                         return Observable.just(list);
                     }

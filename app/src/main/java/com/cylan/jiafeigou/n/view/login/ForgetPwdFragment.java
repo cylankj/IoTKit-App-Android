@@ -250,15 +250,16 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
             presenter.getVerifyCode(ViewUtils.getTextViewContent(etForgetUsername));
-        showLoading();
     }
 
-    private void showLoading() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+    @Override
+    public void showLoading() {
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
     }
 
-    private void dismissLoading() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+    @Override
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @OnClick(R.id.iv_forget_clear_username)
@@ -313,7 +314,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                         AppLogger.d("提交账号与验证码:");
                     }
                 }
-                showLoading();
                 break;
             case JConstant.TYPE_EMAIL:
                 enableEditTextCursor(true);
@@ -491,53 +491,53 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void onResult(int event, final int errId) {
         if (!isAdded()) return;
         if (getView() != null) {
-            getView().post(() -> {
-                dismissLoading();
-                switch (event) {
-                    case JConstant.AUTHORIZE_MAIL:
-                        prepareMailView();
-                        break;
-                    case JConstant.AUTHORIZE_PHONE_SMS:
-                        if (errId == JError.ErrorOK) {
-                            tvForgetPwdSubmit.setEnabled(true);
-                            preparePhoneView();
-                        }
-                        break;
-                    case JConstant.GET_SMS_BACK:
-                        if (errId == JError.ErrorOK)
-                            start2HandleVerificationCode();
-                        break;
-                    case JFG_RESULT_VERIFY_SMS:
-                        if (errId == 0) {
-                            preparePhoneView();
-                        }
-                        break;
-                    case JConstant.CHECK_TIMEOUT:
-                        ToastUtil.showToast(getString(R.string.Request_TimeOut));
-                        break;
-                    case JResultEvent.JFG_RESULT_CHANGE_PASS:
-                        if (errId == JError.ErrorOK) {
-                            ToastUtil.showToast(getString(R.string.PWD_OK));
-                            ActivityUtils.justPop(getActivity());
-                        }
-                        break;
-                }
-                switch (errId) {
-                    case JError.ErrorAccountNotExist:
-                        ToastUtil.showToast(getString(R.string.INVALID_ACCOUNT));
-                        break;
-                    case JError.ErrorGetCodeTooFrequent:
-                        ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
-                        break;
-                    case JError.ErrorSamePass:
-                        ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
-                        break;
-                    case JError.ErrorSMSCodeTimeout: {
-                        ToastUtil.showToast(getString(R.string.INVALID_CODE));
-                        break;
+            switch (event) {
+                case JConstant.AUTHORIZE_MAIL:
+                    prepareMailView();
+                    break;
+                case JConstant.AUTHORIZE_PHONE_SMS:
+                    if (errId == JError.ErrorOK) {
+                        tvForgetPwdSubmit.setEnabled(true);
+                        preparePhoneView();
                     }
+                    break;
+                case JConstant.GET_SMS_BACK:
+                    if (errId == JError.ErrorOK)
+                        start2HandleVerificationCode();
+                    break;
+                case JFG_RESULT_VERIFY_SMS:
+                    if (errId == 0) {
+                        preparePhoneView();
+                    }
+                    break;
+                case JConstant.CHECK_TIMEOUT:
+                    ToastUtil.showToast(getString(R.string.Request_TimeOut));
+                    break;
+                case JResultEvent.JFG_RESULT_CHANGE_PASS:
+                    if (errId == JError.ErrorOK) {
+                        ToastUtil.showToast(getString(R.string.PWD_OK));
+                        ActivityUtils.justPop(getActivity());
+                    }
+                    break;
+            }
+            switch (errId) {
+                case JError.ErrorAccountNotExist:
+                    ToastUtil.showToast(getString(R.string.INVALID_ACCOUNT));
+                    break;
+                case JError.ErrorGetCodeTooFrequent:
+                    ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                    break;
+                case JError.ErrorSamePass:
+                    ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
+                    break;
+                case JError.ErrorSMSCodeTimeout: {
+                    ToastUtil.showToast(getString(R.string.INVALID_CODE));
+                    break;
                 }
-            });
+                case JError.ErrorSMSCodeNotMatch:
+                    ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
+                    break;
+            }
         }
     }
 
