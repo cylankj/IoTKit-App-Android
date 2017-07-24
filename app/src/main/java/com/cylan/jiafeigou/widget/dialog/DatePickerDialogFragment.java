@@ -170,6 +170,8 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+        Log.d("setTimeZone", "setTimeZone:" + TimeZone.getDefault());
+        Log.d("setTimeZone", "setTimeZone:" + timeZone);
         simpleDateFormat.setTimeZone(timeZone);
     }
 

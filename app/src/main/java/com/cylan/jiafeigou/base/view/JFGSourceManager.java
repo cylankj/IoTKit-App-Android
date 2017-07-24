@@ -57,6 +57,12 @@ public interface JFGSourceManager {
      */
     void syncAllProperty();
 
+    /**
+     * 刷新设备属性，首页需要
+     * ,手动刷
+     */
+    boolean syncAllProperty(String uuid);
+
     void syncHomeProperty();
 
     boolean isOnline();

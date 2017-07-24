@@ -666,7 +666,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 LiveShowCase.showHistoryWheelCase(getActivity(), camLiveControlLayer.findViewById(R.id.layout_e));
                 LiveShowCase.showHistoryCase((Activity) getContext(), camLiveControlLayer.findViewById(R.id.imgV_cam_zoom_to_full_screen));
             }
-            basePresenter.startPlay();
+//            basePresenter.startPlay();//加载完成,不需要播放了.
         }
     }
 

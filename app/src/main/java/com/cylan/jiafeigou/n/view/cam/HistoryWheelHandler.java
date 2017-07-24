@@ -3,12 +3,14 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -22,7 +24,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 import java.lang.ref.WeakReference;
-import java.util.TimeZone;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -41,10 +42,9 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     private CamLiveContract.Presenter presenter;
     private Context context;
     private ViewGroup landDateListContainer;
-    private RecyclerView recyclerView;
     private WeakReference<DatePickerDialogFragment> datePickerRef;
     private static final String TAG = "HistoryWheelHandler";
-    private TimeZone timeZone;
+    private String uuid;
 
     public HistoryWheelHandler(ViewGroup landDateListContainer, SuperWheelExt superWheel, CamLiveContract.Presenter presenter) {
         this.landDateListContainer = landDateListContainer;
@@ -52,13 +52,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         superWheelExt.setWheelRollListener(this);
         this.presenter = presenter;
         context = superWheel.getContext();
-        landDateListContainer.post(() -> {
-            recyclerView = (RecyclerView) landDateListContainer.findViewById(R.id.rv_land_date_list);
-        });
-    }
-
-    public void setTimeZone(TimeZone timeZone) {
-        this.timeZone = timeZone;
+        uuid = presenter.getUuid();
     }
 
     public void dateUpdate() {
@@ -138,7 +132,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 }
             });
         }
-        datePickerRef.get().setTimeZone(timeZone);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        datePickerRef.get().setTimeZone(JFGRules.getDeviceTimezone(device));
         datePickerRef.get().setTimeFocus(getWheelCurrentFocusTime());
         datePickerRef.get().setDateList(presenter.getFlattenDateList());
         datePickerRef.get().show(((FragmentActivity) context).getSupportFragmentManager(),

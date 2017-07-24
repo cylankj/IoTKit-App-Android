@@ -196,7 +196,7 @@ public class TimeUtilsTest {
         }
         System.out.println(TimeZone.getDefault().getRawOffset());
         getTimeFormat(-16200000);
-        getTimeFormat(36000000);
+        System.out.println(getTimeFormat(36000000));
     }
 
     private String getTimeFormat(int rawOffset) {
@@ -205,6 +205,18 @@ public class TimeUtilsTest {
         String factor = rawOffset > 0 ? "+" : "-";
         System.out.println(String.format(Locale.getDefault(), "GMT%s%02d:%02d", factor, hour, minute));
         return hour + ":" + minute;
+    }
+
+    @Test
+    public void testDate() {
+        long[] time = new long[]{
+                1500825602000L,
+                1500821908000L,
+                1500711433000L
+        };
+        for (int i = 0; i < time.length; i++) {
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date(time[i])));
+        }
     }
 
 }
