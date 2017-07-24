@@ -971,6 +971,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private String getTime(long time) {
+        if (liveTimeDateFormat == null)
+            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
         return liveTimeDateFormat.format(new Date(time));
     }
 

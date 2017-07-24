@@ -37,7 +37,6 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
 
     public static final String TAG = "SuperWheel:";
 
-    private int scrollState = SCROLL_STATE_IDLE;
     private SuperWheelExt superWheel;
     private GestureDetectorCompat gestureDetectorCompat;
     private OverScroller scroller;
@@ -90,16 +89,17 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         if (mask == MotionEvent.ACTION_CANCEL || mask == MotionEvent.ACTION_UP) {
             // Release the drag.
             isActionUp = true;
-
             isTouchDonw = false;
             mActivePointerId = INVALID_POINTER;
-            if (scrollState != SCROLL_STATE_SETTLING) {
-                if (scroller.isFinished()) {
-                    updateScrollStateIfRequired(SCROLL_STATE_IDLE);
-                }
+            boolean isFinish = scroller.isFinished();
+            if (SuperWheelExt.DEBUG)
+                Log.d(TAG, "onTouchEvent: up: " + "," + isFinish);
+            if (isFinish) {
+                moveDirection = MoveDirection.NONE;
+                updateScrollStateIfRequired(SCROLL_STATE_IDLE);
             }
             if (SuperWheelExt.DEBUG)
-                Log.d(TAG, "onTouchEvent: up");
+                Log.d(TAG, "onTouchEvent: up: " + "," + isFinish);
             return true;
         }
         switch (mask) {
@@ -201,11 +201,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
 
     private void updateScrollStateIfRequired(int newState) {
         Log.d(TAG, "updateScroll:" + dragOrFling + " state:" + newState + " moveDirection:" + moveDirection);
-//        if (dragOrFling == DragOrFling.FLING) {
         superWheel.autoSettle(newState, moveDirection);
-//        } else {//touch_up or dragging finish
-//            superWheel.autoSettle(newState, moveDirection);
-//        }
     }
 
     @IntDef({

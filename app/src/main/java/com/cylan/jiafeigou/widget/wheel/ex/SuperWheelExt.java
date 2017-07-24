@@ -60,10 +60,6 @@ public class SuperWheelExt extends View {
     private int dateTextWidth = 0;
     private Rect textRect;
 
-    /**
-     * 拖拽过程,一直回调返回时间
-     */
-    private boolean notifyAlways = true;
 
     private int LINE_HEIGHT_0 = 10;
     private int LINE_HEIGHT_1 = 25;
@@ -167,10 +163,6 @@ public class SuperWheelExt extends View {
             return totalCountInScreenSize;
         final int doubleScreenSize = (getMeasuredWidth() * 3) >> 1;
         return totalCountInScreenSize = (int) (doubleScreenSize / lineIntervalPx);
-    }
-
-    public void setNotifyAlways(boolean notifyAlways) {
-        this.notifyAlways = notifyAlways;
     }
 
     /**
@@ -355,8 +347,10 @@ public class SuperWheelExt extends View {
             tmpCurrentTime = timeCurrent;
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
             Log.d("timeCurrent", "timeCurrent: " + timeCurrent);
-            Log.d("timeCurrent", "timeTarget: " + timeTarget);
-            if (moveDirection != ITouchHandler.MoveDirection.NONE && idle) {
+            Log.d("timeCurrent", "timeTarget: " + timeTarget + "," + idle);
+            boolean next = moveDirection != ITouchHandler.MoveDirection.NONE && idle;
+            Log.d("timeCurrent", "next:" + next);
+            if (next) {
                 //开始吸附过程
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
@@ -364,11 +358,13 @@ public class SuperWheelExt extends View {
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);//回调的应该是 target 的
             } else {
-                if (notifyAlways && !idle && (wheelRollListener != null)) {
-                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
+                if (!idle && (wheelRollListener != null)) {
+                    boolean finish = touchHandler.isFinished();
+                    if (!finish)
+                        wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
+                    else wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
                 } else {
-                    if (!idle)
-                        return;
+
                     if (iDataProvider.isHotRect(timeCurrent)) {
                         //拖拽停止.
                         if (wheelRollListener != null)

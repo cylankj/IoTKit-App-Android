@@ -162,6 +162,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             mView.onBatteryDrainOut();
                         }
                     }, AppLogger::e);
+            AppLogger.d("getBatterySub:"+JFGRules.popPowerDrainOutLevel(getDevice().pid));
         } else {
 //            Device device = getDevice();
 //            Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);

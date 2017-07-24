@@ -116,10 +116,10 @@ public class DatePickerDialogFragment extends BaseDialog {
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         wheelMinute.setViewAdapter(adapter);
-        wheelMinute.setCurrentItem(this.focusMinute);
         wheelMinute.addChangingListener(changedListener);
         wheelMinute.setCyclic(false);
         wheelMinute.setInterpolator(new AnticipateOvershootInterpolator());
+        wheelMinute.post(() -> wheelMinute.setCurrentItem(this.focusMinute, true));
     }
 
     private void initWheelHour() {
@@ -136,10 +136,10 @@ public class DatePickerDialogFragment extends BaseDialog {
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         wheelHour.setViewAdapter(adapter);
-        wheelHour.setCurrentItem(this.focusHour);
         wheelHour.addChangingListener(changedListener);
         wheelHour.setCyclic(false);
         wheelHour.setInterpolator(new AnticipateOvershootInterpolator());
+        wheelHour.post(() -> wheelHour.setCurrentItem(this.focusHour, true));
     }
 
     private int getIndexByTime() {
@@ -225,10 +225,10 @@ public class DatePickerDialogFragment extends BaseDialog {
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         wheelDatePick.setViewAdapter(adapter);
-        wheelDatePick.setCurrentItem(index);
         wheelDatePick.addChangingListener(changedListener);
         wheelDatePick.setCyclic(false);
         wheelDatePick.setInterpolator(new AnticipateOvershootInterpolator());
+        wheelDatePick.post(() -> wheelDatePick.setCurrentItem(index, true));
     }
 
     // Wheel changed listener

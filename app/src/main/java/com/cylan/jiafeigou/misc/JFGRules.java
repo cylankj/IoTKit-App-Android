@@ -315,10 +315,13 @@ public class JFGRules {
         if (TextUtils.isEmpty(sdContent) || TextUtils.equals(sdContent, "0"))
             return false;
         if (TextUtils.equals("1", sdContent)) return true;
-        sdContent = sdContent.replace("（", "")
-                .replace("）", "").replace(" ", "");
-        if (!sdContent.contains(".")) return false;
-        return BindUtils.versionCompare(version, sdContent) >= 0;
+        String[] ret = sdContent.split(",");
+        if (ret.length < 2 || !sdContent.contains(".")) return false;
+        try {
+            return BindUtils.versionCompare(version, ret[1]) >= 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -337,10 +340,28 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean popPowerDrainOut(int pid) {
-        return isCloudCam(pid) ||
-                isNoPowerBell(pid) ||
-                isCatEeyBell(pid) ||
-                isRsBell(pid) || isBell(pid);
+        String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
+        if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) return false;
+        String[] ret = pContent.split(",");
+        if (ret.length < 2) return false;
+        return TextUtils.equals(ret[0], "1");
+    }
+
+    /**
+     * 电量 弹窗
+     * @param pid
+     * @return
+     */
+    public static int popPowerDrainOutLevel(int pid) {
+        String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
+        if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) return -1;
+        String[] ret = pContent.split(",");
+        if (ret.length < 2) return -1;
+        try {
+            return Integer.parseInt(ret[1].replace(" ", ""));
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
 

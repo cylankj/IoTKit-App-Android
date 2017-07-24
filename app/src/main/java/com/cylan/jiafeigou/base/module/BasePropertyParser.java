@@ -94,9 +94,9 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_1005_BELL_UNREAD_COUNT_V2, new DPProperty(int.class, DPProperty.LEVEL_HOME, DOORBELL));
         properties.put(ID_1004_BELL_UNREAD_COUNT, new DPProperty(int.class, DPProperty.LEVEL_HOME, DOORBELL));
 
-        properties.put(ID_1003_CAM_222_UNREAD_COUNT, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA,DOORBELL));
-        properties.put(ID_1002_CAM_512UNREAD_COUNT_V2, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA,DOORBELL));
-        properties.put(ID_1001_CAM_505_UNREAD_COUNT, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA,DOORBELL));
+        properties.put(ID_1003_CAM_222_UNREAD_COUNT, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_1002_CAM_512UNREAD_COUNT_V2, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_1001_CAM_505_UNREAD_COUNT, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
 
         properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(boolean.class));//set
         properties.put(606, new DPProperty(DpMsgDefine.DPShareItem.class));
@@ -129,7 +129,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_217_DEVICE_MOBILE_NET_PRIORITY, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_216_DEVICE_VOLTAGE, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_215_DEVICE_RTMP, new DPProperty(boolean.class, PROPERTY, CAMERA));
-        properties.put(ID_214_DEVICE_TIME_ZONE, new DPProperty(DpMsgDefine.DPTimeZone.class, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_214_DEVICE_TIME_ZONE, new DPProperty(DpMsgDefine.DPTimeZone.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_213_DEVICE_P2P_VERSION, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_212_DEVICE_UPLOAD_LOG, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_211_APP_UPLOAD_LOG, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));

@@ -158,8 +158,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                     setupHistoryData(iData);
                     HistoryFile historyFile = iData.getMinHistoryFileByStartTime(timeStart);//最小时间.
                     if (historyFile != null) {
-                        setNav2Time(historyFile.time * 1000L);
-                        presenter.startPlayHistory(historyFile.time * 1000L);
+                        setNav2Time(TimeUtils.wrapToLong(historyFile.time));
+                        presenter.startPlayHistory(TimeUtils.wrapToLong(historyFile.time));
                         AppLogger.d("找到历史录像?" + historyFile);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

@@ -153,6 +153,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
     public void init(List<WheelItem> items) {
         if (ListUtils.getSize(items) == 0) return;
+        Collections.sort(items);
         Collections.reverse(items);//反向一下。
         //需要auto append data,左边右边都需要填充数据
         AppLogger.d(String.format(Locale.getDefault(), "initSize half screen item counts:%s", HALF_SCREEN_COUNT));
