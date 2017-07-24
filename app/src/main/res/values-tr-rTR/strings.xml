@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">110V elektrik beslemesi</string>
   <string name="HistoricalCard_Failed">Tarihi video kartı okunamadı</string>
   <string name="Historical_Failed">Geçmiş video okunamadı</string>
+  <string name="Historical_LoadFail">Yükleme başarısız, lütfen tekrar deneyin</string>
   <string name="Historical_No">Hiçbir tarihi video yok</string>
   <string name="Historical_Read">Geçmiş video okundu</string>
   <string name="History_video">Geçmiş videosu</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Kayıt</string>
   <string name="Request_TimeOut">Zaman aşımı</string>
   <string name="Reset_Suc">Zaten kırmızı çaktı</string>
-  <string name="RuiShi_Guide">3s için RESET düğmesine uzun basmak için iğne kullanın</string>
+  <string name="RuiShi_Guide">5s için RESET düğmesine uzun basmak için iğne kullanın</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Cumartesi</string>
   <string name="SAT_1">Cumartesi</string>

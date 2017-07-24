@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">Nguồn 110V</string>
   <string name="HistoricalCard_Failed">Thẻ video lịch sử đã đọc thất bại</string>
   <string name="Historical_Failed">Video lịch sử đã đọc thất bại</string>
+  <string name="Historical_LoadFail">Lỗi khi tải, hãy thử lại</string>
   <string name="Historical_No">Không có video lịch sử nào</string>
   <string name="Historical_Read">Video lịch sử đã được đọc</string>
   <string name="History_video">Video lịch sử</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Ghi lại</string>
   <string name="Request_TimeOut">Hết giờ</string>
   <string name="Reset_Suc">Đã chập chờn trong màu đỏ</string>
-  <string name="RuiShi_Guide">Sử dụng kim để nhấn và giữ nút RESET trong 3 giây</string>
+  <string name="RuiShi_Guide">Sử dụng kim để nhấn và giữ nút RESET trong 5 giây</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Thứ bảy</string>
   <string name="SAT_1">Thứ bảy</string>

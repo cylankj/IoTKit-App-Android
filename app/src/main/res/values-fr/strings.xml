@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">Alimentation 110V</string>
   <string name="HistoricalCard_Failed">La carte vidéo historique n\'a pas réussi</string>
   <string name="Historical_Failed">Les lectures vidéo historiques ont échoué</string>
+  <string name="Historical_LoadFail">Échec du chargement, essayer à nouveau</string>
   <string name="Historical_No">Il n\'y a pas de vidéo historique</string>
   <string name="Historical_Read">La vidéo historique a été lue</string>
   <string name="History_video">Vidéo d\'histoire</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Record</string>
   <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Déjà clignotaient en rouge</string>
-  <string name="RuiShi_Guide">Utilisez l\'aiguille pour appuyer longuement sur le bouton RESET pour 3s</string>
+  <string name="RuiShi_Guide">Utilisez l\'aiguille pour appuyer longuement sur le bouton RESET pour 5s</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Samedi</string>
   <string name="SAT_1">Tous Les Samedis</string>

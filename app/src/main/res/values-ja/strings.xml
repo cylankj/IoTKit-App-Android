@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">110V電源使用可能</string>
   <string name="HistoricalCard_Failed">歴史的なビデオカードの読み取りに失敗しました</string>
   <string name="Historical_Failed">履歴ビデオの読み込みに失敗しました</string>
+  <string name="Historical_LoadFail">読み込み失敗,リトライ</string>
   <string name="Historical_No">歴史的なビデオはありません</string>
   <string name="Historical_Read">履歴ビデオが読み込まれました</string>
   <string name="History_video">履歴ビデオ</string>
@@ -388,7 +389,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">パスワード</string>
   <string name="PASSWORD_BIT">新しいパスワードを設定してください</string>
-  <string name="PASSWORD_LESSTHAN_SIX">6~32文字でパスワードを入力してください</string>
+  <string name="PASSWORD_LESSTHAN_SIX">6~12文字でパスワードを入力してください</string>
   <string name="PHONE_EMAIL">Eメール</string>
   <string name="PHONE_NUMBER">携帯電話番号</string>
   <string name="PHONE_NUMBER_1">携帯電話番号</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">記録</string>
   <string name="Request_TimeOut">タイムアウト</string>
   <string name="Reset_Suc">既に赤に点滅</string>
-  <string name="RuiShi_Guide">ニードルを使用してRESETボタンを3秒間押し続けます</string>
+  <string name="RuiShi_Guide">ニードルを使用してRESETボタンを5秒間押し続けます</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">土曜日</string>
   <string name="SAT_1">毎週土曜日</string>

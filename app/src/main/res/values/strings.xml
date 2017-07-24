@@ -155,7 +155,7 @@
     <string name="DOOR_UNCALL">Missed</string>
     <string name="DOOR_VOICE">Voice</string>
     <string name="DOOR_WIFI_HINT">LED Status Indicator</string>
-    <string name="DailyGreatTips_Full">Collection\'s number of My Favorite has reached the upper limit 50, going to delete?</string>
+    <string name="DailyGreatTips_Full">Number of My Favorite Collection\'s has gonna to 50 upper limit, going to delete?</string>
     <string name="Daily_Great_NO_CONTENTS">No content</string>
     <string name="Dec">Dec.</string>
     <string name="Delete_Share">Delete share?</string>
@@ -255,6 +255,7 @@
     <string name="HZ_VOTE">110V electricity power</string>
     <string name="HistoricalCard_Failed">The historical video card reads failed</string>
     <string name="Historical_Failed">Historical video reads failed</string>
+    <string name="Historical_LoadFail">Load fail, please retry.</string>
     <string name="Historical_No">There\'s no historical video</string>
     <string name="Historical_Read">The historical video has been read</string>
     <string name="History_video">History video</string>
@@ -410,7 +411,7 @@
     <string name="PWD_OK_2">Set successfully</string>
     <string name="Phone">Phone</string>
     <string name="PowerLight_BlueFlashing">Blue flashing: Low power</string>
-    <string name="PowerLight_BlueOut">Blue out: Power off</string>
+    <string name="PowerLight_BlueOut">Blue off, power off</string>
     <string name="PowerLight_SteadyBlue">Steady blue: Booting</string>
     <string name="Qiaoan_Blinking">After being powered on, wait for the light to flicker in red</string>
     <string name="Qiaoan_ResetDevice">Reset Device</string>
@@ -492,7 +493,7 @@
     <string name="Record_Video">Record</string>
     <string name="Request_TimeOut">Timeout</string>
     <string name="Reset_Suc">Already flickered in red</string>
-    <string name="RuiShi_Guide">Use needle to long press the RESET button for 3s</string>
+    <string name="RuiShi_Guide">Use needle to long press the RESET button for 5s</string>
     <string name="RuiShi_Name">IPCam</string>
     <string name="SAT">Saturday</string>
     <string name="SAT_1">Sat</string>
@@ -601,7 +602,7 @@
     <string name="Start_instructions_F">2. Bind account</string>
     <string name="Start_instructions_G">Attention \"加菲狗官微服务\" Official Accounts, enter the main page, click the menu bar of the service, select the binding account.</string>
     <string name="Start_instructions_H">Bind account</string>
-    <string name="Start_instructions_I">Please enter dog Cleverdog accounts \"mobile phone or email accounts\ "for binding, if you forget the password please back to Cleverdog client</string>
+    <string name="Start_instructions_I">Please enter dog Cleverdog accounts \"mobile phone or email accounts \"for binding, if you forget the password please back to Cleverdog client</string>
     <string name="Switch_Mode">please switch to direct mode to view shooting content</string>
     <string name="Switch_Mode_Pop">please switch current network shooting content to direct mode</string>
     <string name="Switch_Off">always off</string>
@@ -749,7 +750,7 @@
     <string name="Tap1_DoorFun_VoiceTips">Sounds will be out from the telephone receiver</string>
     <string name="Tap1_DoorFun_Waitting">Waiting&#8230;</string>
     <string name="Tap1_DownloadFirmwareFai">Download firmware failed</string>
-    <string name="Tap1_DownloadFirmwareTips">Download will start shortly,please ensure that cellphone and device are connecting with the same WIFI</string>
+    <string name="Tap1_DownloadFirmwareTips">Download will start shortly,please ensure that cellphone and device to connect in same WIFI</string>
     <string name="Tap1_FileDamagedTips">File is damaged, delete?</string>
     <string name="Tap1_File_Camera">Camera</string>
     <string name="Tap1_File_CameraNPhone">Camera + Phone album</string>
@@ -779,8 +780,8 @@
     <string name="Tap1_NewFirmware">New firmware</string>
     <string name="Tap1_NoMessages">No messages</string>
     <string name="Tap1_Offline">Offline, please reconnect>></string>
-    <string name="Tap1_OutdoorMode">Direct mode</string>
-    <string name="Tap1_OutdoorMode_Opened">Direct mode has been opened</string>
+    <string name="Tap1_OutdoorMode">LAN mode</string>
+    <string name="Tap1_OutdoorMode_Opened">LAN mode has been opened</string>
     <string name="Tap1_Refreshed">Refreshed</string>
     <string name="Tap1_RefreshedFailed">Refresh failed</string>
     <string name="Tap1_SDCardFullyTips">Fully occupied</string>
@@ -803,7 +804,7 @@
     <string name="Tap1_TitleName">Home</string>
     <string name="Tap1_Tosetup">Set up</string>
     <string name="Tap1_Update">Update</string>
-    <string name="Tap1_UpdateFirmwareTips">Update will start shortly,please ensure that cellphone and device are connecting with the same WIFI</string>
+    <string name="Tap1_UpdateFirmwareTips">Update will start shortly,please ensure that cellphone and device to connect in same WIFI</string>
     <string name="Tap1_Update_Electricity">Low battery &lt; 30%, upgrade failed, please charge and retry</string>
     <string name="Tap1_Update_Precautions">Upgrade takes about 4&#8211;5 mins, don\’t cut off Internet or power off device during upgrade</string>
     <string name="Tap1_device_deleted">This device has been deleted.</string>
@@ -892,7 +893,7 @@
     <string name="Tap3_Setting_taptoload">Tap to load again</string>
     <string name="Tap3_ShareDevice">Share device</string>
     <string name="Tap3_ShareDevice_Button">Share</string>
-    <string name="Tap3_ShareDevice_CancelShareTips">Cancel the sharing failed</string>
+    <string name="Tap3_ShareDevice_CancelShareTips">Failed to cancel sharing</string>
     <string name="Tap3_ShareDevice_CanceldeTips">Canceled</string>
     <string name="Tap3_ShareDevice_CancleShare">Sure to cancel the sharing with this user?</string>
     <string name="Tap3_ShareDevice_Contacts">Contacts</string>

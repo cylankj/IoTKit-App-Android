@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">Energia elettrica 110V</string>
   <string name="HistoricalCard_Failed">La scheda video storica non è riuscita</string>
   <string name="Historical_Failed">Le letture video storiche non sono riuscite</string>
+  <string name="Historical_LoadFail">Impossibile caricare, riprova per favore</string>
   <string name="Historical_No">Non ci sono video storici</string>
   <string name="Historical_Read">Il video storico è stato letto</string>
   <string name="History_video">Video della storia</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Disco</string>
   <string name="Request_TimeOut">Tempo scaduto</string>
   <string name="Reset_Suc">Reset effettuato</string>
-  <string name="RuiShi_Guide">Usare l\'ago per premere a lungo il pulsante RESET per 3s</string>
+  <string name="RuiShi_Guide">Usare l\'ago per premere a lungo il pulsante RESET per 5s</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Sabato</string>
   <string name="SAT_1">SAB</string>

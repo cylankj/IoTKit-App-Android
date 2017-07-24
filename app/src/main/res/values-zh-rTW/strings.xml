@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">支援110V電壓</string>
   <string name="HistoricalCard_Failed">歷史錄像卡讀取失敗</string>
   <string name="Historical_Failed">歷史錄像讀取失敗</string>
+  <string name="Historical_LoadFail">加載失敗，請重試</string>
   <string name="Historical_No">沒有這段歷史視頻</string>
   <string name="Historical_Read">歷史錄像已讀完</string>
   <string name="History_video">歷史錄像</string>
@@ -388,7 +389,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">密碼</string>
   <string name="PASSWORD_BIT">設置新密碼</string>
-  <string name="PASSWORD_LESSTHAN_SIX">請輸入6~32位密碼</string>
+  <string name="PASSWORD_LESSTHAN_SIX">請輸入6~12位密碼</string>
   <string name="PHONE_EMAIL">電子郵件</string>
   <string name="PHONE_NUMBER">手機號碼</string>
   <string name="PHONE_NUMBER_1">手機號碼</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">查看時錄像</string>
   <string name="Request_TimeOut">請求超時</string>
   <string name="Reset_Suc">復位成功</string>
-  <string name="RuiShi_Guide">使用取卡針長按重置鍵3秒</string>
+  <string name="RuiShi_Guide">使用取卡針長按重置鍵5秒</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">星期六</string>
   <string name="SAT_1">每週六</string>

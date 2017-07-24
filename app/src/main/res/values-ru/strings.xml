@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">Источник питания 110 В</string>
   <string name="HistoricalCard_Failed">Не удалось прочитать историческую видеокарту</string>
   <string name="Historical_Failed">Не удалось прочитать видео</string>
+  <string name="Historical_LoadFail">Неудачная загрузка, Повторите попытку</string>
   <string name="Historical_No">Исторического видео нет</string>
   <string name="Historical_Read">Историческое видео было прочитано</string>
   <string name="History_video">История видео</string>
@@ -388,7 +389,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Пароль</string>
   <string name="PASSWORD_BIT">Новый пароль</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Пожалуйста, введите пароль от 6 до 32 символов</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Пожалуйста, введите пароль от 6 до 12 символов</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Номер телефона</string>
   <string name="PHONE_NUMBER_1">Номер телефона</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">запись</string>
   <string name="Request_TimeOut">Таймаут</string>
   <string name="Reset_Suc">Уже мелькали в красном</string>
-  <string name="RuiShi_Guide">Используйте иглу для длительного нажатия кнопки RESET в течение 3 с</string>
+  <string name="RuiShi_Guide">Используйте иглу для длительного нажатия кнопки RESET в течение 5 с</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Сб</string>
   <string name="SAT_1">Кажд. сб</string>

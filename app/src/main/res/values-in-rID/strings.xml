@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">Daya Listrik 110V</string>
   <string name="HistoricalCard_Failed">Kartu video historis gagal dibaca</string>
   <string name="Historical_Failed">Video historis terbaca gagal</string>
+  <string name="Historical_LoadFail">Gagal memuat, silahkan coba lagi</string>
   <string name="Historical_No">Tidak ada video historis</string>
   <string name="Historical_Read">Video historis telah dibaca</string>
   <string name="History_video">Video sejarah</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Merekam</string>
   <string name="Request_TimeOut">Time out</string>
   <string name="Reset_Suc">Sudah berkedip&#8211;kedip merah</string>
-  <string name="RuiShi_Guide">Gunakan jarum untuk lama menekan tombol RESET selama 3 detik</string>
+  <string name="RuiShi_Guide">Gunakan jarum untuk lama menekan tombol RESET selama 5 detik</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Sabtu</string>
   <string name="SAT_1">Sabtu</string>

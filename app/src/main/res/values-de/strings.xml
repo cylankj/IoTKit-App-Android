@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">110V Netzteil</string>
   <string name="HistoricalCard_Failed">Die historische Grafikkarte liest nicht</string>
   <string name="Historical_Failed">Historische Video&#8211;Lesevorgänge fehlgeschlagen</string>
+  <string name="Historical_LoadFail">nicht geladen,bitte wiederholen</string>
   <string name="Historical_No">Es gibt kein historisches Video</string>
   <string name="Historical_Read">Das historische Video wurde gelesen</string>
   <string name="History_video">Geschichte Video</string>
@@ -388,7 +389,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Passwort</string>
   <string name="PASSWORD_BIT">Neues Passwort erstellen</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Bitte ein 6 bis 32&#8211;stelliges Passwort eingeben</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Bitte ein 6 bis 12&#8211;stelliges Passwort eingeben</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Handynummer</string>
   <string name="PHONE_NUMBER_1">Handynummer</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Aufzeichnung</string>
   <string name="Request_TimeOut">Auszeit</string>
   <string name="Reset_Suc">Schon flackerten in rot</string>
-  <string name="RuiShi_Guide">Benutzen Sie die Nadel lange, um die RESET&#8211;Taste für 3s zu drücken</string>
+  <string name="RuiShi_Guide">Benutzen Sie die Nadel lange, um die RESET&#8211;Taste für 5s zu drücken</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Samstag</string>
   <string name="SAT_1">Samtags</string>

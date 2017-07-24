@@ -255,6 +255,7 @@
   <string name="HZ_VOTE">Voltaje de 110V</string>
   <string name="HistoricalCard_Failed">La tarjeta de video histórica dice que falló</string>
   <string name="Historical_Failed">No se pudo leer el video histórico</string>
+  <string name="Historical_LoadFail">Falló la carga, inténtelo de Nuevo</string>
   <string name="Historical_No">No hay video histórico</string>
   <string name="Historical_Read">El video histórico ha sido leído</string>
   <string name="History_video">Video de la historia</string>
@@ -388,7 +389,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Contraseña</string>
   <string name="PASSWORD_BIT">Nueva Contraseña</string>
-  <string name="PASSWORD_LESSTHAN_SIX">La contraseña debe tener de 6 a 32 dígitos</string>
+  <string name="PASSWORD_LESSTHAN_SIX">La contraseña debe tener de 6 a 12 dígitos</string>
   <string name="PHONE_EMAIL">E&#8211;mail</string>
   <string name="PHONE_NUMBER">Número de teléfono</string>
   <string name="PHONE_NUMBER_1">Número de teléfono</string>
@@ -492,7 +493,7 @@
   <string name="Record_Video">Grabar</string>
   <string name="Request_TimeOut">Tiempo fuera</string>
   <string name="Reset_Suc">Ya parpadeado en rojo</string>
-  <string name="RuiShi_Guide">Use la aguja para presionar el botón RESET durante 3 segundos</string>
+  <string name="RuiShi_Guide">Use la aguja para presionar el botón RESET durante 5 segundos</string>
   <string name="RuiShi_Name">IPCam</string>
   <string name="SAT">Sáb</string>
   <string name="SAT_1">Cada sábado</string>
