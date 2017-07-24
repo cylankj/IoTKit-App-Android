@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.n.view.bind.SNInputFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -17,8 +18,6 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
@@ -81,7 +80,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_camera: {
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindCamActivity.class);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipsTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
@@ -115,7 +114,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_camera_cloud:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Cloud_Camera));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
@@ -124,7 +123,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_consumer_cam://原来睿视
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.bind_reset_rs);
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Consumer_Camera));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.RuiShi_Guide));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
@@ -139,13 +138,13 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 //                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_DoorbellTips));
 //                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.DOOR_BLINKING));
                 intent = new Intent(this, BindBellActivity.class);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.BELL_AP);
                 startActivity(intent);
                 return;
             case R.id.v_to_bind_bell_no_battery:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_bell_Power));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
@@ -154,7 +153,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_cat_eye_cam:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.eyes_android);
                 intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_bell);
-                intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.BELL_AP);
                 intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_Door_Viewer));
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));

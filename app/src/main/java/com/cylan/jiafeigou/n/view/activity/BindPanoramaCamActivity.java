@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.view.bind.BindGuideActivity;
 import com.cylan.jiafeigou.n.view.bind.ConfigPanoramaWiFiSuccessFragment;
 import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -150,7 +151,7 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string._720PanoramicCamera));
         intent.putExtra(JConstant.KEY_BIND_DEVICE_ALIAS, getString(R.string._720PanoramicCamera));
         intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
-        intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+        intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);
 

@@ -127,7 +127,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 svSettingDeviceLogo;
 
     private String uuid;
-//    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
+    //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
 //    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
     private SimpleDialogFragment mClearRecordFragment;
 
@@ -422,7 +422,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             //freeCam直接进入
             Intent intent = new Intent(this, BindCamActivity.class);
             intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, "DOG-******");
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
             intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
@@ -435,7 +435,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         } else if (JFGRules.isBell(device.pid)) {
             Intent intent = new Intent(this, BindBellActivity.class);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, "BELL-******");
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.BELL_AP);
             intent.putExtra(JUST_SEND_INFO, uuid);
             startActivity(intent);
         } else {

@@ -134,6 +134,7 @@ public class DataExt implements IData {
             if (end <= 0)
                 return null;
         }
+        if (end <= start) return null;
         long[] data = new long[end - start];
         for (int i = start; i < end; i++) {
             data[i - start] = flattenDataList.get(i);
