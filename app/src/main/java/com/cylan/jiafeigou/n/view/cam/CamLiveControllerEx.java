@@ -338,7 +338,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 postDelayed(landHideRunnable, 3000);
             } else {
                 removeCallbacks(portHideRunnable);
-                postDelayed(portHideRunnable, 3000);
+//                postDelayed(portHideRunnable, 3000);
             }
         });
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
@@ -607,6 +607,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //|直播| 按钮
         View tvLive = layoutE.findViewById(R.id.tv_live);
         post(portShowRunnable);
+        //现在显示的条件就是手动点击其他情况都不显示
+        setLoadingState(null, null);
+        post(() -> layoutC.setVisibility(INVISIBLE));
+
+
         if (tvLive != null) tvLive.setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
@@ -878,8 +883,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             removeCallbacks(landHideRunnable);
             removeCallbacks(landShowRunnable);
-            post(portShowRunnable);
             if (livePlayState != PLAY_STATE_PLAYING) {//暂停或 idle 不隐藏
+                post(portShowRunnable);
                 post(() -> {
                     removeCallbacks(portHideRunnable);
                     removeCallbacks(landHideRunnable);
