@@ -94,7 +94,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 //            ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setOnItemClickListener((View itemView, int viewType, int position) -> {
 //                long time = dateStartList.get(position);
 //                AppLogger.d("msgTime pick: " + TimeUtils.getSpecifiedDate(time));
-//                loadSelectedDay(TimeUtils.getSpecificDayStartTime(time));
+//                playPreciseByTime(TimeUtils.getSpecificDayStartTime(time));
 //                landDateListContainer.removeCallbacks(containerHide);
 //                landDateListContainer.post(containerHide);//选中立马隐藏
 //                ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusPos(position);
@@ -128,7 +128,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                     AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
                     if (datePickerListener != null)
                         datePickerListener.onPickDate((Long) value, STATE_FINISH);
-                    loadSelectedDay((Long) value);
+                    playPreciseByTime((Long) value);
                 }
             });
         }
@@ -147,7 +147,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     /**
      * 选择一天,load所有的数据,但是需要移动的这一天的开始位置.
      */
-    private void loadSelectedDay(long timeStart) {
+    private void playPreciseByTime(long timeStart) {
 //        final long start = TimeUtils.getSpecificDayStartTime(timeStart);
         presenter.assembleTheDay()
                 .subscribeOn(Schedulers.io())
@@ -158,8 +158,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                     setupHistoryData(iData);
                     HistoryFile historyFile = iData.getMinHistoryFileByStartTime(timeStart);//最小时间.
                     if (historyFile != null) {
-                        setNav2Time(TimeUtils.wrapToLong(historyFile.time));
-                        presenter.startPlayHistory(TimeUtils.wrapToLong(historyFile.time));
+                        setNav2Time(TimeUtils.wrapToLong(timeStart));
+                        presenter.startPlayHistory(TimeUtils.wrapToLong(timeStart));
                         AppLogger.d("找到历史录像?" + historyFile);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

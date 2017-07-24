@@ -263,7 +263,7 @@ public class DatePickerDialogFragment extends BaseDialog {
                     dismiss();
 
                     final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
-                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(finalTime));
+                    AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(finalTime) + "," + finalTime);
                     if (action != null && finalTime != timeFocus) {
                         action.onDialogAction(view.getId(), finalTime);
                     }

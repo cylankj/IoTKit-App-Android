@@ -162,7 +162,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             mView.onBatteryDrainOut();
                         }
                     }, AppLogger::e);
-            AppLogger.d("getBatterySub:"+JFGRules.popPowerDrainOutLevel(getDevice().pid));
+            AppLogger.d("getBatterySub:" + JFGRules.popPowerDrainOutLevel(getDevice().pid));
         } else {
 //            Device device = getDevice();
 //            Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
@@ -713,7 +713,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     switchInterface = true;
                     AppLogger.i("stop play live !");
                 }
-                AppLogger.i("play history  " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, getLiveStream().time * 1000));
+                getLiveStream().time = time;
+                AppLogger.i("play history  " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time)));
                 getHotSeatStateMaintainer().saveRestore();
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫

@@ -943,10 +943,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-    /**
-     * 时间轴刷新不需要 那么频繁
-     */
-    private long fuckTheTime;
+//    /**
+//     * 时间轴刷新不需要 那么频繁
+//     */
+//    private long fuckTheTime;
 
     private void setLiveRectTime(int type, long timestamp) {
         //全景的时间戳是0,使用设备的时区
@@ -961,9 +961,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
                 && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
-            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
-                return;
-            } else fuckTheTime = System.currentTimeMillis();
+//            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
+//                return;
+//            } else fuckTheTime = System.currentTimeMillis();
             //移动导航条
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
