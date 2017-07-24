@@ -961,7 +961,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
                 && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING) {
-            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 10 * 1000) {
+            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
                 return;
             } else fuckTheTime = System.currentTimeMillis();
             //移动导航条

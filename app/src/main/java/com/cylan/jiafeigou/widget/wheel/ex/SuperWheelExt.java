@@ -342,7 +342,7 @@ public class SuperWheelExt extends View {
                     setPositionByTime(timeTarget);
                     Log.d("tmpCurrentTime", "tmpCurrentTime==");
                 }
-                return;
+//                return;
             }
             tmpCurrentTime = timeCurrent;
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
@@ -360,9 +360,11 @@ public class SuperWheelExt extends View {
             } else {
                 if (!idle && (wheelRollListener != null)) {
                     boolean finish = touchHandler.isFinished();
-                    if (!finish)
+                    Log.d("Tfinish", "Tfinish:" + touchHandler.isTouchDown());
+                    if (!finish || touchHandler.isTouchDown()) {
                         wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
-                    else wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
+                    } else if (!touchHandler.isTouchDown())
+                        wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
                 } else {
 
                     if (iDataProvider.isHotRect(timeCurrent)) {

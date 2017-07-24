@@ -119,6 +119,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                     Log.d(TAG, "onTouchEvent: ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_MOVE:
+                isTouchDonw = true;
                 if (superWheel.getParent() != null) {
                     superWheel.getParent().requestDisallowInterceptTouchEvent(true);
                 }
