@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -200,7 +201,8 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
-            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount(), 1, getNewPassword());
+            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount(), 1,
+                    MD5Util.lowerCaseMD5(getNewPassword()));
             AutoSignIn.getInstance().autoLogin();
             getActivity().getSupportFragmentManager().popBackStack();
         }
