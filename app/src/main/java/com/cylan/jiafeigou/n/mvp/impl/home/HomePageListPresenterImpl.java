@@ -55,10 +55,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 getShareDevicesListRsp(),
                 devicesUpdate(),
                 internalUpdateUuidList(),
-                devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
-//                checkNetSub(),
                 deviceRecordStateSub()
         };
     }
@@ -116,18 +114,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 });
     }
 
-//    private Subscription checkNetSub() {
-//        return Observable.interval(4, TimeUnit.SECONDS)
-//                .observeOn(Schedulers.newThread())
-//                .map(aLong -> {
-//                    //优先check online
-//                    return NetUtils.isPublicNetwork() || ApFilter.isApNet();
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(ret -> mView != null)
-//                .subscribe(ret ->
-//                        mView.onNetworkChanged(ret), AppLogger::e);
-//    }
 
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
@@ -160,23 +146,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe(ret -> {
                 }, throwable -> {
                     addSubscription(devicesUpdate());
-                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
-                });
-    }
-
-
-    private Subscription devicesUpdate1() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListRsp.class)
-                .filter((RxEvent.DeviceListRsp data) -> (getView() != null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(update -> {
-                    RxBus.getCacheInstance().post(new InternalHelp());
-                    AppLogger.d("data pool update: " + update);
-                    return null;
-                })
-                .subscribe(ret -> {
-                }, throwable -> {
-                    addSubscription(devicesUpdate1());
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
     }

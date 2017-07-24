@@ -40,7 +40,6 @@ public class HistoryWheelShowCaseFragment extends Fragment {
             layoutParams.guidePercent = percent;
             guideline.setLayoutParams(layoutParams);
         }
-
         return rootView;
     }
 

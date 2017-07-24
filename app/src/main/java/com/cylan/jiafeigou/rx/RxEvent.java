@@ -378,13 +378,6 @@ public class RxEvent {
         }
     }
 
-    /**
-     * 获取设备列表
-     */
-    @Deprecated
-    public static final class DeviceListRsp {
-    }
-
 
     /**
      * 获取好友的信息回调

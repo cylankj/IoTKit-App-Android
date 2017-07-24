@@ -1105,6 +1105,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onNetworkChanged(CamLiveContract.Presenter presenter, boolean connected) {
         post(() -> {
             changeViewState();
+            if (layoutE != null)
+                layoutE.findViewById(R.id.btn_load_history).setEnabled(connected);
             if (!connected) {
 //                showHistoryWheel(false);
                 removeCallbacks(landHideRunnable);  // 取消播放后延时显示的任务
@@ -1152,7 +1154,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
-            layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
+            layoutE.findViewById(R.id.btn_load_history).setEnabled(NetUtils.getJfgNetType() != 0);
             layoutE.setVisibility(JFGRules.showSdcard(device)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;

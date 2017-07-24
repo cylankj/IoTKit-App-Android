@@ -223,8 +223,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initListAdapter();
         initProgressBarColor();
         initSomeViewMargin();
-//        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
-//        if (ListUtils.isEmpty(devices)) emptyViewState.setVisibility(View.VISIBLE);
         onItemsRsp(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
         view.post(updateAccount);
     }
@@ -634,10 +632,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 in.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
                 startActivity(in);
             }
-//            else if (JFGRules.isBell(device.pid)) {
-//                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-//            }
         }
     }
 
@@ -681,12 +675,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             .observeOn(Schedulers.io())
                             .flatMap(i -> BaseApplication.getAppComponent().getTaskDispatcher().perform(i))
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(rsp -> ToastUtil.showToast(getString(R.string.DELETED_SUC)), e -> {
+                            .subscribe(rsp -> {
+                                ToastUtil.showToast(getString(R.string.DELETED_SUC));
+                                if (basePresenter != null)
+                                    basePresenter.fetchDeviceList(true);
+                            }, e -> {
                                 ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
                                 AppLogger.e("err: " + MiscUtils.getErr(e));
-                            }, () -> {
-                                LoadingDialog.dismissLoading(getFragmentManager());
-                            });
+                            }, () -> LoadingDialog.dismissLoading(getFragmentManager()));
                     basePresenter.addSubscription("unbind", subscribe);
                 }, getString(R.string.CANCEL), null);
         return true;
