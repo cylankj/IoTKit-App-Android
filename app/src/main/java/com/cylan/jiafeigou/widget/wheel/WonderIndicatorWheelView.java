@@ -51,7 +51,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.wonder_time_indicator, this, true);
         int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        ITEM_WIDTH = getResources().getDimensionPixelSize(R.dimen.x27);//item是固定宽度的。
+        ITEM_WIDTH = getResources().getDimensionPixelSize(R.dimen.x100);//item是固定宽度的。
         //原理，需要保证最左边一个有数据的一天的左边还有N个item.所以最左边的一个item才能移到中间。
         //item之间没有间隙。
         HALF_SCREEN_COUNT = screenWidth / 2 / ITEM_WIDTH + 1;//半屏有这么多个
@@ -156,22 +156,22 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         Collections.reverse(items);//反向一下。
         //需要auto append data,左边右边都需要填充数据
         AppLogger.d(String.format(Locale.getDefault(), "initSize half screen item counts:%s", HALF_SCREEN_COUNT));
-        long startTime = TimeUtils.getSpecificDayStartTime(items.get(0).time);
-        //头也加
-        for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
-            WheelItem item = new WheelItem();
-            item.time = startTime - j * 24 * 3600 * 1000L;
-            item.fade = true;
-            items.add(0, item);
-        }
-        //尾部也加
-        startTime = items.get(items.size() - 1).time;
-        for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
-            WheelItem item = new WheelItem();
-            item.time = startTime + j * 24 * 3600 * 1000L;
-            item.fade = true;
-            items.add(item);
-        }
+//        long startTime = TimeUtils.getSpecificDayStartTime(items.get(0).time);
+//        //头也加
+//        for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
+//            WheelItem item = new WheelItem();
+//            item.time = startTime - j * 24 * 3600 * 1000L;
+//            item.fade = true;
+//            items.add(0, item);
+//        }
+//        //尾部也加
+//        startTime = items.get(items.size() - 1).time;
+//        for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
+//            WheelItem item = new WheelItem();
+//            item.time = startTime + j * 24 * 3600 * 1000L;
+//            item.fade = true;
+//            items.add(item);
+//        }
         int finalCount = ListUtils.getSize(items);
         for (int i = 0; i < finalCount; i++) {
             if (items.get(i).selected) {

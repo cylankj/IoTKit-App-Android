@@ -50,7 +50,6 @@ public class BindCamActivity extends BaseBindActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_cam);
         ButterKnife.bind(this);
-//        ViewUtils.addViewMargins(customToolbar, 0, (int) getResources().getDimension(R.dimen.y9), 0, 0);
         customToolbar.setBackAction(v -> finishExt());
         customToolbar.post(this::initAnimation);
         tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));

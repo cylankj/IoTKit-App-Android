@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
-import com.cylan.jiafeigou.n.view.cam.LiveShowCase;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -18,8 +17,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import rx.android.schedulers.AndroidSchedulers;
-
 /**
  * Created by cylan-hunt on 16-12-19.
  */
@@ -27,6 +24,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class DataExt implements IData {
     private static DataExt instance;
     private SimpleDateFormat dateFormat;
+    private static final Object lock = new Object();
 
     public static DataExt getInstance() {
         if (instance == null)
@@ -59,29 +57,30 @@ public class DataExt implements IData {
 
     @Override
     public void flattenData(ArrayList<HistoryFile> list, TimeZone zone) {
-        this.rawList = list;
-        flattenDataList.clear();
-        int size = list.size();
-        if (size > 0) {
-            initDateFormat(zone);
-            //需要判断顺序.....
-            AppLogger.e("需要判断顺序:" + zone.getDisplayName());
-            int maxIndex = list.get(0).time >= list.get(list.size() - 1).time ? 0 : list.size() - 1;
-            int minIndex = maxIndex == 0 ? list.size() - 1 : 0;
-            long timeMax = getTenMinuteByTimeRight((list.get(maxIndex).time + list.get(maxIndex).duration) * 1000L);
-            long timeMin = getTenMinuteByTimeLeft((list.get(minIndex).time) * 1000L);
-            size = 0;
-            Log.d(TAG, String.format(Locale.getDefault(), "timeMax:%s,timeMin:%s", timeMax, timeMin));
-            for (long time = timeMax; time >= timeMin; ) {
-                flattenDataList.add(time);
-                fillMap(time);
-                if (DEBUG)
-                    Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(time));
-                size++;
-                time -= 10 * 60 * 1000L;
+        synchronized (lock) {
+            this.rawList = list;
+            flattenDataList.clear();
+            int size = list.size();
+            if (size > 0) {
+                initDateFormat(zone);
+                //需要判断顺序.....
+                AppLogger.e("需要判断顺序:" + zone.getDisplayName());
+                int maxIndex = list.get(0).time >= list.get(list.size() - 1).time ? 0 : list.size() - 1;
+                int minIndex = maxIndex == 0 ? list.size() - 1 : 0;
+                long timeMax = getTenMinuteByTimeRight((list.get(maxIndex).time + list.get(maxIndex).duration) * 1000L);
+                long timeMin = getTenMinuteByTimeLeft((list.get(minIndex).time) * 1000L);
+                size = 0;
+                Log.d(TAG, String.format(Locale.getDefault(), "timeMax:%s,timeMin:%s", timeMax, timeMin));
+                for (long time = timeMax; time >= timeMin; ) {
+                    flattenDataList.add(time);
+                    fillMap(time);
+                    if (DEBUG)
+                        Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(time));
+                    size++;
+                    time -= 10 * 60 * 1000L;
+                }
             }
         }
-
     }
 
     /**

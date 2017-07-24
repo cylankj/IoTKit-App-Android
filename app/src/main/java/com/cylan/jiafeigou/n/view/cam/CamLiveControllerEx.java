@@ -1013,6 +1013,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void onHistoryDataRsp(CamLiveContract.Presenter presenter) {
         showHistoryWheel(true);
         reInitHistoryHandler(presenter);
+        Log.d("onHistoryDataRsp", "onHistoryDataRsp");
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
@@ -1342,7 +1343,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
 
         presenter.startPlayHistory(timeTarget);
-//        presenter.assembleTheDay()
+//        presenter.drawTheDay()
 //                .subscribeOn(Schedulers.io())
 //                .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
 //                                .timeout(30, TimeUnit.SECONDS),
