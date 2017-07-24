@@ -111,7 +111,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private void makeNewMsgSub() {
         if (newMsgSub != null) newMsgSub.unsubscribe();
-        RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+        newMsgSub = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter(ret -> TextUtils.equals(ret.uuid, device.uuid) && vpCameraLive.getCurrentItem() == 0)
                 .flatMap(ret -> Observable.from(ret.dpList))
@@ -156,12 +156,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onNewIntent(intent);
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         Log.d("onNewIntent", "onNewIntent:" + uuid);
-        if (TextUtils.isEmpty(uuid)) {
-            AppLogger.e("what the hell uuid is null");
-            finishExt();
-        }
-        initToolbar(getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE));
-        initAdapter();
+//        if (TextUtils.isEmpty(uuid)) {
+//            AppLogger.e("what the hell uuid is null");
+//            finishExt();
+//        }
+//        initToolbar(getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE));
+//        initAdapter();
+        finish();
+        startActivity(intent);
     }
 
     @Override
@@ -223,6 +225,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (newMsgSub != null) newMsgSub.unsubscribe();
     }
 
     /**

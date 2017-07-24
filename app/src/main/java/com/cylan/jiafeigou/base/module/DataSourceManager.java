@@ -706,7 +706,8 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public int getLoginState() {
-        JFGAccount account = this.getJFGAccount();if (account == null || TextUtils.isEmpty(account.getAccount())) {
+        JFGAccount account = this.getJFGAccount();
+        if (account == null || TextUtils.isEmpty(account.getAccount())) {
             return 0;//无账号
         } else {
             return PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, 0);
@@ -940,7 +941,7 @@ public class DataSourceManager implements JFGSourceManager {
         bean.content = ContextUtils.getContext().getString(R.string.app_name);
         bean.subContent = list.get(list.size() - 1).msg;
         final Intent intent = new Intent(ContextUtils.getContext(), FeedbackActivity.class);
-        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotifyManager.getNotifyManager().sendNotify(bean);
     }
 
@@ -987,7 +988,7 @@ public class DataSourceManager implements JFGSourceManager {
                                     final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                                     intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
-                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, AppLogger::e);
                     } catch (Exception e) {
@@ -1021,7 +1022,7 @@ public class DataSourceManager implements JFGSourceManager {
                                             ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
                                     bean.time = System.currentTimeMillis();
                                     bean.resId = R.mipmap.ic_launcher;
-                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), bean.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     bean.time = entity.getVersion();
                                     bean.notificationId = (uuid + "bell").hashCode();
                                     bean.content = title;

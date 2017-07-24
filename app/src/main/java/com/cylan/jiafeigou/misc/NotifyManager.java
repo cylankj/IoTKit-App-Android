@@ -106,6 +106,7 @@ public class NotifyManager implements INotify {
 
     @Override
     public void sendNotify(NotifyBean notifyBean) {
+        AppLogger.d("bean:" + notifyBean);
         if (!enablePush()) return;//用户设置中不允许推送通知,则不发送消息了
         if (notifyBean == null || notifyBean.notificationId == -1)
             throw new IllegalArgumentException("notifyBean.notificationId cannot be  -1");
@@ -135,6 +136,7 @@ public class NotifyManager implements INotify {
 //        notification.flags |= Notification.FLAG_NO_CLEAR;
 //        notification.flags |= Notification.FLAG_ONGOING_EVENT;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Intent.FLAG_ACTIVITY_CLEAR_TOP;
         NotificationManager mNotificationManager = (NotificationManager) ContextUtils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFY_ID + notifyBean.notificationId, notification);
     }

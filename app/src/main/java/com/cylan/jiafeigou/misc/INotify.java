@@ -66,5 +66,18 @@ public interface INotify {
 
         public int notificationId = -1;
 
+        @Override
+        public String toString() {
+            return "NotifyBean{" +
+                    "content='" + content + '\'' +
+                    ", subContent='" + subContent + '\'' +
+                    ", time=" + time +
+                    ", pendingIntent=" + pendingIntent +
+                    ", resId=" + resId +
+                    ", sound=" + sound +
+                    ", vibrate=" + vibrate +
+                    ", notificationId=" + notificationId +
+                    '}';
+        }
     }
 }
