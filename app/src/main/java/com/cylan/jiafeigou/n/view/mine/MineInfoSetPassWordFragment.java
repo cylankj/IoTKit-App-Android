@@ -201,6 +201,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
             AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount(), 1, getNewPassword());
+            AutoSignIn.getInstance().autoLogin();
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }
