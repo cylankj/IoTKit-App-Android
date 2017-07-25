@@ -3,12 +3,6 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 
-//if (project.rootProject.file('fastdex.properties').exists())
-//    apply plugin: 'com.github.typ0520.fastdex'
-
-////多渠道包没人愿意维护多渠道包，算了，删了吧。
-apply plugin: 'packer'
-
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -372,6 +366,30 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 }
+/////////////////编译过滤器/////////////////////////////////
+//只需要在一个文件中读出需要编译的 variant名字
+def List<String> getBuildVariantList() {
+    Properties vFile = new Properties()
+    File file = rootProject.file('variant.properties')
+    if (file.exists())
+        vFile.load(file.newDataInputStream())
+    String buildVariant = vFile.getProperty('buildVariant')
+    if (buildVariant == null) return new ArrayList<String>()
+    ArrayList<String> vList = new ArrayList(Arrays.asList(buildVariant.split(",")))
+    println("hunt..." + vList)
+    return vList
+}
 
+List<String> variantFilterList = getBuildVariantList()
+
+android.variantFilter { variant ->
+    String name = variant.getFlavors().get(0).name
+    boolean toBuild = variantFilterList.contains(name)
+    println("oem...." + name + ",toBuild?" + !toBuild)
+    if (toBuild) {
+        variant.setIgnore(true)//true:不编译此variant
+    }
+}
+/////////////////////////////////////////////////////
 //谷歌推送
 //apply plugin: 'com.google.gms.google-services'
