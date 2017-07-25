@@ -1340,7 +1340,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
             }
             AppLogger.d("切换本地:mic:" + localMic + ",speaker:" + localSpeaker);
-            BaseApplication.getAppComponent().getCmd().setAudio(true, localMic, localSpeaker);
+            // 有视频直播中才能操作。
+            if (presenterWeakReference.get().getLiveStream().playState == PLAY_STATE_PLAYING) {
+                BaseApplication.getAppComponent().getCmd().setAudio(true, localMic, localSpeaker);
+            }
             if (presenterWeakReference.get().isEarpiecePlug()) {
                 presenterWeakReference.get().switchEarpiece(true);
             }
