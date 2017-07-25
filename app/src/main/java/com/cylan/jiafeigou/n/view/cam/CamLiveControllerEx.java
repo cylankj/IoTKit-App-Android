@@ -1177,22 +1177,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }, 100);
     }
 
-    public void showUseCase() {
-        if (presenter.isDeviceStandby() || isLand()) return;
-
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
-        Device device = sourceManager.getDevice(uuid);
-        if (JFGRules.hasHistory(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
-            LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
-            if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
-                LiveShowCase.showHistoryWheelCase((Activity) getContext(), findViewById(R.id.layout_e));
-            }
-        }
-        if (JFGRules.hasProtection(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {
-            LiveShowCase.showSafeCase((Activity) getContext(), layoutD);
-        }
-    }
-
     @Override
     public void updateLiveViewMode(String mode) {
         liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
@@ -1321,9 +1305,22 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
         //先loading吧.
+        //怎么样,都先开始播放历史录像吧
+        boolean fetching = presenter.fetchHistoryDataList();
+        if (!fetching) {
+            //有历史录像
+            reInitHistoryHandler(presenter);
+            historyWheelHandler.setNav2Time(timeTarget);
+            AppLogger.d("点击播放历史录像:" + timeTarget);
+            presenter.startPlayHistory(timeTarget);
+            return;
+        }
+        //获取历史录像ui逻辑
+        layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
+        livePlayState = PLAY_STATE_PREPARE;
+        setLoadingState(getResources().getString(R.string.LOADING), null);
         Subscription subscription = Observable.just("get")
                 .subscribeOn(Schedulers.io())
-                .map(ret -> presenter.fetchHistoryDataList())
                 .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
                         .timeout(30, TimeUnit.SECONDS).first())
                 .flatMap(o -> Observable.just(o.isEmpty))
@@ -1346,9 +1343,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-//                    handler.setupHistoryData(iData);
-                    handler.setNav2Time(timeTarget);
+                    handler.setNav2Time(timeTarget, 2000);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
+                    presenter.startPlayHistory(timeTarget);
                     AppLogger.d("目标历史录像时间?" + timeTarget);
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {
@@ -1361,40 +1358,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                     }
                 });
-
         presenter.addSubscription("fetchHistoryBy", subscription);
-
-
-        presenter.startPlayHistory(timeTarget);
-//        presenter.drawTheDay()
-//                .subscribeOn(Schedulers.io())
-//                .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-//                                .timeout(30, TimeUnit.SECONDS),
-//                        RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
-//                                .timeout(30, TimeUnit.SECONDS))
-//                        .first())
-//                .filter(iData -> iData != null)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
-//                .subscribe(iData -> {
-//                    HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-//                    AppLogger.d("历史录像导航条空?" + (handler == null));
-//                    if (handler != null) {
-//                        if (layoutE.getCurrentView() instanceof ViewGroup) {
-//                            layoutE.showNext();
-//                            if (livePlayState == PLAY_STATE_PREPARE) {
-//                                livePlayState = PLAY_STATE_STOP;
-//                                setLoadingState(PLAY_STATE_STOP, null);
-//                            }
-//                            AppLogger.d("需要展示 遮罩");
-//                        }
-//
-//                        handler.setupHistoryData(iData);
-//                        handler.setNav2Time(timeTarget);
-//                        setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-//                        AppLogger.d("目标历史录像时间?" + timeTarget);
-//                    }
-//                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override
