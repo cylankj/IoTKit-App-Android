@@ -251,7 +251,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
                                     livePlayState = PLAY_STATE_STOP;
                                     setLoadingState(PLAY_STATE_STOP, null);
-                                    ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
+                                    if (presenter != null
+                                            && presenter.getHistoryDataProvider() != null
+                                            && presenter.getHistoryDataProvider().getDataCount() == 0)
+                                        ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                                 }
                             });
                     presenter.addSubscription("fetchHistoryBy", subscription);
@@ -535,6 +538,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
+            } else if (livePlayState == PLAY_STATE_PREPARE) {
+                layoutC.setVisibility(VISIBLE);//loading 必须显示
             }
             streamSwitcher.setVisibility(GONE);
             YoYo.with(Techniques.SlideOutUp)
@@ -1346,7 +1351,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);
-                        ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
+                        if (presenter != null
+                                && presenter.getHistoryDataProvider() != null
+                                && presenter.getHistoryDataProvider().getDataCount() == 0)
+                            ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                     }
                 });
 
