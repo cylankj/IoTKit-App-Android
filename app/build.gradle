@@ -373,6 +373,7 @@ def List<String> getBuildVariantList() {
     File file = rootProject.file('variant.properties')
     if (file.exists())
         vFile.load(file.newDataInputStream())
+    else throw new IllegalArgumentException("variant.properties 文件不存在")
     String buildVariant = vFile.getProperty('buildVariant')
     if (buildVariant == null) return new ArrayList<String>()
     ArrayList<String> vList = new ArrayList(Arrays.asList(buildVariant.split(",")))
