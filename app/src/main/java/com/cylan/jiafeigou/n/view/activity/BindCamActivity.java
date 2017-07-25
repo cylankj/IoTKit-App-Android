@@ -1,22 +1,18 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.bind.BindGuideActivity;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,24 +22,15 @@ public class BindCamActivity extends BaseBindActivity {
 
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    @BindView(R.id.imgV_camera_wifi_light_flash)
-    ImageView imgVCameraWifiLightFlash;
-    @BindView(R.id.imgV_camera_hand)
-    ImageView imgVCameraHand;
-    @BindView(R.id.imgV_camera_red_dot)
-    ImageView imgVCameraRedDot;
+
     @BindView(R.id.tv_main_content)
     TextView tvMainContent;
     @BindView(R.id.tv_sub_title)
     TextView tvSubTitle;
-    @BindView(R.id.fLayout_hand)
-    FrameLayout fLayoutHand;
     @BindView(R.id.tv_bind_camera_tip)
     TextView tvBindCameraTip;
-    @BindView(R.id.fLayout_bind_device_list_fragment_container)
-    FrameLayout fLayoutBindDeviceListFragmentContainer;
-    private AnimationDrawable animationDrawable;
-    private AnimatorSet handFlash;
+    @BindView(R.id.imv_anima)
+    ImageView imvAnima;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,55 +38,19 @@ public class BindCamActivity extends BaseBindActivity {
         setContentView(R.layout.activity_bind_cam);
         ButterKnife.bind(this);
         customToolbar.setBackAction(v -> finishExt());
-        customToolbar.post(this::initAnimation);
         tvMainContent.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_TITLE));
         tvSubTitle.setText(getIntent().getStringExtra(JConstant.KEY_ANIM_SUB_TITLE));
         tvBindCameraTip.setText(getIntent().getStringExtra(JConstant.KEY_NEXT_STEP));
+        int gifId = getIntent().getIntExtra(JConstant.KEY_ANIM_GIF, -1);
+        GlideDrawableImageViewTarget imageViewTarget =
+                new GlideDrawableImageViewTarget(imvAnima);
+        Glide.with(this).load(R.raw.add_cam).into(imageViewTarget);
     }
 
     protected int[] getOverridePendingTransition() {
         return new int[]{R.anim.slide_in_right, R.anim.slide_out_left};
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (handFlash != null) {
-            handFlash.removeAllListeners();
-            handFlash.cancel();
-        }
-    }
-
-    private void initAnimation() {
-        handFlash = new AnimatorSet();
-        handFlash.playTogether(AnimatorUtils.toCenterX(imgVCameraHand, 0),
-                ObjectAnimator.ofFloat(imgVCameraHand, "alpha", 0, 1.f));
-        handFlash.setDuration(800);
-        handFlash.addListener(new AnimatorUtils.SimpleAnimationListener() {
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-//                imgVCameraRedDot.post(() -> imgVCameraRedDot.setVisibility(View.GONE));
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                if (animationDrawable == null)
-                    animationDrawable = AnimatorUtils.onWiFiLightFlash(imgVCameraWifiLightFlash);
-                if (animationDrawable != null && !animationDrawable.isRunning())
-                    animationDrawable.start();
-                imgVCameraRedDot.post(() -> imgVCameraRedDot.setVisibility(View.VISIBLE));
-                handFlash.setStartDelay(3000);
-                handFlash.start();
-            }
-        });
-        handFlash.start();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
 
     @OnClick(R.id.tv_bind_camera_tip)
     public void onClick(View view) {

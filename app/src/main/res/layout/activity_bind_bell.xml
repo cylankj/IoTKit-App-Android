@@ -38,66 +38,73 @@
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp16" />
 
-    <FrameLayout
-        android:id="@+id/fLayout_flip_layout"
+    <ImageView
+        android:id="@+id/imv_anima"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_bind_wait_msg"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/y40">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y40" />
+    <!--<FrameLayout-->
+    <!--android:id="@+id/fLayout_flip_layout"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/tv_bind_wait_msg"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_marginTop="@dimen/y40">-->
 
-        <FrameLayout
-            android:id="@+id/fLayout_flip_before"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/add_image_ring">
+    <!--<FrameLayout-->
+    <!--android:id="@+id/fLayout_flip_before"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/add_image_ring">-->
 
-            <ImageView
-                android:id="@+id/imgV_power_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:src="@drawable/add_image_red_dot"
-                android:visibility="invisible" />
+    <!--<ImageView-->
+    <!--android:id="@+id/imgV_power_light"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:layout_marginLeft="@dimen/x10"-->
+    <!--android:layout_marginRight="@dimen/x10"-->
+    <!--android:src="@drawable/add_image_red_dot"-->
+    <!--android:visibility="invisible" />-->
 
-            <ImageView
-                android:id="@+id/imgV_wifi_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:src="@drawable/add_image_red_dot"
-                android:visibility="invisible" />
+    <!--<ImageView-->
+    <!--android:id="@+id/imgV_wifi_light"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical|end"-->
+    <!--android:layout_marginLeft="@dimen/x10"-->
+    <!--android:layout_marginRight="@dimen/x10"-->
+    <!--android:src="@drawable/add_image_red_dot"-->
+    <!--android:visibility="invisible" />-->
 
-            <ImageView
-                android:id="@+id/imgV_hand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="@dimen/y40"
-                android:src="@drawable/image_hand"
-                android:visibility="invisible" />
-        </FrameLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/imgV_hand"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal|bottom"-->
+    <!--android:layout_marginBottom="@dimen/y40"-->
+    <!--android:src="@drawable/image_hand"-->
+    <!--android:visibility="invisible" />-->
+    <!--</FrameLayout>-->
 
-        <FrameLayout
-            android:id="@+id/fLayout_flip_after"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/add_image_ring1"
-            android:visibility="gone">
+    <!--<FrameLayout-->
+    <!--android:id="@+id/fLayout_flip_after"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/add_image_ring1"-->
+    <!--android:visibility="gone">-->
 
-            <ImageView
-                android:id="@+id/imgV_wifi_light_flash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="@dimen/y40"
-                android:src="@drawable/doorbell_wifi_light_flash" />
-        </FrameLayout>
-    </FrameLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/imgV_wifi_light_flash"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal|bottom"-->
+    <!--android:layout_marginBottom="@dimen/y40"-->
+    <!--android:src="@drawable/doorbell_wifi_light_flash" />-->
+    <!--</FrameLayout>-->
+    <!--</FrameLayout>-->
 
     <View
         android:layout_width="match_parent"
@@ -117,9 +124,9 @@
         android:textSize="@dimen/sp16" />
 
     <!--<FrameLayout-->
-        <!--android:id="@+id/fLayout_bind_device_list_fragment_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_below="@+id/custom_toolbar" />-->
+    <!--android:id="@+id/fLayout_bind_device_list_fragment_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_below="@+id/custom_toolbar" />-->
 </RelativeLayout>
