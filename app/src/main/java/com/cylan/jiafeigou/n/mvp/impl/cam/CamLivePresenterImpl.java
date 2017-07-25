@@ -703,24 +703,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         addSubscription(beforePlayObservable(s -> {
             try {
-                //先停止播放{历史录像,直播都需要停止播放}
-                //此处表明拖动历史录像时间轴.
                 int ret;
-                boolean switchInterface = false;
-                if (getLiveStream().type == TYPE_LIVE && (getLiveStream().playState == PLAY_STATE_PREPARE
-                        || getLiveStream().playState == PLAY_STATE_PLAYING)) {
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-                    switchInterface = true;
-                    AppLogger.i("stop play live !");
-                }
                 getLiveStream().time = time;
-                AppLogger.i("play history  " + JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time)));
                 getHotSeatStateMaintainer().saveRestore();
+                if(getLiveStream().playState != PLAY_STATE_PLAYING){
+                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    AppLogger.i("firstly play live .......");
+                }
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i("play history video: " + uuid + " ret:" + ret + ",switchInterface:" + switchInterface);
+                AppLogger.i("play history video: " + uuid + " time:"+JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time))+" ret:" + ret );
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
