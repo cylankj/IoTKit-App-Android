@@ -47,7 +47,7 @@ public class GcmService extends GcmListenerService {
          * that a message was received.
          */
         sendNotification(message);
-        BellPuller.getInstance().fireBellCalling(message, data);
+        BellPuller.getInstance().fireBellCalling(getApplicationContext(), message, data);
         // [END_EXCLUDE]
     }
     // [END receive_message]

@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.push;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -54,23 +56,30 @@ public class BellPuller {
      * @param response
      * @param bundle
      */
-    public void fireBellCalling(String response, Bundle bundle) {
+    public void fireBellCalling(Context context, String response, Bundle bundle) {
+        System.out.println(PUSH_TAG + "fireBellCalling start:" + context.getPackageName());
+        BaseApplication.getAppComponent().getInitializationManager().initialization();//在这里做初始化
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        System.out.println(PUSH_TAG + "fireBellCalling end" + sourceManager.getAccount());
         AppLogger.d(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response);
-        if (sourceManager.getAccount() == null) {
+        if (sourceManager.getAccount() == null || TextUtils.isEmpty(sourceManager.getAccount().getAccount())) {
             //表明没有登录,这种情况比较多{1.登出,2.App正常离线,3.反正就是处于后台,系统管控着}
             Observable.just(response)
                     .subscribeOn(Schedulers.newThread())
                     .map(ret -> {
+                        System.out.println(PUSH_TAG + "autoLogin start");
                         AutoSignIn.getInstance().autoLogin();
+                        System.out.println(PUSH_TAG + "autoLogin end");
                         return ret;
                     })
                     .timeout(3, TimeUnit.SECONDS)
                     .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class))
                     .subscribe(ret -> {
+                        System.out.println("登录成功");
                         AppLogger.d("push,登录成功:" + new Gson().toJson(ret.devices));
                         prepareForBelling(response);
                     }, throwable -> {
+                        System.out.println("登录 timeout");
                         AppLogger.e("收到门铃呼叫推送,但是登录超时?" + MiscUtils.getErr(throwable));
                         //也有可能,本地缓存了该设备.
                         prepareForBelling(response);
@@ -96,6 +105,7 @@ public class BellPuller {
         long time = Long.parseLong(items[3]);
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         Device device = sourceManager.getDevice(cid);
+        System.out.println(PUSH_TAG + "device," + device + "," + device.available());
         if (device == null || !device.available()) {
             AppLogger.d(PUSH_TAG + "当前列表没有这个设备");
             return;
@@ -108,6 +118,7 @@ public class BellPuller {
             AppLogger.e(PUSH_TAG + "err:" + MiscUtils.getErr(e));
 
         }
+        System.out.println(PUSH_TAG + "time," + PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL));
         if (System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL) - time < 30) {
             launchBellLive(cid, url, time);
         }

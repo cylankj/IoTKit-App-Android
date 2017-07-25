@@ -45,7 +45,7 @@ public class HuaweiPushReceiver extends PushReceiver {
     public boolean onPushMsg(Context context, byte[] bytes, Bundle bundle) {
         String pushMessage = new String(bytes);
         AppLogger.e(PUSH_TAG + "收到华为推送消息:" + pushMessage + bundle + ",context:" + context.getApplicationContext().getPackageName() + ",\n" + context.getApplicationInfo().processName);
-        BellPuller.getInstance().fireBellCalling(pushMessage, bundle);
+        BellPuller.getInstance().fireBellCalling(context, pushMessage, bundle);
         return super.onPushMsg(context, bytes, bundle);
     }
 
