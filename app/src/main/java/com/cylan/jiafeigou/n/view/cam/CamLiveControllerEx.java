@@ -1177,22 +1177,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }, 100);
     }
 
-    public void showUseCase() {
-        if (presenter.isDeviceStandby() || isLand()) return;
-
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
-        Device device = sourceManager.getDevice(uuid);
-        if (JFGRules.hasHistory(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
-            LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
-            if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
-                LiveShowCase.showHistoryWheelCase((Activity) getContext(), findViewById(R.id.layout_e));
-            }
-        }
-        if (JFGRules.hasProtection(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {
-            LiveShowCase.showSafeCase((Activity) getContext(), layoutD);
-        }
-    }
-
     @Override
     public void updateLiveViewMode(String mode) {
         liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
@@ -1359,7 +1343,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-                    handler.setNav2Time(timeTarget, 2000);
+                    handler.setNav2Time(timeTarget, 2000);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
                     presenter.startPlayHistory(timeTarget);
                     AppLogger.d("目标历史录像时间?" + timeTarget);
