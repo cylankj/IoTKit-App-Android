@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -81,6 +82,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                 .map(remote -> {
                     int result = -1;
                     try {
+                        AppLogger.d("H5分享的远程路径为:" + remote);
                         result = appCmd.putFileToCloud(remote, filePath);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -110,8 +112,9 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
     public void share(PanoramaAlbumContact.PanoramaItem item, String desc, String thumbPath) {
         Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                long seq = appCmd.getVideoShareUrl(getRemoteFilePath(item.fileName, false), desc, 0, item.type);
-                AppLogger.e("获取 H5返回码为:" + seq);
+                String remoteFilePath = getRemoteFilePath(item.fileName, false);
+                long seq = appCmd.getVideoShareUrl(remoteFilePath, desc, DataSourceManager.getInstance().getStorageType(), item.type);
+                AppLogger.e("获取 H5返回码为:" + seq + ",remoteFilePath:" + remoteFilePath + ",type" + item.type);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -128,11 +131,11 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
                     try {
                         DpMsgDefine.DPShareItem shareItem = new DpMsgDefine.DPShareItem();
                         shareItem.cid = uuid;
-                        shareItem.msgType = item.type;
+                        shareItem.msgType = item.type == PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_PICTURE ? 0 : 1;
                         shareItem.desc = desc;
                         shareItem.fileName = item.fileName;
                         shareItem.url = h5.url;
-                        shareItem.regionType = 0;
+                        shareItem.regionType = DataSourceManager.getInstance().getStorageType();
                         shareItem.time = item.time;
                         ArrayList<JFGDPMsg> params = new ArrayList<>();
                         JFGDPMsg msg = new JFGDPMsg(606, 0);

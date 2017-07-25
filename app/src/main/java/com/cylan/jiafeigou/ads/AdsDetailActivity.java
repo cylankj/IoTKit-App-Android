@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.ads;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -10,7 +11,6 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.ex.JfgException;
@@ -93,9 +93,17 @@ public class AdsDetailActivity extends BaseFullScreenFragmentActivity {
                         public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
                             ShareManager.byWeb(AdsDetailActivity.this)
                                     .withUrl(description.tagUrl)
-                                    .withDescription(" dd")
+                                    .withDescription(description.url)
                                     .withThumb(resource.getAbsolutePath())
-                                    .withTitle(" aaa")
+                                    .share();
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            ShareManager.byWeb(AdsDetailActivity.this)
+                                    .withUrl(description.tagUrl)
+                                    .withDescription(description.url)
                                     .share();
                         }
                     });

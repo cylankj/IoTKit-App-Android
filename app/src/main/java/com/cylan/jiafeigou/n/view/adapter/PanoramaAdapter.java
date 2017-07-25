@@ -66,7 +66,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         holder.setVisibility(R.id.dv_time_line, isInEditMode ? View.INVISIBLE : View.VISIBLE);
         holder.setChecked(R.id.rb_item_check, item.selected);
         holder.setVisibility(R.id.rb_item_check, isInEditMode ? View.VISIBLE : View.GONE);
-        holder.setVisibility(R.id.iv_album_video_duration_text, item.type == 1 ? View.VISIBLE : View.GONE);
+        holder.setVisibility(R.id.iv_album_video_duration_text, item.type == PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_VIDEO ? View.VISIBLE : View.GONE);
         holder.setText(R.id.iv_album_video_duration_text, TimeUtils.getMM_SS(item.duration * 1000L));
         holder.setVisibility(R.id.iv_album_icon_720_iphone, (item.location == 0 || item.location == 2) ? View.VISIBLE : View.GONE);
         //0:本地;1:设备;2:本地+设备

@@ -707,6 +707,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".n.view.mine.ShareContentWebH5Activity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@style/CamActivityTheme" />
     </application>
 
 </manifest>

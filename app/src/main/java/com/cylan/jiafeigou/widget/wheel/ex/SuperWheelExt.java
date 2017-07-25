@@ -299,16 +299,16 @@ public class SuperWheelExt extends View {
      */
     private float getPosition(long time) {
         long timeInterval = iDataProvider == null ? 0 : (iDataProvider.getFlattenMaxTime() - time);
-        return -timeInterval * pixelsInSecond / 1000.0f + getMeasuredWidth() / 2;//中心点为0,像左边降序.
+        return -timeInterval * pixelsInSecond / 1000.0f + getMarkerLeft();//中心点为0,像左边降序.
     }
 
     public int getMaxScrollX() {
         if (iDataProvider == null) return 0;
-        return (int) ((getMeasuredWidth() >> 1) - getMinPos(iDataProvider.getFlattenMinTime()));
+        return (int) (getMarkerLeft() - getMinPos(iDataProvider.getFlattenMinTime()));
     }
 
     public int getMinScrollX() {
-        return getMeasuredWidth() / 2;
+        return getMarkerLeft();
     }
 
     /**

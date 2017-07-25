@@ -12,19 +12,22 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.interfases.CallBack;
+import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.utils.JfgUtils;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -106,7 +109,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     feedRtcp.stop();//清空之前的状态
                     mView.onViewer();
                     if (shouldShowPreview()) {
-                        File file = new File(JConstant.MEDIA_PATH, "." + uuid + ".jpg");
+                        File file = new File(PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""));
                         mView.onShowVideoPreviewPicture(file.toString());
                     }
                     return getViewHandler();
@@ -217,23 +220,22 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
+                            byte[] screenshot = appCmd.screenshot(false);
+                            if (screenshot != null) {
+                                int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
+                                int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+                                Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
+                                String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+                                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+                                BitmapUtils.saveBitmap2file(bitmap, filePath);
+                                AppLogger.e("截图文件地址:" + filePath);
+                            }
                             appCmd.stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
                             disconn.code = STOP_VIERER_BY_SYSTEM;
                             RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
                             AppLogger.d("正在发送停止直播消息:" + getViewHandler());
-                            appCmd.screenshot(false, new CallBack<Bitmap>() {
-                                @Override
-                                public void onSucceed(Bitmap bitmap) {
-                                    BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + File.separator + "." + uuid + ".jpg");
-                                }
-
-                                @Override
-                                public void onFailure(String s) {
-                                    AppLogger.d("保存门铃画像失败" + s);
-                                }
-                            });
                             return true;
                         } catch (JfgException e) {
                             e.printStackTrace();

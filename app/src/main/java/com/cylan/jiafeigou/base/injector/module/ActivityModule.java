@@ -85,4 +85,5 @@ public class ActivityModule {
     public static SplashContact.Presenter provideSplashPresenter(BasePresenterInjector injector) {
         return injector.inject(new SplashPresenter());
     }
+
 }
