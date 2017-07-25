@@ -385,8 +385,8 @@ List<String> variantFilterList = getBuildVariantList()
 android.variantFilter { variant ->
     String name = variant.getFlavors().get(0).name
     boolean toBuild = variantFilterList.contains(name)
-    println("oem...." + name + ",toBuild?" + !toBuild)
-    if (toBuild) {
+    println("oem...." + name + ",toBuild?" + toBuild)
+    if (!toBuild) {
         variant.setIgnore(true)//true:不编译此variant
     }
 }
