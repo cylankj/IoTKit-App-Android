@@ -349,6 +349,7 @@ public class JFGRules {
 
     /**
      * 电量 弹窗
+     *
      * @param pid
      * @return
      */
@@ -440,7 +441,7 @@ public class JFGRules {
      * @deprecated 需要一并传入是否为共享账号
      */
     public static boolean isNeedNormalRadio(int pid) {
-        return isRS(pid) || !JFGRules.isRoundRadio(pid);
+        return !isNeedPanoramicView(pid);
     }
 
     public static boolean isRuiShiCam(int pid) {
@@ -558,7 +559,7 @@ public class JFGRules {
     public static boolean isRoundRadio(int pid) {
         IProperty property = BaseApplication.getAppComponent().getProductProperty();
         String view = property.property(pid, "VIEW");
-        return TextUtils.equals(view, "圆形");
+        return !TextUtils.isEmpty(view) && view.startsWith("圆形");
     }
 
 

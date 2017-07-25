@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
@@ -159,7 +161,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     /**
      * 显示黑色块。
      */
-    public void setThumbnail(){
+    public void setThumbnail() {
         imgThumbnail.setVisibility(VISIBLE);
         imgThumbnail.setImageResource(0);
         imgThumbnail.setBackgroundColor(Color.BLACK);
@@ -284,8 +286,13 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     return;
                 }
                 if (isNormalView) {
+                    ViewGroup.LayoutParams lp = (imageViewRef.get()).getLayoutParams();
+                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    imageViewRef.get().setLayoutParams(lp);
                     imageViewRef.get().setVisibility(VISIBLE);
                     imageViewRef.get().setImageBitmap(resource);
+//                    BitmapUtils.saveBitmap2file(resource, JConstant.ROOT_DIR + File.separator + "t.png");
                 } else {
                     imageViewRef.get().setVisibility(GONE);
                     videoViewWeakReference.get().loadBitmap(resource);

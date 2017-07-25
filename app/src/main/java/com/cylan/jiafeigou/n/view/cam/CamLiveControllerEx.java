@@ -368,6 +368,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         isSightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
         Log.d("initSightSetting", "judge? " + isSightShow);
         if (!isSightShow) return;//不是第一次
+        layoutE.setVisibility(INVISIBLE);//需要隐藏历史录像时间轴
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
@@ -379,6 +380,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
                 if (layout != null) liveViewWithThumbnail.removeView(layout);
                 basePresenter.startPlay();
+                //需要隐藏历史录像时间轴
+                layoutE.setVisibility(JFGRules.showSdcard(basePresenter.getDevice())
+                        ? VISIBLE : INVISIBLE);
             });
             layout.setOnClickListener(v -> AppLogger.d("don't click me"));
             view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
