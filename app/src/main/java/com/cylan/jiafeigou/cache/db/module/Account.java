@@ -297,4 +297,29 @@ public class Account extends BasePropertyHolder<Account> {
     public boolean isAvailable() {
         return available;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "_id=" + _id +
+                ", account='" + account + '\'' +
+                ", server='" + server + '\'' +
+                ", password='" + password + '\'' +
+                ", loginType=" + loginType +
+                ", phone='" + phone + '\'' +
+                ", token='" + token + '\'' +
+                ", alias='" + alias + '\'' +
+                ", enablePush=" + enablePush +
+                ", enableSound=" + enableSound +
+                ", email='" + email + '\'' +
+                ", enableVibrate=" + enableVibrate +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", action='" + action + '\'' +
+                ", state='" + state + '\'' +
+                ", option='" + option + '\'' +
+                ", accountJson='" + accountJson + '\'' +
+                ", isOnline=" + isOnline +
+                ", available=" + available +
+                '}';
+    }
 }
