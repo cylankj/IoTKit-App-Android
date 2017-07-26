@@ -154,13 +154,13 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .mergeWith(BasePanoramaApiHelper.getInstance().sdFormat(uuid).subscribeOn(Schedulers.io())
                         .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)))
                 .subscribeOn(Schedulers.io())
-                .first(deviceSyncRsp -> {
+                .filter(deviceSyncRsp -> {
                     if (!TextUtils.equals(deviceSyncRsp.uuid, uuid)) {
                         return false;
                     }
                     if (deviceSyncRsp.dpList != null && deviceSyncRsp.dpList.size() > 0) {
                         for (JFGDPMsg msg : deviceSyncRsp.dpList) {
-                            if (msg.id == 204 || msg.id == 222) {
+                            if (msg.id == 203) {//唯一一个条件.203
                                 return true;
                             }
                         }
@@ -173,7 +173,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     AppLogger.e("收到设备同步消息:" + new Gson().toJson(deviceSyncRsp));
                     if (deviceSyncRsp != null && deviceSyncRsp.dpList != null) {
                         for (JFGDPMsg msg : deviceSyncRsp.dpList) {
-                            if (msg.id == 204) {
+                            if (msg.id == 203) {
                                 DpMsgDefine.DPSdStatus status = null;
                                 DpMsgDefine.DPSdStatusInt statusInt = null;
                                 try {

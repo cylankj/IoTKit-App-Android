@@ -4,6 +4,7 @@ import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -105,6 +106,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs) {
         return getActiveAccount().map(account -> {
+            Log.d("saveDPByteInTx", "saveDPByteInTx:" + uuid);
             Set<DPEntity> result = new HashSet<>();
             DPEntity dpEntity = null;
             Device device = sourceManager.getDevice(uuid);
@@ -512,7 +514,7 @@ public class BaseDBHelper implements IDBHelper {
                     Device dpDevice = null;
                     JFGDevice dev;
                     List<Device> remove = buildDPDeviceQueryBuilder(account.getAccount(), getServer(), null, null, null, null).list();
-                    if (remove!=null) {
+                    if (remove != null) {
                         deviceDao.deleteInTx(remove);
                     }
                     for (int i = 0; i < device.length; i++) {
