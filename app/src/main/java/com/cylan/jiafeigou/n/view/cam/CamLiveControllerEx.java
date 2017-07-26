@@ -443,14 +443,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard || status.err != 0) {
             //隐藏
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //2.手机无网络
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             //隐藏
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //4.被分享用户不显示
@@ -462,7 +462,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             AppLogger.d("isDeviceOnline false");
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //3.没有历史录像
@@ -1170,7 +1170,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
-            layoutE.findViewById(R.id.btn_load_history).setEnabled(NetUtils.getJfgNetType() != 0);
+            boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
+            layoutE.findViewById(R.id.btn_load_history)
+                    .setEnabled(NetUtils.getJfgNetType() != 0 && online);
             layoutE.setVisibility(JFGRules.showSdcard(device)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;

@@ -72,7 +72,6 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
@@ -244,24 +243,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d("isResumed", "start isResumed: " + getUserVisibleHint());
         Device device = basePresenter.getDevice();
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        //不需要自动播放了
-        if (judge()) {
-            //显示按钮
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        basePresenter.saveHotSeatState();
+//        basePresenter.saveHotSeatState();
+        if (basePresenter != null)
+            basePresenter.stopPlayVideo(true).subscribe(ret -> {
+            }, AppLogger::e);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (basePresenter != null)
-            basePresenter.stopPlayVideo(true).subscribe(ret -> {
-            }, AppLogger::e);
     }
 
     @Override
