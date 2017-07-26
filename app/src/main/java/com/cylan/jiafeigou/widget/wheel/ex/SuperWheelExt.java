@@ -405,9 +405,9 @@ public class SuperWheelExt extends View {
      */
     public void setPositionByTime(long timeTarget) {
 //        post(() -> {
-        Log.d("setPositionByTime", "setPositionByTime:" + timeTarget);
         long timeCurrent = getCurrentFocusTime();
         float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
+        Log.i("setPositionByTime", "setPositionByTime:" + timeTarget + "," + deltaDx);
         touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
 //        });
         this.lastUpdateTime = System.currentTimeMillis();

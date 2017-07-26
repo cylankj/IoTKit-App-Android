@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
@@ -444,14 +445,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard || status.err != 0) {
             //隐藏
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //2.手机无网络
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             //隐藏
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //4.被分享用户不显示
@@ -463,7 +464,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             AppLogger.d("isDeviceOnline false");
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //3.没有历史录像
@@ -474,11 +475,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         layoutE.setVisibility(show ? VISIBLE : INVISIBLE);
-    }
-
-    @Override
-    public void initHotRect() {
-
     }
 
     @Override
@@ -540,6 +536,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable landHideRunnable = new Runnable() {
         @Override
         public void run() {
+            if (historyWheelHandler != null && historyWheelHandler.isBusy()) {
+                //滑动过程
+                postDelayed(this, 3000);
+                return;
+            }
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
@@ -1179,7 +1180,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
-            layoutE.findViewById(R.id.btn_load_history).setEnabled(NetUtils.getJfgNetType() != 0);
+            boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
+            layoutE.findViewById(R.id.btn_load_history)
+                    .setEnabled(NetUtils.getJfgNetType() != 0 && online);
             layoutE.setVisibility(JFGRules.showSdcard(device)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
@@ -1371,20 +1374,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void showMobileDataCover(CamLiveContract.Presenter presenter) {
-        AppLogger.d("显示遮罩");
-        liveViewWithThumbnail.showMobileDataInterface(v -> {
-            presenter.startPlay();
-        });
-    }
-
-    @Override
     public void updateLiveRect(Rect rect) {
         if (liveViewWithThumbnail != null)
             liveViewWithThumbnail.post(() -> {
                 liveViewWithThumbnail.getLocalVisibleRect(rect);
                 AppLogger.d("rect: " + rect);
             });
+    }
+
+    @Override
+    public void dpUpdate(JFGDPMsg msg, Device device) {
+        if (msg != null && msg.id == 214) {
+            TimeZone timeZone = JFGRules.getDeviceTimezone(device);
+            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+            liveTimeDateFormat.setTimeZone(timeZone);
+        }
     }
 
     @Override

@@ -243,24 +243,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d("isResumed", "start isResumed: " + getUserVisibleHint());
         Device device = basePresenter.getDevice();
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        //不需要自动播放了
-        if (judge()) {
-            //显示按钮
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        basePresenter.saveHotSeatState();
+//        basePresenter.saveHotSeatState();
+        if (basePresenter != null)
+            basePresenter.stopPlayVideo(true).subscribe(ret -> {
+            }, AppLogger::e);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (basePresenter != null)
-            basePresenter.stopPlayVideo(true).subscribe(ret -> {
-            }, AppLogger::e);
     }
 
     @Override
@@ -400,6 +396,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             String _509 = device.$(509, "1");
             camLiveControlLayer.updateLiveViewMode(_509);
         }
+        camLiveControlLayer.dpUpdate(msg, getDevice());
     }
 
 

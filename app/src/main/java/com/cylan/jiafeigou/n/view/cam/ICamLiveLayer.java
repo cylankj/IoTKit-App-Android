@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -46,11 +47,6 @@ public interface ICamLiveLayer {
 
     void initView(CamLiveContract.Presenter presenter, String uuid);
 
-    /**
-     * speaker*2,mic*2,capture*2
-     */
-    void initHotRect();
-
     void onLivePrepared(int type);
 
     void onLiveStart(CamLiveContract.Presenter presenter, Device device);
@@ -81,8 +77,6 @@ public interface ICamLiveLayer {
 
     void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible);
 
-//    void setCaptureListener(View.OnClickListener captureListener);
-
     void updateLiveViewMode(String mode);
 
     /***
@@ -109,7 +103,12 @@ public interface ICamLiveLayer {
 
     void reAssembleHistory(CamLiveContract.Presenter presenter, long timeTarget);
 
-    void showMobileDataCover(CamLiveContract.Presenter presenter);
-
     void updateLiveRect(Rect rect);
+
+    /**
+     * 设备属性更新
+     *
+     * @param device
+     */
+    void dpUpdate(JFGDPMsg msg, Device device);
 }
