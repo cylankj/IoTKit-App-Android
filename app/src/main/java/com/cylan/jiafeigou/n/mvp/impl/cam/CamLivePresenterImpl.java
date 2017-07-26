@@ -339,8 +339,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(ret -> {
                     mView.onHistoryDataRsp(historyDataProvider);
                     AppLogger.d("历史录像wheel准备好,断开直播");
-                    stopPlayVideo(PLAY_STATE_STOP).subscribe(result -> {
-                    }, AppLogger::e);
+                    startPlayHistory(historyDataProvider.getFlattenMinTime());
                 }, AppLogger::e);
         addSubscription(subscription, "hisFlat");
     }
@@ -712,7 +711,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 int ret;
                 getLiveStream().time = time;
                 getHotSeatStateMaintainer().saveRestore();
-                if(getLiveStream().playState != PLAY_STATE_PLAYING){
+                if (getLiveStream().playState != PLAY_STATE_PLAYING) {
                     BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                     AppLogger.i("firstly play live .......");
                 }

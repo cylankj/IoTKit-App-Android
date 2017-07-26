@@ -248,7 +248,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     findViewById(R.id.v_flag).setVisibility(VISIBLE);
                                     AppLogger.d("需要展示 遮罩");
                                 }
-                                if (presenter != null) presenter.startPlayHistory(-1);
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
                                     layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
