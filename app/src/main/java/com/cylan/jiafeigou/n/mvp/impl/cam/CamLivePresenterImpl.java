@@ -313,7 +313,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     public float getVideoPortHeightRatio() {
         AppLogger.d("获取分辨率?");
         float cache = PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, 0.0f);
-        if (cache == 0.0f) cache = JFGRules.getDefaultPortHeightRatio(0);
+        if (cache == 0.0f) cache = JFGRules.getDefaultPortHeightRatio(getDevice().pid);
         return PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, cache);
     }
 

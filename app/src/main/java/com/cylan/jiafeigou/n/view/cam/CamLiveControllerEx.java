@@ -849,8 +849,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(VISIBLE);
-            float ratio = isNormalView ? presenter.getVideoPortHeightRatio() : 1.0f;
-            updateLiveViewRectHeight(ratio);
+            updateLiveViewRectHeight(presenter.getVideoPortHeightRatio());
             //有条件的.
             if (presenter.getPlayState() == PLAY_STATE_PLAYING) {
                 //需要根据设备属性表来决定是否显示或隐藏 portFlip
