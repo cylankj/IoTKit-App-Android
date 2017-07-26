@@ -159,14 +159,12 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
         final String alias = mDevice.alias;
         final String shareAccount = mDevice.shareAccount;
-        final int onLineState = net != null ? net.net : (mDevice.pid == JConstant.OS_MAGNET ? 1 : 0);
-//        final int deviceType = bean.mDevice.pid;
-        Log.d("handleState", "handleState: " + uuid + " " + net);
+        final boolean deviceOnline = JFGRules.isDeviceOnline(net);
+        Log.d("handleState", "handleState: " + uuid + " " + net + "," + deviceOnline);
         int online = JConstant.getOnlineIcon(mDevice.pid);
         int offline = JConstant.getOfflineIcon(mDevice.pid);
-//        String mac = mDevice.$(DpMsgMap.ID_202_MAC, "");
         boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
-        int iconRes = (onLineState != 0 && onLineState != -1) || apMode ? online : offline;
+        int iconRes = deviceOnline || apMode ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!isPrimaryAccount(shareAccount))

@@ -65,6 +65,7 @@ public class SuperWheelExt extends View {
     private int LINE_HEIGHT_1 = 25;
 
     private IData iDataProvider;
+    private long lastUpdateTime;
 
     public IData getDataProvider() {
         return iDataProvider;
@@ -299,7 +300,7 @@ public class SuperWheelExt extends View {
      */
     private float getPosition(long time) {
         long timeInterval = iDataProvider == null ? 0 : (iDataProvider.getFlattenMaxTime() - time);
-        return -timeInterval * pixelsInSecond / 1000.0f + getMeasuredWidth() / 2;//中心点为0,像左边降序.
+        return -timeInterval * pixelsInSecond / 1000.0f + (getMeasuredWidth() >> 1);//中心点为0,像左边降序.
     }
 
     public int getMaxScrollX() {
@@ -409,6 +410,7 @@ public class SuperWheelExt extends View {
         Log.i("setPositionByTime", "setPositionByTime:" + timeTarget + "," + deltaDx);
         touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
 //        });
+        this.lastUpdateTime = System.currentTimeMillis();
     }
 
     /**
@@ -427,6 +429,19 @@ public class SuperWheelExt extends View {
     }
 
     private WheelRollListener wheelRollListener;
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public long getNextTimeDistance() {
+        long currentFocusTime = getCurrentFocusTime();
+        return iDataProvider.getNextFocusTime(currentFocusTime, ITouchHandler.MoveDirection.RIGHT) - currentFocusTime;
+    }
+
+    public long getNextFocusTime(long time) {
+        return iDataProvider.getNextFocusTime(time, ITouchHandler.MoveDirection.RIGHT);
+    }
 
     public interface WheelRollListener {
         /**

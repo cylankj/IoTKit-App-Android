@@ -321,10 +321,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onDeviceInfoChanged(JFGDPMsg msg) throws IOException {
         int msgId = (int) msg.id;
-        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-            DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-            if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
-            if (!sdStatus.hasSdcard) {
+        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY || msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
+            boolean hasSDCard = true;
+            if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+                if (sdStatus != null) {
+                    hasSDCard = sdStatus.hasSdcard;
+                }
+            } else {
+                DpMsgDefine.DPSdStatus status = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                if (status != null) {
+                    hasSDCard = status.hasSdcard;
+                }
+            }
+
+            if (!hasSDCard) {
                 AppLogger.d("sdcard 被拔出");
                 camLiveControlLayer.hideHistoryWheel();
                 if (!getUserVisibleHint() || basePresenter.isShareDevice()) {
@@ -346,6 +357,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 AppLogger.e("sdcard数据被清空，唐宽，还没实现");
             }
         }
+
         if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
             DpMsgDefine.DPStandby standby = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPStandby.class);
             if (standby != null && standby.standby) {
