@@ -384,6 +384,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             String _509 = device.$(509, "1");
             camLiveControlLayer.updateLiveViewMode(_509);
         }
+        camLiveControlLayer.dpUpdate(msg, getDevice());
     }
 
 

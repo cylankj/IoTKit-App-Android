@@ -63,12 +63,12 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.d("OnReportJfgDevices" + gson.toJson(jfgDevices));
-//        for (JFGDevice device : jfgDevices) {
-//            if (device.uuid.contains("0209")) {
-//                device.alias = "hunt";
-//                device.pid = 50;
-//            }
-//        }
+        for (JFGDevice device : jfgDevices) {
+            if (device.uuid.contains("00002")) {
+                device.alias = "hunt";
+                device.pid = 6;
+            }
+        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
     }
 

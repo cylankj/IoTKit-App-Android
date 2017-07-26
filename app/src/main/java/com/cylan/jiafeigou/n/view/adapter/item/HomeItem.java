@@ -109,7 +109,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         //2 电量
         if (mDevice != null && JFGRules.isDeviceOnline(net) && JFGRules.showBattery(mDevice.pid, false)) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
-            if (battery < 20 && (JFGRules.isBell(mDevice.pid) || JFGRules.isFreeCam(mDevice.pid))) {//门铃和freeCam 电量低于20%在线显示
+            if (battery <= 20 && (JFGRules.isBell(mDevice.pid) || JFGRules.isFreeCam(mDevice.pid))) {//门铃和freeCam 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else if (battery <= 50 && JFGRules.is3GCam(mDevice.pid)) {//3G狗 低于50%在线显示

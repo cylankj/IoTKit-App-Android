@@ -28,11 +28,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -65,7 +65,6 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
@@ -476,11 +475,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void initHotRect() {
-
-    }
-
-    @Override
     public void onLivePrepared(int type) {
         livePlayType = type;
         livePlayState = PLAY_STATE_PREPARE;
@@ -539,6 +533,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable landHideRunnable = new Runnable() {
         @Override
         public void run() {
+            if (historyWheelHandler != null && historyWheelHandler.isBusy()) {
+                //滑动过程
+                postDelayed(this, 3000);
+                return;
+            }
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
@@ -1364,20 +1363,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void showMobileDataCover(CamLiveContract.Presenter presenter) {
-        AppLogger.d("显示遮罩");
-        liveViewWithThumbnail.showMobileDataInterface(v -> {
-            presenter.startPlay();
-        });
-    }
-
-    @Override
     public void updateLiveRect(Rect rect) {
         if (liveViewWithThumbnail != null)
             liveViewWithThumbnail.post(() -> {
                 liveViewWithThumbnail.getLocalVisibleRect(rect);
                 AppLogger.d("rect: " + rect);
             });
+    }
+
+    @Override
+    public void dpUpdate(JFGDPMsg msg, Device device) {
+        if (msg != null && msg.id == 214) {
+            TimeZone timeZone = JFGRules.getDeviceTimezone(device);
+            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+            liveTimeDateFormat.setTimeZone(timeZone);
+        }
     }
 
     @Override
