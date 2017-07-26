@@ -56,6 +56,7 @@ public class MiscUtilsTest {
 
     @Test
     public void testHAN() {
+
 //        System.out.println(containsHanScript("xxx已下架xxx"));
 //        for (int i = Character.MIN_VALUE; i <= Character.MAX_VALUE; ++i) {
 //            System.out.println(i + "    " + (char) i);

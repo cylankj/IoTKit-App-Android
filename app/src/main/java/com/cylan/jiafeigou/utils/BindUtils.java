@@ -170,28 +170,33 @@ public class BindUtils {
      * @note It does not work if "1.10" is supposed to be equal to "1.10.0".
      */
     public static int versionCompare(String str1, String str2) {
-        if (str1 == null) str1 = "0";
-        if (str2 == null) str2 = "0";
-        Pattern pattern = Pattern.compile("\\d+");
-        List<String> str1Result = new ArrayList<>();
-        List<String> str2Result = new ArrayList<>();
-        Matcher matcher = pattern.matcher(str1);
-        while (matcher.find()) {
-            str1Result.add(matcher.group());
-        }
-        matcher = pattern.matcher(str2);
-        while (matcher.find()) {
-            str2Result.add(matcher.group());
-        }
-        if (str1Result.size() == 0) return -1;
-        for (int i = 0; i < str1Result.size(); i++) {
-            if (str2Result.size() < i || str2Result.size() == 0) return 1;
-            int version1 = Integer.parseInt(str1Result.get(i));
-            int version2 = Integer.parseInt(str2Result.get(i));
-            if (version1 == version2) continue;
-            return Integer.signum(version1 - version2);
-        }
-        return 0;
+        if (TextUtils.isEmpty(str1)) str1 = "0.0";
+        if (TextUtils.isEmpty(str2)) str2 = "0.0";
+        Version a = new Version(str1);
+        Version b = new Version(str2);
+        return a.compareTo(b);
+//        if (str1 == null) str1 = "0";
+//        if (str2 == null) str2 = "0";
+//        Pattern pattern = Pattern.compile("\\d+");
+//        List<String> str1Result = new ArrayList<>();
+//        List<String> str2Result = new ArrayList<>();
+//        Matcher matcher = pattern.matcher(str1);
+//        while (matcher.find()) {
+//            str1Result.add(matcher.group());
+//        }
+//        matcher = pattern.matcher(str2);
+//        while (matcher.find()) {
+//            str2Result.add(matcher.group());
+//        }
+//        if (str1Result.size() == 0) return -1;
+//        for (int i = 0; i < str1Result.size(); i++) {
+//            if (str2Result.size() < i || str2Result.size() == 0) return 1;
+//            int version1 = Integer.parseInt(str1Result.get(i));
+//            int version2 = Integer.parseInt(str2Result.get(i));
+//            if (version1 == version2) continue;
+//            return Integer.signum(version1 - version2);
+//        }
+//        return 0;
     }
 
     //setDevice by hunt 2016-08-05
@@ -272,4 +277,52 @@ public class BindUtils {
     public static final String BELL_AP = "BELL-**-******";
     public static final String DOG_AP = "DOG-**-******";
 
+    private static class Version implements Comparable<Version> {
+
+        private String version;
+
+        public final String get() {
+            return this.version;
+        }
+
+        public Version(String version) {
+            if (version == null)
+                throw new IllegalArgumentException("Version can not be null");
+            if (!version.matches("[0-9]+(\\.[0-9]+)*"))
+                throw new IllegalArgumentException("Invalid version format");
+            this.version = version;
+        }
+
+        @Override
+        public int compareTo(Version that) {
+            if (that == null)
+                return 1;
+            String[] thisParts = this.get().split("\\.");
+            String[] thatParts = that.get().split("\\.");
+            int length = Math.max(thisParts.length, thatParts.length);
+            for (int i = 0; i < length; i++) {
+                int thisPart = i < thisParts.length ?
+                        Integer.parseInt(thisParts[i]) : 0;
+                int thatPart = i < thatParts.length ?
+                        Integer.parseInt(thatParts[i]) : 0;
+                if (thisPart < thatPart)
+                    return -1;
+                if (thisPart > thatPart)
+                    return 1;
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if (this == that)
+                return true;
+            if (that == null)
+                return false;
+            if (this.getClass() != that.getClass())
+                return false;
+            return this.compareTo((Version) that) == 0;
+        }
+
+    }
 }

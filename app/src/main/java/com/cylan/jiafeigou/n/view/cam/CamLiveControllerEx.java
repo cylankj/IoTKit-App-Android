@@ -137,7 +137,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private CamLiveContract.Presenter presenter;
     private Switcher streamSwitcher;
     private int pid;
-    private String cVersion;
+    //    private String cVersion;
     private boolean isRSCam;
     private Handler handler = new Handler();
 
@@ -248,6 +248,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                     findViewById(R.id.v_flag).setVisibility(VISIBLE);
                                     AppLogger.d("需要展示 遮罩");
                                 }
+                                if (presenter != null) presenter.startPlayHistory(-1);
                             }, throwable -> {
                                 if (throwable instanceof TimeoutException) {
                                     layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
@@ -283,7 +284,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        this.cVersion = device.$(207, "");
         isRSCam = JFGRules.isRS(device.pid);
         if (device == null) {
             AppLogger.e("device is null");
@@ -510,6 +510,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             Log.d("wahat", "portHideRunnable");
         }
     };
+
     private Runnable portShowRunnable = new Runnable() {
         @Override
         public void run() {
@@ -522,7 +523,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
-            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, cVersion, false) ? VISIBLE : GONE);
+            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false) ? VISIBLE : GONE);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
@@ -565,7 +566,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
             streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING &&
-                    JFGRules.showSdHd(pid, cVersion, false) ? VISIBLE : GONE);
+                    JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false) ? VISIBLE : GONE);
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);
