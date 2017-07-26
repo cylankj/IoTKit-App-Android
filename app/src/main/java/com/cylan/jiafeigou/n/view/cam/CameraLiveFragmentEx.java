@@ -72,7 +72,6 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
@@ -244,24 +243,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Log.d("isResumed", "start isResumed: " + getUserVisibleHint());
         Device device = basePresenter.getDevice();
         camLiveControlLayer.onActivityStart(basePresenter, device);
-        //不需要自动播放了
-        if (judge()) {
-            //显示按钮
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        basePresenter.saveHotSeatState();
+//        basePresenter.saveHotSeatState();
+        if (basePresenter != null)
+            basePresenter.stopPlayVideo(true).subscribe(ret -> {
+            }, AppLogger::e);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (basePresenter != null)
-            basePresenter.stopPlayVideo(true).subscribe(ret -> {
-            }, AppLogger::e);
     }
 
     @Override
@@ -275,7 +270,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             Bundle bundle = getArguments();
             if (getArguments().containsKey(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME)) {
                 long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
-                AppLogger.d("需要定位到时间轴");
+                AppLogger.d("需要定位到时间轴:" + time);
                 if (time == 0 && BuildConfig.DEBUG)
                     throw new IllegalArgumentException("play history time is 0");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
@@ -326,10 +321,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onDeviceInfoChanged(JFGDPMsg msg) throws IOException {
         int msgId = (int) msg.id;
-        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-            DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-            if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
-            if (!sdStatus.hasSdcard) {
+        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY || msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
+            boolean hasSDCard = true;
+            if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+                if (sdStatus != null) {
+                    hasSDCard = sdStatus.hasSdcard;
+                }
+            } else {
+                DpMsgDefine.DPSdStatus status = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                if (status != null) {
+                    hasSDCard = status.hasSdcard;
+                }
+            }
+
+            if (!hasSDCard) {
                 AppLogger.d("sdcard 被拔出");
                 camLiveControlLayer.hideHistoryWheel();
                 if (!getUserVisibleHint() || basePresenter.isShareDevice()) {
@@ -351,6 +357,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 AppLogger.e("sdcard数据被清空，唐宽，还没实现");
             }
         }
+
         if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
             DpMsgDefine.DPStandby standby = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPStandby.class);
             if (standby != null && standby.standby) {
@@ -389,6 +396,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             String _509 = device.$(509, "1");
             camLiveControlLayer.updateLiveViewMode(_509);
         }
+        camLiveControlLayer.dpUpdate(msg, getDevice());
     }
 
 

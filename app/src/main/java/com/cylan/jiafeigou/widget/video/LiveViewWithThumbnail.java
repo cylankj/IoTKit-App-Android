@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -24,14 +26,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.SimpleCache;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.lang.ref.WeakReference;
 
 import rx.Observable;
@@ -159,7 +157,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     /**
      * 显示黑色块。
      */
-    public void setThumbnail(){
+    public void setThumbnail() {
         imgThumbnail.setVisibility(VISIBLE);
         imgThumbnail.setImageResource(0);
         imgThumbnail.setBackgroundColor(Color.BLACK);
@@ -284,8 +282,18 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     return;
                 }
                 if (isNormalView) {
+                    ViewGroup.LayoutParams lp = (imageViewRef.get()).getLayoutParams();
+                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    imageViewRef.get().setLayoutParams(lp);
                     imageViewRef.get().setVisibility(VISIBLE);
-                    imageViewRef.get().setImageBitmap(resource);
+                    imageViewRef.get().setImageResource(0);
+                    BitmapDrawable bd = new BitmapDrawable(imageViewRef.get().getContext().getResources(), resource);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        imageViewRef.get().setBackground(bd);
+                    } else {
+                        imageViewRef.get().setBackgroundDrawable(bd);
+                    }
                 } else {
                     imageViewRef.get().setVisibility(GONE);
                     videoViewWeakReference.get().loadBitmap(resource);

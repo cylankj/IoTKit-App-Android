@@ -28,11 +28,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -65,7 +65,6 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
@@ -103,6 +102,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer,
         View.OnClickListener {
+    private static final long DAMP_DISTANCE = 30 * 1000L;
     private String uuid;
     private static final String TAG = "CamLiveControllerEx";
     private ILiveControl.Action action;
@@ -140,6 +140,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private String cVersion;
     private boolean isRSCam;
     private Handler handler = new Handler();
+
     /**
      * 设备的时区
      */
@@ -155,6 +156,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public CamLiveControllerEx(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
     }
 
     @Override
@@ -368,6 +370,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         isSightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
         Log.d("initSightSetting", "judge? " + isSightShow);
         if (!isSightShow) return;//不是第一次
+        layoutE.setVisibility(INVISIBLE);//需要隐藏历史录像时间轴
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
@@ -379,6 +382,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
                 if (layout != null) liveViewWithThumbnail.removeView(layout);
                 basePresenter.startPlay();
+                //需要隐藏历史录像时间轴
+                layoutE.setVisibility(JFGRules.showSdcard(basePresenter.getDevice())
+                        ? VISIBLE : INVISIBLE);
             });
             layout.setOnClickListener(v -> AppLogger.d("don't click me"));
             view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
@@ -439,14 +445,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard || status.err != 0) {
             //隐藏
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //2.手机无网络
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             //隐藏
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //4.被分享用户不显示
@@ -458,7 +464,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             AppLogger.d("isDeviceOnline false");
-            layoutE.setVisibility(INVISIBLE);
+//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //3.没有历史录像
@@ -469,11 +475,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         layoutE.setVisibility(show ? VISIBLE : INVISIBLE);
-    }
-
-    @Override
-    public void initHotRect() {
-
     }
 
     @Override
@@ -535,6 +536,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable landHideRunnable = new Runnable() {
         @Override
         public void run() {
+            if (historyWheelHandler != null && historyWheelHandler.isBusy()) {
+                //滑动过程
+                postDelayed(this, 3000);
+                return;
+            }
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
@@ -916,7 +922,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
         Log.d("setLiveRectTime", "isBusy?" + isWheelBusy);
         if (!isWheelBusy) {
-            setLiveRectTime(livePlayType, rtcp.timestamp);
+            setLiveRectTime(livePlayType, rtcp.timestamp, true);
         }
         //点击事件
         if (liveTimeRectListener == null) {
@@ -960,25 +966,33 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //     */
 //    private long fuckTheTime;
 
-    private void setLiveRectTime(int type, long timestamp) {
+    private void setLiveRectTime(int type, long timestamp, boolean useDamp) {
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
-        ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
-                .setContent(content);
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
+        boolean shouldUpdateWheelTime = !useDamp ||
+                System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
+                || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
+        AppLogger.d("useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance())
+        ;
+        if (shouldUpdateWheelTime) {
+            ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
+        }
         if (livePlayState == PLAY_STATE_PREPARE) return;
         if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
                 && presenter != null
-                && presenter.getPlayState() == PLAY_STATE_PLAYING) {
+                && presenter.getPlayState() == PLAY_STATE_PLAYING && shouldUpdateWheelTime) {
 //            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
 //                return;
 //            } else fuckTheTime = System.currentTimeMillis();
             //移动导航条
+//            if (!useDamp || System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > 10 * 1000) {
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
+//            }
         }
     }
 
@@ -1031,7 +1045,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
-            setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+            setLiveRectTime(TYPE_HISTORY, time, false);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
 //                prepareLayoutDAnimation(state == STATE_FINISH);//正在查看历史视频时， 拖动时间轴视频画面不显示暂停的按钮
         });
         findViewById(R.id.tv_cam_live_land_bottom).setVisibility(VISIBLE);
@@ -1166,27 +1180,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
-            layoutE.findViewById(R.id.btn_load_history).setEnabled(NetUtils.getJfgNetType() != 0);
+            boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
+            layoutE.findViewById(R.id.btn_load_history)
+                    .setEnabled(NetUtils.getJfgNetType() != 0 && online);
             layoutE.setVisibility(JFGRules.showSdcard(device)
                     ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);
-    }
-
-    public void showUseCase() {
-        if (presenter.isDeviceStandby() || isLand()) return;
-
-        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
-        Device device = sourceManager.getDevice(uuid);
-        if (JFGRules.hasHistory(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {//分享设备不提示
-            LiveShowCase.showHistoryCase((Activity) getContext(), findViewById(R.id.imgV_cam_zoom_to_full_screen));
-            if (DataExt.getInstance().getDataCount() > 0) {//说明有数据
-                LiveShowCase.showHistoryWheelCase((Activity) getContext(), findViewById(R.id.layout_e));
-            }
-        }
-        if (JFGRules.hasProtection(device.pid, false) && TextUtils.isEmpty(device.shareAccount)) {
-            LiveShowCase.showSafeCase((Activity) getContext(), layoutD);
-        }
     }
 
     @Override
@@ -1317,9 +1317,22 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void reAssembleHistory(CamLiveContract.Presenter presenter, final long timeTarget) {
         //先loading吧.
+        //怎么样,都先开始播放历史录像吧
+        boolean fetching = presenter.fetchHistoryDataList();
+        if (!fetching) {
+            //有历史录像
+            reInitHistoryHandler(presenter);
+            historyWheelHandler.setNav2Time(timeTarget);
+            AppLogger.d("点击播放历史录像:" + timeTarget);
+            presenter.startPlayHistory(timeTarget);
+            return;
+        }
+        //获取历史录像ui逻辑
+        layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
+        livePlayState = PLAY_STATE_PREPARE;
+        setLoadingState(getResources().getString(R.string.LOADING), null);
         Subscription subscription = Observable.just("get")
                 .subscribeOn(Schedulers.io())
-                .map(ret -> presenter.fetchHistoryDataList())
                 .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
                         .timeout(30, TimeUnit.SECONDS).first())
                 .flatMap(o -> Observable.just(o.isEmpty))
@@ -1342,9 +1355,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-//                    handler.setupHistoryData(iData);
-                    handler.setNav2Time(timeTarget);
-                    setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
+                    handler.setNav2Time(timeTarget);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
+                    setLiveRectTime(TYPE_HISTORY, timeTarget / 1000, false);
+                    presenter.startPlayHistory(timeTarget);
                     AppLogger.d("目标历史录像时间?" + timeTarget);
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {
@@ -1357,48 +1370,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                     }
                 });
-
         presenter.addSubscription("fetchHistoryBy", subscription);
-
-
-        presenter.startPlayHistory(timeTarget);
-//        presenter.drawTheDay()
-//                .subscribeOn(Schedulers.io())
-//                .flatMap(aBoolean -> Observable.concat(RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-//                                .timeout(30, TimeUnit.SECONDS),
-//                        RxBus.getCacheInstance().toObservable(RxEvent.HistoryEmpty.class)
-//                                .timeout(30, TimeUnit.SECONDS))
-//                        .first())
-//                .filter(iData -> iData != null)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnCompleted(() -> AppLogger.d("reLoad hisData: good"))
-//                .subscribe(iData -> {
-//                    HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-//                    AppLogger.d("历史录像导航条空?" + (handler == null));
-//                    if (handler != null) {
-//                        if (layoutE.getCurrentView() instanceof ViewGroup) {
-//                            layoutE.showNext();
-//                            if (livePlayState == PLAY_STATE_PREPARE) {
-//                                livePlayState = PLAY_STATE_STOP;
-//                                setLoadingState(PLAY_STATE_STOP, null);
-//                            }
-//                            AppLogger.d("需要展示 遮罩");
-//                        }
-//
-//                        handler.setupHistoryData(iData);
-//                        handler.setNav2Time(timeTarget);
-//                        setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
-//                        AppLogger.d("目标历史录像时间?" + timeTarget);
-//                    }
-//                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-    }
-
-    @Override
-    public void showMobileDataCover(CamLiveContract.Presenter presenter) {
-        AppLogger.d("显示遮罩");
-        liveViewWithThumbnail.showMobileDataInterface(v -> {
-            presenter.startPlay();
-        });
     }
 
     @Override
@@ -1408,6 +1380,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 liveViewWithThumbnail.getLocalVisibleRect(rect);
                 AppLogger.d("rect: " + rect);
             });
+    }
+
+    @Override
+    public void dpUpdate(JFGDPMsg msg, Device device) {
+        if (msg != null && msg.id == 214) {
+            TimeZone timeZone = JFGRules.getDeviceTimezone(device);
+            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+            liveTimeDateFormat.setTimeZone(timeZone);
+        }
     }
 
     @Override

@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.text.TextUtils;
 
-import com.cylan.jfgapp.interfases.CallBack;
+import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.wrapper.BaseCallablePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -18,6 +18,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.utils.JfgUtils;
 
 import java.io.File;
 
@@ -38,44 +40,49 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
 
     @Override
     public void capture() {
-        BaseApplication.getAppComponent().getCmd().screenshot(false, new CallBack<Bitmap>() {
-            @Override
-            public void onSucceed(Bitmap bitmap) {
-                String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                mView.onTakeSnapShotSuccess(bitmap);
-                Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
-                    BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    MediaScannerConnection.scanFile(mView.getActivityContext(), new String[]{filePath}, null, null);
-                    DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                    item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                    item.cid = uuid;
-                    Device device = sourceManager.getDevice(uuid);
-                    item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                    long time = System.currentTimeMillis();
-                    item.fileName = time / 1000 + ".jpg";
-                    item.time = (int) (time / 1000);
-                    IDPEntity entity = new DPEntity()
-                            .setUuid(uuid)
-                            .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                            .setVersion(System.currentTimeMillis())
-                            .setAccount(sourceManager.getAccount().getAccount())
-                            .setAction(DBAction.SHARED)
-                            .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
-                            .setBytes(item.toBytes());
-                    subscriber.onNext(entity);
-                    subscriber.onCompleted();
-                })
-                        .subscribeOn(Schedulers.io())
-                        .flatMap(entity -> taskDispatcher.perform(entity))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> {
-                        }, e -> AppLogger.d(e.getMessage()));
-            }
 
-            @Override
-            public void onFailure(String s) {
-                mView.onTakeSnapShotFailed();
-            }
-        });
+        Observable.just("capture")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    byte[] screenshot = appCmd.screenshot(false);
+                    if (screenshot != null) {
+                        int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
+                        int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+                        Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
+                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onTakeSnapShotSuccess(bitmap));
+                        String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+                        String fileName = System.currentTimeMillis() + ".png";
+                        MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+                        BitmapUtils.saveBitmap2file(bitmap, filePath);
+                        MediaScannerConnection.scanFile(mView.getActivityContext(), new String[]{filePath}, null, null);
+                        AppLogger.e("截图文件地址:" + filePath);
+                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+                        item.cid = uuid;
+                        Device device = sourceManager.getDevice(uuid);
+                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                        long time = System.currentTimeMillis();
+                        item.fileName = time / 1000 + ".jpg";
+                        item.time = (int) (time / 1000);
+                        IDPEntity entity = new DPEntity()
+                                .setUuid(uuid)
+                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                                .setVersion(System.currentTimeMillis())
+                                .setAccount(sourceManager.getAccount().getAccount())
+                                .setAction(DBAction.SHARED)
+                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
+                                .setBytes(item.toBytes());
+                        return entity;
+                    } else {
+                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onTakeSnapShotFailed());
+                        return null;
+                    }
+
+                })
+                .filter(ret -> ret != null)
+                .flatMap(entity -> taskDispatcher.perform(entity))
+                .subscribe(result -> {
+                }, e -> AppLogger.d(e.getMessage()));
     }
 }

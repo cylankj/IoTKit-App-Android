@@ -151,7 +151,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         Device device = getDevice();
                         Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
                         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-                        if (battery < 20 && net.net > 0) {//电量低
+                        if (battery <= 20 && net.net > 0) {//电量低
                             DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
                             if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天
                                 option.lastLowBatteryTime = System.currentTimeMillis();
@@ -338,7 +338,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onHistoryDataRsp(historyDataProvider);
-                    AppLogger.d("历史录像wheel准备好");
+                    AppLogger.d("历史录像wheel准备好,断开直播");
+                    stopPlayVideo(PLAY_STATE_STOP).subscribe(result -> {
+                    }, AppLogger::e);
                 }, AppLogger::e);
         addSubscription(subscription, "hisFlat");
     }
@@ -346,6 +348,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     @Override
     public boolean fetchHistoryDataList() {
 //        test();
+        if (getLiveStream().playState == PLAY_STATE_PLAYING || getLiveStream().playState == PLAY_STATE_PREPARE) {
+            stopPlayVideo(PLAY_STATE_STOP).subscribe(ret -> {
+            }, AppLogger::e);
+            AppLogger.d("获取历史录像,先断开直播,或者历史录像");
+        }
         if (ListUtils.isEmpty(History.getHistory().getDateList(uuid))) {
             if (historyDataProvider != null) historyDataProvider.clean();
         }
@@ -363,9 +370,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
-                        .timeout(5, TimeUnit.SECONDS)
+                        .timeout(30, TimeUnit.SECONDS)
                         .flatMap(rsp -> makeTimeDelayForList()))
-//                .doOnUnsubscribe(() -> removeSubscription("getHistoryList"))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onHistoryLoadFinished();
@@ -714,7 +720,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
-                AppLogger.i("play history video: " + uuid + " time:"+JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time))+" ret:" + ret );
+                AppLogger.i("play history video: " + uuid + " time:" + JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time)) + " ret:" + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }

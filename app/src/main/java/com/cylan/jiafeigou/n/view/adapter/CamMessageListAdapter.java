@@ -192,6 +192,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard() && !isSharedDevice;
     }
 
+    private boolean showHistoryButton(CamMessageBean bean) {
+        if (isSharedDevice || !hasSdcard()) return false;
+        return bean != null && bean.bellCallRecord != null ? bean.bellCallRecord.isRecording == 1 : (System.currentTimeMillis() - bean.version) >= 30 * 60 * 1000L;
+    }
+
     private boolean textShowSdBtn(CamMessageBean item) {
         //考虑这个bean的条件.
         if (item.sdcardSummary != null) {
@@ -267,7 +272,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
-        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.GONE);
+        holder.setVisibility(R.id.tv_jump_next, showHistoryButton(item) ? View.VISIBLE : View.GONE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);

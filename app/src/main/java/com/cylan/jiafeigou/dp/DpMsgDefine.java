@@ -827,7 +827,7 @@ public class DpMsgDefine {
         public int type;
         @Index(4)
         @Optional
-        public int isRecording;
+        public int isRecording = -1;//默认为- 1吧,//0为假:1为真
         @Index(5)
         @Optional
         public int fileIndex = -1;//默认为-1 ,因为听说新版本默认为零

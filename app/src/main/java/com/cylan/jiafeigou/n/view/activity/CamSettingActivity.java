@@ -535,9 +535,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
         String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
-        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
-            svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
-        } else
+//        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
+//            svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
+//        } else
             svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
         ////////////////////////standby////////////////////////////////////////////
         DpMsgDefine.DPStandby dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());

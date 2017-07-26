@@ -54,13 +54,14 @@ public interface PanoramaAlbumContact {
 
     class PanoramaItem implements Parcelable {
         @IntDef({TYPE_PICTURE, TYPE_VIDEO})
-        @interface PANORAMA_ITEM_TYPE {
-            int TYPE_PICTURE = 0;
-            int TYPE_VIDEO = 1;
+        public @interface PANORAMA_ITEM_TYPE {
+            int TYPE_PICTURE = 1;
+            int TYPE_VIDEO = 2;
+            int TYPE_SEPARATOR = 3;
         }
 
         public String fileName;
-        public int type;//0:jpg,1:mp4,2:分隔符
+        public int type;//1:jpg,2:mp4,3:分隔符
         public int time;
         public int duration;//如果 type 为1,duration为视频时长
         public boolean selected;
@@ -70,10 +71,10 @@ public interface PanoramaAlbumContact {
         public PanoramaItem(String name) {
             if (TextUtils.isEmpty(name)) return;
             String[] split = name.split("\\.");
-            type = TextUtils.equals("mp4", split[1]) ? 1 : 0;
-            if (type == 0) {
+            type = TextUtils.equals("mp4", split[1]) ? PANORAMA_ITEM_TYPE.TYPE_VIDEO : PANORAMA_ITEM_TYPE.TYPE_PICTURE;
+            if (type == PANORAMA_ITEM_TYPE.TYPE_PICTURE) {
                 time = Integer.parseInt(split[0]);
-            } else if (type == 1) {
+            } else if (type == PANORAMA_ITEM_TYPE.TYPE_VIDEO) {
                 String[] strings = split[0].split("_");
                 time = Integer.parseInt(strings[0]);
                 duration = Integer.parseInt(strings[1]);
@@ -82,7 +83,7 @@ public interface PanoramaAlbumContact {
         }
 
         public PanoramaItem(int time) {
-            this.type = 2;
+            this.type = PANORAMA_ITEM_TYPE.TYPE_SEPARATOR;
             this.time = time;
         }
 

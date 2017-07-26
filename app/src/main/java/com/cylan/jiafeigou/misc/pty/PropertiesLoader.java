@@ -40,13 +40,13 @@ public class PropertiesLoader implements IProperty {
             throw new IllegalArgumentException("properties.json文件有错");
         }
         final String shareContent = FileUtils.readAsset(ContextUtils.getContext().getAssets(),
-                "properties.json");
+                "shareProperties.json");
         try {
             sharePropertyFile = new Gson().fromJson(shareContent, PropertyFile.class);
             AppLogger.d("load properties: " + content.length() + "," + sharePropertyFile.getVersion());
         } catch (Exception e) {
             AppLogger.e("initialize failed: " + e.getLocalizedMessage());
-            throw new IllegalArgumentException("properties.json文件有错");
+//            throw new IllegalArgumentException("properties.json文件有错");
         }
     }
 

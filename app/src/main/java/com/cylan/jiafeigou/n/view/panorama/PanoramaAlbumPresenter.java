@@ -218,7 +218,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                     downloadInfo.setUrl(request.getBaseUrl());
                                     DownloadDBManager.INSTANCE.replace(downloadInfo);
                                 }
-                                if (item.type == 0) {
+                                if (item.type == PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_PICTURE) {
                                     DownloadManager.getInstance().addTask(taskKey, request, null);
                                 }
                             }

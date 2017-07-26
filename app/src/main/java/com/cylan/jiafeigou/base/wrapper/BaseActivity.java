@@ -181,7 +181,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
      * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
      */
     public void onViewAction(int action, String handler, Object extra) {
-        presenter.onViewAction(action, handler, extra);
+        if (presenter != null) {
+            presenter.onViewAction(action, handler, extra);
+        }
     }
 
 
@@ -199,11 +201,15 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         switch (orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:// 加入横屏要处理的代码
                 onScreenRotationChanged(true);
-                presenter.onScreenRotationChanged(true);
+                if (presenter != null) {
+                    presenter.onScreenRotationChanged(true);
+                }
                 break;
             case Configuration.ORIENTATION_PORTRAIT:// 加入竖屏要处理的代码
                 onScreenRotationChanged(false);
-                presenter.onScreenRotationChanged(false);
+                if (presenter != null) {
+                    presenter.onScreenRotationChanged(false);
+                }
                 break;
         }
     }

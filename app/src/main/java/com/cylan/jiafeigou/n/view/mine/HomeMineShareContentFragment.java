@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.Intent;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 import android.os.Bundle;
@@ -25,7 +26,6 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
 import com.cylan.jiafeigou.n.view.adapter.item.AbstractBindingViewHolder;
 import com.cylan.jiafeigou.n.view.adapter.item.ShareContentItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -157,8 +157,8 @@ public class HomeMineShareContentFragment extends BaseFragment<MineShareContentC
     private boolean onEnterShareDetail(View view, IAdapter<ShareContentItem> iAdapter, ShareContentItem iItem, int position) {
         if (!editMode.get()) {
             AppLogger.e("将进入分享详情页面");
-            ShareContentH5DetailFragment fragment = ShareContentH5DetailFragment.newInstance(iItem.shareItem, () -> adapter.remove(position));
-            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content);
+            Intent launchIntent = ShareContentWebH5Activity.getLaunchIntent(getActivity(), iItem.shareItem);
+            startActivity(launchIntent);
         }
         return !editMode.get();
     }
