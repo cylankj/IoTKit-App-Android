@@ -74,7 +74,7 @@ public interface CamSettingContract {
 
         void clearSdcard();
 
-        Subscription clearSdcardReqBack();
+//        Subscription clearSdcardReqBack();
 
         Subscription onClearSdReqBack();
 

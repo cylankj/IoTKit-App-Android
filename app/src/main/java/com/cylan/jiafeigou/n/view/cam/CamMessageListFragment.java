@@ -39,6 +39,8 @@ import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -197,6 +199,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onStart() {
         super.onStart();
         //从通知栏跳进来
+        boolean needRefresh = false;
         if (getActivity() != null && getActivity().getIntent() != null) {
             if (getActivity().getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE)) {//需要每次进来都刷新数据,
                 //客户端绑定门铃一代设备之后，门铃按呼叫键呼叫生成呼叫记录；
@@ -205,9 +208,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 Intent intent = getActivity().getIntent();
                 if (intent != null) intent.removeExtra(JConstant.KEY_JUMP_TO_MESSAGE);
                 AppLogger.d("刷新数据中...");
-                startRequest(true);
+
+                needRefresh = true;
             }
         }
+        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ClearDataEvent.class)) {
+            needRefresh = true;
+            camMessageListAdapter.clear();
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ClearDataEvent.class);
+        }
+        if (needRefresh) startRequest(true);
     }
 
     @Override

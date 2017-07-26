@@ -19,6 +19,7 @@ public final class DpMsgMap {
     public static final int ID_501_CAMERA_ALARM_FLAG = 501;
 
     public static final int ID_205_CHARGING = 205;
+    public static final int ID_203_SD_FORMAT_RSP = 203;
 
     public static final int ID_505_CAMERA_ALARM_MSG = 505;
 
