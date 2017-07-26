@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
@@ -140,7 +141,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(update -> {
                     RxBus.getCacheInstance().post(new InternalHelp());
-                    AppLogger.d("data pool update: " + update);
                     return null;
                 })
                 .subscribe(ret -> {
@@ -295,6 +295,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             RxBus.getCacheInstance().post(new InternalHelp());
             initDeviceRecordState();
         }
+        WifiInfo wifiInfo = NetUtils.getWifiManager().getConnectionInfo();
+        AppLogger.d("网络变化?" + (wifiInfo == null ? null : (wifiInfo.getSupplicantState()) + "," + wifiInfo.getSSID()));
     }
 
     /**

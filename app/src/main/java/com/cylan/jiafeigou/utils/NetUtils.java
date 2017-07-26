@@ -170,6 +170,10 @@ public class NetUtils {
         return (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
     }
 
+    public static WifiManager getWifiManager() {
+        return (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+    }
+
 
     /**
      * 手机卡运营商名称
