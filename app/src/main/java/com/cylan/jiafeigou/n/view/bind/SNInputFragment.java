@@ -122,7 +122,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
         if (!isAdded()) return;
         LoadingDialog.dismissLoading(getFragmentManager());
         AppLogger.d("err:" + err + ",pid:" + pid);
-        if (err <= 0) {
+        if (pid <= 0 || err != 0) {
             ToastUtil.showToast(getString(R.string.ADD_FAILED));
             return;
         }

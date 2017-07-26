@@ -887,10 +887,12 @@ public class DpMsgDefine {
         @Override
         public String toString() {
             return "DPBellCallRecord{" +
-                    "state=" + isOK +
-                    ", startTime=" + time +
+                    "isOK=" + isOK +
+                    ", time=" + time +
                     ", duration=" + duration +
                     ", type=" + type +
+                    ", isRecording=" + isRecording +
+                    ", fileIndex=" + fileIndex +
                     '}';
         }
     }

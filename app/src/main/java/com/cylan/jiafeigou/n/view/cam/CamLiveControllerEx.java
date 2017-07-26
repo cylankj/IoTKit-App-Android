@@ -796,6 +796,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
+            ViewUtils.increaseMargins(streamSwitcher, 0, 0, 0, (int) getResources().getDimension(R.dimen.y10));
         } else {
             if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
                 findViewById(R.id.tv_live).setVisibility(GONE);
@@ -811,6 +812,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
             }
+            ViewUtils.increaseMargins(streamSwitcher, 0, 0, 0, -(int) getResources().getDimension(R.dimen.y10));
         }
         //历史录像显示
         boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid, false);
