@@ -712,8 +712,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 int ret;
                 getLiveStream().time = time;
                 getHotSeatStateMaintainer().saveRestore();
-                if (getLiveStream().playState != PLAY_STATE_PLAYING) {
-                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                if(getLiveStream().playState != PLAY_STATE_PLAYING){
+                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                     AppLogger.i("firstly play live .......");
                 }
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
