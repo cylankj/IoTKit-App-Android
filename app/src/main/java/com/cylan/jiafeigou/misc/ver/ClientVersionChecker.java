@@ -194,7 +194,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
         try {
             String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
             BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
-        } catch (JfgException e) {
+        } catch (Throwable e) {
             AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
         }
     }

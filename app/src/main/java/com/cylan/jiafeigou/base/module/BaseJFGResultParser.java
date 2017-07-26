@@ -120,8 +120,6 @@ BaseJFGResultParser {
                 break;
         }
         if (login) {
-            AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
-            AfterLoginService.resumeOfflineRequest();
             PushPickerIntentService.start();
             Observable.just(new FetchFeedbackTask(),
                     new FetchFriendsTask(),

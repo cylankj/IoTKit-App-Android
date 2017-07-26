@@ -1021,10 +1021,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
         float ratio;
-        ratio = isNormalView ? (float) resolution.height / resolution.width :
+        ratio = isNormalView ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
                 isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
                         Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
         updateLiveViewRectHeight(ratio);
+    }
+
+    private float getLandFillScreen() {
+        return (float) Resources.getSystem().getDisplayMetrics().heightPixels /
+                Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     /**
