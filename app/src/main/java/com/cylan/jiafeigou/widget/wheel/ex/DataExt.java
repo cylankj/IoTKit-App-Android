@@ -199,40 +199,50 @@ public class DataExt implements IData {
     }
 
 
-    private long getNextFocusTime(long time) {
+    private long getNextFocusTime(long time, boolean modifyIndex) {
         if (rawList.size() == 0)
             return 0;
         HistoryFile v = getVideo(time);
-        index = Collections.binarySearch(rawList, v);
-        index = -(index + 1);
+        int tmpIndex = index;
+
+        tmpIndex = Collections.binarySearch(rawList, v);
+        tmpIndex = -(tmpIndex + 1);
 //        Log.d("getNextFocusTime", "getNextFocusTime: " + index);
-        if (index < 0 && rawList.size() > 0) {
-            index = 0;
+        if (tmpIndex < 0 && rawList.size() > 0) {
+            tmpIndex = 0;
             return rawList.get(0).time * 1000L;
         }
-        if (index > rawList.size() - 1 && rawList.size() > 0) {
-            index = rawList.size() - 1;
-            return rawList.get(index).time * 1000L;
+        if (tmpIndex > rawList.size() - 1 && rawList.size() > 0) {
+            tmpIndex = rawList.size() - 1;
+            return rawList.get(tmpIndex).time * 1000L;
         }
-        return rawList.get(index).time * 1000L;
+        if (modifyIndex) index = tmpIndex;
+        return rawList.get(tmpIndex).time * 1000L;
     }
 
     @Override
     public long getNextFocusTime(long time, int considerDirection) {
-        long tmpTime = getNextFocusTime(time);
+        return getNextFocusTime(time, considerDirection, true);
+    }
+
+    @Override
+    public long getNextFocusTime(long time, int considerDirection, boolean modifyIndex) {
+        long tmpTime = getNextFocusTime(time, modifyIndex);
         if (considerDirection == -1)//不考虑方向
             return tmpTime;
         //0:向左滑动
-        index += 1;
-        if (index > rawList.size() - 1) {
-            index = rawList.size() - 1;
+        int tmpIndex = index;
+        tmpIndex += 1;
+        if (tmpIndex > rawList.size() - 1) {
+            tmpIndex = rawList.size() - 1;
         }
         //1:向右滑动
-        index -= 1;
-        if (index < 0 && rawList.size() > 0) {
-            index = 0;
+        tmpIndex -= 1;
+        if (tmpIndex < 0 && rawList.size() > 0) {
+            tmpIndex = 0;
         }
-        return rawList.get(index).time * 1000L;
+        if (modifyIndex) index = tmpIndex;
+        return rawList.get(tmpIndex).time * 1000L;
     }
 
     @Override
@@ -280,6 +290,23 @@ public class DataExt implements IData {
         timeWithType.clear();
         rawList.clear();
         flattenDataList.clear();
+    }
+
+    @Override
+    public long getNextTarget(long timeTarget) {
+        if (rawList == null || rawList.size() == 0) return 0;
+        HistoryFile temp = null;
+        for (HistoryFile file : rawList) {
+            long current = file.time + file.duration;
+            if (current > timeTarget) {
+                if (temp == null) {
+                    temp = file;
+                } else if (file.time < temp.time) {
+                    temp = file;
+                }
+            }
+        }
+        return Math.max(timeTarget, temp == null ? 0 : temp.time);
     }
 
     private HistoryFile getVideo(long time) {

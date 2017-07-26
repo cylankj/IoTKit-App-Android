@@ -57,6 +57,8 @@ public interface IData {
      */
     long getNextFocusTime(long time, int considerDirection);
 
+    long getNextFocusTime(long time, int considerDirection, boolean asgin);
+
     boolean isHotRect(long time);
 
     HistoryFile getMaxHistoryFile();
@@ -72,4 +74,6 @@ public interface IData {
     HistoryFile getMinHistoryFileByStartTime(long startTime);
 
     public void clean();
+
+    long getNextTarget(long timeTarget);
 }
