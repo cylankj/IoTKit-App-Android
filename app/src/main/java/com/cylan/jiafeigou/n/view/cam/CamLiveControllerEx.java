@@ -32,7 +32,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -65,7 +64,6 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
@@ -103,6 +101,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer,
         View.OnClickListener {
+    private static final long DAMP_DISTANCE = 30 * 1000L;
     private String uuid;
     private static final String TAG = "CamLiveControllerEx";
     private ILiveControl.Action action;
@@ -140,6 +139,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private String cVersion;
     private boolean isRSCam;
     private Handler handler = new Handler();
+
     /**
      * 设备的时区
      */
@@ -155,6 +155,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public CamLiveControllerEx(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
     }
 
     @Override
@@ -920,7 +921,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
         Log.d("setLiveRectTime", "isBusy?" + isWheelBusy);
         if (!isWheelBusy) {
-            setLiveRectTime(livePlayType, rtcp.timestamp);
+            setLiveRectTime(livePlayType, rtcp.timestamp, true);
         }
         //点击事件
         if (liveTimeRectListener == null) {
@@ -964,25 +965,33 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //     */
 //    private long fuckTheTime;
 
-    private void setLiveRectTime(int type, long timestamp) {
+    private void setLiveRectTime(int type, long timestamp, boolean useDamp) {
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
-        ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
-                .setContent(content);
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
+        boolean shouldUpdateWheelTime = !useDamp ||
+                System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
+                || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
+        AppLogger.d("useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance())
+        ;
+        if (shouldUpdateWheelTime) {
+            ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
+        }
         if (livePlayState == PLAY_STATE_PREPARE) return;
         if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
                 && presenter != null
-                && presenter.getPlayState() == PLAY_STATE_PLAYING) {
+                && presenter.getPlayState() == PLAY_STATE_PLAYING && shouldUpdateWheelTime) {
 //            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
 //                return;
 //            } else fuckTheTime = System.currentTimeMillis();
             //移动导航条
+//            if (!useDamp || System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > 10 * 1000) {
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
+//            }
         }
     }
 
@@ -1035,7 +1044,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
-            setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+            setLiveRectTime(TYPE_HISTORY, time, false);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
 //                prepareLayoutDAnimation(state == STATE_FINISH);//正在查看历史视频时， 拖动时间轴视频画面不显示暂停的按钮
         });
         findViewById(R.id.tv_cam_live_land_bottom).setVisibility(VISIBLE);
@@ -1343,8 +1352,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-                    handler.setNav2Time(timeTarget, 2000);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
-                    setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
+                    handler.setNav2Time(timeTarget);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
+                    setLiveRectTime(TYPE_HISTORY, timeTarget / 1000, false);
                     presenter.startPlayHistory(timeTarget);
                     AppLogger.d("目标历史录像时间?" + timeTarget);
                 }, throwable -> {

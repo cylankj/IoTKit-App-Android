@@ -46,6 +46,14 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     private static final String TAG = "HistoryWheelHandler";
     private String uuid;
 
+    public long getLastUpdateTime() {
+        return superWheelExt.getLastUpdateTime();
+    }
+
+    public long getNextTimeDistance() {
+        return superWheelExt.getNextTimeDistance();
+    }
+
     public HistoryWheelHandler(ViewGroup landDateListContainer, SuperWheelExt superWheel, CamLiveContract.Presenter presenter) {
         this.landDateListContainer = landDateListContainer;
         this.superWheelExt = superWheel;
@@ -120,11 +128,13 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 if (value != null && value instanceof Long) {
                     IData data = presenter.getHistoryDataProvider();
                     HistoryFile historyFile = data == null ? null : data.getMaxHistoryFile();
+
                     if (historyFile == null || historyFile.getTime() + historyFile.getDuration() < (long) value / 1000) {
                         AppLogger.d("没有这段视频: " + historyFile + "," + value);
                         ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
                         return;
                     }
+
                     AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
                     if (datePickerListener != null)
                         datePickerListener.onPickDate((Long) value, STATE_FINISH);
@@ -169,9 +179,9 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         superWheelExt.post(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time)));
     }
 
-    public void setNav2Time(long time, long delay) {
-        superWheelExt.postDelayed(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time)), delay);
-    }
+//    public void setNav2Time(long time, long delay) {
+//        superWheelExt.postDelayed(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time)), delay);
+//    }
 
     public boolean isBusy() {
         return superWheelExt.isBusy();
@@ -193,7 +203,6 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
                 superWheelExt.removeCallbacks(dragRunnable);
-//                superWheelExt.postDelayed(dragRunnable, 400);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
@@ -232,6 +241,10 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 
     public boolean isDragging() {
         return false;
+    }
+
+    public long getNextFocusTime(long time) {
+       return superWheelExt.getNextFocusTime(time);
     }
 
     /**
