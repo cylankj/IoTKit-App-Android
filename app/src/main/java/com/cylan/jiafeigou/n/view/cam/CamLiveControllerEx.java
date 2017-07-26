@@ -223,7 +223,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     AppLogger.d("点击加载历史视频");
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
                     livePlayState = PLAY_STATE_PREPARE;
-                    setLoadingState(getResources().getString(R.string.LOADING), null);
+                    setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
                     Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
@@ -445,14 +445,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard || status.err != 0) {
             //隐藏
-//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //2.手机无网络
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             //隐藏
-//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //4.被分享用户不显示
@@ -464,7 +462,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             AppLogger.d("isDeviceOnline false");
-//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //3.没有历史录像
@@ -1082,6 +1079,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             post(portHideRunnable);
             setLoadingState(null, null);
         }
+        if (!isLand()) {
+            if (standby.standby) {
+                layoutE.setVisibility(INVISIBLE);
+            } else {
+                layoutE.setVisibility(JFGRules.showSdcard(device) ? VISIBLE : INVISIBLE);
+            }
+        }
+        layoutE.findViewById(R.id.btn_load_history).setEnabled(!standby.standby);
     }
 
     private boolean isStandBy() {
@@ -1335,7 +1340,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //获取历史录像ui逻辑
         layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
         livePlayState = PLAY_STATE_PREPARE;
-        setLoadingState(getResources().getString(R.string.LOADING), null);
+        setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
         Subscription subscription = Observable.just("get")
                 .subscribeOn(Schedulers.io())
                 .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
@@ -1442,6 +1447,5 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void hideHistoryWheel() {
         presenter.getHistoryDataProvider().clean();
         historyWheelHandler.dateUpdate();
-//        layoutE.setVisibility(INVISIBLE);
     }
 }
