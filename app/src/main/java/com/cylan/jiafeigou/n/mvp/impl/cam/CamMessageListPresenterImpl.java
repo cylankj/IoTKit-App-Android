@@ -202,7 +202,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 //                    if (refresh) {
 //                        mView.onListInsert(result.first, 0);
 //                    } else
-                        if (result.second) {
+                    if (result.second) {
                         mView.onListAppend(result.first);
                     } else mView.onListInsert(result.first, 0);
                     return result;
@@ -305,6 +305,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void refreshDateList(boolean needToLoadList) {
+        BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
         Subscription subscription = getDateListQuery()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
