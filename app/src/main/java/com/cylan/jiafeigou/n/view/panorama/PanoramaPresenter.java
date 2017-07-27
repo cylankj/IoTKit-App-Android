@@ -185,7 +185,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 if (battery != null) {
                                     mView.onDeviceBatteryChanged(this.battery = battery);
                                 }
-                                if (this.battery < 20 && notifyBatteryLow) {
+                                if (this.battery <= 20 && notifyBatteryLow) {
                                     mView.onBellBatteryDrainOut();
                                     notifyBatteryLow = false;
                                 } else if (this.battery > 20) {
@@ -324,7 +324,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     device.getEmptyProperty(206);
                                 }
                                 property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
-                                if (bat.battery < 20 && isFirst) {//检查电量
+                                if (bat.battery <= 20 && isFirst) {//检查电量
                                     isFirst = false;
                                     DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
                                     if (option != null && option.lastLowBatteryTime < TimeUtils.getTodayStartTime()) {//新的一天

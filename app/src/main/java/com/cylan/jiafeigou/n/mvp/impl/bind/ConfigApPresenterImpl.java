@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
@@ -44,6 +45,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.bind.UdpConstant.BIND_TAG;
+import static com.cylan.jiafeigou.utils.BindUtils.TAG_UDP_FLOW;
 
 /**
  * Created by cylan-hunt on 16-7-8.
@@ -78,6 +80,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         //2.发送fping,等待fping_ack
         //3.发送setServer,setLanguage
         //4.发送sendWifi
+        PerformanceUtils.startTrace(TAG_UDP_FLOW);
         String shortCid = getCurrentBindCidInShort();
         if (TextUtils.isEmpty(shortCid)) {
             getView().check3gFinish();

@@ -34,8 +34,12 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -140,6 +144,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     //    private String cVersion;
     private boolean isRSCam;
     private Handler handler = new Handler();
+    private boolean needShowSight;
 
     /**
      * 设备的时区
@@ -210,57 +215,88 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutF.findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(this);
         layoutE.findViewById(R.id.btn_load_history)
                 .setOnClickListener(v -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-                    if (!status.hasSdcard) {
-                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
-                        return;
-                    }
-                    if (status.err != 0) {
-                        ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
-                        return;
-                    }
-                    AppLogger.d("点击加载历史视频");
-                    layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
-                    livePlayState = PLAY_STATE_PREPARE;
-                    setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
-                    Subscription subscription = Observable.just("get")
-                            .subscribeOn(Schedulers.io())
-                            .map(ret -> presenter.fetchHistoryDataList())
-                            .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
-                                    .timeout(30, TimeUnit.SECONDS).first())
-                            .flatMap(o -> Observable.just(o.isEmpty))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(isEmpty -> {
-                                AppLogger.d("加载成功:" + isEmpty);
-                                layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-                                if (isEmpty) {
-                                    ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
-                                    livePlayState = PLAY_STATE_STOP;
-                                    setLoadingState(PLAY_STATE_STOP, null);
-                                    return;
-                                }
-                                if (vsLayoutWheel.getCurrentView() instanceof ViewGroup) {
-                                    vsLayoutWheel.showNext();
-                                    livePlayState = PLAY_STATE_STOP;
-                                    setLoadingState(PLAY_STATE_STOP, null);
-                                    findViewById(R.id.tv_live).setVisibility(VISIBLE);
-                                    findViewById(R.id.v_flag).setVisibility(VISIBLE);
-                                    AppLogger.d("需要展示 遮罩");
-                                }
-                            }, throwable -> {
-                                if (throwable instanceof TimeoutException) {
-                                    layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
-                                    livePlayState = PLAY_STATE_STOP;
-                                    setLoadingState(PLAY_STATE_STOP, null);
-                                    if (presenter != null
-                                            && presenter.getHistoryDataProvider() != null
-                                            && presenter.getHistoryDataProvider().getDataCount() == 0)
-                                        ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
-                                }
-                            });
-                    presenter.addSubscription("fetchHistoryBy", subscription);
+                    AppLogger.d("需要手动获取sd卡");
+                    getSdcardStatus();
                 });
+    }
+
+    private void getSdcardStatus() {
+        Subscription subscription = Observable.just(new DPEntity()
+                .setMsgId(204)
+                .setUuid(uuid)
+                .setAction(DBAction.QUERY)
+                .setVersion(0)
+                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
+                .subscribeOn(Schedulers.io())
+                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
+                .map(ret -> {
+                    try {
+                        DpMsgDefine.DPSdStatus sdStatus = ret.getResultResponse();
+                        return sdStatus;
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(status -> {
+                    if (status == null) {
+                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
+                    } else {
+                        if (!status.hasSdcard) {
+                            ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
+                            return;
+                        }
+                        if (status.err != 0) {
+                            ToastUtil.showToast(getResources().getString(R.string.VIDEO_SD_DESC));
+                            return;
+                        }
+                        toLoadingHistory();
+                    }
+                }, throwable -> ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD)));
+        presenter.addSubscription("getSdcardStatus", subscription);
+    }
+
+    private void toLoadingHistory() {
+        AppLogger.d("点击加载历史视频");
+        layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
+        livePlayState = PLAY_STATE_PREPARE;
+        setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
+        Subscription subscription = Observable.just("get")
+                .subscribeOn(Schedulers.io())
+                .map(ret -> presenter.fetchHistoryDataList())
+                .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
+                        .timeout(30, TimeUnit.SECONDS).first())
+                .flatMap(o -> Observable.just(o.isEmpty))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isEmpty -> {
+                    AppLogger.d("加载成功:" + isEmpty);
+                    layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
+                    if (isEmpty) {
+                        ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
+                        livePlayState = PLAY_STATE_STOP;
+                        setLoadingState(PLAY_STATE_STOP, null);
+                        return;
+                    }
+                    if (vsLayoutWheel.getCurrentView() instanceof ViewGroup) {
+                        vsLayoutWheel.showNext();
+                        livePlayState = PLAY_STATE_STOP;
+                        setLoadingState(PLAY_STATE_STOP, null);
+                        findViewById(R.id.tv_live).setVisibility(VISIBLE);
+                        findViewById(R.id.v_flag).setVisibility(VISIBLE);
+                        AppLogger.d("需要展示 遮罩");
+                    }
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        layoutE.findViewById(R.id.btn_load_history).setEnabled(true);
+                        livePlayState = PLAY_STATE_STOP;
+                        setLoadingState(PLAY_STATE_STOP, null);
+                        if (presenter != null
+                                && presenter.getHistoryDataProvider() != null
+                                && presenter.getHistoryDataProvider().getDataCount() == 0)
+                            ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
+                    }
+                });
+        presenter.addSubscription("fetchHistoryBy", subscription);
     }
 
     @Override
@@ -276,6 +312,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void initView(CamLiveContract.Presenter presenter, String uuid) {
         this.presenter = presenter;
         this.uuid = uuid;
+        needShowSight = JFGRules.showSight(presenter.getDevice().pid, JFGRules.isShareDevice(uuid));
         //disable 6个view
         setHotSeatState(-1, false, false, false, false, false, false);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
@@ -307,9 +344,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
             }
         });
-        String _509 = device.$(509, "1");
-        videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
-        videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
+        if (needShowSight) {
+            String _509 = device.$(509, "1");
+            videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+            videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
+        }
+        updateCamParam(device.$(510, new DpMsgDefine.DpCoordinate()));
         liveViewWithThumbnail.setLiveView(videoView);
         initSightSetting(presenter);
         //分享用户不显示
@@ -349,26 +389,35 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         AppLogger.d("需要重置清晰度");
     }
 
+    private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
+        try {
+            CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
+            liveViewWithThumbnail.getVideoView().config360(cp);
+        } catch (Exception e) {
+        }
+    }
+
     public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
         reInitHistoryHandler(presenter);
         return historyWheelHandler;
     }
 
-    private boolean isSightShow;
+    private boolean isSightShown;
 
-    public boolean isSightShow() {
-        return isSightShow;
+    public boolean isSightShown() {
+        return isSightShown;
     }
 
     /**
      * 全景视角设置
      */
     private void initSightSetting(CamLiveContract.Presenter basePresenter) {
-        if (isNormalView || basePresenter.isShareDevice()) return;
+
+        if (!needShowSight || basePresenter.isShareDevice()) return;
         String uuid = basePresenter.getUuid();
-        isSightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
-        Log.d("initSightSetting", "judge? " + isSightShow);
-        if (!isSightShow) return;//不是第一次
+        isSightShown = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
+        Log.d("initSightSetting", "judge? " + isSightShown);
+        if (!isSightShown) return;//不是第一次
         layoutE.setVisibility(INVISIBLE);//需要隐藏历史录像时间轴
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
@@ -570,7 +619,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .duration(250)
                     .playOn(layoutA);
             if (!layoutD.isShown())
-                layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);//
+                layoutD.setVisibility(VISIBLE);//
             YoYo.with(Techniques.SlideInUp)
                     .duration(250)
                     .playOn(layoutD);
@@ -974,22 +1023,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean shouldUpdateWheelTime = !useDamp ||
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
-        AppLogger.d("useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
+        Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
         if (shouldUpdateWheelTime) {
             ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
         }
         if (livePlayState == PLAY_STATE_PREPARE) return;
-        if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
-                && presenter != null
+        if (!isWheelBusy && type == TYPE_HISTORY && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING && shouldUpdateWheelTime) {
-//            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
-//                return;
-//            } else fuckTheTime = System.currentTimeMillis();
-            //移动导航条
-//            if (!useDamp || System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > 10 * 1000) {
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
-//            }
         }
     }
 
@@ -1185,7 +1227,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible) {
-        final boolean judge = !isSightShow() && !isStandBy();
+        final boolean judge = !isSightShown() && !isStandBy();
         Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
@@ -1399,6 +1441,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             TimeZone timeZone = JFGRules.getDeviceTimezone(device);
             liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
             liveTimeDateFormat.setTimeZone(timeZone);
+        }
+        if (msg != null && msg.id == 510) {
+            try {
+                updateCamParam(DpUtils.unpackData(msg.packValue, DpMsgDefine.DpCoordinate.class));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

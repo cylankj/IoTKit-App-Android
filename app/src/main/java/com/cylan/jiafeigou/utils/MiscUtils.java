@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -56,6 +57,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.bind.UdpConstant.BIND_TAG;
+import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_RECOVERY_FLOW;
+import static com.cylan.jiafeigou.utils.BindUtils.TAG_UDP_FLOW;
 import static com.cylan.jiafeigou.utils.ContextUtils.getContext;
 
 /**
@@ -671,6 +674,8 @@ public class MiscUtils {
      * 属于绑定过程,恢复公网的wifi
      */
     public static void recoveryWiFi() {
+        PerformanceUtils.stopTrace(TAG_UDP_FLOW);
+        PerformanceUtils.startTrace(TAG_NET_RECOVERY_FLOW);
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         List<WifiConfiguration> list =
                 wifiManager.getConfiguredNetworks();
@@ -804,5 +809,18 @@ public class MiscUtils {
             return count + 1;
         }
         return 0;
+    }
+
+    public static <T> boolean arrayContains(T[] array, T target) {
+        return false;
+    }
+
+    public static boolean arrayContains(int[] array, int target) {
+        if (array == null || array.length == 0) return false;
+        for (int t : array) {
+            if (t == target)
+                return true;
+        }
+        return false;
     }
 }

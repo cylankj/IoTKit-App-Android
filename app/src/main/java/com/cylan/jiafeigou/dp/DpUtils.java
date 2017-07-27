@@ -29,6 +29,18 @@ public class DpUtils {
         return mp.createBufferUnpacker(data).read(clazz);
     }
 
+    public static <T> T unpackDataWithoutThrow(byte[] data, Class<T> clazz, T defaultValue) {
+        if (clazz == null || data == null) {
+            AppLogger.e("value is null: " + clazz);
+            return null;
+        }
+        try {
+            return mp.createBufferUnpacker(data).read(clazz);
+        } catch (IOException e) {
+            return defaultValue;
+        }
+    }
+
     public static <T> T unpackData(byte[] data, Class<T> clazz, T defaultValue) throws IOException {
         if (clazz == null || data == null) {
             AppLogger.e("value is null: " + clazz);

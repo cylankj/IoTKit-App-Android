@@ -61,7 +61,7 @@ public interface JFGSourceManager {
      * 刷新设备属性，首页需要
      * ,手动刷
      */
-    boolean syncAllProperty(String uuid);
+    boolean syncAllProperty(String uuid, int... excludeMsgIds);
 
     void syncHomeProperty();
 

@@ -52,7 +52,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             if (device != null && device.available()) {
                 Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
                 DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-                if (battery < 20 && net.net > 0) {//电量低
+                if (battery <= 20 && net.net > 0) {//电量低
                     DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
                     if (option != null && option.lastLowBatteryTime < todayInMidNight) {//新的一天
                         option.lastLowBatteryTime = System.currentTimeMillis();
