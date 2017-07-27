@@ -126,6 +126,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     //横屏 侧滑日历
     private View layoutG;
 
+    private float portRatio = -1;
     private boolean isNormalView;
     private int livePlayState;
     private int livePlayType;
@@ -345,11 +346,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
         });
         if (needShowSight) {
-            String _509 = device.$(509, "1");
-            videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
-            videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
+            updateLiveViewMode(device.$(509, "1"));
+        } else {
+            updateCamParam(device.$(510, new DpMsgDefine.DpCoordinate()));
         }
-        updateCamParam(device.$(510, new DpMsgDefine.DpCoordinate()));
         liveViewWithThumbnail.setLiveView(videoView);
         initSightSetting(presenter);
         //分享用户不显示
@@ -900,7 +900,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(VISIBLE);
-            updateLiveViewRectHeight(presenter.getVideoPortHeightRatio());
+            updateLiveViewRectHeight(portRatio == -1 ? presenter.getVideoPortHeightRatio() : portRatio);
             //有条件的.
             if (presenter.getPlayState() == PLAY_STATE_PLAYING) {
                 //需要根据设备属性表来决定是否显示或隐藏 portFlip
@@ -1017,7 +1017,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
+        String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
         boolean shouldUpdateWheelTime = !useDamp ||
@@ -1059,10 +1059,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } catch (JfgException e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
-        float ratio;
-        ratio = isNormalView ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
+        float ratio = isNormalView ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
                 isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
                         Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
+        if (portRatio == -1 && !isLand()) portRatio = ratio;
         updateLiveViewRectHeight(ratio);
     }
 
@@ -1244,8 +1244,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void updateLiveViewMode(String mode) {
-        liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
-        liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
+        if (needShowSight) {
+            liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+            liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
+        } else updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
         liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
 
