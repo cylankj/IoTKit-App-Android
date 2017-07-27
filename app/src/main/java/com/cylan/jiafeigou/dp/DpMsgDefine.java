@@ -1301,4 +1301,57 @@ public class DpMsgDefine {
             }
         };
     }
+
+    @Message
+    public static class DpCoordinate extends BaseDataPoint {
+        @Index(0)
+        public int x;
+        @Index(1)
+        public int y;
+        @Index(2)
+        public int r;
+        @Index(3)
+        public int w;
+        @Index(4)
+        public int h;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(this.x);
+            dest.writeInt(this.y);
+            dest.writeInt(this.r);
+            dest.writeInt(this.w);
+            dest.writeInt(this.h);
+        }
+
+        public DpCoordinate() {
+        }
+
+        protected DpCoordinate(Parcel in) {
+            super(in);
+            this.x = in.readInt();
+            this.y = in.readInt();
+            this.r = in.readInt();
+            this.w = in.readInt();
+            this.h = in.readInt();
+        }
+
+        public static final Creator<DpCoordinate> CREATOR = new Creator<DpCoordinate>() {
+            @Override
+            public DpCoordinate createFromParcel(Parcel source) {
+                return new DpCoordinate(source);
+            }
+
+            @Override
+            public DpCoordinate[] newArray(int size) {
+                return new DpCoordinate[size];
+            }
+        };
+    }
 }

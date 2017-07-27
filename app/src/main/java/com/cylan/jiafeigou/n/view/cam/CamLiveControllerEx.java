@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -347,6 +348,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         });
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
+        updateCamParam(device.$(510, new DpMsgDefine.DpCoordinate()));
+    }
+
+    private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
+        try {
+            CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
+            liveViewWithThumbnail.getVideoView().config360(cp);
+        } catch (Exception e) {
+        }
     }
 
     public HistoryWheelHandler getHistoryWheelHandler(CamLiveContract.Presenter presenter) {
@@ -354,21 +364,22 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         return historyWheelHandler;
     }
 
-    private boolean isSightShow;
+    private boolean isSightShown;
 
-    public boolean isSightShow() {
-        return isSightShow;
+    public boolean isSightShown() {
+        return isSightShown;
     }
 
     /**
      * 全景视角设置
      */
     private void initSightSetting(CamLiveContract.Presenter basePresenter) {
-        if (isNormalView || basePresenter.isShareDevice()) return;
+        boolean showSight = JFGRules.showSight(basePresenter.getDevice().pid, JFGRules.isShareDevice(uuid));
+        if (!showSight || basePresenter.isShareDevice()) return;
         String uuid = basePresenter.getUuid();
-        isSightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
-        Log.d("initSightSetting", "judge? " + isSightShow);
-        if (!isSightShow) return;//不是第一次
+        isSightShown = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
+        Log.d("initSightSetting", "judge? " + isSightShown);
+        if (!isSightShown) return;//不是第一次
         layoutE.setVisibility(INVISIBLE);//需要隐藏历史录像时间轴
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
@@ -1184,7 +1195,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onActivityResume(CamLiveContract.Presenter presenter, Device device, boolean isUserVisible) {
-        final boolean judge = !isSightShow() && !isStandBy();
+        final boolean judge = !isSightShown() && !isStandBy();
         Log.d("judge", "judge: " + judge);
         handler.postDelayed(() -> {
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
@@ -1398,6 +1409,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             TimeZone timeZone = JFGRules.getDeviceTimezone(device);
             liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
             liveTimeDateFormat.setTimeZone(timeZone);
+        }
+        if (msg != null && msg.id == 510) {
+            try {
+                updateCamParam(DpUtils.unpackData(msg.packValue, DpMsgDefine.DpCoordinate.class));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

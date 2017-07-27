@@ -242,8 +242,6 @@ public interface CamLiveContract {
 
         boolean isDeviceStandby();
 
-        boolean judge();
-
         boolean fetchHistoryDataList();
     }
 

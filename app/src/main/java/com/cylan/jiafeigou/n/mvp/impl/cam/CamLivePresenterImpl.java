@@ -410,28 +410,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     }
 
     @Override
-    public boolean judge() {
-        //待机模式
-        if (isDeviceStandby()) {
-            return false;
-        }
-        //全景,首次使用模式
-        boolean sightShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + getUuid(),
-                false);
-        if (sightShow)
-            return false;
-        //手机数据
-//        if (NetUtils.getJfgNetType() == 2 && !ALLOW_PLAY_WITH_MOBILE_NET) {
-//            ALLOW_PLAY_WITH_MOBILE_NET = true;
-//            //显示遮罩层
-//            camLiveControlLayer.showMobileDataCover(basePresenter);
-//            return false;
-//        }
-        return true;
-
-    }
-
-    @Override
     public void startPlay() {
         if (mView == null || !mView.isUserVisible()) return;
         if (getLiveStream().playState == PLAY_STATE_PREPARE) {

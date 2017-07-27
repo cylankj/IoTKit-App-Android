@@ -106,7 +106,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, CAMERA, DOORBELL));//清晰度,分辨率
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
-        properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(DpMsgDefine.DpCoordinate.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_509_CAMERA_MOUNT_MODE, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_508_CAMERA_STANDBY_FLAG, new DPProperty(DpMsgDefine.DPStandby.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY, new DPProperty(DpMsgDefine.DPTimeLapse.class));
