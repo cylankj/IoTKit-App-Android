@@ -203,6 +203,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
     private void updateScrollStateIfRequired(int newState) {
         Log.d(TAG, "updateScroll:" + dragOrFling + " state:" + newState + " moveDirection:" + moveDirection);
         superWheel.autoSettle(newState, moveDirection);
+//        superWheel.autoSettle(newState, MoveDirection.RIGHT);
     }
 
     @IntDef({
