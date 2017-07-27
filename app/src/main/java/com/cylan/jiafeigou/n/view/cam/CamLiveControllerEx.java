@@ -348,12 +348,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
             }
         });
-        if (needShowSight) {
-            updateLiveViewMode(device.$(509, "1"));
-        } else {
-            updateCamParam(device.$(510, new DpMsgDefine.DpCoordinate()));
-        }
         liveViewWithThumbnail.setLiveView(videoView);
+        updateLiveViewMode(device.$(509, "1"));
         initSightSetting(presenter);
         //分享用户不显示
         boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid, false);
@@ -395,6 +391,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void updateCamParam(DpMsgDefine.DpCoordinate coord) {
         try {
             CameraParam cp = new CameraParam(coord.x, coord.y, coord.r, coord.w, coord.h, 180);
+            if (cp.cx == 0 && cp.cy == 0 && cp.h == 0) {
+                cp = CameraParam.getTopPreset();
+            }
             liveViewWithThumbnail.getVideoView().config360(cp);
         } catch (Exception e) {
         }
@@ -1266,11 +1265,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void updateLiveViewMode(String mode) {
-        liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
-        liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
         if (!needShowSight) {
             updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
+        } else {
+            liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         }
+        liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
         liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
 
