@@ -18,6 +18,7 @@ import com.mcxiaoke.packer.helper.PackerNg;
 public class OptionsImpl {
     private static final String TAG = "iDebugOptions";
     private static final String KEY_SERVER = "server";
+    private static String server;
 
     private OptionsImpl() {
     }
@@ -34,6 +35,7 @@ public class OptionsImpl {
 
     public static void setServer(String server) {
         PreferencesUtils.putString(KEY_SERVER, server);
+        OptionsImpl.server = server;
     }
 
     /**
@@ -45,15 +47,18 @@ public class OptionsImpl {
      */
     public static String getServer() {
         try {
+            if (!TextUtils.isEmpty(OptionsImpl.server)) return OptionsImpl.server;
             String server = PreferencesUtils.getString(KEY_SERVER, "");
-            if (!TextUtils.isEmpty(server)) return server;
+            if (!TextUtils.isEmpty(server)) return OptionsImpl.server = server;
             // com.mcxiaoke.packer.helper.PackerNg
             final String domain = PackerNg.getMarket(ContextUtils.getContext());
             if (!TextUtils.isEmpty(domain)) {
-                Log.d(TAG, "get serverFrom ng: " + domain.trim());
-                return domain.trim();
+                OptionsImpl.server = domain.trim();
+                Log.d(TAG, "get serverFrom ng: " + OptionsImpl.server);
+                PreferencesUtils.putString(KEY_SERVER, OptionsImpl.server);
+                return OptionsImpl.server;
             }
-            server = PackageUtils.getMetaString(ContextUtils.getContext(), "server").trim();
+            OptionsImpl.server = server = PackageUtils.getMetaString(ContextUtils.getContext(), "server").trim();
             if (!BuildConfig.DEBUG) {
                 return server;
             }
