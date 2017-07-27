@@ -201,7 +201,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         if (mDevice != null && JFGRules.showBattery(mDevice.pid, false) && JFGRules.isDeviceOnline(mDevice.$(201,
                 new DpMsgDefine.DPNet()))) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
-            if (battery < 20) {//电量低于20%在线显示
+            if (battery <= 20) {//电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else {

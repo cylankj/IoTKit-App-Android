@@ -74,7 +74,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
-import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -163,13 +162,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         }
                     }, AppLogger::e);
             AppLogger.d("getBatterySub:" + JFGRules.popPowerDrainOutLevel(getDevice().pid));
-        } else {
-//            Device device = getDevice();
-//            Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
-//            DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-//            if (battery < 20 && net.net > 0) {
-//                mView.onBatteryDrainOut();
-//            }
         }
         return null;
     }
@@ -184,11 +176,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     try {
                         for (JFGDPMsg msg : deviceSyncRsp.dpList) {
                             if (msg.id == DpMsgMap.ID_206_BATTERY) {
-                                Integer battery = DpUtils.unpackData(msg.packValue, Integer.class);
-                                if (battery != null && battery < 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                                Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
+                                if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
                                     mView.onBatteryDrainOut();
                                 }
-
                             }
                             mView.onDeviceInfoChanged(msg);
                         }
@@ -196,10 +187,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());
                     }
-                }, e -> {
-                    e.printStackTrace();
-                    AppLogger.e(e.getMessage());
-                });
+                }, AppLogger::e);
     }
 
     private Subscription checkNewVersionRsp() {
@@ -691,7 +679,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 getHotSeatStateMaintainer().saveRestore();
                 if (getLiveStream().playState != PLAY_STATE_PLAYING) {
                     BaseApplication.getAppComponent().getCmd().playVideo(uuid);
-                    AppLogger.i("firstly play live .......");
+                    AppLogger.i(" stop video .first......");
                 }
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫

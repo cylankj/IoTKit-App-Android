@@ -581,7 +581,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .duration(250)
                     .playOn(layoutA);
             if (!layoutD.isShown())
-                layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);//
+                layoutD.setVisibility(VISIBLE);//
             YoYo.with(Techniques.SlideInUp)
                     .duration(250)
                     .playOn(layoutD);
@@ -985,22 +985,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean shouldUpdateWheelTime = !useDamp ||
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
-        AppLogger.d("useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
+        Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
         if (shouldUpdateWheelTime) {
             ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
         }
         if (livePlayState == PLAY_STATE_PREPARE) return;
-        if (!isWheelBusy && type == TYPE_HISTORY && timestamp != 0
-                && presenter != null
+        if (!isWheelBusy && type == TYPE_HISTORY && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING && shouldUpdateWheelTime) {
-//            if (fuckTheTime != 0 && System.currentTimeMillis() - fuckTheTime < 3 * 1000) {
-//                return;
-//            } else fuckTheTime = System.currentTimeMillis();
-            //移动导航条
-//            if (!useDamp || System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > 10 * 1000) {
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
-//            }
         }
     }
 
