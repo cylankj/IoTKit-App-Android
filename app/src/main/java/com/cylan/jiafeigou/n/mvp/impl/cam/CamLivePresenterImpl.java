@@ -712,10 +712,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 int ret;
                 getLiveStream().time = time;
                 getHotSeatStateMaintainer().saveRestore();
-                if(getLiveStream().playState != PLAY_STATE_PLAYING){
-                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
-                    AppLogger.i("firstly play live .......");
-                }
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BaseBellCallEventListener.getInstance().currentCaller(null);
