@@ -94,7 +94,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     public void clearCache() {
         getView().showClearingCacheProgress();
         addSubscription(Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(o -> {
                     File directory = getCacheDirectory(ContextUtils.getContext(), "");
                     deleteCacheFile(directory);
