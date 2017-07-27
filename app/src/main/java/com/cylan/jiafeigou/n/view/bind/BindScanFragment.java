@@ -58,6 +58,9 @@ import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotBind;
 @RuntimePermissions
 public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> implements ZXingScannerView.ResultHandler, ScanContract.View {
 
+    private static final String VID = "vid";
+    private static final String SN = "sn";
+    private static final String PID = "pid";
     @BindView(R.id.zxV_scan)
     ZXingScannerView zxVScan;
     @BindView(R.id.custom_toolbar)
@@ -161,18 +164,17 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the startTime to figure out.
-        String result = rawResult.getText().replace(JConstant.EFAMILY_URL_PREFIX, "");
-        //注意大小写
-        String vid = MiscUtils.getValueFromUri(rawResult.getText(), "Vid");
-        String sn = MiscUtils.getValueFromUri(rawResult.getText(), "sn");
-        String pid = MiscUtils.getValueFromUri(rawResult.getText(), "pid");
-        if (!TextUtils.isEmpty(vid) && !TextUtils.isEmpty(sn) && !TextUtils.isEmpty(pid)) {
+        //转化成小写
+        final String result = rawResult.getText().toLowerCase();
+        ProductInfo info = new ProductInfo();
+        info.setPid(MiscUtils.getValueFromUri(result, PID)).setSn(MiscUtils.getValueFromUri(result, SN)).setVid(MiscUtils.getValueFromUri(result, VID));
+        if (info.isValid()) {
             try {
-                handleScanResult(rawResult.getText());
+                handleScanResult(info);
             } catch (Exception e) {
                 AppLogger.e("" + e.getLocalizedMessage());
             }
-        } else if (TextUtils.isEmpty(vid) && !TextUtils.isEmpty(sn) && !TextUtils.isEmpty(pid)) {
+        } else if (info.isNotSupport()) {
             ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_QR_Fail));
             zxVScan.stopCamera();
             if (getActivity() instanceof BindDeviceActivity)
@@ -185,14 +187,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     }
 
     public static final Pattern vidReg = Pattern.compile("vid=[0-9a-zA-Z]{0,12}", Pattern.CASE_INSENSITIVE);
-    public static final Pattern pidReg = Pattern.compile("pid=\\d{0,12}", Pattern.CASE_INSENSITIVE);
-    public static final Pattern snReg = Pattern.compile("sn=[0-9a-zA-Z]{0,64}", Pattern.CASE_INSENSITIVE);
 
-    private void handleScanResult(String url) {
-        String vid = MiscUtils.getValueFromUri(url, "Vid");
-        String sn = MiscUtils.getValueFromUri(url, "sn");
-        String sPid = MiscUtils.getValueFromUri(url, "pid");
-        if (TextUtils.isEmpty(vid) || TextUtils.isEmpty(sPid) || TextUtils.isEmpty(sn)) {
+    private void handleScanResult(ProductInfo info) {
+        if (info.isEmpty()) {
             ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
             return;
         }
@@ -203,7 +200,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         }
         zxVScan.stopCamera();
         try {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(sn);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(info.sn);
             if (device != null && device.available()) {
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_AddedDeviceTips));
                 HandlerThreadUtils.postDelay(() -> {
@@ -214,7 +211,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 }, 2000);
             } else {
                 zxVScan.stop();
-                int pid = Integer.parseInt(sPid);
+                int pid = Integer.parseInt(info.pid);
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this)
                         .commit();
                 if (JFGRules.isConsumerCam(pid)) {
@@ -272,4 +269,38 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     public void setPresenter(ScanContract.Presenter presenter) {
         this.basePresenter = presenter;
     }
+
+    private static final class ProductInfo {
+        private String vid;
+        private String sn;
+        private String pid;
+
+        public ProductInfo setVid(String vid) {
+            this.vid = vid;
+            return this;
+        }
+
+        public ProductInfo setSn(String sn) {
+            this.sn = sn;
+            return this;
+        }
+
+        public ProductInfo setPid(String pid) {
+            this.pid = pid;
+            return this;
+        }
+
+        public boolean isValid() {
+            return !TextUtils.isEmpty(vid) && !TextUtils.isEmpty(pid) && !TextUtils.isEmpty(sn);
+        }
+
+        public boolean isNotSupport() {
+            return TextUtils.isEmpty(vid) && !TextUtils.isEmpty(sn) && !TextUtils.isEmpty(pid);
+        }
+
+        public boolean isEmpty() {
+            return TextUtils.isEmpty(vid) || TextUtils.isEmpty(pid) || TextUtils.isEmpty(sn);
+        }
+    }
+
 }
