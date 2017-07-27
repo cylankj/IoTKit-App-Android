@@ -406,7 +406,7 @@ public class DataSourceManager implements JFGSourceManager {
         }
         try {
             appCmd.robotGetMultiData(map, 1, false, 0);
-            AppLogger.d("多查询");
+            AppLogger.d("刷主页dp");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -839,15 +839,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 }
                             }
                         }
-//                        Device device;
-//                        syncAllProperty();//不需要在这里刷,进入设备页面刷一次.
-//                        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
-//                            device = entry.getValue();
-//                            parameters = device.getQueryParams();
-//                            AppLogger.d("正在查询设备属性:" + new Gson().toJson(parameters));
-//                            appCmd.robotGetData(device.getUuid(), parameters, 1, false, 0);
-//                        }
-//                        appCmd.getShareList(uuidList);
+                        syncHomeProperty();
                         getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
                     } catch (Exception e) {
                         AppLogger.d(e.getMessage());

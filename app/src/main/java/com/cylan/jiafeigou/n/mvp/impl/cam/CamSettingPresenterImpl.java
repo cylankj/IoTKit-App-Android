@@ -67,7 +67,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         return new Subscription[]{
                 robotDataSync(),
                 robotDeviceDataSync(),
-                clearSdcardReqBack(),
                 onClearSdReqBack()
         };
     }
@@ -328,41 +327,38 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 }, AppLogger::e);
     }
 
-    @Override
-    public Subscription clearSdcardReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<DpMsgDefine.DPSdStatus>>() {
-                    @Override
-                    public Observable<DpMsgDefine.DPSdStatus> call(RxEvent.DeviceSyncRsp rsp) {
-                        if (rsp != null && rsp.dpList.size() > 0) {
-                            for (JFGDPMsg dp : rsp.dpList) {
-                                try {
-                                    if (dp.id == 204 && TextUtils.equals(uuid, rsp.uuid)) {
-                                        DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
-                                        return Observable.just(sdStatus);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    return Observable.just(null);
-                                }
-                            }
-                        }
-                        return Observable.just(null);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> {
-                    if (o != null) {
-                        //清空SD卡提示
-                        if (isInitSd) {
-                            getView().clearSdResult(0);
-                            isInitSd = false;
-                        }
-
-                    }
-                }, AppLogger::e);
-    }
+//    @Override
+//    public Subscription clearSdcardReqBack() {
+//        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+//                .subscribeOn(Schedulers.io())
+//                .flatMap(rsp -> {
+//                    if (rsp != null && rsp.dpList.size() > 0) {
+//                        for (JFGDPMsg dp : rsp.dpList) {
+//                            try {
+//                                if (dp.id == 203 && TextUtils.equals(uuid, rsp.uuid)) {
+//                                    DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
+//                                    return Observable.just(sdStatus);
+//                                }
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                                return Observable.just(null);
+//                            }
+//                        }
+//                    }
+//                    return Observable.just(null);
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(o -> {
+//                    if (o != null) {
+//                        //清空SD卡提示
+//                        if (isInitSd) {
+//                            getView().clearSdResult(0);
+//                            isInitSd = false;
+//                        }
+//
+//                    }
+//                }, AppLogger::e);
+//    }
 
     @Override
     public Subscription onClearSdReqBack() {
@@ -371,7 +367,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .map(ret -> ret.rets)
                 .flatMap(Observable::from)
-                .filter(msg -> msg.id == 218)
+                .filter(msg -> msg.id == 203)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result.ret == 0) {
@@ -384,6 +380,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public void clearBellRecord(String uuid) {
+        AppLogger.d("删除uuid下所有401dp");
         Subscription subscribe = Observable.just(new DPEntity()
                 .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                 .setUuid(uuid)
@@ -395,7 +392,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .subscribe(rsp -> {
                     if (rsp.getResultCode() == 0) {//删除成功
                         mView.onClearBellRecordSuccess();
-                        RxBus.getCacheInstance().post(new RxEvent.ClearDataEvent(DpMsgMap.ID_401_BELL_CALL_STATE));
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ClearDataEvent(DpMsgMap.ID_401_BELL_CALL_STATE));
                         AppLogger.d("清空呼叫记录成功!");
                     } else {
                         mView.onClearBellRecordFailed();

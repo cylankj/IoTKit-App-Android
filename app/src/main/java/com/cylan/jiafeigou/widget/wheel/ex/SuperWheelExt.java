@@ -66,6 +66,8 @@ public class SuperWheelExt extends View {
 
     private IData iDataProvider;
     private long lastUpdateTime;
+    private long nextTarget;
+    private long currentTatget;
 
     public IData getDataProvider() {
         return iDataProvider;
@@ -309,7 +311,7 @@ public class SuperWheelExt extends View {
     }
 
     public int getMinScrollX() {
-        return getMarkerLeft();
+        return getMeasuredWidth() / 2;
     }
 
     /**
@@ -355,9 +357,10 @@ public class SuperWheelExt extends View {
                 //开始吸附过程
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
+                timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.RIGHT);
                 setPositionByTime(timeTarget);
                 if (wheelRollListener != null)
-                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);//回调的应该是 target 的
+                    wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
             } else {
                 if (!idle && (wheelRollListener != null)) {
                     boolean finish = touchHandler.isFinished();
@@ -411,6 +414,13 @@ public class SuperWheelExt extends View {
         touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
 //        });
         this.lastUpdateTime = System.currentTimeMillis();
+        this.currentTatget = timeTarget;
+//        this.nextTarget = iDataProvider.getNextFocusTime(timeTarget, ITouchHandler.MoveDirection.RIGHT, false);
+        if (iDataProvider != null) {
+            this.nextTarget = iDataProvider.getNextTarget(timeTarget / 1000) * 1000L;
+        }
+        this.nextTarget = Math.max(currentTatget, nextTarget);
+        Log.i("setPositionByTime", "current:" + (currentTatget / 1000) + ",next:" + (nextTarget / 1000));
     }
 
     /**
@@ -435,12 +445,12 @@ public class SuperWheelExt extends View {
     }
 
     public long getNextTimeDistance() {
-        long currentFocusTime = getCurrentFocusTime();
-        return iDataProvider.getNextFocusTime(currentFocusTime, ITouchHandler.MoveDirection.RIGHT) - currentFocusTime;
+        Log.i(TAG, "getNextTimeDistance: " + nextTarget + ",current:" + currentTatget);
+        return nextTarget - currentTatget;
     }
 
     public long getNextFocusTime(long time) {
-        return iDataProvider.getNextFocusTime(time, ITouchHandler.MoveDirection.RIGHT);
+        return iDataProvider.getNextFocusTime(time, ITouchHandler.MoveDirection.RIGHT, false);
     }
 
     public interface WheelRollListener {

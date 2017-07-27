@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.msgpack.MsgPackTest;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -61,6 +60,12 @@ public class DpMsgDefineTest {
 
     @Test
     public void testObject() throws IOException {
+
+        System.out.println("DPBellCallRecord:" + unpackData(new byte[]{-108, 0, -50, 89, 120, 6, 4, 0, 1},
+                DpMsgDefine.DPBellCallRecord.class));
+        System.out.println("DPBellCallRecord:" + unpackData(new byte[]{-108, 0, -50, 89, 120, 45, -68, 0, 1},
+                DpMsgDefine.DPBellCallRecord.class));
+
         Good good = new Good();
         good.cid = "11111";
         byte[] raw = DpUtils.pack(good);

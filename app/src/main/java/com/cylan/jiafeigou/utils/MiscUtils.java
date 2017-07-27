@@ -550,6 +550,7 @@ public class MiscUtils {
         } else if (camMessageBean.bellCallRecord != null && camMessageBean.bellCallRecord.fileIndex != 0) {
             index = camMessageBean.bellCallRecord.fileIndex;
         }
+        if (index < 0) index = 1;
         return index;
     }
 

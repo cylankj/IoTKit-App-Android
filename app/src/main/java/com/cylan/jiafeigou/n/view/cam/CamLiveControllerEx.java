@@ -137,7 +137,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private CamLiveContract.Presenter presenter;
     private Switcher streamSwitcher;
     private int pid;
-    private String cVersion;
+    //    private String cVersion;
     private boolean isRSCam;
     private Handler handler = new Handler();
 
@@ -223,7 +223,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     AppLogger.d("点击加载历史视频");
                     layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
                     livePlayState = PLAY_STATE_PREPARE;
-                    setLoadingState(getResources().getString(R.string.LOADING), null);
+                    setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
                     Subscription subscription = Observable.just("get")
                             .subscribeOn(Schedulers.io())
                             .map(ret -> presenter.fetchHistoryDataList())
@@ -283,7 +283,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        this.cVersion = device.$(207, "");
         isRSCam = JFGRules.isRS(device.pid);
         if (device == null) {
             AppLogger.e("device is null");
@@ -445,14 +444,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard || status.err != 0) {
             //隐藏
-//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //2.手机无网络
         int net = NetUtils.getJfgNetType();
         if (net == 0) {
             //隐藏
-//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //4.被分享用户不显示
@@ -464,7 +461,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //5.设备离线
         if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
             AppLogger.d("isDeviceOnline false");
-//            layoutE.setVisibility(INVISIBLE);
             return;
         }
         //3.没有历史录像
@@ -513,6 +509,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             Log.d("wahat", "portHideRunnable");
         }
     };
+
     private Runnable portShowRunnable = new Runnable() {
         @Override
         public void run() {
@@ -525,7 +522,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
-            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, cVersion, false) ? VISIBLE : GONE);
+            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false) ? VISIBLE : GONE);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(VISIBLE);
             }
@@ -568,7 +565,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
             streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING &&
-                    JFGRules.showSdHd(pid, cVersion, false) ? VISIBLE : GONE);
+                    JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false) ? VISIBLE : GONE);
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);
@@ -799,6 +796,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
+            ViewUtils.increaseMargins(streamSwitcher, 0, 0, 0, (int) getResources().getDimension(R.dimen.y10));
         } else {
             if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
                 findViewById(R.id.tv_live).setVisibility(GONE);
@@ -814,6 +812,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
                 findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
             }
+            ViewUtils.increaseMargins(streamSwitcher, 0, 0, 0, -(int) getResources().getDimension(R.dimen.y10));
         }
         //历史录像显示
         boolean showFlip = !presenter.isShareDevice() && JFGRules.hasProtection(device.pid, false);
@@ -852,8 +851,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(VISIBLE);
-            float ratio = isNormalView ? presenter.getVideoPortHeightRatio() : 1.0f;
-            updateLiveViewRectHeight(ratio);
+            updateLiveViewRectHeight(presenter.getVideoPortHeightRatio());
             //有条件的.
             if (presenter.getPlayState() == PLAY_STATE_PLAYING) {
                 //需要根据设备属性表来决定是否显示或隐藏 portFlip
@@ -970,14 +968,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-        String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
+         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                 + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
         boolean shouldUpdateWheelTime = !useDamp ||
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
-        AppLogger.d("useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance())
-        ;
+        AppLogger.d("useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
         if (shouldUpdateWheelTime) {
             ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
         }
@@ -1021,10 +1018,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
         float ratio;
-        ratio = isNormalView ? (float) resolution.height / resolution.width :
+        ratio = isNormalView ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
                 isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
                         Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
         updateLiveViewRectHeight(ratio);
+    }
+
+    private float getLandFillScreen() {
+        return (float) Resources.getSystem().getDisplayMetrics().heightPixels /
+                Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     /**
@@ -1045,6 +1047,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
+            AppLogger.d("onHistoryDataRsp");
             setLiveRectTime(TYPE_HISTORY, time, false);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
 //                prepareLayoutDAnimation(state == STATE_FINISH);//正在查看历史视频时， 拖动时间轴视频画面不显示暂停的按钮
         });
@@ -1077,6 +1080,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             post(portHideRunnable);
             setLoadingState(null, null);
         }
+        if (!isLand()) {
+            if (standby.standby) {
+                layoutE.setVisibility(INVISIBLE);
+            } else {
+                layoutE.setVisibility(JFGRules.showSdcard(device) ? VISIBLE : INVISIBLE);
+            }
+        }
+        layoutE.findViewById(R.id.btn_load_history).setEnabled(!standby.standby);
     }
 
     private boolean isStandBy() {
@@ -1330,7 +1341,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //获取历史录像ui逻辑
         layoutE.findViewById(R.id.btn_load_history).setEnabled(false);
         livePlayState = PLAY_STATE_PREPARE;
-        setLoadingState(getResources().getString(R.string.LOADING), null);
+        setLoadingState(getResources().getString(R.string.VIDEO_REFRESHING), null);
         Subscription subscription = Observable.just("get")
                 .subscribeOn(Schedulers.io())
                 .flatMap(aBoolean -> RxBus.getCacheInstance().toObservable(RxEvent.HistoryBack.class)
@@ -1437,6 +1448,5 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void hideHistoryWheel() {
         presenter.getHistoryDataProvider().clean();
         historyWheelHandler.dateUpdate();
-//        layoutE.setVisibility(INVISIBLE);
     }
 }

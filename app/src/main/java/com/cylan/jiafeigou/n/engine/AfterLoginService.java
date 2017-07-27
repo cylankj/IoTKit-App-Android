@@ -32,7 +32,6 @@ public class AfterLoginService extends IntentService {
     /**
      * 保存账号密码，登陆成功后保存。
      */
-    public static final String ACTION_SAVE_ACCOUNT = "action_save_account";
     public static final String ACTION_SYN_OFFLINE_REQ = "action_offline_req";
 
     public static final String ACTION_CHECK_VERSION = "action_check_version";
@@ -43,20 +42,6 @@ public class AfterLoginService extends IntentService {
         super("AfterLoginService");
     }
 
-    public static void startSaveAccountAction(Context context) {
-        Intent intent = new Intent(context, AfterLoginService.class);
-        intent.putExtra(TAG, ACTION_SAVE_ACCOUNT);
-        context.startService(intent);
-    }
-
-    /**
-     * 恢复离线时候,加入请求队列的消息
-     */
-    public static void resumeOfflineRequest() {
-        Intent intent = new Intent(ContextUtils.getContext(), AfterLoginService.class);
-        intent.putExtra(TAG, ACTION_SYN_OFFLINE_REQ);
-        ContextUtils.getContext().startService(intent);
-    }
 
     /**
      * 恢复离线时候,加入请求队列的消息
@@ -75,11 +60,7 @@ public class AfterLoginService extends IntentService {
         if (intent != null) {
             final String action = intent.getStringExtra(TAG);
             AppLogger.i("AfterLoginService: " + action + ",looper: " + (Looper.myLooper() == Looper.getMainLooper()));
-            if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
-                Observable.just("go and do something")
-                        .subscribeOn(Schedulers.newThread())
-                        .subscribe(new BindTask(), AppLogger::e);
-            } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
+            if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 AppLogger.d("尝试检查版本");
                 IVersion<ClientVersionChecker.CVersion> version = new ClientVersionChecker();
