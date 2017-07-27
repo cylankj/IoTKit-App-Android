@@ -824,7 +824,7 @@
       "UPTIME": "1",
       "VALUE": "RS_CAMERA180",
       "VIEW": "圆形（切掉上下部分）",
-      "VIEWANGLE": "1",
+      "VIEWANGLE": "0",
       "WARMSOUND": "1",
       "WIFI": "1",
       "WIFI_INFO": "1",
@@ -1269,5 +1269,5 @@
       1385
     ]
   },
-  "version": "20170724"
+  "version": "20170727"
 }
