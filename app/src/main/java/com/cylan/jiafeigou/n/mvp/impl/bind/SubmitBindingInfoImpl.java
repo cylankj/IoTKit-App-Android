@@ -163,13 +163,15 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         }
                         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                         if (account != null && !sendBindInfo) {
-                            sendBindInfo = true;
                             try {
                                 String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                                 UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
                                 if (portrait != null) {
-                                    BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                                    AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
+                                    int ret = BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                                    AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait) + "," + ret);
+                                    if (ret != 0) {
+                                        AppLogger.d("客户端登录失败.需要不断尝试");
+                                    } else sendBindInfo = true;
                                 }
                             } catch (Exception e) {
                                 AppLogger.d("err: " + e.getLocalizedMessage());
