@@ -144,7 +144,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             public void onFinish() {
                 if (isAdded()) {
                     tvMeterGetCode.setText(getString(R.string.ANEW_SEND));
-                    tvMeterGetCode.setEnabled(true);
+                    if (checkInputType() == JConstant.TYPE_PHONE) {
+                        tvMeterGetCode.setEnabled(true);
+                    }
                 }
             }
         };
@@ -277,6 +279,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
      * android:animateLayoutChanges="true",就有transition的效果。
      */
     private void start2HandleVerificationCode() {
+
         fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
@@ -337,8 +340,15 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void userNameChange(CharSequence s, int start, int before, int count) {
         final boolean flag = TextUtils.isEmpty(s);
         ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
-        boolean codeValid = checkInputType() != JConstant.TYPE_INVALID;
+        int visibility = fLayoutVerificationCodeInputBox.getVisibility();
+        int inputType = checkInputType();
+        boolean codeValid = inputType != JConstant.TYPE_INVALID && (visibility != View.VISIBLE || inputType == JConstant.TYPE_PHONE);
         tvForgetPwdSubmit.setEnabled(!flag && codeValid);
+        if (TextUtils.equals(tvMeterGetCode.getText(), getString(R.string.ANEW_SEND)) && inputType == JConstant.TYPE_PHONE) {
+            tvMeterGetCode.setEnabled(true);
+        }
+        tvMeterGetCode.setEnabled(inputType == JConstant.TYPE_PHONE && TextUtils.equals(tvMeterGetCode.getText(), getString(R.string.ANEW_SEND)));
+
     }
 
     @OnTextChanged(R.id.et_verification_input)

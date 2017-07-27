@@ -242,6 +242,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(status -> {
+
                     if (status == null) {
                         ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
                     } else {
