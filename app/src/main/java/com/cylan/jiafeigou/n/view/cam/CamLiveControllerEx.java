@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -74,6 +75,7 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
+import com.daimajia.androidanimations.library.BaseViewAnimator;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
@@ -385,6 +387,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
         });
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
+        layoutD.findViewById(R.id.live_time_layout).setVisibility(JFGRules.hasSDFeature(device.pid) ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -601,7 +604,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             YoYo.with(Techniques.SlideOutUp)
                     .duration(200)
                     .playOn(layoutA);
-            YoYo.with(Techniques.SlideOutDown)
+            YoYo.with(new BaseViewAnimator() {
+                @Override
+                protected void prepare(View target) {
+                    ViewGroup parent = (ViewGroup) target.getParent();
+                    int distance = parent.getHeight() - layoutE.getTop();
+                    this.getAnimatorAgent().play(ObjectAnimator.ofFloat(target, "translationY", 0.0F, (float) distance));
+
+                }
+            })
                     .duration(200)
                     .playOn(layoutD);
             YoYo.with(Techniques.SlideOutDown)
@@ -633,7 +644,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .playOn(layoutA);
             if (!layoutD.isShown())
                 layoutD.setVisibility(VISIBLE);//
-            YoYo.with(Techniques.SlideInUp)
+            YoYo.with(new BaseViewAnimator() {
+                @Override
+                protected void prepare(View target) {
+                    ViewGroup parent = (ViewGroup) target.getParent();
+                    int distance = parent.getHeight() - layoutE.getTop();
+                    this.getAnimatorAgent().play(ObjectAnimator.ofFloat(target, "translationY", (float) (distance), 0.0F));
+                }
+            })
                     .duration(250)
                     .playOn(layoutD);
             if (!layoutE.isShown()) layoutE.setVisibility(VISIBLE);//
