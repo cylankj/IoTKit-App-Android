@@ -248,15 +248,15 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPause() {
         super.onPause();
-//        basePresenter.saveHotSeatState();
-        if (basePresenter != null)
-            basePresenter.stopPlayVideo(true).subscribe(ret -> {
-            }, AppLogger::e);
+        basePresenter.saveHotSeatState();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        if (basePresenter != null)
+            basePresenter.stopPlayVideo(true).subscribe(ret -> {
+            }, AppLogger::e);
     }
 
     @Override

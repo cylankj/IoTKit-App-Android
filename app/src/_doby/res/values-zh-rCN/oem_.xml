@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="show_guide">true</bool>
-    <bool name="show_copyright">false</bool>
-    <bool name="show_agreement">false</bool>
-    <bool name="show_about">true</bool>
-    <bool name="show_official_website">false</bool>
-    <bool name="show_official_hot_line">false</bool>
-    <bool name="show_ruishi_interface">true</bool>
-    <bool name="show_scan_bind_interface">true</bool>
-    <bool name="show_cat_eye_bind_interface">true</bool>
-    <bool name="show_about_logo">true</bool>
-    <bool name="show_third_login">true</bool>
-    <bool name="show_share_btn">true</bool>
-    <bool name="show_wechat_entrance">false</bool>
-    <string name="qrcode_prefix">%1$s&amp;id=%2$s</string>
-    <string name="share_default_description">@string/Tap1_Shared_Description_zhongxing</string>
-    <string name="share_default_title">@string/Tap1_Shared_Title_zhognxing</string>
-    <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s&amp;g_f=991653</string>
-    <string name="facebook_app_id">fb1698182270477390</string>
-    <string name="agreementSuffix">"_zhongxing"</string>
-    <string name="log">"Doby"</string>
-    <integer name="max_password_length">32</integer>
     <bool name="show_weixin_push">true</bool>
 </resources>

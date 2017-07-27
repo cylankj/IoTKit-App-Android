@@ -1244,10 +1244,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void updateLiveViewMode(String mode) {
-        if (needShowSight) {
-            liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
-            liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
-        } else updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
+        liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+        liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
+        if (!needShowSight) {
+            updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
+        }
         liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
 

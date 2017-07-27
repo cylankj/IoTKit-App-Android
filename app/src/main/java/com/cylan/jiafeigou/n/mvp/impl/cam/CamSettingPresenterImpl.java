@@ -47,19 +47,16 @@ import rx.schedulers.Schedulers;
  */
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
-    private Device device;
-
     private static final int[] autoRecordMode = {
             R.string.RECORD_MODE,
             R.string.RECORD_MODE_1,
             R.string.RECORD_MODE_2
     };
-    private boolean isInitSd;
 
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid, 204);
     }
 
     @Override
@@ -93,8 +90,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void start() {
         super.start();
-        getView().deviceUpdate(device);
-        AppLogger.d("检查升级包");
+        getView().deviceUpdate(getDevice());
     }
 
     /**
@@ -258,7 +254,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public Observable<Boolean> switchApModel(int model) {
-        final String mac = device.$(202, "");
+        final String mac = getDevice().$(202, "");
         if (TextUtils.isEmpty(mac)) {
             AppLogger.d("mac为空");
             return Observable.just(false);
@@ -320,7 +316,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
                         BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
-                        isInitSd = true;
                     } catch (Exception e) {
                         AppLogger.e("format sd： " + e.getLocalizedMessage());
                     }
