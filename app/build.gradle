@@ -78,7 +78,7 @@ android {
 
     signingConfigs {
         debug {
-            v2SigningEnabled false
+            v2SigningEnabled true
             storeFile file('../debug.keystore')
             storePassword 'android'
             keyAlias 'AndroidDebugKey'
@@ -105,7 +105,7 @@ android {
             // 1. Gradle版本 >= 2.14.1
             // 2. Android Gradle Plugin 版本 >= 2.2.0
             // 作用是只使用旧版签名，禁用V2版签名模式
-            v2SigningEnabled false
+            v2SigningEnabled true
             Properties properties = new Properties()
             File localProperties = project.rootProject.file('local.properties')
             if (localProperties.exists()) {
