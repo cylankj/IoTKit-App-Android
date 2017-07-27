@@ -1,17 +1,22 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RadioButton;
 
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -21,6 +26,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
@@ -35,6 +42,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     RadioButton rbtnSightVertical;
     private String uuid;
     private String initValue;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,29 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
             rbtnSightVertical.setChecked(TextUtils.equals("0", dpPrimary));
         } catch (Exception e) {
         }
+        subscription = getDeviceUnBindSub();
+    }
+
+    private Subscription getDeviceUnBindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(event -> TextUtils.equals(event.uuid, uuid))
+                .subscribe(event -> {
+
+                    onDeviceUnBind();
+
+                }, e -> AppLogger.d(e.getMessage()));
+    }
+
+    private void onDeviceUnBind() {
+        AppLogger.d("当前设备已解绑");
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
+                getString(R.string.OK), (dialog, which) -> {
+                    finish();
+                    Intent intent = new Intent(getContext(), NewHomeActivity.class);
+                    startActivity(intent);
+                }, false);
     }
 
     @Override
@@ -112,5 +143,10 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         String dpPrimary = device.$(509, "1");
         if (!TextUtils.equals(dpPrimary, initValue))
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+
+        if (subscription != null && subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+            subscription = null;
+        }
     }
 }

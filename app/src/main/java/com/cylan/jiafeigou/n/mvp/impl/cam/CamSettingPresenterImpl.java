@@ -39,7 +39,6 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -64,7 +63,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         return new Subscription[]{
                 robotDataSync(),
                 robotDeviceDataSync(),
-                onClearSdReqBack()
+                onClearSdReqBack(),
+                getDeviceUnBindSub()
         };
     }
 
@@ -399,5 +399,18 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     AppLogger.d("清空呼叫记录失败!");
                 });
         addSubscription(subscribe);
+    }
+
+
+    private Subscription getDeviceUnBindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(event -> TextUtils.equals(event.uuid, uuid))
+                .subscribe(event -> {
+                    if (mView != null) {
+                        mView.onDeviceUnBind();
+                    }
+                }, e -> AppLogger.d(e.getMessage()));
     }
 }

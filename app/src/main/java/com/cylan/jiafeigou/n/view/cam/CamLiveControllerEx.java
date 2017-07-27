@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -431,8 +433,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 if (layout != null) liveViewWithThumbnail.removeView(layout);
                 basePresenter.startPlay();
                 //需要隐藏历史录像时间轴
-                layoutE.setVisibility(JFGRules.showSdcard(basePresenter.getDevice())
+                boolean showSdcard = JFGRules.showSdcard(basePresenter.getDevice());
+                layoutE.setVisibility(showSdcard
                         ? VISIBLE : INVISIBLE);
+                vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             });
             layout.setOnClickListener(v -> AppLogger.d("don't click me"));
             view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
@@ -602,6 +606,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .playOn(layoutD);
             YoYo.with(Techniques.SlideOutDown)
                     .duration(200)
+                    .withListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (!isLand()) {
+                                layoutE.setTranslationY(0);
+                                layoutE.setAlpha(1);
+                            }
+                        }
+                    })
                     .playOn(layoutE);
         }
     };
@@ -829,6 +842,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         boolean isLand = isLand();
         layoutA.setVisibility(isLand ? VISIBLE : INVISIBLE);
         layoutF.setVisibility(isLand ? INVISIBLE : VISIBLE);
+
         layoutE.findViewById(R.id.tv_live).setBackgroundColor(isLand ? Color.TRANSPARENT : Color.WHITE);
         if (isLand) {
             //隐藏所有的 showcase
@@ -936,6 +950,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutA.setTranslationY(0);
         layoutD.setTranslationY(0);
         layoutE.setTranslationY(0);
+        layoutA.setAlpha(1);
+        layoutD.setAlpha(1);
+        layoutE.setAlpha(1);
         if (land) {
             layoutE.setVisibility(VISIBLE);
             removeCallbacks(portHideRunnable);
@@ -953,6 +970,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 post(() -> {
                     removeCallbacks(portHideRunnable);
                     removeCallbacks(landHideRunnable);
+
                 });
             }
         }
@@ -1126,7 +1144,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (standby.standby) {
                 layoutE.setVisibility(INVISIBLE);
             } else {
-                layoutE.setVisibility(JFGRules.showSdcard(device) ? VISIBLE : INVISIBLE);
+                boolean showSdcard = JFGRules.showSdcard(device);
+                layoutE.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
+                vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             }
         }
         layoutE.findViewById(R.id.btn_load_history).setEnabled(!standby.standby);
@@ -1236,8 +1256,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
             layoutE.findViewById(R.id.btn_load_history)
                     .setEnabled(NetUtils.getJfgNetType() != 0 && online);
-            layoutE.setVisibility(JFGRules.showSdcard(device)
-                    ? VISIBLE : INVISIBLE);
+            boolean showSdcard = JFGRules.showSdcard(device);
+            layoutE.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
+            vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);
     }
@@ -1498,7 +1519,33 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     public void hideHistoryWheel() {
-        presenter.getHistoryDataProvider().clean();
+        IData historyDataProvider = presenter.getHistoryDataProvider();
+        if (historyDataProvider != null) {
+            historyDataProvider.clean();
+        }
         historyWheelHandler.dateUpdate();
+    }
+
+    public void showPlayHistoryButton() {
+        /**
+         * newdoby（1.0.0.457） 已经获取历史视频 当sd卡拔出，客户端点击弹窗中确定后，历史时间轴应消失，同时显示“历史录像”按钮
+         * */
+        IData historyDataProvider = presenter.getHistoryDataProvider();
+        if (historyDataProvider != null) {
+            historyDataProvider.clean();
+        }
+        historyWheelHandler.dateUpdate();
+        vsLayoutWheel.setVisibility(VISIBLE);
+        layoutE.setVisibility(VISIBLE);
+        if (vsLayoutWheel.getDisplayedChild() == 1) {
+            vsLayoutWheel.showPrevious();
+        }
+        vsLayoutWheel.findViewById(R.id.btn_load_history).setEnabled(true);
+        if (isLand()) {
+            vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        } else {
+            vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(R.color.color_F7F8FA));
+            findViewById(R.id.v_line).setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
+        }
     }
 }

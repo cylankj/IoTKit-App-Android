@@ -41,6 +41,8 @@ public interface CamSettingContract {
         void onClearBellRecordSuccess();
 
         void onClearBellRecordFailed();
+
+        void onDeviceUnBind();
     }
 
     interface Presenter extends BasePresenter {

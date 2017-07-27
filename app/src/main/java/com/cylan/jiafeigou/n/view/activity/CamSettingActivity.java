@@ -538,7 +538,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 //        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
 //            svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
 //        } else
-            svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
+        svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
         ////////////////////////standby////////////////////////////////////////////
         DpMsgDefine.DPStandby dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         if (!JFGRules.showStandbyItem(device.pid, false)) {
@@ -853,11 +853,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
                     //sd
                     String statusContent = basePresenter.getDetailsSubTitle(getContext(), summary.hasSdcard, summary.errCode);
-                    if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-                        svSettingDeviceDetail.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
-                    } else {
-                        svSettingDeviceDetail.setTvSubTitle(statusContent, R.color.color_8c8c8c);
-                    }
+//                    if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+//                        svSettingDeviceDetail.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+//                    } else {
+                    svSettingDeviceDetail.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+//                    }
                     //自动录像显示.
                     DpMsgDefine.DPStandby standby = basePresenter.getDevice().$(508, new DpMsgDefine.DPStandby());
                     svSettingDeviceAutoRecord.setTvSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
@@ -896,10 +896,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 }
                 if (status == null) status = new DpMsgDefine.DPSdStatus();
                 String detailInfo = basePresenter.getDetailsSubTitle(getContext(), status.hasSdcard, status.err);
-                if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
-                    svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
-                } else
-                    svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
+//                if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
+//                    svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
+//                } else
+                svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
                 LoadingDialog.dismissLoading(getSupportFragmentManager());
                 break;
         }
@@ -982,6 +982,17 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void onClearBellRecordFailed() {
         ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
         LoadingDialog.dismissLoading(getSupportFragmentManager());
+    }
+
+    @Override
+    public void onDeviceUnBind() {
+        AppLogger.d("当前设备已解绑");
+        AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
+                getString(R.string.OK), (dialog, which) -> {
+                    finish();
+                    Intent intent = new Intent(getContext(), NewHomeActivity.class);
+                    startActivity(intent);
+                }, false);
     }
 
     private void enableStandby(boolean enable) {

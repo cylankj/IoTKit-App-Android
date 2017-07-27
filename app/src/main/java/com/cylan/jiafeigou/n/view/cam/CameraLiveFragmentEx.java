@@ -337,7 +337,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
             if (!hasSDCard) {
                 AppLogger.d("sdcard 被拔出");
-                camLiveControlLayer.hideHistoryWheel();
+//                camLiveControlLayer.hideHistoryWheel();
+                camLiveControlLayer.showPlayHistoryButton();
                 if (!getUserVisibleHint() || basePresenter.isShareDevice()) {
                     AppLogger.d("隐藏了，sd卡更新");
                     return;
@@ -349,6 +350,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                                 if (accept()) {
                                     basePresenter.startPlay();
                                 }
+
                         });
                 if (basePresenter.getPlayType() == TYPE_HISTORY) {
                     basePresenter.stopPlayVideo(TYPE_HISTORY).subscribe(ret -> {
