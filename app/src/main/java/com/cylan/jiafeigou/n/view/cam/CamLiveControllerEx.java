@@ -1060,7 +1060,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
         Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
-        if (shouldUpdateWheelTime) {
+        if (shouldUpdateWheelTime && JFGRules.hasSDFeature(pid)) {
             ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
         }
         if (livePlayState == PLAY_STATE_PREPARE) return;
