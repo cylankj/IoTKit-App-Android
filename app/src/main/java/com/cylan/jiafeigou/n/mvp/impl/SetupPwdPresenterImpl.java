@@ -60,7 +60,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .map(o -> {
                     try {
-                        AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd);
+                        AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd, true);
                         AutoSignIn.getInstance().autoLogin();
                     } catch (Exception e) {
                         e.printStackTrace();

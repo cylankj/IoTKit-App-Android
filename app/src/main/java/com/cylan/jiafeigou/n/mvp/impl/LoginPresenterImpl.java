@@ -4,7 +4,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -18,6 +20,7 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -108,13 +111,23 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(o -> {
                     try {
                         countUp(phone);
-                        BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                        int ret = BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                        AppLogger.d("getCodeByPhone?" + ret);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                     AppLogger.d("phone:" + phone);
+                    Subscription subscription = RxBus.getCacheInstance().toObservable(JFGResult.class)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe(ret -> {
+                                try {
+                                    ToastUtil.showToast(mView.getContext().getResources().getString(R.string.GetCode_FrequentlyTips));
+                                } catch (Throwable throwable) {
+                                }
+                            }, AppLogger::e);
+                    addSubscription(subscription, "getCodeByPhoneResult");
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
-        addSubscription(subscribe);
+        addSubscription(subscribe, "getCodeByPhone");
     }
 
     @Override

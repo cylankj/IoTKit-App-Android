@@ -220,6 +220,18 @@ public class AutoSignIn {
         }
     }
 
+    public void autoSave(String account, int type, String pwd, boolean needEncrypt) {
+        try {
+            SignType signType = new SignType();
+            signType.account = account;
+            signType.type = type;
+            String aes = saveAccountAes(signType);
+            savePwdMd5(aes, TextUtils.isEmpty(pwd) ? "" : needEncrypt ? MD5Util.lowerCaseMD5(pwd) : pwd);
+        } catch (Exception e) {
+            AppLogger.e("e:" + e.getLocalizedMessage());
+        }
+    }
+
     public void autoClearPassWord() {
         SignType signType = getSignType();
         if (signType != null) {
