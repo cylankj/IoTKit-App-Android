@@ -19,10 +19,10 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotExist;
+import static com.cylan.jiafeigou.misc.bind.UdpConstant.BIND_TAG;
 
 /**
  * Created by cylan-hunt on 16-8-24.
@@ -39,6 +39,11 @@ public class BindUtils {
     private static final String INVALID_SSID_0 = "<unknown ssid>";
     private static final String INVALID_SSID_1 = "0x";
 
+
+    public static final String TAG_UDP_FLOW = BIND_TAG + "send_udp_msg";
+    public static final String TAG_NET_RECOVERY_FLOW = BIND_TAG + "net_recovery";
+    public static final String TAG_NET_LOGIN_FLOW = BIND_TAG + "login";
+    public static final String TAG_NET_FINAL_FLOW = BIND_TAG + "final";
 
     public static List<ScanResult> transformDogList(List<ScanResult> resultList, Pattern pattern) {
         if (resultList == null || resultList.size() == 0)

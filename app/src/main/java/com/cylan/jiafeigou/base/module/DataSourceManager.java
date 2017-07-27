@@ -357,7 +357,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public boolean syncAllProperty(String uuid) {
+    public boolean syncAllProperty(String uuid, int... excludeMsgIds) {
         if (mCachedDeviceMap.size() == 0) return false;
         Device device = mCachedDeviceMap.get(uuid);
         if (device == null) return false;
@@ -371,7 +371,11 @@ public class DataSourceManager implements JFGSourceManager {
         ArrayList<JFGDPMsg> parameters = device.getQueryParams();
         JFGDPMsg[] array = new JFGDPMsg[parameters.size()];
         for (int i = 0; i < parameters.size(); i++) {
-            array[i] = parameters.get(i);
+            int msgId = (int) parameters.get(i).id;
+            if (MiscUtils.arrayContains(excludeMsgIds, msgId)) {
+                array[i] = new JFGDPMsg(201, 0);//201是占位符号
+            } else
+                array[i] = parameters.get(i);
         }
         map.put(uuid, array);
         try {

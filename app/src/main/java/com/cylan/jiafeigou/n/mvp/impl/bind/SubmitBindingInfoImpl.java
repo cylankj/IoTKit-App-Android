@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -40,6 +41,9 @@ import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
+import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_FINAL_FLOW;
+import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_LOGIN_FLOW;
+import static com.cylan.jiafeigou.utils.BindUtils.TAG_NET_RECOVERY_FLOW;
 
 /**
  * Created by cylan-hunt on 16-11-12.
@@ -67,6 +71,8 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
             AppLogger.d("网络恢复了:" + NetUtils.getNetName(ContextUtils.getContext()));
             BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_LOST);
             BaseApplication.getAppComponent().getCmd().reportEnvChange(JfgEnum.ENVENT_TYPE.ENV_NETWORK_CONNECTED);
+            PerformanceUtils.stopTrace(TAG_NET_RECOVERY_FLOW);
+            PerformanceUtils.startTrace(TAG_NET_LOGIN_FLOW);
         }
     }
 
@@ -171,7 +177,11 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                     AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait) + "," + ret);
                                     if (ret != 0) {
                                         AppLogger.d("客户端登录失败.需要不断尝试");
-                                    } else sendBindInfo = true;
+                                    } else {
+                                        sendBindInfo = true;
+                                        PerformanceUtils.stopTrace(TAG_NET_LOGIN_FLOW);
+                                        PerformanceUtils.startTrace(TAG_NET_FINAL_FLOW);
+                                    }
                                 }
                             } catch (Exception e) {
                                 AppLogger.d("err: " + e.getLocalizedMessage());
@@ -207,6 +217,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                 AppLogger.d("绑定成功,网络状态为:");
                                 finalSetSome();
                                 simulatePercent.boost();
+                                PerformanceUtils.stopTrace(TAG_NET_FINAL_FLOW);
                             } else {
                                 //timeout失败
                                 bindState = BIND_TIME_OUT;
