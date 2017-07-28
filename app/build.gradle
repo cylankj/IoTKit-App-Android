@@ -79,26 +79,26 @@ android {
     signingConfigs {
         debug {
             v2SigningEnabled true
-            storeFile file('../debug.keystore')
-            storePassword 'android'
-            keyAlias 'AndroidDebugKey'
-            keyPassword 'android'
+//            storeFile file('../debug.keystore')
+//            storePassword 'android'
+//            keyAlias 'AndroidDebugKey'
+//            keyPassword 'android'
 
-//            Properties properties = new Properties()
-//            File localProperties = project.rootProject.file('local.properties')
-//            if (localProperties.exists()) {
-//                properties.load(localProperties.newDataInputStream())
-//                def store_file = properties.getProperty('store_file')
-//                if (store_file != null) {
-//                    def store_pwd = properties.getProperty('store_pwd')
-//                    def store_alias = properties.getProperty('store_alias')
-//                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
-//                    storeFile file(store_file)
-//                    storePassword store_pwd
-//                    keyAlias store_alias
-//                    keyPassword store_alias_pwd
-//                }
-//            }
+            Properties properties = new Properties()
+            File localProperties = project.rootProject.file('local.properties')
+            if (localProperties.exists()) {
+                properties.load(localProperties.newDataInputStream())
+                def store_file = properties.getProperty('store_file')
+                if (store_file != null) {
+                    def store_pwd = properties.getProperty('store_pwd')
+                    def store_alias = properties.getProperty('store_alias')
+                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+                    storeFile file(store_file)
+                    storePassword store_pwd
+                    keyAlias store_alias
+                    keyPassword store_alias_pwd
+                }
+            }
         }
         release {
             // 满足下面两个条件时需要此配置
@@ -167,7 +167,7 @@ android {
                                     "BUGLY_APP_CHANNEL"  : "cylan",
                                     "TWITTER_APP_KEY"    : "kvWyAC3sYGxaEmfkKDVWrKFa7",
                                     "TWITTER_APP_SECRET" : "S447fVyJ2zZsFwDQUn3Ra11SdQlmmBVyVn4cOsSSiid8nboBbi",
-                                    "FACEBOOK_APP_KEY"   : "1866682200216878"
+                                    "FACEBOOK_APP_KEY"   : "444251309281886"
 
             ]
         }
@@ -194,10 +194,11 @@ android {
                                     "BUGLY_APPID"        : "f1f2edf649",
                                     "BUGLY_APP_VERSION"  : versionName,
                                     "BUGLY_APP_CHANNEL"  : "doby",
-                                    "TWITTER_APP_KEY"    : "yP4mZddIEumAsk7OnzNWpcrQy8",
+                                    "TWITTER_APP_KEY"    : "P4mZddIEumAsk7OnzNWpcrQy8",
                                     "TWITTER_APP_SECRET" : "1T5Pg7UBRVkq6OSvOs9EBEGiMXVLYmAeOdW3HPTazuqjWyzRAm",
-                                    "FACEBOOK_APP_KEY"   : "1698182270477390"
-
+                                    "FACEBOOK_APP_KEY"   : "1698182270477391"
+            //<error>Desktop applications only support the oauth_callback value 'oob'</error>
+            //新增的app需要在twitter后台,填上callbackUrl
             ]
         }
         _cell_c {
