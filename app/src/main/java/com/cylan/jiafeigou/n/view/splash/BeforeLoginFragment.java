@@ -230,7 +230,7 @@ public class BeforeLoginFragment extends Fragment {
                 toast = Toast.makeText(context, String.format("现在只需再执行%s步操作即可", 10 - count), Toast.LENGTH_SHORT);
 //                toast.show();
             }
-            if (count > 15) {
+            if (count > 20) {
                 time = 0;
                 count = 0;
                 return true;

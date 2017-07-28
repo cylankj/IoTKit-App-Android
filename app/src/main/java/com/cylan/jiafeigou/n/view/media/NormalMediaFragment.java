@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
@@ -43,7 +43,6 @@ public class NormalMediaFragment extends IBaseFragment {
     PhotoView imgVShowPic;
     @BindView(R.id.imv_back)
     ImageView imgBack;
-    private Device device;
     private CamMessageBean bean;
 
 
@@ -86,7 +85,11 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        if (TextUtils.isEmpty(uuid)) {
+            if (BuildConfig.DEBUG) throw new IllegalArgumentException("uuid is null");
+            getActivity().finish();
+            return;
+        }
         int index = getArguments().getInt(KEY_INDEX);
         bean = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (bean != null) {
