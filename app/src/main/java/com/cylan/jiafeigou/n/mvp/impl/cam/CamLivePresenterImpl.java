@@ -170,6 +170,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
     private Subscription getDeviceSyncSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter(ret -> TextUtils.equals(ret.uuid, uuid))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deviceSyncRsp -> {
                     if (deviceSyncRsp == null || deviceSyncRsp.dpList == null) {
                         return;

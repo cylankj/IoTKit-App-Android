@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -96,7 +97,7 @@ public class DataSourceManager implements JFGSourceManager {
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
     private ArrayList<JFGFriendAccount> friendBeanArrayList;
     private ArrayList<JFGFriendRequest> friendsReqBeanArrayList;
-
+    private MapSubscription mapSubscription = new MapSubscription();
     @Deprecated
     private boolean isOnline = true;
     private JFGAccount jfgAccount;
@@ -926,7 +927,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 updateIdList.add((long) entity.getMsgId());
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
-                            AppLogger.d("收到设备同步消息");
+                            AppLogger.d("收到设备同步消息:" + event.arrayList);
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
@@ -1074,11 +1075,13 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void initSubscription() {
-        makeCacheGetDataSub();
-        makeCacheSyncDataSub();
-        makeCacheAccountSub();
-        makeCacheDeviceSub();
-        makeAccountSub();
+        if (mapSubscription != null) mapSubscription.clear();
+        if (mapSubscription == null) mapSubscription = new MapSubscription();
+        mapSubscription.add(makeCacheGetDataSub(), "makeCacheGetDataSub");
+        mapSubscription.add(makeCacheSyncDataSub(), "makeCacheSyncDataSub");
+        mapSubscription.add(makeCacheAccountSub(), "makeCacheAccountSub");
+        mapSubscription.add(makeCacheDeviceSub(), "makeCacheDeviceSub");
+        mapSubscription.add(makeAccountSub(), "makeAccountSub");
     }
 
     /**

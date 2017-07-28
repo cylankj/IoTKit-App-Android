@@ -305,6 +305,47 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         addSubscription(subscription, tag);
     }
 
+    //这块代码 没有经过验证
+//    @Override
+//    public void clearSdcard() {
+//        Observable.just("clear")
+//                .subscribeOn(Schedulers.io())
+//                .map(s -> {
+//                    try {
+//                        ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+//                        JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
+//                        mesg.packValue = DpUtils.pack(0);
+//                        ipList.add(mesg);
+//                        long ret = BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
+//                    } catch (Exception e) {
+//                        AppLogger.e("format sd： " + e.getLocalizedMessage());
+//                    }
+//                    return null;
+//                })
+//                .flatMap(result -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+//                        .subscribeOn(Schedulers.io())
+//                        .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
+//                        .flatMap(ret -> Observable.from(ret.dpList))
+//                        .filter(msg -> msg.id == 203)
+//                        .timeout(120, TimeUnit.SECONDS))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(ret -> {
+//                    try {
+//                        DpMsgDefine.DPSdStatus status = DpUtils.unpackData(ret.packValue, DpMsgDefine.DPSdStatus.class, new DpMsgDefine.DPSdStatus());
+//                        if (status != null && status.hasSdcard && status.err == 0) {
+//                            mView.clearSdResult(0);
+//                        } else {
+//                            //失败
+//                            mView.clearSdResult(1);
+//                        }
+//                    } catch (Exception e) {
+//                    }
+//                }, throwable -> {
+//                    if (throwable instanceof TimeoutException) {
+//                        mView.clearSdResult(1);
+//                    }
+//                });
+//    }
     @Override
     public void clearSdcard() {
         rx.Observable.just(null)

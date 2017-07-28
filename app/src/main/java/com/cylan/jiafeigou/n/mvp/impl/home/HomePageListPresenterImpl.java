@@ -137,14 +137,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription devicesUpdate() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .filter((RobotoGetDataRsp data) -> (getView() != null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(update -> {
-                    RxBus.getCacheInstance().post(new InternalHelp());
-                    return null;
-                })
-                .subscribe(ret -> {
-                }, throwable -> {
+                .filter(ret -> mView != null)
+                .subscribe(ret -> RxBus.getCacheInstance().post(new InternalHelp()), throwable -> {
                     addSubscription(devicesUpdate());
                     AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
