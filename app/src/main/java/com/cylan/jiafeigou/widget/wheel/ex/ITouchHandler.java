@@ -95,7 +95,18 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
             if (SuperWheelExt.DEBUG)
                 Log.d(TAG, "onTouchEvent: up: " + "," + isFinish);
             if (isFinish) {
-                moveDirection = MoveDirection.NONE;
+                /*
+                问题 #116436
+                  现在测试结果都是往最近的靠
+
+                  说明：下一时间点有视频
+                  情况一：当时播放12:00的视频 下一个时间点视频是20:00 当拖到12:02分时，应自动往右边靠，播放20:00的视频
+
+                  说明：上一时间点有视频
+                  情况二：当时播放12:00的视频 上一时间点视频是09:00 当拖到09:10分时，应自动往右边靠，播放12:00的视频
+
+                * */
+                moveDirection = MoveDirection.RIGHT;
                 updateScrollStateIfRequired(SCROLL_STATE_IDLE);
             }
             if (SuperWheelExt.DEBUG)

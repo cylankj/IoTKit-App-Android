@@ -282,9 +282,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         String action = intent.getAction();
+        getView().onNetworkChanged(NetUtils.getJfgNetType(context) > 0);
         if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
 //            NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            updateConnectInfo(null);
+//            updateConnectInfo(null);
         } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
             RxBus.getCacheInstance().post(new InternalHelp());
             initDeviceRecordState();

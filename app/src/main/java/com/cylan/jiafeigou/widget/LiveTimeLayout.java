@@ -8,6 +8,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by cylan-hunt on 16-12-23.
@@ -16,6 +21,9 @@ import com.cylan.jiafeigou.R;
 public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
 
     private TextView textView;
+    private int liveType;
+    private long liveTime;
+    private SimpleDateFormat liveTimeDateFormat;
 
     public LiveTimeLayout(Context context) {
         this(context, null);
@@ -31,11 +39,25 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
         textView = (TextView) v.findViewById(R.id.tv_live_time);
     }
 
+    private String getTime(long time) {
+        if (liveTimeDateFormat == null)
+            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+        return liveTimeDateFormat.format(new Date(time));
+    }
+
     @Override
-    public void setContent(String content) {
+    public void setContent(int liveType, long liveTime) {
         if (!isShown()) setVisibility(VISIBLE);
         if (!textView.isShown()) textView.setVisibility(View.VISIBLE);
-        textView.setText(content);
+        this.liveType = liveType;
+        if (liveType == CamLiveContract.TYPE_HISTORY) {
+            this.liveTime = liveTime;
+            String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback) + "|%s", getTime(liveTime == 0 ? System.currentTimeMillis() : liveTime * 1000L));
+            textView.setText(content);
+        } else if (liveType == CamLiveContract.TYPE_LIVE) {
+            String content = String.format(getContext().getString(R.string.Tap1_Camera_VideoLive) + "|%s", getTime(System.currentTimeMillis()));
+            textView.setText(content);
+        }
     }
 }
 

@@ -222,6 +222,8 @@ public class DataExt implements IData {
 
     @Override
     public long getNextFocusTime(long time, int considerDirection) {
+
+
         return getNextFocusTime(time, considerDirection, true);
     }
 
@@ -232,14 +234,17 @@ public class DataExt implements IData {
             return tmpTime;
         //0:向左滑动
         int tmpIndex = index;
-        tmpIndex += 1;
-        if (tmpIndex > rawList.size() - 1) {
-            tmpIndex = rawList.size() - 1;
-        }
-        //1:向右滑动
-        tmpIndex -= 1;
-        if (tmpIndex < 0 && rawList.size() > 0) {
-            tmpIndex = 0;
+        if (considerDirection == 0) {
+            tmpIndex += 1;
+            if (tmpIndex > rawList.size() - 1) {
+                tmpIndex = rawList.size() - 1;
+            }
+        } else if (considerDirection == 1) {
+            //1:向右滑动
+            tmpIndex -= 1;
+            if (tmpIndex < 0 && rawList.size() > 0) {
+                tmpIndex = 0;
+            }
         }
         if (modifyIndex) index = tmpIndex;
         return rawList.get(tmpIndex).time * 1000L;
@@ -298,7 +303,7 @@ public class DataExt implements IData {
         HistoryFile temp = null;
         for (HistoryFile file : rawList) {
             long current = file.time + file.duration;
-            if (current > timeTarget) {
+            if (current >= timeTarget) {
                 if (temp == null) {
                     temp = file;
                 } else if (file.time < temp.time) {

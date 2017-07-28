@@ -1055,15 +1055,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-        String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", getTime(timestamp == 0 || type == 1 ? System.currentTimeMillis() : timestamp * 1000L));
+
         boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
         boolean shouldUpdateWheelTime = !useDamp ||
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
         Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
-        if (shouldUpdateWheelTime && JFGRules.hasSDFeature(pid)) {
-            ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(content);
+        if (JFGRules.hasSDFeature(pid)) {
+            ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout)).setContent(type, timestamp);
         }
         if (livePlayState == PLAY_STATE_PREPARE) return;
         if (!isWheelBusy && type == TYPE_HISTORY && presenter != null

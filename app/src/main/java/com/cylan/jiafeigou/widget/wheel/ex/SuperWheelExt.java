@@ -342,6 +342,7 @@ public class SuperWheelExt extends View {
                 if (idle && !iDataProvider.isHotRect(timeCurrent))//dragging finish,空白区域
                 {
                     long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+//                    long timeTarget = iDataProvider.getNextTarget(timeCurrent);
                     setPositionByTime(timeTarget);
                     Log.d("tmpCurrentTime", "tmpCurrentTime==");
                 }
@@ -349,6 +350,7 @@ public class SuperWheelExt extends View {
             }
             tmpCurrentTime = timeCurrent;
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+//            long timeTarget = iDataProvider.getNextTarget(timeCurrent);
             Log.d("timeCurrent", "timeCurrent: " + timeCurrent);
             Log.d("timeCurrent", "timeTarget: " + timeTarget + "," + idle);
             boolean next = moveDirection != ITouchHandler.MoveDirection.NONE && idle;
@@ -358,6 +360,7 @@ public class SuperWheelExt extends View {
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
                 timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.RIGHT);
+//                timeTarget = iDataProvider.getNextTarget(timeCurrent);
                 setPositionByTime(timeTarget);
                 if (wheelRollListener != null)
                     wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
