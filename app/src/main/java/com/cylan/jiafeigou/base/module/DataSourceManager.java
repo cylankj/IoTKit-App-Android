@@ -261,7 +261,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Device getDevice(String uuid) {
-        Device device = mCachedDeviceMap == null ? new Device() : mCachedDeviceMap.get(uuid);
+        Device device = mCachedDeviceMap == null || TextUtils.isEmpty(uuid) ? new Device() : mCachedDeviceMap.get(uuid);
         if (device == null) {
             device = new Device();
             device.setPropertyParser(propertyParser);

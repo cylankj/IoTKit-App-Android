@@ -545,6 +545,10 @@ public class JFGRules {
         return sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard;
     }
 
+    public static boolean hasSdcard(DpMsgDefine.DPSdcardSummary sdStatus) {
+        return sdStatus != null && sdStatus.errCode == 0 && sdStatus.hasSdcard;
+    }
+
     public static boolean isShareDevice(String uuid) {
         if (TextUtils.isEmpty(uuid)) return false;
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
