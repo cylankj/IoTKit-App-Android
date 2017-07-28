@@ -498,27 +498,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void showHistoryWheel(boolean show) {
         //处理显示逻辑
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        //1.sd
-        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (!status.hasSdcard || status.err != 0) {
-            //隐藏
-            return;
-        }
-        //2.手机无网络
-        int net = NetUtils.getJfgNetType();
-        if (net == 0) {
-            //隐藏
-            return;
-        }
         //4.被分享用户不显示
         if (JFGRules.isShareDevice(device)) {
             AppLogger.d("is share device");
             layoutE.setVisibility(INVISIBLE);
-            return;
-        }
-        //5.设备离线
-        if (!JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()))) {
-            AppLogger.d("isDeviceOnline false");
             return;
         }
         //3.没有历史录像
@@ -632,6 +615,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     };
 
+    private boolean showSdHdBtn() {
+        return livePlayState == PLAY_STATE_PLAYING
+                && livePlayType == TYPE_LIVE
+                && JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false);
+    }
+
     private Runnable landShowRunnable = new Runnable() {
         @Override
         public void run() {
@@ -639,8 +628,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
-            streamSwitcher.setVisibility(livePlayState == PLAY_STATE_PLAYING &&
-                    JFGRules.showSdHd(pid, presenter.getDevice().$(207, ""), false) ? VISIBLE : GONE);
+            streamSwitcher.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);
@@ -704,8 +692,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //现在显示的条件就是手动点击其他情况都不显示
         setLoadingState(null, null);
         post(() -> layoutC.setVisibility(INVISIBLE));
-
-
         if (tvLive != null) tvLive.setEnabled(isPlayHistory);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
@@ -1155,7 +1141,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         DpMsgDefine.DPNet dpNet = device.$(201, new DpMsgDefine.DPNet());//http://yf.cylan.com.cn:82/redmine/issues/109805
         liveViewWithThumbnail.enableStandbyMode(standby.standby && dpNet.net > 0, clickListener, !TextUtils.isEmpty(device.shareAccount));
-        if (standby.standby && dpNet.net > 0 && !isLand()) {
+        if (standby.standby && JFGRules.isDeviceOnline(dpNet) && !isLand()) {
             post(portHideRunnable);
             setLoadingState(null, null);
         }
@@ -1276,7 +1262,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutE.findViewById(R.id.btn_load_history)
                     .setEnabled(NetUtils.getJfgNetType() != 0 && online);
             boolean showSdcard = JFGRules.showSdcard(device);
-            layoutE.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
+            layoutE.setVisibility(judge && showSdcard ? VISIBLE : INVISIBLE);
             vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);

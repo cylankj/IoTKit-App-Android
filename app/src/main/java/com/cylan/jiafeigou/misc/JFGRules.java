@@ -549,6 +549,12 @@ public class JFGRules {
         return sdStatus != null && sdStatus.errCode == 0 && sdStatus.hasSdcard;
     }
 
+    public static boolean isDeviceStandBy(Device device) {
+        if (device == null) return false;
+        DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
+        return standby != null && standby.standby;
+    }
+
     public static boolean isShareDevice(String uuid) {
         if (TextUtils.isEmpty(uuid)) return false;
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
