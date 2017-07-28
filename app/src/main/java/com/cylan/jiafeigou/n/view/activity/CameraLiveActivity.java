@@ -130,6 +130,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private boolean filterNewMsgId(long id) {
         if (JFGRules.isCamera(device.pid))
             return id == 505 || id == 222 || id == 512;
+        if (JFGRules.isBell(device.pid))
+            return id == 401;
         return true;
     }
 
