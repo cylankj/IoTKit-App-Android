@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,12 +10,15 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SnPresenter;
@@ -25,6 +29,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +85,8 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
         InputFilter filter = (source, start, end, dest, dstart, dend) -> source.toString().trim();
         etInputBox.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(20)});
         view.setOnClickListener(v -> IMEUtils.hide(getActivity()));
+        ViewUtils.forceOpenSoftKeyboard(getActivity());
+        etInputBox.requestFocus();
     }
 
     @Override
@@ -110,6 +118,15 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
                 if (NetUtils.getJfgNetType() == 0) {
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
+                }
+                List<Device> deviceList = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+                if (deviceList != null) {
+                    for (Device device : deviceList) {
+                        if (device != null && TextUtils.equals(device.getUuid(), etInputBox.getText().toString().trim())) {
+                            ToastUtil.showToast(getString(R.string.DEVICE_EXISTED));
+                            return;
+                        }
+                    }
                 }
                 LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                 basePresenter.getPid(etInputBox.getText().toString().trim());

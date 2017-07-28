@@ -434,7 +434,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             + getContext().getString(R.string.Tap1_Camera_OverlookTips));
             view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
                 if (layout != null) liveViewWithThumbnail.removeView(layout);
-                basePresenter.startPlay();
+//                basePresenter.startPlay();
+                livePlayState = PLAY_STATE_STOP;
+                setLoadingState(PLAY_STATE_STOP, null);
                 //需要隐藏历史录像时间轴
                 boolean showSdcard = JFGRules.showSdcard(basePresenter.getDevice());
                 layoutE.setVisibility(showSdcard

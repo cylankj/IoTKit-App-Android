@@ -1,6 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
+import android.text.TextUtils;
+
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -8,8 +12,9 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -46,12 +51,9 @@ public class SnPresenter extends AbstractFragmentPresenter<SnContract.View> impl
                         .timeout(3, TimeUnit.SECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    try {
-                        int pid = DpUtils.unpackData(ret.data, int.class);
-                        mView.getPidRsp(JError.ErrorOK, pid);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    int pid = DpUtils.unpackDataWithoutThrow(ret.data, int.class, -1);
+                    mView.getPidRsp(JError.ErrorOK, pid);
+                    throw new RxEvent.HelperBreaker("手动结束");
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {
                         mView.getPidRsp(-1, -1);

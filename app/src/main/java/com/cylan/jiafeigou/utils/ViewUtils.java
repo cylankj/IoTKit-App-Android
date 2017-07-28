@@ -15,6 +15,7 @@ import android.transition.TransitionManager;
 import android.util.ArrayMap;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -330,6 +331,11 @@ public class ViewUtils {
 //                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
 //                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
 //                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
+    }
+
+    public static void forceOpenSoftKeyboard(Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
 
