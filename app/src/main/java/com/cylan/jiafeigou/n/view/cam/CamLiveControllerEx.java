@@ -289,7 +289,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .subscribe(status -> {
 
                     if (status == null) {
-                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
+                        ToastUtil.showNegativeToast(getResources().getString(R.string.has_not_sdcard));
                     } else {
                         if (!status.hasSdcard) {
                             ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
