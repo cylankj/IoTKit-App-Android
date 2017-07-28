@@ -308,21 +308,21 @@
             android:src="@drawable/icon_port_capture_selector" />
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/layout_g"
-        android:layout_width="@dimen/x230"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="end"
-        android:background="@color/color_4C000000"
-        android:visibility="gone">
+    <!--<FrameLayout-->
+        <!--android:id="@+id/layout_g"-->
+        <!--android:layout_width="@dimen/x230"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:background="@color/color_4C000000"-->
+        <!--android:visibility="gone">-->
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_land_date_list"
-            android:layout_width="@dimen/x180"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
-    </FrameLayout>
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/rv_land_date_list"-->
+            <!--android:layout_width="@dimen/x180"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="center" />-->
+    <!--</FrameLayout>-->
 
     <com.cylan.jiafeigou.widget.Switcher
         android:id="@+id/sv_switch_stream"

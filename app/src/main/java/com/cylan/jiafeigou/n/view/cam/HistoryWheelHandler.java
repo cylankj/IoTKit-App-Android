@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -41,9 +40,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     private SuperWheelExt superWheelExt;
     private CamLiveContract.Presenter presenter;
     private Context context;
-    private ViewGroup landDateListContainer;
     private WeakReference<DatePickerDialogFragment> datePickerRef;
-    private static final String TAG = "HistoryWheelHandler";
     private String uuid;
 
     public long getLastUpdateTime() {
@@ -54,8 +51,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         return superWheelExt.getNextTimeDistance();
     }
 
-    public HistoryWheelHandler(ViewGroup landDateListContainer, SuperWheelExt superWheel, CamLiveContract.Presenter presenter) {
-        this.landDateListContainer = landDateListContainer;
+    public HistoryWheelHandler(SuperWheelExt superWheel, CamLiveContract.Presenter presenter) {
         this.superWheelExt = superWheel;
         superWheelExt.setWheelRollListener(this);
         this.presenter = presenter;
@@ -84,11 +80,6 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 //        } else {
         showPortDatePicker();
 //        }
-    }
-
-    public void onBackPress() {
-        if (landDateListContainer.getTranslationX() == 0)
-            AnimatorUtils.slideOutRight(landDateListContainer);
     }
 
 //    private void showLandDatePicker() {
@@ -230,13 +221,6 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         this.datePickerListener = datePickerListener;
     }
 
-    private Runnable containerHide = new Runnable() {
-        @Override
-        public void run() {
-            AnimatorUtils.slideOutRight(landDateListContainer);
-        }
-    };
-
     private DatePickerListener datePickerListener;
 
     public boolean isDragging() {
@@ -244,7 +228,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     public long getNextFocusTime(long time) {
-       return superWheelExt.getNextFocusTime(time);
+        return superWheelExt.getNextFocusTime(time);
     }
 
     /**
