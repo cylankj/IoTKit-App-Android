@@ -34,6 +34,8 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     @BindView(R.id.lLayout_week)
     LinearLayout lLayoutWeek;
+    private Device device;
+    private DpMsgDefine.DPAlarmInfo alarmInfo;
 
     public CapturePeriodDialogFragment() {
         // Required empty public constructor
@@ -75,8 +77,8 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     private void initView() {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        DpMsgDefine.DPAlarmInfo alarmInfo = device.$(502, new DpMsgDefine.DPAlarmInfo());
+        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        alarmInfo = device.$(502, new DpMsgDefine.DPAlarmInfo());
         checkedSerial = alarmInfo.day;
         final int checkBoxCount = lLayoutWeek.getChildCount();//应该是7
         for (int i = 0; i < checkBoxCount; i++) {
@@ -105,7 +107,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (action != null) {
+        if (action != null && checkedSerial != alarmInfo.day) {
             action.onDialogAction(0, checkedSerial);
         }
     }
