@@ -506,6 +506,11 @@ public class JFGRules {
         return productProperty.hasProperty(pid, "WARMSOUND");
     }
 
+    public static boolean hasSDFeature(int pid) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        return productProperty.hasProperty(pid, "SD");
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;
