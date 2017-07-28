@@ -86,7 +86,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     FrameLayout flProtectionTitle;
     @BindView(R.id.ll_24_record_container)
     LinearLayout ll24RecordContainer;
-    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
+    //    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     //    private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
 
@@ -271,12 +271,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             }
             break;
             case R.id.fLayout_protection_warn_effect: {
-                initWarnEffectFragment();
-                AlarmSoundEffectFragment fragment = warnEffectFragmentWeakReference.get();
-                fragment.setCallBack((Object o) -> {
-                    updateDetails();
-                });
-                fragment.setArguments(getArguments());
+                AlarmSoundEffectFragment fragment = AlarmSoundEffectFragment.newInstance(getArguments());
+                fragment.setCallBack((Object o) -> updateDetails());
                 loadFragment(android.R.id.content, fragment);
             }
             break;
@@ -345,13 +341,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         Bundle bundle = getArguments();
         bundle.putString(KEY_TITLE, title);
         return bundle;
-    }
-
-    private void initWarnEffectFragment() {
-        if (warnEffectFragmentWeakReference == null
-                || warnEffectFragmentWeakReference.get() == null) {
-            warnEffectFragmentWeakReference = new WeakReference<>(AlarmSoundEffectFragment.newInstance(new Bundle()));
-        }
     }
 
     private void showFragment(DialogFragment fragment) {
