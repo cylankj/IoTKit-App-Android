@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -164,7 +165,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         int online = JConstant.getOnlineIcon(mDevice.pid);
         int offline = JConstant.getOfflineIcon(mDevice.pid);
         boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
-        int iconRes = deviceOnline || apMode ? online : offline;
+        int iconRes = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || apMode ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!isPrimaryAccount(shareAccount))
