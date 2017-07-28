@@ -44,7 +44,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
     @Override
     public void register(final String account, final String pwd, final int type, final String token) {
         rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
@@ -57,7 +57,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
     @Override
     public void executeLogin(final LoginAccountBean login) {
         Observable.just(login)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(o -> {
                     try {
                         AutoSignIn.getInstance().autoSave(o.userName, 1, o.pwd, true);

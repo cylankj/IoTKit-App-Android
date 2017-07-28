@@ -49,7 +49,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
         if (!checkCondition()) return;
         AppLogger.d("记得这个弹窗,需要在网络状态好的情况下.");
         final String uuid = portrait.getCid();
-        Observable.just("go").subscribeOn(Schedulers.newThread())
+        Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
@@ -66,7 +66,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                     return Observable.just(seq);
                 })
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .filter(ret -> ret != null && TextUtils.equals(uuid, ret.getUuid())))
                 .flatMap(ret -> {
                     BinVersion oldVersion = getVersionFrom(uuid);

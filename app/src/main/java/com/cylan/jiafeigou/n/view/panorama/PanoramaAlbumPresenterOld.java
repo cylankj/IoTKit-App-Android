@@ -15,8 +15,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 //        super.onStart();
 //        fetch(false);//下拉刷新
 //        Observable.just("make")
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
 //                .delay(2, TimeUnit.SECONDS)
 //                .subscribe(account -> {
 //                    makeTCPBridge();
@@ -56,7 +56,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //     */
 //    private void startGetFirstItem() {
 ////        Observable.just("go")
-////                .subscribeOn(Schedulers.newThread())
+////                .subscribeOn(Schedulers.io())
 ////                .subscribe(account -> {
 ////                    PanoramaEvent.MsgFirstFileInListReq req = new PanoramaEvent.MsgFirstFileInListReq();
 ////                    byte[] data = fill(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2,
@@ -117,7 +117,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //            AppLogger.d("设备刷新了，或者更换sd卡了。:" + dateFormat.format(new Date(firstTime * 1000L)));
 //        }
 //        Observable.just("o")
-//                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
 //                .subscribe(account -> startSyncAlbumList(time, 20), AppLogger::e);
 //    }
 //
@@ -171,7 +171,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //     */
 //    private void goonDownload() {
 //        PanAlbumDataManager.getInstance().getNextPreparedDownloadFile(mUUID)
-//                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
 //                .flatMap(file -> {
 //                    if (file == null) {
 //                        AppLogger.e("err: no file need to be downloaded");
@@ -259,7 +259,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 //
 //    private void notifyItemFinish(PanoramaEvent.MsgFileDownloadRsp rsp) {
 //        Observable.just(rsp)
-//                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
 //                .flatMap(new Func1<PanoramaEvent.MsgFileDownloadRsp, Observable<Integer>>() {
 //                    @Override
 //                    public Observable<Integer> call(PanoramaEvent.MsgFileDownloadRsp rsp) {

@@ -124,7 +124,7 @@ BaseJFGResultParser {
             Observable.just(new FetchFeedbackTask(),
                     new FetchFriendsTask(),
                     new SysUnreadCountTask())
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .subscribe(objectAction1 -> objectAction1.call(""), AppLogger::e);
         }
         if (BaseApplication.isBackground()) return;

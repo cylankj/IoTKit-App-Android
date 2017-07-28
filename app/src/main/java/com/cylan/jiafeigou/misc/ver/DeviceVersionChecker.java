@@ -45,7 +45,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
             lastCheckTime = System.currentTimeMillis();
         } else return;
         final String uuid = portrait.getCid();
-        Observable.just("go").subscribeOn(Schedulers.newThread())
+        Observable.just("go").subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS)
                 .flatMap(what -> {
                     long seq;
@@ -62,7 +62,7 @@ public class DeviceVersionChecker extends AbstractVersion<AbstractVersion.BinVer
                     return Observable.just(seq);
                 })
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RxEvent.VersionRsp.class)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .filter(ret -> ret != null && TextUtils.equals(uuid, ret.getUuid())))
                 .flatMap(ret -> {
                     BinVersion oldVersion = getVersionFrom(uuid);

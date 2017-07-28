@@ -166,7 +166,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             case R.id.sv_home_setting_recommend:
                 //推荐给亲友
                 Observable.just("loadList")
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .map(s -> {
                             if (!ListUtils.isEmpty(finalList)) return finalList;
                             final Intent intent = new Intent(Intent.ACTION_SEND);

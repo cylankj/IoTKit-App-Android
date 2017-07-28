@@ -73,7 +73,7 @@ public class FetchFriendsTask implements Action1<Object> {
      */
     private Observable<RxEvent.GetFriendList> getFriendListObservable() {
         return Observable.just("goGet")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(s -> {
                     BaseApplication.getAppComponent().getCmd().getFriendList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class);
@@ -87,7 +87,7 @@ public class FetchFriendsTask implements Action1<Object> {
      */
     private Observable<RxEvent.GetAddReqList> getFriendReqListObservable() {
         return Observable.just("goGet")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(s -> {
                     BaseApplication.getAppComponent().getCmd().getFriendRequestList();
                     return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class);

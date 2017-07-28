@@ -100,7 +100,7 @@ public class BeforeLoginFragment extends Fragment {
         if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.InitFrom2x.class)) {
             if (AutoSignIn.getInstance().isNotEmpty()) {
                 subscription = RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .delay(1, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(throwable -> {

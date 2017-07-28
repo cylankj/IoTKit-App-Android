@@ -208,7 +208,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         Log.d("loadBitmap", "loadBitmap: " + mode);
         if (subscription != null) subscription.unsubscribe();
         subscription = Observable.just(mode)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {

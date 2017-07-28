@@ -118,7 +118,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .last()
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("getShareDevicesListRsp:", getView() != null))
@@ -199,7 +199,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription robotDeviceDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0 && getView() != null))
                 .flatMap(ret -> Observable.from(ret.dpList))
                 .subscribe(msg -> {
@@ -244,7 +244,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         if (refreshSub != null && !refreshSub.isUnsubscribed())
             return;
         refreshSub = Observable.just(manually)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(1, TimeUnit.SECONDS)
                 .map((Boolean aBoolean) -> {
                     if (manually)
@@ -259,14 +259,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     return aBoolean;
                 })
                 .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
-                .observeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
                 .delay(3, TimeUnit.SECONDS)
                 .filter(aBoolean -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         addSubscription(Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
@@ -301,7 +301,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private void updateConnectInfo(NetworkInfo networkInfo) {
         Observable.just(networkInfo)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(aLong -> {
                     ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo info = connectivityManager.getActiveNetworkInfo();

@@ -162,7 +162,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         }
 
         private Subscription submitBindDeviceSub() {
-            return Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.newThread())
+            return Observable.interval(INTERVAL, TimeUnit.SECONDS, Schedulers.io())
                     .flatMap(aLong -> {
                         if (INTERVAL * aLong * 1000 >= TIME_OUT) {
                             throw new RxEvent.HelperBreaker("timeout");
@@ -235,7 +235,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
          */
         private void finalSetSome() {
             Observable.just("go")
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .subscribe(s -> {
                         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                         //303,501

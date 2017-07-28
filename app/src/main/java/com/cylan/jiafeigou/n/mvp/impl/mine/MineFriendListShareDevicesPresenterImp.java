@@ -91,7 +91,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     @Override
     public void getDeviceInfo(ArrayList<String> cid) {
         rx.Observable.just(cid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> ListUtils.getSize(ret) > 0)
                 .subscribe(cidList -> {
                     BaseApplication.getAppComponent().getCmd().getShareList(cidList);
@@ -109,7 +109,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
             getView().showSendReqProgress();
         }
         rx.Observable.just(chooseList)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(deviceBeen -> {
                     for (DeviceBean bean : deviceBeen) {
                         try {

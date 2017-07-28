@@ -111,7 +111,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     private Subscription robotDataSync() {
         return RxBus.getCacheInstance().toObservable(JfgEvent.RobotoSyncData.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> TextUtils.equals(ret.identity, uuid))
                 .flatMap(robotoSyncData -> Observable.from(robotoSyncData.list))
                 .filter(ret -> ret.id == 204 && mView != null)

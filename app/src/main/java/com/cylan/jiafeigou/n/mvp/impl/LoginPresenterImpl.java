@@ -62,7 +62,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     private Subscription resultVerifyCodeSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultVerifyCode resultVerifyCode) -> {
@@ -107,7 +107,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void getCodeByPhone(final String phone) {
         Subscription subscribe = Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     try {
                         countUp(phone);
@@ -133,7 +133,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void verifyCode(final String phone, final String code, final String token) {
         Subscription subscribe = Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().verifySMS(phone, code, token);
@@ -150,7 +150,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void checkAccountIsReg(String account) {
         mView.showLoading();
         Subscription subscribe = Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .timeout(30, TimeUnit.SECONDS)
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(ret -> {

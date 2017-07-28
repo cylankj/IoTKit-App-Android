@@ -220,7 +220,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     private void updateDetails() {
         subscription = Observable.just("update: ")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> !isDetached())

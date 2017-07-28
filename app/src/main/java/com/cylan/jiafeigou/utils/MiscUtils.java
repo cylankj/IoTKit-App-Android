@@ -714,7 +714,7 @@ public class MiscUtils {
 
     public static Observable<String> getAppVersionFromGooglePlay() {
         return Observable.just("getVersion")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> {
                     GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
                     int resultCode = apiAvailability.isGooglePlayServicesAvailable(ContextUtils.getContext());
@@ -776,7 +776,7 @@ public class MiscUtils {
      */
     public static void checkJFGLikeApp() {
         Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(ret -> {
                     final PackageManager pm = ContextUtils.getContext().getPackageManager();
                     //get a list of installed apps.
@@ -792,7 +792,7 @@ public class MiscUtils {
 
     public static void checkVPNState() {
         Observable.just("check")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(ret -> AppLogger.d(BIND_TAG + "vpn is on..." + NetUtils.isVPNOn()), AppLogger::e);
     }
 

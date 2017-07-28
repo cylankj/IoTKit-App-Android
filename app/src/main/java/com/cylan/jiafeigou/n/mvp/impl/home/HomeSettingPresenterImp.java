@@ -73,7 +73,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     @Override
     public void logOut(String account) {
         BaseApplication.getAppComponent().getSourceManager().logout()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(retAccount -> {
                     BaseApplication.getAppComponent().getCmd().logout();
                     AutoSignIn.getInstance().autoLogout();
@@ -162,7 +162,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     @Override
     public void savaSwitchState(boolean isChick, final String key) {
         addSubscription(rx.Observable.just(isChick)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .subscribe(aBoolean -> chooseWhichSet(aBoolean, key), AppLogger::e),
                 "savaSwitchState");
     }

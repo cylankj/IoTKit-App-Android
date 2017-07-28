@@ -408,13 +408,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         svSwitchStream.setSwitcherListener((view, index) -> {
             if (view.getId() == R.id.switch_hd) {
                 presenter.switchStreamMode(index)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
                         }, AppLogger::e);
             } else if (view.getId() == R.id.switch_sd) {
                 presenter.switchStreamMode(index)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(ret -> {
                         }, AppLogger::e);

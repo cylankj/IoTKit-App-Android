@@ -46,7 +46,7 @@ public class OptionalBindFlow extends AFullBind {
 
     public void setWifiInfo(final String uuidSuffix, final String ssid, final String pwd, final int type) {
         Observable.just(uuidSuffix)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(s -> ping(s)
                         .flatMap(this::fping)
                         .flatMap(this::check3G)

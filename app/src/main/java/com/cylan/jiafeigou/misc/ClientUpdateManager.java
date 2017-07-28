@@ -154,7 +154,7 @@ public class ClientUpdateManager {
         }
         updatingTask.remove(uuid);
         Observable.just("go")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(t, AppLogger::e);
     }
 

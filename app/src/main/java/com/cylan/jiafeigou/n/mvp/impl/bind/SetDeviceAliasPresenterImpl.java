@@ -47,7 +47,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                     return account != null && account.isOnline();
                 })
                 .map(s -> alias)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map((String s) -> {
                     if (s != null && s.trim().length() == 0) return -1;//如果是空格则跳过,显示默认名称
                     try {

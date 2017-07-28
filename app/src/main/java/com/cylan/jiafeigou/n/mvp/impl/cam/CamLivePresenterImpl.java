@@ -139,7 +139,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         //按照
         if (JFGRules.popPowerDrainOut(getDevice().pid)) {
             Observable.just("getBatterySub")
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .filter(ret -> NetUtils.getJfgNetType() > 0)//在线
                     .filter(ret -> !JFGRules.isShareDevice(uuid))//非分享
                     .observeOn(AndroidSchedulers.mainThread())
@@ -197,7 +197,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription videoDisconnectSub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null)
                 .map(ret -> {
                     AppLogger.i("stop for reason: " + ret.code);
@@ -322,7 +322,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return false;
         }
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> {
                     AppLogger.d("get history?" + ret);
                     return ret;
@@ -349,7 +349,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Observable<Boolean> makeTimeDelayForList() {
         return Observable.just("")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(list -> {
                     drawTheDay();
                     //更新日历
@@ -421,7 +421,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription errCodeSub() {
         return RxBus.getCacheInstance().toObservable(JFGHistoryVideoErrorInfo.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> ret != null && ret.code != 0)
                 .subscribe(result -> {
                     stopPlayVideo(result.code).subscribe(what -> {
@@ -470,7 +470,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription RTCPNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 //断网就不要feed.
                 .filter(rtcp -> getView() != null && NetUtils.getJfgNetType() != 0)
                 .map(rtcp -> {
@@ -491,7 +491,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private Subscription timeoutSub() {
         return Observable.just("timeout")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .timeout(30, TimeUnit.SECONDS)
                 .doOnError(ret -> AppLogger.e("30s 超时了"))
                 .subscribe(ret -> {
@@ -508,7 +508,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                 .timeout(30, TimeUnit.SECONDS)
                 .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
-                .observeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
                 .map(resolution -> {
                     removeTimeoutSub();
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
@@ -599,7 +599,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
  */
 //    private Observable<Boolean> checkDevice() {
 //        return Observable.just(uuid)
-//                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
 //                .flatMap(new Func1<String, Observable<Boolean>>() {
 //                    @Override
 //                    public Observable<Boolean> call(String account) {
@@ -616,7 +616,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Observable<Boolean> checkNetwork() {
         return Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<String, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(String s) {
@@ -679,7 +679,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
         resolutionW = resolutionH = 0;
         return Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap((String s) -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
@@ -836,7 +836,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      */
     private Subscription sdcardFormatSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .map(ret -> ret.rets)
                 .flatMap(Observable::from)
@@ -954,7 +954,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         public void run() {
             if (presenterWeakReference != null && presenterWeakReference.get() != null) {
                 Observable.just("")
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .filter(ret -> presenterWeakReference.get().mView != null)
                         .subscribe(ret -> {
                             int net = NetUtils.getJfgNetType();
@@ -1192,7 +1192,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         public void switchMic() {
             if (presenterWeakReference.get() != null && viewWeakReference.get() != null) {
                 Observable.just(true)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .flatMap(ret -> {
                             //当前状态,remoteSpeaker = localMic ,remoteMic=localSpeaker
                             micOn = !micOn;
@@ -1227,7 +1227,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         public void switchSpeaker() {
             if (presenterWeakReference.get() != null && viewWeakReference.get() != null) {
                 Observable.just(true)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .flatMap(ret -> {
                             //操作speaker的时候,本地的mic是关闭的.
                             speakerOn = !speakerOn;

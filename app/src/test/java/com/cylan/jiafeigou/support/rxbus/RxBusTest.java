@@ -31,6 +31,21 @@ public class RxBusTest {
     public void getDefault() throws Exception {
         RxBus rxBus = RxBus.getCacheInstance();
         assertNotNull(rxBus);
+
+        for (int i = 0; i < 1000000; i++)
+            Observable.just(1)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Action1<Integer>() {
+                        @Override
+                        public void call(Integer integer) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(integer + "," + Thread.currentThread());
+                        }
+                    });
     }
 
     @Test
