@@ -255,11 +255,18 @@ public class DatePickerDialogFragment extends BaseDialog {
             switch (view.getId()) {
                 case R.id.tv_dialog_btn_right:
                     dismiss();
-
+                    if (focusDateIndex >= ListUtils.getSize(dateStartList)) {
+                        AppLogger.d("out of index");
+                        return;
+                    }
                     final long tmp = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
                     AppLogger.d("finalTime: " + TimeUtils.getTimeSpecial(tmp));
                     break;
                 case R.id.tv_dialog_btn_left:
+                    if (focusDateIndex >= ListUtils.getSize(dateStartList)) {
+                        AppLogger.d("out of index");
+                        return;
+                    }
                     dismiss();
 
                     final long finalTime = TimeUtils.getSpecificDayStartTime(dateStartList.get(focusDateIndex)) + focusHour * 3600 * 1000 + focusMinute * 60 * 1000;
