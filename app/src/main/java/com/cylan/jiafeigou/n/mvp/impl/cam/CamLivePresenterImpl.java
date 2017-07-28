@@ -12,7 +12,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -116,9 +115,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         super.start();
         BaseApplication.getAppComponent().getSourceManager()
                 .syncAllProperty(uuid, 204, 222);
-        addSubscription(getBatterySub());
-        addSubscription(getDeviceSyncSub());
-        addSubscription(getDeviceUnBindSub());
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -165,31 +161,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             AppLogger.d("getBatterySub:" + JFGRules.popPowerDrainOutLevel(getDevice().pid));
         }
         return null;
-    }
-
-    private Subscription getDeviceSyncSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .filter(ret -> TextUtils.equals(ret.uuid, uuid))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(deviceSyncRsp -> {
-                    if (deviceSyncRsp == null || deviceSyncRsp.dpList == null) {
-                        return;
-                    }
-                    try {
-                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
-                            if (msg.id == DpMsgMap.ID_206_BATTERY) {
-                                Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
-                                if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
-                                    mView.onBatteryDrainOut();
-                                }
-                            }
-                            mView.onDeviceInfoChanged(msg);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        AppLogger.e(e.getMessage());
-                    }
-                }, AppLogger::e);
     }
 
     private Subscription checkNewVersionRsp() {
@@ -851,7 +822,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync(), checkNewVersionRsp(), sdcardFormatSub()};
+        return new Subscription[]{getBatterySub(),
+                robotDataSync(),
+                getDeviceUnBindSub(),
+                checkNewVersionRsp(),
+                sdcardFormatSub()};
     }
 
     /**
@@ -901,13 +876,18 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(msg -> {
                     try {
-                        getView().onDeviceInfoChanged(msg);
                         if (msg.id == 222) {
                             DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                             if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
                             if (!sdStatus.hasSdcard || sdStatus.errCode != 0)
                                 updateLiveStream(TYPE_LIVE, 0, -1);
+                        } else if (msg.id == DpMsgMap.ID_206_BATTERY) {
+                            Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
+                            if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                                mView.onBatteryDrainOut();
+                            }
                         }
+                        mView.onDeviceInfoChanged(msg);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

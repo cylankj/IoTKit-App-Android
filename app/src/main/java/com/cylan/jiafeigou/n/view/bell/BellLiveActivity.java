@@ -517,6 +517,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 roundCardPopup.dismiss();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
                 ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment,
                         android.R.id.content);
