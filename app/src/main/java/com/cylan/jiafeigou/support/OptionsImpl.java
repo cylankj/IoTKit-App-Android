@@ -47,22 +47,22 @@ public class OptionsImpl {
      */
     public static String getServer() {
         try {
-            if (!TextUtils.isEmpty(OptionsImpl.server)) return OptionsImpl.server;
+            if (!TextUtils.isEmpty(OptionsImpl.server)) return OptionsImpl.server.replace("_", ":");
             String server = PreferencesUtils.getString(KEY_SERVER, "");
-            if (!TextUtils.isEmpty(server)) return OptionsImpl.server = server;
+            if (!TextUtils.isEmpty(server)) return OptionsImpl.server = server.replace("_", ":");
             // com.mcxiaoke.packer.helper.PackerNg
-            final String domain = PackerNg.getMarket(ContextUtils.getContext());
+            final String domain = PackerNg.getChannel(ContextUtils.getContext());
             if (!TextUtils.isEmpty(domain)) {
                 OptionsImpl.server = domain.trim();
                 Log.d(TAG, "get serverFrom ng: " + OptionsImpl.server);
                 PreferencesUtils.putString(KEY_SERVER, OptionsImpl.server);
-                return OptionsImpl.server;
+                return OptionsImpl.server.replace("_", ":");
             }
             OptionsImpl.server = server = PackageUtils.getMetaString(ContextUtils.getContext(), "server").trim();
             if (!BuildConfig.DEBUG) {
-                return server;
+                return server.replace("_", ":");
             }
-            return server;
+            return server.replace("_", ":");
         } catch (Exception e) {
             Log.d("IOException", ":" + e.getLocalizedMessage());
             return "";
