@@ -110,7 +110,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer,
         View.OnClickListener {
-    private static final long DAMP_DISTANCE = 30 * 1000L;
+    private static final long DAMP_DISTANCE = 3 * 1000L;
     private String uuid;
     private static final String TAG = "CamLiveControllerEx";
     private ILiveControl.Action action;
