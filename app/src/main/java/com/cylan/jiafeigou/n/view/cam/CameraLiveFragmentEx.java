@@ -321,23 +321,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onDeviceInfoChanged(JFGDPMsg msg) throws IOException {
         int msgId = (int) msg.id;
-        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY || msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
-            boolean hasSDCard = true;
-            if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                if (sdStatus != null) {
-                    hasSDCard = sdStatus.hasSdcard;
-                }
-            } else {
-                DpMsgDefine.DPSdStatus status = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                if (status != null) {
-                    hasSDCard = status.hasSdcard;
-                }
-            }
-
-            if (!hasSDCard) {
+        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+            DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+            if (!JFGRules.hasSdcard(sdStatus)) {
                 AppLogger.d("sdcard 被拔出");
-//                camLiveControlLayer.hideHistoryWheel();
                 camLiveControlLayer.showPlayHistoryButton();
                 if (!getUserVisibleHint() || basePresenter.isShareDevice()) {
                     AppLogger.d("隐藏了，sd卡更新");
