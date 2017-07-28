@@ -289,7 +289,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .subscribe(status -> {
 
                     if (status == null) {
-                        ToastUtil.showNegativeToast(getResources().getString(R.string.has_not_sdcard));
+                        ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
                     } else {
                         if (!status.hasSdcard) {
                             ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD));
@@ -1050,7 +1050,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     return;
                 }
                 if (!status.hasSdcard || status.err != 0) {
-                    ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
+                    ToastUtil.showToast(getContext().getString(R.string.NO_SDCARD));
                     return;
                 }
                 if (historyWheelHandler == null || presenter.getHistoryDataProvider() == null ||
