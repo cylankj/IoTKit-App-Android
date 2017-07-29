@@ -64,6 +64,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
     @Override
     public void portraitBlur(Bitmap bitmap) {
         //使用默认的图片
+        AppLogger.e("需要在io线程操作.");
         Observable.just(bitmap)
                 .subscribeOn(Schedulers.io())
                 .map(b -> {
