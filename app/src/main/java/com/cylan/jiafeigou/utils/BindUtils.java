@@ -180,8 +180,6 @@ public class BindUtils {
         Version a = new Version(str1);
         Version b = new Version(str2);
         return a.compareTo(b);
-//        if (str1 == null) str1 = "0";
-//        if (str2 == null) str2 = "0";
 //        Pattern pattern = Pattern.compile("\\d+");
 //        List<String> str1Result = new ArrayList<>();
 //        List<String> str2Result = new ArrayList<>();

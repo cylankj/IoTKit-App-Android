@@ -70,10 +70,10 @@ public class DatePickerDialogFragment extends BaseDialog {
         return fragment;
     }
 
-    @Override
-    protected int getCustomWidth() {
-        return ViewGroup.LayoutParams.WRAP_CONTENT;
-    }
+//    @Override
+//    protected int getCustomWidth() {
+//        return ViewGroup.LayoutParams.WRAP_CONTENT;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
