@@ -106,7 +106,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                   情况二：当时播放12:00的视频 上一时间点视频是09:00 当拖到09:10分时，应自动往右边靠，播放12:00的视频
 
                 * */
-                moveDirection = MoveDirection.RIGHT;
+                moveDirection = MoveDirection.NONE;
                 updateScrollStateIfRequired(SCROLL_STATE_IDLE);
             }
             if (SuperWheelExt.DEBUG)

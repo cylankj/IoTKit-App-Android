@@ -1574,7 +1574,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (historyDataProvider != null) {
             historyDataProvider.clean();
         }
-        historyWheelHandler.dateUpdate();
+        if (historyWheelHandler != null) {
+            historyWheelHandler.dateUpdate();
+        }
         vsLayoutWheel.setVisibility(VISIBLE);
         layoutE.setVisibility(VISIBLE);
         if (vsLayoutWheel.getDisplayedChild() == 1) {

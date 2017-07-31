@@ -17,19 +17,21 @@
             android:layout_margin="@dimen/x20" />
 
         <LinearLayout
-            android:layout_marginEnd="@dimen/x20"
-            android:layout_marginStart="@dimen/x20"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_marginEnd="@dimen/x20"
+            android:layout_marginStart="@dimen/x20"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <com.cylan.jiafeigou.widget.pick.WheelVerticalView
                 android:id="@+id/wheel_date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/y100"
                 android:layout_marginEnd="@dimen/x5"
                 android:layout_marginStart="@dimen/x5"
+                android:layout_weight="1"
                 app:selectionDivider="@drawable/wheel_divider"
                 app:selectionDividerHeight="1px" />
 

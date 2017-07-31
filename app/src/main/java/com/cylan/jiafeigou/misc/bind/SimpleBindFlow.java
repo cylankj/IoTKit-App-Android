@@ -367,8 +367,14 @@ public class SimpleBindFlow extends AFullBind {
 //                .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    boolean needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
-                            && BindUtils.isUcos(udpDevicePortrait.uuid);
+                    Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + udpDevicePortrait.version);
+                    boolean needUpdate = false;
+                    try {
+                        needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
+                                && BindUtils.isUcos(udpDevicePortrait.uuid);
+                    } catch (Exception e) {
+                        AppLogger.e(e.getMessage());
+                    }
                     //是否需要升级
                     if (needUpdate)
                         iBindResult.needToUpgrade();
