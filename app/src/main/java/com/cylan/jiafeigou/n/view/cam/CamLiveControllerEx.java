@@ -663,6 +663,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private Runnable landShowRunnable = new Runnable() {
+
+
         @Override
         public void run() {
             setLoadingState(null, null);
@@ -670,6 +672,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(INVISIBLE);//全屏直播门铃 1.需要去掉中间播放按钮
             }
             svSwitchStream.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
+
             YoYo.with(Techniques.SlideInDown)
                     .duration(250)
                     .playOn(layoutA);

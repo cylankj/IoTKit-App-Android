@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="#4C000000"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/imgV_cam_live_land_nav_back"
@@ -309,19 +309,19 @@
     </FrameLayout>
 
     <!--<FrameLayout-->
-        <!--android:id="@+id/layout_g"-->
-        <!--android:layout_width="@dimen/x230"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_gravity="end"-->
-        <!--android:background="@color/color_4C000000"-->
-        <!--android:visibility="gone">-->
+    <!--android:id="@+id/layout_g"-->
+    <!--android:layout_width="@dimen/x230"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_gravity="end"-->
+    <!--android:background="@color/color_4C000000"-->
+    <!--android:visibility="gone">-->
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/rv_land_date_list"-->
-            <!--android:layout_width="@dimen/x180"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center" />-->
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/rv_land_date_list"-->
+    <!--android:layout_width="@dimen/x180"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="center" />-->
     <!--</FrameLayout>-->
 
     <com.cylan.jiafeigou.widget.Switcher
