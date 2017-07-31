@@ -328,12 +328,20 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 Intent homeModeIntent = new Intent(this, BindPanoramaCamActivity.class);
                 homeModeIntent.putExtra("PanoramaConfigure", "Family");
                 homeModeIntent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                homeModeIntent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipShort));
+                homeModeIntent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+                homeModeIntent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                homeModeIntent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 startActivity(homeModeIntent);
                 break;
             case R.id.sv_setting_direct_mode:
                 Intent directModeIntent = new Intent(this, BindPanoramaCamActivity.class);
                 directModeIntent.putExtra("PanoramaConfigure", "OutDoor");
                 directModeIntent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                directModeIntent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipShort));
+                directModeIntent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+                directModeIntent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                directModeIntent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 startActivity(directModeIntent);
                 break;
         }
