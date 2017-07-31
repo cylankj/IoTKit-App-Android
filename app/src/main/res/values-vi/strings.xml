@@ -937,7 +937,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, hãy thử lại</string>
   <string name="Tips_ShortVideo">Bấm dài để ghi lại một đoạn video ngắn</string>
   <string name="Tips_SureDelete">Chắc chắn để delete?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Không phản hồi, hãy thử lại</string>
   <string name="UPDATE_FAIL">Lỗi kết nối camera, hãy thử lại</string>
   <string name="UPDATING_BUTTON">Đang cập nhật</string>

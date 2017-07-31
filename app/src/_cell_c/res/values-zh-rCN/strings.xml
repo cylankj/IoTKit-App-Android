@@ -3,7 +3,7 @@
 <resources>
   <string name="Slogan">美好生活 智能家居</string>
   <string name="Tap1_Shared_Description">我用720°全景摄像机拍摄了一段内容，快来看看吧</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_cn.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_cn.html</string>
   <string name="app_name">Cell_C</string>
   <string name="help_url">https://%1$s:8081/helps/zh&#8211;rCN%2$s.html</string>
 </resources>

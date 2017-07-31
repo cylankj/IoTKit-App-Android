@@ -937,7 +937,7 @@
   <string name="Tips_Device_TimeoutRetry">連接超時，請重試</string>
   <string name="Tips_ShortVideo">長按錄製短視頻</string>
   <string name="Tips_SureDelete">是否刪除？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">設備無回應，請重試</string>
   <string name="UPDATE_FAIL">設備連接失敗，請重試</string>
   <string name="UPDATING_BUTTON">正在更新</string>

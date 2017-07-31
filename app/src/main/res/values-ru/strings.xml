@@ -937,7 +937,7 @@
   <string name="Tips_Device_TimeoutRetry">Тайм&#8211;аут, пожалуйста, попробуйте еще раз</string>
   <string name="Tips_ShortVideo">Длительное нажатие для записи короткого видео</string>
   <string name="Tips_SureDelete">Уверенный удалить?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Нет ответа, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATE_FAIL">Подключение устройства не удалось, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATING_BUTTON">Обновляется</string>

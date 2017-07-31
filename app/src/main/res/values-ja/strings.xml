@@ -937,7 +937,7 @@
   <string name="Tips_Device_TimeoutRetry">タイムアウト、再試行してください</string>
   <string name="Tips_ShortVideo">長押しして短いビデオを録画する</string>
   <string name="Tips_SureDelete">必ず削除して？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">デバイスに反応がありません。再試行してください</string>
   <string name="UPDATE_FAIL">デバイスの接続に失敗しました、再試行してください</string>
   <string name="UPDATING_BUTTON">アップグレード中</string>
