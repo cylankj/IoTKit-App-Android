@@ -150,7 +150,7 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string._720PanoramicCamera));
         intent.putExtra(JConstant.KEY_BIND_DEVICE_ALIAS, getString(R.string._720PanoramicCamera));
-        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
         intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
         startActivity(intent);

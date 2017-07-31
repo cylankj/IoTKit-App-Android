@@ -40,7 +40,7 @@ public class BindBellActivity extends BaseBindActivity {
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.Smart_bell_Battery));
         intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
-        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.bind_guide);
+        intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
         startActivity(intent);
     }
 
