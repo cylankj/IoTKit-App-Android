@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,98 +18,41 @@
         android:id="@+id/tv_main_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/custom_toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y30"
         android:gravity="center"
         android:text="@string/Tap1_AddDevice_DoorbellTipsTitle"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp26" />
+        android:textSize="@dimen/sp26"
+        hunt:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
 
     <TextView
         android:id="@+id/tv_bind_wait_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_main_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y15"
         android:gravity="center"
         android:text="@string/Tap1_AddDevice_DoorbellTips"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp16" />
+        android:textSize="@dimen/sp16"
+        hunt:layout_constraintTop_toBottomOf="@+id/tv_main_content" />
 
     <ImageView
         android:id="@+id/imv_anima"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_bind_wait_msg"
-        android:layout_centerHorizontal="true" />
-    <!--<FrameLayout-->
-    <!--android:id="@+id/fLayout_flip_layout"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/tv_bind_wait_msg"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:layout_marginTop="@dimen/y40">-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/fLayout_flip_before"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@drawable/add_image_ring">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/imgV_power_light"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_marginLeft="@dimen/x10"-->
-    <!--android:layout_marginRight="@dimen/x10"-->
-    <!--android:src="@drawable/add_image_red_dot"-->
-    <!--android:visibility="invisible" />-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/imgV_wifi_light"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_vertical|end"-->
-    <!--android:layout_marginLeft="@dimen/x10"-->
-    <!--android:layout_marginRight="@dimen/x10"-->
-    <!--android:src="@drawable/add_image_red_dot"-->
-    <!--android:visibility="invisible" />-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/imgV_hand"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_horizontal|bottom"-->
-    <!--android:layout_marginBottom="@dimen/y40"-->
-    <!--android:src="@drawable/image_hand"-->
-    <!--android:visibility="invisible" />-->
-    <!--</FrameLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/fLayout_flip_after"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@drawable/add_image_ring1"-->
-    <!--android:visibility="gone">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/imgV_wifi_light_flash"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_horizontal|bottom"-->
-    <!--android:layout_marginBottom="@dimen/y40"-->
-    <!--android:src="@drawable/doorbell_wifi_light_flash" />-->
-    <!--</FrameLayout>-->
-    <!--</FrameLayout>-->
+        hunt:layout_constraintBottom_toTopOf="@+id/tv_bind_doorbell_tip"
+        hunt:layout_constraintEnd_toEndOf="parent"
+        hunt:layout_constraintStart_toStartOf="parent"
+        hunt:layout_constraintTop_toBottomOf="@+id/tv_bind_wait_msg" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
         android:layout_alignTop="@+id/tv_bind_doorbell_tip"
-        android:background="@color/color_d8d8d8" />
+        android:background="@color/color_d8d8d8"
+        hunt:layout_constraintBottom_toTopOf="@+id/tv_bind_doorbell_tip" />
 
     <TextView
         android:id="@+id/tv_bind_doorbell_tip"
@@ -120,12 +63,6 @@
         android:gravity="center"
         android:text="@string/DOOR_BLINKING"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="@dimen/sp16" />
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/fLayout_bind_device_list_fragment_container"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_alignParentStart="true"-->
-    <!--android:layout_below="@+id/custom_toolbar" />-->
-</RelativeLayout>
+        android:textSize="@dimen/sp16"
+        hunt:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>
