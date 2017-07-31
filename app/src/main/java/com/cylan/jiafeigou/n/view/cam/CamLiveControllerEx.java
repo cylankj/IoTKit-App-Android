@@ -1192,7 +1192,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             }
         }
-        btnLoadHistory.setEnabled(!standby.standby);
+        btnLoadHistory.setEnabled(!standby.standby && device.$(201, new DpMsgDefine.DPNet()).net > 0);
     }
 
     private boolean isStandBy() {
