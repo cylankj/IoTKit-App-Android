@@ -18,7 +18,7 @@
     <string name="share_default_title">@string/Tap1_Shared_Title_zhognxing</string>
     <string name="share_to_friends_link">http://a.app.qq.com/o/simple.jsp?pkgname=%s&amp;g_f=991653</string>
     <string name="facebook_app_id">fb1698182270477391</string>
-    <string name="agreementSuffix">"_zhongxing"</string>
+    <string name="agreementSuffix">"_DobyNew"</string>
     <string name="log">"Doby"</string>
     <integer name="max_password_length">32</integer>
     <bool name="show_weixin_push">false</bool>
