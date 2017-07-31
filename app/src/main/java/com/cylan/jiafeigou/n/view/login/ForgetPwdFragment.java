@@ -279,11 +279,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
      * android:animateLayoutChanges="true",就有transition的效果。
      */
     private void start2HandleVerificationCode() {
-
-        fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
-        countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
-        tvForgetPwdSubmit.setEnabled(false);
+        countDownTimer.start();
+        fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
+        tvForgetPwdSubmit.post(() -> tvForgetPwdSubmit.setEnabled(false));
     }
 
     //判读是手机号还是邮箱
@@ -298,6 +297,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
                     //获取验证码
                     if (presenter != null) {
+                        tvForgetPwdSubmit.setEnabled(false);
                         presenter.getVerifyCode(ViewUtils.getTextViewContent(etForgetUsername));
 
                     }
@@ -342,7 +342,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         int visibility = fLayoutVerificationCodeInputBox.getVisibility();
         int inputType = checkInputType();
-        boolean codeValid = inputType != JConstant.TYPE_INVALID && (visibility != View.VISIBLE || inputType == JConstant.TYPE_PHONE);
+//        boolean user = !TextUtils.isEmpty(etForgetUsername.getText()) && TextUtils.isDigitsOnly(etForgetUsername.getText());
+//        tvForgetPwdSubmit.setEnabled(self && user);
+        boolean codeValid = inputType != JConstant.TYPE_INVALID && (visibility != View.VISIBLE ||
+                (inputType == JConstant.TYPE_PHONE && etForgetUsername.getText().length() > 0));
         tvForgetPwdSubmit.setEnabled(!flag && codeValid);
         if (TextUtils.equals(tvMeterGetCode.getText(), getString(R.string.ANEW_SEND)) && inputType == JConstant.TYPE_PHONE) {
             tvMeterGetCode.setEnabled(true);
@@ -514,6 +517,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 case JConstant.GET_SMS_BACK:
                     if (errId == JError.ErrorOK)
                         start2HandleVerificationCode();
+                    else
+                        tvForgetPwdSubmit.setEnabled(true);
                     break;
                 case JFG_RESULT_VERIFY_SMS:
                     if (errId == 0) {
