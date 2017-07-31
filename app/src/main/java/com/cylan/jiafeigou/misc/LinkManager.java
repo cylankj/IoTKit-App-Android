@@ -46,8 +46,12 @@ public class LinkManager {
     }
 
     public static String getHelpWebUrl() {
+        String suffix = ContextUtils.getContext().getString(R.string.agreementSuffix);
+        if (!TextUtils.isEmpty(suffix)) {
+            suffix = "doby";
+        }
         return ContextUtils.getContext().getString(R.string.help_url,
                 OptionsImpl.getServer().split(":")[0],
-                ContextUtils.getContext().getString(R.string.agreementSuffix));
+                suffix);
     }
 }
