@@ -243,7 +243,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.tv_meter_get_code)
     public void reGetVerificationCode(View v) {
-        ViewUtils.deBounceClick(v);
+//        ViewUtils.deBounceClick(v);//这里会在一秒后自动设置成 enable ,所以不用
+        tvMeterGetCode.setEnabled(false);
         if (presenter.checkOverCount(ViewUtils.getTextViewContent(etForgetUsername))) {
             ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
             return;
@@ -284,6 +285,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
         tvForgetPwdSubmit.setEnabled(false);
+
     }
 
     //判读是手机号还是邮箱
@@ -298,6 +300,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
                     //获取验证码
                     if (presenter != null) {
+                        tvForgetPwdSubmit.setEnabled(false);
                         presenter.getVerifyCode(ViewUtils.getTextViewContent(etForgetUsername));
 
                     }
@@ -342,7 +345,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         int visibility = fLayoutVerificationCodeInputBox.getVisibility();
         int inputType = checkInputType();
-        boolean codeValid = inputType != JConstant.TYPE_INVALID && (visibility != View.VISIBLE || inputType == JConstant.TYPE_PHONE);
+//        boolean user = !TextUtils.isEmpty(etForgetUsername.getText()) && TextUtils.isDigitsOnly(etForgetUsername.getText());
+//        tvForgetPwdSubmit.setEnabled(self && user);
+        boolean codeValid = inputType != JConstant.TYPE_INVALID && (visibility != View.VISIBLE ||
+                (inputType == JConstant.TYPE_PHONE && etForgetUsername.getText().length() > 0));
         tvForgetPwdSubmit.setEnabled(!flag && codeValid);
         if (TextUtils.equals(tvMeterGetCode.getText(), getString(R.string.ANEW_SEND)) && inputType == JConstant.TYPE_PHONE) {
             tvMeterGetCode.setEnabled(true);
@@ -360,7 +366,13 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.tv_forget_pwd_submit)
     public void forgetPwdCommit(View v) {
-        ViewUtils.deBounceClick(v);
+        /*
+        //这里不用 deBounceClick 因为会在一秒后自动设置 button 为 enable ,
+        bug单号为:#116624
+        android（1.0.0.469） 忘记密码页面，
+        只有手机号没有输入验证码，继续按钮应该置灰，现在未置灰点击继续，提示“请求超时”
+        * */
+//        ViewUtils.deBounceClick(v);
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             Toast.makeText(getContext(), getString(R.string.NO_NETWORK_4), Toast.LENGTH_SHORT).show();
             return;
@@ -514,6 +526,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 case JConstant.GET_SMS_BACK:
                     if (errId == JError.ErrorOK)
                         start2HandleVerificationCode();
+                    else
+                        tvForgetPwdSubmit.setEnabled(true);
                     break;
                 case JFG_RESULT_VERIFY_SMS:
                     if (errId == 0) {

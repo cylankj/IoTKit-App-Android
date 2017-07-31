@@ -87,7 +87,7 @@
                     android:focusableInTouchMode="true"
                     android:gravity="center"
                     android:hint="@string/ENTER_CODE"
-                    android:inputType="numberDecimal"
+                    android:inputType="number"
                     android:maxLength="6"
                     android:paddingLeft="@dimen/x40"
                     android:paddingRight="@dimen/x40"

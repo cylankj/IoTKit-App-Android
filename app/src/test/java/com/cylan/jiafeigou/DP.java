@@ -65,6 +65,7 @@ public class DP {
                 .subscribe(ret -> {
                     System.out.println(ret);
                 });
+//        DpUtils.pack()
     }
 
     @Test
@@ -202,19 +203,19 @@ public class DP {
 
     @Test
     public void patternTest() {
-        System.out.println(BindUtils.versionCompare("4", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.0.0.1021", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("(3.1.0.1011)", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.3.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("2.1.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "(3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.3.1011", "(3.0.0.1011)"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
-        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("4", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.0.0", "3.0.0.1011"));
+        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0"));
+//        System.out.println(BindUtils.versionCompare("3.3.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("2.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "(3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.3.1011", "(3.0.0.1011)"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
+//        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
     }
 
 }

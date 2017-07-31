@@ -346,7 +346,7 @@ public class SuperWheelExt extends View {
                     setPositionByTime(timeTarget);
                     Log.d("tmpCurrentTime", "tmpCurrentTime==");
                 }
-//                return;
+                return;
             }
             tmpCurrentTime = timeCurrent;
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);

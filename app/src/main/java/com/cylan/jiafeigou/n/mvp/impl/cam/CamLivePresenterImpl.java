@@ -153,9 +153,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                                 option.lastLowBatteryTime = System.currentTimeMillis();
                                 device.setOption(option);
                                 BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
-//                                mView.onBatteryDrainOut();
+                                mView.onBatteryDrainOut();
                             }
-                            mView.onBatteryDrainOut();
+//                            mView.onBatteryDrainOut();
                         }
                     }, AppLogger::e);
             AppLogger.d("getBatterySub:" + JFGRules.popPowerDrainOutLevel(getDevice().pid));

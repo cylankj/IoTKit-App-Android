@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -110,34 +109,34 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 //    }
 
     private void showPortDatePicker() {
-        if (datePickerRef == null || datePickerRef.get() == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
-            DatePickerDialogFragment.newInstance(bundle);
-            datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
-            datePickerRef.get().setAction((int id, Object value) -> {
-                if (value != null && value instanceof Long) {
-                    IData data = presenter.getHistoryDataProvider();
-                    HistoryFile historyFile = data == null ? null : data.getMaxHistoryFile();
+//        if (datePickerRef == null || datePickerRef.get() == null) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
+        DatePickerDialogFragment fragment = DatePickerDialogFragment.newInstance(bundle);
+//            datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
+        fragment.setAction((int id, Object value) -> {
+            if (value != null && value instanceof Long) {
+                IData data = presenter.getHistoryDataProvider();
+                HistoryFile historyFile = data == null ? null : data.getMaxHistoryFile();
 
-                    if (historyFile == null || historyFile.getTime() + historyFile.getDuration() < (long) value / 1000) {
-                        AppLogger.d("没有这段视频: " + historyFile + "," + value);
-                        ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
-                        return;
-                    }
-
-                    AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
-                    if (datePickerListener != null)
-                        datePickerListener.onPickDate((Long) value, STATE_FINISH);
-                    playPreciseByTime((Long) value);
+                if (historyFile == null || historyFile.getTime() + historyFile.getDuration() < (long) value / 1000) {
+                    AppLogger.d("没有这段视频: " + historyFile + "," + value);
+                    ToastUtil.showToast(ContextUtils.getContext().getString(R.string.Historical_No));
+                    return;
                 }
-            });
-        }
+
+                AppLogger.d("msgTime pick: " + TimeUtils.getTimeSpecial((Long) value) + "," + value);
+                if (datePickerListener != null)
+                    datePickerListener.onPickDate((Long) value, STATE_FINISH);
+                playPreciseByTime((Long) value);
+            }
+        });
+//        }
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        datePickerRef.get().setTimeZone(JFGRules.getDeviceTimezone(device));
-        datePickerRef.get().setTimeFocus(getWheelCurrentFocusTime());
-        datePickerRef.get().setDateList(presenter.getFlattenDateList());
-        datePickerRef.get().show(((FragmentActivity) context).getSupportFragmentManager(),
+        fragment.setTimeZone(JFGRules.getDeviceTimezone(device));
+        fragment.setTimeFocus(getWheelCurrentFocusTime());
+        fragment.setDateList(presenter.getFlattenDateList());
+        fragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                 "DatePickerDialogFragment");
     }
 
