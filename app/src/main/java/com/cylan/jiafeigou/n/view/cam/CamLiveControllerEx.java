@@ -37,6 +37,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -1585,7 +1586,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (vsLayoutWheel.getDisplayedChild() == 1) {
             vsLayoutWheel.showPrevious();
         }
-        btnLoadHistory.setEnabled(true);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        btnLoadHistory.setEnabled(device.$(201, new DpMsgDefine.DPNet()).net > 0);//设备在线才可点击
         if (isLand()) {
             vsLayoutWheel.getCurrentView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
         } else {
