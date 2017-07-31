@@ -173,10 +173,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 }
                                 shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
                             } else if (msg.id == 205) {
-                                Integer charge = unpackData(msg.packValue, int.class);
-                                if (charge != null && charge == 1) {
+                                boolean charge = unpackData(msg.packValue, boolean.class);
+                                if (charge) {
                                     mView.onDeviceBatteryChanged(-1);
-                                } else if (charge != null && charge == 0) {
+                                } else {
                                     mView.onDeviceBatteryChanged(battery);
                                 }
                                 AppLogger.e("charge:" + charge);

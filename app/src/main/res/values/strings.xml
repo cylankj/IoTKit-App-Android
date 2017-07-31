@@ -937,7 +937,14 @@
     <string name="Tips_Device_TimeoutRetry">Timeout, please try again</string>
     <string name="Tips_ShortVideo">Long press to record short video</string>
     <string name="Tips_SureDelete">Sure to delete?</string>
-    <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+    <!--
+     【链接】IGeneralRules
+      http://www.jfgou.com/app/DobyNew/treaty_DobyNew_en.html
+      毛峰  16:27:18
+     【链接】二、服务使用
+      http://www.jfgou.com/app/DobyNew/treaty_DobyNew_cn.html
+       -->
+    <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
     <string name="UPDATE_DISCONNECT">No response, please try again</string>
     <string name="UPDATE_FAIL">Failed to connect camera, please try again</string>
     <string name="UPDATING_BUTTON">Updating</string>

@@ -937,7 +937,14 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, versuchen Sie es erneut</string>
   <string name="Tips_ShortVideo">Lange drückt ein kurzes Video aufnehmen</string>
   <string name="Tips_SureDelete">Sicher löschen?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <!--
+   【链接】IGeneralRules
+    http://www.jfgou.com/app/DobyNew/treaty_DobyNew_en.html
+    毛峰  16:27:18
+   【链接】二、服务使用
+    http://www.jfgou.com/app/DobyNew/treaty_DobyNew_cn.html
+     -->
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
   <string name="UPDATE_FAIL">Geräteverbindung fehlgeschlagen ist, versuchen Sie es erneut</string>
   <string name="UPDATING_BUTTON">Update läuft</string>

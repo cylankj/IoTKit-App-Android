@@ -305,6 +305,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (panoramaAdapter.isInEditMode()) {
             panoramaAdapter.reverseItemSelectedState(position);
             deleteSelected.setEnabled(panoramaAdapter.getRemovedList().size() > 0);
+            selectAll.setText(panoramaAdapter.getRemovedList().size() == panoramaAdapter.getCount() ? getString(R.string.CANCEL) : getString(R.string.SELECT_ALL));
         } else {
             Intent intent = PanoramaDetailActivity.getIntent(this, uuid, item, albumViewMode, position);
             startActivity(intent);

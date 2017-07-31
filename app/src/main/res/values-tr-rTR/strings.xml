@@ -937,7 +937,7 @@
   <string name="Tips_Device_TimeoutRetry">Zaman aşımı, tekrar deneyin</string>
   <string name="Tips_ShortVideo">Kısa bir video kaydetmek için uzun basın</string>
   <string name="Tips_SureDelete">Emin silmek için？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="UPDATE_FAIL">Kameraya bağlantı başarısız, lütfen tekrar deneyiniz.</string>
   <string name="UPDATING_BUTTON">Güncelleme</string>

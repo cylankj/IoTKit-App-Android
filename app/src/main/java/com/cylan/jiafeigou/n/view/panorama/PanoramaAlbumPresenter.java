@@ -81,7 +81,19 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 204) {
-                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                DpMsgDefine.DPSdStatus status = null;
+
+                                try {
+                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                } catch (Exception e) {
+                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
+                                    status = new DpMsgDefine.DPSdStatus();
+                                    status.hasSdcard = statusInt.hasSdcard == 1;
+                                    status.err = statusInt.err;
+                                    status.used = statusInt.used;
+                                    status.total = statusInt.total;
+                                }
+
                                 if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onSDCardCheckResult(0);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化

@@ -937,7 +937,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, riprovare</string>
   <string name="Tips_ShortVideo">Premere a lungo per registrare un breve video</string>
   <string name="Tips_SureDelete">Procedo alla cancellazione?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Nessuna reazione, riprova per favore</string>
   <string name="UPDATE_FAIL">Impossibile collegare la macchina fotografica, riprova per favore</string>
   <string name="UPDATING_BUTTON">Aggiornamento</string>
