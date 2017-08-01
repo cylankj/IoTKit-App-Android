@@ -353,6 +353,7 @@ public class JFGRules {
      * @param pid
      * @return
      */
+
     public static int popPowerDrainOutLevel(int pid) {
         String pContent = BaseApplication.getAppComponent().getProductProperty().property(pid, "POWER");
         if (TextUtils.isEmpty(pContent) || TextUtils.equals("0", pContent)) return -1;
