@@ -8,7 +8,7 @@
     android:background="@color/color_white">
 
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/act_panorama_camera_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/nav_tab_back_selector"
             android:drawablePadding="@dimen/y15"
             android:drawableStart="@drawable/nav_tab_back_selector"
             android:padding="@dimen/y15"
@@ -32,20 +31,38 @@
             android:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.ImageViewTip
+            android:id="@+id/imv_toolbar_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y17"
+            android:layout_toStartOf="@+id/imgv_toolbar_right"
+            android:padding="@dimen/y5"
+            android:src="@drawable/icon_news"
+            app:t_border_color="@color/color_white"
+            app:t_border_width="@dimen/y1"
+            app:t_point_color="@color/color_red_dot_f43531"
+            app:t_radius="@dimen/x4"
+            app:t_round_image="true"
+            app:t_show_point="true" />
+
+        <com.cylan.jiafeigou.widget.ImageViewTip
             android:id="@+id/imgv_toolbar_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y11"
             android:background="@android:color/transparent"
-            android:padding="@dimen/y14"
+            android:padding="@dimen/y5"
             android:src="@drawable/icon_setting"
             app:t_border_color="@color/color_white"
             app:t_border_width="@dimen/y1"
             app:t_point_color="@color/color_red_dot_f43531"
             app:t_radius="@dimen/x4"
             app:t_round_image="true"
-            app:t_show_point="false" />
-    </FrameLayout>
+            app:t_show_point="true" />
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/act_panorama_camera_video_container"
@@ -320,6 +337,18 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:riv_oval="false" />
+
+        <View
+            android:id="@+id/act_panorama_camera_bottom_panel_hint_dot"
+            android:layout_width="@dimen/y7"
+            android:layout_height="@dimen/y7"
+            android:background="@drawable/red_cycle"
+            app:layout_constraintBottom_toBottomOf="@+id/act_panorama_camera_bottom_panel_album"
+            app:layout_constraintEnd_toEndOf="@+id/act_panorama_camera_bottom_panel_album"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toStartOf="@+id/act_panorama_camera_bottom_panel_album"
+            app:layout_constraintTop_toTopOf="@+id/act_panorama_camera_bottom_panel_album"
+            app:layout_constraintVertical_bias="0.1" />
 
         <ImageButton
             android:id="@+id/act_panorama_bottom_panel_camera_photograph"

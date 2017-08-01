@@ -29,10 +29,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
-
+            <!-- 需要考虑下面文字比较长时的情况,所以这里要指定其 layout_gravity 为 center_horizontal-->
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
                 <com.cylan.jiafeigou.widget.SimpleProgressBar
                     android:id="@+id/progress_loading"

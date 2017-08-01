@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/y72">
+    android:layout_height="match_parent"
+    android:paddingEnd="@dimen/y20"
+    android:paddingStart="@dimen/y20">
 
     <ImageView
         android:id="@+id/imgv_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/y15"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_settings_item_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginEnd="0dp" />
 
 
     <TextView
         android:id="@+id/tv_settings_item_title"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x15"
+        android:layout_height="20dp"
         android:gravity="center|start"
         android:text="@string/EQUIPMENT_INFO"
         android:textColor="@color/color_black"
@@ -29,23 +31,21 @@
         app:layout_constraintEnd_toStartOf="@+id/option_container"
         app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:layout_editor_absoluteY="19dp" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/tv_settings_item_sub_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x15"
         android:layout_marginTop="@dimen/y3"
         android:textColor="@color/color_8C8C8C"
         android:textSize="@dimen/sp13"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/option_container"
-        app:layout_constraintStart_toEndOf="@+id/imgv_item_icon"
+        app:layout_constraintStart_toStartOf="@+id/tv_settings_item_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title"
-        app:layout_constraintVertical_bias="0"
-        tools:layout_editor_absoluteY="42dp" />
+        app:layout_constraintVertical_bias="0" />
 
     <FrameLayout
         android:id="@+id/option_container"
@@ -81,8 +81,6 @@
         android:id="@+id/imv_item_red_hint"
         android:layout_width="@dimen/y8"
         android:layout_height="@dimen/y8"
-        android:layout_marginEnd="@dimen/y10"
-        android:layout_marginStart="@dimen/y10"
         android:src="@drawable/hardware_update_point"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -93,8 +91,6 @@
         android:id="@+id/v_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
-        android:layout_marginEnd="@dimen/y10"
-        android:layout_marginStart="@dimen/y10"
         android:background="@color/color_e8e8e8"
         app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>

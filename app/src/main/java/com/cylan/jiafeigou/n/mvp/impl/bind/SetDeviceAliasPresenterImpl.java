@@ -49,7 +49,8 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .map(s -> alias)
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
-                    if (s != null && s.trim().length() == 0) return -1;//如果是空格则跳过,显示默认名称
+                    // TODO: 2017/8/1 现在不过滤空格了
+                    if (s != null && s.length() == 0) return -1;//如果是空格则跳过,显示默认名称
                     try {
                         count++;
                         if (count > 5) {

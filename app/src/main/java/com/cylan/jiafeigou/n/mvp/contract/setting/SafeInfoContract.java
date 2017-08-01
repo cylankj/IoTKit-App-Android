@@ -13,6 +13,9 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface SafeInfoContract {
 
     interface View extends BaseView<Presenter> {
+
+        void onAIStrategyRsp();
+
     }
 
     interface Presenter extends BasePresenter {
@@ -20,8 +23,10 @@ public interface SafeInfoContract {
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        public <T extends DataPoint> void updateInfoReq(T value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
 
         String getRepeatMode(Context context);
+
+        void getAIStrategy();
     }
 }

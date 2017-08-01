@@ -197,8 +197,8 @@ android {
                                     "TWITTER_APP_KEY"    : "P4mZddIEumAsk7OnzNWpcrQy8",
                                     "TWITTER_APP_SECRET" : "1T5Pg7UBRVkq6OSvOs9EBEGiMXVLYmAeOdW3HPTazuqjWyzRAm",
                                     "FACEBOOK_APP_KEY"   : "1698182270477391"
-            //<error>Desktop applications only support the oauth_callback value 'oob'</error>
-            //新增的app需要在twitter后台,填上callbackUrl
+                                    //<error>Desktop applications only support the oauth_callback value 'oob'</error>
+                                    //新增的app需要在twitter后台,填上callbackUrl
             ]
         }
         _cell_c {

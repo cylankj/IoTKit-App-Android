@@ -75,4 +75,9 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
         }
         return builder.toString();
     }
+
+    @Override
+    public void getAIStrategy() {
+
+    }
 }

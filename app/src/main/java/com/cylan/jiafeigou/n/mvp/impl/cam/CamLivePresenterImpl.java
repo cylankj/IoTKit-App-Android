@@ -300,7 +300,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(ret -> {
                     mView.onHistoryDataRsp(historyDataProvider);
                     AppLogger.d("历史录像wheel准备好,断开直播");
-                    startPlayHistory(historyDataProvider.getFlattenMinTime());
+                    //放在这里不好,有 bug 单:#116924
+                    //Android（1.0.0.490）没获取到历史视频时。从消息界面，点击查看视频（11:00历史视频）；跳转至直播界面播放历史视频，
+                    // 不是消息界面时间上的历史视频，而是历史视频时间上最早一天的历史视频
+
+//                    startPlayHistory(historyDataProvider.getFlattenMinTime());
                 }, AppLogger::e);
         addSubscription(subscription, "hisFlat");
     }

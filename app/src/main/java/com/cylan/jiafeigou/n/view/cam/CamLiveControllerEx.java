@@ -74,6 +74,7 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
@@ -114,7 +115,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer,
         View.OnClickListener {
-    private static final long DAMP_DISTANCE = 30 * 1000L;
+    private static final long DAMP_DISTANCE = 2000L;
     @BindView(R.id.imgV_cam_live_land_nav_back)
     TextView imgVCamLiveLandNavBack;
     @BindView(R.id.imgV_land_cam_switch_speaker)
@@ -320,6 +321,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isEmpty -> {
                     AppLogger.d("加载成功:" + isEmpty);
+                    presenter.startPlayHistory(DataExt.getInstance().getFlattenMinTime());
                     btnLoadHistory.setEnabled(true);
                     if (isEmpty) {
                         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
@@ -1476,8 +1478,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-                    handler.setNav2Time(timeTarget);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     setLiveRectTime(TYPE_HISTORY, timeTarget / 1000, false);
+                    handler.setNav2Time(timeTarget);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     presenter.startPlayHistory(timeTarget);
                     AppLogger.d("目标历史录像时间?" + timeTarget);
                 }, throwable -> {

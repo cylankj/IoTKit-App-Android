@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -94,6 +93,8 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         initShowWonderPageSub();
         basePresenter = new NewHomeActivityPresenterImpl(this);
         AfterLoginService.resumeTryCheckVersion();
+
+
     }
 
     private void initShowWonderPageSub() {

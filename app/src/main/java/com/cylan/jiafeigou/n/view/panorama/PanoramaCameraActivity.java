@@ -32,6 +32,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -112,7 +113,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @BindView(R.id.act_panorama_camera_banner_information_charge_text)
     TextView bannerChargeText;
     @BindView(R.id.act_panorama_camera_toolbar)
-    FrameLayout panoramaToolBar;
+    RelativeLayout panoramaToolBar;
     @BindView(R.id.act_panorama_camera_flow_speed)
     TextView liveFlowSpeedText;
     @BindView(R.id.act_panorama_camera_banner_bad_net_work_configure)
@@ -1097,5 +1098,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 e.printStackTrace();
             }
         });
+    }
+
+    @OnClick(R.id.imv_toolbar_message)
+    public void onEnterMessage() {
+        AppLogger.d("onEnterMessage");
     }
 }

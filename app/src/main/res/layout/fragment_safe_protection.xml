@@ -38,9 +38,24 @@
         android:id="@+id/sw_motion_detection"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20"
         hunt:sv_title="@string/SECURE_TYPE"
+        hunt:sv_v_divider="true" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/sw_motion_AI"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y54"
+        hunt:sv_red_hint="true"
+        hunt:sv_switch_visibility="false"
+        hunt:sv_title="AI识别"
+        hunt:sv_v_divider="true" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/sw_motion_interval"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y54"
+        hunt:sv_switch_visibility="false"
+        hunt:sv_title="报警间隔"
         hunt:sv_v_divider="true" />
 
 
@@ -48,8 +63,6 @@
         android:id="@+id/fLayout_protection_sensitivity"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
         hunt:sv_title="@string/SECURE_SENSITIVITY"
         hunt:sv_v_divider="true" />
 
@@ -57,9 +70,8 @@
         android:id="@+id/fLayout_protection_warn_effect"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        hunt:sv_title="@string/SOUNDS" />
+        hunt:sv_title="@string/SOUNDS"
+        hunt:sv_v_divider="true" />
 
     <FrameLayout
         android:id="@+id/fl_protection_title"
@@ -87,8 +99,6 @@
             android:id="@+id/fLayout_protection_start_time"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y54"
-            android:layout_marginLeft="@dimen/x10"
-            android:layout_marginRight="@dimen/x10"
             hunt:sv_title="@string/FROME"
             hunt:sv_v_divider="true" />
 
@@ -96,8 +106,6 @@
             android:id="@+id/fLayout_protection_end_time"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y54"
-            android:layout_marginLeft="@dimen/x10"
-            android:layout_marginRight="@dimen/x10"
             hunt:sv_title="@string/TO"
             hunt:sv_v_divider="true" />
 
@@ -105,9 +113,8 @@
             android:id="@+id/fLayout_protection_repeat_period"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y54"
-            android:layout_marginLeft="@dimen/x10"
-            android:layout_marginRight="@dimen/x10"
-            hunt:sv_title="@string/REPEAT" />
+            hunt:sv_title="@string/REPEAT"
+            hunt:sv_v_divider="true" />
 
     </LinearLayout>
 </LinearLayout>

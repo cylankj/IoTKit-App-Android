@@ -73,4 +73,8 @@ public interface IHttpApi {
 
     @GET(CGI + "?Msg=getUpgradeStatus")
     Observable<PanoramaEvent.MsgUpgradeStatusRsp> getUpgradeStatus();
+
+
+    @GET("")
+    Observable getAIStrategy();
 }

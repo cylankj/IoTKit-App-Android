@@ -33,14 +33,14 @@
             android:id="@+id/lLayout_setting_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/x20"
-            android:paddingRight="@dimen/x20">
+            android:orientation="vertical">
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
                 android:text="@string/SETTINGS"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp15" />
@@ -71,6 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/y15"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
                 android:text="@string/NETWORK"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp15" />
@@ -117,6 +119,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/y15"
+                android:paddingEnd="@dimen/y20"
+                android:paddingStart="@dimen/y20"
                 android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp15" />

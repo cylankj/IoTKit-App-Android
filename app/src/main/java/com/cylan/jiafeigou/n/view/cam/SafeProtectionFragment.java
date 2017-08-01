@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -86,6 +85,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     FrameLayout flProtectionTitle;
     @BindView(R.id.ll_24_record_container)
     LinearLayout ll24RecordContainer;
+    @BindView(R.id.sw_motion_AI)
+    SettingItemView0 swMotionAI;
+    @BindView(R.id.sw_motion_interval)
+    SettingItemView0 swMotionInterval;
     //    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     //    private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
@@ -190,6 +193,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean protection = property.hasProperty(device.pid, "PROTECTION");
         boolean warmsound = property.hasProperty(device.pid, "WARMSOUND");
+        boolean enableAI = property.hasProperty(device.pid, "AI");//todo 暂时还没有定义该字段
+        boolean warmInterval = property.hasProperty(device.pid, "INTERVAL");//todo 暂时还没有定义该字段
 
         tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
         flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);
@@ -199,6 +204,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
+        swMotionAI.setVisibility(enableAI ? View.VISIBLE : View.GONE);
+        swMotionInterval.setVisibility(warmInterval ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -334,6 +341,20 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 showFragment(fragment);
             }
             break;
+
+            case R.id.sw_motion_AI: {
+
+            }
+            break;
+
+            case R.id.sw_motion_interval: {
+                Bundle bundle = new Bundle();
+                bundle.putString(BaseDialog.KEY_TITLE, "报警间隔");
+                WarmIntervalFragment fragment = WarmIntervalFragment.newInstance(bundle);
+
+                showFragment(fragment);
+            }
+            break;
         }
     }
 
@@ -376,5 +397,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @Override
+    public void onAIStrategyRsp() {
+        // TODO: 2017/8/1 获取当前账号 AI 策略,根据策略和设备属性表来决定是否显示 AI 选项
+
     }
 }
