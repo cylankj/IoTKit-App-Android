@@ -9,14 +9,6 @@
     android:orientation="vertical">
 
 
-    <com.cylan.jiafeigou.widget.CustomToolbar
-        android:id="@+id/custom_toolbar"
-        layout="@layout/layout_default_custom_tool_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        hunt:ct_fit_system_window="true"
-        hunt:ct_icon="@drawable/nav_icon_back_gary" />
-
     <ImageView
         android:id="@+id/iv_explain_gray"
         android:layout_width="wrap_content"
@@ -61,6 +53,8 @@
                     android:fontFamily="sans-serif-thin"
                     android:textColor="@color/color_36BDFF"
                     android:textSize="@dimen/sp47" />
+
+
             </FrameLayout>
 
             <TextView
@@ -78,6 +72,14 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:orientation="vertical">
+
+            <com.cylan.jiafeigou.widget.CustomToolbar
+                android:id="@+id/custom_toolbar"
+                layout="@layout/layout_default_custom_tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:ct_fit_system_window="true"
+                hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
             <TextView
                 android:layout_width="wrap_content"
