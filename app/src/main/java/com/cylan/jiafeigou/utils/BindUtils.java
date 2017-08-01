@@ -267,7 +267,7 @@ public class BindUtils {
         } else if (JFGRules.isBell(pid)) {
             intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.door_android);
             intent.putExtra(JConstant.KEY_CONNECT_AP_GIF, R.raw.dog_doby);
-            intent.putExtra(JConstant.KEY_SSID_PREFIX, BELL_AP);
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, DOG_AP);
             intent.putExtra(JConstant.KEY_BIND_DEVICE, context.getString(R.string.Smart_bell_Battery));
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_DoorbellTips));
