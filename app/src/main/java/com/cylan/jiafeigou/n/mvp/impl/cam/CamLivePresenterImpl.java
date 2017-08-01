@@ -882,9 +882,11 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                             if (!sdStatus.hasSdcard || sdStatus.errCode != 0)
                                 updateLiveStream(TYPE_LIVE, 0, -1);
                         } else if (msg.id == DpMsgMap.ID_206_BATTERY) {
-                            Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
-                            if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
-                                mView.onBatteryDrainOut();
+                            if (JFGRules.popPowerDrainOut(getDevice().pid)) {
+                                Integer battery = DpUtils.unpackDataWithoutThrow(msg.packValue, Integer.class, 0);
+                                if (battery != null && battery <= 20 && getDevice().$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet()).net > 0) {
+                                    mView.onBatteryDrainOut();
+                                }
                             }
                         }
                         mView.onDeviceInfoChanged(msg);
