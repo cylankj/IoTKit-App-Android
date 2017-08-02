@@ -18,50 +18,55 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
 
-        <Button
-            android:id="@+id/tv_top_bar_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawablePadding="@dimen/y15"
-            android:drawableStart="@drawable/nav_tab_back_selector"
-            android:padding="@dimen/y15"
-            android:text="@string/_720PanoramicCamera"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp16" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <com.cylan.jiafeigou.widget.ImageViewTip
-            android:id="@+id/imv_toolbar_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/y17"
-            android:layout_toStartOf="@+id/imgv_toolbar_right"
-            android:padding="@dimen/y5"
-            android:src="@drawable/icon_news"
-            app:t_border_color="@color/color_white"
-            app:t_border_width="@dimen/y1"
-            app:t_point_color="@color/color_red_dot_f43531"
-            app:t_radius="@dimen/x4"
-            app:t_round_image="true"
-            app:t_show_point="true" />
+            <Button
+                android:id="@+id/tv_top_bar_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawablePadding="@dimen/y15"
+                android:drawableStart="@drawable/nav_tab_back_selector"
+                android:padding="@dimen/y15"
+                android:text="@string/_720PanoramicCamera"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp16" />
 
-        <com.cylan.jiafeigou.widget.ImageViewTip
-            android:id="@+id/imgv_toolbar_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/y11"
-            android:background="@android:color/transparent"
-            android:padding="@dimen/y5"
-            android:src="@drawable/icon_setting"
-            app:t_border_color="@color/color_white"
-            app:t_border_width="@dimen/y1"
-            app:t_point_color="@color/color_red_dot_f43531"
-            app:t_radius="@dimen/x4"
-            app:t_round_image="true"
-            app:t_show_point="true" />
+            <com.cylan.jiafeigou.widget.ImageViewTip
+                android:id="@+id/imv_toolbar_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/y17"
+                android:layout_toStartOf="@+id/imgv_toolbar_right"
+                android:padding="@dimen/y5"
+                android:src="@drawable/icon_news"
+                app:t_border_color="@color/color_white"
+                app:t_border_width="@dimen/y1"
+                app:t_point_color="@color/color_red_dot_f43531"
+                app:t_radius="@dimen/x4"
+                app:t_round_image="true"
+                app:t_show_point="true" />
+
+            <com.cylan.jiafeigou.widget.ImageViewTip
+                android:id="@+id/imgv_toolbar_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/y11"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/y5"
+                android:src="@drawable/icon_setting"
+                app:t_border_color="@color/color_white"
+                app:t_border_width="@dimen/y1"
+                app:t_point_color="@color/color_red_dot_f43531"
+                app:t_radius="@dimen/x4"
+                app:t_round_image="true"
+                app:t_show_point="true" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <FrameLayout

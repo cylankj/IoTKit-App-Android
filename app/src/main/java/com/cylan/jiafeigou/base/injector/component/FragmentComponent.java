@@ -4,6 +4,7 @@ import com.cylan.jiafeigou.base.injector.lifecycle.PerFragment;
 import com.cylan.jiafeigou.base.injector.module.FragmentModule;
 import com.cylan.jiafeigou.n.view.bell.BellDetailFragment;
 import com.cylan.jiafeigou.n.view.bell.BellSettingFragment;
+import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
@@ -50,4 +51,6 @@ public interface FragmentComponent {
     void inject(ShareContentWebH5Activity fragment);
 
     void inject(PanoramaCameraFragment fragment);
+
+    void inject(AIRecognitionFragment fragment);
 }

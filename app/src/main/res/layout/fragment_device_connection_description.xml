@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white">
+
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ct_background_color="@color/color_0ba8cf"
+            app:ct_enable_shadow="false"
+            app:ct_enable_theme="true"
+            app:ct_fit_system_window="true"
+            app:ct_icon="@drawable/nav_icon_close_white"
+            app:ct_icon_right="@drawable/icon_explain_white"
+            app:ct_left_title="设备离线"
+            app:ct_left_title_color="@color/color_white" />
+
+        <TextView
+            android:id="@+id/sure_power"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/y15"
+            android:layout_marginTop="@dimen/y34"
+            android:drawablePadding="@dimen/y14"
+            android:drawableStart="@drawable/icon_power_off"
+            android:text="请检查设备是否已开机"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/custom_toolbar" />
+
+        <TextView
+            android:id="@+id/sure_explain"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y16"
+            android:layout_marginStart="@dimen/y50"
+            android:layout_marginTop="@dimen/y9"
+            android:text="设备电源灯常亮则开机,未常亮请长按开机键,直至蓝灯常亮"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sure_power" />
+
+        <View
+            android:id="@+id/sure_divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y1"
+            android:layout_marginEnd="@dimen/y59"
+            android:layout_marginStart="@dimen/y46"
+            android:layout_marginTop="@dimen/y42"
+            android:background="#EBE7EE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sure_explain" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y6"
+            android:text="请检查周围网络"
+            android:textColor="@color/color_999999"
+            app:layout_constraintEnd_toEndOf="@+id/sure_divider"
+            app:layout_constraintStart_toStartOf="@+id/sure_divider"
+            app:layout_constraintTop_toBottomOf="@+id/sure_divider" />
+
+        <TextView
+            android:id="@+id/wifi_way_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/y15"
+            android:layout_marginTop="@dimen/y36"
+            android:drawablePadding="@dimen/y14"
+            android:drawableStart="@drawable/icon_wifi_off"
+            android:text="有可用WiFi"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y16"
+            android:layout_marginStart="@dimen/y50"
+            android:layout_marginTop="@dimen/y9"
+            android:text="请给设备配置WiFi进行连接"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wifi_way_title" />
+
+        <TextView
+            android:id="@+id/setup_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/y51"
+            android:layout_marginTop="@dimen/y16"
+            android:text="去设置"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/y15"
+            android:layout_marginTop="@dimen/y43"
+            android:drawablePadding="@dimen/y14"
+            android:drawableStart="@drawable/icon_wifi_off"
+            android:text="无可用WiFi"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setup_wifi" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y16"
+            android:layout_marginStart="@dimen/y50"
+            android:layout_marginTop="@dimen/y9"
+            android:text="请给设备配置WiFi进行连接"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView6"
+
+
+            />
+
+        <TextView
+            android:id="@+id/setup_ap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/y51"
+            android:layout_marginTop="@dimen/y16"
+            android:text="去设置"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

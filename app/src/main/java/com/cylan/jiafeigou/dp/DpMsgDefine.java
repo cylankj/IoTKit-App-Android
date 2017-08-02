@@ -537,9 +537,12 @@ public class DpMsgDefine {
         @Index(2)
         public int fileIndex;
         @Index(3)
-        public int type;
+        public int ossType;
         @Index(4)
         public String tly;//全景设备陀螺仪。'0'俯视, '1' 平视。
+        @Index(5)
+        @Optional
+        public int[] objects;
         @Ignore
         public static DPAlarm empty = new DPAlarm();
 
@@ -552,7 +555,7 @@ public class DpMsgDefine {
                     "time=" + time +
                     ", isRecording=" + isRecording +
                     ", fileIndex=" + fileIndex +
-                    ", type=" + type +
+                    ", type=" + ossType +
                     ", tly='" + tly + '\'' +
                     '}';
         }
@@ -568,7 +571,7 @@ public class DpMsgDefine {
             if (time != dpAlarm.time) return false;
             if (isRecording != dpAlarm.isRecording) return false;
             if (fileIndex != dpAlarm.fileIndex) return false;
-            if (type != dpAlarm.type) return false;
+            if (ossType != dpAlarm.ossType) return false;
             return tly != null ? tly.equals(dpAlarm.tly) : dpAlarm.tly == null;
 
         }
@@ -579,7 +582,7 @@ public class DpMsgDefine {
             result = 31 * result + time;
             result = 31 * result + isRecording;
             result = 31 * result + fileIndex;
-            result = 31 * result + type;
+            result = 31 * result + ossType;
             result = 31 * result + (tly != null ? tly.hashCode() : 0);
             return result;
         }
@@ -595,7 +598,7 @@ public class DpMsgDefine {
             dest.writeInt(this.time);
             dest.writeInt(this.isRecording);
             dest.writeInt(this.fileIndex);
-            dest.writeInt(this.type);
+            dest.writeInt(this.ossType);
             dest.writeString(this.tly);
         }
 
@@ -604,7 +607,7 @@ public class DpMsgDefine {
             this.time = in.readInt();
             this.isRecording = in.readInt();
             this.fileIndex = in.readInt();
-            this.type = in.readInt();
+            this.ossType = in.readInt();
             this.tly = in.readString();
         }
 
@@ -843,7 +846,7 @@ public class DpMsgDefine {
             dpAlarm.time = time;
             dpAlarm.version = version;
             dpAlarm.msgId = 505;
-            dpAlarm.type = type;
+            dpAlarm.ossType = type;
             dpAlarm.tly = "";
             dpAlarm.isRecording = isRecording;
             dpAlarm.fileIndex = fileIndex;
@@ -1351,6 +1354,82 @@ public class DpMsgDefine {
             @Override
             public DpCoordinate[] newArray(int size) {
                 return new DpCoordinate[size];
+            }
+        };
+    }
+
+    @Message
+    public static class DPWarnInterval extends BaseDataPoint {
+
+        @Index(0)
+        public int sec;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(this.sec);
+        }
+
+        public DPWarnInterval() {
+        }
+
+        protected DPWarnInterval(Parcel in) {
+            super(in);
+            this.sec = in.readInt();
+        }
+
+        public static final Creator<DPWarnInterval> CREATOR = new Creator<DPWarnInterval>() {
+            @Override
+            public DPWarnInterval createFromParcel(Parcel source) {
+                return new DPWarnInterval(source);
+            }
+
+            @Override
+            public DPWarnInterval[] newArray(int size) {
+                return new DPWarnInterval[size];
+            }
+        };
+    }
+
+    @Message
+    public static class DPCameraObjectDetect extends BaseDataPoint {
+
+        @Index(0)
+        public int[] objects;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeIntArray(this.objects);
+        }
+
+        public DPCameraObjectDetect() {
+        }
+
+        protected DPCameraObjectDetect(Parcel in) {
+            super(in);
+            this.objects = in.createIntArray();
+        }
+
+        public static final Creator<DPCameraObjectDetect> CREATOR = new Creator<DPCameraObjectDetect>() {
+            @Override
+            public DPCameraObjectDetect createFromParcel(Parcel source) {
+                return new DPCameraObjectDetect(source);
+            }
+
+            @Override
+            public DPCameraObjectDetect[] newArray(int size) {
+                return new DPCameraObjectDetect[size];
             }
         };
     }

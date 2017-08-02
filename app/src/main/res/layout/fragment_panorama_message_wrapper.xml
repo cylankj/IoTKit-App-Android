@@ -1,10 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_f0f0f0"
-    tools:context="com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment">
+    android:layout_height="match_parent">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
@@ -12,22 +10,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
-        app:ct_icon="@drawable/nav_icon_back_white"
-        app:ct_left_title="AI识别"
-        app:ct_left_title_color="@color/color_white"
-        app:ct_left_title_size="@dimen/sp18"
+        app:ct_icon="@drawable/nav_tab_back_selector"
+        app:ct_left_title="消息"
+        app:ct_left_title_color="#FFFFFF"
+        app:ct_left_title_size="@dimen/sp17"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_ai_selection"
+    <FrameLayout
+        android:id="@+id/message_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/color_f0f0f0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
-
 </android.support.constraint.ConstraintLayout>

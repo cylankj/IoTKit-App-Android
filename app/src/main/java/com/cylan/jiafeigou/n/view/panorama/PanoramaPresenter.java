@@ -75,6 +75,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         registerSubscription(getReportMsgSub());
         registerSubscription(getNetWorkMonitorSub());
         registerSubscription(getDeviceRecordStateSub());
+        registerSubscription(makeNewMsgSub());
     }
 
     private Subscription getDeviceRecordStateSub() {
@@ -106,11 +107,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
                     if (event.mobile != null && event.mobile.isConnected()) {
-                        mView.onRefreshConnectionMode(1);
+                        mView.onRefreshConnectionMode(event.mobile.getType());
                     } else if (event.wifi != null && event.wifi.isConnected()) {
-                        mView.onRefreshConnectionMode(0);
+                        mView.onRefreshConnectionMode(event.wifi.getType());
                     } else {
-                        mView.onRefreshConnectionMode(-1);
+                        mView.onRefreshConnectionMode(-2);
                     }
                 }, e -> {
                 });
@@ -470,5 +471,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(ret -> {
                 }, AppLogger::e);
         registerSubscription(subscribe);
+    }
+
+    private Subscription makeNewMsgSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .subscribeOn(Schedulers.io())
+                .flatMap(ret -> Observable.from(ret.dpList))
+                .filter(ret -> filterNewMsgId(ret.id))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    mView.onShowNewMsgHint();
+                }, AppLogger::e);
+    }
+
+    private boolean filterNewMsgId(long id) {
+        return id == 505 || id == 222 || id == 512;
     }
 }

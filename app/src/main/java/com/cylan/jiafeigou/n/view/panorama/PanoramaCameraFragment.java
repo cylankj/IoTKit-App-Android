@@ -152,6 +152,8 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     ProgressBar bottomPanelLoading;
     @BindView(R.id.act_panorama_camera_upgrading)
     TextView cameraUpgrading;
+    @BindView(R.id.imv_toolbar_message)
+    ImageViewTip ivt_newMessageTips;
 
     private AlertDialog deviceReportDialog;
 
@@ -163,12 +165,9 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     private int panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
     private PopupWindow videoPopHint;
     private PanoramicView720_Ext surfaceView;
-    private ConnectionDialog connectionDialog;
     private AlertDialog mobileAlert;
     private boolean hasResolution = false;
-    private ConnectionDescriptionFragment fragment;
     private boolean justForTest = false;
-    //    private boolean hasNetSetting = false;
     private boolean upgrading = false;
     private boolean alertSDFormatError = true;
     private boolean alertHttpNotAvailable = true;
@@ -202,21 +201,6 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
         onHideBadNetWorkBanner();
     }
-
-//    @Override
-//    public void onViewAction(int action, String handler, Object extra) {
-//        super.onViewAction(action, handler, extra);
-//        if (action == VIEW_ACTION_OK) {
-//            hasNetSetting = false;
-//            int netType = NetUtils.getNetType(getContext());
-//            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-//            if (!hasNetSetting) {
-//                presenter.startViewer();
-//            }
-//            onRefreshConnectionMode(alertMobile ? 1 : -2);
-//            onRefreshViewModeUI(panoramaViewMode, false, false);
-//        }
-//    }
 
     @Override
     public void onDismiss() {
@@ -585,7 +569,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         AppLogger.d("clickedSettingMenu");
         hideVideoModePop();
         presenter.dismiss();
-        startActivity(new Intent(getContext(), CamSettingActivity.class));
+        startActivity(new Intent(getContext(), CamSettingActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
     }
 
     @OnClick(R.id.tv_top_bar_left)
@@ -619,25 +603,14 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     public void clickedConfigureNetWorkBanner() {
         AppLogger.d("clickedConfigureNetWorkBanner");
         CharSequence text = bannerWarmingTitle.getText();
-        if (TextUtils.equals(text, getString(R.string.Tap1_DisconnectedPleaseCheck))) {
-            showConfigNetWorkFragment();
-        } else if (TextUtils.equals(text, getString(R.string.Tap1_Offline))) {
-            showConfigConnectionDialog();
-        } else if (TextUtils.equals(text, getString(R.string.Tips_Device_TimeoutRetry))) {
-
+        if (TextUtils.equals(text, getString(R.string.Tap1_Offline))) {
+            DeviceConnectionDescriptionFragment deviceConnectionDescriptionFragment = DeviceConnectionDescriptionFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.camera_main_container, deviceConnectionDescriptionFragment).addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
+        } else if (TextUtils.equals(text, getString(R.string.OK))) {
+            ConnectionDescriptionFragment connectionDescriptionFragment = ConnectionDescriptionFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.camera_main_container, connectionDescriptionFragment).addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
         }
     }
-
-    private void showConfigNetWorkFragment() {
-        if (fragment == null) {
-            fragment = ConnectionDescriptionFragment.newInstance();
-        }
-//        hasNetSetting = true;
-
-        getFragmentManager().beginTransaction().replace(R.id.camera_main_container, fragment).commit();
-//        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, R.id.camera_main_container);
-    }
-
 
     public void clickedQuickMenuItem1SwitchMic(View view) {
         AppLogger.d("clickedQuickMenuItem1SwitchMic");
@@ -746,6 +719,11 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
 
     }
 
+    @Override
+    public void onShowNewMsgHint() {
+        ivt_newMessageTips.setShowDot(true);
+    }
+
     public void onDeviceUpgrade() {
         upgrading = true;
         cameraUpgrading.setVisibility(View.VISIBLE);
@@ -754,16 +732,6 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         bannerSwitcher.setVisibility(View.INVISIBLE);
         liveFlowSpeedText.setVisibility(View.INVISIBLE);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
-    }
-
-
-    public void showConfigConnectionDialog() {
-        if (connectionDialog == null) {
-            connectionDialog = ConnectionDialog.newInstance(uuid);
-        }
-        if (!connectionDialog.isVisible()) {
-            connectionDialog.show(getFragmentManager(), ConnectionDialog.class.getSimpleName());
-        }
     }
 
     public void onSwitchSpeedMode(@SPEED_MODE int mode) {
@@ -830,7 +798,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     }
 
     @Override
-    public void onRefreshConnectionMode(int connectionType) {//-1:连接设备超时 ,-2:可以忽略
+    public void onRefreshConnectionMode(int connectionType) {//1:mobile,0:wifi
         bannerSwitcher.setVisibility(View.VISIBLE);
         cameraUpgrading.setVisibility(View.GONE);
         Device device = sourceManager.getDevice(uuid);
@@ -844,61 +812,44 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         boolean apMode = JFGRules.isAPDirect(uuid, mac);
         boolean isOnline = net.net > 0;
-        boolean online = sourceManager.isOnline();
+        int netType = NetUtils.getNetType(getContext());
         bannerConnectionIcon.setImageResource(apMode ? R.drawable.camera720_icon_ap : R.drawable.camera720_icon_wifi);
         bannerConnectionIcon.setVisibility((apMode || isOnline) ? View.VISIBLE : View.GONE);
         bannerConnectionText.setVisibility(upgrading ? View.INVISIBLE : View.VISIBLE);
         bannerConnectionText.setText(apMode ? R.string.Tap1_OutdoorMode : isOnline ? R.string.DEVICE_WIFI_ONLINE : R.string.NOT_ONLINE);
         bottomPanelAlbumItem.setEnabled(!upgrading);
         bottomPanelAlbumItem.setAlpha(bottomPanelAlbumItem.isEnabled() ? 1 : 0.3f);
-        if (!apMode && !isOnline) {
-            bannerChargeText.setVisibility(View.INVISIBLE);
-            bannerChargeIcon.setVisibility(View.INVISIBLE);
-        }
+        bannerChargeText.setVisibility((!apMode && !isOnline) ? View.INVISIBLE : View.VISIBLE);
+        bannerChargeIcon.setVisibility((!apMode && !isOnline) ? View.INVISIBLE : View.VISIBLE);
         menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled(!apMode);
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled(!apMode);
+        liveFlowSpeedText.setVisibility(View.INVISIBLE);
         if (apMode) {//ap 模式禁用对讲功能
             onSpeaker(false);
             onMicrophone(false);
         }
-        if (NetUtils.getNetType(getContext()) == -1) {//真没网了
+        if ((!apMode && !isOnline) || connectionType < 0) {
+
             if (bannerSwitcher.getDisplayedChild() == 0) {
                 bannerSwitcher.showNext();
             }
-            bannerWarmingTitle.setText(R.string.Tap1_DisconnectedPleaseCheck);
-            liveFlowSpeedText.setVisibility(View.INVISIBLE);
-            loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
-        } else if (!apMode && !isOnline) {//不是 ap 直连且当前设备是离线状态
-            if (bannerSwitcher.getDisplayedChild() == 0) {
-                bannerSwitcher.showNext();
-            }
-            bannerWarmingTitle.setText(R.string.Tap1_Offline);
-            loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
-            liveFlowSpeedText.setVisibility(View.INVISIBLE);
-        } else if (connectionType == -1) {//-1
-            if (bannerSwitcher.getDisplayedChild() == 0) {
-                bannerSwitcher.showNext();
-            }
-            bannerWarmingTitle.setText(R.string.Tips_Device_TimeoutRetry);
-            loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
-            liveFlowSpeedText.setVisibility(View.INVISIBLE);
-        } else if (connectionType < 0) {
-            if (bannerSwitcher.getDisplayedChild() == 1) {
-                bannerSwitcher.showPrevious();
-            }
-            loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
-            liveFlowSpeedText.setVisibility(View.INVISIBLE);
-            if (!hasResolution /*&& !hasNetSetting*/) {
-                presenter.startViewer();
-            }
+
+            bottomPanelPhotoGraphItem.setEnabled(false);
+            bottomPanelMoreItem.setEnabled(false);
+
+            bannerWarmingTitle.setText(connectionType == -1 ? R.string.Tips_Device_TimeoutRetry :
+                    netType != -1 ? R.string.Tap1_Offline : R.string.Tap1_DisconnectedPleaseCheck);
+            loadingBar.setState(connectionType == -1 ? JConstant.PLAY_STATE_LOADING_FAILED : JConstant.PLAY_STATE_IDLE, null);
+            return;
         }
 
-        menuBinding.actPanoramaCameraQuickMenuItem1Mic.setEnabled(!apMode);
-        menuBinding.actPanoramaCameraQuickMenuItem2Voice.setEnabled(!apMode);
-        if (connectionType < 0) return;
+        if (bannerSwitcher.getDisplayedChild() == 1) {
+            bannerSwitcher.showPrevious();
+        }
+        loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
 
         onHideBadNetWorkBanner();//不管是 WiFi 还是移动网络,都应该隐藏网络不好的 banner
-        if (connectionType == 0) {//wifi
+        if (connectionType == ConnectivityManager.TYPE_WIFI || netType == ConnectivityManager.TYPE_WIFI) {//wifi
             AppLogger.d("正在使用 WiFi 网络,可以放心观看");
 
             if (mobileAlert != null && mobileAlert.isShowing()) {
@@ -909,7 +860,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
             /*}*/
             if (preNetType != connectionType)
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
-        } else if (connectionType == 1) {//mobile
+        } else if (connectionType == ConnectivityManager.TYPE_MOBILE || netType == ConnectivityManager.TYPE_MOBILE) {//mobile
             AppLogger.d("正在使用移动网络,请注意流量");
             if (alertMobile) {
                 onRefreshControllerView(false, false);
@@ -935,8 +886,9 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
                 presenter.startViewer();
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedNetwork));
             }
-            preNetType = connectionType;
+
         }
+        preNetType = connectionType;
     }
 
 
@@ -1110,6 +1062,9 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     @OnClick(R.id.imv_toolbar_message)
     public void onEnterMessage() {
         AppLogger.d("onEnterMessage");
+        PanoramaMessageWrapper messageWrapper = PanoramaMessageWrapper.newInstance(uuid);
+        getFragmentManager().beginTransaction().replace(R.id.camera_main_container, messageWrapper).addToBackStack(PanoramaMessageWrapper.class.getSimpleName()).commit();
+        ivt_newMessageTips.setShowDot(false);
     }
 
     public static PanoramaCameraFragment newInstance(String uuid) {

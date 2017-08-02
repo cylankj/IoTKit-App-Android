@@ -161,13 +161,13 @@ public class MiscUtils {
     }
 
     public static int getFileType(CamMessageBean bean) {
-        return bean.alarmMsg != null ? bean.alarmMsg.type : bean.bellCallRecord != null ? bean.bellCallRecord.type : 0;
+        return bean.alarmMsg != null ? bean.alarmMsg.ossType : bean.bellCallRecord != null ? bean.bellCallRecord.type : 0;
     }
 
     public static CamWarnGlideURL getCamWarnUrl(String cid, CamMessageBean bean, int index) {
         CamWarnGlideURL result = null;
         if (bean.alarmMsg != null) {
-            result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.type);
+            result = new CamWarnGlideURL(cid, bean.alarmMsg.time + "_" + index + ".jpg", bean.alarmMsg.time, index, bean.alarmMsg.ossType);
         } else if (bean.bellCallRecord != null) {
             if (bean.bellCallRecord.fileIndex == -1) {
                 //旧版本门铃呼叫记录,不带index

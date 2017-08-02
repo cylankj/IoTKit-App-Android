@@ -217,6 +217,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             camMessageListAdapter.clear();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ClearDataEvent.class);
         }
+        if (getArguments() != null && getArguments().getBoolean(JConstant.KEY_JUMP_TO_MESSAGE, false)) {
+            //需要刷新
+            needRefresh = true;
+        }
         if (needRefresh) startRequest(true);
     }
 

@@ -7,10 +7,12 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareContentContract;
+import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.setting.AIRecognitionPresenter;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullContract;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
@@ -80,6 +82,13 @@ public class FragmentModule {
     @PerFragment
     public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
         PanoramaPresenter presenter = injector.inject(new PanoramaPresenter());
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public static AIRecognitionContact.Presenter provideAIRecognitionPresenter(BasePresenterInjector injector) {
+        AIRecognitionPresenter presenter = injector.inject(new AIRecognitionPresenter());
         return presenter;
     }
 

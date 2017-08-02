@@ -12,6 +12,11 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.pick.OnWheelChangedListener;
 import com.cylan.jiafeigou.widget.pick.WheelVerticalView;
@@ -43,9 +48,10 @@ public class WarmIntervalFragment extends BaseDialog {
     @BindView(R.id.warm_unit)
     WheelVerticalView warmUnit;
 
-    private int currentUnit = 1;
-
-    private int currentNumber = 1;
+    private int numberIndex = 0;
+    private int unitIndex = 0;
+    private String uuid;
+    private Device device;
 
     public static WarmIntervalFragment newInstance(Bundle bundle) {
         WarmIntervalFragment fragment = new WarmIntervalFragment();
@@ -67,6 +73,7 @@ public class WarmIntervalFragment extends BaseDialog {
         final String title = bundle.getString(KEY_TITLE);
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
+        this.uuid = bundle.getString(JConstant.KEY_DEVICE_ITEM_UUID, "");
         if (!TextUtils.isEmpty(title))
             tvDialogTitle.setText(title);
         if (!TextUtils.isEmpty(lContent))
@@ -74,6 +81,10 @@ public class WarmIntervalFragment extends BaseDialog {
         if (!TextUtils.isEmpty(rContent))
             tvDialogBtnRight.setText(rContent);
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
+        device = DataSourceManager.getInstance().getDevice(uuid);
+        DpMsgDefine.DPWarnInterval interval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, new DpMsgDefine.DPWarnInterval());
+        numberIndex = interval.sec / 60 - 1;
+        unitIndex = interval.sec >= 60 ? 1 : 0;
         initWarmUnit();
         initWarmNumber();
     }
@@ -92,25 +103,24 @@ public class WarmIntervalFragment extends BaseDialog {
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         warmUnit.setViewAdapter(adapter);
-        warmUnit.setCurrentItem(currentUnit);
+        warmUnit.setCurrentItem(unitIndex);
         warmUnit.addChangingListener(changedListener);
 //        warmUnit.setCyclic(true);
         warmUnit.setInterpolator(new AnticipateOvershootInterpolator());
         warmUnit.setVisibleItems(3);
         warmUnit.setViewAdapter(adapter);
-        warmUnit.setCurrentItem(currentUnit);
     }
 
     // Wheel changed listener
     private OnWheelChangedListener changedListener = (wheel, oldValue, newValue) -> {
         switch (wheel.getId()) {
             case R.id.warm_number:
-                currentNumber = newValue;
+                numberIndex = newValue;
                 break;
             case R.id.warm_unit:
-                currentUnit = newValue;
+                unitIndex = newValue;
                 warmNumber.invalidateItemsLayout(true);
-                warmNumber.setCurrentItem(1);
+                warmNumber.setCurrentItem(0);
                 break;
         }
     };
@@ -119,12 +129,12 @@ public class WarmIntervalFragment extends BaseDialog {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             protected CharSequence getItemText(int index) {
-                return currentUnit == 0 ? "30" : "" + index + 1;
+                return unitIndex == 0 ? "30" : "" + (index + 1);
             }
 
             @Override
             public int getItemsCount() {
-                return currentUnit == 0 ? 1 : 10;
+                return unitIndex == 0 ? 1 : 10;
             }
 
 
@@ -136,16 +146,19 @@ public class WarmIntervalFragment extends BaseDialog {
         warmNumber.setInterpolator(new AnticipateOvershootInterpolator());
         warmNumber.setVisibleItems(3);
         warmNumber.setViewAdapter(adapter);
-        warmNumber.setCurrentItem(currentNumber);
+        warmNumber.setCurrentItem(numberIndex);
     }
 
     @OnClick(R.id.tv_dialog_btn_right)
     public void sure() {
-
+        if (action != null) {
+            action.onDialogAction(0, unitIndex == 0 ? 30 : 60 * (numberIndex + 1));
+        }
+        dismiss();
     }
 
     @OnClick(R.id.tv_dialog_btn_left)
     public void cancel() {
-
+        dismiss();
     }
 }

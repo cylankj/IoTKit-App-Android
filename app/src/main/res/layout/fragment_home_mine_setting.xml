@@ -56,9 +56,7 @@
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_home_setting_accessMes"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_title="@string/PUSH_MSG"
                     hunt:sv_v_divider="true" />
 
@@ -66,9 +64,7 @@
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_sound_container"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_title="@string/IN_APP_SOUND"
                     hunt:sv_v_divider="true" />
 
@@ -76,27 +72,21 @@
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_vibrate_container"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_title="@string/IN_APP_VIBRATE"
                     hunt:sv_v_divider="true" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_home_setting_wechat"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_title="@string/Alarm_WeChat"
                     hunt:sv_v_divider="true" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_setting_wechat_switch"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_switch_visibility="false"
                     hunt:sv_title="@string/Change_ID"
                     hunt:sv_v_divider="true" />
@@ -104,9 +94,7 @@
                 <com.cylan.jiafeigou.widget.SettingItemView0
                     android:id="@+id/sv_home_setting_clear"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    android:layout_marginEnd="@dimen/x10"
-                    android:layout_marginStart="@dimen/x5"
+                    android:layout_height="wrap_content"
                     hunt:sv_sub_title="0.0M"
                     hunt:sv_switch_visibility="false"
                     hunt:sv_title="@string/CLEAR_DATA"
@@ -116,9 +104,7 @@
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_home_setting_recommend"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_switch_visibility="false"
                     hunt:sv_title="@string/app_share"
                     hunt:sv_v_divider="true" />
@@ -126,9 +112,7 @@
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_home_setting_about"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    android:layout_marginEnd="@dimen/x20"
-                    android:layout_marginStart="@dimen/x20"
+                    android:layout_height="wrap_content"
                     hunt:sv_switch_visibility="false"
                     hunt:sv_title="@string/ABOUT"
                     hunt:sv_v_divider="true" />

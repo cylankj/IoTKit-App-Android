@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -204,7 +205,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
-        swMotionAI.setVisibility(enableAI ? View.VISIBLE : View.GONE);
+        swMotionAI.setVisibility(enableAI || true ? View.VISIBLE : View.GONE);
         swMotionInterval.setVisibility(warmInterval || true ? View.VISIBLE : View.GONE);
     }
 
@@ -249,6 +250,12 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
                         fLayoutProtectionEndTime.setTvSubTitle(MiscUtils.parse2Time(info.timeEnd));
                     }
+
+                    //报警间隔
+                    DpMsgDefine.DPWarnInterval warnInterval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, new DpMsgDefine.DPWarnInterval());
+                    int sec = warnInterval.sec / 60;
+                    swMotionInterval.setTvSubTitle(sec > 0 ? "" + sec + "分钟" : "30秒");
+
                 }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
     }
 
@@ -346,15 +353,26 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             break;
 
             case R.id.sw_motion_AI: {
-
+                AIRecognitionFragment aiRecognitionFragment = AIRecognitionFragment.newInstance(uuid);
+                ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), aiRecognitionFragment, android.R.id.content);
             }
             break;
 
             case R.id.sw_motion_interval: {
-                Bundle bundle = new Bundle();
-                bundle.putString(BaseDialog.KEY_TITLE, "报警间隔");
-                WarmIntervalFragment fragment = WarmIntervalFragment.newInstance(bundle);
-
+                WarmIntervalFragment fragment = WarmIntervalFragment.newInstance(getBundle("报警间隔"));
+                fragment.setAction((id, value) -> {
+                    if (value != null && value instanceof Integer) {
+                        Integer result = (Integer) value;
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        DpMsgDefine.DPWarnInterval info = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, new DpMsgDefine.DPWarnInterval());
+                        if (info.sec != result) {
+                            info.sec = result;
+                            basePresenter.updateInfoReq(info, DpMsgMap.ID_514_CAM_WARNINTERVAL);
+                        }
+                        updateDetails();
+                        ToastUtil.showToast(getString(R.string.PWD_OK_2));
+                    }
+                });
                 showFragment(fragment);
             }
             break;

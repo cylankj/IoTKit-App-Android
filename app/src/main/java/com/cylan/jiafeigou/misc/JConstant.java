@@ -154,6 +154,40 @@ public class JConstant {
     public static final java.lang.String KEY_SHOW_HISTORY_WHEEL_CASE = "key_show_history_wheel_case";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL = "key_cam_live_page_play_history_init_wheel";
 
+    //人形检测的物体
+    public static final int OBJECT_MAN = 1;
+    public static final int OBJECT_CAT = 2;
+    public static final int OBJECT_DOG = 3;
+    public static final int OBJECT_CAR = 4;
+
+
+    public static String getAIText(int[] objects) {
+        StringBuilder result = new StringBuilder();
+        if (objects != null) {
+            for (int object : objects) {
+                switch (object) {
+                    case JConstant.OBJECT_MAN: {
+                        result.append("人形 ");
+                        break;
+                    }
+                    case JConstant.OBJECT_DOG: {
+                        result.append("狗 ");
+                        break;
+                    }
+                    case JConstant.OBJECT_CAR: {
+                        result.append("猫 ");
+                        break;
+                    }
+                    case JConstant.OBJECT_CAT: {
+                        result.append("车辆 ");
+                        break;
+                    }
+                }
+            }
+        }
+        return result.toString();
+    }
+    //人形检测的物体
 
     /**
      * 保存了 {@link BellLiveActivity}的进程id

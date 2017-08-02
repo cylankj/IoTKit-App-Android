@@ -15,16 +15,11 @@ public class CameraMainActivity extends BaseActivity {
     protected void initViewAndListener() {
         super.initViewAndListener();
         PanoramaCameraFragment fragment = PanoramaCameraFragment.newInstance(uuid);
-        getSupportFragmentManager().beginTransaction().replace(R.id.camera_main_container, fragment).addToBackStack(PanoramaCameraFragment.class.getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.camera_main_container, fragment).commit();
     }
 
     @Override
     protected void setActivityComponent(ActivityComponent activityComponent) {
 
-    }
-
-    @Override
-    protected void onPrepareToExit(Action action) {
-        action.actionDone();
     }
 }

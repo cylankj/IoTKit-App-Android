@@ -24,97 +24,110 @@
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_white" />
 
-    <TextView
-        android:id="@+id/tv_motion_detection_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20"
-        android:text="@string/SETTINGS"
-        android:textColor="@color/color_4b9fd5"
-        android:textSize="@dimen/sp15" />
-
-    <com.cylan.jiafeigou.widget.SettingItemView1
-        android:id="@+id/sw_motion_detection"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        hunt:sv_title="@string/SECURE_TYPE"
-        hunt:sv_v_divider="true" />
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/sw_motion_AI"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        hunt:sv_red_hint="true"
-        hunt:sv_switch_visibility="false"
-        hunt:sv_title="AI识别"
-        hunt:sv_v_divider="true" />
-
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/sw_motion_interval"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        hunt:sv_switch_visibility="false"
-        hunt:sv_title="报警间隔"
-        hunt:sv_v_divider="true" />
-
-
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/fLayout_protection_sensitivity"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        hunt:sv_title="@string/SECURE_SENSITIVITY"
-        hunt:sv_v_divider="true" />
-
-    <com.cylan.jiafeigou.widget.SettingItemView0
-        android:id="@+id/fLayout_protection_warn_effect"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        hunt:sv_title="@string/SOUNDS"
-        hunt:sv_v_divider="true" />
-
-    <FrameLayout
-        android:id="@+id/fl_protection_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            android:layout_marginTop="@dimen/y20"
-            android:text="@string/TIME"
-            android:textColor="@color/color_4b9fd5"
-            android:textSize="@dimen/sp15" />
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_24_record_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/fLayout_protection_start_time"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y54"
-            hunt:sv_title="@string/FROME"
-            hunt:sv_v_divider="true" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/fLayout_protection_end_time"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y54"
-            hunt:sv_title="@string/TO"
-            hunt:sv_v_divider="true" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/fLayout_protection_repeat_period"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y54"
-            hunt:sv_title="@string/REPEAT"
-            hunt:sv_v_divider="true" />
+            <TextView
+                android:id="@+id/tv_motion_detection_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                android:text="@string/SETTINGS"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp15" />
 
-    </LinearLayout>
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sw_motion_detection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_title="@string/SECURE_TYPE"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sw_motion_AI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_red_hint="true"
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="AI识别"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sw_motion_interval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="报警间隔"
+                hunt:sv_v_divider="true" />
+
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/fLayout_protection_sensitivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_title="@string/SECURE_SENSITIVITY"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/fLayout_protection_warn_effect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                hunt:sv_title="@string/SOUNDS"
+                hunt:sv_v_divider="true" />
+
+            <FrameLayout
+                android:id="@+id/fl_protection_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginTop="@dimen/y20"
+                    android:text="@string/TIME"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="@dimen/sp15" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_24_record_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/fLayout_protection_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    hunt:sv_title="@string/FROME"
+                    hunt:sv_v_divider="true" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/fLayout_protection_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    hunt:sv_title="@string/TO"
+                    hunt:sv_v_divider="true" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/fLayout_protection_repeat_period"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    hunt:sv_title="@string/REPEAT"
+                    hunt:sv_v_divider="true" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

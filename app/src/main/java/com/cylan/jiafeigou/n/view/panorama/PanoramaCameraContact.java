@@ -38,6 +38,8 @@ public interface PanoramaCameraContact {
 
         void onDeviceInitFinish();
 
+        void onShowNewMsgHint();
+
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)

@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -320,12 +321,22 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         long id = bean.id;
         String tContent = TimeUtils.getHH_MM(bean.version) + " ";
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
-            return tContent + getContext().getString(R.string.MSG_WARNING);
+            /*现在人形检测也是用的这个消息,增加了扩展字段,有人形的提示和无人形的提示有区别
+            * 1.有人形提示:检测到 XXX
+            * 2.无人形提示:有新的发现
+            * */
+            if (bean.alarmMsg.objects != null) {//有检测数据
+                return tContent + "检测到 " + JConstant.getAIText(bean.alarmMsg.objects);
+            } else {//无检测数据
+                return tContent + getContext().getString(R.string.MSG_WARNING);
+            }
+
         } else if (id == DpMsgMap.ID_401_BELL_CALL_STATE) {
             return tContent + (bean.bellCallRecord.isOK == 1 ? getContext().getString(R.string.DOOR_CALL) : getContext().getString(R.string.DOOR_UNCALL));
         }
         return tContent;
     }
+
 
     /**
      * 时间
