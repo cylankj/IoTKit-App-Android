@@ -176,7 +176,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     @Override
     public void getFriendListData() {
         rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(o -> BaseApplication.getAppComponent().getCmd().getFriendList(),
                         throwable -> AppLogger.e("getFriendListData" + throwable.getLocalizedMessage()));
     }
@@ -216,7 +216,7 @@ public class AddFriendsContactImp extends AbstractPresenter<AddFriendContract.Vi
     @Override
     public void checkFriendAccount(final String account) {
         rx.Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);

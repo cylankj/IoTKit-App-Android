@@ -176,7 +176,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         if (getAppComponent().getCmd() != null) {
             if (reportTask != null) reportTask.unsubscribe();
             reportTask = Observable.just("report")
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .delay(3, TimeUnit.MINUTES)
                     .subscribe(ret -> {
                         AppLogger.d("timeout for report");

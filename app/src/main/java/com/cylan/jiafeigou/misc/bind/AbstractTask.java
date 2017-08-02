@@ -45,7 +45,7 @@ public abstract class AbstractTask implements ISubmit<AbstractTask.SResult>, Sim
 
     private Observable<SResult> observableResult() {
         return Observable.interval(2, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(aLong -> {
                     if (2 * aLong * 1000 > getTimeout()) {
                         //超时了
@@ -74,7 +74,7 @@ public abstract class AbstractTask implements ISubmit<AbstractTask.SResult>, Sim
 
     private Observable<Boolean> sendBindInfoObservable(String uuid) {
         return Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(sendInfo())
                 .filter(ret -> ret);
     }

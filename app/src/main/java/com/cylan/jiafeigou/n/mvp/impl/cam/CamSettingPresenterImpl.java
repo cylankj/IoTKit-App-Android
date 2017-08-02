@@ -260,7 +260,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
             return Observable.just(false);
         }
         return Observable.just(model)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(s -> {
                     try {
                         for (int i = 0; i < 3; i++) {
@@ -275,7 +275,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     return Observable.just(s);
                 })
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .timeout(10, TimeUnit.SECONDS))//原型说10s
                 .timeout(10, TimeUnit.SECONDS)
                 .flatMap(localUdpMsg -> {
@@ -349,7 +349,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void clearSdcard() {
         rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
                         ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
@@ -399,7 +399,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public Subscription onClearSdReqBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .map(ret -> ret.rets)
                 .flatMap(Observable::from)

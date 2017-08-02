@@ -90,7 +90,7 @@ public class SimpleBindFlow extends AFullBind {
      */
     private void sendPingFPing() {
         Observable.just(1)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(ret -> {
                     try {
                         for (int i = 0; i < 2; i++) {
@@ -147,7 +147,7 @@ public class SimpleBindFlow extends AFullBind {
      */
     public void setServerLanguage(UdpConstant.UdpDevicePortrait portrait) {
         Observable.just(portrait)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(ret -> {
                     try {
                         AppLogger.i(BIND_TAG + portrait);
@@ -315,7 +315,7 @@ public class SimpleBindFlow extends AFullBind {
     @Override
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
         Observable.just(1)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(200, TimeUnit.MILLISECONDS)
                 .filter((Integer integer) -> {
                     return devicePortrait != null;
@@ -359,12 +359,12 @@ public class SimpleBindFlow extends AFullBind {
         //zip用法,合并,这里使用了timeout,也就是说,次subscription的生命周期只有1s
         AppLogger.d(BIND_TAG + "check3GCase:" + check3GCase);
         return Observable.just(shortUUID)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(this::pingObservable)
                 .flatMap(this::fPingObservable)
                 //1s内
                 .timeout(3, TimeUnit.SECONDS, timeoutException(check3GCase))
-//                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.io())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     Log.i("CYLAN_TAG", "UPGRADE_VERSION:" + UPGRADE_VERSION + ",udpDevicePortrait.version:" + udpDevicePortrait.version);

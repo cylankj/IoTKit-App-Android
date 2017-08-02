@@ -66,7 +66,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     @Override
     public void sendRequest(final String account, final String mesg) {
         rx.Observable.just(account, mesg)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().addFriend(account, mesg);
@@ -113,7 +113,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     @Override
     public void checkAccount(String account) {
         rx.Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
@@ -172,7 +172,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     @Override
     public Subscription sendAddFriendRep() {
         return RxBus.getCacheInstance().toObservable(RxEvent.AddFriendBack.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addFriendBack -> {
                     if (addFriendBack != null && isSendReq) {

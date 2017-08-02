@@ -144,7 +144,7 @@ public class FeedbackImpl extends AbstractPresenter<FeedBackContract.View>
     @Override
     public Observable<Boolean> sendFeedBack(FeedBackBean bean) {
         return rx.Observable.just(bean)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(ret -> {
                     JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     FeedbackManager.SubmitFeedbackTask task = new FeedbackManager.SubmitFeedbackTask(account.getAccount(), bean);

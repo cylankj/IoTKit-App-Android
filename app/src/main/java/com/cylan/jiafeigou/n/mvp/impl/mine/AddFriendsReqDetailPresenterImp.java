@@ -45,7 +45,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
     @Override
     public void handlerAddAsFriend(String addRequestItems) {
         rx.Observable.just(addRequestItems)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(account -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().consentAddFriend(account);
@@ -82,7 +82,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
     @Override
     public void sendAddReq(FriendsReqBean addRequestItems) {
         rx.Observable.just(addRequestItems)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(mineAddReqBean -> {
                     try {
                         BaseApplication.getAppComponent().getCmd().addFriend(mineAddReqBean.account, "");
@@ -123,7 +123,7 @@ public class AddFriendsReqDetailPresenterImp extends AbstractPresenter<MineFrien
     @Override
     public Subscription executeGetAddReqList() {
         return rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     BaseApplication.getAppComponent().getCmd().getFriendRequestList();
                 }, AppLogger::e);

@@ -678,7 +678,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException {
         Observable.just("update")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     Device device = getDevice(uuid);
                     if (device == null) {
@@ -710,7 +710,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends DataPoint> boolean clearValue(String uuid, int... msgIdList) throws IllegalAccessException {
         Observable.just("update")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     if (msgIdList == null || msgIdList.length == 0) return;
                     Device device = getDevice(uuid);
@@ -998,7 +998,7 @@ public class DataSourceManager implements JFGSourceManager {
                         List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
-                                .subscribeOn(Schedulers.newThread())
+                                .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
                                     if (getAccount() == null || !getJFGAccount().isEnablePush())
                                         return;
@@ -1035,7 +1035,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
                                 .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
-                                .subscribeOn(Schedulers.newThread())
+                                .subscribeOn(Schedulers.io())
                                 .subscribe(baseDPTaskResult -> {
                                     if (getAccount() == null || !getJFGAccount().isEnablePush())
                                         return;
@@ -1092,7 +1092,7 @@ public class DataSourceManager implements JFGSourceManager {
     private Subscription makeAccountSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class)
                 .onBackpressureBuffer()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 //可能是本地的
                 .filter(ret -> isOnline())
                 .subscribe(ret -> {

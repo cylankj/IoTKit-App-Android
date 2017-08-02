@@ -318,7 +318,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     private void getInterestingSSid(List<ScanResult> resultList) {
         if (!ListUtils.isEmpty(resultList))
             LocalWifiInfo.Saver.getSaver().getMap()
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .flatMap(map -> {
                         if (map != null)
                             for (ScanResult result : resultList) {

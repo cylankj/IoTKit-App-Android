@@ -124,7 +124,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
      */
     private Observable<RxEvent.ClientCheckVersion> checkVersionFromGooglePlay() {
         return MiscUtils.getAppVersionFromGooglePlay()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(gVersion -> {
                     String v = PackageUtils.getAppVersionName(ContextUtils.getContext());
                     AppLogger.d("有没有?" + v + ",gV: " + gVersion);
@@ -148,7 +148,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
      */
     private Observable<RxEvent.ClientCheckVersion> checkVersionFrom8Hour() {
         return Observable.just("check_version")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
                 .filter(s -> {
                     int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
@@ -164,7 +164,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
         if (MiscUtils.isGooglePlayServiceAvailable()) {
             //google play 可用 只走google play
             checkVersionFromGooglePlay()
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .filter(ret -> ret != null)
                     .doOnError(ret -> checkVersionFrom8Hours())
                     .subscribe(ret -> {
@@ -183,7 +183,7 @@ public class ClientVersionChecker implements IVersion<ClientVersionChecker.CVers
 
     private void checkVersionFrom8Hours() {
         AppLogger.d("走8小时");
-        checkVersionFrom8Hour().subscribeOn(Schedulers.newThread())
+        checkVersionFrom8Hour().subscribeOn(Schedulers.io())
                 .subscribe(ret -> {
                 }, throwable -> {//让整条订阅连结束
                     if (throwable instanceof RxEvent.HelperBreaker) {

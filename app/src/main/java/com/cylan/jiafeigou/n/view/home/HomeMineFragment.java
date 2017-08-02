@@ -128,9 +128,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             //访客状态
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-            basePresenter.portraitBlur(bm);
-//            setAliasName(getString(R.string.Tap3_LogIn));
+            Observable.just("go")
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(ret -> {
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
+                        basePresenter.portraitBlur(bm);
+                    }, AppLogger::e);
         }
         super.onStart();
         boolean needShowHelp = PreferencesUtils.getBoolean(JConstant.KEY_HELP_GUIDE, true);
@@ -255,8 +258,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (isVisibleToUser && isAdded()) {
             if (getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
                 //访客状态
-                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
-                basePresenter.portraitBlur(bm);
+                Observable.just("go")
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(ret -> {
+                            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
+                            basePresenter.portraitBlur(bm);
+                        }, AppLogger::e);
             }
             lazyLoad();
             //查询好友列表.
@@ -317,12 +324,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 } else {
                     Observable.just("go")
                             .subscribeOn(Schedulers.io())
-                            .map(s -> {
-                                return Bitmap.createBitmap(resource);
-                            })
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .filter(ret -> basePresenter.get() != null)
-                            .subscribe(ret -> basePresenter.get().portraitBlur(ret), AppLogger::e);
+                            .subscribe(ret -> basePresenter.get().portraitBlur(Bitmap.createBitmap(resource)), AppLogger::e);
                 }
             } else {
                 mFrameLayout.get().setBackground(mDrawable.get());

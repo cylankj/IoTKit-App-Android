@@ -65,7 +65,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     public void checkNewVersion(String uuid) {
         //检测是否有新的固件
         Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     Device device = sourceManager.getDevice(uuid);
                     DpMsgDefine.DPPrimary<String> sVersion = sourceManager.getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, null);

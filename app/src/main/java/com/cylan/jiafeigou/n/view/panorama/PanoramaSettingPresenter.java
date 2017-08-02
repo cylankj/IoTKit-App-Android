@@ -34,7 +34,7 @@ public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingConta
 
     private Subscription newVersionRspSub() {
         Subscription subscription = RxBus.getCacheInstance().toObservable(AbstractVersion.BinVersion.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(version -> {
                     version.setLastShowTime(System.currentTimeMillis());
                     PreferencesUtils.putString(JConstant.KEY_FIRMWARE_CONTENT + uuid, new Gson().toJson(version));

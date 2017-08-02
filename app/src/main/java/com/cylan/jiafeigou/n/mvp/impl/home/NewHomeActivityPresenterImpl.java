@@ -34,7 +34,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
 
     private Subscription updateRsp() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.ApkDownload.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -62,7 +62,7 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
 
     private Subscription mineTabNewInfoRsp() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.InfoUpdate.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(ret -> {

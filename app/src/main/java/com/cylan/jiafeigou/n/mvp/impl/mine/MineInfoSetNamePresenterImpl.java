@@ -42,7 +42,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
             getView().showSendHint();
         }
         addSubscription(Observable.just(newAlias)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(s -> {
                     JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     jfgAccount.resetFlag();

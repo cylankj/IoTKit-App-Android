@@ -65,7 +65,7 @@ public class BellPuller {
         if (sourceManager.getAccount() == null || TextUtils.isEmpty(sourceManager.getAccount().getAccount())) {
             //表明没有登录,这种情况比较多{1.登出,2.App正常离线,3.反正就是处于后台,系统管控着}
             Observable.just(response)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .map(ret -> {
                         System.out.println(PUSH_TAG + "autoLogin start");
                         AutoSignIn.getInstance().autoLogin();
