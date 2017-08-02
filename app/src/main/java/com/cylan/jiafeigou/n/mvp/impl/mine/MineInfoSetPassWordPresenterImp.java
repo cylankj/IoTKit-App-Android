@@ -73,7 +73,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
     @Override
     public void sendChangePassReq(final String account, final String oldPass, final String newPass) {
         rx.Observable.just(account)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(s -> {
                     try {
                         int i = BaseApplication.getAppComponent().getCmd().changePassword(account, oldPass, newPass);

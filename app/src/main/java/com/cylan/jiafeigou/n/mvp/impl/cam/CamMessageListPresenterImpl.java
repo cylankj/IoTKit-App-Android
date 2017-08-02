@@ -207,7 +207,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     } else mView.onListInsert(result.first, 0);
                     return result;
                 })
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())

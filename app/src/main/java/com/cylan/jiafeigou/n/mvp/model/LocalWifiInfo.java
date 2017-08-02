@@ -67,7 +67,7 @@ public class LocalWifiInfo {
             if (wifiInfoMap == null) wifiInfoMap = new HashMap<>();
             wifiInfoMap.put(localWifiInfo.getSsid(), localWifiInfo);
             Observable.just("save")
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .subscribe(ret -> {
                         try {
                             PreferencesUtils.putString(secretKey, AESUtil.encrypt(new Gson().toJson(saver)));
@@ -79,7 +79,7 @@ public class LocalWifiInfo {
 
         public Observable<LocalWifiInfo> getInfo(String ssid) {
             return Observable.just(ssid)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .flatMap(s -> {
                         if (wifiInfoMap != null)
                             return Observable.just(wifiInfoMap.get(s));
@@ -98,7 +98,7 @@ public class LocalWifiInfo {
 
         public Observable<Map<String, LocalWifiInfo>> getMap() {
             return Observable.just(null)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .flatMap(s -> {
                         if (wifiInfoMap != null)
                             return Observable.just(wifiInfoMap);

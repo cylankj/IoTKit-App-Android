@@ -63,7 +63,7 @@ public class PanFUUpdate extends BaseFUUpdate {
     public void call(String s) {
         //1.发送一个fping,等待fpingRsp,从中读取ip,port.
         RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)//设备无响应
                 .flatMap(localUdpMsg -> {
                     MessagePack msgPack = new MessagePack();
@@ -160,7 +160,7 @@ public class PanFUUpdate extends BaseFUUpdate {
      */
     private void makeUpdateRspRecv(int timeout) {
         Subscription subscription = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .timeout(timeout, TimeUnit.SECONDS)//设备无响应
                 .filter(ret -> !TextUtils.isEmpty(ret.ip) && ret.port != 0)
                 .flatMap(localUdpMsg -> {

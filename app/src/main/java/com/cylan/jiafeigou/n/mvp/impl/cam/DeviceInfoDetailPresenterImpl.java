@@ -104,7 +104,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     @Override
     public void clearSdcard() {
         rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
                         ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
@@ -158,7 +158,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     @Override
     public Subscription onClearSdReqBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
                 .map(ret -> ret.rets)
                 .flatMap(Observable::from)

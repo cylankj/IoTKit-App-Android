@@ -48,7 +48,7 @@ public class GlobalResetPwdSource {
         }
         long time = System.currentTimeMillis();
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.PwdHasResetEvent.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
                     AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground());

@@ -56,13 +56,13 @@ public class AdsStrategy {
             //获取失败需要重新获取
             Log.d("AdsStrategy", "'AdsStrategy'");
             Observable.just("go and get ads")
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .map(s -> {
                         AppCmd cmd = BaseApplication.getAppComponent().getCmd();
                         if (cmd != null) {//必须要等待sdk init完成,也即是load dex完成后,才能调用.
                             RxBus.getCacheInstance().toObservableSticky(RxEvent.GlobalInitFinishEvent.class)
                                     .first()
-                                    .subscribeOn(Schedulers.newThread())
+                                    .subscribeOn(Schedulers.io())
                                     .delay(10, TimeUnit.SECONDS)
                                     .subscribe(ret -> {
                                         Log.d("AdsStrategy", "初始化成功'AdsStrategy,手动结束'");
@@ -163,7 +163,7 @@ public class AdsStrategy {
      */
     public Observable<AdsStrategy.AdsDescription> needShowAds() {
         return Observable.just("check and get ads")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(s -> {
                     //1.广告页仅在加菲狗版本、中国大陆地区(简体中文)版本显示，其余版本屏蔽。
                     //2.在广告投放时间期限内，每个用户看到的广告展示次数最多为三次，广告展示次数满三次后不再显示。

@@ -21,7 +21,7 @@ public abstract class AbstractPresenter implements BasePresenter {
      *                     {@link Schedulers#io()}
      *                     {@link Schedulers#immediate()}
      *                     {@link Schedulers#trampoline()}
-     *                     {@link Schedulers#newThread()}
+     *                     {@link Schedulers#io()}
      */
     protected void submitCallbackUI(final Task task, Scheduler workerThread) {
         Observable.just(task)

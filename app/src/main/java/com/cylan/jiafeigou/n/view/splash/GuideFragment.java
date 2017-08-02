@@ -63,7 +63,7 @@
 //        if (PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN, false) && index == 3) {
 //            AppLogger.d("updata_login");
 //            resultSub = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultUpdateLogin.class)
-//                    .subscribeOn(Schedulers.newThread())
+//                    .subscribeOn(Schedulers.io())
 //                    .timeout(3, TimeUnit.SECONDS, rx.Observable.just(null)
 //                            .observeOn(AndroidSchedulers.mainThread())
 //                            .map(o -> {

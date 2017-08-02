@@ -732,7 +732,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
                         ToastUtil.showToast(getString(R.string.Instructions_Sent));
                         Subscription subscription = basePresenter.switchApModel(1)
-                                .subscribeOn(Schedulers.newThread())
+                                .subscribeOn(Schedulers.io())
                                 .delay(1, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(ret -> {

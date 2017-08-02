@@ -102,7 +102,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         switch (view.getId()) {
             case R.id.sv_sight_horizontal:
                 Observable.just("save")
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .map(s -> {
                             try {
                                 DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("1");
@@ -118,7 +118,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                 break;
             case R.id.sv_sight_vertical:
                 Observable.just("save")
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .map(s -> {
                             DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("0");
                             try {

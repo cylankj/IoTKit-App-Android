@@ -87,7 +87,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             return;
         }
         Subscription subscription = aFullBind.getBindObservable(false, shortCid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     AppLogger.d(BIND_TAG + "last state");
@@ -106,7 +106,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     @Override
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
         Observable.just("just send wifi info")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .map(s -> {
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -144,7 +144,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     @Override
     public void refreshWifiList() {
         Observable.just("scan")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
 //                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribe(ret -> {
                     WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -160,7 +160,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             return;
         }
         Subscription subscription = aFullBind.getBindObservable(false, shortCid)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .delay(1, TimeUnit.SECONDS)
                 //网络为3
                 .filter(udpDevicePortrait -> {
@@ -222,7 +222,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             Subscription subscription = Observable.just(scanResults)
                     //别那么频繁
                     .throttleFirst(200, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .filter((List<ScanResult> s) -> {
                         //非空返回,如果空,下面的map是不会有结果.
                         return getView() != null;

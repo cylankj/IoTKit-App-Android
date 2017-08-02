@@ -52,7 +52,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     private void save(Bitmap bitmap) {
         Observable.just(bitmap)
                 .filter(new RxHelper.Filter<>("", bitmap != null))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map((Bitmap bMap) -> {
                     String fileName = System.currentTimeMillis() + ".png";
                     String filePath = JConstant.MEDIA_PATH + File.separator;

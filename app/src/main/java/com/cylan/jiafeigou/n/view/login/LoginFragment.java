@@ -1084,6 +1084,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void onAuthenticationResult(int code) {
+        if (!isAdded()) return;
         if (code == 0) {
 
         } else if (code == -1) {

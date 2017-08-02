@@ -61,7 +61,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
     @Override
     public void startScan() {
         Subscription subscription = Observable.just("scan")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(s -> {
                     if (wifiManager != null) wifiManager.startScan();
                     return null;
@@ -84,7 +84,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
         String mac = getLatestMac();
         if (TextUtils.isEmpty(mac)) {
             Subscription subscription = RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .throttleFirst(500, TimeUnit.MILLISECONDS)
                     .subscribe((JfgUdpMsg.FPingAck fPingAck) -> {
                         if (TextUtils.equals(uuid, fPingAck.cid)) {
@@ -162,7 +162,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
         Subscription subscription = Observable.just(scanResults)
                 //别那么频繁
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .filter((List<ScanResult> s) -> {
                     //非空返回,如果空,下面的map是不会有结果.
                     return getView() != null;

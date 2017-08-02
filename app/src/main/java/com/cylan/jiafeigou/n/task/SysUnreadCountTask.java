@@ -31,7 +31,7 @@ public class SysUnreadCountTask implements Action1<Object> {
         getSystemUnreadCount()
                 .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).first(rsp->rsp.seq==ret)
                         .filter(result -> result.map != null)
-                        .observeOn(Schedulers.newThread())
+                        .observeOn(Schedulers.io())
                         .flatMap(rsp -> {
                             int count = -1;
                             if (rsp != null && rsp.map != null && rsp.map.size() != 0) {
@@ -55,7 +55,7 @@ public class SysUnreadCountTask implements Action1<Object> {
                             }
                             return Observable.just(count);
                         }))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(integer -> {
                     TreeHelper helper = BaseApplication.getAppComponent().getTreeHelper();
                     TreeNode node = helper.findTreeNodeByName(SystemMessageFragment.class.getSimpleName());

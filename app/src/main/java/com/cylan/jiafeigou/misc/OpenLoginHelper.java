@@ -430,7 +430,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 //        } else {
 //            //twitter,响应得非常快.
 //            Observable.just(login)
-//                    .subscribeOn(Schedulers.newThread())
+//                    .subscribeOn(Schedulers.io())
 //                    .delay(1, TimeUnit.SECONDS)
 //                    .subscribe(ret -> RxBus.getCacheInstance().postSticky(login), AppLogger::e);
 //        }
