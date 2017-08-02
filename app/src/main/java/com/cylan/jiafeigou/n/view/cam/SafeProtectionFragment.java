@@ -205,7 +205,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
         swMotionAI.setVisibility(enableAI ? View.VISIBLE : View.GONE);
-        swMotionInterval.setVisibility(warmInterval ? View.VISIBLE : View.GONE);
+        swMotionInterval.setVisibility(warmInterval || true ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -257,7 +257,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             R.id.fLayout_protection_warn_effect,
             R.id.fLayout_protection_start_time,
             R.id.fLayout_protection_end_time,
-            R.id.fLayout_protection_repeat_period})
+            R.id.fLayout_protection_repeat_period,
+            R.id.sw_motion_AI,
+            R.id.sw_motion_interval
+    })
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fLayout_protection_sensitivity: {

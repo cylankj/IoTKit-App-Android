@@ -48,7 +48,7 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
+import com.cylan.jiafeigou.n.view.panorama.CameraMainActivity;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -621,7 +621,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
             if (JFGRules.isPan720(device.pid)) {
-                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+                startActivity(new Intent(getActivity(), CameraMainActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             } else /**if (JFGRules.isCamera(device.pid))/**/ {
                 Intent in = new Intent(getActivity(), CameraLiveActivity.class);
                 View tip = itemView.findViewById(R.id.img_device_icon);

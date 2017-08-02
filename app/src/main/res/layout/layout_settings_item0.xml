@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/y15"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_settings_item_title"
         app:layout_constraintStart_toStartOf="parent"

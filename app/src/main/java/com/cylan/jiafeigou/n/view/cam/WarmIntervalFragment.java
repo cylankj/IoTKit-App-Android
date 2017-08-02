@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -93,7 +94,7 @@ public class WarmIntervalFragment extends BaseDialog {
         warmUnit.setViewAdapter(adapter);
         warmUnit.setCurrentItem(currentUnit);
         warmUnit.addChangingListener(changedListener);
-        warmUnit.setCyclic(true);
+//        warmUnit.setCyclic(true);
         warmUnit.setInterpolator(new AnticipateOvershootInterpolator());
         warmUnit.setVisibleItems(3);
         warmUnit.setViewAdapter(adapter);
@@ -109,6 +110,7 @@ public class WarmIntervalFragment extends BaseDialog {
             case R.id.warm_unit:
                 currentUnit = newValue;
                 warmNumber.invalidateItemsLayout(true);
+                warmNumber.setCurrentItem(1);
                 break;
         }
     };
@@ -117,7 +119,7 @@ public class WarmIntervalFragment extends BaseDialog {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             protected CharSequence getItemText(int index) {
-                return currentUnit == 0 ? "30" : "" + index;
+                return currentUnit == 0 ? "30" : "" + index + 1;
             }
 
             @Override
@@ -130,10 +132,20 @@ public class WarmIntervalFragment extends BaseDialog {
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         warmNumber.setViewAdapter(adapter);
         warmNumber.addChangingListener(changedListener);
-        warmNumber.setCyclic(true);
+//        warmNumber.setCyclic(true);
         warmNumber.setInterpolator(new AnticipateOvershootInterpolator());
         warmNumber.setVisibleItems(3);
         warmNumber.setViewAdapter(adapter);
         warmNumber.setCurrentItem(currentNumber);
+    }
+
+    @OnClick(R.id.tv_dialog_btn_right)
+    public void sure() {
+
+    }
+
+    @OnClick(R.id.tv_dialog_btn_left)
+    public void cancel() {
+
     }
 }

@@ -39,7 +39,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     protected JFGSourceManager sourceManager;
     @Inject
     protected AppCmd appCmd;
-    protected String mUUID;
+    protected String uuid;
     protected AlertDialog alert;
     protected static Toast sToast;
 
@@ -59,10 +59,10 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
+            uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
         }
         if (presenter != null) {
-            presenter.onSetViewUUID(mUUID);
+            presenter.onSetViewUUID(uuid);
         }
     }
 

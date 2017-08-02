@@ -44,10 +44,10 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.DeviceInformation;
-import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.LayoutPanoramaPopMenuBinding;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -62,7 +62,6 @@ import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -91,6 +90,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.schedulers.Schedulers;
 
+import static android.content.Context.AUDIO_SERVICE;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.ERROR_CODE_HTTP_NOT_AVAILABLE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT;
 
@@ -98,7 +98,7 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PAN
  * Created by yanzhendong on 2017/3/7.
  */
 @RuntimePermissions
-public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View, CommonPanoramicView.PanoramaEventListener {
+public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View, CommonPanoramicView.PanoramaEventListener {
 
     @BindView(R.id.act_panorama_camera_banner)
     ViewSwitcher bannerSwitcher;
@@ -168,7 +168,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private boolean hasResolution = false;
     private ConnectionDescriptionFragment fragment;
     private boolean justForTest = false;
-    private boolean hasNetSetting = false;
+    //    private boolean hasNetSetting = false;
     private boolean upgrading = false;
     private boolean alertSDFormatError = true;
     private boolean alertHttpNotAvailable = true;
@@ -182,13 +182,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private int preNetType;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
+    }
+
+    @Override
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
     }
 
     @Override
@@ -198,20 +203,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onHideBadNetWorkBanner();
     }
 
-    @Override
-    public void onViewAction(int action, String handler, Object extra) {
-        super.onViewAction(action, handler, extra);
-        if (action == VIEW_ACTION_OK) {
-            hasNetSetting = false;
-            int netType = NetUtils.getNetType(this);
-            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
-            if (!hasNetSetting) {
-                presenter.startViewer();
-            }
-            onRefreshConnectionMode(alertMobile ? 1 : -2);
-            onRefreshViewModeUI(panoramaViewMode, false, false);
-        }
-    }
+//    @Override
+//    public void onViewAction(int action, String handler, Object extra) {
+//        super.onViewAction(action, handler, extra);
+//        if (action == VIEW_ACTION_OK) {
+//            hasNetSetting = false;
+//            int netType = NetUtils.getNetType(getContext());
+//            boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE);
+//            if (!hasNetSetting) {
+//                presenter.startViewer();
+//            }
+//            onRefreshConnectionMode(alertMobile ? 1 : -2);
+//            onRefreshViewModeUI(panoramaViewMode, false, false);
+//        }
+//    }
 
     @Override
     public void onDismiss() {
@@ -223,7 +228,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        menuBinding = LayoutPanoramaPopMenuBinding.inflate(getLayoutInflater());//先初始化,以免为空
+        menuBinding = LayoutPanoramaPopMenuBinding.inflate(LayoutInflater.from(getContext()));//先初始化,以免为空
         View contentView = menuBinding.getRoot();
         contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         popOption = new PopupWindow(contentView, contentView.getMeasuredWidth(), contentView.getMeasuredHeight());
@@ -248,7 +253,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelPhotoGraphItem.setOnTouchListener(photoGraphTouchListener);
         panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
         alertSDFormatError = true;
-        deviceReportDialog = new AlertDialog.Builder(this).setCancelable(false).create();
+        deviceReportDialog = new AlertDialog.Builder(getActivity()).setCancelable(false).create();
         alertHttpNotAvailable = PreferencesUtils.getBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable);
     }
 
@@ -306,7 +311,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         hasResolution = true;
         if (surfaceView == null) {
-            surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, this, true);
+            surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, getActivity(), true);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             surfaceView.setLayoutParams(params);
             videoLiveContainer.addView(surfaceView);
@@ -366,13 +371,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onVideoDisconnect(int code) {
         if (code == JError.ErrorVideoPeerInConnect) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.CONNECTING)
                     .setCancelable(false)
                     .setPositiveButton(R.string.OK, (dialog, which) -> {
                         dialog.dismiss();
                         presenter.dismiss();
-                        finish();
+                        getActivity().finish();
                     })
                     .show();
         } else if (code == -3) {
@@ -391,12 +396,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         presenter.cancelViewer();
         AlertDialog.Builder builder = AlertDialogManager.getInstance().getCustomDialog(getActivityContext());
         builder.setPositiveButton(getString(R.string.OK), (dialog, which) -> {
-            finish();
-            Intent intent = new Intent(this, NewHomeActivity.class);
+            getActivity().finish();
+            Intent intent = new Intent(getContext(), NewHomeActivity.class);
             startActivity(intent);
         })
                 .setMessage(getString(R.string.Tap1_device_deleted));
-        AlertDialogManager.getInstance().showDialog("onDeviceUnBind", this, builder);
+        AlertDialogManager.getInstance().showDialog("onDeviceUnBind", getActivity(), builder);
     }
 
     @Override
@@ -425,7 +430,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
         hasResolution = false;
@@ -435,11 +440,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onRefreshControllerView(false, true);
         updateHint();
         setting.setEnabled(true);
-        int netType = NetUtils.getNetType(this);
+        int netType = NetUtils.getNetType(getContext());
         boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
-        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-            onRefreshConnectionMode(alertMobile ? 1 : -2);
-        }
+//        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
+        onRefreshConnectionMode(alertMobile ? 1 : -2);
+//        }
     }
 
     private void updateHint() {
@@ -459,25 +464,25 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
         presenter.dismiss();
     }
 
-    @Override
-    protected void setActivityComponent(ActivityComponent activityComponent) {
-        activityComponent.inject(this);
-    }
+//    @Override
+//    protected void setActivityComponent(ActivityComponent activityComponent) {
+//        activityComponent.inject(this);
+//    }
 
     public boolean muteAudio(boolean bMute) {
         boolean isSuccess;
-        AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        AudioManager am = (AudioManager) getContext().getSystemService(AUDIO_SERVICE);
         if (bMute) {
             int result = am.requestAudioFocus(null, AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
             isSuccess = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
@@ -530,7 +535,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
         presenter.dismiss();
-        Intent intent = new Intent(this, PanoramaAlbumActivity.class);
+        Intent intent = new Intent(getContext(), PanoramaAlbumActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
     }
@@ -554,7 +559,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     public void showVideoModePop() {
         if (videoPopHint == null) {
-            View view = LayoutInflater.from(this).inflate(R.layout.item_panorama_pop_hint, null);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_panorama_pop_hint, null);
             view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
             videoPopHint = new PopupWindow(view, view.getMeasuredWidth(), view.getMeasuredHeight());
             videoPopHint.setFocusable(false);
@@ -580,20 +585,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         AppLogger.d("clickedSettingMenu");
         hideVideoModePop();
         presenter.dismiss();
-        startActivity(new Intent(this, CamSettingActivity.class));
+        startActivity(new Intent(getContext(), CamSettingActivity.class));
     }
 
-    @Override
     @OnClick(R.id.tv_top_bar_left)
-    public void onBackPressed() {
+    public void onBackClick() {
         if (!hideVideoModePop()) {
             presenter.dismiss();
-            super.onBackPressed();
+            getActivity().finish();
         }
         AppLogger.d("clickedToolBarBackMenu");
     }
 
-    @Override
+    //    @Override
     protected void onPrepareToExit(Action action) {
         presenter.dismiss();
         if (surfaceView != null) {
@@ -628,14 +632,16 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (fragment == null) {
             fragment = ConnectionDescriptionFragment.newInstance();
         }
-        hasNetSetting = true;
-        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
+//        hasNetSetting = true;
+
+        getFragmentManager().beginTransaction().replace(R.id.camera_main_container, fragment).commit();
+//        ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment, R.id.camera_main_container);
     }
 
 
     public void clickedQuickMenuItem1SwitchMic(View view) {
         AppLogger.d("clickedQuickMenuItem1SwitchMic");
-        PanoramaCameraActivityPermissionsDispatcher.switchMicroPhoneWithPermissionWithCheck(this);
+        PanoramaCameraFragmentPermissionsDispatcher.switchMicroPhoneWithPermissionWithCheck(this);
     }
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
@@ -661,13 +667,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     public void clickedQuickMenuItem2SwitchVoice(View view) {
         AppLogger.d("clickedQuickMenuItem2SwitchVoice");
-        PanoramaCameraActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+        PanoramaCameraFragmentPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PanoramaCameraActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        PanoramaCameraFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     public void clickedQuickMenuItem3Resolution(View view) {
@@ -702,7 +708,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onBellBatteryDrainOut() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.Tap1_LowPower)
                 .setCancelable(false)
                 .setPositiveButton(R.string.I_KNOW, null)
@@ -756,7 +762,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             connectionDialog = ConnectionDialog.newInstance(uuid);
         }
         if (!connectionDialog.isVisible()) {
-            connectionDialog.show(getSupportFragmentManager(), ConnectionDialog.class.getSimpleName());
+            connectionDialog.show(getFragmentManager(), ConnectionDialog.class.getSimpleName());
         }
     }
 
@@ -855,7 +861,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             onSpeaker(false);
             onMicrophone(false);
         }
-        if (NetUtils.getNetType(this) == -1) {//真没网了
+        if (NetUtils.getNetType(getContext()) == -1) {//真没网了
             if (bannerSwitcher.getDisplayedChild() == 0) {
                 bannerSwitcher.showNext();
             }
@@ -882,7 +888,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             }
             loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
             liveFlowSpeedText.setVisibility(View.INVISIBLE);
-            if (!hasResolution && !hasNetSetting) {
+            if (!hasResolution /*&& !hasNetSetting*/) {
                 presenter.startViewer();
             }
         }
@@ -898,9 +904,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             if (mobileAlert != null && mobileAlert.isShowing()) {
                 mobileAlert.dismiss();
             }
-            if (!hasNetSetting) {
-                presenter.startViewer();
-            }
+           /* if (!hasNetSetting) {*/
+            presenter.startViewer();
+            /*}*/
             if (preNetType != connectionType)
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
         } else if (connectionType == 1) {//mobile
@@ -908,14 +914,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             if (alertMobile) {
                 onRefreshControllerView(false, false);
                 if (mobileAlert == null) {
-                    mobileAlert = new AlertDialog.Builder(this)
+                    mobileAlert = new AlertDialog.Builder(getActivity())
                             .setMessage(R.string.Tap1_Firmware_DataTips)
                             .setPositiveButton(R.string.OK, (dialog, which) -> {
                                 PreferencesUtils.putBoolean(JConstant.ALERT_MOBILE, true);
                                 loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
-                                if (!hasNetSetting) {
-                                    presenter.startViewer();
-                                }
+                               /* if (!hasNetSetting) {*/
+                                presenter.startViewer();
+                                /*}*/
                             })
                             .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
                                 loadingBar.setState(JConstant.PLAY_STATE_LOADING_FAILED, null);
@@ -1064,11 +1070,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onNewFirmwareRsp() {
-        if (isFinishing()) return;
-        AlertDialogManager.getInstance().showDialog(this,
+//        if (isFinishing()) return;
+        AlertDialogManager.getInstance().showDialog(getActivity(),
                 getString(R.string.Tap1_Device_UpgradeTips), getString(R.string.Tap1_Device_UpgradeTips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    Intent intent = new Intent(this, FirmwareUpdateActivity.class);
+                    Intent intent = new Intent(getContext(), FirmwareUpdateActivity.class);
                     intent.putExtra(JConstant.KEY_COMPONENT_NAME, this.getClass().getName());
                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                     startActivity(intent);
@@ -1092,6 +1098,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelAlbumItem.setAlpha(bottomPanelAlbumItem.isEnabled() ? 1 : 0.3f);
         Schedulers.io().createWorker().schedule(() -> {
             try {
+
                 String filePath = JConstant.MEDIA_PATH + File.separator + JConstant.PANORAMA_THUMB_PICTURE + File.separator + uuid + ".jpg";
                 FileUtils.saveBitmap(bitmap, filePath);
             } catch (IOException e) {
@@ -1103,5 +1110,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.imv_toolbar_message)
     public void onEnterMessage() {
         AppLogger.d("onEnterMessage");
+    }
+
+    public static PanoramaCameraFragment newInstance(String uuid) {
+        Bundle bundle = new Bundle();
+        PanoramaCameraFragment fragment = new PanoramaCameraFragment();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

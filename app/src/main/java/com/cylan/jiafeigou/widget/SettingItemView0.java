@@ -52,7 +52,7 @@ public class SettingItemView0 extends RelativeLayout {
         tvSubTitle = (TextView) view.findViewById(R.id.tv_settings_item_sub_title);
         imgvIcon = (ImageView) view.findViewById(R.id.imgv_item_icon);
         imgvRedHint = (ImageView) view.findViewById(R.id.imv_item_red_hint);
-        imgvIcon.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_image_show, true)
+        imgvIcon.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_image_show, false)
                 ? VISIBLE : GONE);
         switchButton = (SafeSwitchButton) view.findViewById(R.id.btn_item_switch);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);

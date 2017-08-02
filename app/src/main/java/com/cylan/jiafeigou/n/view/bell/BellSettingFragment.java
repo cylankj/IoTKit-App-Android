@@ -91,7 +91,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
             case R.id.sv_setting_device_detail: {
                 BellDetailFragment fragment = BellDetailFragment.newInstance(null);
                 Bundle bundle = new Bundle();
-                bundle.putString(KEY_DEVICE_ITEM_UUID, mUUID);
+                bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
 
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
@@ -120,7 +120,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 mClearRecordFragment.setAction((id, value) -> {
                     switch (id) {
                         case R.id.tv_dialog_btn_right:
-                            presenter.clearBellRecord(mUUID);
+                            presenter.clearBellRecord(uuid);
                             LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                     }
                 });
@@ -132,7 +132,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                Device device = sourceManager.getDevice(mUUID);
+                Device device = sourceManager.getDevice(uuid);
                 String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
@@ -203,7 +203,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
         }
 //        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
 
-        DpMsgDefine.DPNet net = sourceManager.getDevice(mUUID).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = sourceManager.getDevice(uuid).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         if (net != null) svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(net));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);

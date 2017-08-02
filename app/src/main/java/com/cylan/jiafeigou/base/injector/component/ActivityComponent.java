@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellRecordDetailActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingActivity;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
@@ -25,7 +24,7 @@ public interface ActivityComponent {
 
     void inject(BellLiveActivity activity);
 
-    void inject(PanoramaCameraActivity activity);
+//    void inject(PanoramaCameraFragment activity);
 
     void inject(PanoramaAlbumActivity activity);
 

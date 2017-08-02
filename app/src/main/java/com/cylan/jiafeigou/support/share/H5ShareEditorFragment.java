@@ -117,7 +117,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             imm.showSoftInput(shareBinding.shareContextEditor, 0);
         }
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
-        if (presenter != null) presenter.check(mUUID, shareItem.time);
+        if (presenter != null) presenter.check(uuid, shareItem.time);
     }
 
     private String getNameByType(int shareType) {

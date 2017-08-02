@@ -30,8 +30,6 @@
         android:id="@+id/rl_alarm_setting_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/x10"
-        android:layout_marginStart="@dimen/x10"
         android:layout_marginTop="@dimen/y12">
 
         <com.cylan.jiafeigou.widget.SettingItemView0
@@ -67,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/y10"
             android:clickable="false">
 
             <RadioButton
@@ -99,9 +98,7 @@
     <RelativeLayout
         android:id="@+id/rl_watch_video_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/x10"
-        android:layout_marginStart="@dimen/x10">
+        android:layout_height="wrap_content">
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/siv_watch_video_switcher"

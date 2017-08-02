@@ -9,11 +9,12 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.ShareContentWebH5Activity;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullFragment;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraFragment;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureFragment;
-import com.cylan.jiafeigou.support.share.H5ShareEditorFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordDeviceFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordMainFragment;
+import com.cylan.jiafeigou.support.share.H5ShareEditorFragment;
 
 import dagger.Component;
 
@@ -47,4 +48,6 @@ public interface FragmentComponent {
     void inject(H5ShareEditorFragment fragment);
 
     void inject(ShareContentWebH5Activity fragment);
+
+    void inject(PanoramaCameraFragment fragment);
 }

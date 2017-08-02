@@ -13,8 +13,10 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullContract;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullPresenter;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigurePresenter;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSharePresenter;
 
@@ -73,4 +75,12 @@ public class FragmentModule {
     public static PanoramaShareContact.Presenter providePanoramaSharePresenter(BasePresenterInjector injector) {
         return injector.inject(new PanoramaSharePresenter());
     }
+
+    @Provides
+    @PerFragment
+    public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
+        PanoramaPresenter presenter = injector.inject(new PanoramaPresenter());
+        return presenter;
+    }
+
 }

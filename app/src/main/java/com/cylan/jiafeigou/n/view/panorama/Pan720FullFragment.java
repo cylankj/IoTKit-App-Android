@@ -102,7 +102,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
         PAlbumBean bean = getArguments().getParcelable("item_url");
         customToolbar.setToolbarLeftTitle(TimeUtils.getTimeSpecial(bean.getDownloadFile().getTime() * 1000L));
         Glide.with(this)
-                .load(Uri.fromFile(new File(JConstant.PAN_PATH + File.separator + mUUID + File.separator + bean.getDownloadFile().fileName)))
+                .load(Uri.fromFile(new File(JConstant.PAN_PATH + File.separator + uuid + File.separator + bean.getDownloadFile().fileName)))
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -144,7 +144,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        Device device = sourceManager.getDevice(mUUID);
+        Device device = sourceManager.getDevice(uuid);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (!TextUtils.equals(mac, NetUtils.getRouterMacAddress((Application) ContextUtils.getContext()))) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));

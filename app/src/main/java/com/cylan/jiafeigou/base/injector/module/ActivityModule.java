@@ -10,10 +10,8 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumPresenter;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailPresenter;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingPresenter;
 import com.cylan.jiafeigou.support.share.ShareMediaContact;
@@ -37,12 +35,6 @@ public class ActivityModule {
         return injector.inject(new BellLivePresenterImpl());
     }
 
-    @Provides
-    @PerActivity
-    public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
-        PanoramaPresenter presenter = injector.inject(new PanoramaPresenter());
-        return presenter;
-    }
 
     @Provides
     @PerActivity
@@ -85,5 +77,4 @@ public class ActivityModule {
     public static SplashContact.Presenter provideSplashPresenter(BasePresenterInjector injector) {
         return injector.inject(new SplashPresenter());
     }
-
 }

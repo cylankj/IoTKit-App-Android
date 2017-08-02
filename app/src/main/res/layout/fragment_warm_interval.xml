@@ -22,12 +22,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <com.cylan.jiafeigou.widget.pick.WheelVerticalView
             android:id="@+id/warm_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/x5"
-            android:layout_marginStart="@dimen/x5"
+            android:layout_marginStart="@dimen/y28"
             android:background="#F00"
             app:layout_constraintBottom_toTopOf="@+id/tv_dialog_btn_left"
             app:layout_constraintEnd_toStartOf="@+id/warm_unit"
@@ -38,10 +38,9 @@
 
         <com.cylan.jiafeigou.widget.pick.WheelVerticalView
             android:id="@+id/warm_unit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/x5"
-            android:layout_marginStart="@dimen/x5"
+            android:layout_marginEnd="@dimen/y28"
             android:background="#0F0"
             app:layout_constraintBottom_toTopOf="@+id/tv_dialog_btn_left"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,9 +54,12 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y36"
             android:gravity="center"
+            android:paddingBottom="@dimen/y8"
             android:paddingEnd="@dimen/y22"
             android:paddingStart="@dimen/y22"
-            android:text="@string/OK"
+            android:paddingTop="@dimen/y8"
+
+            android:text="@string/CANCEL"
             android:textColor="@color/color_4b9fd5"
             android:textSize="@dimen/sp14"
             app:layout_constraintBottom_toBottomOf="@+id/tv_dialog_btn_right"
@@ -67,14 +69,18 @@
             android:id="@+id/tv_dialog_btn_right"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y36"
-            android:layout_margin="@dimen/y8"
+            android:layout_marginEnd="@dimen/y8"
+            android:layout_marginTop="@dimen/y38"
             android:gravity="center"
+            android:paddingBottom="@dimen/y8"
             android:paddingEnd="@dimen/y22"
             android:paddingStart="@dimen/y22"
-            android:text="@string/CANCEL"
+            android:paddingTop="@dimen/y8"
+            android:text="@string/OK"
             android:textColor="@color/color_4b9fd5"
             android:textSize="@dimen/sp14"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/warm_unit" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -78,12 +78,12 @@ public class DelayRecordGuideFragment extends BaseFragment {
             initDeviceEnableDialog();
             mEnableDeviceDialog.get().show(getChildFragmentManager(), BaseDialog.class.getName());
         } else {
-            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, mUUID);
+            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, uuid);
         }
     }
 
     private boolean isDeviceSleeping() {
-        Device device = sourceManager.getDevice(mUUID);
+        Device device = sourceManager.getDevice(uuid);
         DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         return isStandBY.standby;
     }

@@ -115,7 +115,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction((id, value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                Device device = sourceManager.getDevice(mUUID);
+                Device device = sourceManager.getDevice(uuid);
                 if (!TextUtils.isEmpty(content)
                         && device != null && !TextUtils.equals(device.alias, content)) {
                     device.alias = content;
@@ -169,7 +169,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         } else {
             svSettingHardwareUpdate.setTvSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
             if (presenter != null)
-                presenter.checkNewVersion(mUUID);
+                presenter.checkNewVersion(uuid);
         }
     }
 
@@ -196,7 +196,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
             case R.id.rl_hardware_update:
 //                if (checkDevVersion != null) {
                 Intent intent = new Intent(getActivity(), FirmwareUpdateActivity.class);
-                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 getActivity().startActivity(intent);
 //                }
                 break;
