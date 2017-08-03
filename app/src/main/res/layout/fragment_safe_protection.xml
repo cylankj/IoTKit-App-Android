@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 hunt:sv_red_hint="true"
                 hunt:sv_switch_visibility="false"
-                hunt:sv_title="AI识别"
+                hunt:sv_title="@string/SETTING_SECURE_AI"
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0

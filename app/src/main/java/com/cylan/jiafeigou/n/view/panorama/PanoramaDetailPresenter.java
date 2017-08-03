@@ -5,7 +5,10 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -73,7 +76,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
         if (mode == 0) {
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
-        } else {
+        } else if (mode == 1 || mode == 2) {
             Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(1, Collections.singletonList(item.fileName))
                     .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                     .subscribeOn(Schedulers.io())
@@ -93,6 +96,29 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         AppLogger.e(e.getMessage());
                     });
             registerSubscription(subscribe);
+        } else if (mode == 3) {
+            // TODO: 2017/8/3  
+            Subscription subscribe = Observable.just(0)
+                    .observeOn(Schedulers.io())
+                    .map(version -> new DPEntity()
+                            .setUuid("")
+                            .setVersion(version)
+                            .setAction(DBAction.DELETED)
+                            .setMsgId(DpMsgMap.ID_505_CAMERA_ALARM_MSG))
+                    .flatMap(this::perform)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> {
+                        if (ret.getResultCode() == 0) {//成功了
+                            mView.onDeleteResult(0);
+                        } else {
+                            mView.onDeleteResult(-1);
+                        }
+                    }, e -> {
+                        e.printStackTrace();
+                        AppLogger.d(e.getMessage());
+                    });
+            registerSubscription(subscribe);
+
         }
     }
 }

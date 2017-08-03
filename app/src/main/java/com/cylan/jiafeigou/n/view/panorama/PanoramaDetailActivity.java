@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -121,12 +122,20 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private DownloadInfo downloadInfo;
     private PopupWindow morePopMenu;
     private TextView download;
-    private int mode;
+    private int mode;//0 :仅本地 1:设备 2:本机+设备 3:fromMessageList
     private View deleted;
     private boolean looper = true;
     private boolean isPlay = false;
     private IjkMediaPlayer player1;
 
+
+    public static Intent getIntentFromMessage(Context context, DpMsgDefine.DPAlarm alarm, int position) {
+        Intent intent = new Intent(context, PanoramaDetailActivity.class);
+        intent.putExtra("panorama_position", position);
+        intent.putExtra("panorama_mode", 3);
+
+        return intent;
+    }
 
     public static Intent getIntent(Context context, String uuid, PanoramaAlbumContact.PanoramaItem item, int mode, int position) {
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -521,7 +530,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void deleteWithAlert() {
         new AlertDialog.Builder(this)
-                .setMessage(mode == 0 ? R.string.Tips_SureDelete : R.string.Tap1_DeletedCameraNCellphoneFileTips)
+                .setMessage(mode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
                 .setNegativeButton(R.string.CANCEL, null)
                 .setPositiveButton(R.string.DELETE, (dialog, which) -> {
                     if (deleted != null) {
@@ -655,6 +664,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             deletePanoramaItem.position = getIntent().getIntExtra("panorama_position", 0);
             RxBus.getCacheInstance().post(deletePanoramaItem);
             finish();
+        } else {
+            AppLogger.e("删除失败了");
         }
     }
 

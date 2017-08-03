@@ -19,7 +19,7 @@
             app:ct_fit_system_window="true"
             app:ct_icon="@drawable/nav_icon_close_white"
             app:ct_icon_right="@drawable/icon_explain_white"
-            app:ct_left_title="设备离线"
+            app:ct_left_title="@string/NOT_ONLINE"
             app:ct_left_title_color="@color/color_white" />
 
         <TextView

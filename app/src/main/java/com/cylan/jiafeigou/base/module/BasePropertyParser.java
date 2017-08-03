@@ -105,8 +105,8 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(606, new DPProperty(DpMsgDefine.DPShareItem.class));
         properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));//set
         properties.put(ID_601_ACCOUNT_STATE, new DPProperty(DpMsgDefine.DPMineMesg.class));
-        properties.put(ID_515_CAM_ObjectDetect, new DPProperty(DpMsgDefine.DPCameraObjectDetect.class, CAMERA, DOORBELL, PROPERTY));
-        properties.put(ID_514_CAM_WARNINTERVAL, new DPProperty(DpMsgDefine.DPWarnInterval.class, CAMERA, DOORBELL, PROPERTY));
+        properties.put(ID_515_CAM_ObjectDetect, new DPProperty(DpMsgDefine.DPCameraObjectDetect.class, DPProperty.LEVEL_HOME, CAMERA, DOORBELL, PROPERTY));
+        properties.put(ID_514_CAM_WARNINTERVAL, new DPProperty(DpMsgDefine.DPWarnInterval.class, DPProperty.LEVEL_HOME, CAMERA, DOORBELL, PROPERTY));
         properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, CAMERA, DOORBELL));//清晰度,分辨率
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
@@ -122,7 +122,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_402_BELL_VOICE_MSG, new DPProperty(int.class, PROPERTY, DOORBELL));
         properties.put(ID_401_BELL_CALL_STATE, new DPProperty(DpMsgDefine.DPBellCallRecord.class));//set
         properties.put(ID_304_DEVICE_CAMERA_ROTATE, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(228, new DPProperty(DpMsgDefine.DPBaseUpgradeStatus.class, PROPERTY, CAMERA, DOORBELL));
@@ -147,7 +147,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_204_SDCARD_STORAGE, new DPProperty(DpMsgDefine.DPSdStatus.class, PROPERTY, CAMERA, DOORBELL));
         //格式化响应.结构和204一样.
         properties.put(ID_203_SD_FORMAT_RSP, new DPProperty(DpMsgDefine.DPSdStatus.class, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_202_MAC, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
+        properties.put(ID_202_MAC, new DPProperty(String.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_201_NET, new DPProperty(DpMsgDefine.DPNet.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(305, new DPProperty(DpMsgDefine.DPAutoRecordWatcher.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
     }

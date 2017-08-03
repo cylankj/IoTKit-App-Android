@@ -70,7 +70,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         holder.setText(R.id.iv_album_video_duration_text, TimeUtils.getMM_SS(item.duration * 1000L));
         holder.setVisibility(R.id.iv_album_icon_720_iphone, (item.location == 0 || item.location == 2) ? View.VISIBLE : View.GONE);
         //0:本地;1:设备;2:本地+设备
-        holder.setVisibility(R.id.iv_album_icon_720_camera, (item.location == 1 || item.location == 2) ? View.VISIBLE : View.GONE);
+        //1.1.0 版本只有一个手机图标了
+//        holder.setVisibility(R.id.iv_album_icon_720_camera, (item.location == 1 || item.location == 2) ? View.VISIBLE : View.GONE);
+        holder.setVisibility(R.id.iv_album_icon_720_camera, View.GONE);
         Glide.with(getContext())
                 .load(new PanoramaThumbURL(uuid, item.fileName))
                 .placeholder(R.drawable.wonderful_pic_place_holder)

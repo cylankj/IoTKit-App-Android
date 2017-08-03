@@ -288,7 +288,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
-            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
+//            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
         });
         LoadingDialog.dismissLoading(getFragmentManager());
     }
@@ -311,7 +311,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             setCurrentPosition(0);
             lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
             rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
-            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0);
+            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
         });
     }
 
@@ -390,7 +390,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (getView() != null && getActivity() != null) {
             getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
         }
-        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0);
+        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
     }
 
     @Override

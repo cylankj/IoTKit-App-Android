@@ -54,6 +54,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onStop() {
         super.onStop();
 //        DownloadManager.getInstance().stopAllTask();//#113300
+
+        //1.1.0 新需求,需要在退出页面是停止下载
+        DownloadManager.getInstance().stopAllTask();
     }
 
     @Override
