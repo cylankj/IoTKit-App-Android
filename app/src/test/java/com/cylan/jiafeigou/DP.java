@@ -218,4 +218,13 @@ public class DP {
 //        System.out.println(BindUtils.versionCompare("3.1.0.1011", "3.0.0.1011"));
     }
 
+    @Test
+    public void test505() throws Exception {
+        MessagePack messagePack = new MessagePack();
+        byte[] bytes = new byte[]{-106, -50, 89, -126, -114, 116, 1, 1, 1, -95, 48, -112};
+        messagePack.read(bytes);
+        System.out.println(messagePack.toString());
+    }
+
+
 }

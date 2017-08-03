@@ -18,6 +18,10 @@
   <string name="ADD_SHARE">Partager la connexion</string>
   <string name="ADD_SUCC_1">Rajout réussi</string>
   <string name="AGREE">Lu et accepté</string>
+  <string name="AI_CAT">Chat</string>
+  <string name="AI_DOG">Chien</string>
+  <string name="AI_HUMAN">Humain</string>
+  <string name="AI_VEHICLE">Véhicule</string>
   <string name="ALARM">Alertes</string>
   <string name="ALERTS">Alertes</string>
   <string name="ALIAS">Nom</string>
@@ -93,6 +97,7 @@
   <string name="ClearingTips">Clairière&#8230;</string>
   <string name="Cloud_Camera">Caméra nuage</string>
   <string name="Consumer_Camera">Appareil photo consommateur</string>
+  <string name="DATA_FLOW_PHOTO">La consommation de données serait créée si vous voyez la photo originale sans connexion WIFI, continuez&#8211;vous?</string>
   <string name="DEAL_FEEDBACK">Merci pour vos commentaires</string>
   <string name="DELETE">Supprimer</string>
   <string name="DELETED">Supprimé</string>
@@ -103,6 +108,7 @@
   <string name="DELETE_SURE">Vous êtes sûr de vouloir supprimer ?</string>
   <string name="DELETE_THEME">Supprimer</string>
   <string name="DELETE_THEME_XX">Vous êtes sûr de vouloir supprimer %s ?</string>
+  <string name="DETECTED_AI">Détecté</string>
   <string name="DEVICE">Dispositif</string>
   <string name="DEVICES_TIPS_TEXT">Ce processus a besoin:\n 1 l\'appareil connecté au réseau \n 2 enregistrer et activer le CID \n 3 liaison avec le compte actuel</string>
   <string name="DEVICES_TITLE">Ajouter un appareil</string>
@@ -118,6 +124,13 @@
   <string name="DEVICE_CONNECTING">L\'appareil se connecte à internet</string>
   <string name="DEVICE_EXISTED">L\'appareil a été rajouté</string>
   <string name="DEVICE_NO_RES">Ajout complet \n Aller à la liste, afficher l\'état de l\'appareil</string>
+  <string name="DEVICE_OFFLINE1">Vérifiez si l\'appareil est sous tension</string>
+  <string name="DEVICE_OFFLINE2">Le voyant d\'alimentation de l\'appareil est toujours après le démarrage. Si la LED ne s\'allume pas, appuyez sur le bouton d\'alimentation jusqu\'à ce que le voyant bleu clignote.</string>
+  <string name="DEVICE_OFFLINE3">Vérifiez le réseau environnant</string>
+  <string name="DEVICE_OFFLINE4">WiFi disponible</string>
+  <string name="DEVICE_OFFLINE5">Configurez le WiFi pour le périphérique</string>
+  <string name="DEVICE_OFFLINE6">Pas de WiFi disponible</string>
+  <string name="DEVICE_OFFLINE7">Veuillez brancher les points chauds de l\'équipement</string>
   <string name="DEVICE_UPGRADE">Mise à jour</string>
   <string name="DEVICE_UPGRADE_TIPS">Le dispositif doit être rebondir à mettre à jour le logiciel.</string>
   <string name="DEVICE_WIFI_ONLINE">Connecté au Wifi</string>
@@ -396,6 +409,9 @@
   <string name="PHONE_NUMBER_2">Numéro de tél. incorrect</string>
   <string name="PHONE_NUMBER_3">Le compte courant va utiliser ce numéro de tél.</string>
   <string name="PHONE_SIGNUP">Téléphone</string>
+  <string name="PHOTO_DELE_POP">Au&#8211;delà de la récupération après la suppression, assurez&#8211;vous de supprimer de l\'photos?</string>
+  <string name="PHOTO_DOWN_DELE">Le fichier actuel est en cours de téléchargement, et il ne sera pas restauré après avoir été supprimé, effacez&#8211;vous?</string>
+  <string name="PHOTO_NOT_LOAD">Impossible de charger une photo originale</string>
   <string name="PLEASE_WAIT">Patienter&#8230;</string>
   <string name="PLEASE_WAIT_1">Patienter&#8230;</string>
   <string name="PLEASE_WAIT_2">En cours rajout, patienter&#8230;</string>
@@ -501,6 +517,8 @@
   <string name="SAT_Hisvideo_Timeselector">Sam</string>
   <string name="SAVE">Effectué</string>
   <string name="SAVED_PHOTOS">Enregistré dans l\'album</string>
+  <string name="SAVE_PHONE">Enregistrer au téléphone</string>
+  <string name="SAVE_SUCCESS">Sauvegarde réussie</string>
   <string name="SCENE_ADDED">%s ajouté</string>
   <string name="SCENE_ADD_ERR">Échec rajout %s</string>
   <string name="SCENE_SAVED">Installation OK</string>
@@ -540,6 +558,7 @@
   <string name="SETTING_FREE">Activer la détection de mouvement et l\'alarme d\'un appareil</string>
   <string name="SETTING_RECORD">Paramètres vidéo</string>
   <string name="SETTING_SD">Carte Micro SD</string>
+  <string name="SETTING_SECURE_AI">Reconnaissance AI</string>
   <string name="SETTING_TIMEZONE">Fuseau Horaire</string>
   <string name="SET_NEW_PWD">Définir le nouveau mot de passe</string>
   <string name="SET_PHOTO_FAIL">Échec transfert photo</string>
@@ -548,6 +567,7 @@
   <string name="SET_PWD">Mot de passe</string>
   <string name="SHARE">Partager</string>
   <string name="SHARE_ACCOUNT">Compte</string>
+  <string name="SHARE_DOWNLOAD">Téléchargez la photo originale puis partagez</string>
   <string name="SHARE_ERR">Partager avec seulement 5 amis</string>
   <string name="SHARE_E_MAIL">E&#8211;mail</string>
   <string name="SHARE_FROM">Partage de %s</string>
@@ -647,12 +667,12 @@
   <string name="Tap0_register_VerificationTips">Le mail d\'activation a été envoyé à %s, s\'il vous plaît cliquer sur le lien pour activer votre compte.</string>
   <string name="Tap0_wrongcode">Code de vérification incorrect</string>
   <string name="Tap1_AddDeviceTips">Cliquez vite sur\"+\"en haut à droite pour ajouter un dispositif</string>
-  <string name="Tap1_AddDevice_CameraTipShort">Appuyez brièvement sur le bouton WiFi pour 1s</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Après la mise sous tension, appuyez sur la touche WiFi</string>
   <string name="Tap1_AddDevice_CameraTips">Attendez que l\'indicateur de scintillement en bleu</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">appuyez longuement sur le bouton WiFi pour 3s</string>
   <string name="Tap1_AddDevice_CloudcameraTips">Attendez que l\'indicateur soit en bleu</string>
   <string name="Tap1_AddDevice_CloudcameraTitle">Après le démarrage et appuyez longuement sur le bouton WiFi pour 3s</string>
-  <string name="Tap1_AddDevice_ConnectWifi">Se connecter au réseau Wi&#8211;Fi</string>
+  <string name="Tap1_AddDevice_ConnectWifi">Se connecter au réseau WiFi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Attendez que le voyant de garder en rouge</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Redémarrer et appuyez longuement sur la touche WiFi pour 3s</string>
   <string name="Tap1_AddDevice_FindNoResult">Aucun dispositif cherché, veuillez essayer à nouveau</string>
@@ -677,7 +697,7 @@
   <string name="Tap1_Album_PutInVR">Mettre le téléphone portable dans des verres VR</string>
   <string name="Tap1_Album_Share_Description">Ajouter description</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" n\'est pas installé, veuillez l\'installer et réessayer</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Le contenu partagé sera enregistré dans \" Merveilleux de la journée\"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Le contenu partagé sera enregistré dans \"Moi > Partage de la gestion > 720°Cam Contenu partagés \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Les images seront affichées dans\"merveilleux de la journée\"</string>
   <string name="Tap1_CameraFun_Standby">En mode veille</string>
   <string name="Tap1_CameraFun_Standby_Description">Activer le mode en veille, l\'appareil va entrer dans l\'état de sommeil, le fonctionnement comme regarder le vidéo en direct, le vidéo en histoire, la sécurité et l\'alarme, l\'enregistrement automatique, le filmer en retard ne seront pas disponibles</string>
@@ -937,7 +957,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, essayez à nouveau</string>
   <string name="Tips_ShortVideo">Appuyez longuement pour enregistrer une courte vidéo</string>
   <string name="Tips_SureDelete">Sure supprimer?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">La caméra ne répond pas, essayer à nouveau</string>
   <string name="UPDATE_FAIL">Échec de connexion de la caméra, essayer à nouveau</string>
   <string name="UPDATING_BUTTON">Mise à jour en cours</string>
@@ -948,7 +968,7 @@
   <string name="USER_HELP">FAQ</string>
   <string name="USER_NAME">Saisir un pseudo</string>
   <string name="USE_HELP">Aide</string>
-  <string name="Unconnect_Network">Votre appareil n\'est pas connecté à un réseau mobile ou à un réseau Wi&#8211;Fi</string>
+  <string name="Unconnect_Network">Votre appareil n\'est pas connecté à un réseau mobile ou à un réseau WiFi</string>
   <string name="VALID_STORAGE">Stockage disponible</string>
   <string name="VIDEO_FirmwareUpdating">Mise à jour du firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Chargement</string>
@@ -993,8 +1013,8 @@
   <string name="WiFiLight_RedFlashing">Rouge clignotant: Connexion</string>
   <string name="WiFiLight_RedNBlueFlashing">rouge &amp; bleu Clignotement: mise à jour</string>
   <string name="WiFiLight_SteadyBlue">Steady blue: WiFi en ligne</string>
-  <string name="Wifi_Hotspot">Dans l\'appareil [Paramètres> LAN sans fil], choisissez un point d\'accès Wi&#8211;Fi pour vous connecter.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi Réseau:</string>
+  <string name="Wifi_Hotspot">Dans l\'appareil [Paramètres> LAN sans fil], choisissez un point d\'accès WiFi pour vous connecter.</string>
+  <string name="Wifi_Method">WiFi Réseau:</string>
   <string name="Wifi_Set_Up">Aller à la mise en place</string>
   <string name="Word_Hours">Heure</string>
   <string name="XX_DISCOVERY">%s a découvert du mouvement.</string>
@@ -1034,7 +1054,7 @@
   <string name="not_found_the_album_application">Album photos introuvable</string>
   <string name="pb_request">Chargement</string>
   <string name="permission_auth">Sur Android valider l\'autorisation \'%s\' dans les paramètres système</string>
-  <string name="photo">Photo</string>
+  <string name="photo">Photos</string>
   <string name="please_choose_wifi">Choisir le réseau WiFi</string>
   <string name="receive_new_news">%s nouveaux messages reçus</string>
   <string name="rename">Modifier le nom</string>

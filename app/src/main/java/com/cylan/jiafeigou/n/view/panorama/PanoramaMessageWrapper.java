@@ -46,7 +46,13 @@ public class PanoramaMessageWrapper extends BaseFragment {
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         bundle.putBoolean(JConstant.KEY_JUMP_TO_MESSAGE, true);
         CamMessageListFragment fragment = CamMessageListFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.message_container, fragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.message_container, fragment).commit();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
     }
 }

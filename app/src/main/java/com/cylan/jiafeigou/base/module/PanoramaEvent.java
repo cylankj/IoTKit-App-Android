@@ -125,13 +125,13 @@ public interface PanoramaEvent {
     @Message
     class MsgSdInfoRsp {
         @Index(0)
-        public int sdIsExist;//sd卡是否存在
-        @Index(1)
-        public int sdcard_recogntion;//错误号。0 正常； 非0错误，需要格式化
-        @Index(2)
         public long storage;//卡容量 单位byte
-        @Index(3)
+        @Index(1)
         public long storage_used;//已用空间 单位byte
+        @Index(2)
+        public int sdcard_recogntion;//错误号。0 正常； 非0错误，需要格式化
+        @Index(3)
+        public boolean sdIsExist;//sd卡是否存在
     }
 
     @Message
@@ -141,6 +141,7 @@ public interface PanoramaEvent {
         @Index(1)
         public int resolution;
     }
+
     @Message
     class MsgUpgradeStatusRsp {
         @Index(0)

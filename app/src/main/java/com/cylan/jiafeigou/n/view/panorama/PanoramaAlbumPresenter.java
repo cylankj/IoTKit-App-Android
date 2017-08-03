@@ -126,7 +126,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    if (ret != null && ret.sdIsExist == 0) {//sd 卡不存在
+                    if (ret != null && !ret.sdIsExist) {//sd 卡不存在
                         mView.onSDCardCheckResult(0);
                     } else {
                         mView.onSDCardCheckResult(1);

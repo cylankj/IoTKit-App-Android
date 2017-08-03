@@ -264,6 +264,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"
                 android:layout_marginBottom="@dimen/y20"
+                android:layout_marginEnd="@dimen/y36"
+                android:layout_marginStart="@dimen/y36"
                 android:layout_marginTop="@dimen/y61"
                 android:background="@drawable/un_bind_device_btn_seletor"
                 android:gravity="center"

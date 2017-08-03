@@ -11,14 +11,11 @@ import com.cylan.jiafeigou.dp.DataPoint;
 public interface AIRecognitionContact {
 
     interface View extends JFGView {
-        void onObjectDetectRsp(int[] objects);
+        void onDeviceUpdate(DataPoint dataPoint);
 
-        void onSetObjectDetectRsp(int code);
     }
 
     interface Presenter extends JFGPresenter<View> {
         void getObjectDetect();
-
-        <T extends DataPoint> void setObjectDetect(T value);
     }
 }

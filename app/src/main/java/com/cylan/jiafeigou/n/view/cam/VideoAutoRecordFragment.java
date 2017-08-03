@@ -117,28 +117,30 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         IProperty property = BaseApplication.getAppComponent().getProductProperty();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+
+        //如果有24小时录像选项的,开启三个选项,没有24小时录像的,开启一个选项
         boolean record24 = property.hasProperty(device.pid, "24RECORD");
 
         rb24Hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
         siv_mode_24_hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
 
-        boolean isRSBell = JFGRules.isRsBell(device.pid);
-        siv_mode_never.setVisibility(isRSBell ? View.GONE : View.VISIBLE);
-        rbNever.setVisibility(isRSBell ? View.GONE : View.VISIBLE);
-        siv_mode_motion.setSwitcherVisibility(isRSBell ? View.VISIBLE : View.GONE);
+//        boolean isRSBell = JFGRules.isRsBell(device.pid);
+        siv_mode_never.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        rbNever.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_motion.setSwitcherVisibility(record24 ? View.GONE : View.VISIBLE);
 
-        rbMotion.setVisibility(isRSBell ? View.GONE : View.VISIBLE);
+        rbMotion.setVisibility(record24 ? View.VISIBLE : View.GONE);
 
         DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
         boolean isRs = JFGRules.isRS(device.pid);
-        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs && !isRSBell ? 2 : -1);
+        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
 
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!alarm) oldOption = -1;
-        if (!isRSBell) {
+        if (record24) {
             rbMotion.setChecked(oldOption == 0);
             rb24Hours.setChecked(oldOption == 1);
             rbNever.setChecked(oldOption == 2);
@@ -161,7 +163,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     }
 
     private void onSwitcherModeMotion(CompoundButton button, boolean checked) {
-        AppLogger.d("Aaaaaaaaaaaaaaaaa");
         if (checked) {
             if (!hasSdcard()) {//先提示没有 sd卡再提示关闭移动侦测
                 ToastUtil.showToast(getString(R.string.has_not_sdcard));

@@ -18,6 +18,10 @@
   <string name="ADD_SHARE">添加分享</string>
   <string name="ADD_SUCC_1">恭喜你，添加成功！</string>
   <string name="AGREE">点击按钮，表示您已同意</string>
+  <string name="AI_CAT">猫</string>
+  <string name="AI_DOG">狗</string>
+  <string name="AI_HUMAN">人形</string>
+  <string name="AI_VEHICLE">车辆</string>
   <string name="ALARM">警报声</string>
   <string name="ALERTS">警报声</string>
   <string name="ALIAS">昵称</string>
@@ -93,6 +97,7 @@
   <string name="ClearingTips">清除中&#8230;</string>
   <string name="Cloud_Camera">云摄像机</string>
   <string name="Consumer_Camera">消费类摄像机</string>
+  <string name="DATA_FLOW_PHOTO">当前使用非WiFi网络，查看原图将会产生流量，是否继续？</string>
   <string name="DEAL_FEEDBACK">感谢您的反馈</string>
   <string name="DELETE">删除</string>
   <string name="DELETED">已删除</string>
@@ -103,6 +108,7 @@
   <string name="DELETE_SURE">确定删除该设备的所有消息？</string>
   <string name="DELETE_THEME">删除位置</string>
   <string name="DELETE_THEME_XX">确定删除位置“%s”吗？</string>
+  <string name="DETECTED_AI">检测到</string>
   <string name="DEVICE">设备</string>
   <string name="DEVICES_TIPS_TEXT">将完成以下步骤：\n1.设备连接到网络\n2.注册并激活CID\n3.与当前账号绑定</string>
   <string name="DEVICES_TITLE">添加设备</string>
@@ -118,6 +124,13 @@
   <string name="DEVICE_CONNECTING">设备正在连接网络&#8230;</string>
   <string name="DEVICE_EXISTED">此账号已经绑定该设备</string>
   <string name="DEVICE_NO_RES">绑定完成 \n 请到列表查看设备状态</string>
+  <string name="DEVICE_OFFLINE1">请检查设备是否已开机</string>
+  <string name="DEVICE_OFFLINE2">设备电源灯常亮则开机，未常亮请长按开机键，直至蓝灯常亮。</string>
+  <string name="DEVICE_OFFLINE3">请检查周围网络</string>
+  <string name="DEVICE_OFFLINE4">有可用WiFi</string>
+  <string name="DEVICE_OFFLINE5">请给设备配置WiFi进行连接。</string>
+  <string name="DEVICE_OFFLINE6">无可用WiFi</string>
+  <string name="DEVICE_OFFLINE7">请直连设备热点。</string>
   <string name="DEVICE_UPGRADE">设备软件升级</string>
   <string name="DEVICE_UPGRADE_TIPS">设备软件版本较低，请重新绑定设备进行升级</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi在线</string>
@@ -396,6 +409,9 @@
   <string name="PHONE_NUMBER_2">请输入有效的手机号码</string>
   <string name="PHONE_NUMBER_3">当前账号正在使用此手机号码</string>
   <string name="PHONE_SIGNUP">手机注册</string>
+  <string name="PHOTO_DELE_POP">删除后将不可恢复，确定从相册中删除？</string>
+  <string name="PHOTO_DOWN_DELE">当前有文件正在下载，删除后将不可恢复，是否删除？</string>
+  <string name="PHOTO_NOT_LOAD">无法加载原图</string>
   <string name="PLEASE_WAIT">请稍候&#8230;</string>
   <string name="PLEASE_WAIT_1">登录中，请稍后&#8230;</string>
   <string name="PLEASE_WAIT_2">正在绑定，请稍候&#8230;</string>
@@ -501,6 +517,8 @@
   <string name="SAT_Hisvideo_Timeselector">周六</string>
   <string name="SAVE">完成</string>
   <string name="SAVED_PHOTOS">已保存到相册</string>
+  <string name="SAVE_PHONE">保存到手机</string>
+  <string name="SAVE_SUCCESS">保存成功</string>
   <string name="SCENE_ADDED">\“%s\”已添加</string>
   <string name="SCENE_ADD_ERR">\“%s\”添加失败</string>
   <string name="SCENE_SAVED">设置成功</string>
@@ -540,6 +558,7 @@
   <string name="SETTING_FREE">随意设置单个设备的移动侦测及报警</string>
   <string name="SETTING_RECORD">录像设置</string>
   <string name="SETTING_SD">Micro SD卡</string>
+  <string name="SETTING_SECURE_AI">AI识别</string>
   <string name="SETTING_TIMEZONE">设备时区</string>
   <string name="SET_NEW_PWD">设置新密码</string>
   <string name="SET_PHOTO_FAIL">头像设置失败</string>
@@ -548,6 +567,7 @@
   <string name="SET_PWD">设置密码</string>
   <string name="SHARE">亲密分享</string>
   <string name="SHARE_ACCOUNT">对方账号</string>
+  <string name="SHARE_DOWNLOAD">请先下载原图再分享</string>
   <string name="SHARE_ERR">只能分享5位朋友哦</string>
   <string name="SHARE_E_MAIL">手机号/邮箱</string>
   <string name="SHARE_FROM">来自%s的分享</string>
@@ -647,12 +667,12 @@
   <string name="Tap0_register_VerificationTips">已发送邮件到%s，请点击邮件内的链接激活账号</string>
   <string name="Tap0_wrongcode">验证码错误</string>
   <string name="Tap1_AddDeviceTips">快点击右上角“+”添加设备吧</string>
-  <string name="Tap1_AddDevice_CameraTipShort">短按WiFi键1秒</string>
+  <string name="Tap1_AddDevice_CameraTipShort">开机后，按一下WiFi键</string>
   <string name="Tap1_AddDevice_CameraTips">等待蓝灯闪烁</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">长按WiFi键3秒</string>
   <string name="Tap1_AddDevice_CloudcameraTips">等待蓝灯常亮</string>
   <string name="Tap1_AddDevice_CloudcameraTitle">开机后，长按WiFi键3秒</string>
-  <string name="Tap1_AddDevice_ConnectWifi">连接Wi&#8211;Fi网络</string>
+  <string name="Tap1_AddDevice_ConnectWifi">连接WiFi网络</string>
   <string name="Tap1_AddDevice_DoorbellTips">等待红灯常亮</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">重新开机，长按WiFi键3秒</string>
   <string name="Tap1_AddDevice_FindNoResult">未搜索到设备，请重试</string>
@@ -660,12 +680,12 @@
   <string name="Tap1_AddDevice_QR">扫一扫</string>
   <string name="Tap1_AddDevice_QR_Fail">此设备暂不支持扫码添加</string>
   <string name="Tap1_AddDevice_SetName">给设备取一个名字吧</string>
-  <string name="Tap1_AddDevice_TipsE">设备连接网络失败，可能是Wi&#8211;Fi密码输入错误，请注意区分大小写</string>
+  <string name="Tap1_AddDevice_TipsE">设备连接网络失败，可能是WiFi密码输入错误，请注意区分大小写</string>
   <string name="Tap1_AddDevice_ToSetting">前往设置</string>
-  <string name="Tap1_AddDevice_WifiConfTips">选择设备要连接的Wi&#8211;Fi</string>
+  <string name="Tap1_AddDevice_WifiConfTips">选择设备要连接的WiFi</string>
   <string name="Tap1_AddDevice_disconnected">网络连接失败，请重新绑定</string>
   <string name="Tap1_AddDevice_openlocationservice">请开启定位服务</string>
-  <string name="Tap1_AddDevice_refreshWifi">未找到设备，是否刷新Wi&#8211;Fi列表？</string>
+  <string name="Tap1_AddDevice_refreshWifi">未找到设备，是否刷新WiFi列表？</string>
   <string name="Tap1_AddDevice_tips">确定退出配置设备？</string>
   <string name="Tap1_Add_Tips">点击这里添加设备</string>
   <string name="Tap1_AddedDeviceTips">设备已绑定当前账号</string>
@@ -677,7 +697,7 @@
   <string name="Tap1_Album_PutInVR">请将手机放入VR眼镜</string>
   <string name="Tap1_Album_Share_Description">请输入照片（视频）描述&#8230;</string>
   <string name="Tap1_Album_Share_NotInstalledTips">未安装“%s”，请安装后重试</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">分享的内容将会保存到“每日精彩”</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">分享的内容将会保存到“我的 > 分享管理 > 720°全景已分享内容”</string>
   <string name="Tap1_BigPic_FavoriteTips">收藏图片将展现在「每日精彩」</string>
   <string name="Tap1_CameraFun_Standby">待机</string>
   <string name="Tap1_CameraFun_Standby_Description">开启待机，设备将进入休眠状态，查看直播、历史视频、安全防护及报警、录像设置、延时摄影等功能将无法使用</string>
@@ -761,8 +781,8 @@
   <string name="Tap1_FirmwareUpdateSuc">固件升级成功</string>
   <string name="Tap1_FirmwareUpdating">正在升级(%s)</string>
   <string name="Tap1_Firmware_DataTips">当前使用非WiFi网络，继续操作将会产生流量，是否继续？</string>
-  <string name="Tap1_HomeMode">家居模式</string>
-  <string name="Tap1_HomeMode_Opened">家居模式已开启</string>
+  <string name="Tap1_HomeMode">连接WiFi</string>
+  <string name="Tap1_HomeMode_Opened">连接WiFi已开启</string>
   <string name="Tap1_Index_DayGreetings">每天都给自己一点小期待</string>
   <string name="Tap1_Index_NightGreetings">每次的歇息，总会带来新的向往</string>
   <string name="Tap1_Index_NoDevice">还没有设备哦</string>
@@ -780,8 +800,8 @@
   <string name="Tap1_NewFirmware">新固件</string>
   <string name="Tap1_NoMessages">无消息</string>
   <string name="Tap1_Offline">设备离线，请重新配置连接>></string>
-  <string name="Tap1_OutdoorMode">直连模式</string>
-  <string name="Tap1_OutdoorMode_Opened">直连模式已开启</string>
+  <string name="Tap1_OutdoorMode">直连</string>
+  <string name="Tap1_OutdoorMode_Opened">直连已开启</string>
   <string name="Tap1_Refreshed">刷新成功</string>
   <string name="Tap1_RefreshedFailed">刷新失败</string>
   <string name="Tap1_SDCardFullyTips">SD卡存储空间已满</string>
@@ -937,7 +957,7 @@
   <string name="Tips_Device_TimeoutRetry">连接超时，请重试</string>
   <string name="Tips_ShortVideo">长按录制短视频</string>
   <string name="Tips_SureDelete">是否删除？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_cn.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_cn.html</string>
   <string name="UPDATE_DISCONNECT">设备无响应，请重试</string>
   <string name="UPDATE_FAIL">设备连接失败，请重试</string>
   <string name="UPDATING_BUTTON">正在更新</string>
@@ -948,7 +968,7 @@
   <string name="USER_HELP">使用帮助</string>
   <string name="USER_NAME">请输入昵称</string>
   <string name="USE_HELP">使用帮助</string>
-  <string name="Unconnect_Network">您的设备未连接移动网络，或Wi&#8211;Fi网络</string>
+  <string name="Unconnect_Network">您的设备未连接移动网络，或WiFi网络</string>
   <string name="VALID_STORAGE">存储空间</string>
   <string name="VIDEO_FirmwareUpdating">固件升级中&#8230;</string>
   <string name="VIDEO_REFRESHING">正在加载，请稍后</string>
@@ -993,8 +1013,8 @@
   <string name="WiFiLight_RedFlashing">红色闪烁：连接中</string>
   <string name="WiFiLight_RedNBlueFlashing">红/蓝闪烁：固件升级中</string>
   <string name="WiFiLight_SteadyBlue">蓝色长亮：WiFi在线</string>
-  <string name="Wifi_Hotspot">在设备的【设置>无线局域网】请选择一个Wi&#8211;Fi热点连接。</string>
-  <string name="Wifi_Method">Wi&#8211;Fi网络：</string>
+  <string name="Wifi_Hotspot">在设备的【设置>无线局域网】请选择一个WiFi热点连接。</string>
+  <string name="Wifi_Method">WiFi网络：</string>
   <string name="Wifi_Set_Up">立即去设置</string>
   <string name="Word_Hours">小时</string>
   <string name="XX_DISCOVERY">“%s”有新的发现</string>
@@ -1016,7 +1036,7 @@
   <string name="contacts_auth">通讯录</string>
   <string name="copy">复制</string>
   <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved</string>
-  <string name="device_Wi_Fi">Wi&#8211;Fi</string>
+  <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n可能是一个电话号码，你可以：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
   <string name="find_new_version">发现新版本</string>

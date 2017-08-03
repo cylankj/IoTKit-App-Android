@@ -18,6 +18,10 @@
   <string name="ADD_SHARE">Bagikan</string>
   <string name="ADD_SUCC_1">Berhasil menambahkan</string>
   <string name="AGREE">Saya membaca dan setuju</string>
+  <string name="AI_CAT">Kucing</string>
+  <string name="AI_DOG">Anjing</string>
+  <string name="AI_HUMAN">Manusia</string>
+  <string name="AI_VEHICLE">Kendaraan</string>
   <string name="ALARM">Sinyal Peringatan</string>
   <string name="ALERTS">Sinyal Peringatan</string>
   <string name="ALIAS">Nama</string>
@@ -93,6 +97,7 @@
   <string name="ClearingTips">Kliring&#8230;</string>
   <string name="Cloud_Camera">Kamera awan</string>
   <string name="Consumer_Camera">Kamera konsumen</string>
+  <string name="DATA_FLOW_PHOTO">Konsumsi data akan tercipta jika melihat foto asli tanpa koneksi WIFI, lanjutkan?</string>
   <string name="DEAL_FEEDBACK">Terima kasih untuk saran yang anda berikan</string>
   <string name="DELETE">Hapus</string>
   <string name="DELETED">Sudah dihapus</string>
@@ -103,6 +108,7 @@
   <string name="DELETE_SURE">Apakah anda yakin akan menghapus ?</string>
   <string name="DELETE_THEME">Hapus</string>
   <string name="DELETE_THEME_XX">Anda yakin mau menghapus %s?</string>
+  <string name="DETECTED_AI">Terdeteksi</string>
   <string name="DEVICE">Perangkat</string>
   <string name="DEVICES_TIPS_TEXT">Proses ini membutuhkan:\n1 . Perangkat yang terhubung ke jaringan \n2. Pendaftaran dan CID Aktif \n3. Dengan Akun yang terhubung</string>
   <string name="DEVICES_TITLE">Tambah perangkat</string>
@@ -118,6 +124,13 @@
   <string name="DEVICE_CONNECTING">Perangkat menghubungkan ke internet</string>
   <string name="DEVICE_EXISTED">Perangkat telah ditambahkan</string>
   <string name="DEVICE_NO_RES">Tambahkan Selesai \n Buka daftar perangkat dan lihat status perangkat</string>
+  <string name="DEVICE_OFFLINE1">Harap periksa apakah perangkat diaktifkan</string>
+  <string name="DEVICE_OFFLINE2">LED daya perangkat selalu setelah booting. Jika lampu LED tidak menyala, tekan tombol daya hingga lampu kilat biru menyala.</string>
+  <string name="DEVICE_OFFLINE3">Silakan periksa jaringan di sekitarnya</string>
+  <string name="DEVICE_OFFLINE4">Tersedia WiFi</string>
+  <string name="DEVICE_OFFLINE5">Konfigurasikan WiFi untuk perangkat</string>
+  <string name="DEVICE_OFFLINE6">WiFi tidak tersedia</string>
+  <string name="DEVICE_OFFLINE7">Tolong hubungkan peralatan hot spot</string>
   <string name="DEVICE_UPGRADE">Tingkatkan perangkat</string>
   <string name="DEVICE_UPGRADE_TIPS">Perangkat harus pulih untuk memperbarui perangkat lunak.</string>
   <string name="DEVICE_WIFI_ONLINE">WIFI&#8211;Online</string>
@@ -396,6 +409,9 @@
   <string name="PHONE_NUMBER_2">No. Telp salah</string>
   <string name="PHONE_NUMBER_3">Akun menggunakan nomor telepon</string>
   <string name="PHONE_SIGNUP">Telepon</string>
+  <string name="PHOTO_DELE_POP">Beyond mengambil setelah penghapusan, tentu untuk menghapus dari fotos?</string>
+  <string name="PHOTO_DOWN_DELE">File saat ini sedang didownload, dan tidak akan dipulihkan setelah dihapus, hapus?</string>
+  <string name="PHOTO_NOT_LOAD">Tidak dapat memuat foto asli</string>
   <string name="PLEASE_WAIT">Silahkan Tunggu&#8230;</string>
   <string name="PLEASE_WAIT_1">Silahkan Tunggu&#8230;</string>
   <string name="PLEASE_WAIT_2">Sedang menambahkan , silahkan tunggu..</string>
@@ -501,6 +517,8 @@
   <string name="SAT_Hisvideo_Timeselector">Sabtu</string>
   <string name="SAVE">Done</string>
   <string name="SAVED_PHOTOS">Tersimpan ke foto</string>
+  <string name="SAVE_PHONE">Simpan di telepon</string>
+  <string name="SAVE_SUCCESS">Berhasil disimpan</string>
   <string name="SCENE_ADDED">\"%s\" Berhasil menambahkan</string>
   <string name="SCENE_ADD_ERR">\"%s\" Gagal untuk menambah</string>
   <string name="SCENE_SAVED">Set Berhasil</string>
@@ -540,6 +558,7 @@
   <string name="SETTING_FREE">Set deteksi gerak dan alarm perangkat</string>
   <string name="SETTING_RECORD">Pengaturan video</string>
   <string name="SETTING_SD">Kartu Micro SD</string>
+  <string name="SETTING_SECURE_AI">Pengakuan AI</string>
   <string name="SETTING_TIMEZONE">Zona waktu</string>
   <string name="SET_NEW_PWD">Set Kata sandi baru</string>
   <string name="SET_PHOTO_FAIL">Upload gagal</string>
@@ -548,6 +567,7 @@
   <string name="SET_PWD">Kata sandi</string>
   <string name="SHARE">Bagikan</string>
   <string name="SHARE_ACCOUNT">Alamat E&#8211;mail</string>
+  <string name="SHARE_DOWNLOAD">Silahkan download foto asli dan kemudian bagikan</string>
   <string name="SHARE_ERR">Hanya bagikan ke 5 teman</string>
   <string name="SHARE_E_MAIL">Alamat E&#8211;mail</string>
   <string name="SHARE_FROM">Bagikan %s</string>
@@ -647,7 +667,7 @@
   <string name="Tap0_register_VerificationTips">Mail aktivasi telah dikirim ke %s, silakan klik link untuk mengaktifkan account Anda.</string>
   <string name="Tap0_wrongcode">Error</string>
   <string name="Tap1_AddDeviceTips">Tekan\"+\"untuk menambahkan perangkat</string>
-  <string name="Tap1_AddDevice_CameraTipShort">Tekan sebentar lama tombol WiFi untuk 1s</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Setelah dinyalakan, tekan tombol WiFi</string>
   <string name="Tap1_AddDevice_CameraTips">Tunggu indikator berkedip biru</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">tekan lama tombol WiFi untuk 3s</string>
   <string name="Tap1_AddDevice_CloudcameraTips">Tunggu indikator tetap biru</string>
@@ -677,7 +697,7 @@
   <string name="Tap1_Album_PutInVR">Meletakkan ponsel ke dalam gelas VR</string>
   <string name="Tap1_Album_Share_Description">Tambahkan deskripsi</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" tidak terpasang, silahkan install dan coba lagi</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Konten bersama akan disimpan ke \"My Favorite \"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Konten bersama akan disimpan ke \"Ranjau > Manajemen berbagi > 720°Cam Dibagikan isi \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Kumpulkan gambar&#8211;gambar di\"My Favorite \"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Standby ke hibernate, tidak akan bisa menonton live, lihat riwayat video, lindungi dan awasi, rekam otomatis, fotografi selang waktu, dan lain&#8211;lain.</string>
@@ -937,7 +957,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, coba lagi</string>
   <string name="Tips_ShortVideo">Tekan lama untuk merekam video singkat</string>
   <string name="Tips_SureDelete">Pastikan untuk delete?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Tidak ada respon , silahkan coba lagi</string>
   <string name="UPDATE_FAIL">Gagal menyambung ke kamera , silahkan coba lagi</string>
   <string name="UPDATING_BUTTON">Sedang memperbarui</string>
@@ -948,7 +968,7 @@
   <string name="USER_HELP">FAQ</string>
   <string name="USER_NAME">Nama pengguna</string>
   <string name="USE_HELP">Bantuan</string>
-  <string name="Unconnect_Network">Perangkat Anda tidak terhubung ke jaringan selular atau jaringan Wi&#8211;Fi</string>
+  <string name="Unconnect_Network">Perangkat Anda tidak terhubung ke jaringan selular atau jaringan WiFi</string>
   <string name="VALID_STORAGE">Penyimpanan Valid</string>
   <string name="VIDEO_FirmwareUpdating">Firmware updating&#8230;</string>
   <string name="VIDEO_REFRESHING">Sedang memuat</string>
@@ -993,8 +1013,8 @@
   <string name="WiFiLight_RedFlashing">flashing merah: Connecting</string>
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blue flashing: Memperbarui</string>
   <string name="WiFiLight_SteadyBlue">Mantap biru: WiFi secara online</string>
-  <string name="Wifi_Hotspot">Di perangkat [Settings> Wireless LAN], pilih hotspot Wi&#8211;Fi untuk terhubung.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi Jaringan:</string>
+  <string name="Wifi_Hotspot">Di perangkat [Settings> Wireless LAN], pilih hotspot WiFi untuk terhubung.</string>
+  <string name="Wifi_Method">WiFi Jaringan:</string>
   <string name="Wifi_Set_Up">Pergi ke set up</string>
   <string name="Word_Hours">jam</string>
   <string name="XX_DISCOVERY">\"%s\" ada penemuan baru</string>
@@ -1016,7 +1036,7 @@
   <string name="contacts_auth">Kontak</string>
   <string name="copy">Salin</string>
   <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
-  <string name="device_Wi_Fi">Wi&#8211;Fi</string>
+  <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\nMungkin adalah nomor ponsel, anda bisa:</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
   <string name="find_new_version">Penemuan versi baru</string>
@@ -1034,7 +1054,7 @@
   <string name="not_found_the_album_application">Aplikasi album tidak ditemukan</string>
   <string name="pb_request">Memuat</string>
   <string name="permission_auth">Silahkan ganti \"%s\" izin pada sistem pengaturan Android, memperbolehkan anda untuk pemakaian normal</string>
-  <string name="photo">Foto</string>
+  <string name="photo">Fotos</string>
   <string name="please_choose_wifi">Pilih WIFI</string>
   <string name="receive_new_news">Menerima %s pesan</string>
   <string name="rename">Edit nama</string>

@@ -1400,7 +1400,7 @@ public class DpMsgDefine {
     public static class DPCameraObjectDetect extends BaseDataPoint {
 
         @Index(0)
-        public int[] objects;
+        public int[] objects = new int[]{};
 
         @Override
         public int describeContents() {

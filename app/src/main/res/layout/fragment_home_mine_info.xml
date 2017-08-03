@@ -38,13 +38,21 @@
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/profile_photo"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/y72"
             android:layout_marginEnd="@dimen/y15"
             hunt:layout_constraintEnd_toEndOf="parent"
             hunt:layout_constraintStart_toStartOf="parent"
             hunt:layout_constraintTop_toBottomOf="@+id/tv_my_id"
             hunt:sv_title="@string/PROFILE_PHOTO"
-            hunt:sv_v_divider="true" />
+            hunt:sv_v_divider="false" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y1"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:background="@color/color_e8e8e8"
+            hunt:layout_constraintTop_toBottomOf="@+id/profile_photo" />
 
         <com.cylan.jiafeigou.support.photoselect.CircleImageView
             android:id="@+id/user_ImageHead"

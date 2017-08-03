@@ -56,7 +56,8 @@
             android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_24_hours"
             hunt:sv_sub_title="@string/RECORD_INFO_2"
-            hunt:sv_title="@string/RECORD_MODE_2" />
+            hunt:sv_title="@string/RECORD_MODE_2"
+            hunt:sv_v_divider="true" />
 
 
         <RadioGroup

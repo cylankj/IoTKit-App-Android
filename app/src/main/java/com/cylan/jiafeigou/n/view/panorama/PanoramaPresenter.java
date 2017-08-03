@@ -296,7 +296,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getSdInfo())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
-                    if (ret != null && ret.sdIsExist == 0) {//SDCard 不存在
+                    if (ret != null && !ret.sdIsExist) {//SDCard 不存在
 //                        mView.onReportDeviceError(2004);
                         shouldRefreshRecord = false;
                     } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
@@ -441,7 +441,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    if (ret != null && ret.sdIsExist == 1 && ret.sdcard_recogntion == 0) {
+                    if (ret != null && ret.sdIsExist && ret.sdcard_recogntion == 0) {
                         mView.onSDFormatResult(1);
                     } else {
                         mView.onSDFormatResult(-1);
