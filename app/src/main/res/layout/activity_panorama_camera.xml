@@ -47,8 +47,7 @@
                 app:t_border_width="@dimen/y1"
                 app:t_point_color="@color/color_red_dot_f43531"
                 app:t_radius="@dimen/x4"
-                app:t_round_image="true"
-                app:t_show_point="true" />
+                app:t_round_image="true" />
 
             <com.cylan.jiafeigou.widget.ImageViewTip
                 android:id="@+id/imgv_toolbar_right"
@@ -337,23 +336,13 @@
             app:civ_border_color="@color/color_white"
             app:civ_border_overlay="true"
             app:civ_border_width="@dimen/y1"
+            app:civ_hint_color="@color/color_red"
+            app:civ_hint_radius="@dimen/y3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:riv_oval="false" />
-
-        <View
-            android:id="@+id/act_panorama_camera_bottom_panel_hint_dot"
-            android:layout_width="@dimen/y7"
-            android:layout_height="@dimen/y7"
-            android:background="@drawable/red_cycle"
-            app:layout_constraintBottom_toBottomOf="@+id/act_panorama_camera_bottom_panel_album"
-            app:layout_constraintEnd_toEndOf="@+id/act_panorama_camera_bottom_panel_album"
-            app:layout_constraintHorizontal_bias="0.9"
-            app:layout_constraintStart_toStartOf="@+id/act_panorama_camera_bottom_panel_album"
-            app:layout_constraintTop_toTopOf="@+id/act_panorama_camera_bottom_panel_album"
-            app:layout_constraintVertical_bias="0.1" />
 
         <ImageButton
             android:id="@+id/act_panorama_bottom_panel_camera_photograph"

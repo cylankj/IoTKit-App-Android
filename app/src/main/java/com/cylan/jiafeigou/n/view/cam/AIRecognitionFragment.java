@@ -10,14 +10,21 @@ import android.view.View;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
 import com.cylan.jiafeigou.n.view.cam.item.AISelectionItem;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 
@@ -34,13 +41,15 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
     FastItemAdapter<AISelectionItem> itemAdapter;
 
     private AISelectionItem[] prefabObjs = new AISelectionItem[]{
-            new AISelectionItem(1, R.drawable.icon_man_hl, R.drawable.icon_man, "人形"),//人形
-            new AISelectionItem(2, R.drawable.icon_cat_hl, R.drawable.icon_cat, "猫"),//猫
-            new AISelectionItem(3, R.drawable.icon_dog_hl, R.drawable.icon_dog, "狗"),//狗
-            new AISelectionItem(4, R.drawable.icon_car_hl, R.drawable.icon_car, "车辆"),//车辆
+            new AISelectionItem(1, R.drawable.icon_man_hl, R.drawable.icon_man, ContextUtils.getContext().getString(R.string.AI_HUMAN)),//人形
+            new AISelectionItem(2, R.drawable.icon_cat_hl, R.drawable.icon_cat, ContextUtils.getContext().getString(R.string.AI_CAT)),//猫
+            new AISelectionItem(3, R.drawable.icon_dog_hl, R.drawable.icon_dog, ContextUtils.getContext().getString(R.string.AI_DOG)),//狗
+            new AISelectionItem(4, R.drawable.icon_car_hl, R.drawable.icon_car, ContextUtils.getContext().getString(R.string.AI_VEHICLE)),//车辆
             new AISelectionItem(-1),//占位符
             new AISelectionItem(-1)//占位符
     };
+
+    private int[] preobj;
 
     public AIRecognitionFragment() {
         // Required empty public constructor
@@ -66,16 +75,7 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
     }
 
     @Override
-    public void onObjectDetectRsp(int[] objects) {
-        if (objects != null) {
-            for (int object : objects) {
-                itemAdapter.select(itemAdapter.getPosition(object));
-            }
-        }
-    }
-
-    @Override
-    public void onSetObjectDetectRsp(int code) {
+    public void onDeviceUpdate(DataPoint dataPoint) {
 
     }
 
@@ -120,7 +120,18 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
     public void onStart() {
         super.onStart();
         presenter.getObjectDetect();
+        initObjectDetect();
 
+    }
+
+    private void initObjectDetect() {
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        DpMsgDefine.DPCameraObjectDetect objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new DpMsgDefine.DPCameraObjectDetect());
+        if (objectDetect.objects != null) {
+            for (int object : objectDetect.objects) {
+                itemAdapter.select(itemAdapter.getPosition(object));
+            }
+        }
     }
 
     private List<AISelectionItem> getAlignedList() {
@@ -140,6 +151,15 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
     @Override
     public void onDetach() {
         super.onDetach();
+        if (callBack != null) {
+            Set<Integer> selections = itemAdapter.getSelections();
+            int[] result = new int[selections.size()];
 
+            Object[] objects = selections.toArray();
+            for (int i = 0; i < objects.length; i++) {
+                result[i] = itemAdapter.getItem((Integer) objects[i]).objType;
+            }
+            callBack.callBack(result);
+        }
     }
 }

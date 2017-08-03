@@ -558,13 +558,27 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     private Intent getIntent(int position, int index) {
-        Intent intent = new Intent(getActivity(), CamMediaActivity.class);
+        //720 和 普通报警消息进入的页面不一样
+        Intent intent = null;
         CamMessageBean item = camMessageListAdapter.getItem(position);
-        intent.putExtra(KEY_INDEX, index);
-        intent.putExtra(KEY_BUNDLE, item);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, item.bellCallRecord != null);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
+        if (JFGRules.isPan720(getDevice().pid)) {
+            // TODO: 2017/8/3 720 消息详情页
+// intent= new Intent(getActivity(), PanoramaDetailActivity.class);
+            intent = new Intent(getActivity(), CamMediaActivity.class);
+            intent.putExtra(KEY_INDEX, index);
+            intent.putExtra(KEY_BUNDLE, item);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, item.bellCallRecord != null);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        } else {
+
+            intent = new Intent(getActivity(), CamMediaActivity.class);
+            intent.putExtra(KEY_INDEX, index);
+            intent.putExtra(KEY_BUNDLE, item);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, item.bellCallRecord != null);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
+        }
+
         return intent;
     }
 

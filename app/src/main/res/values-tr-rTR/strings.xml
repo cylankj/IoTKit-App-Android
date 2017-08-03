@@ -18,6 +18,10 @@
   <string name="ADD_SHARE">Paylaş</string>
   <string name="ADD_SUCC_1">Başarılı bir şekilde eklendi</string>
   <string name="AGREE">Okudum ve kabul ediyorum</string>
+  <string name="AI_CAT">Kedi</string>
+  <string name="AI_DOG">Köpek</string>
+  <string name="AI_HUMAN">İnsan</string>
+  <string name="AI_VEHICLE">araç</string>
   <string name="ALARM">Alarmlar</string>
   <string name="ALERTS">Alarmlar</string>
   <string name="ALIAS">Ad</string>
@@ -93,6 +97,7 @@
   <string name="ClearingTips">Takas&#8230;</string>
   <string name="Cloud_Camera">Bulut Kamerası</string>
   <string name="Consumer_Camera">Tüketici Kamerası</string>
+  <string name="DATA_FLOW_PHOTO">WIFI bağlantısı olmadan orijinal fotoğrafı izlerseniz veri tüketimi oluşturulur, devam edilsin mi?</string>
   <string name="DEAL_FEEDBACK">Geri dönüşünüz için teşekkür ederiz</string>
   <string name="DELETE">Sil</string>
   <string name="DELETED">Silindi</string>
@@ -103,6 +108,7 @@
   <string name="DELETE_SURE">Silmek istediğinizden emin misiniz?</string>
   <string name="DELETE_THEME">Sil</string>
   <string name="DELETE_THEME_XX">%s ı silmek istediğinizden emin misiniz ?</string>
+  <string name="DETECTED_AI">Algılanan</string>
   <string name="DEVICE">Cihaz</string>
   <string name="DEVICES_TIPS_TEXT">Bu işlem şunları gerektirir:\n1. Ağa bağlı cihaz\n2.CID yi kaydet ve aktifleştir\n3.Mevcut hesap bağlantısı</string>
   <string name="DEVICES_TITLE">Cihaz ekle</string>
@@ -118,6 +124,13 @@
   <string name="DEVICE_CONNECTING">Cihaz İnternete bağlanıyor</string>
   <string name="DEVICE_EXISTED">Bu cihaz eklendi</string>
   <string name="DEVICE_NO_RES">Ekleme tamamlandı \n Cihaz durum listesi görüntülemeye gidin</string>
+  <string name="DEVICE_OFFLINE1">Lütfen cihazın açık olup olmadığını kontrol edin</string>
+  <string name="DEVICE_OFFLINE2">Aygıtın güç LED\'i önyüklemeden sonra daima bulunur. LED ışığı yanmıyorsa, mavi ışık yanıp sönene kadar lütfen güç düğmesine basın.</string>
+  <string name="DEVICE_OFFLINE3">Lütfen çevreleyen ağı kontrol edin</string>
+  <string name="DEVICE_OFFLINE4">Kullanılabilir WiFi</string>
+  <string name="DEVICE_OFFLINE5">Lütfen cihaz için Kablosuz özelliğini yapılandırın</string>
+  <string name="DEVICE_OFFLINE6">Mevcut WiFi yok</string>
+  <string name="DEVICE_OFFLINE7">Lütfen ekipmanın sıcak noktalarını birbirine bağlayın</string>
   <string name="DEVICE_UPGRADE">Cihaz yükseltme</string>
   <string name="DEVICE_UPGRADE_TIPS">Cihaz yazılımını güncellemek için tepme gerekmektedir.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi Çevrimiçi</string>
@@ -396,6 +409,9 @@
   <string name="PHONE_NUMBER_2">Geçersiz telefon numarası</string>
   <string name="PHONE_NUMBER_3">Hesap telefon numarasını kullanıyor</string>
   <string name="PHONE_SIGNUP">Telefon</string>
+  <string name="PHOTO_DELE_POP">Sildikten sonra geri getirmenin ötesinde fotoğraf silmek istediğinizden emin misiniz?</string>
+  <string name="PHOTO_DOWN_DELE">Mevcut dosya indiriliyor ve silindikten sonra geri yüklenmeyecek, silinsin mi?</string>
+  <string name="PHOTO_NOT_LOAD">Orijinal fotoğraf yüklenemiyor</string>
   <string name="PLEASE_WAIT">Lütfen bekleyin&#8230;</string>
   <string name="PLEASE_WAIT_1">Lütfen bekleyin&#8230;</string>
   <string name="PLEASE_WAIT_2">Ekleniyor, lütfen bekleyin&#8230;</string>
@@ -501,6 +517,8 @@
   <string name="SAT_Hisvideo_Timeselector">Cut</string>
   <string name="SAVE">Yapıldı</string>
   <string name="SAVED_PHOTOS">Fotoğraflara kaydedildi</string>
+  <string name="SAVE_PHONE">Telefonda sakla</string>
+  <string name="SAVE_SUCCESS">Başarıyla kaydedildi</string>
   <string name="SCENE_ADDED">\"%s\" Başarılı bir şekilde eklendi</string>
   <string name="SCENE_ADD_ERR">\"%s\" ekleme başarısız</string>
   <string name="SCENE_SAVED">Başarılı bir şekilde kuruldu.</string>
@@ -540,6 +558,7 @@
   <string name="SETTING_FREE">Kişisel cihazın alarm ve hareket algılamasını ayarlayın</string>
   <string name="SETTING_RECORD">Video ayarları</string>
   <string name="SETTING_SD">Mikro SD kart</string>
+  <string name="SETTING_SECURE_AI">AI tanıma</string>
   <string name="SETTING_TIMEZONE">Zaman bölgesi</string>
   <string name="SET_NEW_PWD">Yeni şifre kur</string>
   <string name="SET_PHOTO_FAIL">Yükleme başarısız</string>
@@ -548,6 +567,7 @@
   <string name="SET_PWD">Şifre</string>
   <string name="SHARE">Paylaş</string>
   <string name="SHARE_ACCOUNT">E&#8211;posta</string>
+  <string name="SHARE_DOWNLOAD">Lütfen orijinal fotoğrafı indirin ve ardından paylaşın</string>
   <string name="SHARE_ERR">Sadece 5 arkadaşla paylaş</string>
   <string name="SHARE_E_MAIL">E&#8211;posta</string>
   <string name="SHARE_FROM">%s paylaşıldı</string>
@@ -647,12 +667,12 @@
   <string name="Tap0_register_VerificationTips">Etkinleştirme e&#8211;postası %s\'ya gönderildi, lütfen hesabınızı etkinleştirmek için bağlantıyı tıklayın.</string>
   <string name="Tap0_wrongcode">Hata</string>
   <string name="Tap1_AddDeviceTips">Cihaz eklemek için\"+\"ya tıklayın</string>
-  <string name="Tap1_AddDevice_CameraTipShort">Kısa süreli basma 1s WiFi düğmesi</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Açıldıktan sonra WiFi tuşuna basın</string>
   <string name="Tap1_AddDevice_CameraTips">Gösterge mavi titremesine bekleyin</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Uzun süreli basma 3s WiFi düğmesi</string>
   <string name="Tap1_AddDevice_CloudcameraTips">Göstergenin mavi renkte kalmasını bekle</string>
   <string name="Tap1_AddDevice_CloudcameraTitle">Açılıştan sonra ve 3 saniye için WiFi düğmesine uzunca basın</string>
-  <string name="Tap1_AddDevice_ConnectWifi">Wi&#8211;Fi ağına bağlan</string>
+  <string name="Tap1_AddDevice_ConnectWifi">WiFi ağına bağlan</string>
   <string name="Tap1_AddDevice_DoorbellTips">göstergesi kırmızı tutmak için bekleyin</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">3s için yeniden başlatma ve uzun basın WiFi düğmesine</string>
   <string name="Tap1_AddDevice_FindNoResult">Hiçbir cihaz bulunamadı, lütfen tekrar deneyin</string>
@@ -665,7 +685,7 @@
   <string name="Tap1_AddDevice_WifiConfTips">Seç WiFi</string>
   <string name="Tap1_AddDevice_disconnected">Bağlantı kopuk, lütfen cihazı yeniden ekleyin</string>
   <string name="Tap1_AddDevice_openlocationservice">Ayarlarda konum hizmetlerini açın</string>
-  <string name="Tap1_AddDevice_refreshWifi">Cihaz bulunamadı, Wi&#8211;Fi listesini yenilemeyi deneyin</string>
+  <string name="Tap1_AddDevice_refreshWifi">Cihaz bulunamadı, WiFi listesini yenilemeyi deneyin</string>
   <string name="Tap1_AddDevice_tips">Cihaz yapılandırmayı durdur ve çık</string>
   <string name="Tap1_Add_Tips">Aygıtı eklemek etmek için tıklayın</string>
   <string name="Tap1_AddedDeviceTips">Mevcut hesap ile bağlı</string>
@@ -677,7 +697,7 @@
   <string name="Tap1_Album_PutInVR">Cep telefonunu VR gözlüğüne koy</string>
   <string name="Tap1_Album_Share_Description">Açıklama ekle</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" yüklü değil, lütfen yükleyin ve tekrar deneyin</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Paylaşılan içerik kaydedilir \"Günlük Mükemmel \"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Paylaşılan içerik kaydedilir \"Benil > Paylaşım yönetimi > 720°Cam Paylaşılan içerik \"</string>
   <string name="Tap1_BigPic_FavoriteTips">\"Günlük Mükemmel\" içindeki resimleri topla</string>
   <string name="Tap1_CameraFun_Standby">Beklemede</string>
   <string name="Tap1_CameraFun_Standby_Description">Hazırda bekletmek için beklemeyi başlatın, bu durumda canlı izleme, geçmiş videoları kontrol etme, koruma ve alarm verme, otomatik kayıt, hızlandırılmış fotoğrafçılık vs. işlemler yapılamayacaktır.</string>
@@ -937,7 +957,7 @@
   <string name="Tips_Device_TimeoutRetry">Zaman aşımı, tekrar deneyin</string>
   <string name="Tips_ShortVideo">Kısa bir video kaydetmek için uzun basın</string>
   <string name="Tips_SureDelete">Emin silmek için？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="UPDATE_FAIL">Kameraya bağlantı başarısız, lütfen tekrar deneyiniz.</string>
   <string name="UPDATING_BUTTON">Güncelleme</string>
@@ -993,8 +1013,8 @@
   <string name="WiFiLight_RedFlashing">Kırmızı yanıp sönen: Bağlama</string>
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blue yanıp: Güncellenmesi</string>
   <string name="WiFiLight_SteadyBlue">Sabit mavi: WiFi çevrimiçi</string>
-  <string name="Wifi_Hotspot">Aygıtta [Settings> Wireless LAN], bağlanmak için lütfen bir Wi&#8211;Fi hotspot seçin.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi şebekesi:</string>
+  <string name="Wifi_Hotspot">Aygıtta [Settings> Wireless LAN], bağlanmak için lütfen bir WiFi hotspot seçin.</string>
+  <string name="Wifi_Method">WiFi şebekesi:</string>
   <string name="Wifi_Set_Up">Kurmaya git</string>
   <string name="Word_Hours">saat</string>
   <string name="XX_DISCOVERY">%s in yeni bir keşfi var</string>
@@ -1016,7 +1036,7 @@
   <string name="contacts_auth">İrtibatlar</string>
   <string name="copy">Kopyala</string>
   <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
-  <string name="device_Wi_Fi">Wi&#8211;Fi</string>
+  <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n bir telefon numarası olabilir, Yapabilecekleriniz:</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
   <string name="find_new_version">Yeni sürümün keşfi</string>

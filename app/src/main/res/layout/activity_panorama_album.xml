@@ -49,7 +49,7 @@
                     android:focusable="false"
                     android:gravity="center_vertical"
                     android:padding="0dp"
-                    android:text="@string/Tap1_File_CameraNPhone"
+                    android:text="@string/photo"
                     android:textColor="@color/color_white"
                     android:textSize="@dimen/sp18" />
 

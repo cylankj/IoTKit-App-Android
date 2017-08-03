@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -195,7 +196,18 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     private boolean showHistoryButton(CamMessageBean bean) {
         if (isSharedDevice || !hasSdcard()) return false;
-        return bean != null && bean.bellCallRecord != null ? bean.bellCallRecord.isRecording == 1 : (System.currentTimeMillis() - bean.version) >= 30 * 60 * 1000L;
+        if (bean != null && bean.bellCallRecord != null) {
+            return bean.bellCallRecord.isRecording == 1;
+        } else if (bean != null && bean.alarmMsg != null) {
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            boolean pan720 = JFGRules.isPan720(device.pid);
+            if (pan720) {
+                return bean.alarmMsg.isRecording == 1;
+            } else {
+                return bean.alarmMsg.isRecording == 1 && (System.currentTimeMillis() - bean.alarmMsg.version) >= 30 * 60 * 1000L;
+            }
+        }
+        return false;
     }
 
     private boolean textShowSdBtn(CamMessageBean item) {
@@ -325,8 +337,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 1.有人形提示:检测到 XXX
             * 2.无人形提示:有新的发现
             * */
-            if (bean.alarmMsg.objects != null) {//有检测数据
-                return tContent + "检测到 " + JConstant.getAIText(bean.alarmMsg.objects);
+            if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
+                return tContent + getContext().getString(R.string.DETECTED_AI) + JConstant.getAIText(bean.alarmMsg.objects);
+//                return tContent + "检测到" + JConstant.getAIText(bean.alarmMsg.objects);
             } else {//无检测数据
                 return tContent + getContext().getString(R.string.MSG_WARNING);
             }

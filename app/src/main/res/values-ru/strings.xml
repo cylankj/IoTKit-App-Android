@@ -18,6 +18,10 @@
   <string name="ADD_SHARE">Поделиться</string>
   <string name="ADD_SUCC_1">Поздравляем! Добавление прошло успешно!</string>
   <string name="AGREE">Я прочитал и согласен с условиями</string>
+  <string name="AI_CAT">Кот</string>
+  <string name="AI_DOG">Собака</string>
+  <string name="AI_HUMAN">Человек</string>
+  <string name="AI_VEHICLE">Средство передвижения</string>
   <string name="ALARM">Оповещение</string>
   <string name="ALERTS">Оповещение</string>
   <string name="ALIAS">Никнейм</string>
@@ -93,6 +97,7 @@
   <string name="ClearingTips">Clearing &#8230;</string>
   <string name="Cloud_Camera">Облачная камера</string>
   <string name="Consumer_Camera">Потребительская камера</string>
+  <string name="DATA_FLOW_PHOTO">Потребление данных будет создано, если просмотреть исходную фотографию без подключения WIFI, продолжите?</string>
   <string name="DEAL_FEEDBACK">Спасибо за ваш отзыв!</string>
   <string name="DELETE">Удалить</string>
   <string name="DELETED">Вся информация удалена!</string>
@@ -103,6 +108,7 @@
   <string name="DELETE_SURE">Уверены что хотите удалить?</string>
   <string name="DELETE_THEME">Удалить</string>
   <string name="DELETE_THEME_XX">Вы уверены, что хотите удалить %s ?</string>
+  <string name="DETECTED_AI">Обнаружен</string>
   <string name="DEVICE">устройство</string>
   <string name="DEVICES_TIPS_TEXT">Этот процесс требует:\n1.Устройство, подключенное к сети\n2.Регистрация и активация CID\n3.Привязки с данного аккаунта </string>
   <string name="DEVICES_TITLE">Добавить устройство</string>
@@ -118,6 +124,13 @@
   <string name="DEVICE_CONNECTING">Устройство подключено к интернету</string>
   <string name="DEVICE_EXISTED">Данное устройство уже было добавлено</string>
   <string name="DEVICE_NO_RES">Добавлено \n Открыть список просмотра состояния устройства</string>
+  <string name="DEVICE_OFFLINE1">Проверьте, включено ли устройство</string>
+  <string name="DEVICE_OFFLINE2">Индикатор питания устройства всегда после загрузки. Если светодиод не горит, нажмите кнопку питания, пока не загорится синий индикатор.</string>
+  <string name="DEVICE_OFFLINE3">Проверьте сеть</string>
+  <string name="DEVICE_OFFLINE4">Доступный WiFi</string>
+  <string name="DEVICE_OFFLINE5">Пожалуйста, настройте WiFi для устройства</string>
+  <string name="DEVICE_OFFLINE6">Нет доступных WiFi</string>
+  <string name="DEVICE_OFFLINE7">Пожалуйста, подключите горячие точки оборудования</string>
   <string name="DEVICE_UPGRADE">Устройство обновлено</string>
   <string name="DEVICE_UPGRADE_TIPS">Устройство должно быть отскок, чтобы обновить программное обеспечение.</string>
   <string name="DEVICE_WIFI_ONLINE">Подключено к WiFi</string>
@@ -279,11 +292,11 @@
   <string name="LARGER_IMAGE">Нажмите для просмотра увеличенного изображения</string>
   <string name="LAST_UPDATE">Обновление</string>
   <string name="LED">Световой индикатор устройства</string>
-  <string name="LIGTH_DOOR_LABEL_0">Красный свет, конфигурация Wi&#8211;Fi</string>
+  <string name="LIGTH_DOOR_LABEL_0">Красный свет, конфигурация WiFi</string>
   <string name="LIGTH_DOOR_LABEL_1">Красный мигающая лампочка, подключение к сети</string>
   <string name="LIGTH_DOOR_LABEL_2">Голубой мигает, вызов</string>
   <string name="LIGTH_DOOR_LABEL_3">Зеленый свет, зарядка</string>
-  <string name="LIGTH_LABEL_0_1">Голубая мигающая лампочка, состояние настройки Wi&#8211;Fi </string>
+  <string name="LIGTH_LABEL_0_1">Голубая мигающая лампочка, состояние настройки WiFi </string>
   <string name="LIGTH_LABEL_0_2">Горит голубая лампочка, WiFi подключен</string>
   <string name="LIGTH_LABEL_1_1">Голубая мигающая лампочка, подключение к сети</string>
   <string name="LIGTH_LABEL_1_2">Горит голубая лампочка, 3G/4G подключен</string>
@@ -396,6 +409,9 @@
   <string name="PHONE_NUMBER_2">Введите действующий номер мобильного телефона</string>
   <string name="PHONE_NUMBER_3">Этот номер уже используется</string>
   <string name="PHONE_SIGNUP">Телефон</string>
+  <string name="PHOTO_DELE_POP">После получения после удаления, обязательно удалить из Фото?</string>
+  <string name="PHOTO_DOWN_DELE">Текущий файл загружается, и он не будет восстановлен после удаления, удаления?</string>
+  <string name="PHOTO_NOT_LOAD">Невозможно загрузить оригинальную фотографию</string>
   <string name="PLEASE_WAIT">Пожалуйста, подождите&#8230;</string>
   <string name="PLEASE_WAIT_1">Пожалуйста, подождите&#8230;</string>
   <string name="PLEASE_WAIT_2">Добавление, пожалуйста, подождите&#8230;</string>
@@ -501,6 +517,8 @@
   <string name="SAT_Hisvideo_Timeselector">сб</string>
   <string name="SAVE">Выполнено</string>
   <string name="SAVED_PHOTOS">Сохранённые фотографии</string>
+  <string name="SAVE_PHONE">Сохранить по телефону</string>
+  <string name="SAVE_SUCCESS">Успешно сохранено</string>
   <string name="SCENE_ADDED">%s Добавлено</string>
   <string name="SCENE_ADD_ERR">%s Не добавлено</string>
   <string name="SCENE_SAVED">Установлено</string>
@@ -540,6 +558,7 @@
   <string name="SETTING_FREE">Установить обнаружение движения и сигнализацию</string>
   <string name="SETTING_RECORD">Настройки видео</string>
   <string name="SETTING_SD">Карта microSD</string>
+  <string name="SETTING_SECURE_AI">Распознавание ИИ</string>
   <string name="SETTING_TIMEZONE">Часовой пояс</string>
   <string name="SET_NEW_PWD">Установить новый пароль</string>
   <string name="SET_PHOTO_FAIL">Загрузка иконки не получилась</string>
@@ -548,6 +567,7 @@
   <string name="SET_PWD">Установить пароль</string>
   <string name="SHARE">Поделиться</string>
   <string name="SHARE_ACCOUNT">Счёт</string>
+  <string name="SHARE_DOWNLOAD">Загрузите исходную фотографию и затем</string>
   <string name="SHARE_ERR">Поделиться с 5&#8211;ю друзьями</string>
   <string name="SHARE_E_MAIL">E&#8211;mail</string>
   <string name="SHARE_FROM">Информация поступила из %s</string>
@@ -647,12 +667,12 @@
   <string name="Tap0_register_VerificationTips">Почты активации отправлен %s, пожалуйста, нажмите на следующую ссылку, чтобы активировать учетную запись.</string>
   <string name="Tap0_wrongcode">Ошибка подтверждения</string>
   <string name="Tap1_AddDeviceTips">Нахмите\"+\"для добавления устройства</string>
-  <string name="Tap1_AddDevice_CameraTipShort">Короткое нажатие кнопки WiFi в течение 1s</string>
+  <string name="Tap1_AddDevice_CameraTipShort">После включения питания нажмите клавишу WiFi</string>
   <string name="Tap1_AddDevice_CameraTips">Подождите, пока индикатор мерцать синим цветом</string>
   <string name="Tap1_AddDevice_CameraTipsTitle">Длительное нажатие кнопки WiFi в течение 3s</string>
   <string name="Tap1_AddDevice_CloudcameraTips">Подождите, пока индикатор не станет синим</string>
   <string name="Tap1_AddDevice_CloudcameraTitle">После загрузки и длительного нажатия кнопки WiFi на 3 секунды</string>
-  <string name="Tap1_AddDevice_ConnectWifi">Подключиться к сети Wi&#8211;Fi</string>
+  <string name="Tap1_AddDevice_ConnectWifi">Подключиться к сети WiFi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Подождите, пока индикатор держать в красном цвете</string>
   <string name="Tap1_AddDevice_DoorbellTipsTitle">Перезагрузка и длительное нажатие на кнопку WiFi в течение 3 секунд</string>
   <string name="Tap1_AddDevice_FindNoResult">Устройсво не найдено. Попробуйте ещё раз</string>
@@ -662,7 +682,7 @@
   <string name="Tap1_AddDevice_SetName">Имя устройства</string>
   <string name="Tap1_AddDevice_TipsE">Ошибка подключения WiFi</string>
   <string name="Tap1_AddDevice_ToSetting">Установка</string>
-  <string name="Tap1_AddDevice_WifiConfTips">Выберите Wi&#8211;Fi</string>
+  <string name="Tap1_AddDevice_WifiConfTips">Выберите WiFi</string>
   <string name="Tap1_AddDevice_disconnected">Отключено, пожалуйста, добавьте устройство еще раз.</string>
   <string name="Tap1_AddDevice_openlocationservice">включите insetting служб определения местоположения</string>
   <string name="Tap1_AddDevice_refreshWifi">Ни одно устройство найдено, попробуйте обновить список WiFi.</string>
@@ -677,7 +697,7 @@
   <string name="Tap1_Album_PutInVR">Поместите мобильный телефон в очки VR</string>
   <string name="Tap1_Album_Share_Description">Добавить описание</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" не установлен, установите его и попробуйте еще раз</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Общий контент будет сохранен в\"Ежедневное чудо \"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Общий контент будет сохранен в\"Меня > совместное управление > 720°Cam Общие cодержание \"</string>
   <string name="Tap1_BigPic_FavoriteTips">Коллекция\"Фото дня\"</string>
   <string name="Tap1_CameraFun_Standby">Режим ожидания</string>
   <string name="Tap1_CameraFun_Standby_Description">Если включается режим ожидания, устройство будет переходить к режиму гибернации, и будет невозможно использлвать такие функции, как просмотр прямой трансляции, просмотр бывших видео, безопасная защита, сигнализация, автоматическая видеозапись, покадровая съёмка и т.д.</string>
@@ -750,7 +770,7 @@
   <string name="Tap1_DoorFun_VoiceTips">Звуки будут вне от приемника</string>
   <string name="Tap1_DoorFun_Waitting">Ожидание&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Скачать прошивку не удалось</string>
-  <string name="Tap1_DownloadFirmwareTips">Загрузка начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же Wi&#8211;Fi</string>
+  <string name="Tap1_DownloadFirmwareTips">Загрузка начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же WiFi</string>
   <string name="Tap1_FileDamagedTips">Файл поврежден, удалить?</string>
   <string name="Tap1_File_Camera">Камера</string>
   <string name="Tap1_File_CameraNPhone">Камера + Телефон альбом</string>
@@ -760,9 +780,9 @@
   <string name="Tap1_FirmwareUpdateFai">Обновление не удалось</string>
   <string name="Tap1_FirmwareUpdateSuc">Обновление успешно</string>
   <string name="Tap1_FirmwareUpdating">Обновления(%s)</string>
-  <string name="Tap1_Firmware_DataTips">Потребление данных будет создан,если идти дальше без подключения Wi&#8211;Fi,продолжить?</string>
-  <string name="Tap1_HomeMode">Домашний режим</string>
-  <string name="Tap1_HomeMode_Opened">Режим Home был открыт</string>
+  <string name="Tap1_Firmware_DataTips">Потребление данных будет создан,если идти дальше без подключения WiFi,продолжить?</string>
+  <string name="Tap1_HomeMode">WIFI режим</string>
+  <string name="Tap1_HomeMode_Opened">Режим WIFI был открыт</string>
   <string name="Tap1_Index_DayGreetings">Маленький сюрприз каждый день</string>
   <string name="Tap1_Index_NightGreetings">Расслабтесь и перегрузите устройство</string>
   <string name="Tap1_Index_NoDevice">Нет устройств</string>
@@ -804,7 +824,7 @@
   <string name="Tap1_TitleName">Дома</string>
   <string name="Tap1_Tosetup">Установка</string>
   <string name="Tap1_Update">Обновить</string>
-  <string name="Tap1_UpdateFirmwareTips">Обновить начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же Wi&#8211;Fi</string>
+  <string name="Tap1_UpdateFirmwareTips">Обновить начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же WiFi</string>
   <string name="Tap1_Update_Electricity">Энергия устройства ниже 30%, нельзя обновить, повторите попытку после полной зарядки.</string>
   <string name="Tap1_Update_Precautions">Обновление требует примерно 4&#8211;5 минут, не отключите питание устройства или доступ в Интернет в это время.</string>
   <string name="Tap1_device_deleted">Это устройство было удалено.</string>
@@ -937,7 +957,7 @@
   <string name="Tips_Device_TimeoutRetry">Тайм&#8211;аут, пожалуйста, попробуйте еще раз</string>
   <string name="Tips_ShortVideo">Длительное нажатие для записи короткого видео</string>
   <string name="Tips_SureDelete">Уверенный удалить?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Нет ответа, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATE_FAIL">Подключение устройства не удалось, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATING_BUTTON">Обновляется</string>
@@ -948,7 +968,7 @@
   <string name="USER_HELP">Помощь</string>
   <string name="USER_NAME">Имя пользователя</string>
   <string name="USE_HELP">Помощь</string>
-  <string name="Unconnect_Network">Ваше устройство не подключено к мобильной сети или сети Wi&#8211;Fi</string>
+  <string name="Unconnect_Network">Ваше устройство не подключено к мобильной сети или сети WiFi</string>
   <string name="VALID_STORAGE">Объём памяти</string>
   <string name="VIDEO_FirmwareUpdating">Обновление прошивки&#8230;</string>
   <string name="VIDEO_REFRESHING">Идет загрузка, пожалуйста подождите</string>
@@ -963,7 +983,7 @@
   <string name="WEEKDAYS">Рабочие дни</string>
   <string name="WEEKEND">Выходные</string>
   <string name="WELL_OK">Да</string>
-  <string name="WIFI">Wi&#8211;Fi</string>
+  <string name="WIFI">WiFi</string>
   <string name="WIFI_CONN">%s</string>
   <string name="WIFI_ERR_AUTH">%s Пароль введен неверно</string>
   <string name="WIFI_ERR_INFO">Соединение установить не удалось</string>
@@ -971,10 +991,10 @@
   <string name="WIFI_ERR_TIMEOUT">\"%s\" Ошибка соединения, советуем повторить попытку после перезагрузки маршрутизатора</string>
   <string name="WIFI_HINT">Светодиодный индикатор состояния</string>
   <string name="WIFI_HINT_LAGEL">Примечание:на продукции серии WiFi нет индикатора 3G</string>
-  <string name="WIFI_HINT_LAGEL_0">Световой сигнал Wi&#8211;Fi</string>
+  <string name="WIFI_HINT_LAGEL_0">Световой сигнал WiFi</string>
   <string name="WIFI_HINT_LAGEL_1">Световой сигнал 3G/4G</string>
   <string name="WIFI_HINT_LAGEL_2">Световой сигнал питания</string>
-  <string name="WIFI_NAME">Wi&#8211;Fi:</string>
+  <string name="WIFI_NAME">WiFi:</string>
   <string name="WIFI_OFF">На Вашем телефоне выключен WiFi, повторите попытку после подключения</string>
   <string name="WIFI_PWD">Код WIFI</string>
   <string name="WIFI_PWD_1">Код WIFI:</string>
@@ -993,8 +1013,8 @@
   <string name="WiFiLight_RedFlashing">Красный мигающий: подключение</string>
   <string name="WiFiLight_RedNBlueFlashing">Мигает красный и синий: обновление</string>
   <string name="WiFiLight_SteadyBlue">Устойчивый синий: WiFi онлайн</string>
-  <string name="Wifi_Hotspot">В устройстве [Настройки> Беспроводная ЛВС], выберите точку доступа Wi&#8211;Fi для подключения.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi сеть:</string>
+  <string name="Wifi_Hotspot">В устройстве [Настройки> Беспроводная ЛВС], выберите точку доступа WiFi для подключения.</string>
+  <string name="Wifi_Method">WiFi сеть:</string>
   <string name="Wifi_Set_Up">Перейти к настройке</string>
   <string name="Word_Hours">часов</string>
   <string name="XX_DISCOVERY">%s Перемещение объектов</string>
@@ -1016,7 +1036,7 @@
   <string name="contacts_auth">Контакты</string>
   <string name="copy">Копировать</string>
   <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
-  <string name="device_Wi_Fi">Wi&#8211;Fi</string>
+  <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s \nсерийным номером может быть номер телефона, вы можете:</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
   <string name="find_new_version">Открытие новой версии</string>

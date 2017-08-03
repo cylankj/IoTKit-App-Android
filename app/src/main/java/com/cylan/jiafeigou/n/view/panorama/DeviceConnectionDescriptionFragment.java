@@ -38,7 +38,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
         descriptionBinding = FragmentDeviceConnectionDescriptionBinding.inflate(inflater);
         descriptionBinding.setupWifi.setOnClickListener(this::setUpWiFi);
         descriptionBinding.setupAp.setOnClickListener(this::setUpAP);
-        descriptionBinding.sureExplain.setOnClickListener(this::showExplain);
+        descriptionBinding.customToolbar.setRightAction(this::showExplain);
         descriptionBinding.customToolbar.setBackAction(v -> getActivity().onBackPressed());
         return descriptionBinding.getRoot();
     }
@@ -51,7 +51,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
     private void setUpAP(View view) {
         AppLogger.d("将配置户外模式");
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        Intent intent = BindUtils.getIntentByPid(device.pid,getContext());
+        Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
         intent.putExtra("PanoramaConfigure", "OutDoor");
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
@@ -66,9 +66,10 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
         startActivity(intent);
     }
 
-    public static DeviceConnectionDescriptionFragment newInstance() {
+    public static DeviceConnectionDescriptionFragment newInstance(String uuid) {
         DeviceConnectionDescriptionFragment fragment = new DeviceConnectionDescriptionFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         return fragment;
     }

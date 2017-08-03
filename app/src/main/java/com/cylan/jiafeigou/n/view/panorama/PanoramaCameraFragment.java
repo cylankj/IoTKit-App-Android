@@ -427,7 +427,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         int netType = NetUtils.getNetType(getContext());
         boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
 //        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-        onRefreshConnectionMode(alertMobile ? 1 : -2);
+        onRefreshConnectionMode(alertMobile ? ConnectivityManager.TYPE_MOBILE : -2);
 //        }
     }
 
@@ -604,11 +604,24 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         AppLogger.d("clickedConfigureNetWorkBanner");
         CharSequence text = bannerWarmingTitle.getText();
         if (TextUtils.equals(text, getString(R.string.Tap1_Offline))) {
-            DeviceConnectionDescriptionFragment deviceConnectionDescriptionFragment = DeviceConnectionDescriptionFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.camera_main_container, deviceConnectionDescriptionFragment).addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
+            DeviceConnectionDescriptionFragment deviceConnectionDescriptionFragment = DeviceConnectionDescriptionFragment.newInstance(uuid);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_right_in,
+                            R.anim.slide_out_left,
+                            R.anim.slide_in_left,
+                            R.anim.slide_out_right)
+                    .replace(R.id.camera_main_container, deviceConnectionDescriptionFragment)
+                    .addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
         } else if (TextUtils.equals(text, getString(R.string.OK))) {
             ConnectionDescriptionFragment connectionDescriptionFragment = ConnectionDescriptionFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.camera_main_container, connectionDescriptionFragment).addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_right_in,
+                            R.anim.slide_out_left,
+                            R.anim.slide_in_left,
+                            R.anim.slide_out_right)
+                    .replace(R.id.camera_main_container, connectionDescriptionFragment).addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
         }
     }
 
@@ -828,7 +841,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
             onSpeaker(false);
             onMicrophone(false);
         }
-        if ((!apMode && !isOnline) || connectionType < 0) {
+        if ((!apMode && !isOnline) || connectionType == -1) {
 
             if (bannerSwitcher.getDisplayedChild() == 0) {
                 bannerSwitcher.showNext();
@@ -1063,7 +1076,18 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     public void onEnterMessage() {
         AppLogger.d("onEnterMessage");
         PanoramaMessageWrapper messageWrapper = PanoramaMessageWrapper.newInstance(uuid);
-        getFragmentManager().beginTransaction().replace(R.id.camera_main_container, messageWrapper).addToBackStack(PanoramaMessageWrapper.class.getSimpleName()).commit();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right)
+                .replace(R.id.camera_main_container, messageWrapper)
+                .addToBackStack(PanoramaMessageWrapper.class.getSimpleName())
+
+                .commit();
+
         ivt_newMessageTips.setShowDot(false);
     }
 

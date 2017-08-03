@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -41,6 +42,8 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -194,8 +197,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         boolean protection = property.hasProperty(device.pid, "PROTECTION");
         boolean warmsound = property.hasProperty(device.pid, "WARMSOUND");
-        boolean enableAI = property.hasProperty(device.pid, "AI");//todo 暂时还没有定义该字段
-        boolean warmInterval = property.hasProperty(device.pid, "INTERVAL");//todo 暂时还没有定义该字段
+        boolean enableAI = property.hasProperty(device.pid, "AI_RECOGNITION");//todo 暂时还没有定义该字段
+        boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
 
         tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
         flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);
@@ -205,8 +208,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
-        swMotionAI.setVisibility(enableAI || true ? View.VISIBLE : View.GONE);
-        swMotionInterval.setVisibility(warmInterval || true ? View.VISIBLE : View.GONE);
+        swMotionAI.setVisibility(enableAI ? View.VISIBLE : View.GONE);
+        swMotionInterval.setVisibility(warmInterval ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -255,6 +258,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     DpMsgDefine.DPWarnInterval warnInterval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, new DpMsgDefine.DPWarnInterval());
                     int sec = warnInterval.sec / 60;
                     swMotionInterval.setTvSubTitle(sec > 0 ? "" + sec + "分钟" : "30秒");
+
+                    DpMsgDefine.DPCameraObjectDetect objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new DpMsgDefine.DPCameraObjectDetect());
+                    if (objectDetect.objects == null || objectDetect.objects.length == 0) {
+                        //未开启 AI 识别
+                        swMotionAI.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+                    } else {
+                        swMotionAI.setTvSubTitle(JConstant.getAIText(objectDetect.objects));
+                    }
 
                 }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
     }
@@ -354,6 +365,29 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
             case R.id.sw_motion_AI: {
                 AIRecognitionFragment aiRecognitionFragment = AIRecognitionFragment.newInstance(uuid);
+                aiRecognitionFragment.setCallBack(result -> {
+                    if (result instanceof int[]) {
+                        int[] select = (int[]) result;
+                        DpMsgDefine.DPCameraObjectDetect objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new DpMsgDefine.DPCameraObjectDetect());
+
+                        List<Integer> list1 = new ArrayList<>(objectDetect.objects.length);
+                        List<Integer> list2 = new ArrayList<>(select.length);
+
+                        for (int object : objectDetect.objects) {
+                            list1.add(object);
+                        }
+
+                        for (int i : select) {
+                            list2.add(i);
+                        }
+                        if (list1.size() != list2.size() || ListUtils.getDiff(list1, list2).size() != 0) {
+                            objectDetect.objects = select;
+                            basePresenter.updateInfoReq(objectDetect, DpMsgMap.ID_515_CAM_ObjectDetect);
+                            updateDetails();
+                            ToastUtil.showToast(getString(R.string.PWD_OK_2));
+                        }
+                    }
+                });
                 ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), aiRecognitionFragment, android.R.id.content);
             }
             break;
@@ -368,9 +402,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         if (info.sec != result) {
                             info.sec = result;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_514_CAM_WARNINTERVAL);
+                            updateDetails();
+                            ToastUtil.showToast(getString(R.string.PWD_OK_2));
                         }
-                        updateDetails();
-                        ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
                 showFragment(fragment);

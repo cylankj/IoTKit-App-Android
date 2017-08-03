@@ -26,11 +26,6 @@ public class AISelectionItem extends AbstractItem<AISelectionItem, AISelectionIt
     public int icon;
 
     @Override
-    public long getIdentifier() {
-        return objType;
-    }
-
-    @Override
     public ViewHolder getViewHolder(View v) {
         return new ViewHolder(v);
     }
@@ -38,12 +33,6 @@ public class AISelectionItem extends AbstractItem<AISelectionItem, AISelectionIt
     @Override
     public int getType() {
         return 0;
-    }
-
-    @Override
-    public AISelectionItem withSetSelected(boolean selected) {
-
-        return super.withSetSelected(selected);
     }
 
     public AISelectionItem(int objType) {
@@ -55,6 +44,8 @@ public class AISelectionItem extends AbstractItem<AISelectionItem, AISelectionIt
         this.icon_hl = icon_hl;
         this.icon = icon;
         this.text = text;
+        this.mIdentifier = objType;
+        this.withSelectable(objType != -1);
     }
 
     @Override

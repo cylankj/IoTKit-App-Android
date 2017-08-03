@@ -127,7 +127,7 @@ public class BaseForwardHelper {
             JFGDPMsgRet msg = rsp.rets.get(0);
             if (msgId == 218) {
                 PanoramaEvent.MsgSdInfoRsp status = new PanoramaEvent.MsgSdInfoRsp();
-                status.sdIsExist = msg.ret == 0 ? 1 : 0;
+                status.sdIsExist = msg.ret == 0;
                 return (R) status;
             }
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public class BaseForwardHelper {
                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
                 PanoramaEvent.MsgSdInfoRsp infoRsp = new PanoramaEvent.MsgSdInfoRsp();
                 infoRsp.sdcard_recogntion = status.err;
-                infoRsp.sdIsExist = status.hasSdcard ? 1 : 0;
+                infoRsp.sdIsExist = status.hasSdcard;
                 infoRsp.storage = status.total;
                 infoRsp.storage_used = status.used;
                 return (T) infoRsp;
@@ -185,10 +185,15 @@ public class BaseForwardHelper {
             } else if (msgId == 218) {
 
             } else if (msgId == 228) {
-                DpMsgDefine.DPBaseUpgradeStatus upgradeStatus = unpackData(msg.packValue, DpMsgDefine.DPBaseUpgradeStatus.class);
-                int upgrade = 0;
-                if (upgradeStatus != null) {
-                    upgrade = upgradeStatus.upgrade;
+                //可能变成 int 了,到处类型装换错误
+//                DpMsgDefine.DPBaseUpgradeStatus upgradeStatus = unpackData(msg.packValue, DpMsgDefine.DPBaseUpgradeStatus.class);
+//                DpMsgDefine.DPBaseUpgradeStatus upgradeStatus = unpackData(msg.packValue, DpMsgDefine.DPBaseUpgradeStatus.class);
+                Integer upgrade = unpackData(msg.packValue, int.class);
+//                if (upgradeStatus != null) {
+//                    upgrade = upgradeStatus.upgrade;
+//                }
+                if (upgrade == null) {
+                    upgrade = 0;
                 }
                 PanoramaEvent.MsgUpgradeStatusRsp upgradeStatusRsp = new PanoramaEvent.MsgUpgradeStatusRsp();
                 upgradeStatusRsp.upgradeStatus = upgrade;

@@ -18,6 +18,10 @@
   <string name="ADD_SHARE">Condividi</string>
   <string name="ADD_SUCC_1">Congratulazioni, dispositivo aggiunto</string>
   <string name="AGREE">Ho letto e accetto</string>
+  <string name="AI_CAT">Gatto</string>
+  <string name="AI_DOG">Cane</string>
+  <string name="AI_HUMAN">Umano</string>
+  <string name="AI_VEHICLE">Veicolo</string>
   <string name="ALARM">Suono alarme</string>
   <string name="ALERTS">Suono alarme</string>
   <string name="ALIAS">Nome</string>
@@ -93,6 +97,7 @@
   <string name="ClearingTips">Clearing&#8230;</string>
   <string name="Cloud_Camera">Fotocamera Nuvola</string>
   <string name="Consumer_Camera">Macchina fotografica del consumatore</string>
+  <string name="DATA_FLOW_PHOTO">Il consumo di dati sarebbe stato creato se visualizzare la foto originale senza connessione WIFI, continuare?</string>
   <string name="DEAL_FEEDBACK">Grazie per la Tua opinione</string>
   <string name="DELETE">Cancella</string>
   <string name="DELETED">Sono stati eliminati</string>
@@ -103,8 +108,9 @@
   <string name="DELETE_SURE">Sei sicuro di voler cancellara?</string>
   <string name="DELETE_THEME">Cancella</string>
   <string name="DELETE_THEME_XX">Sei sicuro di eliminare %s ?</string>
+  <string name="DETECTED_AI">Rilevato</string>
   <string name="DEVICE">Dispositivo</string>
-  <string name="DEVICES_TIPS_TEXT">Questo fase richiede:\n 1.Dispositivo connesso alla rete Wi&#8211;Fi\n 2.Registrare e attivare un account \n 3.Inserire l\'account.</string>
+  <string name="DEVICES_TIPS_TEXT">Questo fase richiede:\n 1.Dispositivo connesso alla rete WiFi\n 2.Registrare e attivare un account \n 3.Inserire l\'account.</string>
   <string name="DEVICES_TITLE">Aggiungi Dispositivo</string>
   <string name="DEVICES_TITLE_1">Connetti un dispositivo</string>
   <string name="DEVICES_TITLE_2">Trova dispositivo</string>
@@ -118,6 +124,13 @@
   <string name="DEVICE_CONNECTING">Il dispositivo si collega a Internet</string>
   <string name="DEVICE_EXISTED">Il dispositivo è stato aggiunto</string>
   <string name="DEVICE_NO_RES">Dispositivo aggiunto \n Vai all\'elenco per vedere lo status</string>
+  <string name="DEVICE_OFFLINE1">Controllare se il dispositivo è acceso</string>
+  <string name="DEVICE_OFFLINE2">Il LED di alimentazione del dispositivo è sempre dopo l\'avvio. Se il LED non si accende, premere il pulsante di accensione finché la luce blu non lampeggia.</string>
+  <string name="DEVICE_OFFLINE3">Controllare la rete circostante</string>
+  <string name="DEVICE_OFFLINE4">Disponibile WiFi</string>
+  <string name="DEVICE_OFFLINE5">Configurare WiFi per il dispositivo</string>
+  <string name="DEVICE_OFFLINE6">Nessun WiFi disponibile</string>
+  <string name="DEVICE_OFFLINE7">Collegare i punti caldi dell\'apparecchiatura</string>
   <string name="DEVICE_UPGRADE">Aggiornamento software dispositivo</string>
   <string name="DEVICE_UPGRADE_TIPS">Il dispositivo deve essere rimbalzo per aggiornare il software.</string>
   <string name="DEVICE_WIFI_ONLINE">WiFi On&#8211;line</string>
@@ -284,7 +297,7 @@
   <string name="LIGTH_DOOR_LABEL_2">Led blu lampeggiante,chiamata</string>
   <string name="LIGTH_DOOR_LABEL_3">Led verde, carica</string>
   <string name="LIGTH_LABEL_0_1">Led blu lampeggiante, connessione WiFi</string>
-  <string name="LIGTH_LABEL_0_2">Led blu, Wi&#8211;Fi online</string>
+  <string name="LIGTH_LABEL_0_2">Led blu, WiFi online</string>
   <string name="LIGTH_LABEL_1_1">Led blu lampeggiante, connesso alla rete</string>
   <string name="LIGTH_LABEL_1_2">Led blu, 3G/4G online</string>
   <string name="LIGTH_LABEL_2_1">Lampeggiante, la batteria è scarica</string>
@@ -396,6 +409,9 @@
   <string name="PHONE_NUMBER_2">Numero di telefono non valido</string>
   <string name="PHONE_NUMBER_3">Il numero di telefono è utilizzato per l\'account corrente.</string>
   <string name="PHONE_SIGNUP">Telefono</string>
+  <string name="PHOTO_DELE_POP">Al di là di recuperare dopo la cancellazione, sicuro di eliminare dall\'fotos?</string>
+  <string name="PHOTO_DOWN_DELE">Il file corrente viene scaricato e non verrà ripristinato dopo l\'eliminazione, eliminare?</string>
+  <string name="PHOTO_NOT_LOAD">Impossibile caricare la foto originale</string>
   <string name="PLEASE_WAIT">Attendere Per Favore&#8230;</string>
   <string name="PLEASE_WAIT_1">Attendere&#8230;</string>
   <string name="PLEASE_WAIT_2">Attendere per favore&#8230;</string>
@@ -501,6 +517,8 @@
   <string name="SAT_Hisvideo_Timeselector">Sab</string>
   <string name="SAVE">Fatto</string>
   <string name="SAVED_PHOTOS">Salva in immagini</string>
+  <string name="SAVE_PHONE">Salva sul telefono</string>
+  <string name="SAVE_SUCCESS">Salvato con successo</string>
   <string name="SCENE_ADDED">\"%s\" Aaggiunto correttamente</string>
   <string name="SCENE_ADD_ERR">\"%s\" non aggiunto</string>
   <string name="SCENE_SAVED">Memorizzato con successo</string>
@@ -540,6 +558,7 @@
   <string name="SETTING_FREE">Usare tutti I rilevatori di movimento come default</string>
   <string name="SETTING_RECORD">Impostazioni video</string>
   <string name="SETTING_SD">Micro SD card</string>
+  <string name="SETTING_SECURE_AI">AI riconoscimento</string>
   <string name="SETTING_TIMEZONE">Time zone</string>
   <string name="SET_NEW_PWD">Impostare una nuova password</string>
   <string name="SET_PHOTO_FAIL">Non salvata</string>
@@ -548,6 +567,7 @@
   <string name="SET_PWD">Imposta Password</string>
   <string name="SHARE">Condividi</string>
   <string name="SHARE_ACCOUNT">E&#8211;Mail</string>
+  <string name="SHARE_DOWNLOAD">Scarica la foto originale e poi condividi</string>
   <string name="SHARE_ERR">Puoi condividere fino a 5 amici</string>
   <string name="SHARE_E_MAIL">E&#8211;Mail</string>
   <string name="SHARE_FROM">Condiviso %s</string>
@@ -647,14 +667,14 @@
   <string name="Tap0_register_VerificationTips">La mail di attivazione è stato inviato a %s, si prega di fare clic sul link per attivare l\'account.</string>
   <string name="Tap0_wrongcode">Codice di verifica errato</string>
   <string name="Tap1_AddDeviceTips">Clicca il\"+\"a destra in alto per aggiungere il dispositivo</string>
-  <string name="Tap1_AddDevice_CameraTipShort">Premere brevemente il pulsante Wi&#8211;Fi per 1 secondi</string>
+  <string name="Tap1_AddDevice_CameraTipShort">Dopo l\'accensione, premere il tasto WiFi</string>
   <string name="Tap1_AddDevice_CameraTips">Attendere che l\'indicatore lampeggi in blu</string>
-  <string name="Tap1_AddDevice_CameraTipsTitle">Premere il pulsante Wi&#8211;Fi per 3 secondi</string>
+  <string name="Tap1_AddDevice_CameraTipsTitle">Premere il pulsante WiFi per 3 secondi</string>
   <string name="Tap1_AddDevice_CloudcameraTips">Attendere che l\'indicatore rimanga in blu</string>
   <string name="Tap1_AddDevice_CloudcameraTitle">Dopo l\'avvio e premere a lungo il pulsante WiFi per 3 secondi</string>
   <string name="Tap1_AddDevice_ConnectWifi">Connettersi con WiFi</string>
   <string name="Tap1_AddDevice_DoorbellTips">Attendere che l\'indicatore diventi rosso</string>
-  <string name="Tap1_AddDevice_DoorbellTipsTitle">Riavviare e premere il pulsante Wi&#8211;Fi per 3 secondi</string>
+  <string name="Tap1_AddDevice_DoorbellTipsTitle">Riavviare e premere il pulsante WiFi per 3 secondi</string>
   <string name="Tap1_AddDevice_FindNoResult">Nessun dispositivo trovato, si prega di riprovare</string>
   <string name="Tap1_AddDevice_FindingTips">Ricerca dispositivi nelle vicinanzei, si prega di accendere la modalità di WiFi</string>
   <string name="Tap1_AddDevice_QR">Scansiona QR Code</string>
@@ -677,7 +697,7 @@
   <string name="Tap1_Album_PutInVR">Mettere cellulare in bicchieri VR</string>
   <string name="Tap1_Album_Share_Description">Aggiungere descrizione</string>
   <string name="Tap1_Album_Share_NotInstalledTips">\"%s\" non è installato, installarlo e riprova</string>
-  <string name="Tap1_Album_Share_To_Daily_Great">Il contenuto condiviso verrà salvato a \"Splendida della giornata \"</string>
+  <string name="Tap1_Album_Share_To_Daily_Great">Il contenuto condiviso verrà salvato a \"Mi > Condivisione della gestione > 720°Cam contenuti condivisi \"</string>
   <string name="Tap1_BigPic_FavoriteTips">La raccolta delle immagini verrà visualizzata in\"Splendida della giornata\"</string>
   <string name="Tap1_CameraFun_Standby">Standby</string>
   <string name="Tap1_CameraFun_Standby_Description">Accendere allo standby, il dispositivo sarà entrato nello status di riposo. Le funzioni di visualizzazione in diretta, cronologia di videi, le protezioni e l\'allarme di sicurezza, la registrazione automatica, il timelapse saranno indisponibili</string>
@@ -760,7 +780,7 @@
   <string name="Tap1_FirmwareUpdateFai">Aggiornamento non riuscito</string>
   <string name="Tap1_FirmwareUpdateSuc">Aggiornare successo</string>
   <string name="Tap1_FirmwareUpdating">Aggiornamento(%s)</string>
-  <string name="Tap1_Firmware_DataTips">Consumo di dati sarebbe creato se andare avanti senza di connessione Wi&#8211;Fi,continuare?</string>
+  <string name="Tap1_Firmware_DataTips">Consumo di dati sarebbe creato se andare avanti senza di connessione WiFi,continuare?</string>
   <string name="Tap1_HomeMode">Modalità di casa</string>
   <string name="Tap1_HomeMode_Opened">Modalità Home è stato aperto</string>
   <string name="Tap1_Index_DayGreetings">Ogni giorno</string>
@@ -937,7 +957,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, riprovare</string>
   <string name="Tips_ShortVideo">Premere a lungo per registrare un breve video</string>
   <string name="Tips_SureDelete">Procedo alla cancellazione?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/DobyNew/treaty%s_en.html</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Nessuna reazione, riprova per favore</string>
   <string name="UPDATE_FAIL">Impossibile collegare la macchina fotografica, riprova per favore</string>
   <string name="UPDATING_BUTTON">Aggiornamento</string>
@@ -948,7 +968,7 @@
   <string name="USER_HELP">FAQ</string>
   <string name="USER_NAME">Inserire Nome utente</string>
   <string name="USE_HELP">Aiuto</string>
-  <string name="Unconnect_Network">Il tuo dispositivo non è connesso a una rete mobile oa una rete Wi&#8211;Fi</string>
+  <string name="Unconnect_Network">Il tuo dispositivo non è connesso a una rete mobile oa una rete WiFi</string>
   <string name="VALID_STORAGE">Memoria libera</string>
   <string name="VIDEO_FirmwareUpdating">Aggiornamento firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Sto caricando</string>
@@ -993,8 +1013,8 @@
   <string name="WiFiLight_RedFlashing">Rosso lampeggiante: Collegamento</string>
   <string name="WiFiLight_RedNBlueFlashing">Red &amp; Blu flashing: Aggiornamento</string>
   <string name="WiFiLight_SteadyBlue">Blu fisso: WiFi on line</string>
-  <string name="Wifi_Hotspot">Nel dispositivo [Impostazioni> Wireless LAN], scegliere un punto di accesso Wi&#8211;Fi per connettersi.</string>
-  <string name="Wifi_Method">Wi&#8211;Fi Reti:</string>
+  <string name="Wifi_Hotspot">Nel dispositivo [Impostazioni> Wireless LAN], scegliere un punto di accesso WiFi per connettersi.</string>
+  <string name="Wifi_Method">WiFi Reti:</string>
   <string name="Wifi_Set_Up">Vai alla configurazione</string>
   <string name="Word_Hours">ore</string>
   <string name="XX_DISCOVERY">Nuovi dispositivi di \'%s\'</string>
@@ -1011,12 +1031,12 @@
   <string name="choose_connect_wifi">Scegliere una rete</string>
   <string name="click_back_again_exit">Premere nuovamente per uscire %s</string>
   <string name="conn_ap_overtime">Connessione fallita</string>
-  <string name="connect_by_hand">Connettere \"%s\" nelle impostazioni Wi&#8211;Fi la password è 11111111</string>
+  <string name="connect_by_hand">Connettere \"%s\" nelle impostazioni WiFi la password è 11111111</string>
   <string name="connecting_ap">Connessione in corso&#8230;</string>
   <string name="contacts_auth">Contatti</string>
   <string name="copy">Copia</string>
   <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
-  <string name="device_Wi_Fi">Wi&#8211;Fi</string>
+  <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s \n Può essere un numero di telefono, tu puoi:</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
   <string name="find_new_version">Nuova versione</string>
@@ -1034,7 +1054,7 @@
   <string name="not_found_the_album_application">Nessuna applicazione Album trovata</string>
   <string name="pb_request">Caricamento</string>
   <string name="permission_auth">Abilitare \"%s\" i permessi nelle impostazioni Android.</string>
-  <string name="photo">Foto</string>
+  <string name="photo">Fotos</string>
   <string name="please_choose_wifi">Scegli una rete WIFI per favore</string>
   <string name="receive_new_news">Messaggi ricevuti %s</string>
   <string name="rename">Modifica nome</string>

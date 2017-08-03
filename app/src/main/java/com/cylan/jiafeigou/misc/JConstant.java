@@ -163,28 +163,39 @@ public class JConstant {
 
     public static String getAIText(int[] objects) {
         StringBuilder result = new StringBuilder();
+
         if (objects != null) {
-            for (int object : objects) {
-                switch (object) {
+            int length = objects.length;
+            for (int i = 0; i < length; i++) {
+                int obj = objects[i];
+                switch (obj) {
                     case JConstant.OBJECT_MAN: {
-                        result.append("人形 ");
+                        result.append(ContextUtils.getContext().getString(R.string.AI_HUMAN));
+//                        result.append("人形");
                         break;
                     }
                     case JConstant.OBJECT_DOG: {
-                        result.append("狗 ");
+                        result.append(ContextUtils.getContext().getString(R.string.AI_DOG));
+//                        result.append("狗");
                         break;
                     }
                     case JConstant.OBJECT_CAR: {
-                        result.append("猫 ");
+                        result.append(ContextUtils.getContext().getString(R.string.AI_VEHICLE));
+//                        result.append("车");
                         break;
                     }
                     case JConstant.OBJECT_CAT: {
-                        result.append("车辆 ");
+                        result.append(ContextUtils.getContext().getString(R.string.AI_CAT));
+//                        result.append("猫");
                         break;
                     }
                 }
+                if (i < length - 1) {
+                    result.append(", ");
+                }
             }
         }
+
         return result.toString();
     }
     //人形检测的物体

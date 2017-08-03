@@ -6,19 +6,22 @@
     android:background="@color/color_f0f0f0"
     tools:context="com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment">
 
+
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
         layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
-        app:ct_icon="@drawable/nav_icon_back_white"
+        app:ct_icon="@drawable/nav_tab_back_selector"
         app:ct_left_title="AI识别"
-        app:ct_left_title_color="@color/color_white"
-        app:ct_left_title_size="@dimen/sp18"
+        app:ct_left_title_color="#FFFFFF"
+        app:ct_left_title_size="@dimen/sp17"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_ai_selection"
