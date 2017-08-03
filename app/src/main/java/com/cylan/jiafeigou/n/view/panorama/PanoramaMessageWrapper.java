@@ -19,6 +19,7 @@ public class PanoramaMessageWrapper extends BaseFragment {
 
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    private CamMessageListFragment fragment;
 
     public static PanoramaMessageWrapper newInstance(String uuid) {
         PanoramaMessageWrapper wrapper = new PanoramaMessageWrapper();
@@ -45,7 +46,9 @@ public class PanoramaMessageWrapper extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         bundle.putBoolean(JConstant.KEY_JUMP_TO_MESSAGE, true);
-        CamMessageListFragment fragment = CamMessageListFragment.newInstance(bundle);
+        bundle.putBoolean("show_edit", false);
+        fragment = CamMessageListFragment.newInstance(bundle);
+        fragment.hookEdit(customToolbar.getTvToolbarRight());
         getChildFragmentManager().beginTransaction().replace(R.id.message_container, fragment).commit();
 
     }

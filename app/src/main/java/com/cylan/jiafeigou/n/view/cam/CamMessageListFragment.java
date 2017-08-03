@@ -144,6 +144,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (mockView != null) {
+            this.tvCamMessageListEdit.setVisibility(View.INVISIBLE);
+            this.tvCamMessageListEdit = mockView;
+        }
+
         srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF));
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
@@ -183,7 +189,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         });
         camMessageListAdapter.setOnclickListener(this);
-        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) ? View.INVISIBLE : View.VISIBLE);
+        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) ? View.INVISIBLE : View.VISIBLE)
+        ;
 
     }
 
@@ -602,4 +609,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         return net != null && net.net > 0;
     }
+
+    public void hookEdit(TextView tvToolbarRight) {
+        this.mockView = tvToolbarRight;
+        this.mockView.setId(R.id.tv_cam_message_list_edit);
+        this.mockView.setOnClickListener(this::onBindClick);
+    }
+
+    private TextView mockView;
 }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -60,6 +61,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void onStart() {
         super.onStart();
         BasePanoramaApiHelper.getInstance().init(uuid, true);
+        DataSourceManager.getInstance().syncAllProperty();
     }
 
     @Override

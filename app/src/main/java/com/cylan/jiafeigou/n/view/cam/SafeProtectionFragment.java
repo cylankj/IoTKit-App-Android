@@ -208,8 +208,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         fLayoutProtectionWarnEffect.setVisibility(warmsound && show ? View.VISIBLE : View.GONE);
 
         ll24RecordContainer.setVisibility(protection && show ? View.VISIBLE : View.GONE);
-        swMotionAI.setVisibility(enableAI ? View.VISIBLE : View.GONE);
-        swMotionInterval.setVisibility(warmInterval ? View.VISIBLE : View.GONE);
+        swMotionAI.setVisibility(enableAI && show ? View.VISIBLE : View.GONE);
+        swMotionInterval.setVisibility(warmInterval && show ? View.VISIBLE : View.GONE);
     }
 
     @Override

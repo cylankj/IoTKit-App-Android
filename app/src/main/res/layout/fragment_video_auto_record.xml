@@ -23,14 +23,13 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y10"
+        android:layout_height="@dimen/y12"
         android:background="@drawable/little_shape" />
 
     <RelativeLayout
         android:id="@+id/rl_alarm_setting_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y12">
+        android:layout_height="wrap_content">
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/lLayout_mode_motion"
