@@ -190,7 +190,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/MSG_RECORD"
+                        android:text="@string/History_video"
                         android:textColor="@color/common_btn_color_state"
                         android:textSize="@dimen/sp15" />
                 </FrameLayout>

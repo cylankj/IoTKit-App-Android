@@ -21,5 +21,4 @@
     <string name="agreementSuffix">"_DobyNew"</string>
     <string name="log">"Doby"</string>
     <integer name="max_password_length">32</integer>
-    <bool name="show_weixin_push">false</bool>
 </resources>
