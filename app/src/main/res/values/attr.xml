@@ -237,6 +237,8 @@
         <attr name="civ_border_color" format="color" />
         <attr name="civ_border_overlay" format="boolean" />
         <attr name="civ_fill_color" format="color" />
+        <attr name="civ_hint_color" format="color|reference" />
+        <attr name="civ_hint_radius" format="dimension|reference" />
     </declare-styleable>
 
     <!--软键盘-->

@@ -61,11 +61,13 @@ public class CircleImageView extends AppCompatImageView {
     private final Paint mBitmapPaint = new Paint();
     private final Paint mBorderPaint = new Paint();
     private final Paint mFillPaint = new Paint();
-
+    private final Paint mHintPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int mBorderColor = DEFAULT_BORDER_COLOR;
     private int mBorderWidth = DEFAULT_BORDER_WIDTH;
     private int mFillColor = DEFAULT_FILL_COLOR;
 
+    //显示红点
+    private boolean drawHint = true;
     private Bitmap mBitmap;
     private BitmapShader mBitmapShader;
     private int mBitmapWidth;
@@ -73,7 +75,8 @@ public class CircleImageView extends AppCompatImageView {
 
     private float mDrawableRadius;
     private float mBorderRadius;
-
+    private float mHintRadius;
+    private int mHintColor;
     private ColorFilter mColorFilter;
 
     private boolean mReady;
@@ -101,6 +104,9 @@ public class CircleImageView extends AppCompatImageView {
         mBorderOverlay = a.getBoolean(R.styleable.CircleImageView_civ_border_overlay, DEFAULT_BORDER_OVERLAY);
         mFillColor = a.getColor(R.styleable.CircleImageView_civ_fill_color, DEFAULT_FILL_COLOR);
 
+        mHintColor = a.getColor(R.styleable.CircleImageView_civ_hint_color, DEFAULT_FILL_COLOR);
+        mHintRadius = a.getDimension(R.styleable.CircleImageView_civ_hint_radius, 5.0f);
+
         a.recycle();
 
         init();
@@ -114,6 +120,11 @@ public class CircleImageView extends AppCompatImageView {
             setup();
             mSetupPending = false;
         }
+    }
+
+    public void showHint(boolean drawHint) {
+        this.drawHint = drawHint;
+        invalidate();
     }
 
     @Override
@@ -152,6 +163,11 @@ public class CircleImageView extends AppCompatImageView {
         canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint);
         if (mBorderWidth > 0) {
             canvas.drawCircle(mBorderRect.centerX(), mBorderRect.centerY(), mBorderRadius, mBorderPaint);
+        }
+        //画红点.
+        if (drawHint) {
+            double delta = mBorderRect.height() / 2 - mBorderRect.height() / 2 * Math.cos(Math.PI / 4);
+            canvas.drawCircle((float) (mBorderRect.width() - delta), (float) (mBorderRect.top + delta), mHintRadius, mHintPaint);
         }
     }
 
@@ -399,7 +415,7 @@ public class CircleImageView extends AppCompatImageView {
             mDrawableRect.inset(mBorderWidth - 1.0f, mBorderWidth - 1.0f);
         }
         mDrawableRadius = Math.min(mDrawableRect.height() / 2.0f, mDrawableRect.width() / 2.0f);
-
+        mHintPaint.setColor(mHintColor);
         applyColorFilter();
         updateShaderMatrix();
         invalidate();
