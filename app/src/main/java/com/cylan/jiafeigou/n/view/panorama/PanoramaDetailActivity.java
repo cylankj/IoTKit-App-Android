@@ -336,13 +336,13 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         refreshControllerView(true);
                                         panoramicView720Ext.loadImage(resource);
-                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                        panoramicView720Ext.post(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
                                     }
 
                                     @Override
                                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                         super.onLoadFailed(e, errorDrawable);
-                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                        panoramicView720Ext.post(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
                                         AppLogger.e(e.getMessage());
                                     }
 

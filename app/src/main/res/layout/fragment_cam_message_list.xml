@@ -82,6 +82,8 @@
         android:layout_height="@dimen/y86"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/y5"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="invisible" />
 
 

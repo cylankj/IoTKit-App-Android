@@ -13,11 +13,11 @@
         app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_tab_back_selector"
-        app:ct_left_title="消息"
+        app:ct_left_title="@string/Tap1_Camera_Messages"
         app:ct_left_title_color="#FFFFFF"
         app:ct_left_title_size="@dimen/sp17"
         app:ct_right_title="@string/EDIT_THEME"
-        app:ct_right_title_color="#FFFFFF"
+        app:ct_right_title_color="@color/color_d8d8d8_fffffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

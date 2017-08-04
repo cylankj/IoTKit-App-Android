@@ -97,27 +97,26 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
             return;
         }
         showLoadImageProgress();
-        ivUserinfoBigImage.postDelayed(() ->
-                Glide.with(getContext())
-                        .load(url)
-                        .placeholder(R.drawable.icon_mine_head_normal)
-                        .error(R.drawable.icon_mine_head_normal)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                hideLoadImageProgress();
-                                return false;
-                            }
+        Glide.with(getContext())
+                .load(url)
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        hideLoadImageProgress();
+                        return false;
+                    }
 
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                hideLoadImageProgress();
-                                return false;
-                            }
-                        })
-                        .into(ivUserinfoBigImage), 1000);
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        hideLoadImageProgress();
+                        return false;
+                    }
+                })
+                .into(ivUserinfoBigImage);
     }
 
     @OnClick({R.id.rl_root_view, R.id.iv_userinfo_big_image})
@@ -141,7 +140,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @Override
     public void showLoadImageProgress() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
+        ivUserinfoBigImage.post(() -> LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING)));
     }
 
     @Override

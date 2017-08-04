@@ -65,6 +65,7 @@ public class LoadingDialog extends BaseDialog {
     }
 
     public static void dismissLoading(FragmentManager fragmentManager) {
+        // TODO: 2017/8/4  dismiss 需要 post 以防 dismiss 不掉不需要 postDelay post 就行了
         if (fragmentManager == null) return;
         Fragment dialog = fragmentManager.findFragmentByTag("LoadingDialog");
         if (dialog != null && dialog.isVisible()) {
