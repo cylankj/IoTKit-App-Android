@@ -410,12 +410,11 @@ public class SuperWheelExt extends View {
      * @param timeTarget
      */
     public void setPositionByTime(long timeTarget) {
-//        post(() -> {
+        if (timeTarget == 0) return;
         long timeCurrent = getCurrentFocusTime();
         float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
         Log.i("setPositionByTime", "setPositionByTime:" + timeTarget + "," + deltaDx);
         touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
-//        });
         this.lastUpdateTime = System.currentTimeMillis();
         this.currentTatget = timeTarget;
 //        this.nextTarget = iDataProvider.getNextFocusTime(timeTarget, ITouchHandler.MoveDirection.RIGHT, false);

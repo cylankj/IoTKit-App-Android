@@ -309,26 +309,47 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         refreshControllerView(true);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                         Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(resource));
-                                    }
-
-                                });
-                    } else if (bean != null) {
-                        Glide.with(this)
-                                .load(MiscUtils.getCamWarnUrl(uuid, bean, panoramaItem.index + 1))
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        refreshControllerView(true);
-                                        panoramicView720Ext.loadImage(resource);
                                     }
 
                                     @Override
                                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                         super.onLoadFailed(e, errorDrawable);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                    }
+
+                                    @Override
+                                    public void onStart() {
+                                        super.onStart();
+                                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
+                                    }
+                                });
+                    } else if (bean != null) {
+                        Glide.with(this)
+                                .load(MiscUtils.getCamWarnUrl(uuid, bean, panoramaItem.index + 1))
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .skipMemoryCache(true)
+                                .into(new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                        refreshControllerView(true);
+                                        panoramicView720Ext.loadImage(resource);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                    }
+
+                                    @Override
+                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                        super.onLoadFailed(e, errorDrawable);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                         AppLogger.e(e.getMessage());
+                                    }
+
+                                    @Override
+                                    public void onStart() {
+                                        super.onStart();
+                                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
                                     }
                                 });
                     }
@@ -571,6 +592,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 download.setText(R.string.Tap1_Album_Download);
             } else if (downloadInfo.getState() == DownloadManager.FINISH) {
                 download.setText(R.string.Tap1_Album_Downloaded);
+                download.setEnabled(false);
             } else {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");
                 downloadInfo.setListener(listener);
@@ -718,6 +740,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             RxEvent.DeletePanoramaItem deletePanoramaItem = new RxEvent.DeletePanoramaItem();
             deletePanoramaItem.position = getIntent().getIntExtra("panorama_position", 0);
             RxBus.getCacheInstance().post(deletePanoramaItem);
+            RxBus.getCacheInstance().postSticky(new RxEvent.ClearDataEvent(505));
             finish();
         } else {
             AppLogger.e("删除失败了");

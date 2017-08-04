@@ -239,6 +239,7 @@ public class BindUtils {
             intent.putExtra(JConstant.KEY_ANIM_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTipShort));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, context.getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, context.getString(R.string.BLINKING));
+            intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
             intent.setClass(context, BindPanoramaCamActivity.class);
         } else if (JFGRules.isCamera(pid)) {
             intent.putExtra(JConstant.KEY_SSID_PREFIX, DOG_AP);

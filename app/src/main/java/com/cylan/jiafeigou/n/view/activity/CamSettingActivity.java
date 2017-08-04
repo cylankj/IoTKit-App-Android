@@ -325,24 +325,18 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 break;
 
             case R.id.sv_setting_device_home_mode:
-                Intent homeModeIntent = new Intent(this, BindPanoramaCamActivity.class);
-                homeModeIntent.putExtra("PanoramaConfigure", "Family");
-                homeModeIntent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                homeModeIntent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipShort));
-                homeModeIntent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
-                homeModeIntent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
-                homeModeIntent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
-                startActivity(homeModeIntent);
+                handleJumpToConfig();
                 break;
             case R.id.sv_setting_direct_mode:
-                Intent directModeIntent = new Intent(this, BindPanoramaCamActivity.class);
-                directModeIntent.putExtra("PanoramaConfigure", "OutDoor");
-                directModeIntent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                directModeIntent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipShort));
-                directModeIntent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
-                directModeIntent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
-                directModeIntent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
-                startActivity(directModeIntent);
+                intent = new Intent();
+                intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipShort));
+                intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
+                intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
+                intent.putExtra("PanoramaConfigure", "OutDoor");
+                intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+                intent.setClass(this, BindPanoramaCamActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -420,6 +414,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         return getString(R.string.SD_NORMAL);
     }
 
+
     private void handleJumpToConfig() {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) {
@@ -451,6 +446,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (!JFGRules.isDeviceOnline(net)) {
                 //设备离线
                 Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
+                intent.putExtra("PanoramaConfigure", "Family");
                 intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
                 startActivity(intent);
             } else {
@@ -529,7 +525,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initFirmwareHint(device);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         //////////////////////////分享账号////////////////////////////////////////////
-        if (!TextUtils.isEmpty(device.shareAccount)&&!JFGRules.isPan720(device.pid)) {
+        if (!TextUtils.isEmpty(device.shareAccount) && !JFGRules.isPan720(device.pid)) {
             //分享账号 隐藏
             final int count = lLayoutSettingItemContainer.getChildCount();
             for (int i = 2; i < count - 1; i++) {

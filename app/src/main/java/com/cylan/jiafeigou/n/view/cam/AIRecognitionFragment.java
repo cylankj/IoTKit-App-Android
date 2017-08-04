@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
 import com.cylan.jiafeigou.n.view.cam.item.AISelectionItem;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
 
     @BindView(R.id.rv_ai_selection)
     RecyclerView rv_AISelectionList;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     FastItemAdapter<AISelectionItem> itemAdapter;
 
@@ -103,6 +106,7 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
+        customToolbar.setBackAction(view -> getFragmentManager().popBackStack());
         itemAdapter = new FastItemAdapter<>();
         itemAdapter.withSelectable(true);
         itemAdapter.withMultiSelect(true);

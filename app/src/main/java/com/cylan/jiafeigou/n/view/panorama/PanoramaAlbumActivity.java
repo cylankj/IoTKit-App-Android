@@ -423,10 +423,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (panoramaAdapter != null) {
             panoramaAdapter.notifyDataSetChanged();
         }
-        if (mode >= albumViewMode && albumViewMode != ALBUM_VIEW_MODE.MODE_NONE) {
-            swipeRefreshLayout.setRefreshing(false);
-            return;
-        }
+//        if (mode >= albumViewMode && albumViewMode != ALBUM_VIEW_MODE.MODE_NONE) {
+//            swipeRefreshLayout.setRefreshing(false);
+//            return;
+//        }
 
         if (albumModeSelectPop != null) {
             radioGroup.check(modeToResId(mode, true));

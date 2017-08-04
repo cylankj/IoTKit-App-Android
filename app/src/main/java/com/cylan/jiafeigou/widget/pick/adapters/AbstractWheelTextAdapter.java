@@ -60,7 +60,7 @@ public abstract class AbstractWheelTextAdapter extends AbstractWheelAdapter {
     /**
      * Default text size
      */
-    public static final int DEFAULT_TEXT_SIZE = 24;
+    public static final int DEFAULT_TEXT_SIZE = 20;//默认20sp
 
     /// Custom text typeface
     private Typeface textTypeface;

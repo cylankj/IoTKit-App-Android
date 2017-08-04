@@ -184,9 +184,6 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         handleMsgCountAndTime(holder, uuid, mDevice);
         //右下角状态
         setItemState(holder, uuid, net);
-//        if (JFGRules.isPan720(mDevice.pid)) {
-//            handlePan720RightIcon(holder);
-//        }
     }
 
     private String getAlias(String uuid, String alias) {
