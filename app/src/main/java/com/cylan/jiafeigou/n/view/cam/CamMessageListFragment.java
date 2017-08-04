@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -571,11 +572,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (JFGRules.isPan720(getDevice().pid)) {
             // TODO: 2017/8/3 720 消息详情页
 // intent= new Intent(getActivity(), PanoramaDetailActivity.class);
-            intent = new Intent(getActivity(), CamMediaActivity.class);
-            intent.putExtra(KEY_INDEX, index);
-            intent.putExtra(KEY_BUNDLE, item);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_IS_BELL, item.bellCallRecord != null);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            intent = PanoramaDetailActivity.getIntentFromMessage(getActivity(), uuid, item, position, index);
+            return intent;
         } else {
 
             intent = new Intent(getActivity(), CamMediaActivity.class);

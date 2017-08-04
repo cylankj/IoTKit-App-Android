@@ -31,9 +31,9 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -68,7 +68,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.schedulers.Schedulers;
-import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by yanzhendong on 2017/3/16.
@@ -126,14 +125,23 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private View deleted;
     private boolean looper = true;
     private boolean isPlay = false;
-    private IjkMediaPlayer player1;
+    private CamMessageBean bean;
 
 
-    public static Intent getIntentFromMessage(Context context, DpMsgDefine.DPAlarm alarm, int position) {
+
+    public static Intent getIntentFromMessage(Context context, String uuid, CamMessageBean bean, int position, int index) {
+        PanoramaAlbumContact.PanoramaItem item = new PanoramaAlbumContact.PanoramaItem("");
+        if (bean.alarmMsg != null) {
+            item.type = PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_MESSAGE_PICTURE;
+            item.index = index;
+            item.time = bean.alarmMsg.time;
+        }
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
         intent.putExtra("panorama_position", position);
         intent.putExtra("panorama_mode", 3);
-
+        intent.putExtra("panorama_item", item);
+        intent.putExtra("cam_bean", bean);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         return intent;
     }
 
@@ -174,6 +182,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
         panoramaItem = getIntent().getParcelableExtra("panorama_item");
         mode = getIntent().getIntExtra("panorama_mode", 2);
+        this.bean = getIntent().getParcelableExtra("cam_bean");
         topBack.setText(TimeUtils.getTimeSpecial(panoramaItem.time * 1000L));
         initPanoramaView();
     }
@@ -320,6 +329,30 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     }
                 }
                 break;
+            }
+
+            case PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_MESSAGE_PICTURE: {
+
+                if (panoramaPanelSwitcher.getDisplayedChild() == 0) {
+                    panoramaPanelSwitcher.showNext();
+                }
+                refreshControllerView(false);
+                Glide.with(this)
+                        .load(MiscUtils.getCamWarnUrl(uuid, bean, panoramaItem.index + 1))
+                        .asBitmap()
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                refreshControllerView(true);
+                                Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(resource));
+                            }
+
+                            @Override
+                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                super.onLoadFailed(e, errorDrawable);
+                                AppLogger.e(e.getMessage());
+                            }
+                        });
             }
         }
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);

@@ -58,6 +58,7 @@ public interface PanoramaAlbumContact {
             int TYPE_PICTURE = 1;
             int TYPE_VIDEO = 2;
             int TYPE_SEPARATOR = 3;
+            int TYPE_MESSAGE_PICTURE = 4;
         }
 
         public String fileName;
@@ -67,6 +68,8 @@ public interface PanoramaAlbumContact {
         public boolean selected;
         public DownloadInfo downloadInfo;
         public int location = -1; //0:本地;1:设备;2:本地+设备
+
+        public int index;//for cameraMessage
 
         public PanoramaItem(String name) {
             if (TextUtils.isEmpty(name)) return;
