@@ -114,7 +114,7 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
             try {
                 String remoteFilePath = getRemoteFilePath(item.fileName, false);
                 long seq = appCmd.getVideoShareUrl(remoteFilePath, desc, DataSourceManager.getInstance().getStorageType(), item.type);
-                AppLogger.e("获取 H5返回码为:" + seq + ",remoteFilePath:" + remoteFilePath + ",type" + item.type);
+                AppLogger.e("获取 H5返回码为:" + seq + ",remoteFilePath:" + remoteFilePath + ",type" + item.type + ",storageType" + DataSourceManager.getInstance().getStorageType());
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

@@ -419,7 +419,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onViewModeChanged(int mode, boolean report) {
-        if (true) return;
+//        if (true) return;
         if (panoramaAdapter != null) {
             panoramaAdapter.notifyDataSetChanged();
         }
@@ -445,7 +445,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (has_sdcard == 0) {
             alertDialog.setMessage(getString(R.string.MSG_SD_OFF));
             alertDialog.setCancelable(false);
-            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (dialog, which) -> onViewModeChanged(0, false));
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (dialog, which) -> {
+//                onViewModeChanged(0, false);
+                onViewModeChanged(2, false);
+            });
             alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
             alertDialog.show();
         }

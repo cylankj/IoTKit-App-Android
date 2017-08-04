@@ -117,7 +117,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         return BasePanoramaApiHelper.getInstance().monitorPanoramaApi()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(api -> {
-                    mView.onViewModeChanged(api.ApiType == 0 ? 2 : 0, api.ApiType == -1);
+//                    mView.onViewModeChanged(api.ApiType == 0 ? 2 : 0, api.ApiType == -1);
+                    mView.onViewModeChanged(2, api.ApiType == -1);
                 }, e -> {
                 });
     }

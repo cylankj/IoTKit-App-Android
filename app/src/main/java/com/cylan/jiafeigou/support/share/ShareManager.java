@@ -285,7 +285,7 @@ public class ShareManager {
                     Bundle bundle = new Bundle();
                     bundle.putInt(ShareConstant.SHARE_PLATFORM_TYPE, shareItemType);
                     H5ShareEditorFragment fragment = H5ShareEditorFragment.newInstance(uuid, shareItemType, filePath, thumbPath, shareItem, ShareByH5EditorOption.this);
-                    ActivityUtils.addFragmentToActivity(activity.getSupportFragmentManager(), fragment, android.R.id.content);
+                    ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment, android.R.id.content);
                 }
             }
         }

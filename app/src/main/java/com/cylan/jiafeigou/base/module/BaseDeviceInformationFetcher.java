@@ -122,8 +122,8 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                 .observeOn(Schedulers.io())
                 .filter(event -> !isFetching && !event.success && deviceInformation != null)
                 .map(event -> {
-                    deviceInformation.ip = null;
-                    deviceInformation.port = 0;
+//                    deviceInformation.ip = null;
+//                    deviceInformation.port = 0;
                     isFetching = true;
                     ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

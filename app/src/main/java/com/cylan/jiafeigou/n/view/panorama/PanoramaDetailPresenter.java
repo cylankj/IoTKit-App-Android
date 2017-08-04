@@ -72,7 +72,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
     }
 
     @Override
-    public void delete(PanoramaAlbumContact.PanoramaItem item, int mode) {
+    public void delete(PanoramaAlbumContact.PanoramaItem item, int mode, long version) {
         if (mode == 0) {
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
@@ -98,10 +98,10 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             registerSubscription(subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3  
-            Subscription subscribe = Observable.just(0)
+            Subscription subscribe = Observable.just(version)
                     .observeOn(Schedulers.io())
-                    .map(version -> new DPEntity()
-                            .setUuid("")
+                    .map(ver -> new DPEntity()
+                            .setUuid(uuid)
                             .setVersion(version)
                             .setAction(DBAction.DELETED)
                             .setMsgId(DpMsgMap.ID_505_CAMERA_ALARM_MSG))
