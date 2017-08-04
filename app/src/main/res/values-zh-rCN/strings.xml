@@ -328,6 +328,7 @@
   <string name="MAGNETISM_ON_PUSH">%s被打开了</string>
   <string name="MESSAGE">消息中心</string>
   <string name="MINUTE">分</string>
+  <string name="MINUTE_Cloud">分钟</string>
   <string name="MOBILE_DATA">移动数据网络</string>
   <string name="MOBILE_TIPS">开启后，将断开WiFi网络，使用移动数据连接</string>
   <string name="MODEL">型号</string>
@@ -390,6 +391,7 @@
   <string name="OFF">未启用</string>
   <string name="OFFLINE_ERR">设备离线了</string>
   <string name="OFFLINE_ERR_1">无网络连接</string>
+  <string name="OFFLINE_EXPLAIN">设备离线</string>
   <string name="OFF_LINE">离线</string>
   <string name="OK">确定</string>
   <string name="ON">已启用</string>
@@ -457,6 +459,7 @@
   <string name="REPEAT">重复</string>
   <string name="REPEAT_PLAY">循环播放</string>
   <string name="REPEAT_TIME">秒</string>
+  <string name="REPEAT_TIME_ALARM">秒</string>
   <string name="RESET_PWD">重设密码</string>
   <string name="RET_EALIAS_EXIST">名称已经存在</string>
   <string name="RET_EBINDCID_IN_BINDING">设备已存在</string>
@@ -539,6 +542,7 @@
   <string name="SECOND">%d秒</string>
   <string name="SECURE">安全防护</string>
   <string name="SECURE_ALARM_CLOSE">若关闭，“侦测到异常时”将不启用录像</string>
+  <string name="SECURE_Interval_Alarm">报警间隔</string>
   <string name="SECURE_SENSITIVITY">灵敏度</string>
   <string name="SECURE_TYPE">移动侦测</string>
   <string name="SEE_HELP">查看帮助</string>
@@ -957,7 +961,6 @@
   <string name="Tips_Device_TimeoutRetry">连接超时，请重试</string>
   <string name="Tips_ShortVideo">长按录制短视频</string>
   <string name="Tips_SureDelete">是否删除？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_cn.html</string>
   <string name="UPDATE_DISCONNECT">设备无响应，请重试</string>
   <string name="UPDATE_FAIL">设备连接失败，请重试</string>
   <string name="UPDATING_BUTTON">正在更新</string>
@@ -973,6 +976,7 @@
   <string name="VIDEO_FirmwareUpdating">固件升级中&#8230;</string>
   <string name="VIDEO_REFRESHING">正在加载，请稍后</string>
   <string name="VIDEO_SD_DESC">Micro SD卡需要初始化，才能存储视频</string>
+  <string name="Video_expired">视频不存在，可能已过期</string>
   <string name="WARN_TIME">报警时间段</string>
   <string name="WEB">加菲狗官网</string>
   <string name="WED">星期三</string>
@@ -998,13 +1002,13 @@
   <string name="WIFI_OFF">请打开WiFi开关，再重试</string>
   <string name="WIFI_PWD">WiFi密码</string>
   <string name="WIFI_PWD_1">WiFi密码：</string>
-  <string name="WIFI_SET_2">1.请检查设备WiFi灯是否蓝色闪烁,如果没有,请长按WiFi键约3秒\n2.打开iPhone的设置&#8211;>无线网络,选择\“%s\”WiFi加入,密码8个1</string>
-  <string name="WIFI_SET_3">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;**&#8211;******”加入，密码8个1</string>
-  <string name="WIFI_SET_3_1">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;ML&#8211;******”加入，密码8个1</string>
+  <string name="WIFI_SET_2">1.请检查设备WiFi灯是否蓝色闪烁,如果没有,请长按WiFi键约3秒\n2.打开iPhone的设置&#45;>无线网络,选择\“%s\”WiFi加入,密码8个1</string>
+  <string name="WIFI_SET_3">请在系统设置&#45;>无线局域网，选择“DOG&#45;**&#45;******”加入，密码8个1</string>
+  <string name="WIFI_SET_3_1">请在系统设置&#45;>无线局域网，选择“DOG&#45;ML&#45;******”加入，密码8个1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
-  <string name="WIFI_SET_RS">请在系统设置&#8211;>无线局域网，选择“RS&#8211;CAM&#8211;******”加入，密码8个1</string>
-  <string name="WIFI_SET_VER">请在系统设置&#8211;>无线局域网，选择“%s”加入，密码8个1</string>
+  <string name="WIFI_SET_RS">请在系统设置&#45;>无线局域网，选择“RS&#45;CAM&#45;******”加入，密码8个1</string>
+  <string name="WIFI_SET_VER">请在系统设置&#45;>无线局域网，选择“%s”加入，密码8个1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1035,7 +1039,7 @@
   <string name="connecting_ap">正在获取&#8230;</string>
   <string name="contacts_auth">通讯录</string>
   <string name="copy">复制</string>
-  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved</string>
+  <string name="copyrightEn">Copyright ©2005&#45;%s Cylan.All Rights Reserved</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n可能是一个电话号码，你可以：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1044,7 +1048,7 @@
   <string name="getting">获取中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">未发现Micro SD卡</string>
-  <string name="help_url">https://%1$s:8081/helps/zh&#8211;rCN%2$s.html</string>
+  <string name="help_url">https://%1$s:8081/helps/zh&#45;rCN%2$s.html</string>
   <string name="infrared_night_vision">红外夜视</string>
   <string name="infrared_night_vision_Descript">开启红外夜视可在光线较暗的环境下得到清晰的视频画面</string>
   <string name="isStorageLow">Micro SD卡存储空间不足，无法下载。</string>
@@ -1058,7 +1062,7 @@
   <string name="please_choose_wifi">请选择WiFi网络</string>
   <string name="receive_new_news">收到%s条新消息</string>
   <string name="rename">编辑名称</string>
-  <string name="service_phonenum">400&#8211;716&#8211;3232</string>
+  <string name="service_phonenum">400&#45;716&#45;3232</string>
   <string name="set_failed">保存失败</string>
   <string name="setwifi_check">请设置手机连接到“%s”WiFi网络，再进行配置</string>
   <string name="share_content">最近我在用这款手机APP，很不错哦~ 配合一个摄像头可以随时随地看到家里的老人、宝宝和财物，非常好用！推荐你也试试哦~~~</string>

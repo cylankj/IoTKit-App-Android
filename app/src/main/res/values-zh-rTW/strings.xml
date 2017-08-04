@@ -328,6 +328,7 @@
   <string name="MAGNETISM_ON_PUSH">%s被打開了</string>
   <string name="MESSAGE">訊息中心</string>
   <string name="MINUTE">分</string>
+  <string name="MINUTE_Cloud">分鐘</string>
   <string name="MOBILE_DATA">移動數據網路</string>
   <string name="MOBILE_TIPS">開啟後，將斷開WiFi網路，使用移動數據連接</string>
   <string name="MODEL">型號</string>
@@ -390,6 +391,7 @@
   <string name="OFF">未啟用</string>
   <string name="OFFLINE_ERR">設備離線</string>
   <string name="OFFLINE_ERR_1">無網路連接</string>
+  <string name="OFFLINE_EXPLAIN">設備離線</string>
   <string name="OFF_LINE">離線</string>
   <string name="OK">確定</string>
   <string name="ON">已啟用</string>
@@ -457,6 +459,7 @@
   <string name="REPEAT">重複</string>
   <string name="REPEAT_PLAY">循環播放</string>
   <string name="REPEAT_TIME">秒</string>
+  <string name="REPEAT_TIME_ALARM">秒</string>
   <string name="RESET_PWD">重設密碼</string>
   <string name="RET_EALIAS_EXIST">名稱已經存在</string>
   <string name="RET_EBINDCID_IN_BINDING">設備已存在</string>
@@ -539,6 +542,7 @@
   <string name="SECOND">%d秒</string>
   <string name="SECURE">安全防護</string>
   <string name="SECURE_ALARM_CLOSE">若關閉，“偵測到異常時”將不啟用錄影</string>
+  <string name="SECURE_Interval_Alarm">報警間隔</string>
   <string name="SECURE_SENSITIVITY">靈敏度</string>
   <string name="SECURE_TYPE">位移偵測</string>
   <string name="SEE_HELP">查看幫助</string>
@@ -957,7 +961,6 @@
   <string name="Tips_Device_TimeoutRetry">連接超時，請重試</string>
   <string name="Tips_ShortVideo">長按錄製短視頻</string>
   <string name="Tips_SureDelete">是否刪除？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">設備無回應，請重試</string>
   <string name="UPDATE_FAIL">設備連接失敗，請重試</string>
   <string name="UPDATING_BUTTON">正在更新</string>
@@ -973,6 +976,7 @@
   <string name="VIDEO_FirmwareUpdating">固件更新中&#8230;</string>
   <string name="VIDEO_REFRESHING">正在載入，請稍後</string>
   <string name="VIDEO_SD_DESC">Micro SD卡需要初始化，才能存儲影像資料</string>
+  <string name="Video_expired">視頻不存在，可能已過期</string>
   <string name="WARN_TIME">警示時間</string>
   <string name="WEB">Clever Dog官網</string>
   <string name="WED">星期三</string>
@@ -998,13 +1002,13 @@
   <string name="WIFI_OFF">您的手機未打開WiFi開關，請打開後重試</string>
   <string name="WIFI_PWD">WiFi密碼</string>
   <string name="WIFI_PWD_1">WiFi密碼：</string>
-  <string name="WIFI_SET_2">1.請檢查設備WiFi燈是否藍色閃爍,如果沒有,請長按WiFi鍵約3秒 \n2.打開iPhone的設置&#8211;>無線網路,選擇\“%s\”加入，密碼8個1</string>
-  <string name="WIFI_SET_3">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;**&#8211;******”加入，密碼8個1</string>
-  <string name="WIFI_SET_3_1">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;ML&#8211;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_2">1.請檢查設備WiFi燈是否藍色閃爍,如果沒有,請長按WiFi鍵約3秒 \n2.打開iPhone的設置&#45;>無線網路,選擇\“%s\”加入，密碼8個1</string>
+  <string name="WIFI_SET_3">請在系統設置&#45;>無線區域網，選擇“DOG&#45;**&#45;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_3_1">請在系統設置&#45;>無線區域網，選擇“DOG&#45;ML&#45;******”加入，密碼8個1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暫不支持5GHz的WiFi信號</string>
-  <string name="WIFI_SET_RS">請在系統設置&#8211;>無線區域網，選擇“RS&#8211;CAM&#8211;******”加入，密碼8個1</string>
-  <string name="WIFI_SET_VER">請在系統設置&#8211;>無線區域網，選擇“%s”加入，密碼8個1</string>
+  <string name="WIFI_SET_RS">請在系統設置&#45;>無線區域網，選擇“RS&#45;CAM&#45;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_VER">請在系統設置&#45;>無線區域網，選擇“%s”加入，密碼8個1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1035,7 +1039,7 @@
   <string name="connecting_ap">正在連接&#8230;</string>
   <string name="contacts_auth">通訊錄</string>
   <string name="copy">複製</string>
-  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
+  <string name="copyrightEn">Copyright ©2005&#45;%s Cylan.All Rights Reserved.</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n可能是一個電話號碼，你可以：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1058,7 +1062,7 @@
   <string name="please_choose_wifi">請選擇WiFi網路</string>
   <string name="receive_new_news">收到%s條新訊息</string>
   <string name="rename">編輯名稱</string>
-  <string name="service_phonenum">+86 400&#8211;716&#8211;3232</string>
+  <string name="service_phonenum">+86 400&#45;716&#45;3232</string>
   <string name="set_failed">設定失敗</string>
   <string name="setwifi_check">請設置手機連接到“%s”WiFi網路，再進行配置</string>
   <string name="share_content">最近我在用這款APP，配合一個攝像機可以隨時隨地看到家裏，非常好用！推薦你也試試</string>

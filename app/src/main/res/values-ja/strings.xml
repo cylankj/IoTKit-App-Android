@@ -211,7 +211,7 @@
   <string name="EMAIL_1">メールアドレス</string>
   <string name="EMAIL_2">有効なメールアドレスを入力してください</string>
   <string name="EMAIL_RESET_PWD">システムがメールを%sに送信しましたので、送信されたリンクをクリックしてパスワードの変更をしてください</string>
-  <string name="EMAIL_SIGNUP">E&#8211;mail</string>
+  <string name="EMAIL_SIGNUP">E&#45;mail</string>
   <string name="END_TALKBACK">通話終了～</string>
   <string name="ENTER_CODE">検証コード</string>
   <string name="ENTER_PWD">新しいパスワードを再度入力してください</string>
@@ -328,6 +328,7 @@
   <string name="MAGNETISM_ON_PUSH">%sがオンにしました</string>
   <string name="MESSAGE">メッセージ</string>
   <string name="MINUTE">分</string>
+  <string name="MINUTE_Cloud">分</string>
   <string name="MOBILE_DATA">モバイルデータネットワーク</string>
   <string name="MOBILE_TIPS">当機能を有効にすると、WiFi接続が切断され、モバイルデータを使用します</string>
   <string name="MODEL">型番</string>
@@ -390,6 +391,7 @@
   <string name="OFF">オフ</string>
   <string name="OFFLINE_ERR">デバイスがオフラインです</string>
   <string name="OFFLINE_ERR_1">ネットワークが切断されました</string>
+  <string name="OFFLINE_EXPLAIN">オフラインです</string>
   <string name="OFF_LINE">オフライン</string>
   <string name="OK">確定</string>
   <string name="ON">オン</string>
@@ -457,6 +459,7 @@
   <string name="REPEAT">繰り返し</string>
   <string name="REPEAT_PLAY">リピード再生</string>
   <string name="REPEAT_TIME">秒</string>
+  <string name="REPEAT_TIME_ALARM">秒</string>
   <string name="RESET_PWD">パスワードをリセットする</string>
   <string name="RET_EALIAS_EXIST">この名前はすでに使用されています。他の名前を使用してください</string>
   <string name="RET_EBINDCID_IN_BINDING">デバイスはすでにバインディングされており、繰り返してバインディングできません</string>
@@ -539,6 +542,7 @@
   <string name="SECOND">%d秒</string>
   <string name="SECURE">セキュリティ機能</string>
   <string name="SECURE_ALARM_CLOSE">異常を検出した時に自動録画するので、移動検出をオフにすると、録画が停止される</string>
+  <string name="SECURE_Interval_Alarm">インターバルアラーム</string>
   <string name="SECURE_SENSITIVITY">敏感度</string>
   <string name="SECURE_TYPE">移動検出</string>
   <string name="SEE_HELP">ヘルプを見る</string>
@@ -826,7 +830,7 @@
   <string name="Tap1_Update">更新</string>
   <string name="Tap1_UpdateFirmwareTips">更新が間もなく開始されます。携帯電話と端末が同じWIFIに接続していることを確認してください</string>
   <string name="Tap1_Update_Electricity">バッテリ残量が30%以下ですので更新できません。充電してからリトライしてください。</string>
-  <string name="Tap1_Update_Precautions">アップデートの所要時間は約4&#8211;5分です。完了するまでは電源やネットワーク接続を切らないでください。</string>
+  <string name="Tap1_Update_Precautions">アップデートの所要時間は約4&#45;5分です。完了するまでは電源やネットワーク接続を切らないでください。</string>
   <string name="Tap1_device_deleted">デバイスを削除されました。</string>
   <string name="Tap1_iHome_Associate">関連</string>
   <string name="Tap1_iHome_Associated">関連する</string>
@@ -957,7 +961,6 @@
   <string name="Tips_Device_TimeoutRetry">タイムアウト、再試行してください</string>
   <string name="Tips_ShortVideo">長押しして短いビデオを録画する</string>
   <string name="Tips_SureDelete">必ず削除して？</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">デバイスに反応がありません。再試行してください</string>
   <string name="UPDATE_FAIL">デバイスの接続に失敗しました、再試行してください</string>
   <string name="UPDATING_BUTTON">アップグレード中</string>
@@ -973,6 +976,7 @@
   <string name="VIDEO_FirmwareUpdating">ファームウェアのアップデート&#8230;</string>
   <string name="VIDEO_REFRESHING">アップロード中、お待ちください</string>
   <string name="VIDEO_SD_DESC">Micro SDカードを読み込めません。初期化してください</string>
+  <string name="Video_expired">ビデオが存在しない場合、有効期限が切れている可能性が</string>
   <string name="WARN_TIME">警報時間帯</string>
   <string name="WEB">公式サイト訪問</string>
   <string name="WED">水曜日</string>
@@ -999,12 +1003,12 @@
   <string name="WIFI_PWD">パスワード</string>
   <string name="WIFI_PWD_1">パスワード：</string>
   <string name="WIFI_SET_2">1. デバイスのWiFiランプが青く点滅しているかどうかチェックしてください。点滅していない場合、点滅するまでWiFiキーを約3秒間長押ししてください\n2.iPhoneの設定> WiFiを開き、\"%s\"WiFiを選択し、追加してください,パスワード11111111</string>
-  <string name="WIFI_SET_3">システム設定&#8211;>WiFiにDOG&#8211;**&#8211;******を選択し追加してください,パスワード11111111</string>
-  <string name="WIFI_SET_3_1">システム設定&#8211;> WiFiにDOG&#8211;ML &#8211;******を選択し追加してください,パスワード11111111</string>
+  <string name="WIFI_SET_3">システム設定&#45;>WiFiにDOG&#45;**&#45;******を選択し追加してください,パスワード11111111</string>
+  <string name="WIFI_SET_3_1">システム設定&#45;> WiFiにDOG&#45;ML &#45;******を選択し追加してください,パスワード11111111</string>
   <string name="WIFI_SET_4">戻る%s</string>
   <string name="WIFI_SET_5GTIPS">注意：ただいま5GHz式のWiFi電波が適用されません</string>
-  <string name="WIFI_SET_RS">システム設定&#8211;> WiFiにRS&#8211;CAM &#8211;******を選択し追加してください,パスワード11111111</string>
-  <string name="WIFI_SET_VER">システム設定&#8211;> WiFiに %s を選択し追加してください,パスワード11111111</string>
+  <string name="WIFI_SET_RS">システム設定&#45;> WiFiにRS&#45;CAM &#45;******を選択し追加してください,パスワード11111111</string>
+  <string name="WIFI_SET_VER">システム設定&#45;> WiFiに %s を選択し追加してください,パスワード11111111</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1035,7 +1039,7 @@
   <string name="connecting_ap">獲得中&#8230;</string>
   <string name="contacts_auth">連絡帳</string>
   <string name="copy">复制</string>
-  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
+  <string name="copyrightEn">Copyright ©2005&#45;%s Cylan.All Rights Reserved.</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\nは、電話番号であってもよいし、次のことができます：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1058,7 +1062,7 @@
   <string name="please_choose_wifi">ネットワークの選択</string>
   <string name="receive_new_news">%s新しい情報の提示</string>
   <string name="rename">名前編集</string>
-  <string name="service_phonenum">+86 400&#8211;716&#8211;3232</string>
+  <string name="service_phonenum">+86 400&#45;716&#45;3232</string>
   <string name="set_failed">設定ができませんでした</string>
   <string name="setwifi_check">設定次に、\"%s\"のWiFiネットワークに接続してください</string>
   <string name="share_content">ニースアプリ、あなたも試してみることができます〜</string>

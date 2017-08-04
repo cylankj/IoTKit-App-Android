@@ -5,7 +5,7 @@
   <string name="ABOUT_PHONE">Teléfono de servicio de cliente</string>
   <string name="ACCOUNT">Cuenta</string>
   <string name="ACCOUNT_1">Mi cuenta</string>
-  <string name="ACCOUNT_ERR">Por favor, introduzca una dirección de E&#8211;mail válida</string>
+  <string name="ACCOUNT_ERR">Por favor, introduzca una dirección de E&#45;mail válida</string>
   <string name="ACCOUNT_ERR_1">Por favor, introduzca cuenta válida</string>
   <string name="ACCOUNT_ERR_3">Introduzca la cuenta</string>
   <string name="ACCOUNT_ID">CuentaID:%s</string>
@@ -146,7 +146,7 @@
   <string name="DOOR_BIND">¡Enhorabuena! Ha logrado añadir \n se puede mantener enterando a todas horas de lo que pasa fuera de la pueta</string>
   <string name="DOOR_BLINKING">Luz roja</string>
   <string name="DOOR_BLUE_BLINKING">Azul claro</string>
-  <string name="DOOR_BLUE_BLINKING_EX">Cuando la luz no es \"sólido rojo\", por favor re&#8211;arranque, a continuación, pulse el botón WiFi durante unos tres segundos después del lanzamiento, hasta el rojo sólido.</string>
+  <string name="DOOR_BLUE_BLINKING_EX">Cuando la luz no es \"sólido rojo\", por favor re&#45;arranque, a continuación, pulse el botón WiFi durante unos tres segundos después del lanzamiento, hasta el rojo sólido.</string>
   <string name="DOOR_CALL">Se ha contestado</string>
   <string name="DOOR_CALL_RECORD">No hay récord de llamada</string>
   <string name="DOOR_CAMERA">Tomar fotos</string>
@@ -207,11 +207,11 @@
   <string name="EFAMILY_RELEVANCE_ALARE">Disociar \'%1$s\', dispositivo de \'%2$s\' no recibirá mensaje de llamada timbre</string>
   <string name="EFAMILY_RELEVANCE_DOOR">Doorbell Asociado</string>
   <string name="EFAMILY_VIDEOCALLING1">Llamar&#8230;</string>
-  <string name="EMAIL">E&#8211;mail</string>
-  <string name="EMAIL_1">E&#8211;mail</string>
+  <string name="EMAIL">E&#45;mail</string>
+  <string name="EMAIL_1">E&#45;mail</string>
   <string name="EMAIL_2">Por favor, introduzca el correo electrónico</string>
   <string name="EMAIL_RESET_PWD">Desde el sistema le hemos enviado un correo electrónico a %s, por favor, haga clic en el enlace de este correo para restablecer su contraseña.</string>
-  <string name="EMAIL_SIGNUP">E&#8211;mail</string>
+  <string name="EMAIL_SIGNUP">E&#45;mail</string>
   <string name="END_TALKBACK">Intercom terminado</string>
   <string name="ENTER_CODE">Codigo de prueba</string>
   <string name="ENTER_PWD">Confirmar contraseña nueva</string>
@@ -304,7 +304,7 @@
   <string name="LIGTH_LABEL_2_2">Encendida luz azul, conectado con el circuito elétrico</string>
   <string name="LIVE_DATA">Para celulares, tenga en cuenta el uso de datos</string>
   <string name="LOADING">Cargando&#8230;</string>
-  <string name="LOCAL_NOTIFICATION_AndroidMSG">Busque en el Phone \"%s\" en la página de \"Aviso&#8211;&#8211;Ajuste\" y elija \"permitir la notificación\"</string>
+  <string name="LOCAL_NOTIFICATION_AndroidMSG">Busque en el Phone \"%s\" en la página de \"Aviso&#45;&#45;Ajuste\" y elija \"permitir la notificación\"</string>
   <string name="LOCATION">Ubicaci:</string>
   <string name="LOCATION_1">Nombre</string>
   <string name="LOCATION_NAME">Ubicación:</string>
@@ -328,6 +328,7 @@
   <string name="MAGNETISM_ON_PUSH">%s abre</string>
   <string name="MESSAGE">Mensaje</string>
   <string name="MINUTE">M</string>
+  <string name="MINUTE_Cloud">minutos</string>
   <string name="MOBILE_DATA">red de datos móviles</string>
   <string name="MOBILE_TIPS">Usará primero datos móviles aunque haya WiFi conocido abriendo esta función</string>
   <string name="MODEL">Modelo</string>
@@ -376,10 +377,10 @@
   <string name="NO_DEVICE_1">No se ha encontrado ningún dispositivo</string>
   <string name="NO_MESSAGE">No hay mensajes</string>
   <string name="NO_NERWORK_CHEAKDEVICE">Falla en la red \n Si la lista es ningún dispositivo, por favor vuelva a agregar</string>
-  <string name="NO_NETWORK_1">Conexión fracasada &#8211;1</string>
+  <string name="NO_NETWORK_1">Conexión fracasada &#45;1</string>
   <string name="NO_NETWORK_2">Conexión fracasada</string>
-  <string name="NO_NETWORK_4">Conexión fracasada&#8211;4, confrime y pruebe otra vez</string>
-  <string name="NO_NETWORK_5">Conexión fracasada&#8211;5, el dispositivo no funciona</string>
+  <string name="NO_NETWORK_4">Conexión fracasada&#45;4, confrime y pruebe otra vez</string>
+  <string name="NO_NETWORK_5">Conexión fracasada&#45;5, el dispositivo no funciona</string>
   <string name="NO_NETWORK_DOOR">Conexión fracasada</string>
   <string name="NO_SDCARD">No hay tarjeta Micro SD</string>
   <string name="NO_SET">No establecido</string>
@@ -390,6 +391,7 @@
   <string name="OFF">Inactivo</string>
   <string name="OFFLINE_ERR">El dispositivo está descontectado</string>
   <string name="OFFLINE_ERR_1">Su teléfono no está conectado con Internet</string>
+  <string name="OFFLINE_EXPLAIN">Fuera de línea</string>
   <string name="OFF_LINE">NoEstá Conectado A Internet</string>
   <string name="OK">Aceptar</string>
   <string name="ON">Activo</string>
@@ -403,7 +405,7 @@
   <string name="PASSWORD">Contraseña</string>
   <string name="PASSWORD_BIT">Nueva Contraseña</string>
   <string name="PASSWORD_LESSTHAN_SIX">La contraseña debe tener de 6 a 12 dígitos</string>
-  <string name="PHONE_EMAIL">E&#8211;mail</string>
+  <string name="PHONE_EMAIL">E&#45;mail</string>
   <string name="PHONE_NUMBER">Número de teléfono</string>
   <string name="PHONE_NUMBER_1">Número de teléfono</string>
   <string name="PHONE_NUMBER_2">Introduzca número de teléfono válido por favor</string>
@@ -416,7 +418,7 @@
   <string name="PLEASE_WAIT_1">Iniciando sesión&#8230;</string>
   <string name="PLEASE_WAIT_2">Añadir, por favor espere&#8230;</string>
   <string name="PROFILE_PHOTO">Foto de perfil</string>
-  <string name="PULL_TO_LOAD">Pull&#8211;zu&#8211;Lade</string>
+  <string name="PULL_TO_LOAD">Pull&#45;zu&#45;Lade</string>
   <string name="PULL_TO_REFRESH">Desplegar para actualizar</string>
   <string name="PUSH_MSG">Notificaciones</string>
   <string name="PWD_CHANGED">Se ha cambiado la contraseña de su cuenta, por favor, inicie de nuevo.</string>
@@ -451,12 +453,13 @@
   <string name="REFRESH">Renovar, por favor</string>
   <string name="REFRESHING">Cargando</string>
   <string name="REGISTERED">Esta cuenta ha sido inscribida</string>
-  <string name="RELEASE_TO_LOAD">Lassen&#8211;to&#8211;load</string>
+  <string name="RELEASE_TO_LOAD">Lassen&#45;to&#45;load</string>
   <string name="RELEASE_TO_REFRESH">Soltar para actualizar</string>
   <string name="REMAIN_SPACE">%s GB</string>
   <string name="REPEAT">Repetir</string>
   <string name="REPEAT_PLAY">Reproducción de ciclo</string>
   <string name="REPEAT_TIME">segundos</string>
+  <string name="REPEAT_TIME_ALARM">segundos</string>
   <string name="RESET_PWD">Establecer de nuevo la contraseña</string>
   <string name="RET_EALIAS_EXIST">El nombre ya existe, introduzca de nuevo por favor</string>
   <string name="RET_EBINDCID_IN_BINDING">Su dispositivo ha sido enlazado, no se puede enlazar otra vez</string>
@@ -476,7 +479,7 @@
   <string name="RET_EISBIND_UNBIND">CID No enlazado</string>
   <string name="RET_ELOGIN_ACCOUNT_NOT_EXIST">Cuenta no registrada</string>
   <string name="RET_ELOGIN_CID_SN_NOTMATCH">CID no concuerda con SN</string>
-  <string name="RET_ELOGIN_ERROR">Dirección de E&#8211;mail o contraseña incorrecta</string>
+  <string name="RET_ELOGIN_ERROR">Dirección de E&#45;mail o contraseña incorrecta</string>
   <string name="RET_ELOGIN_VCODE_ERROR">Introduza código de prueba correcto</string>
   <string name="RET_EMODE_STANDARD">Ajustes hechos, funcionará en modo normal.</string>
   <string name="RET_EPARAMS_FALSE">Argument Fehler</string>
@@ -539,6 +542,7 @@
   <string name="SECOND">%d Segundos</string>
   <string name="SECURE">Protección</string>
   <string name="SECURE_ALARM_CLOSE">La grabación automática está ajustada para \"cuando se detecte una anormalidad\", si se apaga la \"detección de movimiento\", se parará la grabación.</string>
+  <string name="SECURE_Interval_Alarm">Alarma de intervalo</string>
   <string name="SECURE_SENSITIVITY">Sensibilidad</string>
   <string name="SECURE_TYPE">Detección de movimiento</string>
   <string name="SEE_HELP">Ayuda</string>
@@ -569,7 +573,7 @@
   <string name="SHARE_ACCOUNT">Cuenta</string>
   <string name="SHARE_DOWNLOAD">Por favor, descargue la foto original y luego comparta</string>
   <string name="SHARE_ERR">Sólo se puede compartir con 5 amigos</string>
-  <string name="SHARE_E_MAIL">E&#8211;mail</string>
+  <string name="SHARE_E_MAIL">E&#45;mail</string>
   <string name="SHARE_FROM">Compartido desde %s</string>
   <string name="SHARE_NAME">Se ha compartido con</string>
   <string name="SIGN_UP">Registrarse</string>
@@ -649,7 +653,7 @@
   <string name="TURN_ON_PROTECTION">Cuando la protección está activada, el usuario será notificado cuando el movimiento se detecte en el período de tiempo establecido.</string>
   <string name="Tap0_AlreadyEmailed">Desde el sistema le hemos enviado un correo electrónico a</string>
   <string name="Tap0_Authorizationfailed">Error de autorización, por favor, inténtelo de nuevo.</string>
-  <string name="Tap0_BindEmail">Fijar E&#8211;mail</string>
+  <string name="Tap0_BindEmail">Fijar E&#45;mail</string>
   <string name="Tap0_BindPhoneNo">Fijar el número de telefono</string>
   <string name="Tap0_BindTips">Después de fijarlo, se puede servirse para iniciar la sesión y buscar la contraseña.</string>
   <string name="Tap0_Click_ActivateAccount">haz clic en el enlace para activar tu cuenta.</string>
@@ -657,7 +661,7 @@
   <string name="Tap0_Login_NoInstalled">Sin %s instalado</string>
   <string name="Tap0_Register_VerificationCode">Ingrese el código de verificación</string>
   <string name="Tap0_WelcomeTourist">Ver primero</string>
-  <string name="Tap0_enterphoneoremail">Introducir el número de telefono o E&#8211;mail.</string>
+  <string name="Tap0_enterphoneoremail">Introducir el número de telefono o E&#45;mail.</string>
   <string name="Tap0_invaildcode">Código de verificación inválido</string>
   <string name="Tap0_register">Suscribirse</string>
   <string name="Tap0_register_EmailVerification">Verificacion de email</string>
@@ -826,7 +830,7 @@
   <string name="Tap1_Update">Actualizar</string>
   <string name="Tap1_UpdateFirmwareTips">Actualizar comienza en breve,asegúrese de que el teléfono móvil y el dispositivo están conectados con el mismo WIFI</string>
   <string name="Tap1_Update_Electricity">La energía está inferior al 30%, no se puede actualizar, por favor vuelve a intentar después de cargar completamente.</string>
-  <string name="Tap1_Update_Precautions">La actualización requiere aproximadamente 4&#8211;5 minutos. En el proceso no deja el dispositivo fuera de la red.</string>
+  <string name="Tap1_Update_Precautions">La actualización requiere aproximadamente 4&#45;5 minutos. En el proceso no deja el dispositivo fuera de la red.</string>
   <string name="Tap1_device_deleted">Este dispositivo ha sido eliminado.</string>
   <string name="Tap1_iHome_Associate">Asociar</string>
   <string name="Tap1_iHome_Associated">Asociado</string>
@@ -957,7 +961,6 @@
   <string name="Tips_Device_TimeoutRetry">De tiempo de espera, intente de nuevo</string>
   <string name="Tips_ShortVideo">Pulsado para grabar un vídeo de corta duración</string>
   <string name="Tips_SureDelete">Asegúrese de eliminar?</string>
-  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Ausrüstung keine Antwort, versuchen Sie es erneut</string>
   <string name="UPDATE_FAIL">Conexión del dispositivo fallido, por favor, inténtalo de nuevo</string>
   <string name="UPDATING_BUTTON">Renovando</string>
@@ -973,6 +976,7 @@
   <string name="VIDEO_FirmwareUpdating">Actualización de firmware&#8230;</string>
   <string name="VIDEO_REFRESHING">Cargando, espere un momento</string>
   <string name="VIDEO_SD_DESC">Se necesita una inicialización para que vaya bien la función de guardar vídeos en la Tarjeta Micro SD</string>
+  <string name="Video_expired">El video no existe, puede que haya caducado</string>
   <string name="WARN_TIME">Horario de alarma</string>
   <string name="WEB">Visitar el sitio web oficial</string>
   <string name="WED">Mié</string>
@@ -998,13 +1002,13 @@
   <string name="WIFI_OFF">WiFi no conectado en este teléfono, inténtelo de nuevo al conectar con el Internet</string>
   <string name="WIFI_PWD">Contraseña</string>
   <string name="WIFI_PWD_1">Contraseña:</string>
-  <string name="WIFI_SET_2">1.Por favor, asegure que la luz azul de la señal de WIFI del dispositivo está parpadeando, si no, mantenga pulsando el botón de WiFi durante tres segundos.\n2.Por favor, busque en la Configuración del iPhone &#8211; Wireless LAN, seleccione \"%s\" conexión,Contraseña ocho 1</string>
-  <string name="WIFI_SET_3">Ajustes de phone &#8211;>Red de área local inalámbrica,elija DOG&#8211;****** entre, si necesitan contraseña, introduzca 11111111</string>
-  <string name="WIFI_SET_3_1">Ajustes de phone &#8211;>Red de área local inalámbrica,elija DOG&#8211;ML****** entre,si necesitan contraseña, introduzca 11111111</string>
+  <string name="WIFI_SET_2">1.Por favor, asegure que la luz azul de la señal de WIFI del dispositivo está parpadeando, si no, mantenga pulsando el botón de WiFi durante tres segundos.\n2.Por favor, busque en la Configuración del iPhone &#45; Wireless LAN, seleccione \"%s\" conexión,Contraseña ocho 1</string>
+  <string name="WIFI_SET_3">Ajustes de phone &#45;>Red de área local inalámbrica,elija DOG&#45;****** entre, si necesitan contraseña, introduzca 11111111</string>
+  <string name="WIFI_SET_3_1">Ajustes de phone &#45;>Red de área local inalámbrica,elija DOG&#45;ML****** entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WIFI_SET_4">lver a %s</string>
   <string name="WIFI_SET_5GTIPS">Nota:No es compatible con el WiFi 5G</string>
-  <string name="WIFI_SET_RS">Ajustes de phone &#8211;>Red de área local inalámbrica,elija RS&#8211;CAM****** entre,si necesitan contraseña, introduzca 11111111</string>
-  <string name="WIFI_SET_VER">Ajustes de phone &#8211;>Red de área local inalámbrica,elija %s entre,si necesitan contraseña, introduzca 11111111</string>
+  <string name="WIFI_SET_RS">Ajustes de phone &#45;>Red de área local inalámbrica,elija RS&#45;CAM****** entre,si necesitan contraseña, introduzca 11111111</string>
+  <string name="WIFI_SET_VER">Ajustes de phone &#45;>Red de área local inalámbrica,elija %s entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WONDER_TODAY_H_M">Hoy HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ayer HH:mm</string>
   <string name="WeChat">WeChat</string>
@@ -1035,7 +1039,7 @@
   <string name="connecting_ap">Por favor, espere&#8230;</string>
   <string name="contacts_auth">Contactos</string>
   <string name="copy">Copiar</string>
-  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
+  <string name="copyrightEn">Copyright ©2005&#45;%s Cylan.All Rights Reserved.</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\nEs el número de teléfono, puedes:</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1058,7 +1062,7 @@
   <string name="please_choose_wifi">Introduzca el nombre de Wifi</string>
   <string name="receive_new_news">Recibió %s mensajes nuevos</string>
   <string name="rename">Introduzca el nombre del dispositivo</string>
-  <string name="service_phonenum">+86 400&#8211;716&#8211;3232</string>
+  <string name="service_phonenum">+86 400&#45;716&#45;3232</string>
   <string name="set_failed">Error al guardar el ajuste</string>
   <string name="setwifi_check">Configure su teléfono para conectarse a \"%s\"</string>
   <string name="share_content">Bonita App, también puede tener un intento ~</string>
