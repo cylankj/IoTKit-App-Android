@@ -621,7 +621,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
             if (JFGRules.isPan720(device.pid)) {
-                startActivity(new Intent(getActivity(), CameraMainActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+                Intent intent = new Intent(getActivity(), CameraMainActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
+                View tip = itemView.findViewById(R.id.img_device_icon);
+                if (tip != null && tip instanceof ImageViewTip) {
+                    if (((ImageViewTip) tip).isShowDot()) {
+                        intent.putExtra(JConstant.KEY_JUMP_TO_MESSAGE, JConstant.KEY_JUMP_TO_MESSAGE);
+                    }
+                }
+                startActivity(intent);
             } else /**if (JFGRules.isCamera(device.pid))/**/ {
                 Intent in = new Intent(getActivity(), CameraLiveActivity.class);
                 View tip = itemView.findViewById(R.id.img_device_icon);

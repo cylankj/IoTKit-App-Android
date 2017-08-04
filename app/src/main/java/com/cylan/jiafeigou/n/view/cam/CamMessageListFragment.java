@@ -190,7 +190,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
         });
         camMessageListAdapter.setOnclickListener(this);
-        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) ? View.INVISIBLE : View.VISIBLE)
+        tvCamMessageListEdit.setVisibility(JFGRules.isShareDevice(uuid) && !JFGRules.isPan720(getDevice().pid) ? View.INVISIBLE : View.VISIBLE)
         ;
 
     }

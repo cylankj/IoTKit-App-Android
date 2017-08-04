@@ -92,37 +92,40 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     private void setItemState(ViewHolder holder, String uuid, DpMsgDefine.DPNet net) {
         //0 net type 网络类型
         int resIdNet = JConstant.getNetTypeRes(net != null ? net.net : -1);
-        if (resIdNet != -1) {
-            holder.setVisibility(R.id.img_device_state_0, VISIBLE);
-            holder.setImageResource(R.id.img_device_state_0, resIdNet);
-        } else holder.setVisibility(R.id.img_device_state_0, GONE);
+        if (JFGRules.isPan720(mDevice.pid) && JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""))) {
+            holder.setVisibility(R.id.img_device_state_net, VISIBLE);
+            holder.setImageResource(R.id.img_device_state_net, R.drawable.home_icon_ap);
+        } else if (resIdNet != -1) {
+            holder.setVisibility(R.id.img_device_state_net, VISIBLE);
+            holder.setImageResource(R.id.img_device_state_net, resIdNet);
+        } else holder.setVisibility(R.id.img_device_state_net, GONE);
         //1 已分享的设备,此设备分享给别的账号.
         if (mDevice != null && !isPrimaryAccount(mDevice.shareAccount)) {
-            holder.setVisibility(R.id.img_device_state_1, GONE);
+            holder.setVisibility(R.id.img_device_state_share, GONE);
         } else {
             if (BaseApplication.getAppComponent().getSourceManager().isDeviceSharedTo(uuid)) {
-                holder.setVisibility(R.id.img_device_state_1, VISIBLE);
-                holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
+                holder.setVisibility(R.id.img_device_state_share, VISIBLE);
+                holder.setImageResource(R.id.img_device_state_share, R.drawable.home_icon_net_link);
             } else {
-                holder.setVisibility(R.id.img_device_state_1, GONE);
+                holder.setVisibility(R.id.img_device_state_share, GONE);
             }
         }
         //2 电量
         if (mDevice != null && JFGRules.isDeviceOnline(net) && JFGRules.showBattery(mDevice.pid, false)) {//设备在线才显示电量
             int battery = mDevice.$(206, 0);
             if (battery <= 20 && (JFGRules.isBell(mDevice.pid) || JFGRules.isFreeCam(mDevice.pid))) {//门铃和freeCam 电量低于20%在线显示
-                holder.setVisibility(R.id.img_device_state_2, VISIBLE);
-                holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
+                holder.setVisibility(R.id.img_device_state_battery, VISIBLE);
+                holder.setImageResource(R.id.img_device_state_battery, R.drawable.home_icon_net_battery);
             } else if (battery <= 50 && JFGRules.is3GCam(mDevice.pid)) {//3G狗 低于50%在线显示
-                holder.setVisibility(R.id.img_device_state_2, VISIBLE);
-                holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
+                holder.setVisibility(R.id.img_device_state_battery, VISIBLE);
+                holder.setImageResource(R.id.img_device_state_battery, R.drawable.home_icon_net_battery);
             } else {
-                holder.setVisibility(R.id.img_device_state_2, GONE);
-                holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
+                holder.setVisibility(R.id.img_device_state_battery, GONE);
+                holder.setImageResource(R.id.img_device_state_battery, android.R.color.transparent);
             }
         } else {
-            holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
-            holder.setVisibility(R.id.img_device_state_2, GONE);
+            holder.setImageResource(R.id.img_device_state_battery, android.R.color.transparent);
+            holder.setVisibility(R.id.img_device_state_battery, GONE);
         }
         //3 延时摄影
 
@@ -130,16 +133,21 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         DpMsgDefine.DPStandby isStandBY = mDevice.$(508, new DpMsgDefine.DPStandby());
         boolean safe = mDevice.$(501, false);
         if (!isStandBY.standby && safe && JFGRules.isCamera(mDevice.pid) && isPrimaryAccount(mDevice.shareAccount) && JFGRules.isDeviceOnline(net)) {
-            holder.setVisibility(R.id.img_device_state_3, VISIBLE);
-            holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
+            holder.setVisibility(R.id.img_device_state_safe, VISIBLE);
+            holder.setImageResource(R.id.img_device_state_safe, R.drawable.home_icon_net_security);
         } else {
-            holder.setVisibility(R.id.img_device_state_3, GONE);
+            holder.setVisibility(R.id.img_device_state_safe, GONE);
         }
         //5 安全待机
-        holder.setVisibility(R.id.img_device_state_4, isStandBY.standby ? VISIBLE : GONE);
+        holder.setVisibility(R.id.img_device_state_standby, isStandBY.standby ? VISIBLE : GONE);
         if (isStandBY.standby && net != null && net.net > 0) {
-            holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
+            holder.setImageResource(R.id.img_device_state_standby, R.drawable.home_icon_net_standby);
         }
+
+        Object state = DataSourceManager.getInstance().getDeviceState(uuid);
+        //有录像状态
+        holder.setImageResource(R.id.img_device_state_record, R.drawable.home_icon_recording);
+        holder.setVisibility(R.id.img_device_state_record, state == null ? GONE : VISIBLE);
 
     }
 
@@ -175,56 +183,10 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         holder.setImageResource(R.id.img_device_icon, iconRes);
         handleMsgCountAndTime(holder, uuid, mDevice);
         //右下角状态
-        if (JFGRules.isPan720(mDevice.pid)) {
-            handlePan720RightIcon(holder);
-        } else setItemState(holder, uuid, net);
-    }
-
-    /**
-     * 设备逐渐多起来,后面可能需要一个设备类型一个itemType
-     *
-     * @param holder
-     */
-    private void handlePan720RightIcon(ViewHolder holder) {
-        //1 已分享的设备,此设备分享给别的账号.
-        if (mDevice != null && !isPrimaryAccount(mDevice.shareAccount)) {
-            holder.setVisibility(R.id.img_device_state_1, GONE);
-        } else {
-            if (BaseApplication.getAppComponent().getSourceManager().isDeviceSharedTo(uuid)) {
-                holder.setVisibility(R.id.img_device_state_1, VISIBLE);
-                holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
-            } else {
-                holder.setVisibility(R.id.img_device_state_1, GONE);
-            }
-        }
-        //2 电量
-//        DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
-        if (mDevice != null && JFGRules.showBattery(mDevice.pid, false) && JFGRules.isDeviceOnline(mDevice.$(201,
-                new DpMsgDefine.DPNet()))) {//设备在线才显示电量
-            int battery = mDevice.$(206, 0);
-            if (battery <= 20) {//电量低于20%在线显示
-                holder.setVisibility(R.id.img_device_state_2, VISIBLE);
-                holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
-            } else {
-                holder.setVisibility(R.id.img_device_state_2, GONE);
-                holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
-            }
-        } else {
-            holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
-            holder.setVisibility(R.id.img_device_state_2, GONE);
-        }
-        if (JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""))) {
-            holder.setVisibility(R.id.img_device_state_0, GONE);
-            holder.setVisibility(R.id.img_device_state_3, VISIBLE);
-            holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_ap);
-        } else {
-            holder.setImageResource(R.id.img_device_state_3, android.R.color.transparent);
-            holder.setVisibility(R.id.img_device_state_3, GONE);
-        }
-        Object state = DataSourceManager.getInstance().getDeviceState(uuid);
-        //有录像状态
-        holder.setImageResource(R.id.img_device_state_5, R.drawable.home_icon_recording);
-        holder.setVisibility(R.id.img_device_state_5, state == null ? GONE : VISIBLE);
+        setItemState(holder, uuid, net);
+//        if (JFGRules.isPan720(mDevice.pid)) {
+//            handlePan720RightIcon(holder);
+//        }
     }
 
     private String getAlias(String uuid, String alias) {
@@ -243,23 +205,15 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         boolean isPrimaryDevice = isPrimaryAccount(mDevice.shareAccount);
         boolean show = needShowUnread(mDevice, isPrimaryDevice);
         //消息数,狗日的门铃的分享设备需要显示.
-        if (JFGRules.isPan720(mDevice.pid)) {
-            holder.setText(R.id.tv_device_msg_count, getPanOnlineMode(mDevice.uuid));
-            ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(false);
-        } else {
-            String warnContent = getLastWarnContent(pair, mDevice.pid, uuid);
-            holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
-            //时间
-            long time = entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0;
-            if (time != 0) {//服务器返回的数据是错的,过滤掉
-                holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, time));
-            }
-            ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
+
+        String warnContent = getLastWarnContent(pair, mDevice.pid, uuid);
+        holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
+        //时间
+        long time = entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0;
+        if (time != 0) {//服务器返回的数据是错的,过滤掉
+            holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(context, time));
         }
-    }
-
-    private void handleRecordState() {
-
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
     }
 
     /**
@@ -288,6 +242,9 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
      * @return
      */
     private boolean needShowUnread(Device mDevice, boolean isPrimaryDevice) {
+        if (JFGRules.isPan720(mDevice.pid)) {
+            return true;//分享的720 设备享有所有的权限
+        }
         if (JFGRules.isCamera(mDevice.pid)) {
             return isPrimaryDevice;//摄像头,分享设备不显示.
         }
@@ -378,15 +335,15 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         TextView tvDeviceMsgCount;
         @BindView(R.id.tv_device_msg_time)
         TextView tvDeviceMsgTime;
-        @BindView(R.id.img_device_state_0)
+        @BindView(R.id.img_device_state_net)
         ImageView imgDeviceState0;
-        @BindView(R.id.img_device_state_1)
+        @BindView(R.id.img_device_state_share)
         ImageView imgDeviceState1;
-        @BindView(R.id.img_device_state_2)
+        @BindView(R.id.img_device_state_battery)
         ImageView imgDeviceState2;
-        @BindView(R.id.img_device_state_3)
+        @BindView(R.id.img_device_state_safe)
         ImageView imgDeviceState3;
-        @BindView(R.id.img_device_state_4)
+        @BindView(R.id.img_device_state_standby)
         ImageView imgDeviceState4;
 
         public ViewHolder(View itemView) {

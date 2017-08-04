@@ -17,13 +17,13 @@
             android:layout_height="@dimen/y48"
             android:clickable="true"
             android:drawablePadding="@dimen/y13"
-            android:drawableStart="@drawable/icon_down"
+            android:drawableStart="@drawable/icon_down_selector"
             android:focusable="true"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y23"
             android:paddingStart="@dimen/y23"
             android:text="@string/Tap1_Album_Download"
-            android:textColor="#333333"
+            android:textColor="@color/color_icon_down"
             android:textSize="@dimen/sp16" />
 
         <TextView
@@ -32,13 +32,13 @@
             android:layout_height="@dimen/y48"
             android:clickable="true"
             android:drawablePadding="@dimen/y13"
-            android:drawableStart="@drawable/icon_delete"
+            android:drawableStart="@drawable/icon_delete_selector"
             android:focusable="true"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/y23"
             android:paddingStart="@dimen/y23"
             android:text="@string/DELETE"
-            android:textColor="#333333"
+            android:textColor="@color/color_icon_down"
             android:textSize="@dimen/sp16" />
 
 

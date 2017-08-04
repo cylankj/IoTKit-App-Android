@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
@@ -316,11 +317,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                         Glide.with(this)
                                 .load(MiscUtils.getCamWarnUrl(uuid, bean, panoramaItem.index + 1))
                                 .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .into(new SimpleTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         refreshControllerView(true);
-                                        Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(resource));
+                                        panoramicView720Ext.loadImage(resource);
                                     }
 
                                     @Override

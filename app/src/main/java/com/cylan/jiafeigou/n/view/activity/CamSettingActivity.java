@@ -529,7 +529,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initFirmwareHint(device);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         //////////////////////////分享账号////////////////////////////////////////////
-        if (!TextUtils.isEmpty(device.shareAccount)) {
+        if (!TextUtils.isEmpty(device.shareAccount)&&!JFGRules.isPan720(device.pid)) {
             //分享账号 隐藏
             final int count = lLayoutSettingItemContainer.getChildCount();
             for (int i = 2; i < count - 1; i++) {
