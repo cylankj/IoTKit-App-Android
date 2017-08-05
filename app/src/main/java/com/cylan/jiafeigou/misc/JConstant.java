@@ -190,9 +190,9 @@ public class JConstant {
                         break;
                     }
                 }
-                if (i < length - 1) {
-                    result.append(", ");
-                }
+//                if (i < length - 1) {
+                result.append(" ");
+//                }
             }
         }
 

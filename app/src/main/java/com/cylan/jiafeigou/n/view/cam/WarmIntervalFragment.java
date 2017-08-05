@@ -98,10 +98,11 @@ public class WarmIntervalFragment extends BaseDialog {
 
             @Override
             protected CharSequence getItemText(int index) {
-                return index == 0 ? "秒" : "分钟";
+                return index == 0 ? getString(R.string.REPEAT_TIME) : getString(R.string.MINUTE_Cloud);
             }
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
+        adapter.setItemResource(R.layout.item_text_view);
         warmUnit.setViewAdapter(adapter);
         warmUnit.setCurrentItem(unitIndex);
         warmUnit.addChangingListener(changedListener);
@@ -137,9 +138,9 @@ public class WarmIntervalFragment extends BaseDialog {
                 return unitIndex == 0 ? 1 : 10;
             }
 
-
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
+        adapter.setItemResource(R.layout.item_text_view);
         warmNumber.setViewAdapter(adapter);
         warmNumber.addChangingListener(changedListener);
 //        warmNumber.setCyclic(true);

@@ -1,14 +1,14 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/y280"
-    android:layout_height="@dimen/y240"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     tools:context="com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment">
 
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="@dimen/y280"
+        android:layout_height="@dimen/y240">
 
         <TextView
             android:id="@+id/tv_dialog_title"
@@ -22,24 +22,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <com.cylan.jiafeigou.widget.pick.WheelVerticalView
             android:id="@+id/warm_number"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/y26"
             android:layout_marginStart="@dimen/y28"
+            android:layout_marginTop="@dimen/y18"
             app:layout_constraintBottom_toTopOf="@+id/tv_dialog_btn_left"
             app:layout_constraintEnd_toStartOf="@+id/warm_unit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_dialog_title"
+
             app:selectionDivider="@drawable/wheel_divider"
             app:selectionDividerHeight="@dimen/y1" />
 
         <com.cylan.jiafeigou.widget.pick.WheelVerticalView
             android:id="@+id/warm_unit"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/y26"
             android:layout_marginEnd="@dimen/y28"
+            android:layout_marginTop="@dimen/y18"
             app:layout_constraintBottom_toTopOf="@+id/tv_dialog_btn_left"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/warm_number"
@@ -47,38 +51,35 @@
             app:selectionDivider="@drawable/wheel_divider"
             app:selectionDividerHeight="@dimen/y1" />
 
+
         <TextView
             android:id="@+id/tv_dialog_btn_left"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y36"
+            android:layout_marginBottom="@dimen/y8"
             android:gravity="center"
-            android:paddingBottom="@dimen/y8"
             android:paddingEnd="@dimen/y22"
             android:paddingStart="@dimen/y22"
-            android:paddingTop="@dimen/y8"
-
             android:text="@string/CANCEL"
             android:textColor="@color/color_4b9fd5"
             android:textSize="@dimen/sp14"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_dialog_btn_right"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_dialog_btn_right" />
 
         <TextView
             android:id="@+id/tv_dialog_btn_right"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y36"
+            android:layout_marginBottom="@dimen/y8"
+
             android:layout_marginEnd="@dimen/y8"
-            android:layout_marginTop="@dimen/y38"
             android:gravity="center"
-            android:paddingBottom="@dimen/y8"
             android:paddingEnd="@dimen/y22"
             android:paddingStart="@dimen/y22"
-            android:paddingTop="@dimen/y8"
             android:text="@string/OK"
             android:textColor="@color/color_4b9fd5"
             android:textSize="@dimen/sp14"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/warm_unit" />
+            app:layout_constraintEnd_toEndOf="parent" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

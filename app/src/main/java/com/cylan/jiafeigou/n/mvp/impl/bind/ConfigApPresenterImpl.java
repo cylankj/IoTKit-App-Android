@@ -10,8 +10,10 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
@@ -193,9 +195,16 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     private String getCurrentBindCidInShort() {
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null && JFGRules.isCylanDevice(wifiInfo.getSSID()))
+        if (wifiInfo != null && JFGRules.isCylanDevice(wifiInfo.getSSID())) {
             return BindUtils.filterCylanDeviceShortCid(wifiInfo.getSSID());
-        else return "";
+        } else {
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            DpMsgDefine.DPNet dpNet = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+            if (TextUtils.equals(dpNet.ssid, wifiInfo == null ? "" : wifiInfo.getSSID().replace("\"", ""))) {
+                return device.uuid.length() >= 6 ? device.uuid.substring(device.uuid.length() - 6, device.uuid.length()) : device.uuid;
+            }
+            return "";
+        }
     }
 
     @Override

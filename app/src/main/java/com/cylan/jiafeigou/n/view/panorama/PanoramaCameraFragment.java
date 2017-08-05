@@ -205,6 +205,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     @Override
     public void onDismiss() {
         if (surfaceView != null) {
+            videoLiveContainer.removeView(surfaceView);
             surfaceView.onDestroy();
         }
     }
@@ -294,16 +295,15 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         hasResolution = true;
-        if (surfaceView == null) {
-            surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, getActivity(), true);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            surfaceView.setLayoutParams(params);
-            videoLiveContainer.addView(surfaceView);
-            surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
-            surfaceView.configV720();
-            surfaceView.setId("IVideoView".hashCode());
-            surfaceView.setEventListener(this);
-        }
+        surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, getActivity(), true);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        surfaceView.setLayoutParams(params);
+
+        videoLiveContainer.addView(surfaceView);
+        surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
+        surfaceView.configV720();
+        surfaceView.setId("IVideoView".hashCode());
+        surfaceView.setEventListener(this);
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         liveFlowSpeedText.setVisibility(View.VISIBLE);
@@ -311,6 +311,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         onRefreshViewModeUI(panoramaViewMode, true, false);
         onHideBadNetWorkBanner();
     }
+
 
     @Override
     public void onShowPreviewPicture(String picture) {
@@ -457,9 +458,21 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
         presenter.dismiss();
+        if (surfaceView != null) {
+            surfaceView.onDestroy();
+            surfaceView = null;
+        }
     }
 
-//    @Override
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (surfaceView != null) {
+            surfaceView.onPause();
+        }
+    }
+
+    //    @Override
 //    protected void setActivityComponent(ActivityComponent activityComponent) {
 //        activityComponent.inject(this);
 //    }

@@ -150,7 +150,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             this.tvCamMessageListEdit.setVisibility(View.INVISIBLE);
             this.tvCamMessageListEdit = mockView;
         }
-
+        this.tvCamMessageListEdit.setEnabled(false);
         srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.color_36BDFF));
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
@@ -289,8 +289,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
-//            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
+            boolean reset = tvCamMessageListDate.getTag() == null ||
+                    ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
+            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
         });
+
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
@@ -312,7 +315,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             setCurrentPosition(0);
             lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
             rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
-            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
+            boolean reset = tvCamMessageListDate.getTag() == null ||
+                    ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
+            tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
         });
     }
 
@@ -391,7 +396,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (getView() != null && getActivity() != null) {
             getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
         }
-        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && !fLayoutCamMessageListTimeline.isShown());
+        boolean reset = tvCamMessageListDate.getTag() == null ||
+                ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
+
+        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
     }
 
     @Override
@@ -443,9 +451,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
                 tvCamMessageListDate.setTag(reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down);
                 ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down, 2);
-                if (reset)
+                if (reset) {
                     AnimatorUtils.slideIn(fLayoutCamMessageListTimeline, false);
-                else AnimatorUtils.slideOut(fLayoutCamMessageListTimeline, false);
+                } else {
+                    AnimatorUtils.slideOut(fLayoutCamMessageListTimeline, false);
+                }
                 tvCamMessageListEdit.setEnabled(!reset);
                 break;
             case R.id.tv_cam_message_list_edit:

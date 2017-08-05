@@ -335,6 +335,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.DOG_AP);
                 intent.putExtra("PanoramaConfigure", "OutDoor");
                 intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 intent.setClass(this, BindPanoramaCamActivity.class);
                 startActivity(intent);
                 break;
@@ -459,6 +460,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                             getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                             }, getString(R.string.CANCEL), null);
+                } else if (JFGRules.isPan720(device.pid)) {
+                    //相同ssid,判断为同一个网络环境.太水了.
+                    Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
+                    intent.setClass(this, ConfigWifiActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    intent.putExtra("PanoramaConfigure", "Family");
+                    startActivity(intent);
                 } else {
                     //相同ssid,判断为同一个网络环境.太水了.
                     Intent intent = new Intent(this, ConfigWifiActivity_2.class);
