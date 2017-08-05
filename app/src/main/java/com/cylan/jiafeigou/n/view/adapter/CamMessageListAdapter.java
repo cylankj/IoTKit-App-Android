@@ -141,15 +141,18 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
     }
 
-    public void markItemSelected(int position) {
+    public boolean markItemSelected(int position) {
         if (!editMode)
-            return;
+            return false;
         if (selectedMap.containsKey(position)) {
             selectedMap.remove(position);
+            notifyItemChanged(position);
+            return false;
         } else {
             selectedMap.put(position, position);
+            notifyItemChanged(position);
+            return true;
         }
-        notifyItemChanged(position);
     }
 
     @Override

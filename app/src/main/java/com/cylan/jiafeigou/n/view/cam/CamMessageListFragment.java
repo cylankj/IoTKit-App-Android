@@ -526,8 +526,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             break;
             case R.id.lLayout_cam_msg_container: {//点击item,选中
                 if (!camMessageListAdapter.isEditMode()) return;
-                camMessageListAdapter.markItemSelected(position);
-                tvMsgDelete.setEnabled(ListUtils.getSize(camMessageListAdapter.getSelectedItems()) > 0);
+                boolean itemSelected = camMessageListAdapter.markItemSelected(position);
+                int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());
+                tvMsgDelete.setEnabled(size > 0);
+                if (!itemSelected) {
+                    tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
+                }
             }
             break;
             case R.id.imgV_cam_message_pic_0:
