@@ -17,6 +17,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:background="@color/color_white"
         tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
         <RelativeLayout
