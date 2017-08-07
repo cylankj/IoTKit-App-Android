@@ -999,6 +999,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
                 if (useAlert) {
+                    deviceReportDialog.dismiss();
                     deviceReportDialog.setMessage(getString(R.string.MSG_SD_OFF));
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
@@ -1018,6 +1019,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
             case 2022://sd卡识别失败，需要格式化
                 AppLogger.d("SD卡识别失败,需要格式化");
                 if (alertSDFormatError) {//设备会一直推消息,这里过滤掉
+                    deviceReportDialog.dismiss();
                     deviceReportDialog.setMessage(getString(R.string.Tap1_NeedsInitializedTips));
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SD_INIT), (dialog, which) -> presenter.formatSDCard());
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (dialog, which) -> alertSDFormatError = false);
