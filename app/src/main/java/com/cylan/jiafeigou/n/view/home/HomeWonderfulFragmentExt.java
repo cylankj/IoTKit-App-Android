@@ -107,10 +107,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         return fragment;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
 
     @Override

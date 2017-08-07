@@ -29,6 +29,11 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         AppLogger.d(this.getClass().getSimpleName());
