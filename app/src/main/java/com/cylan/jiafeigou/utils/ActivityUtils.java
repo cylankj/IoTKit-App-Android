@@ -188,7 +188,7 @@ public class ActivityUtils {
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(id, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     /**
