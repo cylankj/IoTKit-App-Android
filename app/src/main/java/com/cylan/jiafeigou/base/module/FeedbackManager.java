@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.base.module;
 
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
@@ -64,12 +66,14 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
 
     private void saveCache(ArrayList<JFGFeedbackInfo> arrayList) {
         if (arrayList == null) return;
-
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (account == null || TextUtils.isEmpty(account.getAccount())) return;
         ArrayList<FeedBackBean> feedBackBeans = new ArrayList<>();
         for (JFGFeedbackInfo info : arrayList) {
             FeedBackBean bean = new FeedBackBean();
             bean.setContent(info.msg);
             bean.setMsgTime(info.time * 1000);
+            bean.setAccount(account.getAccount());
             feedBackBeans.add(bean);
         }
         TreeNode node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName("HomeMineHelpFragment");
@@ -106,8 +110,12 @@ public class FeedbackManager implements IManager<FeedBackBean, FeedbackManager.S
 
     private Observable<List<FeedBackBean>> loadFromLocal() {
         BaseDBHelper helper = (BaseDBHelper) BaseApplication.getAppComponent().getDBHelper();
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (account == null || TextUtils.isEmpty(account.getAccount()))
+            return Observable.just(new ArrayList<>());
         return helper.getDaoSession().getFeedBackBeanDao()
                 .queryBuilder()
+                .where(FeedBackBeanDao.Properties.Account.eq(account.getAccount()))
                 .orderDesc(FeedBackBeanDao.Properties.MsgTime)
                 .rx().list()
                 .flatMap(feedBackBeans -> {

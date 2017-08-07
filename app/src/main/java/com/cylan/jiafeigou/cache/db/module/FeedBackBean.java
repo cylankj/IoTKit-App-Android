@@ -15,6 +15,7 @@ public class FeedBackBean implements Comparable<FeedBackBean> {
     @Id(autoincrement = true)
     public Long id;
     private String content;
+    private String account;
     private long msgTime;
     private int viewType;
 
@@ -26,10 +27,11 @@ public class FeedBackBean implements Comparable<FeedBackBean> {
         return viewType;
     }
 
-    @Generated(hash = 1265079766)
-    public FeedBackBean(Long id, String content, long msgTime, int viewType) {
+    @Generated(hash = 236047027)
+    public FeedBackBean(Long id, String content, String account, long msgTime, int viewType) {
         this.id = id;
         this.content = content;
+        this.account = account;
         this.msgTime = msgTime;
         this.viewType = viewType;
     }
@@ -54,6 +56,14 @@ public class FeedBackBean implements Comparable<FeedBackBean> {
 //    @Generated(hash = 1818015972)
 //    public FeedBackBean() {
 //    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getAccount() {
+        return account;
+    }
 
     public void setId(long id) {
         this.id = id;

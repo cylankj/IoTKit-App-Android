@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.FeedBackBean;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
@@ -142,9 +144,15 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         autoReplyBean.setViewType(0);
         autoReplyBean.setContent(getString(R.string.Tap3_Feedback_AutoReply));
         autoReplyBean.setMsgTime(System.currentTimeMillis());
+        autoReplyBean.setAccount(getAccount());
         suggestionAdapter.add(autoReplyBean);
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
         presenter.saveIntoDb(autoReplyBean);
+    }
+
+    private String getAccount() {
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        return account != null && !TextUtils.isEmpty(account.getAccount()) ? account.getAccount() : "default";
     }
 
     /**
@@ -155,6 +163,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         suggestionBean.setViewType(1);
         suggestionBean.setContent(mEtSuggestion.getText().toString());
         suggestionBean.setMsgTime(System.currentTimeMillis());
+        suggestionBean.setAccount(getAccount());
         presenter.sendFeedBack(suggestionBean)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -170,6 +179,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         autoReplyBean.setViewType(0);
         autoReplyBean.setContent(getString(R.string.Tap3_Feedback_AutoTips));
         autoReplyBean.setMsgTime(System.currentTimeMillis());
+        autoReplyBean.setAccount(getAccount());
         presenter.saveIntoDb(autoReplyBean);
         return autoReplyBean;
     }
