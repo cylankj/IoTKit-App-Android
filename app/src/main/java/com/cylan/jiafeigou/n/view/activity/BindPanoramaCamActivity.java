@@ -119,19 +119,22 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     bg.setVisibility(View.VISIBLE);
+                    imgVCameraRedDot.setVisibility(View.VISIBLE);
                 }
             });
 
-            AnimatorSet flash = new AnimatorSet();
-            ObjectAnimator redDot = ObjectAnimator.ofFloat(imgVCameraRedDot, "alpha", 0f, 1f, 0f);
-            redDot.setRepeatCount(3);
-            redDot.setRepeatMode(ValueAnimator.RESTART);
+//            AnimatorSet flash = new AnimatorSet();
+//            ObjectAnimator redDot = ObjectAnimator.ofFloat(imgVCameraRedDot, "alpha", 0f, 1f/*, 0f*/);
+//            redDot.setRepeatCount(3);
+//            redDot.setRepeatMode(ValueAnimator);
+//            redDot.setRepeatCount(1);
             ObjectAnimator lightFlash = ObjectAnimator.ofFloat(imgVCameraWifiLightFlash, "alpha", 0f, 1f, 0f);
             lightFlash.setRepeatCount(3);
             lightFlash.setRepeatMode(ValueAnimator.RESTART);
-            flash.playTogether(redDot, lightFlash);
-            flash.setDuration(600);
-            animator.playSequentially(hand, flash);
+            lightFlash.setDuration(600);
+//            flash.playTogether(redDot, lightFlash);
+//            flash.setDuration(600);
+            animator.playSequentially(hand, lightFlash);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -42,6 +43,7 @@ public class PanoramaMessageWrapper extends BaseFragment {
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
+        removeHint();
         customToolbar.setBackAction(view -> getFragmentManager().popBackStack());
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
@@ -57,5 +59,13 @@ public class PanoramaMessageWrapper extends BaseFragment {
     public void onStart() {
         super.onStart();
 
+    }
+
+    private void removeHint() {
+        try {
+            BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

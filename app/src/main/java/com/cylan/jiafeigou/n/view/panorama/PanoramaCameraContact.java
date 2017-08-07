@@ -95,6 +95,10 @@ public interface PanoramaCameraContact {
         void onRefreshConnectionMode(int connectionType);
 
         void onRefreshControllerViewVisible(boolean visible);
+
+        class RecordFinishEvent {
+            public static final RecordFinishEvent INSTANCE = new RecordFinishEvent();
+        }
     }
 
     interface Presenter extends ViewablePresenter<View> {
@@ -112,7 +116,5 @@ public interface PanoramaCameraContact {
         void formatSDCard();
 
         boolean isApiAvailable();
-
-        void shouldRefreshUI(boolean should);
     }
 }

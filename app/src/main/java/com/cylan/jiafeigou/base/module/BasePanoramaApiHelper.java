@@ -149,14 +149,7 @@ public class BasePanoramaApiHelper {
                             AppLogger.d("当前使用的 API 类型为:" + panoramaApiAvailable.ApiType);
                             return panoramaApiAvailable.ApiType >= 0;
                         })
-                        .timeout(5, TimeUnit.SECONDS, Observable.just(null))
-                        .filter(ret -> {
-                            if (ret == null) {
-                                AppLogger.d("正在初始化");
-                                BaseDeviceInformationFetcher.getInstance().init(uuid);
-                            }
-                            return ret != null;
-                        })
+                        .timeout(5, TimeUnit.SECONDS, Observable.just(RxEvent.PanoramaApiAvailable.API_FORWARD))
                         .observeOn(Schedulers.io());
     }
 
