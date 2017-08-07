@@ -220,22 +220,25 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
+                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                            disconn.remote = getViewHandler();
+                            disconn.code = STOP_VIERER_BY_SYSTEM;
+                            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
+                            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
+                            long start = System.currentTimeMillis();
                             byte[] screenshot = appCmd.screenshot(false);
+                            appCmd.stopPlay(handler);
+                            long end = System.currentTimeMillis();
+                            AppLogger.e("花费时间:" + (end - start));
                             if (screenshot != null) {
                                 int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
                                 int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
                                 Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
                                 String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
                                 PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
-                                BitmapUtils.saveBitmap2file(bitmap, filePath);
+                                Schedulers.io().createWorker().schedule(() -> BitmapUtils.saveBitmap2file(bitmap, filePath));
                                 AppLogger.e("截图文件地址:" + filePath);
                             }
-                            appCmd.stopPlay(handler);
-                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                            disconn.remote = getViewHandler();
-                            disconn.code = STOP_VIERER_BY_SYSTEM;
-                            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
-                            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
                             return true;
                         } catch (JfgException e) {
                             e.printStackTrace();

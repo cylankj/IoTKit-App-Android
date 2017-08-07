@@ -106,9 +106,10 @@
         android:id="@+id/iv_album_icon_720_iphone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/y9"
         android:layout_marginEnd="@dimen/y11"
         android:src="@drawable/album_icon_iphone"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_album_icon_720_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
         app:layout_constraintEnd_toStartOf="@+id/iv_album_icon_720_camera" />
 
     <ImageView

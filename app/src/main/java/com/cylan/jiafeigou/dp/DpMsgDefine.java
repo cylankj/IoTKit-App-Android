@@ -1358,79 +1358,86 @@ public class DpMsgDefine {
         };
     }
 
-    @Message
-    public static class DPWarnInterval extends BaseDataPoint {
-
-        @Index(0)
-        public int sec;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(this.sec);
-        }
-
-        public DPWarnInterval() {
-        }
-
-        protected DPWarnInterval(Parcel in) {
-            super(in);
-            this.sec = in.readInt();
-        }
-
-        public static final Creator<DPWarnInterval> CREATOR = new Creator<DPWarnInterval>() {
-            @Override
-            public DPWarnInterval createFromParcel(Parcel source) {
-                return new DPWarnInterval(source);
-            }
-
-            @Override
-            public DPWarnInterval[] newArray(int size) {
-                return new DPWarnInterval[size];
-            }
-        };
-    }
-
-    @Message
-    public static class DPCameraObjectDetect extends BaseDataPoint {
-
-        @Index(0)
-        public int[] objects = new int[]{};
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeIntArray(this.objects);
-        }
-
-        public DPCameraObjectDetect() {
-        }
-
-        protected DPCameraObjectDetect(Parcel in) {
-            super(in);
-            this.objects = in.createIntArray();
-        }
-
-        public static final Creator<DPCameraObjectDetect> CREATOR = new Creator<DPCameraObjectDetect>() {
-            @Override
-            public DPCameraObjectDetect createFromParcel(Parcel source) {
-                return new DPCameraObjectDetect(source);
-            }
-
-            @Override
-            public DPCameraObjectDetect[] newArray(int size) {
-                return new DPCameraObjectDetect[size];
-            }
-        };
-    }
+//    @Message
+//    public static class DPWarnInterval extends BaseDataPoint {
+//
+//        @Index(0)
+//        public int sec;
+//
+//        @Override
+//        public int describeContents() {
+//            return 0;
+//        }
+//
+//        @Override
+//        public void writeToParcel(Parcel dest, int flags) {
+//            super.writeToParcel(dest, flags);
+//            dest.writeInt(this.sec);
+//        }
+//
+//        public DPWarnInterval() {
+//        }
+//
+//        protected DPWarnInterval(Parcel in) {
+//            super(in);
+//            this.sec = in.readInt();
+//        }
+//
+//        public static final Creator<DPWarnInterval> CREATOR = new Creator<DPWarnInterval>() {
+//            @Override
+//            public DPWarnInterval createFromParcel(Parcel source) {
+//                return new DPWarnInterval(source);
+//            }
+//
+//            @Override
+//            public DPWarnInterval[] newArray(int size) {
+//                return new DPWarnInterval[size];
+//            }
+//        };
+//    }
+//
+//
+//    @Message
+//    @Deprecated
+//    public static class DPCameraObjectDetect extends BaseDataPoint {
+//
+//        @Index(0)
+//        public int[] objects = new int[]{};
+//
+//        @Override
+//        public int describeContents() {
+//            return 0;
+//        }
+//
+//        @Override
+//        public void writeToParcel(Parcel dest, int flags) {
+//            super.writeToParcel(dest, flags);
+//            dest.writeIntArray(this.objects);
+//        }
+//
+//        public DPCameraObjectDetect() {
+//        }
+//
+//        @Override
+//        public byte[] toBytes() {
+//            return DpUtils.pack(objects);
+//        }
+//
+//        protected DPCameraObjectDetect(Parcel in) {
+//            super(in);
+//            this.objects = in.createIntArray();
+//        }
+//
+//        public static final Creator<DPCameraObjectDetect> CREATOR = new Creator<DPCameraObjectDetect>() {
+//            @Override
+//            public DPCameraObjectDetect createFromParcel(Parcel source) {
+//                return new DPCameraObjectDetect(source);
+//            }
+//
+//            @Override
+//            public DPCameraObjectDetect[] newArray(int size) {
+//                return new DPCameraObjectDetect[size];
+//            }
+//        };
+//    }
 }

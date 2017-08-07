@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -82,9 +81,9 @@ public class WarmIntervalFragment extends BaseDialog {
             tvDialogBtnRight.setText(rContent);
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
         device = DataSourceManager.getInstance().getDevice(uuid);
-        DpMsgDefine.DPWarnInterval interval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, new DpMsgDefine.DPWarnInterval());
-        numberIndex = interval.sec / 60 - 1;
-        unitIndex = interval.sec >= 60 ? 1 : 0;
+        int interval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);
+        numberIndex = interval / 60 - 1;
+        unitIndex = interval >= 60 ? 1 : 0;
         initWarmUnit();
         initWarmNumber();
     }

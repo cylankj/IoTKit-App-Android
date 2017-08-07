@@ -336,13 +336,13 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         refreshControllerView(true);
                                         panoramicView720Ext.loadImage(resource);
-                                        panoramicView720Ext.post(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                     }
 
                                     @Override
                                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                         super.onLoadFailed(e, errorDrawable);
-                                        panoramicView720Ext.post(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                         AppLogger.e(e.getMessage());
                                     }
 
@@ -682,7 +682,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             panoramaPanelSeekBar.setMax(i2);
             bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend);
             refreshControllerView(true);
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
         });
     }
 
@@ -691,7 +691,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("播放器初始化失败了");
         runOnUiThread(() -> {
             bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
         });
     }
 
@@ -715,7 +715,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         } else if (LoadingDialog.isShowing(getSupportFragmentManager())) {
             runOnUiThread(() -> {
                 bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
-                LoadingDialog.dismissLoading(getSupportFragmentManager());
+                bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
             });
         }
     }
@@ -788,7 +788,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void updateProgress(int progress, int max) {
         if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
         }
         panoramaPanelSeekBar.setProgress(progress);
         bottomVideoMenuPlayTime.setText(String.format("%s/%s", TimeUtils.getMM_SS(progress), TimeUtils.getMM_SS(max)));

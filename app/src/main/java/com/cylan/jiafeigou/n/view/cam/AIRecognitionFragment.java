@@ -14,11 +14,12 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AIRecognitionContact;
 import com.cylan.jiafeigou.n.view.cam.item.AISelectionItem;
+import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -34,6 +35,7 @@ import butterknife.BindView;
  * Use the {@link AIRecognitionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@Badge(parentTag = "SafeProtectionFragment", asRefresh = true)
 public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Presenter> implements AIRecognitionContact.View {
 
     @BindView(R.id.rv_ai_selection)
@@ -118,6 +120,7 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
         rv_AISelectionList.addItemDecoration(new SpaceItemDecoration(getResources().getDimensionPixelOffset(R.dimen.y2)));
         rv_AISelectionList.setAdapter(itemAdapter);
         itemAdapter.add(getAlignedList());
+        BaseApplication.getAppComponent().getTreeHelper().markNodeRead(this.getClass().getSimpleName());
     }
 
     @Override
@@ -130,9 +133,9 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
 
     private void initObjectDetect() {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        DpMsgDefine.DPCameraObjectDetect objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new DpMsgDefine.DPCameraObjectDetect());
-        if (objectDetect.objects != null) {
-            for (int object : objectDetect.objects) {
+        int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{});
+        if (objectDetect != null) {
+            for (int object : objectDetect) {
                 itemAdapter.select(itemAdapter.getPosition(object));
             }
         }

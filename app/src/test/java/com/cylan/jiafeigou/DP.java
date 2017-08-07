@@ -226,5 +226,13 @@ public class DP {
         System.out.println(messagePack.toString());
     }
 
+    @Test
+    public void test515() throws Exception {
+        MessagePack messagePack = new MessagePack();
+        byte[] bytes = new byte[]{-108, 1, 2, 3, 4};
+        messagePack.read(bytes);
+        System.out.println(messagePack.toString());
+    }
+
 
 }
