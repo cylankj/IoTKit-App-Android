@@ -74,7 +74,8 @@ public class Account extends BasePropertyHolder<Account> {
         this.available = true;
         return this;
     }
-@Keep
+
+    @Keep
     public Account() {
     }
 

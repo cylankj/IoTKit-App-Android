@@ -29,7 +29,7 @@ public class SysUnreadCountTask implements Action1<Object> {
     @Override
     public void call(Object o) {
         getSystemUnreadCount()
-                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).first(rsp->rsp.seq==ret)
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).first(rsp -> rsp.seq == ret)
                         .filter(result -> result.map != null)
                         .observeOn(Schedulers.io())
                         .flatMap(rsp -> {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;

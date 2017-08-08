@@ -3,13 +3,11 @@ package com.cylan.jiafeigou.base.module;
 import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.os.Debug;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -34,13 +32,10 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okserver.download.DownloadManager;
-import com.squareup.leakcanary.LeakCanary;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareConfig;
-
-import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Named;

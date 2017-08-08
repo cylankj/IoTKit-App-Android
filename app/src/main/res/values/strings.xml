@@ -174,7 +174,6 @@
   <string name="Delete_Share">Delete share?</string>
   <string name="Detection_Pop">Shut down will no longer push detection alarm message, sure closing?</string>
   <string name="Device_Disconnected">Disconnected</string>
-  <string name="Dont_Show_Again">Don\'t show again</string>
   <string name="Download_Then_Share">Please download the video and then share</string>
   <string name="Downloading">The video is being downloaded</string>
   <string name="EDIT_IMAGE">Edit</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Attention \"加菲狗官微服务\" Official Accounts, enter the main page, click the menu bar of the service, select the binding account.</string>
   <string name="Start_instructions_H">Bind account</string>
   <string name="Start_instructions_I">Please enter dog Cleverdog accounts \"mobile phone or email accounts \"for binding, if you forget the password please back to Cleverdog client</string>
-  <string name="Switch_Mode">please switch to direct mode to view shooting content</string>
-  <string name="Switch_Mode_Pop">please switch current network shooting content to direct mode</string>
   <string name="Switch_Off">always off</string>
   <string name="Switch_On">always on</string>
   <string name="TAKE_PHOTO">Take a Photo</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Recording failed</string>
   <string name="Tap1_Camera_SetProtectionTips">Setting the Protection</string>
   <string name="Tap1_Camera_SpaceUsage">Space usage(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Camera connected with app via internet</string>
-  <string name="Tap1_Camera_UDPconnected">Camera connected with app directly</string>
   <string name="Tap1_Camera_Video">Video</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Auto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">View angle</string>
   <string name="Tap1_CurrentVersion">Current version</string>
   <string name="Tap1_DeleteDownloadingTips">File downloading, delete?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">The saved content will be deleted from camera and cellphone, continue?</string>
   <string name="Tap1_DeviceWasBindedTips">Device has been bound by \"%s\", please unbind and try again.</string>
   <string name="Tap1_Device_NoConnection">No network connection,click Refresh</string>
   <string name="Tap1_Device_UpgradeTips">Find new firmware of device , to update or not？</string>
@@ -776,9 +770,6 @@
   <string name="Tap1_DownloadFirmwareFai">Download firmware failed</string>
   <string name="Tap1_DownloadFirmwareTips">Download will start shortly,please ensure that cellphone and device to connect in same WIFI</string>
   <string name="Tap1_FileDamagedTips">File is damaged, delete?</string>
-  <string name="Tap1_File_Camera">Camera</string>
-  <string name="Tap1_File_CameraNPhone">Camera + Phone album</string>
-  <string name="Tap1_File_Phone">Phone album</string>
   <string name="Tap1_FirmwareDownloading">Downloading(%s)</string>
   <string name="Tap1_FirmwareUpdate">Firmware update</string>
   <string name="Tap1_FirmwareUpdateFai">Update failed</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, please try again</string>
   <string name="Tips_ShortVideo">Long press to record short video</string>
   <string name="Tips_SureDelete">Sure to delete?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">No response, please try again</string>
   <string name="UPDATE_FAIL">Failed to connect camera, please try again</string>
   <string name="UPDATING_BUTTON">Updating</string>

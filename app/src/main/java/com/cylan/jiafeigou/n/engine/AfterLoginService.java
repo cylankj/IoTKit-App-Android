@@ -1,21 +1,15 @@
 package com.cylan.jiafeigou.n.engine;
 
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.os.Process;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.misc.bind.BindTask;
 import com.cylan.jiafeigou.misc.ver.ClientVersionChecker;
 import com.cylan.jiafeigou.misc.ver.IVersion;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 
 /**

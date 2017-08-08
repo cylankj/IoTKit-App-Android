@@ -174,7 +174,6 @@
   <string name="Delete_Share">共有を削除しますか？</string>
   <string name="Detection_Pop">シャットダウンは、もはや検出アラームメッセージを押すことはありません。</string>
   <string name="Device_Disconnected">接続が切断されました</string>
-  <string name="Dont_Show_Again">再度表示しない</string>
   <string name="Download_Then_Share">動画をダウンロードして共有してください</string>
   <string name="Downloading">ビデオがダウンロードされています</string>
   <string name="EDIT_IMAGE">画像編集</string>
@@ -404,7 +403,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">パスワード</string>
   <string name="PASSWORD_BIT">新しいパスワードを設定してください</string>
-  <string name="PASSWORD_LESSTHAN_SIX">6~12文字でパスワードを入力してください</string>
+  <string name="PASSWORD_LESSTHAN_SIX">6~32文字でパスワードを入力してください</string>
   <string name="PHONE_EMAIL">Eメール</string>
   <string name="PHONE_NUMBER">携帯電話番号</string>
   <string name="PHONE_NUMBER_1">携帯電話番号</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">注意してください \"加菲狗官微服务\"公式アカウントは、メインページを入力し、サービスのメニューバーをクリックして、バインディングアカウントを選択します。</string>
   <string name="Start_instructions_H">アカウントをバインドする</string>
   <string name="Start_instructions_I">パスワードを忘れるなど、賢い犬の電話/メールアカウントを入力してください。賢い犬のクライアントに戻ってください。</string>
-  <string name="Switch_Mode">撮影内容を見るにはダイレクトモードに切り替えてください</string>
-  <string name="Switch_Mode_Pop">現在のネットワークの撮影コンテンツをダイレクトモードに切り替えてください</string>
   <string name="Switch_Off">常にオフ</string>
   <string name="Switch_On">常にオン</string>
   <string name="TAKE_PHOTO">一枚写真を撮る</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">失敗した記録</string>
   <string name="Tap1_Camera_SetProtectionTips">保護を設定</string>
   <string name="Tap1_Camera_SpaceUsage">スペース使用量(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">インターネット経由でアプリに接続されたカメラ</string>
-  <string name="Tap1_Camera_UDPconnected">アプリに直接接続されたカメラ</string>
   <string name="Tap1_Camera_Video">ビデオ</string>
   <string name="Tap1_Camera_VideoLive">生放送</string>
   <string name="Tap1_Camera_Video_Auto">オート</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">視野角</string>
   <string name="Tap1_CurrentVersion">現行版</string>
   <string name="Tap1_DeleteDownloadingTips">ファイルがダウンロードされていますか、削除していますか？</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">保存されたコンテンツはカメラと携帯電話から削除され、続行されますか？</string>
   <string name="Tap1_DeviceWasBindedTips">デバイスが “%s”でバインドされています。バインドを解除してもう一度やり直してください。</string>
   <string name="Tap1_Device_NoConnection">いいえ、ネットワーク接続、[更新]をクリックしません</string>
   <string name="Tap1_Device_UpgradeTips">更新するかどうか、デバイスの新しいファームウェアを見つける？</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">ファームウェアのダウンロードに失敗しました</string>
   <string name="Tap1_DownloadFirmwareTips">ダウンロードが間もなく開始されます。携帯電話と端末が同じWIFIに接続していることを確認してください</string>
   <string name="Tap1_FileDamagedTips">ファイルが破損しています，削除またはありません？</string>
-  <string name="Tap1_File_Camera">カメラ</string>
-  <string name="Tap1_File_CameraNPhone">カメラ + 電話アルバム</string>
-  <string name="Tap1_File_Phone">電話アルバム</string>
   <string name="Tap1_FirmwareDownloading">ダウンロード(%s)</string>
   <string name="Tap1_FirmwareUpdate">ファームウェアのアップデート</string>
   <string name="Tap1_FirmwareUpdateFai">更新失敗</string>
   <string name="Tap1_FirmwareUpdateSuc">更新に成功</string>
   <string name="Tap1_FirmwareUpdating">更新中(%s)</string>
   <string name="Tap1_Firmware_DataTips">WIFI接続なしで続行すればデータ消費が発生するでしょうか？</string>
-  <string name="Tap1_HomeMode">ホームモード</string>
-  <string name="Tap1_HomeMode_Opened">ホームモードが開かれています</string>
+  <string name="Tap1_HomeMode">WIFIモード</string>
+  <string name="Tap1_HomeMode_Opened">WIFIモードが開かれました</string>
   <string name="Tap1_Index_DayGreetings">毎日の自分に小さな期待を</string>
   <string name="Tap1_Index_NightGreetings">毎度のリラックスは新しい憧れをもたらす</string>
   <string name="Tap1_Index_NoDevice">デバイスは追加されていません</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">タイムアウト、再試行してください</string>
   <string name="Tips_ShortVideo">長押しして短いビデオを録画する</string>
   <string name="Tips_SureDelete">必ず削除して？</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">デバイスに反応がありません。再試行してください</string>
   <string name="UPDATE_FAIL">デバイスの接続に失敗しました、再試行してください</string>
   <string name="UPDATING_BUTTON">アップグレード中</string>

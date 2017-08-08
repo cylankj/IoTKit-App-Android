@@ -5,10 +5,6 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
-import com.cylan.jiafeigou.cache.db.module.FriendBean;
-import com.cylan.jiafeigou.cache.db.module.FriendBeanDao;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBean;
-import com.cylan.jiafeigou.cache.db.module.FriendsReqBeanDao;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -21,7 +17,6 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;

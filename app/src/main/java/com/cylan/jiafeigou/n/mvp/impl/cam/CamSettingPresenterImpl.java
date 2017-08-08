@@ -9,7 +9,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;

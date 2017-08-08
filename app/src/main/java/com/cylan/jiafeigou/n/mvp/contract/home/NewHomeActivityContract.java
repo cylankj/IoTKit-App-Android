@@ -4,8 +4,6 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 
-import java.io.File;
-
 /**
  * Created by hunt on 16-5-23.
  */

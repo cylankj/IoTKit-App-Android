@@ -174,7 +174,6 @@
   <string name="Delete_Share">是否刪除分享</string>
   <string name="Detection_Pop">關閉後將不再推送偵測報警消息，確定關閉？</string>
   <string name="Device_Disconnected">對端斷開</string>
-  <string name="Dont_Show_Again">不再提示</string>
   <string name="Download_Then_Share">請先下載視頻再分享</string>
   <string name="Downloading">視頻正在下載中</string>
   <string name="EDIT_IMAGE">圖片編輯</string>
@@ -404,7 +403,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">密碼</string>
   <string name="PASSWORD_BIT">設置新密碼</string>
-  <string name="PASSWORD_LESSTHAN_SIX">請輸入6~12位密碼</string>
+  <string name="PASSWORD_LESSTHAN_SIX">請輸入6~32位密碼</string>
   <string name="PHONE_EMAIL">電子郵件</string>
   <string name="PHONE_NUMBER">手機號碼</string>
   <string name="PHONE_NUMBER_1">手機號碼</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">關注“加菲狗官微服务”公眾號後，進入主頁面，點擊菜單欄的“服務”，選擇“綁定賬號”。</string>
   <string name="Start_instructions_H">綁定賬號</string>
   <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
-  <string name="Switch_Mode">拍攝內容請切換至直連模式查看</string>
-  <string name="Switch_Mode_Pop">當前網絡拍攝內容請到設置切換至直連模式查看</string>
   <string name="Switch_Off">始終關閉</string>
   <string name="Switch_On">始終開啟</string>
   <string name="TAKE_PHOTO">拍照</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">拍攝失敗</string>
   <string name="Tap1_Camera_SetProtectionTips">設置安全防護</string>
   <string name="Tap1_Camera_SpaceUsage">空間使用情況(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">攝像機通過網絡與客戶端相連</string>
-  <string name="Tap1_Camera_UDPconnected">攝像機直接與客戶端相連</string>
   <string name="Tap1_Camera_Video">視訊</string>
   <string name="Tap1_Camera_VideoLive">直播</string>
   <string name="Tap1_Camera_Video_Auto">自動</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">視角</string>
   <string name="Tap1_CurrentVersion">當前版本</string>
   <string name="Tap1_DeleteDownloadingTips">文件正在下載中，是否刪除？</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">將同步刪除相機和手機內保存內容，確認刪除？</string>
   <string name="Tap1_DeviceWasBindedTips">設備已被“%s”用戶綁定，請解綁後重試</string>
   <string name="Tap1_Device_NoConnection">無網絡連接，請單擊刷新</string>
   <string name="Tap1_Device_UpgradeTips">發現設備新固件，是否升級？</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">固件下載失敗</string>
   <string name="Tap1_DownloadFirmwareTips">即將下載設備固件，升級設備固件時需保持客戶端與設備連接於同一網路</string>
   <string name="Tap1_FileDamagedTips">文件已損壞，是否刪除？</string>
-  <string name="Tap1_File_Camera">相機</string>
-  <string name="Tap1_File_CameraNPhone">相機+手機相冊</string>
-  <string name="Tap1_File_Phone">手機相冊</string>
   <string name="Tap1_FirmwareDownloading">正在下載(%s)</string>
   <string name="Tap1_FirmwareUpdate">固件更新</string>
   <string name="Tap1_FirmwareUpdateFai">固件升級失敗</string>
   <string name="Tap1_FirmwareUpdateSuc">固件升級成功</string>
   <string name="Tap1_FirmwareUpdating">正在升級(%s)</string>
   <string name="Tap1_Firmware_DataTips">當前使用非WiFi網路，繼續操作將會產生流量，是否繼續？</string>
-  <string name="Tap1_HomeMode">家居模式</string>
-  <string name="Tap1_HomeMode_Opened">家居模式已開啟</string>
+  <string name="Tap1_HomeMode">連接WiFi</string>
+  <string name="Tap1_HomeMode_Opened">連接WiFi已開啟</string>
   <string name="Tap1_Index_DayGreetings">每天都給自己一點小期待</string>
   <string name="Tap1_Index_NightGreetings">每一次的休息 總會帶來新的方向與未來</string>
   <string name="Tap1_Index_NoDevice">還沒有設備</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">連接超時，請重試</string>
   <string name="Tips_ShortVideo">長按錄製短視頻</string>
   <string name="Tips_SureDelete">是否刪除？</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">設備無回應，請重試</string>
   <string name="UPDATE_FAIL">設備連接失敗，請重試</string>
   <string name="UPDATING_BUTTON">正在更新</string>
@@ -997,7 +989,7 @@
   <string name="WIFI_HINT_LAGEL">註：WiFi版系列產品無3G指示燈</string>
   <string name="WIFI_HINT_LAGEL_0">WiFi燈</string>
   <string name="WIFI_HINT_LAGEL_1">3G/4G燈</string>
-  <string name="WIFI_HINT_LAGEL_2">Power燈</string>
+  <string name="WIFI_HINT_LAGEL_2">電源燈</string>
   <string name="WIFI_NAME">WiFi名稱：</string>
   <string name="WIFI_OFF">您的手機未打開WiFi開關，請打開後重試</string>
   <string name="WIFI_PWD">WiFi密碼</string>

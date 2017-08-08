@@ -148,7 +148,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         }
         AppLogger.d("上传到服务器返回的结果为:" + code);
         if (code == -1) {
-            if(presenter!=null)presenter.upload(shareItem.fileName, filePath);
+            if (presenter != null) presenter.upload(shareItem.fileName, filePath);
         }
     }
 
@@ -232,7 +232,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             if (!LoadingDialog.isShowing(getActivity().getSupportFragmentManager())) {
                 LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
             }
-            if(presenter!=null)presenter.share(shareItem, getDescription(), thumbPath);
+            if (presenter != null) presenter.share(shareItem, getDescription(), thumbPath);
         }
     }
 

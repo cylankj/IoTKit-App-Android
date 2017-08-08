@@ -1,10 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
-import android.text.TextUtils;
-
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -12,9 +8,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SnContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 

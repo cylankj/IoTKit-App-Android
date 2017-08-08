@@ -174,7 +174,6 @@
   <string name="Delete_Share">Xóa chia sẻ?</string>
   <string name="Detection_Pop">Đóng cửa sẽ không còn đẩy phát hiện thông báo cảnh báo, chắc chắn đóng?</string>
   <string name="Device_Disconnected">Đã ngắt kết nối</string>
-  <string name="Dont_Show_Again">Không hiển thị lại</string>
   <string name="Download_Then_Share">Vui lòng tải video xuống và chia sẻ</string>
   <string name="Downloading">Video đang được tải xuống</string>
   <string name="EDIT_IMAGE">Sửa</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Chú ý \"加菲狗官微服务\" Tài khoản chính thức, nhập trang chính, nhấp vào thanh trình đơn của dịch vụ, chọn tài khoản ràng buộc.</string>
   <string name="Start_instructions_H">Liên kết tài khoản</string>
   <string name="Start_instructions_I">Vui lòng nhập tài khoản điện tài khoản Clever dog để ràng buộc, chẳng hạn như quên mật khẩu, hãy chuyển đến khách hàng của Clever dog</string>
-  <string name="Switch_Mode">Hãy chuyển sang chế độ trực tiếp để xem nội dung chụp</string>
-  <string name="Switch_Mode_Pop">Vui lòng chuyển đổi nội dung chụp mạng hiện tại sang chế độ trực tiếp</string>
   <string name="Switch_Off">Luôn luôn tắt</string>
   <string name="Switch_On">luôn luôn</string>
   <string name="TAKE_PHOTO">Chụp ảnh</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Bản ghi không thành công</string>
   <string name="Tap1_Camera_SetProtectionTips">Set the Protection</string>
   <string name="Tap1_Camera_SpaceUsage">Sử dụng không gian(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Máy ảnh được kết nối với ứng dụng qua internet</string>
-  <string name="Tap1_Camera_UDPconnected">Máy ảnh được kết nối trực tiếp với ứng dụng</string>
   <string name="Tap1_Camera_Video">Video</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Auto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">View angle</string>
   <string name="Tap1_CurrentVersion">Current version</string>
   <string name="Tap1_DeleteDownloadingTips">Tải file, xóa?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">Nội dung đã lưu sẽ bị xóa khỏi máy ảnh và điện thoại di động, tiếp tục?</string>
   <string name="Tap1_DeviceWasBindedTips">Thiết bị đã bị ràng buộc bởi \"%s\", hãy bỏ liên kết và thử lại.</string>
   <string name="Tap1_Device_NoConnection">No network connection,click Refresh</string>
   <string name="Tap1_Device_UpgradeTips">Tìm firmware mới của thiết bị, cập nhật hay không?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">Download firmware failed</string>
   <string name="Tap1_DownloadFirmwareTips">Tải về sẽ bắt đầu trong thời gian ngắn,hãy đảm bảo rằng điện thoại di động và các thiết bị đang kết nối với WIFI cùng</string>
   <string name="Tap1_FileDamagedTips">Tệp bị hỏng, xoá?</string>
-  <string name="Tap1_File_Camera">Camera</string>
-  <string name="Tap1_File_CameraNPhone">Camera + Album điện thoại</string>
-  <string name="Tap1_File_Phone">Album điện thoại</string>
   <string name="Tap1_FirmwareDownloading">Downloading(%s)</string>
   <string name="Tap1_FirmwareUpdate">Cập nhật firmware</string>
   <string name="Tap1_FirmwareUpdateFai">Update failed</string>
   <string name="Tap1_FirmwareUpdateSuc">Update successfully</string>
   <string name="Tap1_FirmwareUpdating">Đang cập nhật(%s)</string>
   <string name="Tap1_Firmware_DataTips">lượng tiêu thụ dữ liệu sẽ được tạo ra nếu đi về mà không cần kết nối WIFI,tiếp tục không?</string>
-  <string name="Tap1_HomeMode">chế độ nhà</string>
-  <string name="Tap1_HomeMode_Opened">Chế độ nhà đã được mở</string>
+  <string name="Tap1_HomeMode">Chế độ WIFI</string>
+  <string name="Tap1_HomeMode_Opened">Chế độ WIFI đã được mở</string>
   <string name="Tap1_Index_DayGreetings">Ngạc nhiên nhỏ mỗi ngày</string>
   <string name="Tap1_Index_NightGreetings">Hãy khởi động lại và chờ</string>
   <string name="Tap1_Index_NoDevice">Không có thiết bị</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, hãy thử lại</string>
   <string name="Tips_ShortVideo">Bấm dài để ghi lại một đoạn video ngắn</string>
   <string name="Tips_SureDelete">Chắc chắn để delete?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Không phản hồi, hãy thử lại</string>
   <string name="UPDATE_FAIL">Lỗi kết nối camera, hãy thử lại</string>
   <string name="UPDATING_BUTTON">Đang cập nhật</string>

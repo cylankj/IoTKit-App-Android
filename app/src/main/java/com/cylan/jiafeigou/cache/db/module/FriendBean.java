@@ -5,8 +5,8 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 
 /**
@@ -113,7 +113,7 @@ public class FriendBean implements Parcelable {
 
     @Generated(hash = 1327211143)
     public FriendBean(Long id, String iconUrl, String alias, String account,
-            String markName, int isCheckFlag, String sortkey) {
+                      String markName, int isCheckFlag, String sortkey) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.alias = alias;
@@ -130,7 +130,6 @@ public class FriendBean implements Parcelable {
         FriendBean bean = (FriendBean) obj;
         return TextUtils.equals(bean.account, account);
     }
-
 
 
     public static final Creator<FriendBean> CREATOR = new Creator<FriendBean>() {

@@ -603,7 +603,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void deleteWithAlert() {
         new AlertDialog.Builder(this)
-                .setMessage(mode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete)
+                .setMessage(R.string.Tips_SureDelete)
                 .setNegativeButton(R.string.CANCEL, null)
                 .setPositiveButton(R.string.DELETE, (dialog, which) -> {
                     if (deleted != null) {

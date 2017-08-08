@@ -4,7 +4,6 @@ import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;

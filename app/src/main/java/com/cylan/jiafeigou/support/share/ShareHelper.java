@@ -7,5 +7,4 @@ package com.cylan.jiafeigou.support.share;
 public class ShareHelper {
 
 
-
 }

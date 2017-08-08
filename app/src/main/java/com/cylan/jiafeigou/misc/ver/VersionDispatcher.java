@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.misc.ver;
 
-import rx.Observable;
-
 /**
  * Created by hds on 17-6-2.
  */

@@ -2,17 +2,13 @@ package com.cylan.jiafeigou.widget.pop;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.SafeRadioButton;
 
 /**
@@ -30,24 +26,24 @@ public class RoundRectPopup extends RelativePopupWindow {
     private int checkedIndex = -1;
     private int mode;
 
-    public RoundRectPopup(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_panorama_album_pop_menu, null);
-        menuAlbumPopContainer = (RadioGroup) view.findViewById(R.id.menu_album_pop_container);
-        menuItemAlbumPopBoth = (SafeRadioButton) view.findViewById(R.id.menu_item_album_pop_both);
-        menuItemAlbumPopPanorama = (SafeRadioButton) view.findViewById(R.id.menu_item_album_pop_panorama);
-        menuItemAlbumPopPhoto = (SafeRadioButton) view.findViewById(R.id.menu_item_album_pop_photo);
-        setContentView(view);
-        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        setFocusable(true);
-        setOutsideTouchable(true);
-//        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        // Disable default animation for circular reveal
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setAnimationStyle(0);
-        }
-    }
+//    public RoundRectPopup(Context context) {
+//        View view = LayoutInflater.from(context).inflate(R.layout.layout_panorama_album_pop_menu, null);
+//        menuAlbumPopContainer = (RadioGroup) view.findViewById(R.id.menu_album_pop_container);
+//        menuItemAlbumPopBoth = (SafeRadioButton) view.findViewById(R.id.menu_item_album_pop_both);
+//        menuItemAlbumPopPanorama = (SafeRadioButton) view.findViewById(R.id.menu_item_album_pop_panorama);
+//        menuItemAlbumPopPhoto = (SafeRadioButton) view.findViewById(R.id.menu_item_album_pop_photo);
+//        setContentView(view);
+//        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        setFocusable(true);
+//        setOutsideTouchable(true);
+////        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
+//        // Disable default animation for circular reveal
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            setAnimationStyle(0);
+//        }
+//    }
 
     public void setCheckIndex(int index) {
         this.checkedIndex = index;

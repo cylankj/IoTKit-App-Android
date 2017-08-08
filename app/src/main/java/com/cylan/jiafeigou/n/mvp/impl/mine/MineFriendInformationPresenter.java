@@ -127,7 +127,7 @@ public class MineFriendInformationPresenter extends AbstractPresenter<MineFriend
                 .observeOn(Schedulers.io())
                 .map(cmd -> {
                     try {
-                        BaseApplication.getAppComponent().getCmd().consentAddFriend(friendContextItem .friendRequest.account);
+                        BaseApplication.getAppComponent().getCmd().consentAddFriend(friendContextItem.friendRequest.account);
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.e(e.getMessage());

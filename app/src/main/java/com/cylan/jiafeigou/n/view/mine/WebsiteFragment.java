@@ -1,16 +1,13 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.CheckServerTrustedWebViewClient;

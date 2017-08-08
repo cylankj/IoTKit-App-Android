@@ -17,8 +17,8 @@ import java.util.List;
  */
 
 /**
- *使用 productProperty
- * */
+ * 使用 productProperty
+ */
 @Deprecated
 public enum DPDevice {
     CAMERA(4, 5, 7, 8, 10, 17, 18, 19, 20, 21, 23, 26, 36, 37, 38, 39, 47, 48, 49, 1071, 1088, 1089,

@@ -174,7 +174,6 @@
   <string name="Delete_Share">Hapus berbagi?</string>
   <string name="Detection_Pop">Matikan tidak akan lagi push detection pesan alarm, pasti menutup?</string>
   <string name="Device_Disconnected">Terputus</string>
-  <string name="Dont_Show_Again">Jangan tampilkan lagi</string>
   <string name="Download_Then_Share">Silahkan download video dan kemudian bagikan</string>
   <string name="Downloading">Video sedang didownload</string>
   <string name="EDIT_IMAGE">Ubah</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Perhatian \"加菲狗官微服务\", masukkan halaman utama, klik bilah menu layanan, pilih akun pengikat.</string>
   <string name="Start_instructions_H">Bind account</string>
   <string name="Start_instructions_I">Harap masukkan akun email anjing Pintar untuk mengikat, seperti lupa kata sandi, tolong masuk ke klien anjing Pintar</string>
-  <string name="Switch_Mode">Silahkan beralih ke mode langsung untuk melihat konten pemotretan</string>
-  <string name="Switch_Mode_Pop">Tolong aktifkan konten pemotretan jaringan ke mode langsung</string>
   <string name="Switch_Off">Selalu pergi</string>
   <string name="Switch_On">Selalu aktif</string>
   <string name="TAKE_PHOTO">Ambil Foto</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Rekam gagal</string>
   <string name="Tap1_Camera_SetProtectionTips">Mengatur Perlindungan</string>
   <string name="Tap1_Camera_SpaceUsage">Penggunaan ruang(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Kamera terhubung dengan app via internet</string>
-  <string name="Tap1_Camera_UDPconnected">Kamera terhubung dengan app langsung</string>
   <string name="Tap1_Camera_Video">Video</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Auto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">Lihat sudut</string>
   <string name="Tap1_CurrentVersion">Versi sekarang</string>
   <string name="Tap1_DeleteDownloadingTips">Mendownload file, menghapus?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">konten yang disimpan akan dihapus dari kamera dan ponsel, terus?</string>
   <string name="Tap1_DeviceWasBindedTips">Perangkat telah terikat oleh \"%s\", silakan memperlonggar dan coba lagi.</string>
   <string name="Tap1_Device_NoConnection">Ada koneksi jaringan, klik Refresh</string>
   <string name="Tap1_Device_UpgradeTips">Cari firmware baru perangkat, untuk memperbarui atau tidak?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">Download firmware gagal</string>
   <string name="Tap1_DownloadFirmwareTips">Ambil akan segera memulai,pastikan bahwa ponsel dan perangkat terhubung dengan WIFI yang sama</string>
   <string name="Tap1_FileDamagedTips">File rusak, menghapus?</string>
-  <string name="Tap1_File_Camera">Kamera</string>
-  <string name="Tap1_File_CameraNPhone">Kamera + Telepon album</string>
-  <string name="Tap1_File_Phone">Telepon album</string>
   <string name="Tap1_FirmwareDownloading">Downloading(%s)</string>
   <string name="Tap1_FirmwareUpdate">Firmware update</string>
   <string name="Tap1_FirmwareUpdateFai">mengupdate gagal</string>
   <string name="Tap1_FirmwareUpdateSuc">mengupdate berhasil</string>
   <string name="Tap1_FirmwareUpdating">Memutakhirkan(%s)</string>
   <string name="Tap1_Firmware_DataTips">konsumsi data akan dibuat jika pergi tanpa koneksi WIFI,terus?</string>
-  <string name="Tap1_HomeMode">Mode rumah</string>
-  <string name="Tap1_HomeMode_Opened">Modus rumah telah dibuka</string>
+  <string name="Tap1_HomeMode">Mode WIFI</string>
+  <string name="Tap1_HomeMode_Opened">Mode WIFI telah dibuka</string>
   <string name="Tap1_Index_DayGreetings">Sedikit kejutan setiap hari</string>
   <string name="Tap1_Index_NightGreetings">Istirahat dan ulang lagi</string>
   <string name="Tap1_Index_NoDevice">Tidak ada perangkat</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, coba lagi</string>
   <string name="Tips_ShortVideo">Tekan lama untuk merekam video singkat</string>
   <string name="Tips_SureDelete">Pastikan untuk delete?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Tidak ada respon , silahkan coba lagi</string>
   <string name="UPDATE_FAIL">Gagal menyambung ke kamera , silahkan coba lagi</string>
   <string name="UPDATING_BUTTON">Sedang memperbarui</string>

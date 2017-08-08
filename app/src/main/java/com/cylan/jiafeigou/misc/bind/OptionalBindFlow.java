@@ -55,7 +55,7 @@ public class OptionalBindFlow extends AFullBind {
     }
 
     public void setWifiInfo(final String uuid, final String mac,
-                             final String ssid, final String pwd, final int type) {
+                            final String ssid, final String pwd, final int type) {
 //        return Observable.create(subscriber -> {
 //            final Subscription subscription = RxBus.getCacheInstance().toObservable(JfgUdpMsg.DoSetWifiAck.class)
 //                    .timeout(1, TimeUnit.SECONDS)

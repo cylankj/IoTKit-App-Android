@@ -9,7 +9,7 @@ import android.widget.TextView;
 public class ViewBindingAdapter {
 
 
-    public static void bindShareContent(TextView view, View.OnClickListener listener){
+    public static void bindShareContent(TextView view, View.OnClickListener listener) {
 //        view.setOnClickListener();
     }
 }

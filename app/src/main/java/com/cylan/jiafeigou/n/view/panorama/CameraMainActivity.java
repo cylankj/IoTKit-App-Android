@@ -15,7 +15,7 @@ public class CameraMainActivity extends BaseActivity {
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        PanoramaCameraFragment fragment = PanoramaCameraFragment.newInstance(uuid,getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE));
+        PanoramaCameraFragment fragment = PanoramaCameraFragment.newInstance(uuid, getIntent().hasExtra(JConstant.KEY_JUMP_TO_MESSAGE));
         getSupportFragmentManager().beginTransaction().replace(R.id.camera_main_container, fragment).commit();
 
         //不需要进入消息页面
@@ -33,7 +33,6 @@ public class CameraMainActivity extends BaseActivity {
 //                    .commit();
 //        }
     }
-
 
 
     @Override
