@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 hunt:sv_switch_visibility="false"
-                hunt:sv_title="报警间隔"
+                hunt:sv_title="@string/SECURE_Interval_Alarm"
                 hunt:sv_v_divider="true" />
 
 
