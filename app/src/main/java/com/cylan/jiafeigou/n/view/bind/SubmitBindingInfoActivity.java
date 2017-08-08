@@ -64,7 +64,6 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
                 getString(R.string._720PanoramicCamera))) {
             ViewUtils.setViewMarginStatusBar(ivExplainGray);
-            ViewUtils.setViewMarginStatusBar(ivExplainGray);
         }
     }
 
@@ -99,7 +98,11 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         runOnUiThread(() -> {
             if (state == BindUtils.BIND_FAILED) {//失败
                 vsLayoutSwitch.showNext();
-                ivExplainGray.setVisibility(View.VISIBLE);
+                if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                        && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                        getString(R.string._720PanoramicCamera))) {
+                    ivExplainGray.setVisibility(View.VISIBLE);
+                }
 //            customToolbar.setVisibility(View.INVISIBLE);
             } else if (state == JError.ErrorCIDBinded) {//强绑
                 getAlertDialogManager().showDialog(this, "reBind", getString(R.string.DEVICE_EXISTED),
@@ -142,7 +145,11 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 AppLogger.d("绑定失败了!!!!!!!!!!!!!");
                 progressLoading.setVisibility(View.INVISIBLE);
                 vsLayoutSwitch.showNext();
-                ivExplainGray.setVisibility(View.VISIBLE);
+                if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
+                        && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
+                        getString(R.string._720PanoramicCamera))) {
+                    ivExplainGray.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
