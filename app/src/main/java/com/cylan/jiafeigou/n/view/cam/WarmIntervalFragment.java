@@ -82,7 +82,7 @@ public class WarmIntervalFragment extends BaseDialog {
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
         device = DataSourceManager.getInstance().getDevice(uuid);
         int interval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);
-        numberIndex = interval / 60 - 1;
+        numberIndex = interval >= 60 ? interval / 60 - 1 : 0;
         unitIndex = interval >= 60 ? 1 : 0;
         initWarmUnit();
         initWarmNumber();

@@ -309,14 +309,18 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         refreshControllerView(true);
-                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                         Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(resource));
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+
                                     }
 
                                     @Override
                                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                         super.onLoadFailed(e, errorDrawable);
                                         panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+
                                     }
 
                                     @Override
@@ -337,11 +341,13 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                         refreshControllerView(true);
                                         panoramicView720Ext.loadImage(resource);
                                         panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                     }
 
                                     @Override
                                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                         super.onLoadFailed(e, errorDrawable);
+                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                         panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                                         AppLogger.e(e.getMessage());
                                     }
@@ -683,6 +689,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend);
             refreshControllerView(true);
             bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
+            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
         });
     }
 
@@ -691,6 +698,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("播放器初始化失败了");
         runOnUiThread(() -> {
             bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
+            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
             bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
         });
     }
@@ -715,6 +723,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         } else if (LoadingDialog.isShowing(getSupportFragmentManager())) {
             runOnUiThread(() -> {
                 bottomVideoMenuPlay.setImageResource(R.drawable.icon_play);
+                bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
                 bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
             });
         }
@@ -788,6 +797,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void updateProgress(int progress, int max) {
         if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
             bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 200);
         }
         panoramaPanelSeekBar.setProgress(progress);
