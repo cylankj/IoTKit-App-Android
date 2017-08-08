@@ -76,9 +76,8 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
 
 /**
- * Created by yzd on 16-12-28.
+ * @Deprecated 不推荐使用缓存了, 很多问题,每次直接查询服务器就行了
  */
-
 public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
 
@@ -1120,3 +1119,6 @@ public class DataSourceManager implements JFGSourceManager {
         void handleInterception(T data);
     }
 }
+/**
+ * Created by yzd on 16-12-28.
+ */

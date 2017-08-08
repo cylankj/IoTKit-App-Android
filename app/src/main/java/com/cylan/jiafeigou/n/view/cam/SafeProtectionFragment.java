@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -43,6 +44,7 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -369,6 +371,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             case R.id.sw_motion_AI: {
                 AIRecognitionFragment aiRecognitionFragment = AIRecognitionFragment.newInstance(uuid);
                 aiRecognitionFragment.setCallBack(result -> {
+                    swMotionAI.showRedHint(false);
                     if (result instanceof int[]) {
                         int[] select = (int[]) result;
                         int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{});
@@ -461,5 +464,17 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onAIStrategyRsp() {
         // TODO: 2017/8/1 获取当前账号 AI 策略,根据策略和设备属性表来决定是否显示 AI 选项
 
+    }
+
+    @Override
+    public void deviceUpdate(Device device) {
+        updateDetails();
+    }
+
+    @Override
+    public void deviceUpdate(JFGDPMsg msg) throws IOException {
+        if (msg.id == 501 || msg.id == 502 || msg.id == 503 || msg.id == 504 || msg.id == 514 || msg.id == 515) {
+            updateDetails();
+        }
     }
 }

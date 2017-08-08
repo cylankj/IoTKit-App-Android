@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -10,9 +13,17 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
+
+import java.io.IOException;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -30,6 +41,12 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
         super(view);
         this.uuid = uuid;
         view.setPresenter(this);
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
     }
 
     @Override
@@ -80,4 +97,56 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     public void getAIStrategy() {
 
     }
+
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDataSync() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .filter((RobotoGetDataRsp jfgRobotSyncData) -> (
+                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.identity)
+                ))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map((RobotoGetDataRsp update) -> {
+                    getView().deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
+                    return null;
+                })
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
+    }
+
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDeviceDataSync() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter(jfgRobotSyncData -> (
+                        ListUtils.getSize(jfgRobotSyncData.dpList) > 0 &&
+                                getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
+                ))
+                .flatMap(ret -> Observable.from(ret.dpList))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(msg -> {
+                    try {
+                        mView.deviceUpdate(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
+    }
+
+    @Override
+    protected Subscription[] register() {
+        return new Subscription[]{
+                robotDataSync(),
+                robotDeviceDataSync()
+        };
+    }
+
+
 }
