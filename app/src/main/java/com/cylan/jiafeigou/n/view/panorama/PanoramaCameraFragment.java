@@ -635,7 +635,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
                             R.anim.slide_out_right)
                     .replace(R.id.camera_main_container, deviceConnectionDescriptionFragment)
                     .addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
-        } else if (TextUtils.equals(text, getString(R.string.OK))) {
+        } else if (TextUtils.equals(text, getString(R.string.Tap1_DisconnectedPleaseCheck))) {
             ConnectionDescriptionFragment connectionDescriptionFragment = ConnectionDescriptionFragment.newInstance();
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(
