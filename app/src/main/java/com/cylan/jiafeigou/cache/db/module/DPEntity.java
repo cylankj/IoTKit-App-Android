@@ -57,8 +57,8 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
         }
         if (this.dataPointValue == null) {
             return defaultValue;
-        } else if (defaultValue == null || defaultValue instanceof DataPoint) {
-            return this.dataPointValue.getClass().isInstance(defaultValue) ? (V) this.dataPointValue : defaultValue;
+        } else if (defaultValue instanceof DataPoint) {
+            return (V) this.dataPointValue;
         } else if (this.dataPointValue instanceof DpMsgDefine.DPPrimary) {
             DpMsgDefine.DPPrimary<V> ret = ((DpMsgDefine.DPPrimary<V>) this.dataPointValue);
             return ret.value == null ? defaultValue : ret.value;

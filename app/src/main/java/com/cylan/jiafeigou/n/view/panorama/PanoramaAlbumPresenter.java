@@ -47,7 +47,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
 //        BasePanoramaApiHelper.getInstance().init(uuid);
-        checkSDCardAndInit();
+//        checkSDCardAndInit();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
     @Override
     public void fetch(int time, int fetchLocation) {//0:本地;1:设备;2:本地+设备
-        if (fetchSubscription != null && fetchSubscription.isUnsubscribed()) {
+        if (fetchSubscription != null && !fetchSubscription.isUnsubscribed()) {
             fetchSubscription.unsubscribe();
         }
         if (fetchLocation == 0) {
@@ -286,7 +286,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
     @Override
     public void deletePanoramaItem(List<PanoramaAlbumContact.PanoramaItem> items, int mode) {
-        if (deleteSubscription != null && deleteSubscription.isUnsubscribed()) {
+        if (deleteSubscription != null && !deleteSubscription.isUnsubscribed()) {
             deleteSubscription.unsubscribe();
         }
         if (mode == 0) {//本地

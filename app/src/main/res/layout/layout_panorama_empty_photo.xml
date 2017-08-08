@@ -8,8 +8,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:drawablePadding="@dimen/y12"
         android:drawableTop="@drawable/album_pic_empty_state"
         android:gravity="center"
-        android:text="@string/Tap1_Album_Empty" />
+        android:text="@string/Tap1_Album_Empty"
+        android:textColor="#AAAAAA"
+        android:textSize="@dimen/sp15" />
 
 </FrameLayout>

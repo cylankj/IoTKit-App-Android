@@ -83,7 +83,7 @@ public class ShareContentWebH5Activity extends BaseActivity {
 
     private void delete() {
         AppLogger.e("delete");
-        if (subscribe != null && subscribe.isUnsubscribed()) {
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
         if (NetUtils.getNetType(this) == -1) {
@@ -169,7 +169,7 @@ public class ShareContentWebH5Activity extends BaseActivity {
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(h5DetailBinding.headerToolbarContainer);
-        if (subscribe != null && subscribe.isUnsubscribed()) {
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
     }

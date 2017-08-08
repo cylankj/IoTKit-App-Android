@@ -122,7 +122,7 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
         mMediaPlayer = new IjkExoMediaPlayer(getContext());
         mSubscribe = getCacheInstance().toObservable(EventFactory.HideVideoViewEvent.class).subscribe(hideVideoViewEvent -> {
-            if (mSubscribe != null && mSubscribe.isUnsubscribed())
+            if (mSubscribe != null && !mSubscribe.isUnsubscribed())
                 mSubscribe.unsubscribe();
             mMediaPlayer.stop();
             mMediaPlayer.release();

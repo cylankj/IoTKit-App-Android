@@ -89,22 +89,22 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
             if (!isFetching) {
                 RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
             }
-        }
-        //改变背景或者 处理网络的全局变量
-        Schedulers.immediate().createWorker().schedule(() -> {
-            ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getAppComponent().getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            boolean available = (mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected());
-            RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(available);
-            connectionEvent.mobile = mobNetInfo;
-            connectionEvent.wifi = wifiNetInfo;
-            connectionEvent.isOnLine = BaseApplication.isOnline();
+
+            //改变背景或者 处理网络的全局变量
+            Schedulers.immediate().createWorker().schedule(() -> {
+                ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getAppComponent().getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                boolean available = (mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected());
+                RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(available);
+                connectionEvent.mobile = mobNetInfo;
+                connectionEvent.wifi = wifiNetInfo;
+                connectionEvent.isOnLine = BaseApplication.isOnline();
 //            boolean publicNetwork = NetUtils.isPublicNetwork();
 //            BaseApplication.getAppComponent().getSourceManager().setOnline(publicNetwork);
-            RxBus.getCacheInstance().postSticky(connectionEvent);
-        });
-
+                RxBus.getCacheInstance().postSticky(connectionEvent);
+            });
+        }
     }
 
     public void init(String uuid) {

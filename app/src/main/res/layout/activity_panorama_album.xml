@@ -15,9 +15,9 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/color_white"
         android:clickable="true"
         android:focusable="true"
-        android:background="@color/color_white"
         tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
         <RelativeLayout
@@ -68,6 +68,12 @@
             </RelativeLayout>
         </RelativeLayout>
         <!--android:visibility="@{connected?View.GONE:View.VISIBLE}"-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y10"
+            android:background="@drawable/little_shape"
+            app:layout_constraintTop_toBottomOf="@+id/act_panorama_album_toolbar_container" />
+
         <RelativeLayout
             android:id="@+id/act_panorama_camera_banner_bad_net_work"
             android:layout_width="match_parent"
@@ -123,32 +129,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_banner_bad_net_work">
 
-            <RelativeLayout
+            <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/act_panorama_refresh_header"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/y44"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:drawableStart="@drawable/camera720_loading"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/REFRESHING"-->
+            <!--android:visibility="gone" />-->
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/act_panorama_album_lists"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_below="@+id/act_panorama_refresh_header" />
 
-                <TextView
-                    android:id="@+id/act_panorama_refresh_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y44"
-                    android:layout_centerInParent="true"
-                    android:drawableStart="@drawable/camera720_loading"
-                    android:gravity="center"
-                    android:text="@string/REFRESHING"
-                    android:visibility="gone" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/act_panorama_album_lists"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/act_panorama_refresh_header" />
-
-                <include
-                    layout="@layout/layout_panorama_empty_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </RelativeLayout>
+            <!--</RelativeLayout>-->
         </android.support.v4.widget.SwipeRefreshLayout>
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pan_empty_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+          >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawablePadding="@dimen/y12"
+                android:drawableTop="@drawable/album_pic_empty_state"
+                android:gravity="center"
+                android:text="@string/Tap1_Album_Empty"
+                android:textColor="#AAAAAA"
+                android:textSize="@dimen/sp15" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/act_panorama_album_bottom_menu_container"

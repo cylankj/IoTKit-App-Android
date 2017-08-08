@@ -144,7 +144,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         if (!TextUtils.equals(dpPrimary, initValue))
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
 
-        if (subscription != null && subscription.isUnsubscribed()) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
             subscription = null;
         }

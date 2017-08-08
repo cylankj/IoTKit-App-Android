@@ -160,7 +160,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (subscribe != null && subscribe.isUnsubscribed()) {
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
             subscribe = null;
         }

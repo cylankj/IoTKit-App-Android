@@ -185,7 +185,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
             compositeSubscription = null;
         }

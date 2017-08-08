@@ -76,6 +76,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         Glide.with(getContext())
                 .load(new PanoramaThumbURL(uuid, item.fileName))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
                     @Override

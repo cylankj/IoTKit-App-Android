@@ -143,9 +143,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(rsp -> {
                     try {
-                        AppLogger.d("接收到分辨率消息,准备播放直播");
                         liveStreamAction.hasResolution = true;
                         if (mView != null) {
+                            AppLogger.d("接收到分辨率消息,准备播放直播");
                             mView.onResolution(rsp);
                         }
                         mViewLaunchType = onResolveViewIdentify();
@@ -339,8 +339,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         super.onStop();
         if (getViewHandler() != null) {
             if (liveStreamAction.hasResolution) {
-                Subscription subscribe = stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
-                registerSubscription(subscribe);
+                stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
             }
         }
     }

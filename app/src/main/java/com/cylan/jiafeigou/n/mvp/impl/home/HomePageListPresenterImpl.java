@@ -66,7 +66,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         List<Device> device = DataSourceManager.getInstance().getAllDevice();
         String uuid = null;
         boolean apDirect = false;
-        if (recordSub != null && recordSub.isUnsubscribed()) {
+        if (recordSub != null && !recordSub.isUnsubscribed()) {
             recordSub.unsubscribe();
         }
         recordSub = new CompositeSubscription();
@@ -82,7 +82,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             if (apDirect) {
                 BasePanoramaApiHelper.getInstance().init(uuid, true);
                 Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus().subscribe(ret -> {
-                    if (recordSub != null && recordSub.isUnsubscribed()) {
+                    if (recordSub != null && !recordSub.isUnsubscribed()) {
                         recordSub.unsubscribe();
                     }
                 }, e -> {
@@ -94,7 +94,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     if (device1 == null) continue;//可能
                     if (JFGRules.isPan720(device1.pid)) {
                         Subscription subscribe = BaseForwardHelper.getInstance().sendForward(device1.uuid, 13, null).subscribe(ret -> {
-                            if (recordSub != null && recordSub.isUnsubscribed()) {
+                            if (recordSub != null && !recordSub.isUnsubscribed()) {
                                 recordSub.unsubscribe();
                             }
                         }, e -> AppLogger.e(e.getMessage()));

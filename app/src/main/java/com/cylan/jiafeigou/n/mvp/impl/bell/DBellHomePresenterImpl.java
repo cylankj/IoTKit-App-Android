@@ -202,7 +202,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void cancelFetch() {
-        if (subscribe != null && subscribe.isUnsubscribed()) {
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
     }
