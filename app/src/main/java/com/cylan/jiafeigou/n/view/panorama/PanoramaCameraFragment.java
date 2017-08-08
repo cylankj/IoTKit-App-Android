@@ -207,11 +207,13 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
 
     @Override
     public void onDismiss() {
-        if (surfaceView != null) {
-            videoLiveContainer.removeView(surfaceView);
-            surfaceView.onDestroy();
-        }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
 
     @Override
     protected void initViewAndListener() {
@@ -303,6 +305,8 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         hasResolution = true;
+//        if (surfaceView == null) {
+        videoLiveContainer.removeAllViews();
         surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, getActivity(), true);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         surfaceView.setLayoutParams(params);
@@ -312,6 +316,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         surfaceView.configV720();
         surfaceView.setId("IVideoView".hashCode());
         surfaceView.setEventListener(this);
+//        }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         liveFlowSpeedText.setVisibility(View.VISIBLE);
@@ -460,6 +465,9 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     @Override
     public void onResume() {
         super.onResume();
+        if (surfaceView != null) {
+            surfaceView.onResume();
+        }
     }
 
     @Override
@@ -467,10 +475,6 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
 //        presenter.dismiss();
-        if (surfaceView != null) {
-            surfaceView.onDestroy();
-            surfaceView = null;
-        }
     }
 
     @Override
@@ -485,6 +489,17 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
 //    protected void setActivityComponent(ActivityComponent activityComponent) {
 //        activityComponent.inject(this);
 //    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (surfaceView != null) {
+            surfaceView.onDestroy();
+            surfaceView = null;
+            videoLiveContainer.removeAllViews();
+        }
+    }
 
     public boolean muteAudio(boolean bMute) {
         boolean isSuccess;
@@ -954,12 +969,13 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         if (bottomPanelLoading.getVisibility() != View.GONE) {
             bottomPanelLoading.setVisibility(View.GONE);
         }
-        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
-        setting.setEnabled(false);
-
         if (panoramaRecordMode != PANORAMA_RECORD_MODE.MODE_SHORT && !bottomPanelPhotoGraphItem.isEnabled()) {
             bottomPanelPhotoGraphItem.setEnabled(true);
         }
+        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
+        setting.setEnabled(false);
+
+
         switch (type) {
             case PANORAMA_RECORD_MODE.MODE_LONG:
                 bottomPanelSwitcherItem2TimeText.setText(TimeUtils.getHHMMSS(offset * 1000L));

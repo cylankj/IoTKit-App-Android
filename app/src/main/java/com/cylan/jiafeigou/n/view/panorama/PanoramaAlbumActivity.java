@@ -28,8 +28,6 @@ import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,8 +62,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     TextView selectAll;
     @BindView(R.id.tv_msg_delete)
     TextView deleteSelected;
-    @BindView(R.id.act_panorama_refresh_header)
-    TextView refreshHeader;
+//    @BindView(R.id.act_panorama_refresh_header)
+//    TextView refreshHeader;
 
     @ALBUM_VIEW_MODE
     private int albumViewMode = ALBUM_VIEW_MODE.MODE_BOTH;
@@ -338,7 +336,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onSyncFinish() {
-        YoYo.with(Techniques.SlideOutUp).duration(500).playOn(refreshHeader);
+//        YoYo.with(Techniques.SlideOutUp).duration(500).playOn(refreshHeader);
     }
 
     @Override

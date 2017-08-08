@@ -386,7 +386,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         Subscription subscribe = BasePanoramaApiHelper.getInstance().startRec(type)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> mView.onRefreshControllerView(false, true))
+                .doOnSubscribe(() -> mView.onRefreshControllerView(false, false))
                 .subscribe(rsp -> {
                     AppLogger.d("开启视频录制返回结果为" + new Gson().toJson(rsp));
                     if (rsp.ret == 0) {

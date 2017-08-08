@@ -16,12 +16,23 @@
         app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_tab_back_selector"
-        app:ct_left_title="AI识别"
+        app:ct_left_title="@string/SETTING_SECURE_AI"
         app:ct_left_title_color="#FFFFFF"
         app:ct_left_title_size="@dimen/sp17"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y10"
+        android:background="@drawable/little_shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_ai_selection"
