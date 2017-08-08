@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.support.block.impl;
 
 import android.content.Context;
-import android.os.Handler;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.support.block.OnBlockEventInterceptor;
 

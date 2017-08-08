@@ -1059,12 +1059,12 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
                 if (!alertHttpNotAvailable) return;
                 //松开弹
                 if (useAlert) {
-                    deviceReportDialog.setMessage(getString(R.string.Switch_Mode_Pop));
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (dialog, which) -> alertHttpNotAvailable = false);
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable = false));
-                    deviceReportDialog.show();
+//                    deviceReportDialog.setMessage(getString(R.string.Switch_Mode_Pop));
+//                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (dialog, which) -> alertHttpNotAvailable = false);
+//                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable = false));
+//                    deviceReportDialog.show();
                 } else {
-                    ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));
+//                    ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));
                 }
             }
         }

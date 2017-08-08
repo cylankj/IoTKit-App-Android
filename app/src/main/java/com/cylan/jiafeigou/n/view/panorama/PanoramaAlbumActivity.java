@@ -2,16 +2,12 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.widget.PopupWindowCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -166,36 +162,36 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     //    @OnClick(R.id.act_panorama_album_toolbar_header_title)
-    public void showAlbumViewModePop(View view) {
-        ViewUtils.deBounceClick(view);
-        if (albumModeSelectPop == null) {
-            View contentView = LayoutInflater.from(this).inflate(R.layout.layout_panorama_album_pop_menu, null);
-            contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            radioGroup = (RadioGroup) contentView.findViewById(R.id.menu_album_pop_container);
-            menuItemAlbumPopBoth = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_both);
-            menuItemAlbumPopPhoto = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_photo);
-            menuItemAlbumPopPanorama = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_panorama);
-            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-                ((RadioButton) group.findViewById(checkedId)).setChecked(true);
-                albumViewMode = resIdToMode(checkedId);
-                if (albumModeSelectPop != null) albumModeSelectPop.dismiss();
-//                toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
-                swipeRefreshLayout.setRefreshing(true);
-                presenter.fetch(0, albumViewMode);
-            });
-            albumModeSelectPop = new PopupWindow(contentView, contentView.getMeasuredWidth(), contentView.getMeasuredHeight());
-            albumModeSelectPop.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            albumModeSelectPop.setOutsideTouchable(true);
-            albumModeSelectPop.setFocusable(true);
-            albumModeSelectPop.setOnDismissListener(() -> setWindowAlpha(1));
-            radioGroup.check(modeToResId(albumViewMode, true));
-            menuItemAlbumPopPhoto.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PHOTO || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
-            menuItemAlbumPopBoth.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
-            menuItemAlbumPopPanorama.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PANORAMA || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
-        }
-        setWindowAlpha(0.4f);
-        PopupWindowCompat.showAsDropDown(albumModeSelectPop, toolbarAlbumViewMode, 0, -toolbarAlbumViewMode.getMeasuredHeight(), Gravity.LEFT | Gravity.BOTTOM);
-    }
+//    public void showAlbumViewModePop(View view) {
+//        ViewUtils.deBounceClick(view);
+//        if (albumModeSelectPop == null) {
+//            View contentView = LayoutInflater.from(this).inflate(R.layout.layout_panorama_album_pop_menu, null);
+//            contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//            radioGroup = (RadioGroup) contentView.findViewById(R.id.menu_album_pop_container);
+//            menuItemAlbumPopBoth = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_both);
+//            menuItemAlbumPopPhoto = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_photo);
+//            menuItemAlbumPopPanorama = (RadioButton) contentView.findViewById(R.id.menu_item_album_pop_panorama);
+//            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+//                ((RadioButton) group.findViewById(checkedId)).setChecked(true);
+//                albumViewMode = resIdToMode(checkedId);
+//                if (albumModeSelectPop != null) albumModeSelectPop.dismiss();
+////                toolbarAlbumViewMode.setText(titles[modeToResId(albumViewMode, false)]);
+//                swipeRefreshLayout.setRefreshing(true);
+//                presenter.fetch(0, albumViewMode);
+//            });
+//            albumModeSelectPop = new PopupWindow(contentView, contentView.getMeasuredWidth(), contentView.getMeasuredHeight());
+//            albumModeSelectPop.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            albumModeSelectPop.setOutsideTouchable(true);
+//            albumModeSelectPop.setFocusable(true);
+//            albumModeSelectPop.setOnDismissListener(() -> setWindowAlpha(1));
+//            radioGroup.check(modeToResId(albumViewMode, true));
+//            menuItemAlbumPopPhoto.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PHOTO || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+//            menuItemAlbumPopBoth.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+//            menuItemAlbumPopPanorama.setEnabled(albumViewMode == ALBUM_VIEW_MODE.MODE_PANORAMA || albumViewMode == ALBUM_VIEW_MODE.MODE_BOTH);
+//        }
+//        setWindowAlpha(0.4f);
+//        PopupWindowCompat.showAsDropDown(albumModeSelectPop, toolbarAlbumViewMode, 0, -toolbarAlbumViewMode.getMeasuredHeight(), Gravity.LEFT | Gravity.BOTTOM);
+//    }
 
     private void setWindowAlpha(float alpha) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -204,30 +200,21 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     }
 
     private int modeToResId(@ALBUM_VIEW_MODE int mode, boolean isPop) {
-        switch (mode) {
-            case ALBUM_VIEW_MODE.MODE_BOTH:
-                return isPop ? R.id.menu_item_album_pop_both : 0;
-            case ALBUM_VIEW_MODE.MODE_PANORAMA:
-                return isPop ? R.id.menu_item_album_pop_panorama : 1;
-            case ALBUM_VIEW_MODE.MODE_PHOTO:
-                return isPop ? R.id.menu_item_album_pop_photo : 2;
-            default:
-                return isPop ? R.id.menu_item_album_pop_photo : 0;
-        }
+        return 0;
     }
 
-    private int resIdToMode(@ALBUM_VIEW_MODE int resId) {
-        switch (resId) {
-            case R.id.menu_item_album_pop_both:
-                return ALBUM_VIEW_MODE.MODE_BOTH;
-            case R.id.menu_item_album_pop_panorama:
-                return ALBUM_VIEW_MODE.MODE_PANORAMA;
-            case R.id.menu_item_album_pop_photo:
-                return ALBUM_VIEW_MODE.MODE_PHOTO;
-            default:
-                return ALBUM_VIEW_MODE.MODE_PHOTO;
-        }
-    }
+//    private int resIdToMode(@ALBUM_VIEW_MODE int resId) {
+//        switch (resId) {
+//            case R.id.menu_item_album_pop_both:
+//                return ALBUM_VIEW_MODE.MODE_BOTH;
+//            case R.id.menu_item_album_pop_panorama:
+//                return ALBUM_VIEW_MODE.MODE_PANORAMA;
+//            case R.id.menu_item_album_pop_photo:
+//                return ALBUM_VIEW_MODE.MODE_PHOTO;
+//            default:
+//                return ALBUM_VIEW_MODE.MODE_PHOTO;
+//        }
+//    }
 
     @Override
     @OnClick(R.id.act_panorama_album_back)
@@ -334,7 +321,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (DialogInterface.OnClickListener) null);
             alertDialog.show();
         } else {
-            alertDialog.setMessage(getString(albumViewMode == 2 ? R.string.Tap1_DeletedCameraNCellphoneFileTips : R.string.Tips_SureDelete));
+            alertDialog.setMessage(getString(R.string.Tips_SureDelete));
             alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (dialog, which) -> {
                 bottomMenuContainer.setVisibility(View.INVISIBLE);
                 presenter.deletePanoramaItem(items, albumViewMode);

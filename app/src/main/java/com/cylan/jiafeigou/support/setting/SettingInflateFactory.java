@@ -7,6 +7,4 @@ package com.cylan.jiafeigou.support.setting;
 public class SettingInflateFactory {
 
 
-
-
 }

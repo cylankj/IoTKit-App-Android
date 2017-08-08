@@ -174,7 +174,6 @@
   <string name="Delete_Share">Paylaşımı silinsin mi?</string>
   <string name="Detection_Pop">Kapanırsanız artık algılama alarmı mesajı çıkmayacaktır, emin kapatma?</string>
   <string name="Device_Disconnected">Bağlantısız</string>
-  <string name="Dont_Show_Again">Tekrar gösterme</string>
   <string name="Download_Then_Share">Lütfen videoyu indirin ve ardından paylaşın</string>
   <string name="Downloading">Video indiriliyor</string>
   <string name="EDIT_IMAGE">Düzenle</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Dikkat \"加菲狗官微服务\" Resmi Hesaplar, ana sayfaya girin, hizmetin menü çubuğuna tıklayın, cilt hesabı seçin.</string>
   <string name="Start_instructions_H">Hesabı bağla</string>
   <string name="Start_instructions_I">Lütfen şifreyi unuttum gibi bağlamak için Zeki köpek e&#45;posta hesabını giriniz, lütfen Zeki köpek müşterisine geri dönün.</string>
-  <string name="Switch_Mode">Çekim içeriğini görüntülemek için lütfen doğrudan moda geçin</string>
-  <string name="Switch_Mode_Pop">Lütfen geçerli şebeke çekim içeriğini doğrudan moda geçirin</string>
   <string name="Switch_Off">Her zaman kapalı</string>
   <string name="Switch_On">her zaman</string>
   <string name="TAKE_PHOTO">Fotoğraf çek</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">kaydediyor başarısız oldu</string>
   <string name="Tap1_Camera_SetProtectionTips">Koruma Set</string>
   <string name="Tap1_Camera_SpaceUsage">Uzay kullanımı(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Kamera internet üzerinden uygulama ile bağlantı kurdu</string>
-  <string name="Tap1_Camera_UDPconnected">Kamera uygulamayla doğrudan bağlantılı</string>
   <string name="Tap1_Camera_Video">Video</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Oto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">görünüm açısı</string>
   <string name="Tap1_CurrentVersion">Şimdiki versiyonu</string>
   <string name="Tap1_DeleteDownloadingTips">Dosya indiriliyor, silmek mi?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">Kaydedilen içerik kamera ve cep telefonu silinecektir, devam?</string>
   <string name="Tap1_DeviceWasBindedTips">Cihaz, \"%s\" ile sınırlandırıldı, lütfen bağlantıyı bırakın ve tekrar deneyin.</string>
   <string name="Tap1_Device_NoConnection">No ağ bağlantısı, Yenile tıklayın</string>
   <string name="Tap1_Device_UpgradeTips">Güncellemek veya güncellemek için cihazın yeni ürün bilgisini bulma?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">İndir firmware başarısız</string>
   <string name="Tap1_DownloadFirmwareTips">İndirme kısa bir süre içinde başlayacak,lütfen cep telefonunun ve cihazının aynı WIFI ile bağlantı kurduğundan emin olun</string>
   <string name="Tap1_FileDamagedTips">Dosya bozuk, silinsin mi?</string>
-  <string name="Tap1_File_Camera">Kamera</string>
-  <string name="Tap1_File_CameraNPhone">Kamera + Telefon albümü</string>
-  <string name="Tap1_File_Phone">Telefon albümü</string>
   <string name="Tap1_FirmwareDownloading">İndiriliyor(%s)</string>
   <string name="Tap1_FirmwareUpdate">Firmware güncellemesi</string>
   <string name="Tap1_FirmwareUpdateFai">Güncelleştirme başarısız</string>
   <string name="Tap1_FirmwareUpdateSuc">Başarıyla güncelle</string>
   <string name="Tap1_FirmwareUpdating">Güncelleniyor(%s)</string>
   <string name="Tap1_Firmware_DataTips">Veri tüketimi,WIFI bağlantısı olmadan devam ederse oluşturulacak mı?</string>
-  <string name="Tap1_HomeMode">Ev modu</string>
-  <string name="Tap1_HomeMode_Opened">Ev modu açılmış</string>
+  <string name="Tap1_HomeMode">WIFI modu</string>
+  <string name="Tap1_HomeMode_Opened">WIFI modu açıldı</string>
   <string name="Tap1_Index_DayGreetings">Hergün kendiniz için küçük bir sürpriz</string>
   <string name="Tap1_Index_NightGreetings">Biraz dinlenin ve tekrar başlayın</string>
   <string name="Tap1_Index_NoDevice">Cihaz yok</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Zaman aşımı, tekrar deneyin</string>
   <string name="Tips_ShortVideo">Kısa bir video kaydetmek için uzun basın</string>
   <string name="Tips_SureDelete">Emin silmek için？</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Cevap yok, lütfen tekrar deneyiniz</string>
   <string name="UPDATE_FAIL">Kameraya bağlantı başarısız, lütfen tekrar deneyiniz.</string>
   <string name="UPDATING_BUTTON">Güncelleme</string>

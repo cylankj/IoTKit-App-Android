@@ -150,7 +150,7 @@ public class SysMsgBean implements Parcelable, Comparable<SysMsgBean> {
 
     @Generated(hash = 784567696)
     public SysMsgBean(int id, String content, int type, long time, String name,
-            int isDone, int isCheck, String sn, int pid) {
+                      int isDone, int isCheck, String sn, int pid) {
         this.id = id;
         this.content = content;
         this.type = type;

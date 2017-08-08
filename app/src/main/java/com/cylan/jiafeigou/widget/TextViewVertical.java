@@ -9,7 +9,7 @@ import android.view.Gravity;
 public class TextViewVertical extends AppCompatTextView {
     final boolean topDown;
 
-    public TextViewVertical(Context context, AttributeSet attrs){
+    public TextViewVertical(Context context, AttributeSet attrs) {
         super(context, attrs);
         final int gravity = getGravity();
         if (Gravity.isVertical(gravity) && (gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
@@ -20,22 +20,22 @@ public class TextViewVertical extends AppCompatTextView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(heightMeasureSpec, widthMeasureSpec);
         setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
     }
 
     @Override
-    protected boolean setFrame(int l, int t, int r, int b){
-        return super.setFrame(l, t, l+(b-t), t+(r-l));
+    protected boolean setFrame(int l, int t, int r, int b) {
+        return super.setFrame(l, t, l + (b - t), t + (r - l));
     }
 
     @Override
-    public void draw(Canvas canvas){
-        if(topDown){
+    public void draw(Canvas canvas) {
+        if (topDown) {
             canvas.translate(getHeight(), 0);
             canvas.rotate(90);
-        }else {
+        } else {
             canvas.translate(0, getWidth());
             canvas.rotate(-90);
         }

@@ -174,7 +174,6 @@
   <string name="Delete_Share">Удалить общий доступ?</string>
   <string name="Detection_Pop">Завершение работы больше не будет выводить сообщение об обнаружении тревоги, обязательно закрытие?</string>
   <string name="Device_Disconnected">Отключен</string>
-  <string name="Dont_Show_Again">Больше не показывать</string>
   <string name="Download_Then_Share">Загрузите видео, а затем отправьте его</string>
   <string name="Downloading">Видео загружается</string>
   <string name="EDIT_IMAGE">Редактировать</string>
@@ -404,7 +403,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Пароль</string>
   <string name="PASSWORD_BIT">Новый пароль</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Пожалуйста, введите пароль от 6 до 12 символов</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Пожалуйста, введите пароль от 6 до 32 символов</string>
   <string name="PHONE_EMAIL">E&#45;mail</string>
   <string name="PHONE_NUMBER">Номер телефона</string>
   <string name="PHONE_NUMBER_1">Номер телефона</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Внимание \"加菲狗官微服务\", войдите в основную страницу, щелкните строку меню службы, выберите обязательную учетную запись.</string>
   <string name="Start_instructions_H">Связать счет</string>
   <string name="Start_instructions_I">Пожалуйста, введите Умный телефон электронной почты для привязки, например, забудьте пароль, пожалуйста, перейдите к клиенту Clever dog back</string>
-  <string name="Switch_Mode">Перейдите в режим прямого просмотра для просмотра</string>
-  <string name="Switch_Mode_Pop">Переключите текущий сетевой видеоконтент на прямой режим</string>
   <string name="Switch_Off">Всегда выключен</string>
   <string name="Switch_On">всегда включен</string>
   <string name="TAKE_PHOTO">Сделать фото</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Запись не удалось</string>
   <string name="Tap1_Camera_SetProtectionTips">Устанавливает защиту</string>
   <string name="Tap1_Camera_SpaceUsage">использованием пространства(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Камера связана с приложением через интернет</string>
-  <string name="Tap1_Camera_UDPconnected">Камера связана напрямую с приложением</string>
   <string name="Tap1_Camera_Video">Видео</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Авто</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">Угол обзора</string>
   <string name="Tap1_CurrentVersion">Текущая версия</string>
   <string name="Tap1_DeleteDownloadingTips">Загрузка файлов, удаление?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">Сохраненный контент будет удален с камеры и мобильного телефона, продолжить?</string>
   <string name="Tap1_DeviceWasBindedTips">Прибор был связан \"%s\", пожалуйста, отвязать и повторите попытку.</string>
   <string name="Tap1_Device_NoConnection">Нет подключения к сети,щелчок Обновить</string>
   <string name="Tap1_Device_UpgradeTips">Найти новую прошивку устройства, обновлять или нет?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">Скачать прошивку не удалось</string>
   <string name="Tap1_DownloadFirmwareTips">Загрузка начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же WiFi</string>
   <string name="Tap1_FileDamagedTips">Файл поврежден, удалить?</string>
-  <string name="Tap1_File_Camera">Камера</string>
-  <string name="Tap1_File_CameraNPhone">Камера + Телефон альбом</string>
-  <string name="Tap1_File_Phone">Телефон альбом</string>
   <string name="Tap1_FirmwareDownloading">Загрузки(%s)</string>
   <string name="Tap1_FirmwareUpdate">Обновление прошивки</string>
   <string name="Tap1_FirmwareUpdateFai">Обновление не удалось</string>
   <string name="Tap1_FirmwareUpdateSuc">Обновление успешно</string>
   <string name="Tap1_FirmwareUpdating">Обновления(%s)</string>
   <string name="Tap1_Firmware_DataTips">Потребление данных будет создан,если идти дальше без подключения WiFi,продолжить?</string>
-  <string name="Tap1_HomeMode">WIFI режим</string>
-  <string name="Tap1_HomeMode_Opened">Режим WIFI был открыт</string>
+  <string name="Tap1_HomeMode">Режим WIFI</string>
+  <string name="Tap1_HomeMode_Opened">Режим WIFI открыт</string>
   <string name="Tap1_Index_DayGreetings">Маленький сюрприз каждый день</string>
   <string name="Tap1_Index_NightGreetings">Расслабтесь и перегрузите устройство</string>
   <string name="Tap1_Index_NoDevice">Нет устройств</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Тайм&#45;аут, пожалуйста, попробуйте еще раз</string>
   <string name="Tips_ShortVideo">Длительное нажатие для записи короткого видео</string>
   <string name="Tips_SureDelete">Уверенный удалить?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Нет ответа, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATE_FAIL">Подключение устройства не удалось, пожалуйста, попробуйте еще раз</string>
   <string name="UPDATING_BUTTON">Обновляется</string>

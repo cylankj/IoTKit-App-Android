@@ -174,7 +174,6 @@
   <string name="Delete_Share">Supprimer partager?</string>
   <string name="Detection_Pop">Arrêter ne poussera plus le message d\'alarme de détection, fermez&#45;vous la fermeture?</string>
   <string name="Device_Disconnected">Débranché</string>
-  <string name="Dont_Show_Again">Ne plus afficher</string>
   <string name="Download_Then_Share">Téléchargez la vidéo puis partagez</string>
   <string name="Downloading">La vidéo est en cours de téléchargement</string>
   <string name="EDIT_IMAGE">Modifier</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">À l\'attention des Comptes officiels \"加菲狗官微服务\", entrez la page principale, cliquez sur la barre de menu du service, sélectionnez le compte reliant.</string>
   <string name="Start_instructions_H">Lier le compte</string>
   <string name="Start_instructions_I">Entrez le compte de courrier électronique intelligent de Chipper pour lier, par exemple, oubliez le mot de passe, allez chez le client de chien intelligent.</string>
-  <string name="Switch_Mode">Passez en mode direct pour afficher le contenu de la prise de vue</string>
-  <string name="Switch_Mode_Pop">Passez le contenu actuel de la prise de vue réseau au mode direct</string>
   <string name="Switch_Off">toujours désactivé</string>
   <string name="Switch_On">Toujours sur</string>
   <string name="TAKE_PHOTO">Prendre une photo</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Échec de l\'enregistrement</string>
   <string name="Tap1_Camera_SetProtectionTips">Définissez la protection</string>
   <string name="Tap1_Camera_SpaceUsage">Utilisation de l\'espace(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Appareil photo connecté à app via Internet</string>
-  <string name="Tap1_Camera_UDPconnected">Appareil photo connecté à app directement</string>
   <string name="Tap1_Camera_Video">Vidéo</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Auto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">Angle de vue</string>
   <string name="Tap1_CurrentVersion">Version actuelle</string>
   <string name="Tap1_DeleteDownloadingTips">Téléchargement de fichiers, supprimer?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">Le contenu enregistré sera supprimé de la caméra et du téléphone portable, continuez?</string>
   <string name="Tap1_DeviceWasBindedTips">Dispositif a été lié par \"%s\", s\'il vous plaît délier et essayez à nouveau.</string>
   <string name="Tap1_Device_NoConnection">Ni connexion réseau, cliquez sur Actualiser</string>
   <string name="Tap1_Device_UpgradeTips">Trouver un nouveau firmware de l\'appareil, à mettre à jour ou pas?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">Télécharger firmware a échoué</string>
   <string name="Tap1_DownloadFirmwareTips">Téléchargement débutera sous peu,veuillez vous assurer que le téléphone portable et le périphérique sont connectés au même WIFI</string>
   <string name="Tap1_FileDamagedTips">Le fichier est endommagé, supprimer?</string>
-  <string name="Tap1_File_Camera">Caméra</string>
-  <string name="Tap1_File_CameraNPhone">Caméra + Téléphone album</string>
-  <string name="Tap1_File_Phone">Téléphone album</string>
   <string name="Tap1_FirmwareDownloading">Téléchargement en cours(%s)</string>
   <string name="Tap1_FirmwareUpdate">Mise à jour du firmware</string>
   <string name="Tap1_FirmwareUpdateFai">Mise à jour a échoué</string>
   <string name="Tap1_FirmwareUpdateSuc">Mise à jour réussie</string>
   <string name="Tap1_FirmwareUpdating">Réactualisation(%s)</string>
   <string name="Tap1_Firmware_DataTips">La consommation de données serait créée si aller sans connexion WIFI,continuer?</string>
-  <string name="Tap1_HomeMode">Accueil mode</string>
-  <string name="Tap1_HomeMode_Opened">Le mode d\'accueil a été ouvert</string>
+  <string name="Tap1_HomeMode">Mode WIFI</string>
+  <string name="Tap1_HomeMode_Opened">Le mode WIFI a été ouvert</string>
   <string name="Tap1_Index_DayGreetings">Donnez à vous même une petite espérence chaque jour</string>
   <string name="Tap1_Index_NightGreetings">Le repos de chaque fois apporte toujours la nouvelle aspiration</string>
   <string name="Tap1_Index_NoDevice">Il n\'y a pas de dispositif pour le moment</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, essayez à nouveau</string>
   <string name="Tips_ShortVideo">Appuyez longuement pour enregistrer une courte vidéo</string>
   <string name="Tips_SureDelete">Sure supprimer?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">La caméra ne répond pas, essayer à nouveau</string>
   <string name="UPDATE_FAIL">Échec de connexion de la caméra, essayer à nouveau</string>
   <string name="UPDATING_BUTTON">Mise à jour en cours</string>

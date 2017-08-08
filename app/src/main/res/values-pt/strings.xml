@@ -174,7 +174,6 @@
   <string name="Delete_Share">Excluir compartilhamento?</string>
   <string name="Detection_Pop">O desligamento deixará de pressionar a mensagem de alarme de detecção, assegurando o fechamento?</string>
   <string name="Device_Disconnected">Desconectado</string>
-  <string name="Dont_Show_Again">Não mostrar novamente</string>
   <string name="Download_Then_Share">Faça o download do vídeo e compartilhe</string>
   <string name="Downloading">O vídeo está sendo baixado</string>
   <string name="EDIT_IMAGE">Editar</string>
@@ -404,7 +403,7 @@
   <string name="Oct">Oct.</string>
   <string name="PASSWORD">Senha</string>
   <string name="PASSWORD_BIT">Nova senha</string>
-  <string name="PASSWORD_LESSTHAN_SIX">Insira uma senha de 6 a 12 caracteres</string>
+  <string name="PASSWORD_LESSTHAN_SIX">Insira uma senha de 6 a 32 caracteres</string>
   <string name="PHONE_EMAIL">E&#45;mail</string>
   <string name="PHONE_NUMBER">Número de celular</string>
   <string name="PHONE_NUMBER_1">Número de celular</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Atenção \"加菲狗官微服务\", entre na página principal, clique na barra de menu do serviço, selecione a conta obrigatória.</string>
   <string name="Start_instructions_H">Ligar conta</string>
   <string name="Start_instructions_I">Digite a conta de e&#45;mail do telefone inteligente para se ligar, como esquecer a senha, vá para o cliente do cão inteligente, de volta</string>
-  <string name="Switch_Mode">Mude para o modo direto para ver o conteúdo de filmagem</string>
-  <string name="Switch_Mode_Pop">Mude o conteúdo atual da filmagem de rede para o modo direto</string>
   <string name="Switch_Off">Sempre fora</string>
   <string name="Switch_On">sempre</string>
   <string name="TAKE_PHOTO">Tirar foto</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Falha na gravação</string>
   <string name="Tap1_Camera_SetProtectionTips">Defina de Protecção</string>
   <string name="Tap1_Camera_SpaceUsage">Uso do espaço(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Câmera conectada com o app via internet</string>
-  <string name="Tap1_Camera_UDPconnected">Câmara ligada ao app directamente</string>
   <string name="Tap1_Camera_Video">Vídeo</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Auto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">Ângulo de visão</string>
   <string name="Tap1_CurrentVersion">Versão Atual</string>
   <string name="Tap1_DeleteDownloadingTips">Download de arquivos, excluir?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">O conteúdo salvo será excluído da câmera e celular, continuar?</string>
   <string name="Tap1_DeviceWasBindedTips">Dispositivo foi ligado por \"%s\", por favor desvincular e tente novamente.</string>
   <string name="Tap1_Device_NoConnection">Sem ligação à rede, clique Refrescar</string>
   <string name="Tap1_Device_UpgradeTips">Encontrar novo firmware do dispositivo, para atualizar ou não?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">Download de firmware falhou</string>
   <string name="Tap1_DownloadFirmwareTips">Download começará em breve,certifique&#45;se de que o telefone celular e o dispositivo está se conectando com o mesmo WIFI</string>
   <string name="Tap1_FileDamagedTips">Arquivo está danificado, apagar?</string>
-  <string name="Tap1_File_Camera">Câmera</string>
-  <string name="Tap1_File_CameraNPhone">Câmera + Telefone album</string>
-  <string name="Tap1_File_Phone">Telefone album</string>
   <string name="Tap1_FirmwareDownloading">Baixando(%s)</string>
   <string name="Tap1_FirmwareUpdate">Atualização de Firmware</string>
   <string name="Tap1_FirmwareUpdateFai">Atualização falhou</string>
   <string name="Tap1_FirmwareUpdateSuc">Atualizar com êxito</string>
   <string name="Tap1_FirmwareUpdating">Atualizando(%s)</string>
   <string name="Tap1_Firmware_DataTips">Consumo de dados seria criado se continuar sem conexão WiFi,continuar?</string>
-  <string name="Tap1_HomeMode">Modo Home</string>
-  <string name="Tap1_HomeMode_Opened">Modo Outdoor foi aberto</string>
+  <string name="Tap1_HomeMode">Modo Wi&#45;Fi</string>
+  <string name="Tap1_HomeMode_Opened">O modo WIFI foi aberto</string>
   <string name="Tap1_Index_DayGreetings">Dê&#45;se um pouco de surpresa todos os dias</string>
   <string name="Tap1_Index_NightGreetings">Descanse um pouco e comece de novo</string>
   <string name="Tap1_Index_NoDevice">Nenhum dispositivo</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, tente novamente</string>
   <string name="Tips_ShortVideo">Pressão longa para gravar um pequeno vídeo</string>
   <string name="Tips_SureDelete">Claro que para apagar?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">O dispositivo não responde. Por favor tente novamente</string>
   <string name="UPDATE_FAIL">Conexão com dispositivo falhou. Por favor tente novamente</string>
   <string name="UPDATING_BUTTON">Atualizando</string>

@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.R;
 
 public class AspectRatioImageView extends AppCompatImageView {
     private int ratio;
+    private boolean heightBase;
 
     public AspectRatioImageView(Context context) {
         this(context, null);
@@ -26,6 +27,7 @@ public class AspectRatioImageView extends AppCompatImageView {
         super(context, attrs, defStyleAttr);
         TypedArray at = context.obtainStyledAttributes(attrs, R.styleable.AspectImageViewStyle);
         this.ratio = at.getInt(R.styleable.AspectImageViewStyle_as_ratio, 1);
+        this.heightBase = at.getBoolean(R.styleable.AspectImageViewStyle_as_heightBase, false);
         at.recycle();
     }
 
@@ -36,8 +38,16 @@ public class AspectRatioImageView extends AppCompatImageView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int min = Math.min(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
+        final int max = Math.max(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = (int) ((float) width / this.ratio);
-        setMeasuredDimension(width, height);
+        if (heightBase) {
+            //以高度为基准
+            setMeasuredDimension(height * ratio, height);
+        } else {
+            //以宽度为基准
+            setMeasuredDimension(width, height);
+        }
     }
 }

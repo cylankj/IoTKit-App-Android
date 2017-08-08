@@ -7,8 +7,4 @@ package com.cylan.jiafeigou.base;
 public class DeviceManager {
 
 
-
-
-
-
 }

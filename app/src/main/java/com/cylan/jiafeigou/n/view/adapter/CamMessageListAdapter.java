@@ -5,8 +5,6 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -29,6 +27,7 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.widget.AspectRatioImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     /**
      * 图片，只有文字,加载。
      */
-    private static final int MAX_TYPE = 3;
+    private static final int MAX_TYPE = 5;
     private String uuid;
     /**
      * 0： 正常，1:编辑
@@ -158,32 +157,26 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, CamMessageBean item) {
         switch (viewType) {
-            case 0:
+            case CamMessageBean.ViewType.TEXT:
                 handleTextContentLayout(holder, item);
                 break;
-            case 1:
+            case CamMessageBean.ViewType.ONE_PIC:
+            case CamMessageBean.ViewType.TWO_PIC:
+            case CamMessageBean.ViewType.THREE_PIC:
                 handlePicsLayout(holder, item);
-                break;
-//            case 3:
-//                handlerBellLayout(holder, item);
-//            break;
-            default:
-                return;
         }
-        if (onClickListener != null)
+        if (viewType == CamMessageBean.ViewType.FOOT) return;
+        if (onClickListener != null) {
             holder.setOnClickListener(R.id.lLayout_cam_msg_container, onClickListener);
-        if (onClickListener != null)
             holder.setOnClickListener(R.id.tv_cam_message_item_delete, onClickListener);
-        //设置删除可见性,共享设备不可删除消息
-        if (isSharedDevice) {
-            holder.setVisibility(R.id.tv_cam_message_item_delete, View.INVISIBLE);
         }
-
+        //设置删除可见性,共享设备不可删除消息
+        holder.setVisibility(R.id.tv_cam_message_item_delete, isSharedDevice ? View.INVISIBLE : View.INVISIBLE);
+        holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);
         holder.setVisibility(R.id.fLayout_cam_message_item_bottom, !isEditMode() ? View.VISIBLE : View.INVISIBLE);
-        if (isEditMode())
-            holder.setChecked(R.id.rbtn_item_check, selectedMap.containsKey(layoutPosition));
+        holder.setChecked(R.id.rbtn_item_check, isEditMode() && selectedMap.containsKey(layoutPosition));
     }
 
     /**
@@ -247,80 +240,35 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContentSD(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
         holder.setVisibility(R.id.tv_jump_next, textShowSdBtn(item) ? View.VISIBLE : View.GONE);
-        if (onClickListener != null)
-            holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }
 
     private void handlePicsLayout(SuperViewHolder holder,
                                   CamMessageBean item) {
-//        if (!isEditMode()) {
         int count = 0;
         if (item.alarmMsg != null) {
-            count = MiscUtils.getCount(item.alarmMsg.fileIndex);
+            count = item.alarmMsg.fileIndex < 1 ? 1 : MiscUtils.getCount(item.alarmMsg.fileIndex);
         } else if (item.bellCallRecord != null && item.bellCallRecord.fileIndex != -1) {
-            count = MiscUtils.getCount(item.bellCallRecord.fileIndex);
+            count = item.bellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(item.bellCallRecord.fileIndex);
         }
         count = Math.max(count, 1);//最小为1
-        ViewGroup.LayoutParams containerLp = holder.getView(R.id.lLayout_cam_msg_container).getLayoutParams();
-        containerLp.height = getLayoutHeight(count);
-        holder.getView(R.id.lLayout_cam_msg_container).setLayoutParams(containerLp);
-        //根据图片总数,设置view的Gone属性
-        for (int i = 2; i >= 0; i--) {
-            View child = holder.getView(R.id.imgV_cam_message_pic_0 + i);
-            child.setVisibility(count - 1 >= i ? View.VISIBLE : View.GONE);
-            if (count - 1 >= i) {
-                ViewGroup.LayoutParams lp = child.getLayoutParams();
-                lp.width = getPicWidth(count);
-                lp.height = getPicHeight(count);
-                child.setLayoutParams(lp);
-            }
-        }
         for (int index = 1; index <= count; index++) {
+            int id = index == 1 ? R.id.imgV_cam_message_pic0
+                    : index == 2 ? R.id.imgV_cam_message_pic1 :
+                    R.id.imgV_cam_message_pic2;
             Glide.with(getContext())
                     .load(MiscUtils.getCamWarnUrl(uuid, item, index))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
-//                    .override(pic_container_width / count, pic_container_width / count)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .listener(loadListener)
-                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + index - 1));
+                    .into((AspectRatioImageView) holder.getView(id));
+            holder.setOnClickListener(id, onClickListener);
         }
-
-
-//        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
         holder.setVisibility(R.id.tv_jump_next, showHistoryButton(item) ? View.VISIBLE : View.GONE);
-        holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
-        holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
-        holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
-        holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
-//        holder.setEnabled(R.id.tv_jump_next, online());
     }
 
-
-    private int getLayoutHeight(int count) {
-        float static_height = getDimens(R.dimen.x88);
-        return (int) (static_height + (count == 1 ? getDimens(R.dimen.y120)
-                : (count == 2 ? getDimens(R.dimen.x153)
-                : getDimens(R.dimen.x100))));
-    }
-
-    private int getPicWidth(int count) {
-        return count == 1 ? getDimens(R.dimen.x161)
-                : (count == 2 ? getDimens(R.dimen.x153)
-                : getDimens(R.dimen.x100));
-    }
-
-    private int getPicHeight(int count) {
-        return count == 1 ? getDimens(R.dimen.x120)
-                : (count == 2 ? getDimens(R.dimen.x153)
-                : getDimens(R.dimen.x100));
-    }
-
-    private int getDimens(int id) {
-        return (int) getContext().getResources().getDimension(id);
-    }
 
     private View.OnClickListener onClickListener;
 
@@ -405,23 +353,39 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
-                if (camMessageBean.viewType == 2) return 2;
-//                return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : camMessageBean.bellCallRecord == null ? 0 : 3;
-                if (camMessageBean.bellCallRecord != null) return 1;
-                return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
+                if (camMessageBean.bellCallRecord != null) {
+                    final int count = camMessageBean.bellCallRecord.fileIndex < 1 ? 1 : MiscUtils.getCount(camMessageBean.bellCallRecord.fileIndex);
+                    if (count == 1) return CamMessageBean.ViewType.ONE_PIC;
+                    if (count == 2) return CamMessageBean.ViewType.TWO_PIC;
+                    if (count == 3) return CamMessageBean.ViewType.THREE_PIC;
+                }
+                if (camMessageBean.alarmMsg != null) {
+                    final int count = camMessageBean.alarmMsg.fileIndex < 1 ? 1 : MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex);
+                    if (count == 1) return CamMessageBean.ViewType.ONE_PIC;
+                    if (count == 2) return CamMessageBean.ViewType.TWO_PIC;
+                    if (count == 3) return CamMessageBean.ViewType.THREE_PIC;
+                }
+                if (camMessageBean.sdcardSummary != null) {
+                    return CamMessageBean.ViewType.TEXT;
+                }
+                return camMessageBean.viewType;
             }
 
             @Override
-            public int getLayoutId(int viewType) {
+            public int getLayoutId(@CamMessageBean.ViewType int viewType) {
                 switch (viewType) {
-                    case 0:
-                        return R.layout.layout_item_cam_msg_list_0;
-                    case 1:
-                        return R.layout.layout_item_cam_msg_list_1;
-                    case 3:
-                        return R.layout.layout_item_cam_msg_list_1;
+                    case CamMessageBean.ViewType.FOOT:
+                        return R.layout.layout_item_cam_load_more;
+                    case CamMessageBean.ViewType.TEXT:
+                        return R.layout.layout_item_cam_msg_text;
+                    case CamMessageBean.ViewType.ONE_PIC:
+                        return R.layout.layout_item_cam_msg_1pic;
+                    case CamMessageBean.ViewType.TWO_PIC:
+                        return R.layout.layout_item_cam_msg_2pic;
+                    case CamMessageBean.ViewType.THREE_PIC:
+                        return R.layout.layout_item_cam_msg_3pic;
                     default:
-                        return R.layout.simple_load_more_layout;
+                        return R.layout.layout_item_cam_load_more;
                 }
             }
         };
@@ -429,7 +393,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     public boolean hasFooter() {
         int count = getCount();
-        return count > 0 && getItem(count - 1).viewType == 2;
+        return count > 0 && getItem(count - 1).viewType == CamMessageBean.ViewType.FOOT;
     }
 
     private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {

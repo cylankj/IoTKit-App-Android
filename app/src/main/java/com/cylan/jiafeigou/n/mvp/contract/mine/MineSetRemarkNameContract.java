@@ -47,7 +47,6 @@ public interface MineSetRemarkNameContract {
 
         /**
          * 发送修改备注名的请求
-         *
          */
         void setMarkName(String newName, FriendContextItem friendContextItem);
 

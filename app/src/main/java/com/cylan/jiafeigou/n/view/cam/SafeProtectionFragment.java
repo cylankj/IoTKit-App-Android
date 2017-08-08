@@ -260,7 +260,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     //报警间隔
                     int warnInterval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);
                     int sec = warnInterval / 60;
-                    swMotionInterval.setTvSubTitle(sec > 0 ? "" + sec + "分钟" : "30秒");
+                    swMotionInterval.setTvSubTitle(sec > 0 ? "" + sec + getString(R.string.MINUTE_Cloud) : "30" + getString(R.string.REPEAT_TIME));
 
                     int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{});
                     if (objectDetect == null || objectDetect.length == 0) {

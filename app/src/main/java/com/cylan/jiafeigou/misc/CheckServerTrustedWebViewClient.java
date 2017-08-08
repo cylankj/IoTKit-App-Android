@@ -5,7 +5,6 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.util.Log;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 

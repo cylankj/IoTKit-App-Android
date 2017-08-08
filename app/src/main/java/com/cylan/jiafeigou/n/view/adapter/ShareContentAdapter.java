@@ -10,7 +10,6 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter;
 public class ShareContentAdapter extends ItemAdapter<ShareContentItem> {
 
 
-
     public interface UnShareListener {
         void unShare(ShareContentItem shareContentItem, int position);
     }

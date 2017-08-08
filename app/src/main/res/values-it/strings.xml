@@ -174,7 +174,6 @@
   <string name="Delete_Share">Elimina condivisione?</string>
   <string name="Detection_Pop">Spegni non spingerà più il messaggio di allarme di rilevazione, chiudendo definitivamente?</string>
   <string name="Device_Disconnected">Disconnessa</string>
-  <string name="Dont_Show_Again">Non mostrarlo più</string>
   <string name="Download_Then_Share">Scarica il video e poi condividi</string>
   <string name="Downloading">Il video viene scaricato</string>
   <string name="EDIT_IMAGE">Modifica</string>
@@ -627,8 +626,6 @@
   <string name="Start_instructions_G">Attenzione \"加菲狗官微服务\" account ufficiali, entra nella pagina principale, fai clic sulla barra dei menu del servizio, seleziona l\'account di associazione.</string>
   <string name="Start_instructions_H">Bind account</string>
   <string name="Start_instructions_I">Si prega di inserire Clever dog email per legare, come dimenticare la password, vai al client Clever Dog Back</string>
-  <string name="Switch_Mode">Si prega di passare alla modalità diretta per visualizzare i contenuti di ripresa</string>
-  <string name="Switch_Mode_Pop">Si prega di passare i contenuti di ripresa in rete corrente alla modalità diretta</string>
   <string name="Switch_Off">Sempre fuori</string>
   <string name="Switch_On">sempre acceso</string>
   <string name="TAKE_PHOTO">Scatta immagine</string>
@@ -749,8 +746,6 @@
   <string name="Tap1_Camera_RecordingFailed">Record fallito</string>
   <string name="Tap1_Camera_SetProtectionTips">Impostare la protezione</string>
   <string name="Tap1_Camera_SpaceUsage">Utilizzo dello spazio(%1$s/%2$s)</string>
-  <string name="Tap1_Camera_TCPconnected">Telecamera collegata con App via internet</string>
-  <string name="Tap1_Camera_UDPconnected">Telecamera collegata con app direttamente</string>
   <string name="Tap1_Camera_Video">Video</string>
   <string name="Tap1_Camera_VideoLive">Live</string>
   <string name="Tap1_Camera_Video_Auto">Auto</string>
@@ -764,7 +759,6 @@
   <string name="Tap1_Camera_ViewAngle">angolo di vista</string>
   <string name="Tap1_CurrentVersion">Versione attuale</string>
   <string name="Tap1_DeleteDownloadingTips">Scaricamento di file, cancellare?</string>
-  <string name="Tap1_DeletedCameraNCellphoneFileTips">Il contenuto salvato verrà eliminato dalla fotocamera e cellulare, continuare?</string>
   <string name="Tap1_DeviceWasBindedTips">Dispositivo è stato vincolato da \"%s\", prega non associare e riprovare.</string>
   <string name="Tap1_Device_NoConnection">Nessuna connessione di rete, fare clic su Aggiorna</string>
   <string name="Tap1_Device_UpgradeTips">Trovare un nuovo firmware del dispositivo, per aggiornare o no?</string>
@@ -776,17 +770,14 @@
   <string name="Tap1_DownloadFirmwareFai">Download del firmware fallito</string>
   <string name="Tap1_DownloadFirmwareTips">Download inizierà a breve, si prega di accertarsi che il cellulare e il dispositivo si connettono con la stessa WIFI</string>
   <string name="Tap1_FileDamagedTips">Il file è danneggiato, cancellare?</string>
-  <string name="Tap1_File_Camera">Camera</string>
-  <string name="Tap1_File_CameraNPhone">Camera + Telefono album</string>
-  <string name="Tap1_File_Phone">Telefono album</string>
   <string name="Tap1_FirmwareDownloading">Download(%s)</string>
   <string name="Tap1_FirmwareUpdate">Aggiornamento firmware</string>
   <string name="Tap1_FirmwareUpdateFai">Aggiornamento non riuscito</string>
   <string name="Tap1_FirmwareUpdateSuc">Aggiornare successo</string>
   <string name="Tap1_FirmwareUpdating">Aggiornamento(%s)</string>
   <string name="Tap1_Firmware_DataTips">Consumo di dati sarebbe creato se andare avanti senza di connessione WiFi,continuare?</string>
-  <string name="Tap1_HomeMode">Modalità di casa</string>
-  <string name="Tap1_HomeMode_Opened">Modalità Home è stato aperto</string>
+  <string name="Tap1_HomeMode">Modalità WIFI</string>
+  <string name="Tap1_HomeMode_Opened">La modalità WIFI è stata aperta</string>
   <string name="Tap1_Index_DayGreetings">Ogni giorno</string>
   <string name="Tap1_Index_NightGreetings">Riavviare nuovamente.</string>
   <string name="Tap1_Index_NoDevice">Dispositivo non presente</string>
@@ -961,6 +952,7 @@
   <string name="Tips_Device_TimeoutRetry">Timeout, riprovare</string>
   <string name="Tips_ShortVideo">Premere a lungo per registrare un breve video</string>
   <string name="Tips_SureDelete">Procedo alla cancellazione?</string>
+  <string name="Treaty_url">http://www.jfgou.com/app/treaty%s_en.html</string>
   <string name="UPDATE_DISCONNECT">Nessuna reazione, riprova per favore</string>
   <string name="UPDATE_FAIL">Impossibile collegare la macchina fotografica, riprova per favore</string>
   <string name="UPDATING_BUTTON">Aggiornamento</string>
