@@ -324,6 +324,7 @@
     </declare-styleable>
     <declare-styleable name="AspectImageViewStyle">
         <attr name="as_ratio" format="integer|reference" />
+        <attr name="as_heightBase" format="boolean|reference" />
     </declare-styleable>
 
     <declare-styleable name="DividerView">

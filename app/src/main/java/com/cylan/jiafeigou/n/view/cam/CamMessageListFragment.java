@@ -197,7 +197,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     private void setupFootView() {
         CamMessageBean bean = new CamMessageBean();
-        bean.viewType = 2;
+        bean.viewType = CamMessageBean.ViewType.FOOT;
         if (camMessageListAdapter.getCount() > 0)
             bean.version = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version + 1;
         rvCamMessageList.post(() -> camMessageListAdapter.add(bean));
@@ -538,13 +538,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 }
             }
             break;
-            case R.id.imgV_cam_message_pic_0:
+            case R.id.imgV_cam_message_pic0:
                 startActivity(getIntent(position, 0));
                 break;
-            case R.id.imgV_cam_message_pic_1:
+            case R.id.imgV_cam_message_pic1:
                 startActivity(getIntent(position, 1));
                 break;
-            case R.id.imgV_cam_message_pic_2:
+            case R.id.imgV_cam_message_pic2:
                 startActivity(getIntent(position, 2));
                 break;
             case R.id.tv_jump_next: {

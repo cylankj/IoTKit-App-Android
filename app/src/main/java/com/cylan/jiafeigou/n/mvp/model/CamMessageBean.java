@@ -2,8 +2,18 @@ package com.cylan.jiafeigou.n.mvp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.FOOT;
+import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.ONE_PIC;
+import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.TEXT;
+import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.THREE_PIC;
+import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.TWO_PIC;
 
 /**
  * Created by hunt on 16-5-14.
@@ -18,7 +28,25 @@ public class CamMessageBean implements Parcelable {
     public DpMsgDefine.DPBellCallRecord bellCallRecord;//401消息
     public long id = 0;
     public long version;
-    public int viewType = 0;
+    public @ViewType
+    int viewType = ONE_PIC;
+
+
+    @IntDef({
+            FOOT,
+            TEXT,
+            ONE_PIC,
+            TWO_PIC,
+            THREE_PIC
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ViewType {
+        int FOOT = 100;
+        int TEXT = 200;
+        int ONE_PIC = 300;
+        int TWO_PIC = 400;
+        int THREE_PIC = 500;
+    }
 
     @Override
     public String toString() {
