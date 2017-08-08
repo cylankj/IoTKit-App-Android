@@ -358,7 +358,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.notifyDeviceOnlineState(net.net > 0, lPos);
                 break;
             case DpMsgMap.ID_222_SDCARD_SUMMARY:
-                rvCamMessageList.post(() -> {
+                rvCamMessageList.postDelayed(() -> {
                     try {
                         DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(o.packValue, DpMsgDefine.DPSdcardSummary.class);
                         if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
@@ -367,13 +367,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         bean.sdcardSummary = summary;
                         bean.id = DpMsgMap.ID_222_SDCARD_SUMMARY;
                         bean.version = o.version;
+                        ArrayList<CamMessageBean> totalList = camMessageListAdapter.getSelectedItems();
+                        if (totalList != null && totalList.contains(bean)) {
+                            return;//重复了
+                        }
                         camMessageListAdapter.add(0, bean);
                         rvCamMessageList.scrollToPosition(0);
                         lLayoutNoMessage.setVisibility(View.GONE);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                });
+                }, 200);
                 break;
         }
 
