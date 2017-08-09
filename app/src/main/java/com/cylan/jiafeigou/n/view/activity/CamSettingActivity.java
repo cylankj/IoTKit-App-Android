@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
+import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -543,6 +544,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             return;
         }
+        boolean apNet = ApFilter.isApNet();
         ////////////////////////////////////////////////////////////////////////
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
@@ -800,9 +802,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
         svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
         svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
-        svSettingSafeProtection.setEnabled(!dpStandby.standby);
-        svSettingSafeProtection.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
+        svSettingSafeProtection.setEnabled(!dpStandby.standby && !apNet);//ap 模式下有网操作选项需要置灰
+        svSettingSafeProtection.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
         svSettingSafeProtection.setTvSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
+//        svSettingSafeProtection.setAlpha(apNet ? 0.5f : 1f);
 
         /////////////////////////////////////////////////////录像设置//////////////////////////////////////////////////////
         if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
@@ -812,10 +815,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             ////////////////////////显示红点//////////////////////////////////////////////
             node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
             ////////////////////////////autoRecord////////////////////////////////////////
-            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
-            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
+            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby && !apNet);//ap 模式下有网操作选项需要置灰
+            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
             svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
             svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
+//            svSettingDeviceAutoRecord.setAlpha(apNet ? 0.5f : 1f);
         } else {
             svSettingDeviceAutoRecord.setVisibility(View.GONE);
         }

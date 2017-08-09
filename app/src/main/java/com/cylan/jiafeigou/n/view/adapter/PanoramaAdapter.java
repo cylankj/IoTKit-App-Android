@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,14 +14,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PanoramaThumbURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
+import com.lzy.okserver.download.db.DownloadDBManager;
 import com.lzy.okserver.listener.DownloadListener;
 
 import java.util.ArrayList;
@@ -43,6 +51,39 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         this.uuid = uuid;
     }
 
+
+    private void decideDownload(PanoramaAlbumContact.PanoramaItem item) {
+        int netType = NetUtils.getNetType(getContext());
+        String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
+        String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName);
+        if (netType == ConnectivityManager.TYPE_MOBILE || TextUtils.isEmpty(deviceIp)) {
+            DownloadManager.getInstance().stopTask(taskKey);//当前是移动网络或者无法获取到设备 IP 地址,则暂停已有的下载任务
+            return;//移动网络下或者未获取到设备的 IP 地址 不同步
+        }
+        AppLogger.e("item type:" + item.type);
+        //自动下载逻辑
+        item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
+        if (item.downloadInfo != null) {
+            String path = item.downloadInfo.getTargetPath();
+            if (!FileUtils.isFileExist(path) && item.downloadInfo.getState() == 4) {
+                DownloadManager.getInstance().removeTask(item.downloadInfo.getTaskKey());
+                item.downloadInfo = null;
+            }
+        }
+
+        String url = deviceIp + "/images/" + item.fileName;
+        GetRequest request = OkGo.get(url);
+        DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
+        if (downloadInfo != null) {
+            downloadInfo.setRequest(request);
+            downloadInfo.setUrl(request.getBaseUrl());
+            DownloadDBManager.INSTANCE.replace(downloadInfo);
+        }
+        if (item.type == PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_PICTURE) {
+            DownloadManager.getInstance().addTask(taskKey, request, null);
+        }
+        item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
+    }
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PanoramaAlbumContact.PanoramaItem item) {
@@ -94,9 +135,9 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                     }
                 });
         TextView view = holder.getView(R.id.tv_album_download_progress);
-        if (item.downloadInfo == null) {
-            item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));//确保真的没有 download 信息
-        }
+
+        decideDownload(item);//涉及到了公网,局域网,和移动网络,及照片视频不同的逻辑 放在 presenter 里做比较麻烦,直接放在 item来处理了
+
         if (item.downloadInfo == null) {
             AppLogger.e("download is null" + "item type:" + item.type + ",file name:" + item.fileName);
             view.setVisibility(View.INVISIBLE);

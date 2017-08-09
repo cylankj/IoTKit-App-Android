@@ -609,7 +609,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     private void deleteWithAlert() {
         new AlertDialog.Builder(this)
-                .setMessage(R.string.Tips_SureDelete)
+                .setMessage(R.string.PHOTO_DELE_POP)
                 .setNegativeButton(R.string.CANCEL, null)
                 .setPositiveButton(R.string.DELETE, (dialog, which) -> {
                     if (deleted != null) {

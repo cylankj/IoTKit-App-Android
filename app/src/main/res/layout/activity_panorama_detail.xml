@@ -76,7 +76,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/panorama_detail_panel_video_menu_margin_bottom">
+                android:layout_marginBottom="@dimen/panorama_detail_panel_video_menu_margin_bottom"
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_play"
@@ -134,52 +135,48 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/act_panorama_detail_bottom_picture_menu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <ImageButton
+                android:id="@+id/act_panorama_detail_bottom_picture_menu_photograph"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true">
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/photos_icon_camera_selector" />
 
-                <ImageButton
-                    android:id="@+id/act_panorama_detail_bottom_picture_menu_photograph"
-                    android:layout_width="@dimen/y38"
-                    android:layout_height="@dimen/y38"
-                    android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_margin_slide"
-                    android:background="@null"
-                    android:src="@drawable/photos_icon_camera_selector" />
+            <ImageButton
+                android:id="@+id/act_panorama_detail_bottom_picture_menu_vr"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/photos_icon_vr_selector" />
 
-                <ImageButton
-                    android:id="@+id/act_panorama_detail_bottom_picture_menu_vr"
-                    android:layout_width="@dimen/y38"
-                    android:layout_height="@dimen/y38"
-                    android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
-                    android:background="@null"
-                    android:src="@drawable/photos_icon_vr_selector" />
+            <ImageButton
+                android:id="@+id/act_panorama_detail_bottom_picture_menu_panorama"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/photos_icon_fisheye_selector" />
 
-                <ImageButton
-                    android:id="@+id/act_panorama_detail_bottom_picture_menu_panorama"
-                    android:layout_width="@dimen/y38"
-                    android:layout_height="@dimen/y38"
-                    android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
-                    android:background="@null"
-                    android:src="@drawable/photos_icon_fisheye_selector" />
-
-                <ImageButton
-                    android:id="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"
-                    android:layout_width="@dimen/y38"
-                    android:layout_height="@dimen/y38"
-                    android:layout_marginEnd="@dimen/panorama_detail_panel_picture_menu_margin_slide"
-                    android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_item_margin"
-                    android:background="@null"
-                    android:src="@drawable/photos_icon_gyroscope_selector" />
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/photos_icon_gyroscope_selector" />
 
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
     </ViewSwitcher>

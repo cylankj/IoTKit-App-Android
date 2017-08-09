@@ -12,11 +12,8 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.request.GetRequest;
 import com.lzy.okserver.download.DownloadInfo;
 import com.lzy.okserver.download.DownloadManager;
-import com.lzy.okserver.download.db.DownloadDBManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -214,31 +211,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             item = new PanoramaAlbumContact.PanoramaItem(file);
                             item.location = 1;
                             result.add(item);
-                            String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName);
-                            AppLogger.e("item type:" + item.type);
-                            //自动下载逻辑
-                            item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
-                            if (item.downloadInfo != null) {
-                                String path = item.downloadInfo.getTargetPath();
-                                if (!FileUtils.isFileExist(path) && item.downloadInfo.getState() == 4) {
-                                    DownloadManager.getInstance().removeTask(item.downloadInfo.getTaskKey());
-                                    item.downloadInfo = null;
-                                }
-                            }
-                            if (deviceIp != null) {
-                                String url = deviceIp + "/images/" + item.fileName;
-                                GetRequest request = OkGo.get(url);
-                                DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
-                                if (downloadInfo != null) {
-                                    downloadInfo.setRequest(request);
-                                    downloadInfo.setUrl(request.getBaseUrl());
-                                    DownloadDBManager.INSTANCE.replace(downloadInfo);
-                                }
-                                if (item.type == PanoramaAlbumContact.PanoramaItem.PANORAMA_ITEM_TYPE.TYPE_PICTURE) {
-                                    DownloadManager.getInstance().addTask(taskKey, request, null);
-                                }
-                            }
-                            item.downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                         }
                     }
                     return result;
