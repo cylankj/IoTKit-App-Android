@@ -88,38 +88,52 @@
         app:layout_constraintTop_toTopOf="@+id/img_album_content" />
 
 
-    <TextView
-        android:id="@+id/iv_album_video_duration_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/y9"
-        android:layout_marginStart="@dimen/y5"
-        android:text="00:08"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/sp11"
-        android:textStyle="bold"
+    <RelativeLayout
+        android:id="@+id/rl_album_bottom_shape"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/y30"
+        android:background="@drawable/bottom_black_top_white_color"
         app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
-        app:layout_constraintStart_toStartOf="@+id/img_album_content" />
+        app:layout_constraintEnd_toEndOf="@+id/img_album_content"
+        app:layout_constraintStart_toStartOf="@+id/img_album_content">
 
-    <ImageView
-        android:id="@+id/iv_album_icon_720_iphone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/y9"
-        android:layout_marginEnd="@dimen/y11"
-        android:src="@drawable/album_icon_iphone"
-        app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
-        app:layout_constraintEnd_toStartOf="@+id/iv_album_icon_720_camera" />
+        <TextView
+            android:id="@+id/iv_album_video_duration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/y9"
+            android:layout_marginStart="@dimen/y5"
+            android:text="00:08"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/sp11"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/iv_album_icon_720_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/y9"
-        android:layout_marginEnd="@dimen/y6"
-        android:src="@drawable/album_icon_720camera"
-        app:layout_constraintBottom_toBottomOf="@+id/img_album_content"
-        app:layout_constraintEnd_toEndOf="@+id/img_album_content" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y6">
+
+            <ImageView
+                android:id="@+id/iv_album_icon_720_iphone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/album_icon_iphone" />
+
+            <ImageView
+                android:id="@+id/iv_album_icon_720_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/album_icon_720camera"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>

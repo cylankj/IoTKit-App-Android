@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -76,8 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/panorama_detail_panel_video_menu_margin_bottom"
-                android:orientation="horizontal">
+                android:layout_marginBottom="@dimen/panorama_detail_panel_video_menu_margin_bottom">
 
                 <ImageButton
                     android:id="@+id/act_panorama_detail_bottom_video_menu_play"
@@ -135,49 +135,57 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/act_panorama_detail_bottom_picture_menu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
 
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <ImageButton
                 android:id="@+id/act_panorama_detail_bottom_picture_menu_photograph"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginStart="@dimen/panorama_detail_panel_picture_menu_margin_slide"
                 android:background="@null"
-                android:src="@drawable/photos_icon_camera_selector" />
+                android:src="@drawable/photos_icon_camera_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/act_panorama_detail_bottom_picture_menu_vr"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:src="@drawable/photos_icon_vr_selector" />
+                android:src="@drawable/photos_icon_vr_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/act_panorama_detail_bottom_picture_menu_panorama"
+                app:layout_constraintStart_toEndOf="@+id/act_panorama_detail_bottom_picture_menu_photograph"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/act_panorama_detail_bottom_picture_menu_panorama"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:src="@drawable/photos_icon_fisheye_selector" />
+                android:src="@drawable/photos_icon_fisheye_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"
+                app:layout_constraintStart_toEndOf="@+id/act_panorama_detail_bottom_picture_menu_vr"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/act_panorama_detail_bottom_picture_menu_gyroscope"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/panorama_detail_panel_picture_menu_margin_slide"
                 android:background="@null"
-                android:src="@drawable/photos_icon_gyroscope_selector" />
-
-
-        </LinearLayout>
-
+                android:src="@drawable/photos_icon_gyroscope_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
 
     </ViewSwitcher>
 

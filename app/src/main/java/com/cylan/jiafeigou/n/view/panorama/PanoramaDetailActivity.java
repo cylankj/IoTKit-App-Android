@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -201,13 +202,27 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onResume() {
         super.onResume();
+        if (panoramicView720Ext != null) {
+            panoramicView720Ext.onResume();
+        } else {
+            initPanoramaView();
+        }
         looper = true;
         initPanoramaContent(panoramaItem);
+        headerTitleContainer.requestLayout();
+        panoramaPanelSwitcher.requestLayout();
     }
 
     @Override
     protected void onPause() {
+        headerTitleContainer.setTranslationY(0);
+        headerTitleContainer.setAlpha(1);
+        panoramaPanelSwitcher.setTranslationY(0);
+        panoramaPanelSwitcher.setAlpha(1);
         super.onPause();
+        if (panoramicView720Ext != null) {
+            panoramicView720Ext.onPause();
+        }
         looper = false;
         releasePlayer();
     }
@@ -220,12 +235,25 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (panoramicView720Ext != null) {
+            panoramicView720Ext.onDestroy();
+            panoramicView720Ext = null;
+        }
+    }
+
+    @Override
     public void onScreenRotationChanged(boolean land) {
         super.onScreenRotationChanged(land);
         initViewLayoutParams(land);
     }
 
     private void initViewLayoutParams(boolean land) {
+        headerTitleContainer.setTranslationY(0);
+        headerTitleContainer.setAlpha(1);
+        panoramaPanelSwitcher.setTranslationY(0);
+        panoramaPanelSwitcher.setAlpha(1);
         if (land) {
             ViewUtils.clearViewMarginStatusBar(headerTitleContainer);
             popPictureVrTips.setVisibility(View.GONE);
@@ -258,19 +286,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         params = (RelativeLayout.LayoutParams) bottomMenuItemContainer.getLayoutParams();
         params.bottomMargin = (int) getResources().getDimension(R.dimen.panorama_detail_panel_video_menu_margin_bottom);
         bottomMenuItemContainer.setLayoutParams(params);
-        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuPicture.getLayoutParams();
-        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_margin_slide));
-        bottomPictureMenuPicture.setLayoutParams(layoutParams);
-        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuVR.getLayoutParams();
-        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_item_margin));
-        bottomPictureMenuVR.setLayoutParams(layoutParams);
-        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuMode.getLayoutParams();
-        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_item_margin));
-        bottomPictureMenuMode.setLayoutParams(layoutParams);
-        layoutParams = (LinearLayout.LayoutParams) bottomPictureMenuGyroscope.getLayoutParams();
-        layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_item_margin));
-        layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_margin_slide));
-        bottomPictureMenuGyroscope.setLayoutParams(layoutParams);
+
+
+        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) bottomPictureMenuGyroscope.getLayoutParams();
+        lp.setMarginEnd((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_margin_slide));
+        bottomPictureMenuGyroscope.setLayoutParams(lp);
+        lp = (ConstraintLayout.LayoutParams) bottomPictureMenuPicture.getLayoutParams();
+        lp.setMarginStart((int) getResources().getDimension(R.dimen.panorama_detail_panel_picture_menu_margin_slide));
+        bottomPictureMenuPicture.setLayoutParams(lp);
+
     }
 
     private void initPanoramaView() {
@@ -287,7 +311,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);
         panoramicView720Ext.enableGyro(false);
         panoramicView720Ext.configV720();
+        panoramicView720Ext.setZOrderOnTop(true);
+        panoramicView720Ext.setZOrderMediaOverlay(true);
     }
+
 
     private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
         downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
@@ -771,9 +798,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onSingleTap(float v, float v1) {
-        panoramaPanelSwitcher.setSystemUiVisibility(panoramaPanelSwitcher.getTranslationY() == 0 ? View.INVISIBLE : View.VISIBLE);
-        YoYo.with(headerTitleContainer.getTranslationY() == 0 ? Techniques.SlideOutUp : Techniques.SlideInDown).duration(200).playOn(headerTitleContainer);
-        YoYo.with(panoramaPanelSwitcher.getTranslationY() == 0 ? Techniques.SlideOutDown : Techniques.SlideInUp).duration(200).playOn(panoramaPanelSwitcher);
+//        panoramaPanelSwitcher.setSystemUiVisibility(panoramaPanelSwitcher.getTranslationY() == 0 ? View.INVISIBLE : View.VISIBLE);
+        YoYo.with(headerTitleContainer.getTranslationY() != 0 ? Techniques.SlideInDown : Techniques.SlideOutUp).duration(200).playOn(headerTitleContainer);
+        YoYo.with(panoramaPanelSwitcher.getTranslationY() != 0 ? Techniques.SlideInUp : Techniques.SlideOutDown).duration(200).playOn(panoramaPanelSwitcher);
     }
 
     @Override

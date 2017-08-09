@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -155,7 +156,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     });
         } else if (fetchLocation == 1) {
             fetchSubscription = loadFromServer(time)
-                    .delay(1, TimeUnit.SECONDS)
+                    .delay(200, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
                         mView.onAppend(items, time == 0, true, fetchLocation);
@@ -171,22 +172,23 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 //                        return items;
 //                    })
                     .observeOn(Schedulers.io())
-                    .flatMap(items -> loadFromServer(time).map(items1 -> {
-                        items1.addAll(items);
-                        Map<String, PanoramaAlbumContact.PanoramaItem> sort = new HashMap<>();
-                        for (PanoramaAlbumContact.PanoramaItem panoramaItem : items1) {
-                            PanoramaAlbumContact.PanoramaItem panoramaItem1 = sort.get(panoramaItem.fileName);
-                            if (panoramaItem1 == null) {
-                                sort.put(panoramaItem.fileName, panoramaItem);
-                            } else {
-                                panoramaItem1.location = 2;
-                            }
-                        }
-                        List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
-                        Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
-                        return result.subList(0, result.size() > 20 ? 20 : result.size());
-                    }))
-                    .delay(1, TimeUnit.SECONDS)
+                    .flatMap(items -> JFGRules.isDeviceOnline(uuid) ?//设备当前真的不在线,就不需要去 Ping 浪费时间等待了
+                            loadFromServer(time).map(items1 -> {
+                                items1.addAll(items);
+                                Map<String, PanoramaAlbumContact.PanoramaItem> sort = new HashMap<>();
+                                for (PanoramaAlbumContact.PanoramaItem panoramaItem : items1) {
+                                    PanoramaAlbumContact.PanoramaItem panoramaItem1 = sort.get(panoramaItem.fileName);
+                                    if (panoramaItem1 == null) {
+                                        sort.put(panoramaItem.fileName, panoramaItem);
+                                    } else {
+                                        panoramaItem1.location = 2;
+                                    }
+                                }
+                                List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
+                                Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
+                                return result.subList(0, result.size() > 20 ? 20 : result.size());
+                            }) : Observable.just(items)
+                    )
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
                         mView.onAppend(items, time == 0, true, fetchLocation);

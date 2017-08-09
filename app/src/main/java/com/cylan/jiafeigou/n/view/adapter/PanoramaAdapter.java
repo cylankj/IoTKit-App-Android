@@ -1,12 +1,10 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -117,21 +115,20 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         Glide.with(getContext())
                 .load(new PanoramaThumbURL(uuid, item.fileName))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
+                .error(R.drawable.wonderful_pic_place_holder)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new ImageViewTarget<GlideDrawable>(holder.getView(R.id.img_album_content)) {
                     @Override
                     protected void setResource(GlideDrawable resource) {
                         view.setImageDrawable(resource);
-                        view.setScaleType(ImageView.ScaleType.FIT_XY);
+                        holder.setAlpha(R.id.rl_album_bottom_shape, 1);
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        view.setBackgroundResource(R.drawable.wonderful_pic_place_holder);
-                        view.setImageResource(R.drawable.pic_broken);
-                        view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
+                    public void onStart() {
+                        super.onStart();
+                        holder.setAlpha(R.id.rl_album_bottom_shape, 0);
                     }
                 });
         TextView view = holder.getView(R.id.tv_album_download_progress);

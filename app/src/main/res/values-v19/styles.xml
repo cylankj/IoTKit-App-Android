@@ -5,7 +5,6 @@
         <!-- Customize your theme here. -->
         <item name="android:textAllCaps">false</item>
         <item name="android:windowActionBar">false</item>
-        <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

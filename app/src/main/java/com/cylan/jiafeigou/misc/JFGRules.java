@@ -4,8 +4,12 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.DeviceInformation;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
@@ -540,6 +544,21 @@ public class JFGRules {
 
     public static boolean isDeviceOnline(DpMsgDefine.DPNet net) {
         return net != null && net.net > 0 && !TextUtils.isEmpty(net.ssid);
+    }
+
+    public static boolean isDeviceOnline(String uuid) {
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        String mac = device.$(DpMsgMap.ID_202_MAC, "");
+        if (TextUtils.isEmpty(mac)) {
+            DeviceInformation information = BaseDeviceInformationFetcher.getInstance().getDeviceInformation();
+            if (information != null && information.mac != null) {
+                mac = information.mac;
+            }
+        }
+        DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+        boolean apMode = JFGRules.isAPDirect(uuid, mac);
+        boolean isOnline = net.net > 0;
+        return apMode || isOnline;
     }
 
     public static boolean hasSdcard(DpMsgDefine.DPSdStatus sdStatus) {

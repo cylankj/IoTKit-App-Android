@@ -21,8 +21,24 @@ import javax.inject.Singleton;
 @Singleton
 public class PropertiesLoader implements IProperty {
 
+    private static PropertiesLoader instance;
+
+
     @Inject
     public PropertiesLoader() {
+        instance = this;
+    }
+
+    public static PropertiesLoader getInstance() {
+        if (instance == null) {
+            synchronized (PropertiesLoader.class) {
+                if (instance == null) {
+                    instance = new PropertiesLoader();
+                    instance.initialize();
+                }
+            }
+        }
+        return instance;
     }
 
     private PropertyFile propertyFile;

@@ -66,8 +66,8 @@ public class SmartcallActivity extends NeedLoginActivity<SplashContract.Presente
     //这个页面先请求 sd卡权限
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setBackgroundDrawableResource(R.drawable.splash_screen);
         super.onCreate(savedInstanceState);
-//        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.splash_screen));
         PerformanceUtils.stopTrace("SmartcallActivity");
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);
