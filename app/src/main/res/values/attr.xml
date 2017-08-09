@@ -239,6 +239,7 @@
         <attr name="civ_fill_color" format="color" />
         <attr name="civ_hint_color" format="color|reference" />
         <attr name="civ_hint_radius" format="dimension|reference" />
+        <attr name="civ_show_hint" format="boolean|reference" />
     </declare-styleable>
 
     <!--软键盘-->

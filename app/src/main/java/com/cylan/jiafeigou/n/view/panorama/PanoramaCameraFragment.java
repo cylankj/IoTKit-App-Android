@@ -249,6 +249,8 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
 
         Pair<DPEntity, Integer> pair = handleUnreadCount(device);
         ivt_newMessageTips.setShowDot(pair != null && pair.second > 0);
+
+        bottomPanelAlbumItem.showHint(false);
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -328,6 +330,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
 
     @Override
     public void onShowPreviewPicture(String picture) {
+        bottomPanelAlbumItem.showHint(true);
         if (!TextUtils.isEmpty(picture)) {
             Glide.with(this)
                     .load(picture)
@@ -558,6 +561,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
 //        presenter.dismiss();
+        bottomPanelAlbumItem.showHint(false);
         Intent intent = new Intent(getContext(), PanoramaAlbumActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);

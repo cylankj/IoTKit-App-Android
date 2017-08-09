@@ -545,6 +545,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         }
         boolean apNet = ApFilter.isApNet();
+        boolean is720 = JFGRules.isPan720(device.pid);
         ////////////////////////////////////////////////////////////////////////
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
@@ -802,7 +803,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(SafeProtectionFragment.class.getSimpleName());
         svSettingSafeProtection.setVisibility(productProperty.hasProperty(device.pid, "PROTECTION") ? View.VISIBLE : View.GONE);
         svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
-        svSettingSafeProtection.setEnabled(!dpStandby.standby && !apNet);//ap 模式下有网操作选项需要置灰
+        svSettingSafeProtection.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
         svSettingSafeProtection.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
         svSettingSafeProtection.setTvSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
 //        svSettingSafeProtection.setAlpha(apNet ? 0.5f : 1f);
@@ -815,8 +816,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             ////////////////////////显示红点//////////////////////////////////////////////
             node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
             ////////////////////////////autoRecord////////////////////////////////////////
-            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby && !apNet);//ap 模式下有网操作选项需要置灰
-            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
+            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
+            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby && (!is720 || !apNet) ? 1.0f : 0.6f);
             svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
             svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
 //            svSettingDeviceAutoRecord.setAlpha(apNet ? 0.5f : 1f);

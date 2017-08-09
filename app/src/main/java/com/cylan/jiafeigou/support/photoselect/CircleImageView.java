@@ -106,7 +106,7 @@ public class CircleImageView extends AppCompatImageView {
 
         mHintColor = a.getColor(R.styleable.CircleImageView_civ_hint_color, DEFAULT_FILL_COLOR);
         mHintRadius = a.getDimension(R.styleable.CircleImageView_civ_hint_radius, 5.0f);
-
+        drawHint = a.getBoolean(R.styleable.CircleImageView_civ_show_hint, false);
         a.recycle();
 
         init();

@@ -338,6 +338,7 @@
             app:civ_border_width="@dimen/y1"
             app:civ_hint_color="@color/color_red"
             app:civ_hint_radius="@dimen/y4"
+            app:civ_show_hint="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintHorizontal_bias="1.0"

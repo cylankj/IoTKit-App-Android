@@ -107,6 +107,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 })
                 .map(account -> {
                     feedRtcp.stop();//清空之前的状态
+                    feedRtcp.setMonitorListener(this);
                     mView.onViewer();
                     if (shouldShowPreview()) {
                         File file = new File(PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""));
@@ -169,6 +170,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     feedRtcp.stop();
+                    feedRtcp.setMonitorListener(null);
                     e.printStackTrace();
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
@@ -215,6 +217,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         AppLogger.e("stopViewer");
         if (!liveStreamAction.hasStarted) return Observable.empty();
         liveStreamAction.reset();
+        feedRtcp.setMonitorListener(null);
         return Observable.just(getViewHandler())
                 .subscribeOn(Schedulers.io())
                 .map(handler -> {
