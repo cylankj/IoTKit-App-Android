@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.support.share;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.ObservableBoolean;
@@ -33,6 +34,7 @@ import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
 
 import java.io.File;
+import java.util.Random;
 
 import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH;
 import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM;
@@ -61,6 +63,8 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     private String thumbPath;
     private UMShareListener listener;
     private boolean success = false;
+    private Random random = new Random();
+    private ValueAnimator animator;
 
     public static H5ShareEditorFragment newInstance(String uuid, int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem, UMShareListener listener) {
         H5ShareEditorFragment fragment = new H5ShareEditorFragment();
@@ -95,6 +99,33 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         return shareBinding.getRoot();
     }
 
+    private void startCount() {
+        if (animator != null) {
+            animator.cancel();
+        }
+        animator = ValueAnimator.ofInt(1, random.nextInt(80));
+        animator.setDuration(random.nextInt(3000));
+        animator.addUpdateListener(animation -> {
+            shareBinding.sharePercent.setText(String.format("%s%%", animation.getAnimatedValue()));
+        });
+        animator.start();
+    }
+
+    private void endCount() {
+        if (animator != null) {
+            int animatedValue = (int) animator.getAnimatedValue();
+            animator.cancel();
+            animator = ValueAnimator.ofInt(animatedValue, 100);
+            animator.setDuration(500);
+            animator.addUpdateListener(animation -> {
+                shareBinding.sharePercent.setText(String.format("%s%%", animation.getAnimatedValue()));
+            });
+            animator.start();
+        } else {
+            shareBinding.sharePercent.setText("100%");
+        }
+    }
+
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
@@ -110,7 +141,10 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         shareBinding.setShareClick(this::share);
         shareBinding.shareContextEditor.requestFocus();
         shareBinding.shareRetry.setOnClickListener(v -> {
-            if (presenter != null) presenter.upload(shareItem.fileName, filePath);
+            if (presenter != null) {
+                presenter.upload(shareItem.fileName, filePath);
+                startCount();
+            }
         });
         InputMethodManager imm = (InputMethodManager) getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
@@ -144,11 +178,17 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     public void onUploadResult(int code) {
         if (code != -1) {
             uploadSuccess.set(code == 200);
+            if (uploadSuccess.get()) {
+                endCount();
+            }
             shareBinding.shareRetry.setVisibility(uploadSuccess.get() ? View.GONE : View.VISIBLE);
         }
         AppLogger.d("上传到服务器返回的结果为:" + code);
         if (code == -1) {
-            if (presenter != null) presenter.upload(shareItem.fileName, filePath);
+            if (presenter != null) {
+                presenter.upload(shareItem.fileName, filePath);
+                startCount();
+            }
         }
     }
 

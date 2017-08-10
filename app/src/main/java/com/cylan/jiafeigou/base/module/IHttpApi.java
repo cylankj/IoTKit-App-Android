@@ -30,7 +30,7 @@ public interface IHttpApi {
      */
 
     @GET(CGI + "?Msg=fileDelete")
-    Observable<PanoramaEvent.MsgFileRsp> delete(@Query("deltype") int deleteType, @Query("filename") List<String> files);
+    Observable<PanoramaEvent.MsgFileRsp> delete(@Query("deltype") int deleteType, @Query("enwarn") int enwarn, @Query("filename") List<String> files);
 
     @GET(CGI + "?Msg=getFileList")
     Observable<PanoramaEvent.MsgFileListRsp> getFileList(@Query("begintime") int beginTime, @Query("endtime") int endTime, @Query("count") int count);

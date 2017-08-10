@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
@@ -56,7 +58,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStart() {
         super.onStart();
-        BasePanoramaApiHelper.getInstance().init(uuid, true);
+        BaseDeviceInformationFetcher.getInstance().init(uuid);
         DataSourceManager.getInstance().syncAllProperty();
     }
 
@@ -82,16 +84,16 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .subscribe(ret -> {
                     AppLogger.d("设备录像状态发生了变化");
                     PanoramaEvent.MsgVideoStatusRsp deviceState = (PanoramaEvent.MsgVideoStatusRsp) sourceManager.getDeviceState(uuid);
-                    if (deviceState != null && deviceState.ret == 0) {
+                    if (deviceState != null && deviceState.ret == 0 && deviceState.videoType == 2) {//只处理长路像的情况
                         if (!isRecording) {
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
                             refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
                         }
-                        AppLogger.d("有录像状态");
+                        AppLogger.d("有录像状态:" + new Gson().toJson(deviceState));
                     } else if (deviceState == null) {
 //                        if (shouldRefreshRecord) {
 //                            shouldRefreshRecord = false;
-                        AppLogger.d("无录像状态");
+                        AppLogger.d("无录像状态:" + new Gson().toJson(deviceState));
                         if (isRecording) {
                             RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE);
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, true, false);
@@ -223,7 +225,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void makePhotograph() {
         mView.onRefreshControllerViewVisible(false);
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().snapShot()
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().snapShot(uuid)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msgFileRsp -> {
@@ -261,7 +263,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             subscribe.unsubscribe();
         }
 
-        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus()
+        subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {
@@ -273,7 +275,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return !isUpgrade;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus(uuid))
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
@@ -289,7 +291,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return rsp;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getResolution())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getResolution(uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
                     if (ret != null && ret.ret == 0) {
@@ -311,7 +313,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 //                    return ret;
 //                })
 //                .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine(uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
                     if (ret != null && ret.powerline == 1) {
@@ -320,7 +322,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery().observeOn(AndroidSchedulers.mainThread())
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getBattery(uuid).observeOn(AndroidSchedulers.mainThread())
                         .map(bat -> {
                             if (bat != null) {
                                 this.battery = bat.battery;
@@ -365,7 +367,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void switchVideoResolution(@PanoramaCameraContact.View.SPEED_MODE int mode) {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().setResolution(mode)
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().setResolution(uuid, mode)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
@@ -383,7 +385,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startVideoRecord(int type) {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().startRec(type)
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().startRec(uuid, type)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> mView.onRefreshControllerView(false, false))
@@ -411,7 +413,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void stopVideoRecord(int type) {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(type)
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().stopRec(uuid, type)
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> RxBus.getCacheInstance().post(PanoramaCameraContact.View.RecordFinishEvent.INSTANCE))
@@ -435,8 +437,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void formatSDCard() {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().sdFormat()
-                .timeout(30, TimeUnit.SECONDS)
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().sdFormat(uuid)
+                .timeout(120, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     if (ret != null && ret.sdIsExist && ret.sdcard_recogntion == 0) {

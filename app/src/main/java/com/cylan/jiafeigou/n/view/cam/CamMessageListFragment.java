@@ -24,13 +24,11 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -539,6 +537,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
             break;
             case R.id.imgV_cam_message_pic0:
+
                 startActivity(getIntent(position, 0));
                 break;
             case R.id.imgV_cam_message_pic1:
@@ -549,21 +548,25 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.tv_jump_next: {
                 try {
-                    if (!online()) {
+                    if (!JFGRules.isDeviceOnline(uuid)) {
                         ToastUtil.showToast(getString(R.string.NOT_ONLINE));
                         return;
                     }
                     CamMessageBean bean = camMessageListAdapter.getItem(position);
                     boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null || bean.bellCallRecord != null;
                     if (jumpNext) {
-                        Activity activity = getActivity();
-                        if (activity != null && activity instanceof CameraLiveActivity) {
-                            Bundle bundle = new Bundle();
+                        if (JFGRules.isPan720(getDevice().pid)) {
+                            startActivity(getIntent(position, 0));
+                        } else {
+                            Activity activity = getActivity();
+                            if (activity != null && activity instanceof CameraLiveActivity) {
+                                Bundle bundle = new Bundle();
 //                            long time = bean.alarmMsg.version;//1498194000
-                            long time = MiscUtils.getVersion(bean);
-                            bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, time);
-                            bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL, true);
-                            ((CameraLiveActivity) activity).addPutBundle(bundle);
+                                long time = MiscUtils.getVersion(bean);
+                                bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, time);
+                                bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL, true);
+                                ((CameraLiveActivity) activity).addPutBundle(bundle);
+                            }
                         }
                         AppLogger.d("alarm: " + bean);
                     } else {
@@ -590,7 +593,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (JFGRules.isPan720(getDevice().pid)) {
             // TODO: 2017/8/3 720 消息详情页
 // intent= new Intent(getActivity(), PanoramaDetailActivity.class);
-            intent = PanoramaDetailActivity.getIntentFromMessage(getActivity(), uuid, item, position, index);
+            intent = PanoramaDetailActivity.getIntentFromMessage(getActivity(), uuid, item, position, index + 1);
             return intent;
         } else {
 
@@ -620,11 +623,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onClick() {
     }
 
-    private boolean online() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        return net != null && net.net > 0;
-    }
 
     public void hookEdit(TextView tvToolbarRight) {
         this.mockView = tvToolbarRight;

@@ -44,7 +44,7 @@ public class AppModule {
                     if (url != null && !url.startsWith("http://"))
                         url = "http://www.baidu.com" + url;
                     List<String> strings = HttpUrl.parse(url).pathSegments();
-                    String filePath = BasePanoramaApiHelper.getInstance().getFilePath(strings.get(strings.size() - 1));
+                    String filePath = BasePanoramaApiHelper.getInstance().getFilePath("",strings.get(strings.size() - 1));
                     AppLogger.d("HttpProxyCacheServer" + filePath);
                     return filePath;
                 })

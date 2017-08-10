@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -67,8 +68,8 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         initDetailData();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean http = JFGRules.isPan720(device.pid);
-        BasePanoramaApiHelper.getInstance().init(uuid, http);
-        subscription = BasePanoramaApiHelper.getInstance().getSdInfo()
+        if (http) BaseDeviceInformationFetcher.getInstance().init(uuid);
+        subscription = BasePanoramaApiHelper.getInstance().getSdInfo(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> initSdUseDetailRsp(null, false), throwable -> {

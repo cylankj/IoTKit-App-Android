@@ -69,7 +69,7 @@ public interface PanoramaAlbumContact {
         public DownloadInfo downloadInfo;
         public int location = -1; //0:本地;1:设备;2:本地+设备
 
-        public int index;//for cameraMessage
+        public boolean message = false;
 
         public PanoramaItem(String name) {
             if (TextUtils.isEmpty(name)) return;

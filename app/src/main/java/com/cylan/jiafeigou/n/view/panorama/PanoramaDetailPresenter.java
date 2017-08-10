@@ -77,7 +77,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
-            Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(1, Collections.singletonList(item.fileName))
+            Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid,1,0, Collections.singletonList(item.fileName))
                     .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())

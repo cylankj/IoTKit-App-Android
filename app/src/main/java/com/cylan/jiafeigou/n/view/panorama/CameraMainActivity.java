@@ -34,6 +34,10 @@ public class CameraMainActivity extends BaseActivity {
 //        }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     @Override
     protected void setActivityComponent(ActivityComponent activityComponent) {

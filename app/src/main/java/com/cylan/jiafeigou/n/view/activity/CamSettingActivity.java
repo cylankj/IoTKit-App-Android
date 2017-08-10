@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -151,6 +152,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initProductLayout(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid));
         AppLogger.d("检查升级包");
+
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        boolean http = JFGRules.isPan720(device.pid);
+        if (http) BaseDeviceInformationFetcher.getInstance().init(uuid);
     }
 
     private void initProductLayout(Device device) {

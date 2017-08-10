@@ -150,67 +150,85 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     }
 
     public void clearSDCard() {
-        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .mergeWith(BasePanoramaApiHelper.getInstance().sdFormat(uuid).subscribeOn(Schedulers.io())
-                        .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)))
-                .subscribeOn(Schedulers.io())
-                .filter(deviceSyncRsp -> {
-                    if (!TextUtils.equals(deviceSyncRsp.uuid, uuid)) {
-                        return false;
-                    }
-                    if (deviceSyncRsp.dpList != null && deviceSyncRsp.dpList.size() > 0) {
-                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
-                            if (msg.id == 203) {//唯一一个条件.203
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                })
-                .timeout(120, TimeUnit.SECONDS, Observable.create(subscriber -> mView.clearSdResult(2)))
-                .map(deviceSyncRsp -> {
-                    boolean hasSDCard = false;
-                    AppLogger.e("收到设备同步消息:" + new Gson().toJson(deviceSyncRsp));
-                    if (deviceSyncRsp != null && deviceSyncRsp.dpList != null) {
-                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
-                            if (msg.id == 203) {
-                                DpMsgDefine.DPSdStatus status = null;
-                                DpMsgDefine.DPSdStatusInt statusInt = null;
-                                try {
-                                    status = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    try {
-                                        statusInt = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                                if (status == null && statusInt != null) {
-                                    status = new DpMsgDefine.DPSdStatus();
-                                    status.hasSdcard = statusInt.hasSdcard == 1;
-                                    status.err = statusInt.err;
-                                    status.used = statusInt.used;
-                                    status.total = statusInt.total;
-                                }
-                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
-                                break;
-                            } else if (msg.id == 222) {
-                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
-                                hasSDCard = summary != null && summary.errCode == 0 && summary.hasSdcard;
-                                break;
-                            }
-                        }
-                    }
-                    if (hasSDCard) {
-                        History.getHistory().clearHistoryFile(uuid);
-                    }
-                    return hasSDCard ? 0 : deviceSyncRsp == null ? 2 : 1;
-                })
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().sdFormat(uuid)
+                .timeout(120, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.just(2))
-                .subscribe(code -> mView.clearSdResult(code), e -> AppLogger.e(e.getMessage()));
+                .subscribe(ret -> {
+                    if (ret != null && ret.sdIsExist && ret.sdcard_recogntion == 0) {
+                        History.getHistory().clearHistoryFile(uuid);
+                        mView.clearSdResult(0);
+//                        return hasSDCard ? 0 : deviceSyncRsp == null ? 2 : 1;
+                    } else {
+                        mView.clearSdResult(1);
+//                        mView.onSDFormatResult(-1);
+                    }
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    mView.clearSdResult(2);
+                });
+//
+//
+//        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+//                .mergeWith(BasePanoramaApiHelper.getInstance().sdFormat(uuid).subscribeOn(Schedulers.io())
+//                        .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)))
+//                .subscribeOn(Schedulers.io())
+//                .filter(deviceSyncRsp -> {
+//                    if (!TextUtils.equals(deviceSyncRsp.uuid, uuid)) {
+//                        return false;
+//                    }
+//                    if (deviceSyncRsp.dpList != null && deviceSyncRsp.dpList.size() > 0) {
+//                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+//                            if (msg.id == 203) {//唯一一个条件.203
+//                                return true;
+//                            }
+//                        }
+//                    }
+//                    return false;
+//                })
+//                .timeout(120, TimeUnit.SECONDS, Observable.create(subscriber -> mView.clearSdResult(2)))
+//                .map(deviceSyncRsp -> {
+//                    boolean hasSDCard = false;
+//                    AppLogger.e("收到设备同步消息:" + new Gson().toJson(deviceSyncRsp));
+//                    if (deviceSyncRsp != null && deviceSyncRsp.dpList != null) {
+//                        for (JFGDPMsg msg : deviceSyncRsp.dpList) {
+//                            if (msg.id == 203) {
+//                                DpMsgDefine.DPSdStatus status = null;
+//                                DpMsgDefine.DPSdStatusInt statusInt = null;
+//                                try {
+//                                    status = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+//
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                    try {
+//                                        statusInt = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
+//                                    } catch (Exception e1) {
+//                                        e1.printStackTrace();
+//                                    }
+//                                }
+//                                if (status == null && statusInt != null) {
+//                                    status = new DpMsgDefine.DPSdStatus();
+//                                    status.hasSdcard = statusInt.hasSdcard == 1;
+//                                    status.err = statusInt.err;
+//                                    status.used = statusInt.used;
+//                                    status.total = statusInt.total;
+//                                }
+//                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
+//                                break;
+//                            } else if (msg.id == 222) {
+//                                DpMsgDefine.DPSdcardSummary summary = BaseApplication.getAppComponent().getPropertyParser().parser((int) msg.id, msg.packValue, msg.version);
+//                                hasSDCard = summary != null && summary.errCode == 0 && summary.hasSdcard;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    if (hasSDCard) {
+//                        History.getHistory().clearHistoryFile(uuid);
+//                    }
+//                    return hasSDCard ? 0 : deviceSyncRsp == null ? 2 : 1;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .onErrorResumeNext(Observable.just(2))
+//                .subscribe(code -> mView.clearSdResult(code), e -> AppLogger.e(e.getMessage()));
         addSubscription(subscribe);
     }
 

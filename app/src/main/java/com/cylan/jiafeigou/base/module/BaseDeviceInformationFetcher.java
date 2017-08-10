@@ -108,7 +108,9 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     }
 
     public void init(String uuid) {
-        deviceInformation = new DeviceInformation(uuid);
+        if (deviceInformation == null || !TextUtils.equals(deviceInformation.uuid, uuid)) {
+            deviceInformation = new DeviceInformation(uuid);
+        }
         RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
     }
 
@@ -122,8 +124,6 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
                 .observeOn(Schedulers.io())
                 .filter(event -> !isFetching && !event.success && deviceInformation != null)
                 .map(event -> {
-//                    deviceInformation.ip = null;
-//                    deviceInformation.port = 0;
                     isFetching = true;
                     ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

@@ -99,7 +99,7 @@ public class BaseForwardHelper {
     }
 
     public <T> Observable<T> setDataPoint(String uuid, int msgId, Object value) {
-        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+        return (Observable<T>) Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 JFGDPMsg dpMsg = new JFGDPMsg(msgId, 0);
@@ -116,8 +116,7 @@ public class BaseForwardHelper {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> rsp.seq == seq))
-                .first()
-                .map(rsp -> parserSet(msgId, rsp));
+                .first();
     }
 
     private <R> R parserSet(int msgId, RxEvent.SetDataRsp rsp) {

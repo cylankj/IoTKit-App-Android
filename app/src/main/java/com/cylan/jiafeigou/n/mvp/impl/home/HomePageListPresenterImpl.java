@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BaseForwardHelper;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -80,8 +81,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 }
             }
             if (apDirect) {
-                BasePanoramaApiHelper.getInstance().init(uuid, true);
-                Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus().subscribe(ret -> {
+                BaseDeviceInformationFetcher.getInstance().init(uuid);
+                Subscription subscribe = BasePanoramaApiHelper.getInstance().getRecStatus(uuid).subscribe(ret -> {
                     if (recordSub != null && !recordSub.isUnsubscribed()) {
                         recordSub.unsubscribe();
                     }

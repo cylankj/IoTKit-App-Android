@@ -72,6 +72,7 @@ public interface PanoramaCameraContact {
             int MODE_NONE = 0;
             int MODE_SHORT = 1;
             int MODE_LONG = 2;
+            int MODE_SHORT_MD = 3;
         }
 
 

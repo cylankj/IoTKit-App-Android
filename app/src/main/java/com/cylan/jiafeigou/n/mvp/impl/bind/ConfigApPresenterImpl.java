@@ -98,7 +98,9 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         device.setValue(201, new DpMsgDefine.DPNet());//先清空防止过早绑定成功
                     }
                     if (aFullBind != null) {
+                        AppLogger.d("setServerLanguage");
                         aFullBind.setServerLanguage(udpDevicePortrait);
+                        AppLogger.d("sendWifiInfo");
                         aFullBind.sendWifiInfo(ssid, pwd, type);
                     }
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));

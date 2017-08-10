@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class LoadingDialog extends BaseDialog {
 
     private static final String KEY_CONTENT = "key_content";
     private static final String KEY_TOUCH = "key_touch";
+    private static final String TAG = LoadingDialog.class.getSimpleName();
     private DialogInterface.OnCancelListener listener;
 
     public static void showLoading(FragmentManager fragmentManager, String content, boolean dismissTouchOutside, DialogInterface.OnCancelListener listener) {
@@ -39,6 +41,8 @@ public class LoadingDialog extends BaseDialog {
         loadingDialog.listener = listener;
         loadingDialog.show(fragmentManager, "LoadingDialog");
 //        fragmentManager.executePendingTransactions();
+
+        Log.d(TAG, "showLoading() called with: fragmentManager = [" + fragmentManager + "], content = [" + content + "], dismissTouchOutside = [" + dismissTouchOutside + "], listener = [" + listener + "]");
 
 
     }
@@ -68,11 +72,12 @@ public class LoadingDialog extends BaseDialog {
         // TODO: 2017/8/4  dismiss 需要 post 以防 dismiss 不掉不需要 postDelay post 就行了
         if (fragmentManager == null) return;
         Fragment dialog = fragmentManager.findFragmentByTag("LoadingDialog");
-        if (dialog != null && dialog.isVisible()) {
+        if (dialog != null) {
             ((LoadingDialog) dialog).dismiss();
         } else {
-
+            Log.d(TAG, "dismissLoading: 找不到 loading dialog");
         }
+        Log.d(TAG, "dismissLoading() called with: fragmentManager = [" + fragmentManager + "]");
     }
 
     @Override

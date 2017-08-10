@@ -65,7 +65,10 @@ public class ConfigPanoramaWiFiSuccessFragment extends IBaseFragment {
     @OnClick(R.id.panorama_mode_done)
     public void done() {
         if (success) {
-            startActivity(new Intent(getActivity(), CameraMainActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+            Intent intent = new Intent(getActivity(), CameraMainActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            intent.putExtra("config_success", true);
+            startActivity(intent);
         }
     }
 }

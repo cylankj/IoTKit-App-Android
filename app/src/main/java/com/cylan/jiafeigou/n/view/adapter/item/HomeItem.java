@@ -106,7 +106,11 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
             //有录像状态
             holder.setImageResource(R.id.img_device_state_record, R.drawable.home_icon_recording);
             holder.setVisibility(R.id.img_device_state_record, state == null ? GONE : VISIBLE);
-        } else holder.setVisibility(R.id.img_device_state_net, GONE);
+        } else {
+            holder.setVisibility(R.id.img_device_state_net, GONE);
+            holder.setImageResource(R.id.img_device_state_record, R.drawable.home_icon_recording);
+            holder.setVisibility(R.id.img_device_state_record, GONE);
+        }
 
         //1 已分享的设备,此设备分享给别的账号.
         if (mDevice != null && !isPrimaryAccount(mDevice.shareAccount)) {

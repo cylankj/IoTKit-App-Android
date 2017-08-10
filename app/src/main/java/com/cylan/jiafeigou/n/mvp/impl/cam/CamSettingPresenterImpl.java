@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -32,7 +33,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -64,7 +64,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         return new Subscription[]{
                 robotDataSync(),
                 robotDeviceDataSync(),
-                onClearSdReqBack(),
+//                onClearSdReqBack(),
                 getDeviceUnBindSub()
         };
     }
@@ -350,19 +350,38 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 //    }
     @Override
     public void clearSdcard() {
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .subscribe((Object o) -> {
-                    try {
-                        ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
-                        mesg.packValue = DpUtils.pack(0);
-                        ipList.add(mesg);
-                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
-                    } catch (Exception e) {
-                        AppLogger.e("format sd： " + e.getLocalizedMessage());
+
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().sdFormat(uuid)
+                .timeout(120, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    if (ret != null && ret.sdIsExist && ret.sdcard_recogntion == 0) {
+                        History.getHistory().clearHistoryFile(uuid);
+                        mView.clearSdResult(0);
+//                        return hasSDCard ? 0 : deviceSyncRsp == null ? 2 : 1;
+                    } else {
+                        mView.clearSdResult(1);
+//                        mView.onSDFormatResult(-1);
                     }
-                }, AppLogger::e);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    mView.clearSdResult(2);
+                });
+        addSubscription(subscribe);
+
+//        rx.Observable.just(null)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe((Object o) -> {
+//                    try {
+//                        ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+//                        JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
+//                        mesg.packValue = DpUtils.pack(0);
+//                        ipList.add(mesg);
+//                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
+//                    } catch (Exception e) {
+//                        AppLogger.e("format sd： " + e.getLocalizedMessage());
+//                    }
+//                }, AppLogger::e);
     }
 
 //    @Override
@@ -398,23 +417,40 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 //                }, AppLogger::e);
 //    }
 
-    @Override
-    public Subscription onClearSdReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .subscribeOn(Schedulers.io())
-                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
-                .map(ret -> ret.rets)
-                .flatMap(Observable::from)
-                .filter(msg -> msg.id == 203)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    if (result.ret == 0) {
-
-                    } else {
-                        getView().clearSdResult(1);
-                    }
-                }, AppLogger::e);
-    }
+//    @Override
+//    public Subscription onClearSdReqBack() {
+//        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+//                .subscribeOn(Schedulers.io())
+//                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
+//                .map(ret -> ret.dpList)
+//                .flatMap(Observable::from)
+//                .filter(msg -> msg.id == 203)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(result -> {
+//                    DpMsgDefine.DPSdStatus status = null;
+//                    try {
+//                        try {
+//                            status = DpUtils.unpackData(result.packValue, DpMsgDefine.DPSdStatus.class);
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            status = new DpMsgDefine.DPSdStatus();
+//                            DpMsgDefine.DPSdStatusInt statusInt = DpUtils.unpackData(result.packValue, DpMsgDefine.DPSdStatusInt.class);
+//                            status.err = statusInt.err;
+//                            status.hasSdcard = statusInt.hasSdcard == 1;
+//                            status.used = statusInt.used;
+//                            status.total = statusInt.total;
+//                        }
+//                    } catch (Exception e) {
+//
+//                    }
+//                    if (status != null) {
+//                        getView().clearSdResult(status.hasSdcard && status.err == 0 ? 0 : 1);
+//                    } else {
+//                        getView().clearSdResult(1);
+//                    }
+//                }, AppLogger::e);
+//    }
 
     @Override
     public void clearBellRecord(String uuid) {

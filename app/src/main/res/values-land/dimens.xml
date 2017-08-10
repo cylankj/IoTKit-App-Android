@@ -24,7 +24,7 @@
     <dimen name="video_option_play_margin_right">@dimen/y30</dimen>
 
     <!--全景相机详情页屏幕切换时的标注-->
-    <dimen name="panorama_detail_panel_height">@dimen/y48</dimen>
+    <dimen name="panorama_detail_panel_height">@dimen/y55</dimen>
     <dimen name="panorama_detail_panel_video_menu_last_margin">@dimen/y16</dimen>
     <dimen name="panorama_detail_panel_video_menu_margin_bottom">@dimen/y8</dimen>
     <dimen name="panorama_detail_panel_video_menu_item_margin">@dimen/y39</dimen>

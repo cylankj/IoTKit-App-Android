@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -44,8 +45,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onViewAttached(PanoramaAlbumContact.View view) {
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
-//        BasePanoramaApiHelper.getInstance().init(uuid);
-//        checkSDCardAndInit();
+        BaseDeviceInformationFetcher.getInstance().init(uuid);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(monitorPanoramaAPI());
+//        registerSubscription(monitorPanoramaAPI());
         registerSubscription(monitorSDCardUnMount());
         registerSubscription(monitorDeleteUpdateSub());
     }
@@ -111,19 +111,19 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 });
     }
 
-    private Subscription monitorPanoramaAPI() {
-        return BasePanoramaApiHelper.getInstance().monitorPanoramaApi()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(api -> {
-//                    mView.onViewModeChanged(api.ApiType == 0 ? 2 : 0, api.ApiType == -1);
-                    mView.onViewModeChanged(2, api.ApiType == -1);
-                }, e -> {
-                });
-    }
+//    private Subscription monitorPanoramaAPI() {
+//        return BasePanoramaApiHelper.getInstance().monitorPanoramaApi()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(api -> {
+////                    mView.onViewModeChanged(api.ApiType == 0 ? 2 : 0, api.ApiType == -1);
+//                    mView.onViewModeChanged(2, api.ApiType == -1);
+//                }, e -> {
+//                });
+//    }
 
 
     public void checkSDCardAndInit() {
-        Subscription subscribe = BasePanoramaApiHelper.getInstance().getSdInfo()
+        Subscription subscribe = BasePanoramaApiHelper.getInstance().getSdInfo(uuid)
                 .timeout(10, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -156,7 +156,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     });
         } else if (fetchLocation == 1) {
             fetchSubscription = loadFromServer(time)
-                    .delay(200, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(items -> {
                         mView.onAppend(items, time == 0, true, fetchLocation);
@@ -201,8 +200,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private Observable<List<PanoramaAlbumContact.PanoramaItem>> loadFromServer(int time) {
-        return BasePanoramaApiHelper.getInstance().getFileList(0, time == 0 ? (int) (System.currentTimeMillis() / 1000) : time, 20)
+        return BasePanoramaApiHelper.getInstance().getFileList(uuid, 0, time == 0 ? (int) (System.currentTimeMillis() / 1000) : time, 20)
                 .timeout(10, TimeUnit.SECONDS, Observable.just(null))//访问网络设置超时时间,访问本地不用设置超时时间
+                .onErrorResumeNext(Observable.just(null))
                 .map(files -> {
                     List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>();
                     if (files != null && files.files != null) {
@@ -277,7 +277,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         AppLogger.e(e.getMessage());
                     });
         } else if (mode == 1) {//设备
-            deleteSubscription = BasePanoramaApiHelper.getInstance().delete(1, convert(items))
+            deleteSubscription = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, convert(items))
                     .map(ret -> {
                         List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
                         for (PanoramaAlbumContact.PanoramaItem item : items) {
@@ -304,7 +304,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
             })
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .flatMap(ret -> BasePanoramaApiHelper.getInstance().delete(1, convert(items)))
+                    .flatMap(ret -> BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, convert(items)))
                     .map(ret -> {
                         List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
                         for (PanoramaAlbumContact.PanoramaItem item : items) {

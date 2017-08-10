@@ -198,9 +198,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             Device device = DataSourceManager.getInstance().getDevice(uuid);
             boolean pan720 = JFGRules.isPan720(device.pid);
             if (pan720) {
-//                return bean.alarmMsg.isRecording == 1;
+                return bean.alarmMsg.isRecording == 1;
                 // TODO: 2017/8/4 当前查看视频不知道怎么处理
-                return false;
+//                return false;
             } else {
                 return bean.alarmMsg.isRecording == 1 && (System.currentTimeMillis() - bean.alarmMsg.version) >= 30 * 60 * 1000L;
             }

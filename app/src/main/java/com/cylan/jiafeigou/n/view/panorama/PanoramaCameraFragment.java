@@ -74,6 +74,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -172,7 +173,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     private boolean hasResolution = false;
     private boolean justForTest = false;
     private boolean upgrading = false;
-    private boolean alertSDFormatError = true;
+    //    private boolean alertSDFormatError = true;
     private boolean alertHttpNotAvailable = true;
     private boolean alertMobile = true;
     private PopupWindow popOption;
@@ -242,7 +243,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         loadingBar.setAction(loadController);
         bottomPanelPhotoGraphItem.setOnTouchListener(photoGraphTouchListener);
         panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
-        alertSDFormatError = true;
+//        alertSDFormatError = true;
         deviceReportDialog = new AlertDialog.Builder(getActivity()).setCancelable(false).create();
         alertHttpNotAvailable = PreferencesUtils.getBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable);
 
@@ -763,6 +764,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
 
     @Override
     public void onSDFormatResult(int code) {
+        LoadingDialog.dismissLoading(getFragmentManager());
         if (code == 1) {
             ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
         } else if (code == -1) {
@@ -828,6 +830,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         if (enable) hideLoading();
         onRefreshControllerView(enable, false);
         setting.setEnabled(true);
+        ivt_newMessageTips.setEnabled(true);
         popOption.dismiss();
     }
 
@@ -974,11 +977,11 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
             bottomPanelLoading.setVisibility(View.GONE);
         }
         if (panoramaRecordMode != PANORAMA_RECORD_MODE.MODE_SHORT && !bottomPanelPhotoGraphItem.isEnabled()) {
-            bottomPanelPhotoGraphItem.setEnabled(true);
+            bottomPanelPhotoGraphItem.setEnabled(hasResolution);
         }
         bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
         setting.setEnabled(false);
-
+        ivt_newMessageTips.setEnabled(false);
 
         switch (type) {
             case PANORAMA_RECORD_MODE.MODE_LONG:
@@ -1014,6 +1017,8 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
                 }
                 break;
             default:
+                bottomPanelSwitcherItem2TimeText.setText(TimeUtils.getHHMMSS(offset * 1000L));
+                bottomPanelSwitcherItem2DotIndicator.setVisibility(bottomPanelSwitcherItem2DotIndicator.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
                 break;
         }
     }
@@ -1022,7 +1027,7 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
     public void onReportDeviceError(int err, boolean useAlert) {
         onRefreshViewModeUI(panoramaViewMode, true, false);
         onRefreshControllerViewVisible(true);
-        bottomPanelPhotoGraphItem.setEnabled(true);//有长按事件,需要特殊对待
+        bottomPanelPhotoGraphItem.setEnabled(hasResolution);//有长按事件,需要特殊对待
         switch (err) {
             case 150://低电量
                 AppLogger.d("设备电量过低");
@@ -1061,15 +1066,18 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
                 break;
             case 2022://sd卡识别失败，需要格式化
                 AppLogger.d("SD卡识别失败,需要格式化");
-                if (alertSDFormatError) {//设备会一直推消息,这里过滤掉
-                    deviceReportDialog.dismiss();
-                    deviceReportDialog.setMessage(getString(R.string.Tap1_NeedsInitializedTips));
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SD_INIT), (dialog, which) -> presenter.formatSDCard());
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (dialog, which) -> alertSDFormatError = false);
-                    deviceReportDialog.show();
-                    break;
-                }
-                //小于
+//                if (alertSDFormatError) {//设备会一直推消息,这里过滤掉
+                deviceReportDialog.dismiss();
+                deviceReportDialog.setMessage(getString(R.string.Tap1_NeedsInitializedTips));
+                deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SD_INIT), (dialog, which) -> {
+                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.SD_INFO_2), false, null);
+                    presenter.formatSDCard();
+                });
+                deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (DialogInterface.OnClickListener) null);
+                deviceReportDialog.show();
+                break;
+//                }
+            //小于
             case -1:
                 break;
             case -2:

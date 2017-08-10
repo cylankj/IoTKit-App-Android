@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.databinding.FragmentDeviceConnectionDescriptionBinding;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bind.PanoramaExplainFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -41,6 +42,14 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
         descriptionBinding.customToolbar.setRightAction(this::showExplain);
         descriptionBinding.customToolbar.setBackAction(v -> getActivity().onBackPressed());
         return descriptionBinding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (JFGRules.isDeviceOnline(uuid)) {
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 
     private void showExplain(View view) {

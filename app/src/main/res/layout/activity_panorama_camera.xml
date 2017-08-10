@@ -314,6 +314,7 @@
                     android:layout_height="@dimen/y8"
                     android:layout_marginEnd="@dimen/y8"
                     android:src="@drawable/panorama_redording_red_dot"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
                     app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
                     app:layout_constraintStart_toStartOf="parent"

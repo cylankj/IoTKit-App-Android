@@ -321,7 +321,7 @@ public class SimpleBindFlow extends AFullBind {
                     return devicePortrait != null;
                 })
                 .map((Integer o) -> {
-                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);
+                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait + ",ssid:" + ssid + ",psw:" + pwd);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
                     for (int i = 0; i < 3; i++) {
                         JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,

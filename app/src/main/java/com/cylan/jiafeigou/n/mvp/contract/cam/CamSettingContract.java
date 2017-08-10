@@ -78,7 +78,7 @@ public interface CamSettingContract {
 
 //        Subscription clearSdcardReqBack();
 
-        Subscription onClearSdReqBack();
+//        Subscription onClearSdReqBack();
 
         void clearBellRecord(String uuid);
     }

@@ -97,7 +97,7 @@ public interface PanoramaEvent {
         @Index(1)
         public int deleteType;
 
-        public MsgFileReq(List<String> fileName, int deleteType) {
+        public MsgFileReq(List<String> fileName, int deleteType,int enwarn) {
             this.fileName = fileName;
             this.deleteType = deleteType;
         }
