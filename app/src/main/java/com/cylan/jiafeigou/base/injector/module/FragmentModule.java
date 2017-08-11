@@ -78,12 +78,7 @@ public class FragmentModule {
         return injector.inject(new PanoramaSharePresenter());
     }
 
-    @Provides
-    @PerFragment
-    public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
-        PanoramaPresenter presenter = injector.inject(new PanoramaPresenter());
-        return presenter;
-    }
+
 
     @Provides
     @PerFragment
