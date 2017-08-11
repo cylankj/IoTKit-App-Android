@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -116,6 +115,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     } else if (event.wifi != null && event.wifi.isConnected()) {
                         mView.onRefreshConnectionMode(event.wifi.getType());
                     } else {
+                        liveStreamAction.reset();
                         mView.onRefreshConnectionMode(-1);
                     }
                 }, e -> {

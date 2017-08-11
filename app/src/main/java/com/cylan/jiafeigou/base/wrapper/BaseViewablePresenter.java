@@ -100,10 +100,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .filter(isOnline -> {
                     if (!isOnline && !NetUtils.isNetworkAvailable(mView.getAppContext())) {
                         mView.onVideoDisconnect(BAD_NET_WORK);
+                        liveStreamAction.reset();
                         return false;
                     }
-                    liveStreamAction.reset();
-                    return true;
+                    return !liveStreamAction.hasStarted;
                 })
                 .map(account -> {
                     feedRtcp.stop();//清空之前的状态
@@ -174,6 +174,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     e.printStackTrace();
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
+                        liveStreamAction.reset();
                         try {
                             appCmd.stopPlay(getViewHandler());
                         } catch (JfgException e1) {
@@ -289,8 +290,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .first(dis -> {
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
-                    liveStreamAction.hasResolution = false;
-                    liveStreamAction.hasLiveError = true;
+                    liveStreamAction.reset();
                     feedRtcp.stop();
                     if (dis.code != STOP_VIERER_BY_SYSTEM) {
                         mView.onVideoDisconnect(dis.code);
