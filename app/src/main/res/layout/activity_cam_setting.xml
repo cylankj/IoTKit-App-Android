@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_enable_shadow="true"
+        hunt:ct_enable_shadow="false"
         hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
@@ -26,6 +26,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/custom_toolbar"
         android:paddingTop="@dimen/y10"
         android:scrollbars="none">
 
@@ -275,4 +276,12 @@
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y10"
+        android:layout_below="@id/custom_toolbar"
+        android:background="@drawable/little_shape"
+        android:visibility="visible" />
+
+</RelativeLayout>

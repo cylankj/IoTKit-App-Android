@@ -399,7 +399,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             break;
 
             case R.id.sw_motion_interval: {
-                WarmIntervalFragment fragment = WarmIntervalFragment.newInstance(getBundle("报警间隔"));
+                WarmIntervalFragment fragment = WarmIntervalFragment.newInstance(getBundle(getString(R.string.SECURE_Interval_Alarm)));
                 fragment.setAction((id, value) -> {
                     if (value != null && value instanceof Integer) {
                         Integer result = (Integer) value;

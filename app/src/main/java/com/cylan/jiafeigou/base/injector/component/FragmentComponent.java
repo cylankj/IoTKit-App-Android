@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
 import com.cylan.jiafeigou.n.view.mine.ShareContentWebH5Activity;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullFragment;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraFragment;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordDeviceFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordGuideFragment;
@@ -50,7 +49,7 @@ public interface FragmentComponent {
 
     void inject(ShareContentWebH5Activity fragment);
 
-    void inject(PanoramaCameraFragment fragment);
+
 
     void inject(AIRecognitionFragment fragment);
 }

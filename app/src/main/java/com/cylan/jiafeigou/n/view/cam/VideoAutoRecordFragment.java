@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
@@ -31,6 +29,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
+import com.cylan.jiafeigou.widget.SettingItemView0RadioGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,14 +49,14 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContract.Presenter>
         implements VideoAutoRecordContract.View {
 
-    @BindView(R.id.rg_auto_record_mode)
-    RadioGroup rgAutoRecordMode;
-    @BindView(R.id.rb_motion)
-    RadioButton rbMotion;
-    @BindView(R.id.rb_24_hours)
-    RadioButton rb24Hours;
-    @BindView(R.id.rb_never)
-    RadioButton rbNever;
+    //    @BindView(R.id.rg_auto_record_mode)
+//    RadioGroup rgAutoRecordMode;
+//    @BindView(R.id.rb_motion)
+//    RadioButton rbMotion;
+//    @BindView(R.id.rb_24_hours)
+//    RadioButton rb24Hours;
+//    @BindView(R.id.rb_never)
+//    RadioButton rbNever;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.lLayout_mode_motion)
@@ -70,7 +69,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private int oldOption;
 
     @BindView(R.id.rl_alarm_setting_container)
-    RelativeLayout rlAlarmSettingContainer;
+    SettingItemView0RadioGroup rlAlarmSettingContainer;
     @BindView(R.id.rl_watch_video_container)
     RelativeLayout rlWatchVideoContainer;
     @BindView(R.id.siv_watch_video_switcher)
@@ -121,15 +120,18 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         //如果有24小时录像选项的,开启三个选项,没有24小时录像的,开启一个选项
         boolean record24 = property.hasProperty(device.pid, "24RECORD");
 
-        rb24Hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
+//        rb24Hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
         siv_mode_24_hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_24_hours.setShowRadioButton(record24);
 
 //        boolean isRSBell = JFGRules.isRsBell(device.pid);
         siv_mode_never.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        rbNever.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        siv_mode_motion.setSwitcherVisibility(record24 ? View.GONE : View.VISIBLE);
+//        rbNever.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_never.setShowRadioButton(record24);
 
-        rbMotion.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_motion.setSwitcherVisibility(record24 ? View.GONE : View.VISIBLE);
+        siv_mode_motion.setShowRadioButton(record24);
+//        rbMotion.setVisibility(record24 ? View.VISIBLE : View.GONE);
 
         DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
@@ -140,11 +142,11 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!alarm) oldOption = -1;
-        if (record24) {
-            rbMotion.setChecked(oldOption == 0);
-            rb24Hours.setChecked(oldOption == 1);
-            rbNever.setChecked(oldOption == 2);
-        }
+//        if (record24) {
+//            rbMotion.setChecked(oldOption == 0);
+//            rb24Hours.setChecked(oldOption == 1);
+//            rbNever.setChecked(oldOption == 2);
+//        }
         AppLogger.d("");
         siv_mode_motion.setOnCheckedChangeListener(null);
         siv_mode_motion.setChecked(oldOption == 0);
@@ -221,8 +223,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     openAlarm(0);
                     return;
                 }
-
-                rbMotion.setChecked(true);
+                siv_mode_motion.setRadioButtonChecked(true);
+//                rbMotion.setChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 0;
                 basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
@@ -237,7 +239,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     ToastUtil.showToast(getString(R.string.has_not_sdcard));
                     return;
                 }
-                rb24Hours.setChecked(true);
+//                rb24Hours.setChecked(true);
+                siv_mode_24_hours.setRadioButtonChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 1;
                 basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
@@ -248,7 +251,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     ToastUtil.showToast(getString(R.string.has_not_sdcard));
                     return;
                 }
-                rbNever.setChecked(true);
+//                rbNever.setChecked(true);
+                siv_mode_never.setRadioButtonChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 2;
                 basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
@@ -269,11 +273,14 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     wFlag.value = true;
                     basePresenter.updateInfoReq(wFlag, ID_501_CAMERA_ALARM_FLAG);
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
-                    if (index == 1)
-                        rb24Hours.setChecked(true);
-                    else {
-                        rbMotion.setChecked(true);
+                    if (index == 1) {
+////                        rb24Hours.setChecked(true);
+                        siv_mode_24_hours.setRadioButtonChecked(true);
+                    } else {
+////                        rbMotion.setChecked(true);
+//                        siv_mode_motion.setChecked(true);
                         siv_mode_motion.setChecked(true);
+                        siv_mode_motion.setRadioButtonChecked(true);
                     }
                     DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                     flag.value = index;

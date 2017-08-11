@@ -191,8 +191,10 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void pushDeviceState(String uuid, PanoramaEvent.MsgVideoStatusRsp videoStatusRsp) {
-        deviceState.put(uuid, videoStatusRsp);
-        RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+        if (videoStatusRsp.videoType == 2) {//1 短视频,3 报警录像,都忽略掉
+            deviceState.put(uuid, videoStatusRsp);
+            RxBus.getCacheInstance().post(RxEvent.DeviceRecordStateChanged.INSTANCE);
+        }
     }
 
     @Override

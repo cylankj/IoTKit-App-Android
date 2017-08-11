@@ -39,9 +39,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y6"
+        android:text="@string/RECORD_INFO_0"
         android:textColor="@color/color_8C8C8C"
         android:textSize="@dimen/sp13"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/option_container"
         app:layout_constraintStart_toStartOf="@+id/tv_settings_item_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_settings_item_title"
@@ -54,16 +55,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <!--android:layout_marginStart="@dimen/y68"-->
+
         <RadioButton
-            android:id="@+id/radio_place_holder"
+            android:id="@+id/rb_item_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-
             android:clickable="false"
+            android:focusable="false"
             android:theme="@style/RadioButtonStyle"
-            android:visibility="invisible" />
+            android:visibility="visible" />
 
         <com.cylan.jiafeigou.widget.SafeSwitchButton
             android:id="@+id/btn_item_switch"
@@ -73,19 +74,18 @@
             android:layout_gravity="center_vertical|end"
             android:gravity="end"
             android:paddingEnd="0dp"
-            android:paddingStart="@dimen/y20" />
+            android:paddingStart="@dimen/y20"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imv_item_red_hint"
+            android:layout_width="@dimen/y8"
+            android:layout_height="@dimen/y8"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginStart="@dimen/y20"
+            android:src="@drawable/hardware_update_point"
+            android:visibility="gone" />
     </FrameLayout>
-
-
-    <ImageView
-        android:id="@+id/imv_item_red_hint"
-        android:layout_width="@dimen/y8"
-        android:layout_height="@dimen/y8"
-        android:src="@drawable/hardware_update_point"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
     <View

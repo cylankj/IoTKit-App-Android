@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
-import com.cylan.jiafeigou.n.view.panorama.CameraMainActivity;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.widget.LoginButton;
 
 import butterknife.BindView;
@@ -65,7 +65,7 @@ public class ConfigPanoramaWiFiSuccessFragment extends IBaseFragment {
     @OnClick(R.id.panorama_mode_done)
     public void done() {
         if (success) {
-            Intent intent = new Intent(getActivity(), CameraMainActivity.class);
+            Intent intent = new Intent(getActivity(), PanoramaCameraActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             intent.putExtra("config_success", true);
             startActivity(intent);

@@ -110,6 +110,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             R.id.v_to_bind_cat_eye_cam})
     public void onClickBind(View view) {
         Intent intent = new Intent(this, BindAnimationActivity.class);
+        intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
         switch (view.getId()) {
             case R.id.v_to_bind_camera_cloud:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.cloud_cam_android);

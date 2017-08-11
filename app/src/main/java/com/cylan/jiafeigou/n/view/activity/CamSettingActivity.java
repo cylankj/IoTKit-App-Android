@@ -436,17 +436,20 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipsTitle));
             intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
             intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+            intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
         } else if (JFGRules.isCatEeyBell(device.pid)) {//猫眼门铃特殊处理
             Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
             intent.setClass(getContext(), BindAnimationActivity.class);
             intent.putExtra(JUST_SEND_INFO, uuid);
+            intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
 
         } else if (JFGRules.isBell(device.pid)) {
             Intent intent = new Intent(this, BindBellActivity.class);
             intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.BELL_AP);
             intent.putExtra(JUST_SEND_INFO, uuid);
+            intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
         } else {
             DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
@@ -455,6 +458,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
                 intent.putExtra("PanoramaConfigure", "Family");
                 intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+                intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 startActivity(intent);
             } else {
                 //设备在线
@@ -470,13 +474,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     //相同ssid,判断为同一个网络环境.太水了.
                     Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
                     intent.setClass(this, ConfigWifiActivity.class);
+                    intent.putExtra("just_config", true);
                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                     intent.putExtra("PanoramaConfigure", "Family");
+                    intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                     startActivity(intent);
                 } else {
                     //相同ssid,判断为同一个网络环境.太水了.
                     Intent intent = new Intent(this, ConfigWifiActivity_2.class);
                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                     startActivity(intent);
                 }
             }

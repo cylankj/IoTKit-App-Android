@@ -153,6 +153,7 @@ public class JConstant {
     public static final java.lang.String NEED_SHOW_BIND_ANIMATION = "need_show_bind_animation";
     public static final java.lang.String KEY_SHOW_HISTORY_WHEEL_CASE = "key_show_history_wheel_case";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL = "key_cam_live_page_play_history_init_wheel";
+    public static final String KEY_BIND_BACK_ACTIVITY="KEY_BIND_BACK_ACTIVITY";
 
     //人形检测的物体
     public static final int OBJECT_MAN = 1;
