@@ -203,7 +203,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
     }
 
     /**
@@ -211,7 +211,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      */
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @OnClick(R.id.tv_toolbar_icon)

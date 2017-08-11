@@ -280,7 +280,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     if (basePresenter != null)
                         basePresenter.unCollect(currentIndex, MiscUtils.getVersion(camMessageBean), camMessageBean);
                 }
-                LoadingDialog.showLoading(getSupportFragmentManager());
+                LoadingDialog.showLoading(this);
                 imgVBigPicCollect.setEnabled(false);
                 break;
         }
@@ -312,7 +312,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     public void onCollectingRsp(int err) {
         imgVBigPicCollect.setEnabled(true);
-        runOnUiThread(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()));
+        runOnUiThread(() -> LoadingDialog.dismissLoading());
         switch (err) {
             case 1050:
                 AlertDialogManager.getInstance().showDialog(this, getString(R.string.DailyGreatTips_Full), getString(R.string.DailyGreatTips_Full),
@@ -341,9 +341,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         imgVBigPicCollect.post(() -> {
             imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
             imgVBigPicCollect.setTag(state);
-            runOnUiThread(() -> {
-                LoadingDialog.dismissLoading(getSupportFragmentManager());
-            });
+            LoadingDialog.dismissLoading();
         });
     }
 
@@ -393,6 +391,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         private void setCallback(IBaseFragment.CallBack callback) {
             this.callBack = callback;
         }
+
     }
 
     @Override

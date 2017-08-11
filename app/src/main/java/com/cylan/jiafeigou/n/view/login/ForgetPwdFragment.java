@@ -257,12 +257,12 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideLoading() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @OnClick(R.id.iv_forget_clear_username)

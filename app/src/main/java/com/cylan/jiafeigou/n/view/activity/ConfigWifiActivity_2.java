@@ -119,7 +119,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
 
     @Override
     public void sendWifiInfoFailed() {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
 //        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
     }
 

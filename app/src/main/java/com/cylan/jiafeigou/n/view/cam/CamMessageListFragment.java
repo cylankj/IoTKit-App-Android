@@ -283,7 +283,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (basePresenter != null)
                 basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false, false);
             camMessageListAdapter.clear();
-            LoadingDialog.showLoading(getFragmentManager());
+            LoadingDialog.showLoading(getActivity());
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
@@ -292,7 +292,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0 && reset);
         });
 
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
@@ -300,7 +300,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
             AppLogger.i("没有数据");
@@ -388,7 +388,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             makeSureRemoveFoot();
         });
         if (getView() != null && getActivity() != null) {
-            getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
+           LoadingDialog.dismissLoading();
         }
     }
 
@@ -396,7 +396,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onMessageDeleteSuc() {
         ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
         if (getView() != null && getActivity() != null) {
-            getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
+            LoadingDialog.dismissLoading();
         }
         boolean reset = tvCamMessageListDate.getTag() == null ||
                 ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
@@ -407,7 +407,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void loadingDismiss() {
         makeSureRemoveFoot();
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
@@ -445,7 +445,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (TextUtils.equals(getString(R.string.CANCEL), tvCamMessageListEdit.getText()))
                     return;
                 if (basePresenter != null && basePresenter.getDateList().size() == 0) {
-                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+                    LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
                     AppLogger.d("日期加载中...");
                     basePresenter.refreshDateList(true);
                 }
@@ -497,7 +497,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
                             AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
                             tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false, null);
+                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), false, null);
                         })
                         .setNegativeButton(R.string.CANCEL, null)
                         .setCancelable(false)
@@ -522,7 +522,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             camMessageListAdapter.removeAll(list);
                             if (basePresenter != null)
                                 basePresenter.removeItems(list);
-                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING), false, null);
+                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING), false, null);
                         }, getString(R.string.CANCEL), null, false);
             }
             break;

@@ -749,7 +749,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onSDFormatResult(int code) {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
         if (code == 1) {
             ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
         } else if (code == -1) {
@@ -1059,7 +1059,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 deviceReportDialog.dismiss();
                 deviceReportDialog.setMessage(getString(R.string.Tap1_NeedsInitializedTips));
                 deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.SD_INIT), (dialog, which) -> {
-                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SD_INFO_2), false, null);
+                    LoadingDialog.showLoading(this, getString(R.string.SD_INFO_2), false, null);
                     presenter.formatSDCard();
                 });
                 deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (DialogInterface.OnClickListener) null);

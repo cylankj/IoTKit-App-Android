@@ -133,12 +133,12 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showSendReqHint() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.submiting));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.submiting));
     }
 
     @Override
     public void hideSendReqHint() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     /**

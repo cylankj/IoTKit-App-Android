@@ -137,7 +137,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
                 getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                 getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                     presenter.unBindDevice();
-                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                    LoadingDialog.showLoading(this, getString(R.string.DELETEING));
                 }, getString(R.string.CANCEL), null, false);
     }
 
@@ -145,7 +145,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     public void unbindDeviceRsp(int resultCode) {
         AppLogger.d("unbindDeviceRsp: " + resultCode);
         if (resultCode == JError.ErrorOK) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            LoadingDialog.dismissLoading();
             ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             startActivity(new Intent(this, NewHomeActivity.class));//回到主页
         }

@@ -127,7 +127,7 @@ public class ShareManager {
             }
             dialog = null;
             if (activity != null) {
-                LoadingDialog.showLoading(activity.getSupportFragmentManager(), activity.getString(R.string.LOADING));
+                LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING));
             }
         }
 
@@ -351,7 +351,7 @@ public class ShareManager {
         public void onActivityPaused(Activity activity) {
             final String name = activity.getClass().getSimpleName();
             if (TextUtils.equals(activityName, name) && activity instanceof FragmentActivity) {
-                LoadingDialog.dismissLoading(((FragmentActivity) activity).getSupportFragmentManager());
+                LoadingDialog.dismissLoading();
             }
         }
 

@@ -245,7 +245,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)),
                         getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                             basePresenter.unbindDevice();
-                            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(this, getString(R.string.DELETEING));
                         }, getString(R.string.CANCEL), null);
             }
             break;
@@ -324,7 +324,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     switch (id) {
                         case R.id.tv_dialog_btn_right:
                             basePresenter.clearBellRecord(uuid);
-                            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(this, getString(R.string.DELETEING));
                     }
                 });
                 mClearRecordFragment.show(getSupportFragmentManager(), "ClearBellRecordFragment");
@@ -401,12 +401,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SD_INFO_2));
+        LoadingDialog.showLoading(this, getString(R.string.SD_INFO_2));
     }
 
     @Override
     public void hideLoading() {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     private String getSdcardState(boolean hasSdcard, int err) {
@@ -748,17 +748,17 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             getAlertDialogManager()
                     .showDialog(this, getString(R.string.Start_Hotspot), getString(R.string.Start_Hotspot_Prompt, net.ssid), getString(R.string.OK), (dialog, which) -> {
                         ToastUtil.showToast(getString(R.string.Instructions_Sent));
-                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.SETTING));
+                        LoadingDialog.showLoading(this, getString(R.string.SETTING));
                         ToastUtil.showToast(getString(R.string.Instructions_Sent));
                         Subscription subscription = basePresenter.switchApModel(1)
                                 .subscribeOn(Schedulers.io())
                                 .delay(1, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(ret -> {
-                                    LoadingDialog.dismissLoading(getSupportFragmentManager());
+                                    LoadingDialog.dismissLoading();
                                     ToastUtil.showToast(getString(R.string.Start_Success));
                                 }, throwable -> {
-                                    LoadingDialog.dismissLoading(getSupportFragmentManager());
+                                    LoadingDialog.dismissLoading();
                                     ToastUtil.showToast(getString(R.string.Start_Failed));
                                 });
                         basePresenter.addSub(subscription, "enableAp");
@@ -929,7 +929,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 //                    svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
 //                } else
                 svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
-                LoadingDialog.dismissLoading(getSupportFragmentManager());
+                LoadingDialog.dismissLoading();
                 break;
         }
     }
@@ -970,13 +970,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            LoadingDialog.dismissLoading();
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.putExtra("NewHomeActivity_intent", getString(R.string.DELETED_SUC));
             startActivity(intent);
         } else if (state == -1) {
             ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            LoadingDialog.dismissLoading();
         }
     }
 
@@ -1004,13 +1004,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void onClearBellRecordSuccess() {
         ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
     public void onClearBellRecordFailed() {
         ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override

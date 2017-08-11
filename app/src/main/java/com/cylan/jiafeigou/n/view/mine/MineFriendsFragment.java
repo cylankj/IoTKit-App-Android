@@ -175,12 +175,12 @@ public class MineFriendsFragment extends IBaseFragment<MineFriendsContract.Prese
 
     @Override
     public void showLoading(int resId, String... args) {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(resId, (Object[]) args));
+        LoadingDialog.showLoading(getActivity(), getString(resId, (Object[]) args));
     }
 
     @Override
     public void hideLoading() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override

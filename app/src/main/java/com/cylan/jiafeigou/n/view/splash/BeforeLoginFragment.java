@@ -106,13 +106,13 @@ public class BeforeLoginFragment extends Fragment {
                             btnToLogin.setEnabled(true);
                             btnToRegister.setEnabled(true);
                             btnLookAround.setEnabled(true);
-                            LoadingDialog.dismissLoading(getFragmentManager());
+                            LoadingDialog.dismissLoading();
                         })
                         .subscribe(ret -> {
                             btnToLogin.setEnabled(true);
                             btnToRegister.setEnabled(true);
                             btnLookAround.setEnabled(true);
-                            LoadingDialog.dismissLoading(getFragmentManager());
+                            LoadingDialog.dismissLoading();
                             if (ret.code == JError.ErrorOK) {
                                 startActivity(new Intent(getActivity(), NewHomeActivity.class));
                                 getActivity().finish();
@@ -123,7 +123,7 @@ public class BeforeLoginFragment extends Fragment {
                 btnToLogin.setEnabled(false);
                 btnToRegister.setEnabled(false);
                 btnLookAround.setEnabled(false);
-                LoadingDialog.showLoading(getFragmentManager(), getString(R.string.PLEASE_WAIT));
+                LoadingDialog.showLoading(getActivity(), getString(R.string.PLEASE_WAIT));
             }
         }
     }

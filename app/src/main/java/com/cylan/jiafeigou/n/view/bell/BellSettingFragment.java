@@ -121,7 +121,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                     switch (id) {
                         case R.id.tv_dialog_btn_right:
                             presenter.clearBellRecord(uuid);
-                            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING));
                     }
                 });
                 mClearRecordFragment.show(getActivity().getSupportFragmentManager(), "ClearBellRecordFragment");
@@ -138,7 +138,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
                             presenter.unbindDevice();
-                            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
+                            LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING));
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null);
                 AlertDialogManager.getInstance().showDialog(getString(R.string.SURE_DELETE_1, name), getActivity(), builder);
@@ -172,7 +172,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @Override
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
-            LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+            LoadingDialog.dismissLoading();
             ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             getActivity().finish();
         }
@@ -181,13 +181,13 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @Override
     public void onClearBellRecordSuccess() {
         ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
     public void onClearBellRecordFailed() {
         ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override

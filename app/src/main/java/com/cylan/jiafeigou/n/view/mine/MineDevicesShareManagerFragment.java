@@ -108,12 +108,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancelShareProgress() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideCancelShareProgress() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override

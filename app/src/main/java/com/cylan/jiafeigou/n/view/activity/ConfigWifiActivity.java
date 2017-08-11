@@ -136,7 +136,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         super.onResume();
         initFragment();
         if (basePresenter != null && TextUtils.isEmpty(tvConfigApName.getText())) {
-            LoadingDialog.showLoading(getSupportFragmentManager(),
+            LoadingDialog.showLoading(this,
                     getString(R.string.LOADING), false, null);
             basePresenter.refreshWifiList();
             basePresenter.check3GDogCase();
@@ -353,7 +353,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
         if (getIntent().hasExtra(JUST_SEND_INFO)) {
             runOnUiThread(() -> ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG)));
             Intent intent = new Intent(this, NewHomeActivity.class);
@@ -375,14 +375,14 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     @Override
     public void sendWifiInfoFailed() {
         runOnUiThread(() -> {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            LoadingDialog.dismissLoading();
             tvWifiPwdSubmit.viewZoomBig();
         });
     }
 
     @Override
     public void check3gFinish() {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
 

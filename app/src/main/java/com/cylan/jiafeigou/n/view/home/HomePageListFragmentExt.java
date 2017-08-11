@@ -670,7 +670,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         final String alias = ((TextView) v.findViewById(R.id.tv_device_alias)).getText().toString();
         AlertDialogManager.getInstance().showDialog(getActivity(), "deleteItem",
                 getString(R.string.SURE_DELETE_1, alias), getString(R.string.OK), (dialog, which) -> {
-                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
+                    LoadingDialog.showLoading(getActivity(), getString(R.string.DELETEING));
                     Subscription subscribe = Observable.just(new DPEntity()
                             .setUuid(item.getUUid())
                             .setAction(DBAction.UNBIND))
@@ -685,7 +685,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                             }, e -> {
                                 ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
                                 AppLogger.e("err: " + MiscUtils.getErr(e));
-                            }, () -> LoadingDialog.dismissLoading(getFragmentManager()));
+                            }, () -> LoadingDialog.dismissLoading());
                     basePresenter.addSubscription("unbind", subscribe);
                 }, getString(R.string.CANCEL), null);
         return true;

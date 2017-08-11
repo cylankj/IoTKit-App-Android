@@ -1066,14 +1066,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void showLoading() {
         if (isAdded()) {
-            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+            LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
         }
     }
 
     @Override
     public void hideLoading() {
-        if (isAdded() && LoadingDialog.isShowing(getFragmentManager())) {
-            LoadingDialog.dismissLoading(getFragmentManager());
+        if (isAdded() && LoadingDialog.isShowLoading()) {
+            LoadingDialog.dismissLoading();
         }
     }
 

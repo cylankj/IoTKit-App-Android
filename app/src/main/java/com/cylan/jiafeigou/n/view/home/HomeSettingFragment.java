@@ -212,13 +212,13 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void showClearingCacheProgress() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.ClearingTips));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.ClearingTips));
     }
 
     @Override
     public void hideClearingCacheProgress() {
-        if (LoadingDialog.isShowing(getActivity().getSupportFragmentManager()))
-            LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        if (LoadingDialog.isShowLoading())
+            LoadingDialog.dismissLoading();
     }
 
     @Override
@@ -470,21 +470,21 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
             Toast.makeText(getActivity(), getString(R.string.Tap1_Album_Share_NotInstalledTips, getString(R.string.WeChat)), Toast.LENGTH_SHORT).show();
         }
         if (!isAdded()) return;
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
     public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
         Log.d("getOpenID", "onError: " + throwable);
         if (!isAdded()) return;
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
     public void onCancel(SHARE_MEDIA share_media, int i) {
         Log.d("getOpenID", "onCancel: ");
         if (!isAdded()) return;
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     /**

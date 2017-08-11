@@ -126,7 +126,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
                         }
                     }
                 }
-                LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+                LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
                 basePresenter.getPid(etInputBox.getText().toString().trim());
                 break;
         }
@@ -135,7 +135,7 @@ public class SNInputFragment extends IBaseFragment<SnContract.Presenter> impleme
     @Override
     public void getPidRsp(int err, int pid) {
         if (!isAdded()) return;
-        LoadingDialog.dismissLoading(getFragmentManager());
+        LoadingDialog.dismissLoading();
         AppLogger.d("err:" + err + ",pid:" + pid);
         if (pid <= 0 || err != 0) {
             ToastUtil.showToast(getString(R.string.ADD_FAILED));

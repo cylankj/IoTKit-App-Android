@@ -230,7 +230,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     private void startLoadData(boolean asc, long version) {
         mIsLastLoadFinish = false;
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, null);
+        LoadingDialog.showLoading(this, getString(R.string.LOADING), false, null);
         footer.findViewById(R.id.vertical_footer_text).setVisibility(View.GONE);
         footer.findViewById(R.id.vertical_footer_progress_bar).setVisibility(View.VISIBLE);
         presenter.fetchBellRecordsList(asc, version);
@@ -261,7 +261,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBackPressed() {
         super.onBackPressed();
         presenter.cancelFetch();
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     private void initSettingFragment() {
@@ -301,8 +301,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onLoginStateChanged(boolean online) {
         super.onLoginStateChanged(online);
         if (!online) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
-            mEmptyView.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 300);//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
+            LoadingDialog.dismissLoading();
+            LoadingDialog.dismissLoading();//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         }
     }
 
@@ -323,8 +323,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onRecordsListRsp(List<BellCallRecordBean> beanArrayList) {
         mHasLoadInitFinished = true;
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
-        mEmptyView.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 300);//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
+        LoadingDialog.dismissLoading();
+        LoadingDialog.dismissLoading();//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);
         mIsLastLoadFinish = true;
@@ -341,8 +341,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onQueryRecordListTimeOut() {
-        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        if (LoadingDialog.isShowLoading()) {
+            LoadingDialog.dismissLoading();
             ToastUtil.showNegativeToast(getString(R.string.Request_TimeOut));
         }
     }
@@ -350,7 +350,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onDeleteBellRecordSuccess(List<BellCallRecordBean> list) {
         ToastUtil.showPositiveToast("刪除成功");
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
         for (BellCallRecordBean bean : list) {
             bellCallRecordListAdapter.remove(bean);
         }
@@ -427,7 +427,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                                 presenter.deleteBellCallRecord(list);
                                 bellCallRecordListAdapter.setMode(0);
                                 showEditBar(false);
-                                LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                                LoadingDialog.showLoading(DoorBellHomeActivity.this, getString(R.string.DELETEING));
                             }
                         }, getString(R.string.CANCEL), null, false);
                 break;

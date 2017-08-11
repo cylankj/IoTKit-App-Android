@@ -401,7 +401,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
     }
 
     /**
@@ -409,7 +409,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
      */
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     /**

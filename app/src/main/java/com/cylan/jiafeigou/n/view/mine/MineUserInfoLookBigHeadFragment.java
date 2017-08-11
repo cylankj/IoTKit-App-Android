@@ -140,12 +140,12 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @Override
     public void showLoadImageProgress() {
-        ivUserinfoBigImage.post(() -> LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING)));
+      LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideLoadImageProgress() {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override

@@ -100,8 +100,8 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
     @Override
     protected void onPause() {
         super.onPause();
-        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        if (LoadingDialog.isShowLoading()) {
+            LoadingDialog.dismissLoading();
         }
     }
 
@@ -141,8 +141,8 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
         ShareAction shareAction;
         switch (shareStyle) {
             case SHARE_CONTENT_PICTURE:
-                if (!LoadingDialog.isShowing(getSupportFragmentManager())) {
-                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, cancelListener);
+                if (!LoadingDialog.isShowLoading()) {
+                    LoadingDialog.showLoading(this, getString(R.string.LOADING), false, cancelListener);
                 }
                 String imagePath = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_PICTURE_EXTRA_IMAGE_PATH);
                 AppLogger.e("图片分享,直接分享");
@@ -157,8 +157,8 @@ public class ShareMediaActivity extends BaseActivity<ShareMediaContact.Presenter
                 break;
             case SHARE_CONTENT_WEB_URL:
                 AppLogger.e("网址分享,不带上传");
-                if (!LoadingDialog.isShowing(getSupportFragmentManager())) {
-                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false, cancelListener);
+                if (!LoadingDialog.isShowLoading()) {
+                    LoadingDialog.showLoading(this, getString(R.string.LOADING), false, cancelListener);
                 }
                 String shareLinkUrl = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_LINK_URL);
                 String shareThumb = getIntent().getStringExtra(ShareConstant.SHARE_CONTENT_WEB_URL_EXTRA_THUMB_PATH);

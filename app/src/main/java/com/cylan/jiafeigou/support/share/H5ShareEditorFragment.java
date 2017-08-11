@@ -269,8 +269,8 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         if (NetUtils.getNetType(getContext()) == -1) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         } else {
-            if (!LoadingDialog.isShowing(getActivity().getSupportFragmentManager())) {
-                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
+            if (!LoadingDialog.isShowLoading()) {
+                LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
             }
             if (presenter != null) presenter.share(shareItem, getDescription(), thumbPath);
         }
@@ -279,7 +279,7 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     @Override
     public void onStart(SHARE_MEDIA share_media) {
         AppLogger.e("onStart,分享开始啦!,当前分享到的平台为:" + share_media);
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        LoadingDialog.dismissLoading();
     }
 
     @Override
