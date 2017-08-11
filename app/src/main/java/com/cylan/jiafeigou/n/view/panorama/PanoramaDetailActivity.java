@@ -139,6 +139,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public static Intent getIntentFromMessage(Context context, String uuid, CamMessageBean bean, int position, int index) {
         PanoramaAlbumContact.PanoramaItem item = null;
         if (bean.alarmMsg != null) {
+            bean.alarmMsg.isRecording = 0;//全部当成图片处理
             if (bean.alarmMsg.isRecording == 1) {
                 // TODO: 2017/8/10 视频
                 item = new PanoramaAlbumContact.PanoramaItem(bean.alarmMsg.time + "_8.mp4");

@@ -116,7 +116,8 @@ public class BasePanoramaApiHelper {
     }
 
     public Observable<PanoramaEvent.MsgFileListRsp> getFileList(String uuid, int beginTime, int endTime, int count) {
-        return getAvailableApi(uuid).flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : BaseForwardHelper.getInstance().sendForward(uuid, 5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
+//        return getAvailableApi(uuid).flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : BaseForwardHelper.getInstance().sendForward(uuid, 5, new PanoramaEvent.MsgFileListReq(beginTime, endTime, count)));
+        return getAvailableApi(uuid).flatMap(apiType -> apiType.ApiType == 0 ? httpApi.getFileList(beginTime, endTime, count) : Observable.empty());
     }
 
     public Observable<PanoramaEvent.MsgFileRsp> snapShot(String uuid) {
