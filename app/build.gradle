@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
-
+apply plugin: 'kotlin-android'
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -347,6 +347,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.mcxiaoke.packer-ng:helper:2.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:+"
 }
 /////////////////编译过滤器/////////////////////////////////
 //只需要在一个文件中读出需要编译的 variant名字

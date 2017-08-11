@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
@@ -349,9 +348,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             }
             break;
             case R.id.fLayout_protection_repeat_period: {
-                BaseDialog fragment = CapturePeriodDialogFragment.newInstance(getArguments());
-                fragment.setArguments(getArguments());
-                fragment.setAction((int id, Object value) -> {
+                int index = device.$(502, new DpMsgDefine.DPAlarmInfo()).day;
+                WeekFragment weekFragment = WeekFragment.Companion.newInstance(index);
+                weekFragment.setCallBack(value -> {
+                    ToastUtil.showToast("good?" + value);
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
                         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -364,7 +364,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         ToastUtil.showToast(getString(R.string.PWD_OK_2));
                     }
                 });
-                showFragment(fragment);
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), weekFragment, android.R.id.content);
             }
             break;
 
