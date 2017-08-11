@@ -31,7 +31,7 @@ public class PanoramaMessageWrapperActivity extends BaseActivity {
     protected void initViewAndListener() {
         super.initViewAndListener();
         removeHint();
-        customToolbar.setBackAction(view -> getFragmentManager().popBackStack());
+        customToolbar.setBackAction(view -> finish() );
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         bundle.putBoolean(JConstant.KEY_JUMP_TO_MESSAGE, true);
@@ -50,7 +50,7 @@ public class PanoramaMessageWrapperActivity extends BaseActivity {
 
     @Override
     protected void setActivityComponent(ActivityComponent activityComponent) {
-        
+
     }
 
     private void removeHint() {

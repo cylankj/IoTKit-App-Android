@@ -40,6 +40,13 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     private volatile boolean isFetching = false;
 
     public static BaseDeviceInformationFetcher getInstance() {
+        if (INFORMATION_FETCHER == null) {
+            synchronized (BaseDeviceInformationFetcher.class) {
+                if (INFORMATION_FETCHER == null) {
+                    INFORMATION_FETCHER = new BaseDeviceInformationFetcher(ContextUtils.getContext());
+                }
+            }
+        }
         return INFORMATION_FETCHER;
     }
 

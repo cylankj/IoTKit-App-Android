@@ -291,7 +291,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             * 2.无人形提示:有新的发现
             * */
             if (bean.alarmMsg.objects != null && bean.alarmMsg.objects.length > 0) {//有检测数据
-                return tContent + getContext().getString(R.string.DETECTED_AI) + JConstant.getAIText(bean.alarmMsg.objects);
+                return tContent + getContext().getString(R.string.DETECTED_AI) + " " + JConstant.getAIText(bean.alarmMsg.objects);
 //                return tContent + "检测到" + JConstant.getAIText(bean.alarmMsg.objects);
             } else {//无检测数据
                 return tContent + getContext().getString(R.string.MSG_WARNING);

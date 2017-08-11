@@ -144,7 +144,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 item = new PanoramaAlbumContact.PanoramaItem(bean.alarmMsg.time + "_8.mp4");
             } else {
                 // TODO: 2017/8/10 图片
-                item = new PanoramaAlbumContact.PanoramaItem(bean.alarmMsg.time + "_" + bean.alarmMsg.fileIndex + ".jpg");
+                item = new PanoramaAlbumContact.PanoramaItem(bean.alarmMsg.time + ".jpg");
             }
         }
         Intent intent = new Intent(context, PanoramaDetailActivity.class);
@@ -401,23 +401,30 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 }
                 if (downloadInfo != null && downloadInfo.getState() == 4) {
                     LoadingDialog.showLoading(this, getString(R.string.LOADING), false, null);
+                    refreshControllerView(false);
                     initPlayerAndPlay(downloadInfo.getTargetPath());
                 } else {
                     String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
                     if (bean != null) {
                         if (deviceIp != null) {
                             LoadingDialog.showLoading(this, getString(R.string.LOADING), false, null);
+                            refreshControllerView(false);
                             initPlayerAndPlay(deviceIp + "/md/" + panoramaItem.fileName);
                         } else {
                             AppLogger.d("当前网络状况下无法播放");
+                            refreshControllerView(false);
+                            loadPreview();
 
                         }
                     } else {
                         if (deviceIp != null) {
                             LoadingDialog.showLoading(this, getString(R.string.LOADING), false, null);
+                            refreshControllerView(false);
                             initPlayerAndPlay(deviceIp + "/images/" + panoramaItem.fileName);
                         } else {
                             AppLogger.d("当前网络状况下无法播放");
+                            refreshControllerView(false);
+                            loadPreview();
                         }
                     }
                 }
@@ -547,7 +554,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
         if (!NetUtils.isNetworkAvailable(this)) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
-        } else if (bean != null) {
+        } else if (bean != null && bean.alarmMsg.isRecording == 0) {
             releasePlayer();
             Glide.with(this)
                     .load(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex))
@@ -751,40 +758,43 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         });
     }
 
+
+    private void loadPreview() {
+        String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
+        if (!TextUtils.isEmpty(deviceIp) && bean == null) {
+            Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
+//                            refreshControllerView(true);
+                        }
+                    });
+        } else if (bean != null) {
+            Glide.with(this)
+                    .load(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex))
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            refreshControllerView(true);
+                            panoramicView720Ext.loadImage(resource);
+                        }
+                    });
+        }
+
+        bottomVideoMenuPlay.setImageResource(R.drawable.icon_play_selector);
+        LoadingDialog.dismissLoading();
+//            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 1000);
+    }
+
     @Override
     public void OnPlayerFailed(long l) {
         AppLogger.d("播放器初始化失败了");
-        runOnUiThread(() -> {
-            String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
-            if (!TextUtils.isEmpty(deviceIp) && bean == null) {
-                Glide.with(this).load("http://" + deviceIp + "/thumb/" + panoramaItem.fileName.split("\\.")[0] + ".thumb")
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(new SimpleTarget<GlideDrawable>() {
-                            @Override
-                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                                Schedulers.io().createWorker().schedule(() -> panoramicView720Ext.loadImage(BitmapUtils.drawableToBitmap(resource)));
-                                refreshControllerView(true);
-                            }
-                        });
-            } else if (bean != null) {
-                Glide.with(this)
-                        .load(MiscUtils.getCamWarnUrl(uuid, bean, bean.alarmMsg.fileIndex))
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .skipMemoryCache(true)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                refreshControllerView(true);
-                                panoramicView720Ext.loadImage(resource);
-                            }
-                        });
-            }
-
-            bottomVideoMenuPlay.setImageResource(R.drawable.icon_play_selector);
-            LoadingDialog.dismissLoading();
-//            bottomVideoMenuPlay.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 1000);
-        });
+        runOnUiThread(this::loadPreview);
 
     }
 
@@ -911,6 +921,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 bottomVideoMenuPlay.setImageResource(R.drawable.icon_suspend_selector);
 
             }
+        } else {
+            AppLogger.d("播放器初始化失败");
         }
     }
 
