@@ -81,7 +81,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     AppLogger.e("收到设备同步消息:" + new Gson().toJson(result));
                     try {
                         for (JFGDPMsg msg : result.dpList) {
-                            if (msg.id == 204) {
+                            if (msg.id == 222) {
                                 DpMsgDefine.DPSdStatus status = null;
 
                                 try {

@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 hunt:sv_title="@string/SOUNDS"
-                hunt:sv_v_divider="true" />
+                hunt:sv_v_divider="false" />
 
             <FrameLayout
                 android:id="@+id/fl_protection_title"
@@ -125,7 +125,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     hunt:sv_title="@string/REPEAT"
-                    hunt:sv_v_divider="true" />
+                    hunt:sv_v_divider="false" />
 
             </LinearLayout>
         </LinearLayout>

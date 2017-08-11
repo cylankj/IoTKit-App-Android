@@ -648,24 +648,15 @@ public class PanoramaCameraFragment extends BaseFragment<PanoramaCameraContact.P
         AppLogger.d("clickedConfigureNetWorkBanner");
         CharSequence text = bannerWarmingTitle.getText();
         if (TextUtils.equals(text, getString(R.string.Tap1_Offline))) {
-            DeviceConnectionDescriptionFragment deviceConnectionDescriptionFragment = DeviceConnectionDescriptionFragment.newInstance(uuid);
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_right_in,
-                            R.anim.slide_out_left,
-                            R.anim.slide_in_left,
-                            R.anim.slide_out_right)
-                    .replace(R.id.camera_main_container, deviceConnectionDescriptionFragment)
-                    .addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
+            Intent intent = new Intent(getContext(), ConnectionActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            intent.putExtra("which", "offline");
+            startActivity(intent);
         } else if (TextUtils.equals(text, getString(R.string.Tap1_DisconnectedPleaseCheck))) {
-            ConnectionDescriptionFragment connectionDescriptionFragment = ConnectionDescriptionFragment.newInstance();
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_right_in,
-                            R.anim.slide_out_left,
-                            R.anim.slide_in_left,
-                            R.anim.slide_out_right)
-                    .replace(R.id.camera_main_container, connectionDescriptionFragment).addToBackStack(DeviceConnectionDescriptionFragment.class.getSimpleName()).commit();
+            Intent intent = new Intent(getContext(), ConnectionActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            intent.putExtra("which", "no_network");
+            startActivity(intent);
         }
     }
 

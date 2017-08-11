@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoImpl;
-import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
@@ -48,6 +47,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     CustomToolbar customToolbar;
     @BindView(R.id.iv_explain_gray)
     ImageView ivExplainGray;
+    @BindView(R.id.submit_description)
+    TextView submitDescription;
 
 
     @Override
@@ -65,6 +66,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 getString(R.string._720PanoramicCamera))) {
             ViewUtils.setViewMarginStatusBar(ivExplainGray);
         }
+        boolean just_config = getIntent().getBooleanExtra("just_config", false);
+        submitDescription.setText(just_config ? R.string.CONNECTING_1 : R.string.DEVICE_ADDING);
     }
 
     private void adjustViewSize() {
@@ -162,9 +165,9 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     @OnClick(R.id.btn_bind_failed_repeat)
     public void onBindNext() {
-        final String className = getIntent().getStringExtra(JConstant.KEY_COMPONENT_NAME);
+        final String className = getIntent().getStringExtra(JConstant.KEY_BIND_BACK_ACTIVITY);
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(this, BindDeviceActivity.class));
+        intent.setComponent(new ComponentName(this, className));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finishExt();

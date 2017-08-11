@@ -9,7 +9,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +37,8 @@ public class SettingItemView0 extends RelativeLayout {
 
     SafeSwitchButton switchButton;
     View v_divider;
+    RadioButton rbRadioButton;
+    private FrameLayout optionContainer;
 
     public SettingItemView0(Context context) {
         this(context, null);
@@ -52,6 +56,9 @@ public class SettingItemView0 extends RelativeLayout {
         tvSubTitle = (TextView) view.findViewById(R.id.tv_settings_item_sub_title);
         imgvIcon = (ImageView) view.findViewById(R.id.imgv_item_icon);
         imgvRedHint = (ImageView) view.findViewById(R.id.imv_item_red_hint);
+        rbRadioButton = (RadioButton) view.findViewById(R.id.rb_item_radio_button);
+        optionContainer = (FrameLayout) view.findViewById(R.id.option_container);
+
         imgvIcon.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_image_show, false)
                 ? VISIBLE : GONE);
         switchButton = (SafeSwitchButton) view.findViewById(R.id.btn_item_switch);
@@ -66,13 +73,21 @@ public class SettingItemView0 extends RelativeLayout {
         tvSubTitle.setVisibility(TextUtils.isEmpty(tvSubTitle.getText()) ? GONE : VISIBLE);
         int subTitleGravity = ta.getInt(R.styleable.SettingItemViewStyle_sv_sub_title_gravity, -1);
         tvSubTitle.setGravity(subTitleGravity);
-        switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, false)
-                ? VISIBLE : GONE);
+        boolean switchVisibility = ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, false);
+        switchButton.setVisibility(switchVisibility ? VISIBLE : GONE);
+        if (switchVisibility) rbRadioButton.setVisibility(GONE);
         v_divider = findViewById(R.id.v_divider);
         v_divider.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
                 ? VISIBLE : GONE);
         float d = ta.getDimension(R.styleable.SettingItemViewStyle_sv_title_paddingEnd, 0);
         ViewUtils.setMargins(tvSubTitle, 0, 0, (int) d, 0);
+        boolean radioButtonVisibility = ta.getBoolean(R.styleable.SettingItemViewStyle_sv_show_radio_button, false);
+        rbRadioButton.setVisibility(radioButtonVisibility ? VISIBLE : GONE);
+        if (radioButtonVisibility) switchButton.setVisibility(GONE);
+        int radioButtonId = ta.getInt(R.styleable.SettingItemViewStyle_sv_radio_button_id, -1);
+        if (radioButtonId != -1) {
+            rbRadioButton.setId(radioButtonId);
+        }
         ta.recycle();
     }
 
@@ -153,5 +168,13 @@ public class SettingItemView0 extends RelativeLayout {
 
     public void setCheckEnable(boolean enable) {
         switchButton.setEnabled(enable);
+    }
+
+    public void setShowRadioButton(boolean show) {
+        rbRadioButton.setVisibility(show ? VISIBLE : GONE);
+    }
+
+    public void setRadioButtonChecked(boolean checked) {
+        rbRadioButton.setChecked(checked);
     }
 }

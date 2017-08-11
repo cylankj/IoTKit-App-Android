@@ -720,6 +720,13 @@
             android:windowSoftInputMode="adjustPan|stateHidden">
 
         </activity>
+        <activity
+            android:name=".n.view.panorama.ConnectionActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>
