@@ -54,6 +54,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
         Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
         intent.putExtra("PanoramaConfigure", "OutDoor");
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, ConnectionActivity.class.getName());
         startActivity(intent);
     }
 
@@ -63,6 +64,7 @@ public class DeviceConnectionDescriptionFragment extends BaseFragment {
         Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
         intent.putExtra("PanoramaConfigure", "Family");
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, ConnectionActivity.class.getName());
         startActivity(intent);
     }
 

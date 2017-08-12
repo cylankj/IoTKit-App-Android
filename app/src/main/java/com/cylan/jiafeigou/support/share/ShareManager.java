@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.support.share;
 import android.app.Activity;
 import android.app.Application;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +13,6 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -276,16 +276,14 @@ public class ShareManager {
                             .setMessage(R.string.Tap1_Firmware_DataTips)
                             .setCancelable(false)
                             .setPositiveButton(R.string.CARRY_ON, (dialog, which) -> {
-                                H5ShareEditorFragment fragment = H5ShareEditorFragment.newInstance(uuid, shareItemType, filePath, thumbPath, shareItem, ShareByH5EditorOption.this);
-                                ActivityUtils.addFragmentToActivity(activity.getSupportFragmentManager(), fragment, android.R.id.content);
+                                Intent shareIntent = H5ShareEditorActivity.getShareIntent(activity, uuid, shareItemType, filePath, thumbPath, shareItem);
+                                activity.startActivity(shareIntent);
                             })
                             .setNegativeButton(R.string.CANCEL, null)
                             .show();
                 } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(ShareConstant.SHARE_PLATFORM_TYPE, shareItemType);
-                    H5ShareEditorFragment fragment = H5ShareEditorFragment.newInstance(uuid, shareItemType, filePath, thumbPath, shareItem, ShareByH5EditorOption.this);
-                    ActivityUtils.addFragmentSlideInFromRight(activity.getSupportFragmentManager(), fragment, android.R.id.content);
+                    Intent shareIntent = H5ShareEditorActivity.getShareIntent(activity, uuid, shareItemType, filePath, thumbPath, shareItem);
+                    activity.startActivity(shareIntent);
                 }
             }
         }

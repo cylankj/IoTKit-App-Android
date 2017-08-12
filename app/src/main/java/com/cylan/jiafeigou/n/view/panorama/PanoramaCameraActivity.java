@@ -181,7 +181,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     /**
      * 保存前一次的网络类型,只有改变的时候才 toast
      */
-    private int preNetType;
+    private int preNetType = -1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -241,6 +241,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         ivt_newMessageTips.setShowDot(pair != null && pair.second > 0);
 
         bottomPanelAlbumItem.showHint(false);
+
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -889,6 +890,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 videoLiveContainer.removeAllViews();
                 surfaceView = null;
             }
+            preNetType = -1;
             return;
         }
 
@@ -906,9 +908,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             }
            /* if (!hasNetSetting) {*/
             loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
-            presenter.startViewer();
             /*}*/
             if (preNetType != connectionType) {
+                presenter.startViewer();
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
             }
         } else if (connectionType == ConnectivityManager.TYPE_MOBILE || netType == ConnectivityManager.TYPE_MOBILE) {//mobile
@@ -935,8 +937,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 mobileAlert.show();
             } else {
                 loadingBar.setState(JConstant.PLAY_STATE_PREPARE, null);
-                presenter.startViewer();
                 if (preNetType != connectionType) {
+                    presenter.startViewer();
                     ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedNetwork));
                 }
             }

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 
 import com.cylan.jiafeigou.R;
 
@@ -36,7 +37,12 @@ public class TimeUtils {
             return new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault());
         }
     };
-
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormat_3_12 = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy/MM/dd HH:mma", Locale.getDefault());
+        }
+    };
     private static final ThreadLocal<SimpleDateFormat> sSimpleDateFormatter = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
@@ -427,4 +433,12 @@ public class TimeUtils {
         return ret * time;
     }
 
+    public static String get1224(long l) {
+        boolean hourFormat = DateFormat.is24HourFormat(ContextUtils.getContext());
+        if (hourFormat) {
+            return getSimpleDateFormat_3.get().format(l);
+        } else {
+            return getSimpleDateFormat_3_12.get().format(l);
+        }
+    }
 }

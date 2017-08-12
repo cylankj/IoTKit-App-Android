@@ -72,11 +72,7 @@ public class FragmentModule {
         return injector.inject(new MineShareContentPresenterImpl());
     }
 
-    @Provides
-    @PerFragment
-    public static PanoramaShareContact.Presenter providePanoramaSharePresenter(BasePresenterInjector injector) {
-        return injector.inject(new PanoramaSharePresenter());
-    }
+
 
 
 

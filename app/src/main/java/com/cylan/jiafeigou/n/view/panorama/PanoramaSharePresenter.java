@@ -32,6 +32,7 @@ import rx.schedulers.Schedulers;
 
 public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.View> implements PanoramaShareContact.Presenter {
     @Override
+    @Deprecated
     public void check(String uuid, int time) {
         Subscription subscribe = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
@@ -77,7 +78,9 @@ public class PanoramaSharePresenter extends BasePresenter<PanoramaShareContact.V
 
     @Override
     public void upload(String fileName, String filePath) {
-        Subscription subscribe = Observable.just(getRemoteFilePath(fileName, true))
+        Subscription subscribe = Observable.just("upload")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .map(cmd -> getRemoteFilePath(fileName, true))
                 .observeOn(Schedulers.io())
                 .map(remote -> {
                     int result = -1;

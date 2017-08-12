@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingActivity;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.login.LoginActivity;
+import com.cylan.jiafeigou.support.share.H5ShareEditorActivity;
 import com.cylan.jiafeigou.support.share.ShareMediaActivity;
 import com.cylan.jiafeigou.support.splash.SplashActivity;
 
@@ -46,4 +47,6 @@ public interface ActivityComponent {
     void inject(LoginActivity activity);
 
     void inject(PanoramaCameraActivity activity);
+
+    void inject(H5ShareEditorActivity fragment);
 }

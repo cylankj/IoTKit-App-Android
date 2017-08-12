@@ -146,6 +146,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
 //        swipeRefreshLayout.setRefreshing(true);
+        panoramaAdapter.notifyDataSetChanged();
     }
 
     @Override

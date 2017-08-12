@@ -34,7 +34,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getReportMsgSub());
+        registerSubscription(getReportMsgSub(), getNetWorkMonitorSub());
     }
 
     private Subscription getReportMsgSub() {
@@ -45,7 +45,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                     AppLogger.e("收到设备同步消息:" + new Gson().toJson(result));
                     try {
                         for (JFGDPMsg msg : result.dpList) {
-                            if (msg.id == 204) {
+                            if (msg.id == 222) {
                                 DpMsgDefine.DPSdStatus status = null;
                                 try {
                                     status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
@@ -77,7 +77,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
-            Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid,1,0, Collections.singletonList(item.fileName))
+            Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
                     .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
@@ -120,5 +120,21 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             registerSubscription(subscribe);
 
         }
+    }
+
+    private Subscription getNetWorkMonitorSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    AppLogger.e("监听到网络状态发生变化");
+                    if (event.mobile != null && event.mobile.isConnected()) {
+                        mView.onRefreshConnectionMode(event.mobile.getType());
+                    } else if (event.wifi != null && event.wifi.isConnected()) {
+                        mView.onRefreshConnectionMode(event.wifi.getType());
+                    } else {
+                        mView.onRefreshConnectionMode(-1);
+                    }
+                }, e -> {
+                });
     }
 }

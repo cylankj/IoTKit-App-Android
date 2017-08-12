@@ -126,6 +126,7 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     }
 
 
+
     private void monitorDeviceInformationSuggestion() {
         RxBus.getCacheInstance().toObservable(RxEvent.FetchDeviceInformation.class)
                 .observeOn(Schedulers.io())

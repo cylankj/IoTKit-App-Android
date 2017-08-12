@@ -712,12 +712,12 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/CamActivityTheme" />
         <!--<activity-->
-            <!--android:name=".n.view.panorama.CameraMainActivity"-->
-            <!--android:configChanges="locale|orientation|keyboardHidden"-->
-            <!--android:launchMode="singleTask"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/CamActivityTheme"-->
-            <!--android:windowSoftInputMode="adjustPan|stateHidden">-->
+        <!--android:name=".n.view.panorama.CameraMainActivity"-->
+        <!--android:configChanges="locale|orientation|keyboardHidden"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/CamActivityTheme"-->
+        <!--android:windowSoftInputMode="adjustPan|stateHidden">-->
 
         <!--</activity>-->
         <activity
@@ -736,6 +736,13 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.panorama.PanoramaCameraActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".support.share.H5ShareEditorActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

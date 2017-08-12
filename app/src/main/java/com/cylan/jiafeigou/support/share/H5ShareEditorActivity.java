@@ -1,23 +1,21 @@
 package com.cylan.jiafeigou.support.share;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.databinding.FragmentPanoramaShareBinding;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
@@ -52,7 +50,7 @@ import static com.cylan.jiafeigou.support.share.ShareConstant.SHARE_PLATFORM_TYP
  * Created by yanzhendong on 2017/5/27.
  */
 
-public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Presenter> implements PanoramaShareContact.View, UMShareListener {
+public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Presenter> implements PanoramaShareContact.View, UMShareListener {
 
     private FragmentPanoramaShareBinding shareBinding;
     private ObservableField<String> description = new ObservableField<>();
@@ -61,41 +59,36 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     private PanoramaAlbumContact.PanoramaItem shareItem;
     private String filePath;
     private String thumbPath;
-    private UMShareListener listener;
     private boolean success = false;
     private Random random = new Random();
     private ValueAnimator animator;
 
-    public static H5ShareEditorFragment newInstance(String uuid, int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem, UMShareListener listener) {
-        H5ShareEditorFragment fragment = new H5ShareEditorFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, filePath);
-        bundle.putString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, thumbPath);
-        bundle.putParcelable(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, shareItem);
-        bundle.putInt(ShareConstant.SHARE_PLATFORM_TYPE, shareType);
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        fragment.setArguments(bundle);
-        fragment.listener = listener;
-        return fragment;
+    public static Intent getShareIntent(Context context, String uuid, int shareType, String filePath, String thumbPath, PanoramaAlbumContact.PanoramaItem shareItem) {
+        Intent intent = new Intent(context, H5ShareEditorActivity.class);
+        intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH, filePath);
+        intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH, thumbPath);
+        intent.putExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM, shareItem);
+        intent.putExtra(ShareConstant.SHARE_PLATFORM_TYPE, shareType);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        return intent;
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (success) {
-            getActivity().getSupportFragmentManager().popBackStack();
+            finish();
         }
     }
 
     @Override
-    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
-        fragmentComponent.inject(this);
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        shareBinding = FragmentPanoramaShareBinding.inflate(inflater);
+    protected View getContentRootView() {
+        shareBinding = FragmentPanoramaShareBinding.inflate(getLayoutInflater());
         return shareBinding.getRoot();
     }
 
@@ -116,24 +109,32 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
             int animatedValue = (int) animator.getAnimatedValue();
             animator.cancel();
             animator = ValueAnimator.ofInt(animatedValue, 100);
-            animator.setDuration(500);
-            animator.addUpdateListener(animation -> {
-                shareBinding.sharePercent.setText(String.format("%s%%", animation.getAnimatedValue()));
+            animator.setDuration(1000);
+            animator.addUpdateListener(animation -> shareBinding.sharePercent.setText(String.format("%s%%", animation.getAnimatedValue())));
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    shareBinding.sharePercent.setText("100%");
+                    uploadSuccess.set(true);
+                    shareBinding.shareRetry.setVisibility(View.GONE);
+                }
             });
             animator.start();
         } else {
             shareBinding.sharePercent.setText("100%");
+            uploadSuccess.set(true);
+            shareBinding.shareRetry.setVisibility(View.GONE);
         }
     }
 
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        Bundle arguments = getArguments();
-        shareType = arguments.getInt(SHARE_PLATFORM_TYPE);
-        shareItem = arguments.getParcelable(SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM);
-        filePath = arguments.getString(SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH);
-        thumbPath = arguments.getString(SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH);
+        Intent intent = getIntent();
+        shareType = intent.getIntExtra(SHARE_PLATFORM_TYPE, 0);
+        shareItem = intent.getParcelableExtra(SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_SHARE_ITEM);
+        filePath = intent.getStringExtra(SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_FILE_PATH);
+        thumbPath = intent.getStringExtra(SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH);
         shareBinding.setWay(getNameByType(shareType));
         shareBinding.setDescription(description);
         shareBinding.setUploadSuccess(uploadSuccess);
@@ -146,12 +147,17 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
                 startCount();
             }
         });
-        InputMethodManager imm = (InputMethodManager) getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.showSoftInput(shareBinding.shareContextEditor, 0);
         }
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
-        if (presenter != null) presenter.check(uuid, shareItem.time);
+        // TODO: 2017/8/12 并不能判断服务器是否有这个文件 ,废弃掉了
+//        if (presenter != null) presenter.check(uuid, shareItem.time);
+        if (presenter != null) {
+            presenter.upload(shareItem.fileName, filePath);
+            startCount();
+        }
     }
 
     private String getNameByType(int shareType) {
@@ -177,19 +183,14 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     @Override
     public void onUploadResult(int code) {
         if (code != -1) {
-            uploadSuccess.set(code == 200);
-            if (uploadSuccess.get()) {
+            if (code == 200) {
                 endCount();
+            } else {
+                uploadSuccess.set(false);
+                shareBinding.shareRetry.setVisibility(View.VISIBLE);
             }
-            shareBinding.shareRetry.setVisibility(uploadSuccess.get() ? View.GONE : View.VISIBLE);
         }
         AppLogger.d("上传到服务器返回的结果为:" + code);
-        if (code == -1) {
-            if (presenter != null) {
-                presenter.upload(shareItem.fileName, filePath);
-                startCount();
-            }
-        }
     }
 
     @Override
@@ -209,15 +210,15 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     private void shareWithH5ByType(int shareType, String h5) {
-        Bundle arguments = getArguments();
-        String thumbPath = arguments.getString(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH);
+        Intent intent = getIntent();
+        String thumbPath = intent.getStringExtra(ShareConstant.SHARE_CONTENT_H5_WITH_UPLOAD_EXTRA_THUMB_PATH);
         UMWeb umWeb = new UMWeb(h5);
         umWeb.setTitle(getString(R.string.share_default_title));
         umWeb.setDescription(getDescription());
         if (!TextUtils.isEmpty(thumbPath)) {
-            umWeb.setThumb(new UMImage(getContext(), new File(thumbPath)));
+            umWeb.setThumb(new UMImage(this, new File(thumbPath)));
         }
-        ShareAction shareAction = new ShareAction(getActivity());
+        ShareAction shareAction = new ShareAction(this);
         shareAction.withMedia(umWeb);
 //        if (listener != null) {
         shareAction.setCallback(this);
@@ -248,17 +249,18 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
         shareAction.share();
     }
 
-    private void cancelLoading(DialogInterface dialogInterface) {
+    @Override
+    protected void onPrepareToExit(Action action) {
+        cancelShare(null);
 
     }
 
-
     public void cancelShare(View view) {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(this)
                 .setMessage(R.string.Tap3_ShareDevice_UnshareTips)
                 .setCancelable(false)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    finish();
                 })
                 .setNegativeButton(R.string.CANCEL, null)
                 .show();
@@ -266,11 +268,11 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     }
 
     public void share(View view) {
-        if (NetUtils.getNetType(getContext()) == -1) {
+        if (NetUtils.getNetType(this) == -1) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         } else {
             if (!LoadingDialog.isShowLoading()) {
-                LoadingDialog.showLoading(getActivity(), getString(R.string.LOADING), false, dialog -> getActivity().finish());
+                LoadingDialog.showLoading(this, getString(R.string.LOADING), false, dialog -> finish());
             }
             if (presenter != null) presenter.share(shareItem, getDescription(), thumbPath);
         }
@@ -286,23 +288,23 @@ public class H5ShareEditorFragment extends BaseFragment<PanoramaShareContact.Pre
     public void onResult(SHARE_MEDIA share_media) {
         AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
         success = true;
-        ToastUtil.showPositiveToast(getActivity().getString(R.string.Tap3_ShareDevice_SuccessTips));
+        ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
 
     }
 
     @Override
     public void onError(SHARE_MEDIA share_media, Throwable throwable) {
         AppLogger.e("onError,分享失败啦!,当前分享到的平台为:" + share_media + ",错误原因为:" + throwable.getMessage());
-        if (!UMShareAPI.get(getContext()).isInstall(getActivity(), share_media)) {
-            ToastUtil.showNegativeToast(getContext().getString(R.string.Tap1_Album_Share_NotInstalledTips, share_media.toString()));
+        if (!UMShareAPI.get(this).isInstall(this, share_media)) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap1_Album_Share_NotInstalledTips, share_media.toString()));
         } else {
-            ToastUtil.showNegativeToast(getContext().getString(R.string.Tap3_ShareDevice_FailTips));
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
         }
     }
 
     @Override
     public void onCancel(SHARE_MEDIA share_media) {
         AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
-        ToastUtil.showNegativeToast(getActivity().getString(R.string.Tap3_ShareDevice_CanceldeTips));
+        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
     }
 }

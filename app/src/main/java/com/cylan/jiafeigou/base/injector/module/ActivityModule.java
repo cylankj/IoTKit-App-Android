@@ -16,6 +16,8 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaSettingPresenter;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaSharePresenter;
 import com.cylan.jiafeigou.support.share.ShareMediaContact;
 import com.cylan.jiafeigou.support.share.SharePresenter;
 import com.cylan.jiafeigou.support.splash.SplashContact;
@@ -84,5 +86,11 @@ public class ActivityModule {
     public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
         PanoramaPresenter presenter = injector.inject(new PanoramaPresenter());
         return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    public static PanoramaShareContact.Presenter providePanoramaSharePresenter(BasePresenterInjector injector) {
+        return injector.inject(new PanoramaSharePresenter());
     }
 }

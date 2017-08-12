@@ -173,19 +173,23 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     .observeOn(Schedulers.io())
                     .flatMap(items -> JFGRules.isDeviceOnline(uuid) ?//设备当前真的不在线,就不需要去 Ping 浪费时间等待了
                             loadFromServer(time).map(items1 -> {
-                                items1.addAll(items);
-                                Map<String, PanoramaAlbumContact.PanoramaItem> sort = new HashMap<>();
-                                for (PanoramaAlbumContact.PanoramaItem panoramaItem : items1) {
-                                    PanoramaAlbumContact.PanoramaItem panoramaItem1 = sort.get(panoramaItem.fileName);
-                                    if (panoramaItem1 == null) {
-                                        sort.put(panoramaItem.fileName, panoramaItem);
-                                    } else {
-                                        panoramaItem1.location = 2;
+                                if (items1 != null) {
+                                    Map<String, PanoramaAlbumContact.PanoramaItem> sort = new HashMap<>();
+                                    items1.addAll(items);
+                                    for (PanoramaAlbumContact.PanoramaItem panoramaItem : items1) {
+                                        PanoramaAlbumContact.PanoramaItem panoramaItem1 = sort.get(panoramaItem.fileName);
+                                        if (panoramaItem1 == null) {
+                                            sort.put(panoramaItem.fileName, panoramaItem);
+                                        } else {
+                                            panoramaItem1.location = 2;
+                                        }
                                     }
+                                    List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
+                                    Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
+                                    return result.subList(0, result.size() > 20 ? 20 : result.size());
+                                } else {
+                                    return items;
                                 }
-                                List<PanoramaAlbumContact.PanoramaItem> result = new ArrayList<>(sort.values());
-                                Collections.sort(result, (o1, o2) -> o2.time == o1.time ? o2.location - o1.location : o2.time - o1.time);
-                                return result.subList(0, result.size() > 20 ? 20 : result.size());
                             }) : Observable.just(items)
                     )
                     .observeOn(AndroidSchedulers.mainThread())
