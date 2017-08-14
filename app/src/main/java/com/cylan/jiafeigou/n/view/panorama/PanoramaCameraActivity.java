@@ -432,7 +432,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onRefreshControllerView(false, true);
         updateHint();
 //        setting.setEnabled(true);
-        int netType = preNetType = NetUtils.getNetType(this);
+        int netType = NetUtils.getNetType(this);
         //不保存值到 sp 中了,只保存页面变量
 //        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
 //        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
