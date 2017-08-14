@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
@@ -112,6 +112,7 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
         //0:本地;1:设备;2:本地+设备
         //1.1.0 版本只有一个手机图标了
 //        holder.setVisibility(R.id.iv_album_icon_720_camera, (item.location == 1 || item.location == 2) ? View.VISIBLE : View.GONE);
+
         holder.setVisibility(R.id.iv_album_icon_720_camera, View.GONE);
         Glide.with(getContext())
                 .load(new PanoramaThumbURL(uuid, item.fileName))
@@ -123,19 +124,13 @@ public class PanoramaAdapter extends SuperAdapter<PanoramaAlbumContact.PanoramaI
                     @Override
                     protected void setResource(GlideDrawable resource) {
                         view.setImageDrawable(resource);
-
+                        holder.setBackgroundResource(R.id.rl_album_bottom_shape, R.drawable.bottom_black_top_white_color);
                     }
 
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        holder.setAlpha(R.id.rl_album_bottom_shape, 1);
-                        super.onResourceReady(resource, glideAnimation);
-                    }
-
-                    @Override
-                    public void onStart() {
-                        holder.setAlpha(R.id.rl_album_bottom_shape, 0);
-                        super.onStart();
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        holder.setBackgroundResource(R.id.rl_album_bottom_shape, android.R.color.transparent);
                     }
                 });
         TextView view = holder.getView(R.id.tv_album_download_progress);

@@ -69,7 +69,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getApiMonitorSub());
+//        registerSubscription(getApiMonitorSub());
         registerSubscription(newVersionRspSub());
         registerSubscription(getReportMsgSub());
         registerSubscription(getNetWorkMonitorSub());
@@ -208,19 +208,19 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(e.getMessage());
                 });
     }
-
-    private Subscription getApiMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.PanoramaApiAvailable.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    if (ret.ApiType < 0) {
-//                        mView.onRefreshControllerView(false, false);
-                    } else {
-//                        mView.onRefreshControllerView(true, false);
-                        checkAndInitRecord();
-                    }
-                }, AppLogger::e);
-    }
+//
+//    private Subscription getApiMonitorSub() {
+//        return RxBus.getCacheInstance().toObservable(RxEvent.PanoramaApiAvailable.class)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(ret -> {
+//                    if (ret.ApiType < 0) {
+////                        mView.onRefreshControllerView(false, false);
+//                    } else {
+////                        mView.onRefreshControllerView(true, false);
+//                        checkAndInitRecord();
+//                    }
+//                }, AppLogger::e);
+//    }
 
     @Override
     public void makePhotograph() {

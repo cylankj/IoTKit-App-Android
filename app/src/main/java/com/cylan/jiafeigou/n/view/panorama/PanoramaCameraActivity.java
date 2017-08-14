@@ -432,6 +432,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onRefreshControllerView(false, true);
         updateHint();
 //        setting.setEnabled(true);
+        preNetType = -1;
         int netType = NetUtils.getNetType(this);
         //不保存值到 sp 中了,只保存页面变量
 //        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
@@ -439,6 +440,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         onRefreshConnectionMode(netType);
 //        }
     }
+
 
     private void updateHint() {
         try {
@@ -468,6 +470,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
+        preNetType = -1;
 //        presenter.dismiss();
     }
 
@@ -900,6 +903,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
 
         onHideBadNetWorkBanner();//不管是 WiFi 还是移动网络,都应该隐藏网络不好的 banner
+
+        presenter.checkAndInitRecord();
+
         if (connectionType == ConnectivityManager.TYPE_WIFI || netType == ConnectivityManager.TYPE_WIFI) {//wifi
             AppLogger.d("正在使用 WiFi 网络,可以放心观看");
 

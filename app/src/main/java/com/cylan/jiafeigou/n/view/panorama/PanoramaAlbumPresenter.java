@@ -308,17 +308,26 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
             })
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .flatMap(ret -> BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, convert(items)))
+                    .flatMap(ret -> {
+                        if (JFGRules.isDeviceOnline(uuid)) {
+                            return BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, convert(items));
+                        } else {
+                            return Observable.just(null);
+                        }
+
+                    })
                     .map(ret -> {
-                        List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
-                        for (PanoramaAlbumContact.PanoramaItem item : items) {
-                            for (String file : ret.files) {
-                                if (TextUtils.equals(file, item.fileName)) {
-                                    failed.add(item);
+                        if (ret != null && ret.files != null) {
+                            List<PanoramaAlbumContact.PanoramaItem> failed = new ArrayList<>();
+                            for (PanoramaAlbumContact.PanoramaItem item : items) {
+                                for (String file : ret.files) {
+                                    if (TextUtils.equals(file, item.fileName)) {
+                                        failed.add(item);
+                                    }
                                 }
                             }
+                            items.removeAll(failed);
                         }
-                        items.removeAll(failed);
                         return items;
                     })
                     .observeOn(AndroidSchedulers.mainThread())
