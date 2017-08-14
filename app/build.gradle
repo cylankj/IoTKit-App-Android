@@ -304,6 +304,10 @@ dependencies {
                 ext : 'aar'
         ])
     }
+
+
+
+
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile('com.mikepenz:fastadapter:2.6.2@aar') {

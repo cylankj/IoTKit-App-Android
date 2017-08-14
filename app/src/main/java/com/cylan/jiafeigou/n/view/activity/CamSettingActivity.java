@@ -6,15 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
@@ -127,6 +131,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     TextView tvNetWorkSettingTitle;
     @BindView(R.id.sv_setting_device_logo)
     SettingItemView0 svSettingDeviceLogo;
+    @BindView(R.id.siv_target_leveledBFS)
+    SettingItemView0 svTargetLevelBFS;
 
     private String uuid;
     //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
@@ -174,6 +180,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceSoftAp.setVisibility(productProperty.hasProperty(device.pid, "AP") ? View.VISIBLE : View.GONE);
         svSettingDeviceWiredMode.setVisibility(productProperty.hasProperty(device.pid, "WIREDMODE") ? View.VISIBLE : View.GONE);
         sbtnSettingSight.setVisibility(productProperty.hasProperty(device.pid, "VIEWANGLE") ? View.VISIBLE : View.GONE);
+
+
+        //康凯斯门铃测试项
+        svTargetLevelBFS.setVisibility(device.getPid() == 1343 ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
@@ -226,7 +237,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_device_sd_card,
             R.id.sv_setting_device_clear_record,
             R.id.sv_setting_device_home_mode,
-            R.id.sv_setting_direct_mode
+            R.id.sv_setting_direct_mode,
+            R.id.siv_target_leveledBFS
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -344,6 +356,33 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 intent.setClass(this, BindPanoramaCamActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.siv_target_leveledBFS:
+                EditText editText = new EditText(this);
+                editText.setId(R.id.et_input_box);
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                new AlertDialog.Builder(this)
+                        .setTitle("康凯斯门铃 BFS 设置")
+                        .setView(editText)
+                        .setPositiveButton("确认", (dialog, which) -> Schedulers.io().createWorker().schedule(() -> {
+                            EditText viewById = (EditText) ((AlertDialog) dialog).findViewById(R.id.et_input_box);
+                            int level = 8;
+                            if (viewById != null) {
+                                level = Integer.parseInt(viewById.getText().toString());
+                            }
+                            level = Math.max(level, 0);
+                            level = Math.min(level, 31);
+                            try {
+                                BaseApplication.getAppComponent().getCmd().setTargetLeveledBFS(level);
+                                AppLogger.d("正在设置 TargetLevel:" + level);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
+                        }))
+                        .setNegativeButton("取消", (dialog, which) -> {
+
+                        })
+                        .show();
                 break;
         }
     }

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -139,6 +140,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private DetailDataAdapter adapter;
     private Subscription retrySub;
     private Subscription subscribe;
+    private boolean isSetPadding = false;
 
 
     public static Intent getIntentFromMessage(Context context, String uuid, CamMessageBean bean, int position, int index) {
@@ -203,9 +205,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         this.bean = getIntent().getParcelableExtra("cam_bean");
         topBack.setText(TimeUtils.get1224(panoramaItem.time * 1000L));
         initPanoramaView();
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            ViewUtils.setViewPaddingStatusBar(headerTitleContainer);
-        }
+
     }
 
     private Observable<RxEvent.FetchDeviceInformation> getConnection() {
@@ -213,6 +213,24 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 .first(ret -> ret.success)
                 .doOnSubscribe(() -> BaseDeviceInformationFetcher.getInstance().init(uuid))
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE && !isSetPadding) {
+            isSetPadding = true;
+            ViewUtils.setViewPaddingStatusBar(headerTitleContainer);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isSetPadding) {
+            isSetPadding = false;
+            ViewUtils.clearViewPaddingStatusBar(headerTitleContainer);
+        }
     }
 
     @Override
@@ -226,6 +244,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         looper = true;
         initPanoramaContent(panoramaItem);
     }
+
 
     @Override
     protected void onPause() {
@@ -262,7 +281,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramaPanelSwitcher.setTranslationY(0);
         panoramaPanelSwitcher.setAlpha(1);
         if (land) {
-            ViewUtils.clearViewMarginStatusBar(headerTitleContainer);
+            if (isSetPadding) {
+                isSetPadding = false;
+                ViewUtils.clearViewPaddingStatusBar(headerTitleContainer);
+            }
             popPictureVrTips.setVisibility(View.GONE);
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -273,7 +295,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
         } else {
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            ViewUtils.setViewMarginStatusBar(headerTitleContainer);
+            if (!isSetPadding) {
+                isSetPadding = true;
+                ViewUtils.setViewPaddingStatusBar(headerTitleContainer);
+            }
         }
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) panoramaPanelSwitcher.getLayoutParams();
         params.height = ((int) getResources().getDimension(R.dimen.panorama_detail_panel_height));
@@ -549,17 +574,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void releasePlayer() {
-        Schedulers.io().createWorker().schedule(() -> {
-            long p;
-            synchronized (this) {
-                p = player;
-                player = 0;
-            }
-            if (p != 0) {
-                JFGPlayer.Stop(p);
-                JFGPlayer.Release(p);
-            }
-        });
+        AppLogger.d("正在释放播放器!!!");
+        looper = false;
+        if (player != 0) {
+            long address = player;
+            player = 0;
+            JFGPlayer.Stop(address);
+            JFGPlayer.Release(address);
+        }
+        player = 0;
     }
 
     @OnClick(R.id.act_panorama_detail_toolbar_share)
@@ -815,7 +838,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     public void OnPlayerFinish(long l) {
         AppLogger.d("播放完成了");
         isPlay = false;
-        runOnUiThread(() -> initPanoramaContent(panoramaItem));
+        if (looper) {
+            runOnUiThread(() -> initPanoramaContent(panoramaItem));
+        }
     }
 
     @Override
@@ -877,8 +902,17 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onSingleTap(float v, float v1) {
-        if (headerTitleContainer.getTranslationY() != 0) {
-            headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (headerTitleContainer.getTranslationY() != 0) {
+                headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            } else {
+                headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
         } else {
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION

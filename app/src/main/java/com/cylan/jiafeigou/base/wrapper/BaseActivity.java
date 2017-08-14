@@ -221,8 +221,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void onBackPressed() {
-        int orientation = getRequestedOrientation();
-        if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             return;
         }

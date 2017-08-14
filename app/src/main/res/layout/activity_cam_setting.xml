@@ -254,6 +254,17 @@
                 hunt:sv_v_image_show="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/siv_target_leveledBFS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_sub_title=" level: 值为0-31之间,0为最大,默认是8,值越小增益越大"
+                hunt:sv_title="康凯斯门铃 BFS 设置"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_device_clear_record"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -273,6 +284,8 @@
                 android:text="@string/DELETE_CID"
                 android:textColor="@color/color_FF3D32"
                 android:textSize="@dimen/sp16" />
+
+
         </LinearLayout>
     </ScrollView>
 

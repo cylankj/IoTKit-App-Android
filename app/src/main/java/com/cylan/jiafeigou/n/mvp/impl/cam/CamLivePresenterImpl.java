@@ -572,6 +572,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .map(ret -> {
                     //加入管理,如果播放失败,收到disconnect
+
                     feedRtcp.stop();
                     addSubscription(videoDisconnectSub(), "videoDisconnectSub");
                     addSubscription(errCodeSub(), "errCodeSub");
