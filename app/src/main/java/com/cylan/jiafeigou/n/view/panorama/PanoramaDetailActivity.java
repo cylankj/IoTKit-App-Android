@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
@@ -138,7 +139,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private CamMessageBean bean;
 
     private DetailDataAdapter adapter;
-    private Subscription retrySub;
     private Subscription subscribe;
     private boolean isSetPadding = false;
 
@@ -206,6 +206,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         topBack.setText(TimeUtils.get1224(panoramaItem.time * 1000L));
         initPanoramaView();
 
+//        panoramaContentContainer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onSingleTap(0, 0);
+//            }
+//        });
     }
 
     private Observable<RxEvent.FetchDeviceInformation> getConnection() {
@@ -281,19 +287,21 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         panoramaPanelSwitcher.setTranslationY(0);
         panoramaPanelSwitcher.setAlpha(1);
         if (land) {
-            if (isSetPadding) {
+            if (isSetPadding && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//低于19 不隐藏状态栏
                 isSetPadding = false;
                 ViewUtils.clearViewPaddingStatusBar(headerTitleContainer);
             }
-            popPictureVrTips.setVisibility(View.GONE);
+//            popPictureVrTips.setVisibility(View.GONE);
+//            ViewUtils.setSystemUiVisibility(headerTitleContainer, false);
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         } else {
+//            ViewUtils.setSystemUiVisibility(headerTitleContainer, true);
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             if (!isSetPadding) {
                 isSetPadding = true;
@@ -906,9 +914,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void onSingleTap(float v, float v1) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (headerTitleContainer.getTranslationY() != 0) {
-                headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        float translationY = headerTitleContainer.getTranslationY();
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (translationY != 0) {
+                headerTitleContainer.postDelayed(() -> headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE), 200);
             } else {
                 headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -917,16 +928,13 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
-        } else {
-            headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-        YoYo.with(headerTitleContainer.getTranslationY() != 0 ? Techniques.SlideInDown : Techniques.SlideOutUp).duration(200).playOn(headerTitleContainer);
-        YoYo.with(panoramaPanelSwitcher.getTranslationY() != 0 ? Techniques.SlideInUp : Techniques.SlideOutDown).duration(200).playOn(panoramaPanelSwitcher);
+
+
+        YoYo.with(headerTitleContainer.getTranslationY() != 0 ? Techniques.SlideInDown : Techniques.SlideOutUp).duration(200)
+                .playOn(headerTitleContainer);
+        YoYo.with(panoramaPanelSwitcher.getTranslationY() != 0 ? Techniques.SlideInUp : Techniques.SlideOutDown).duration(200)
+                .playOn(panoramaPanelSwitcher);
     }
 
     @Override
