@@ -911,7 +911,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             /*}*/
             if (preNetType != connectionType) {
                 presenter.startViewer();
-                ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
+                if (preNetType != -1) {
+                    ToastUtil.showPositiveToast(getString(R.string.Tap1_SwitchedWiFi));
+                }
             }
         } else if (connectionType == ConnectivityManager.TYPE_MOBILE || netType == ConnectivityManager.TYPE_MOBILE) {//mobile
             AppLogger.d("正在使用移动网络,请注意流量");
