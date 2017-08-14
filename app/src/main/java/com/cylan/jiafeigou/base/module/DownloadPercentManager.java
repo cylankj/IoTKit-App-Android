@@ -107,7 +107,7 @@ public class DownloadPercentManager {
                     .subscribe(responseBody -> {
                         DownloadPercentResponseBody body = new DownloadPercentResponseBody(responseBody, downloadPercent);
                         try {
-                            File file = new File(JConstant.PANORAMA_MEDIA_PATH + File.separator + downloadPercent.getIdentifier());
+                            File file = new File(JConstant.MEDIA_PATH + File.separator + downloadPercent.getIdentifier());
                             file.getParentFile().mkdirs();
                             Sink sink = Okio.sink(file);
                             BufferedSink buffer = Okio.buffer(sink);

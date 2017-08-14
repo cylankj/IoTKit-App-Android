@@ -86,7 +86,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (deviceState != null && deviceState.ret == 0 && deviceState.videoType == 2) {//只处理长路像的情况
                         if (!isRecording) {
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
-                            refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
+                            if (deviceState.videoType != 3) {
+                                refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
+                            }
                         }
                         AppLogger.d("有录像状态:" + new Gson().toJson(deviceState));
                     } else if (deviceState == null) {
@@ -279,7 +281,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
-                    if (rsp != null && rsp.ret == 0) {//检查录像状态
+                    if (rsp != null && rsp.ret == 0 && rsp.videoType != 3) {//检查录像状态
 //                        if (!shouldRefreshRecord) {
 //                            shouldRefreshRecord = true;
 //                        mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);

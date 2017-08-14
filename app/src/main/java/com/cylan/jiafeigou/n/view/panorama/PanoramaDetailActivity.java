@@ -877,7 +877,11 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 new AlertDialog.Builder(this)
                         .setMessage(R.string.MSG_SD_OFF)
                         .setCancelable(false)
-                        .setPositiveButton(R.string.OK, (dialog, which) -> finish())
+                        .setPositiveButton(R.string.OK, (dialog, which) -> {
+                            if (downloadInfo == null || downloadInfo.getState() != DownloadManager.FINISH) {
+                                finish();
+                            }
+                        })
                         .show();
             }
         }

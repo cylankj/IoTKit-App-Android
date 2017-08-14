@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -59,7 +60,6 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     private PanoramaAlbumContact.PanoramaItem shareItem;
     private String filePath;
     private String thumbPath;
-    private boolean success = false;
     private Random random = new Random();
     private ValueAnimator animator;
 
@@ -76,9 +76,7 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     @Override
     public void onStart() {
         super.onStart();
-        if (success) {
-            finish();
-        }
+
     }
 
     @Override
@@ -96,8 +94,8 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
         if (animator != null) {
             animator.cancel();
         }
-        animator = ValueAnimator.ofInt(1, random.nextInt(80));
-        animator.setDuration(random.nextInt(3000));
+        animator = ValueAnimator.ofInt(1, 99);
+        animator.setDuration(random.nextInt(4000));
         animator.addUpdateListener(animation -> {
             shareBinding.sharePercent.setText(String.format("%s%%", animation.getAnimatedValue()));
         });
@@ -109,7 +107,7 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
             int animatedValue = (int) animator.getAnimatedValue();
             animator.cancel();
             animator = ValueAnimator.ofInt(animatedValue, 100);
-            animator.setDuration(1000);
+            animator.setDuration(500);
             animator.addUpdateListener(animation -> shareBinding.sharePercent.setText(String.format("%s%%", animation.getAnimatedValue())));
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -260,6 +258,7 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
                 .setMessage(R.string.Tap3_ShareDevice_UnshareTips)
                 .setCancelable(false)
                 .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    IMEUtils.hide(this);
                     finish();
                 })
                 .setNegativeButton(R.string.CANCEL, null)
@@ -287,8 +286,8 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     @Override
     public void onResult(SHARE_MEDIA share_media) {
         AppLogger.e("onResult,分享成功啦!,当前分享到的平台为:" + share_media);
-        success = true;
         ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
+        finish();
 
     }
 

@@ -53,6 +53,7 @@
             app:rightAction="@{shareClick}"
             app:rightEnable="@{uploadSuccess}"
             app:toolbarTitle="@{@string/ShareTo(way)}" />
+
         <View
             android:id="@+id/v_shadow"
             android:layout_width="0dp"
@@ -148,13 +149,15 @@
             app:layout_constraintEnd_toEndOf="@id/shareContextEditor" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y15"
             android:layout_marginStart="@dimen/y15"
             android:layout_marginTop="@dimen/y15"
             android:text="@string/Tap1_Album_Share_To_Daily_Great"
             android:textColor="@color/color_888888"
             android:textSize="@dimen/sp13"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shareContentBackGround" />
 

@@ -153,7 +153,7 @@ public class JConstant {
     public static final java.lang.String NEED_SHOW_BIND_ANIMATION = "need_show_bind_animation";
     public static final java.lang.String KEY_SHOW_HISTORY_WHEEL_CASE = "key_show_history_wheel_case";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_INIT_WHEEL = "key_cam_live_page_play_history_init_wheel";
-    public static final String KEY_BIND_BACK_ACTIVITY="KEY_BIND_BACK_ACTIVITY";
+    public static final String KEY_BIND_BACK_ACTIVITY = "KEY_BIND_BACK_ACTIVITY";
 
     //人形检测的物体
     public static final int OBJECT_MAN = 1;
@@ -241,8 +241,8 @@ public class JConstant {
     //升级包的目录也需要放在这里
     public static final String WORKER_PATH = ROOT_DIR + File.separator + "log";
     public static final String MEDIA_PATH = ROOT_DIR + File.separator + "media";
-    public static final String PANORAMA_MEDIA_PATH = ROOT_DIR + File.separator + "Panorama";
-    public static final String PANORAMA_MEDIA_THUMB_PATH = PANORAMA_MEDIA_PATH + File.separator + "thumb";
+    //    public static final String PANORAMA_MEDIA_PATH = ROOT_DIR + File.separator + "Panorama";
+//    public static final String PANORAMA_MEDIA_THUMB_PATH = PANORAMA_MEDIA_PATH + File.separator + "thumb";
     public static final String SYSTEM_PHOTO_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "DCIM" + File.separator + "Camera";
     public static final String MISC_PATH = ROOT_DIR + File.separator + "misc";
     public static final String USER_IMAGE_HEAD_URL = "";                  //用户头像

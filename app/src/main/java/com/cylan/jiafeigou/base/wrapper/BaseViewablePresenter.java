@@ -15,6 +15,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
@@ -24,12 +25,15 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.utils.JfgUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -237,6 +241,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             if (screenshot != null) {
                                 int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
                                 int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+                                removeLastPreview();
                                 Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
                                 String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
                                 PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
@@ -251,6 +256,25 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                     return false;
                 });
+    }
+
+    private void removeLastPreview() {
+        final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
+        if (TextUtils.isEmpty(pre)) return;
+        try {
+            if (SimpleCache.getInstance().getPreviewKeyList() != null) {
+                List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
+                for (String key : list) {
+                    if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
+                        SimpleCache.getInstance().removeCache(key);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        Observable.just("go")
+                .subscribeOn(Schedulers.io())
+                .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
     }
 
     protected Observable<RxEvent.LiveResponse> handleVideoResponse(String peer) {

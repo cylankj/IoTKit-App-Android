@@ -388,7 +388,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             makeSureRemoveFoot();
         });
         if (getView() != null && getActivity() != null) {
-           LoadingDialog.dismissLoading();
+            LoadingDialog.dismissLoading();
         }
     }
 
@@ -537,14 +537,40 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
             break;
             case R.id.imgV_cam_message_pic0:
-
-                startActivity(getIntent(position, 0));
+                if (!camMessageListAdapter.isEditMode()) {//编辑模式下点击不应该进入详情页
+                    startActivity(getIntent(position, 0));
+                } else {
+                    boolean itemSelected = camMessageListAdapter.markItemSelected(position);
+                    int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());
+                    tvMsgDelete.setEnabled(size > 0);
+                    if (!itemSelected) {
+                        tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
+                    }
+                }
                 break;
             case R.id.imgV_cam_message_pic1:
-                startActivity(getIntent(position, 1));
+                if (!camMessageListAdapter.isEditMode()) {//编辑模式下点击不应该进入详情页
+                    startActivity(getIntent(position, 0));
+                } else {
+                    boolean itemSelected = camMessageListAdapter.markItemSelected(position);
+                    int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());
+                    tvMsgDelete.setEnabled(size > 0);
+                    if (!itemSelected) {
+                        tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
+                    }
+                }
                 break;
             case R.id.imgV_cam_message_pic2:
-                startActivity(getIntent(position, 2));
+                if (!camMessageListAdapter.isEditMode()) {//编辑模式下点击不应该进入详情页
+                    startActivity(getIntent(position, 0));
+                } else {
+                    boolean itemSelected = camMessageListAdapter.markItemSelected(position);
+                    int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());
+                    tvMsgDelete.setEnabled(size > 0);
+                    if (!itemSelected) {
+                        tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
+                    }
+                }
                 break;
             case R.id.tv_jump_next: {
                 try {

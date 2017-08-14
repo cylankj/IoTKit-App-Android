@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -66,7 +67,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import okhttp3.internal.ws.RealWebSocket;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -475,7 +475,9 @@ public class DataSourceManager implements JFGSourceManager {
                         }, e -> {
                             AppLogger.e("unBindDevices,Error:" + e.getMessage());
                         });
-                        FileUtils.deleteFile(JConstant.PANORAMA_MEDIA_PATH + File.separator + uuid);
+                        FileUtils.deleteFile(JConstant.MEDIA_PATH + File.separator + uuid);
+                        final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
+                        FileUtils.deleteFile(pre);
                         getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid));
                     }
                     return devices;
@@ -981,7 +983,6 @@ public class DataSourceManager implements JFGSourceManager {
      * @param arrayList
      */
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
-        RealWebSocket realWebSocket = null;
 
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
@@ -1119,6 +1120,25 @@ public class DataSourceManager implements JFGSourceManager {
          * @return
          */
         void handleInterception(T data);
+    }
+
+    private void removeLastPreview(String uuid) {
+        final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
+        if (TextUtils.isEmpty(pre)) return;
+        try {
+            if (SimpleCache.getInstance().getPreviewKeyList() != null) {
+                List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
+                for (String key : list) {
+                    if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
+                        SimpleCache.getInstance().removeCache(key);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        Observable.just("go")
+                .subscribeOn(Schedulers.io())
+                .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
     }
 }
 /**
