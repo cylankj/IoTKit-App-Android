@@ -269,7 +269,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 hunt:sv_title="@string/DOOR_CLEAR_REOCRD"
-                hunt:sv_v_divider="false" />
+                hunt:sv_v_divider="false"
+                hunt:sv_v_image_show="true" />
 
             <TextView
                 android:id="@+id/tv_setting_unbind"

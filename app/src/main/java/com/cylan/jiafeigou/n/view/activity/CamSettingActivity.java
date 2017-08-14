@@ -183,7 +183,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
 
         //康凯斯门铃测试项
-        svTargetLevelBFS.setVisibility(device.getPid() == 1343 ? View.VISIBLE : View.GONE);
+        svTargetLevelBFS.setVisibility(device.getPid() == 1343 || device.getPid() == 42 ? View.VISIBLE : View.GONE);
 
     }
 
@@ -358,33 +358,46 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 startActivity(intent);
                 break;
             case R.id.siv_target_leveledBFS:
-                EditText editText = new EditText(this);
-                editText.setId(R.id.et_input_box);
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                new AlertDialog.Builder(this)
-                        .setTitle("康凯斯门铃 BFS 设置")
-                        .setView(editText)
-                        .setPositiveButton("确认", (dialog, which) -> Schedulers.io().createWorker().schedule(() -> {
-                            EditText viewById = (EditText) ((AlertDialog) dialog).findViewById(R.id.et_input_box);
-                            int level = 8;
-                            if (viewById != null) {
-                                level = Integer.parseInt(viewById.getText().toString());
-                            }
-                            level = Math.max(level, 0);
-                            level = Math.min(level, 31);
-                            try {
-                                BaseApplication.getAppComponent().getCmd().setTargetLeveledBFS(level);
-                                AppLogger.d("正在设置 TargetLevel:" + level);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                        }))
-                        .setNegativeButton("取消", (dialog, which) -> {
-
-                        })
-                        .show();
+                setBFS();
                 break;
         }
+    }
+
+    private void setBFS() {
+        EditText editText = new EditText(this);
+        editText.setId(R.id.et_input_box);
+        editText.setHint("请输入0到31之间的整数");
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        new AlertDialog.Builder(this)
+                .setTitle("康凯斯门铃 BFS 设置")
+                .setView(editText)
+                .setPositiveButton("确认", (dialog, which) -> Schedulers.io().createWorker().schedule(() -> {
+                    EditText viewById = (EditText) ((AlertDialog) dialog).findViewById(R.id.et_input_box);
+                    int level = 8;
+                    if (viewById != null) {
+                        String string = viewById.getText().toString();
+                        if (!TextUtils.isEmpty(string)) {
+                            level = Integer.parseInt(string);
+                        }
+                    }
+                    level = Math.max(level, 0);
+                    level = Math.min(level, 31);
+                    try {
+                        int i = BaseApplication.getAppComponent().getCmd().setTargetLeveledBFS(level);
+                        AppLogger.d("正在设置 TargetLevel:" + level + ",result:" + i);
+                        if (i == 0) {
+                            runOnUiThread(() -> ToastUtil.showToast("设置成功"));
+                        } else {
+                            runOnUiThread(() -> ToastUtil.showToast("设置失败"));
+                        }
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }))
+                .setNegativeButton("取消", (dialog, which) -> {
+
+                })
+                .show();
     }
 
     @Override
