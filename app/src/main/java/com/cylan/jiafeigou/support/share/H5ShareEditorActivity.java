@@ -185,6 +185,7 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
                 endCount();
             } else {
                 uploadSuccess.set(false);
+                shareBinding.sharePercent.setVisibility(View.GONE);
                 shareBinding.shareRetry.setVisibility(View.VISIBLE);
             }
         }

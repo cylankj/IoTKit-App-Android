@@ -216,7 +216,7 @@
             android:layout_width="@dimen/y112"
             android:layout_height="@dimen/y86"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/y234"
+            android:layout_centerVertical="true"
             android:src="@drawable/pop_pic_vr_tips" />
 
         <TextView

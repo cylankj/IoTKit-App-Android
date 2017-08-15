@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.cylan.jiafeigou"
     android:versionCode="999"
     android:versionName="888">
@@ -310,10 +309,10 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <!--<activity xmlns:tools="http://schemas.android.com/tools"-->
-            <!--android:name="com.facebook.FacebookActivity"-->
-            <!--android:exported="true"-->
-            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
-            <!--tools:replace="android:theme" />-->
+        <!--android:name="com.facebook.FacebookActivity"-->
+        <!--android:exported="true"-->
+        <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
+        <!--tools:replace="android:theme" />-->
         <!--<activity-->
         <!--android:name=".n.view.panorPanoramaCameraActivityment"-->
         <!--android:configChanges="locale|orientation|keyboardHidden"-->
@@ -619,6 +618,7 @@
             android:name=".n.view.panorama.PanoramaDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme" />
         <activity
             android:name=".n.view.mine.FeedbackActivity"
@@ -651,17 +651,17 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <!--android:name="${ApplicationId}.WBShareActivity"-->
         <!--<activity-->
-            <!--android:name="com.umeng.socialize.media.WBShareCallBackActivity"-->
-            <!--android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"-->
-            <!--android:launchMode="singleTask"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/CamActivityTheme"-->
-            <!--android:windowSoftInputMode="adjustPan|stateHidden">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />-->
+        <!--android:name="com.umeng.socialize.media.WBShareCallBackActivity"-->
+        <!--android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/CamActivityTheme"-->
+        <!--android:windowSoftInputMode="adjustPan|stateHidden">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />-->
 
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--</intent-filter>-->
+        <!--<category android:name="android.intent.category.DEFAULT" />-->
+        <!--</intent-filter>-->
         <!--</activity>-->
         <activity
             android:name="com.umeng.facebook.FacebookActivity"
@@ -744,6 +744,25 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+        <!--<activity-->
+            <!--android:name="com.umeng.socialize.media.WBShareCallBackActivity"-->
+            <!--android:configChanges="locale|orientation|keyboardHidden"-->
+            <!--android:exported="false"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/CamActivityTheme" />-->
+
+        <!--<activity-->
+            <!--android:name="com.sina.weibo.sdk.share.WbShareTransActivity"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/CamActivityTheme">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--</intent-filter>-->
+
+        <!--</activity>-->
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -762,6 +781,13 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:name="com.cylan.doby.WBShareActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme" />
 
     </application>
 

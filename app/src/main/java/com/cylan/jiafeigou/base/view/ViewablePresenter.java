@@ -38,4 +38,6 @@ public interface ViewablePresenter<V extends ViewableView> extends JFGPresenter<
     void dismiss();
 
     SurfaceView getViewerInstance();
+
+    ViewableView.LiveStreamAction getLiveAction();
 }

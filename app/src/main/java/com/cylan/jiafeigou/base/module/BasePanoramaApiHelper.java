@@ -183,6 +183,15 @@ public class BasePanoramaApiHelper {
                                                     status.err = statusInt.err;
                                                     status.hasSdcard = statusInt.hasSdcard == 1;
                                                 }
+                                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+                                                if (device.available()) {
+                                                    DPEntity property = device.getProperty(204);
+                                                    if (property == null) {
+                                                        property = device.getEmptyProperty(204);
+                                                    }
+                                                    property.setValue(status, DpUtils.pack(status), property.getVersion());
+                                                    device.updateProperty(204, property);
+                                                }
                                                 PanoramaEvent.MsgSdInfoRsp sdInfoRsp = new PanoramaEvent.MsgSdInfoRsp();
                                                 sdInfoRsp.sdIsExist = status.hasSdcard;
                                                 sdInfoRsp.sdcard_recogntion = status.err;

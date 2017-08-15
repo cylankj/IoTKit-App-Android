@@ -140,6 +140,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private DetailDataAdapter adapter;
     private Subscription subscribe;
     private boolean isSetPadding = false;
+    private YoYo.YoYoString headerAnimator;
+    private YoYo.YoYoString bottomAnimator;
 
 
     public static Intent getIntentFromMessage(Context context, String uuid, CamMessageBean bean, int position, int index) {
@@ -204,13 +206,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         this.bean = getIntent().getParcelableExtra("cam_bean");
         topBack.setText(TimeUtils.get1224(panoramaItem.time * 1000L));
         initPanoramaView();
-
-//        panoramaContentContainer.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onSingleTap(0, 0);
-//            }
-//        });
     }
 
     private Observable<RxEvent.FetchDeviceInformation> getConnection() {
@@ -241,6 +236,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     protected void onResume() {
         super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         if (panoramicView720Ext != null) {
             panoramicView720Ext.onResume();
         } else {
@@ -253,10 +249,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     protected void onPause() {
-        headerTitleContainer.setTranslationY(0);
-        headerTitleContainer.setAlpha(1);
-        panoramaPanelSwitcher.setTranslationY(0);
-        panoramaPanelSwitcher.setAlpha(1);
+        if (bottomAnimator != null) bottomAnimator.stop();
+        if (headerAnimator != null) headerAnimator.stop();
         super.onPause();
         if (panoramicView720Ext != null) {
             panoramicView720Ext.onPause();
@@ -290,8 +284,6 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 isSetPadding = false;
                 ViewUtils.clearViewPaddingStatusBar(headerTitleContainer);
             }
-//            popPictureVrTips.setVisibility(View.GONE);
-//            ViewUtils.setSystemUiVisibility(headerTitleContainer, false);
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -300,12 +292,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         } else {
-//            ViewUtils.setSystemUiVisibility(headerTitleContainer, true);
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             if (!isSetPadding) {
                 isSetPadding = true;
                 ViewUtils.setViewPaddingStatusBar(headerTitleContainer);
             }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) panoramaPanelSwitcher.getLayoutParams();
         params.height = ((int) getResources().getDimension(R.dimen.panorama_detail_panel_height));
@@ -379,14 +371,12 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                     refreshControllerView(true);
                                     panoramicView720Ext.loadImage(resource);
                                     LoadingDialog.dismissLoading();
-//                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 1000);
                                 }
 
                                 @Override
                                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                     super.onLoadFailed(e, errorDrawable);
                                     LoadingDialog.dismissLoading();
-//                                        panoramicView720Ext.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 1000);
                                 }
 
                                 @Override
@@ -504,6 +494,31 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         onBackPressed();
     }
 
+    @Override
+    public void onBackPressed() {
+        boolean vrEnabled = panoramicView720Ext.isVREnabled();
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && vrEnabled) {
+            if (panoramicView720Ext != null) {
+                panoramicView720Ext.enableVRMode(false);
+                panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);//默认双鱼眼
+                bottomPictureMenuVR.setImageResource(R.drawable.photos_icon_vr_selector);
+                bottomVideoMenuVR.setImageResource(R.drawable.video_icon_vr_selector);
+                bottomPictureMenuGyroscope.setImageResource(panoramicView720Ext.isGyroEnabled() ? R.drawable.photos_icon_gyroscope_selector : R.drawable.photos_icon_manual_selector);
+                bottomVideoMenuGyroscope.setImageResource(panoramicView720Ext.isGyroEnabled() ? R.drawable.video_icon_gyroscope_selector : R.drawable.video_icon_manual_selector);
+                bottomPictureMenuGyroscope.setEnabled(true);
+                bottomVideoMenuGyroscope.setEnabled(true);
+                bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_panorama_selector);
+                bottomVideoMenuMode.setImageResource(R.drawable.video_icon_panorama_selector);
+                bottomPictureMenuMode.setEnabled(true);
+                bottomVideoMenuMode.setEnabled(true);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        } else {
+            finish();
+        }
+    }
+
     @OnClick(R.id.act_panorama_detail_pop_picture_close)
     public void closePopPictureTips() {
         PreferencesUtils.putBoolean(JConstant.SHOW_VR_MODE_TIPS, false);
@@ -516,7 +531,8 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         if (panoramicView720Ext != null) {
             panoramicView720Ext.enableVRMode(!panoramicView720Ext.isVREnabled());
             boolean vrEnabled = panoramicView720Ext.isVREnabled();
-            if (!vrEnabled) panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);//默认双鱼眼
+            if (!vrEnabled)
+                panoramicView720Ext.setDisplayMode(Panoramic720View.DM_Fisheye);//默认双鱼眼
             panoramicView720Ext.enableGyro(vrEnabled || panoramicView720Ext.isGyroEnabled());
             bottomPictureMenuVR.setImageResource(vrEnabled ? R.drawable.photos_icon_vr_hl : R.drawable.photos_icon_vr_selector);
             bottomVideoMenuVR.setImageResource(vrEnabled ? R.drawable.video_icon_vr_hl : R.drawable.video_icon_vr_selector);
@@ -532,8 +548,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             if (show && vrEnabled) {
                 popPictureVrTips.setVisibility(View.VISIBLE);
             }
-            if (!MiscUtils.isLand() && vrEnabled)
-                ViewUtils.setRequestedOrientation(this, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            if (vrEnabled) {
+                ViewUtils.setRequestedOrientation(this, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+            }
         }
     }
 
@@ -915,10 +932,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         float translationY = headerTitleContainer.getTranslationY();
         int orientation = getResources().getConfiguration().orientation;
 
-//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        if (translationY != 0) {
-            headerTitleContainer.postDelayed(() -> headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE), 200);
-        } else {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT && translationY != 0) {
+            headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             headerTitleContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -926,12 +947,13 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-//        }
 
-
-        YoYo.with(headerTitleContainer.getTranslationY() != 0 ? Techniques.SlideInDown : Techniques.SlideOutUp).duration(200)
+        headerAnimator = YoYo.with(headerTitleContainer.getTranslationY() != 0 ? Techniques.FadeInDown : Techniques.FadeOutUp).
+                duration(100)
                 .playOn(headerTitleContainer);
-        YoYo.with(panoramaPanelSwitcher.getTranslationY() != 0 ? Techniques.SlideInUp : Techniques.SlideOutDown).duration(200)
+
+        bottomAnimator = YoYo.with(panoramaPanelSwitcher.getTranslationY() != 0 ? Techniques.FadeInUp : Techniques.FadeOutDown).
+                duration(100)
                 .playOn(panoramaPanelSwitcher);
     }
 

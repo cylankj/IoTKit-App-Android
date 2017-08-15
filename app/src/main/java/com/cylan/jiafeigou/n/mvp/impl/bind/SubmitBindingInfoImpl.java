@@ -110,7 +110,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         private static final long TIME_OUT = 90 * 1000;
         private String uuid;
 
-        private boolean sendBindInfo;
+//        private boolean sendBindInfo;
         private static final int INTERVAL = 3;
 
         public void clean() {
@@ -168,20 +168,20 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                             throw new RxEvent.HelperBreaker("timeout");
                         }
                         JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                        if (account != null && !sendBindInfo) {
+                        if (account != null /*&& !sendBindInfo,ret 返回0 不可靠,*/) {
                             try {
                                 String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                                 UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
                                 if (portrait != null) {
                                     int ret = BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                                     AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait) + "," + ret);
-                                    if (ret != 0) {
-                                        AppLogger.d("客户端登录失败.需要不断尝试");
-                                    } else {
-                                        sendBindInfo = true;
-                                        PerformanceUtils.stopTrace(TAG_NET_LOGIN_FLOW);
-                                        PerformanceUtils.startTrace(TAG_NET_FINAL_FLOW);
-                                    }
+//                                    if (ret != 0) {
+//                                        AppLogger.d("客户端登录失败.需要不断尝试");
+//                                    } else {
+//                                        sendBindInfo = true;
+//                                        PerformanceUtils.stopTrace(TAG_NET_LOGIN_FLOW);
+//                                        PerformanceUtils.startTrace(TAG_NET_FINAL_FLOW);
+//                                    }
                                 }
                             } catch (Exception e) {
                                 AppLogger.d("err: " + e.getLocalizedMessage());

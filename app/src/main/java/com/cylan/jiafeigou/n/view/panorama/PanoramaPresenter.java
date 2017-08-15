@@ -162,7 +162,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             //屏蔽掉204 消息
-                            if (msg.id == 222) {
+                            if (msg.id == 222 ) {//? 204 或者 222?
                                 DpMsgDefine.DPSdStatus status = null;
                                 try {
                                     status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);

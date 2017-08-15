@@ -84,6 +84,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 });
     }
 
+    @Override
+    public ViewableView.LiveStreamAction getLiveAction() {
+        return liveStreamAction;
+    }
+
     private Subscription getDeviceUnBindSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .subscribeOn(Schedulers.io())

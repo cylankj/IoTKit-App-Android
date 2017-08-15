@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/act_panorama_detail_pop_picture_vr_tips"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="#99000000"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="invisible">
+
+
+    <ImageView
+
+        android:id="@+id/act_panorama_detail_pop_picture_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y16"
+        android:padding="@dimen/y17"
+        android:src="@drawable/nav_icon_close_selector" />
+
+
+    <ImageView
+        android:id="@+id/act_panorama_detail_pop_picture"
+        android:layout_width="@dimen/y112"
+        android:layout_height="@dimen/y86"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/pop_pic_vr_tips" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/act_panorama_detail_pop_picture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y15"
+        android:text="@string/Tap1_Album_PutInVR"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/sp16" />
+</RelativeLayout>
