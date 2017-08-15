@@ -1051,6 +1051,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             ToastUtil.showNegativeToast(getString(R.string.SD_ERR_3));
         }
+        deviceUpdate(DataSourceManager.getInstance().getDevice(uuid));
     }
 
     @Override
