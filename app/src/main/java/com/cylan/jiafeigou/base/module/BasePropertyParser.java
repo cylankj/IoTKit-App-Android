@@ -87,9 +87,9 @@ public class BasePropertyParser implements IPropertyParser {
      */
     private void init() {
         //ip
-        properties.put(227, new DPProperty(String.class, CAMERA));
+        properties.put(227, new DPProperty(String.class, DPProperty.LEVEL_HOME, DOORBELL, CAMERA));
         //客户端配置/设备端查询 设备是否使用有线网络
-        properties.put(226, new DPProperty(boolean.class, CAMERA));
+        properties.put(226, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, DOORBELL, CAMERA));
         //设备端是否存在可用的有线网络。
         //设备端插入和拔出网线均会上报该消息。
         properties.put(225, new DPProperty(int.class, CAMERA));

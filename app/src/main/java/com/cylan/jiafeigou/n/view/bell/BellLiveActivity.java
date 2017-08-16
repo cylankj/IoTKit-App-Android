@@ -743,7 +743,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private void initVideoView() {
         if (mSurfaceView == null) {
             mSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false,
-                    getAppContext(), true);
+                    getAppContext(), true, false);
             mSurfaceView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mSurfaceView.setLayoutParams(params);

@@ -116,18 +116,34 @@ public class VideoViewFactory {
     }
 
     public static IVideoView CreateRenderer(Context context) {
-        return CreateRendererExt(false, context, false);
+        return CreateRendererExt(false, context, false, false);
     }
 
-    public static IVideoView CreateRendererExt(boolean isPanoramicView, Context context, boolean useOpenGLES2) {
+    public static IVideoView CreateRendererExt(boolean isPanoramicView, Context context, boolean useOpenGLES2, boolean tank) {
         if (isPanoramicView) {
 //            return
-            return new PanoramicView360_Ext(context);
+            return tank ? new PanoramicView360_Ext(context) : new PanoramicView360_Ext(context);
         }
         return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context)
                 ? new ViEAndroidGLES20_Ext(context)
                 : new SurfaceView_Ext(context));
     }
+
+    /**
+     * @param viewType 0:normalView 1:PanoramicView 2:鱼缸 view
+     */
+    public static IVideoView CreateRendererExt(int viewType, Context context, boolean useOpenGLES2) {
+        switch (viewType) {
+            case 0:
+                return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context) ? new ViEAndroidGLES20_Ext(context) : new SurfaceView_Ext(context));
+            case 1:
+                return new PanoramicView360_Ext(context);
+            case 2:
+                return null;
+        }
+        return null;
+    }
+
 
     public enum RENDERER_VIEW_TYPE {
         TYPE_PANORAMA_360, TYPE_PANORAMA_720, TYPE_DEFAULT

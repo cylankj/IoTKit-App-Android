@@ -10,13 +10,13 @@ import com.cylan.ex.JfgException;
 public interface ViewableView extends JFGView {
 
     class LiveStreamAction {
-        public boolean hasStarted = false;
-        public boolean hasResolution = false;
-        public boolean hasLiveError = false;
-        public boolean speakerOn = false;
-        public boolean microphoneOn = false;
-        public int liveType = 0;
-        public int errorNumber = -1;
+        public volatile boolean hasStarted = false;
+        public volatile boolean hasResolution = false;
+        public volatile boolean hasLiveError = false;
+        public volatile boolean speakerOn = false;
+        public volatile boolean microphoneOn = false;
+        public volatile int liveType = 0;
+        public volatile int errorNumber = -1;
 
         public void reset() {
             hasStarted = false;
@@ -57,7 +57,6 @@ public interface ViewableView extends JFGView {
     int BAD_NET_WORK = CUSTOM_ERROR_CODE_START - 1;
     int BAD_FRAME_RATE = CUSTOM_ERROR_CODE_START - 2;//帧率过低
     int STOP_VIERER_BY_SYSTEM = CUSTOM_ERROR_CODE_START - 3;//
-
 
 
     void hasNoAudioPermission();

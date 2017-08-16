@@ -1,7 +1,14 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
@@ -9,12 +16,18 @@ import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 import com.lzy.okserver.download.DownloadManager;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -77,21 +90,26 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
+            DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
                     .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .map(ret -> {
-                        DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
-                        return ret;
-                    })
+//                    .map(ret -> {
+////                        if (ret != null && ret.ret == 0) {
+//
+////                        }
+//                        return ret;
+//                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
-                        if (ret != null && ret.ret == 0) {//删除成功
-                            mView.onDeleteResult(0);
-                        } else {
-                            mView.onDeleteResult(-1);//本地删除了,设备删除失败
-                        }
+                        mView.onDeleteResult(0);//本地删除了,设备删除失败
+//                        if (ret != null && ret.ret == 0) {//删除成功
+//                            mView.onDeleteResult(0);
+//                        } else {
+////                            mView.onDeleteResult(-1);//本地删除了,设备删除失败
+//                            mView.onDeleteResult(0);//本地删除了,设备删除失败
+//                        }
                     }, e -> {
                         AppLogger.e(e.getMessage());
                     });
@@ -137,4 +155,44 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                 }, e -> {
                 });
     }
+
+    @Override
+    public void saveImage(CamWarnGlideURL glideURL, String fileName) {
+        Glide.with(mView.getActivityContext())//注意contxt
+                .load(glideURL)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        Log.d(TAG, "onResourceReady:" + (resource == null));
+                        save(resource, fileName);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        MiscUtils.getErr(e);
+                    }
+                });
+    }
+
+    private void save(Bitmap bitmap, String fileName) {
+        Observable.just(bitmap)
+                .filter(new RxHelper.Filter<>("", bitmap != null))
+                .subscribeOn(Schedulers.io())
+                .map((Bitmap bMap) -> {
+                    String filePath = JConstant.MEDIA_PATH + File.separator;
+                    BitmapUtils.saveBitmap2file(bMap, filePath + fileName);
+                    MiscUtils.insertImage(filePath, fileName);
+                    return true;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(r -> mView.savePicResult(r), AppLogger::e);
+    }
+
+    @Override
+    public boolean isSaved(String fileName) {
+        return new File(JConstant.MEDIA_PATH + File.separator + fileName).exists();
+    }
+
 }
