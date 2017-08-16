@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.PickImageFragment;
@@ -282,7 +283,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        AppLogger.e("mineInfo:" + e.getMessage());
+                        AppLogger.e("mineInfo:" + MiscUtils.getErr(e));
                         return false;
                     }
 

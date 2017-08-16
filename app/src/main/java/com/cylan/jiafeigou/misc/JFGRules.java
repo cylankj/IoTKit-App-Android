@@ -594,7 +594,7 @@ public class JFGRules {
     public static boolean isRoundRadio(int pid) {
         IProperty property = BaseApplication.getAppComponent().getProductProperty();
         String view = property.property(pid, "VIEW");
-        return !TextUtils.isEmpty(view) && view.startsWith("圆形");
+        return !TextUtils.isEmpty(view) && view.contains("圆形");
     }
 
 

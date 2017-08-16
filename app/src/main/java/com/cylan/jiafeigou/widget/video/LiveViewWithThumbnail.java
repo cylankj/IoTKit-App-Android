@@ -150,7 +150,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                                 .signature(new StringSignature(token))
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
-                        throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+                        MiscUtils::getErr);
     }
 
 

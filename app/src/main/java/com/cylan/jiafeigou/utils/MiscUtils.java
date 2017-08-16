@@ -602,7 +602,7 @@ public class MiscUtils {
     }
 
     public static String getErr(Throwable throwable) {
-        if (throwable == null) return null;
+        if (throwable == null) return "";
         return "err:" + throwable.getLocalizedMessage();
     }
 

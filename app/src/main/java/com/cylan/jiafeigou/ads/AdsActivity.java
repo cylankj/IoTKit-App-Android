@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.AdsTimerView;
 import com.google.gson.Gson;
@@ -64,7 +65,7 @@ public class AdsActivity extends BaseFullScreenFragmentActivity {
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            AppLogger.e(e);
+                            AppLogger.e(MiscUtils.getErr(e));
                             return false;
                         }
 

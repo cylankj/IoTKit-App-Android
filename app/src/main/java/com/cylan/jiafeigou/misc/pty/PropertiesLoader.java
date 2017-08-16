@@ -84,11 +84,11 @@ public class PropertiesLoader implements IProperty {
                 final String os = map.get("OS");
                 if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
                     final String tagValue = map.get(tag);
-                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                    return !TextUtils.isEmpty(tagValue) && !TextUtils.equals(tagValue, "0");
                 }
                 if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + "")) {
                     final String tagValue = map.get(tag);
-                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                    return !TextUtils.isEmpty(tagValue) && !TextUtils.equals(tagValue, "0");
                 }
             }
             return false;
@@ -102,11 +102,11 @@ public class PropertiesLoader implements IProperty {
                 final String os = map.get("OS");
                 if (!TextUtils.isEmpty(os) && TextUtils.equals(os, pidOrOs + "")) {
                     final String tagValue = map.get(tag);
-                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                    return !TextUtils.isEmpty(tagValue) && !TextUtils.equals(tagValue, "0");
                 }
                 if (!TextUtils.isEmpty(pid) && TextUtils.equals(pid, pidOrOs + "")) {
                     final String tagValue = map.get(tag);
-                    return !TextUtils.isEmpty(tagValue) && TextUtils.equals(tagValue, "1");
+                    return !TextUtils.isEmpty(tagValue) && !TextUtils.equals(tagValue, "0");
                 }
             }
             return false;

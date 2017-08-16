@@ -189,7 +189,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
                             @Override
                             public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                AppLogger.e("load failed: " + e.getLocalizedMessage());
+                                AppLogger.e(MiscUtils.getErr(e));
                             }
                         });
             }

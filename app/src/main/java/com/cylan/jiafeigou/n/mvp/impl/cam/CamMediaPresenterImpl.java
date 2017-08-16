@@ -79,7 +79,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.d("err:" + (e == null ? null : e.getLocalizedMessage()));
+                        MiscUtils.getErr(e);
                     }
                 });
     }

@@ -1028,6 +1028,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PLAYING;
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
+
         //分享账号不显示啊.
         if (JFGRules.isShareDevice(uuid)) return;
 //        if (!getHistoryWheelHandler(presenter).isBusy()) {//拖动时间轴时屏蔽 rtcp 时间更新,防止显示异常
