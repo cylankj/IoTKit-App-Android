@@ -178,8 +178,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             }
         }
         DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
-        oldOption = flag.value = checked ? 0 : -1;
-        if (oldOption == -1) oldOption = 2;
+        oldOption = flag.value = checked ? 0 : 2;//#118091 - 1 为无效值
+//        if (oldOption == -1) oldOption = 2;
         basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
     }
 

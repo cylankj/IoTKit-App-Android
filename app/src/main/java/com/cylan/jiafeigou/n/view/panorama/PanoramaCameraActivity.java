@@ -238,9 +238,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
         Pair<DPEntity, Integer> pair = handleUnreadCount(device);
         ivt_newMessageTips.setShowDot(pair != null && pair.second > 0);
-
         bottomPanelAlbumItem.showHint(false);
 
+        initPanoramaVideoView();
     }
 
     private View.OnTouchListener photoGraphTouchListener = new View.OnTouchListener() {
@@ -294,20 +294,24 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         menuBinding.actPanoramaCameraQuickMenuItem1Mic.setImageResource(on ? R.drawable.camera720_icon_talk_selector : R.drawable.camera720_icon_no_talk_selector);
     }
 
+    private void initPanoramaVideoView() {
+        videoLiveContainer.setVisibility(View.VISIBLE);
+        if (surfaceView == null) {
+            surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, this, true);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            surfaceView.setLayoutParams(params);
+            videoLiveContainer.addView(surfaceView);
+            surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
+            surfaceView.setId("IVideoView".hashCode());
+            surfaceView.setEventListener(this);
+        }
+        surfaceView.configV720();
+    }
+
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-//        if (surfaceView == null) {
-        videoLiveContainer.removeAllViews();
-        surfaceView = (PanoramicView720_Ext) VideoViewFactory.CreateRendererExt(VideoViewFactory.RENDERER_VIEW_TYPE.TYPE_PANORAMA_720, this, true);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        surfaceView.setLayoutParams(params);
+        initPanoramaVideoView();
 
-        videoLiveContainer.addView(surfaceView);
-        surfaceView.setDisplayMode(PanoramicView720_Ext.DM_Fisheye);
-        surfaceView.configV720();
-        surfaceView.setId("IVideoView".hashCode());
-        surfaceView.setEventListener(this);
-//        }
         appCmd.enableRenderSingleRemoteView(true, surfaceView);
         loadingBar.setState(JConstant.PLAY_STATE_IDLE, null);
         liveFlowSpeedText.setVisibility(View.VISIBLE);
@@ -555,7 +559,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
-//        presenter.dismiss();
+        presenter.dismiss();
         bottomPanelAlbumItem.showHint(false);
         Intent intent = new Intent(this, PanoramaAlbumActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
@@ -886,10 +890,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //                    netType != -1 ? R.string.Tap1_Offline : R.string.Tap1_DisconnectedPleaseCheck);
             loadingBar.setState(connectionType == -1 ? JConstant.PLAY_STATE_LOADING_FAILED : JConstant.PLAY_STATE_IDLE, null);
             RxBus.getCacheInstance().post(RecordFinishEvent.INSTANCE);
-            if (surfaceView != null) {
-                videoLiveContainer.removeAllViews();
-                surfaceView = null;
-            }
+
+            /*播放失败了需要显示黑屏,但又不能移除 surfaceview ,因为创建 surfaceview 会使屏幕产出闪烁的效果*/
+            videoLiveContainer.setVisibility(View.INVISIBLE);
+
             preNetType = -1;
             return;
         }

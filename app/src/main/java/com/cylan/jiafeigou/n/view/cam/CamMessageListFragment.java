@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -238,6 +239,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
 //            if (camMessageListAdapter.getCount() == 0)
             startRequest(true);//需要每次刷新,而不是第一次刷新
+            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//            SensorManager sensorManager= (SensorManager) getActivity().getSystemService(Activity.SENSOR_SERVICE);
+//            SensorManager.getOrientation()
         }
     }
 

@@ -129,7 +129,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         boolean showBattery = JFGRules.showBattery(device != null ? device.pid : 0, false);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
-        //全景不显示固件升级 显示软件版本
+        //全景不显示固件升级 显示软件版本 
+        // TODO: 2017/8/16 #113788 全景需要显示固件升级 和 SD 卡选项
         tvDeviceSoftwareVersion.setVisibility(JFGRules.showSoftWare(device.pid, false) ? View.VISIBLE : View.GONE);
         boolean showFU = JFGRules.showFirmware(device != null ? device.pid : 0, false);
         //固件升级,分享设备不显示
@@ -153,7 +154,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) return;
         //是否分享设备
-        if (!TextUtils.isEmpty(device.shareAccount)) {
+        if (!TextUtils.isEmpty(device.shareAccount)&&!JFGRules.isPan720(device.pid)) {//todo 720 分享者享有所有权限
             tvDeviceAlias.showDivider(false);
             tvDeviceTimeZone.setVisibility(View.GONE);
             tvDeviceSdcardState.setVisibility(View.GONE);

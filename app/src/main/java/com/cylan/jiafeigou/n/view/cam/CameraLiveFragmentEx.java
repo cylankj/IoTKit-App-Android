@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -51,6 +52,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -264,6 +266,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.setUserVisibleHint(isVisibleToUser);
         if (basePresenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
 //            camLiveControlLayer.showUseCase();
+            // TODO: 2017/8/16 直播页需要自动横屏了
+            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             Device device = basePresenter.getDevice();
             DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
             if (standby.standby) return;

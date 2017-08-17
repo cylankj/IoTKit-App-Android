@@ -225,42 +225,36 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      */
     protected Observable<Boolean> stopViewer() {
         AppLogger.e("stopViewer");
-        if (!liveStreamAction.hasStarted) return Observable.empty();
-        liveStreamAction.reset();
-        feedRtcp.setMonitorListener(null);
-        return Observable.just(getViewHandler())
-                .subscribeOn(Schedulers.io())
-                .map(handler -> {
-                    if (!TextUtils.isEmpty(handler)) {
-                        try {
-                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                            disconn.remote = getViewHandler();
-                            disconn.code = STOP_VIERER_BY_SYSTEM;
-                            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
-                            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
-                            long start = System.currentTimeMillis();
-                            byte[] screenshot = appCmd.screenshot(false);
-                            appCmd.stopPlay(handler);
-                            long end = System.currentTimeMillis();
-                            AppLogger.e("花费时间:" + (end - start));
-                            if (screenshot != null) {
-                                int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
-                                int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
-                                removeLastPreview();
-                                Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
-                                String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
-                                PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
-                                Schedulers.io().createWorker().schedule(() -> BitmapUtils.saveBitmap2file(bitmap, filePath));
-                                AppLogger.e("截图文件地址:" + filePath);
-                            }
-                            return true;
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                            AppLogger.d("停止直播失败");
-                        }
+        // TODO: 2017/8/16 需要同步性很高, rx 的线程切换可能带来不一致性,所以不使用线程切换了
+        if (!TextUtils.isEmpty(getViewHandler()) && liveStreamAction.hasStarted) {
+            liveStreamAction.reset();
+            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+            disconn.remote = getViewHandler();
+            disconn.code = STOP_VIERER_BY_SYSTEM;
+            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
+            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
+            Schedulers.io().createWorker().schedule(() -> {
+                try {
+                    byte[] screenshot = appCmd.screenshot(false);
+                    appCmd.stopPlay(getViewHandler());
+                    if (screenshot != null) {
+                        int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
+                        int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
+                        removeLastPreview();
+                        Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
+                        String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+                        Schedulers.io().createWorker().schedule(() -> BitmapUtils.saveBitmap2file(bitmap, filePath));
+                        AppLogger.e("截图文件地址:" + filePath);
                     }
-                    return false;
-                });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AppLogger.d("停止直播失败");
+                }
+            });
+            return Observable.just(true);
+        }
+        return Observable.just(false);
     }
 
     private void removeLastPreview() {
@@ -370,9 +364,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onStop() {
         super.onStop();
         if (getViewHandler() != null) {
-            if (liveStreamAction.hasResolution) {
-                stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
-            }
+//            if (liveStreamAction.hasResolution) {
+            stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
+//            }
         }
     }
 
@@ -479,7 +473,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public SurfaceView getViewerInstance() {
-        SurfaceView surfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, mView.getAppContext(), true);
+        SurfaceView surfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, mView.getAppContext(), true, false);
         surfaceView.setId("IVideoView".hashCode());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         surfaceView.setLayoutParams(params);

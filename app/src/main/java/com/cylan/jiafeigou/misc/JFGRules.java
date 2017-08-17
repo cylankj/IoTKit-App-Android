@@ -516,6 +516,12 @@ public class JFGRules {
         return productProperty.hasProperty(pid, "SD");
     }
 
+    public static boolean isNeedTankView(int pid) {
+        IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
+        String property = productProperty.property(pid, "VIEW");
+        return !TextUtils.isEmpty(property) && property.contains("切掉上下部分");
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

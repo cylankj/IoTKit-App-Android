@@ -379,9 +379,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         this.pid = device.pid;
         isNormalView = JFGRules.isNeedNormalRadio(device.pid);
-
+        boolean tankVeiw = JFGRules.isNeedTankView(device.pid);
         VideoViewFactory.IVideoView videoView = VideoViewFactory.CreateRendererExt(!isNormalView,
-                getContext(), true);
+                getContext(), true, false);
         videoView.setInterActListener(new VideoViewFactory.InterActListener() {
 
             @Override
@@ -630,21 +630,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(VISIBLE);//loading 必须显示
             }
             svSwitchStream.setVisibility(GONE);
-            YoYo.with(Techniques.SlideOutUp)
+            YoYo.with(Techniques.FadeOutUp)
                     .duration(200)
                     .playOn(layoutA);
             YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
                     ViewGroup parent = (ViewGroup) target.getParent();
-                    int distance = parent.getHeight() - layoutE.getTop();
+                    int distance = layoutE.getHeight();
                     this.getAnimatorAgent().play(ObjectAnimator.ofFloat(target, "translationY", 0.0F, (float) distance));
 
                 }
             })
                     .duration(200)
                     .playOn(layoutD);
-            YoYo.with(Techniques.SlideOutDown)
+            YoYo.with(Techniques.FadeOutDown)
                     .duration(200)
                     .withListener(new AnimatorListenerAdapter() {
                         @Override
@@ -676,7 +676,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             svSwitchStream.setVisibility(showSdHdBtn() ? VISIBLE : GONE);
 
-            YoYo.with(Techniques.SlideInDown)
+            YoYo.with(Techniques.FadeInDown)
                     .duration(250)
                     .playOn(layoutA);
             if (!layoutD.isShown())
@@ -685,7 +685,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 @Override
                 protected void prepare(View target) {
                     ViewGroup parent = (ViewGroup) target.getParent();
-                    int distance = parent.getHeight() - layoutE.getTop();
+                    int distance = layoutE.getHeight();
                     this.getAnimatorAgent().play(ObjectAnimator.ofFloat(target, "translationY", (float) (distance), 0.0F));
                 }
             })
@@ -696,7 +696,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
-            YoYo.with(Techniques.SlideInUp)
+            YoYo.with(Techniques.FadeInUp)
                     .duration(250)
                     .playOn(layoutE);
             postDelayed(landHideRunnable, 3000);
@@ -709,13 +709,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         public void run() {
             float t = layoutA.getTranslationY();
             if (layoutA.getTranslationY() != 0) {
-                if (t == -layoutA.getMeasuredHeight()) {
-                    //显示
-                    removeCallbacks(landShowRunnable);
-                    removeCallbacks(landHideRunnable);
-                    post(landShowRunnable);
-                    Log.e(TAG, "点击 显示");
-                }
+//                if (t == -layoutA.getMeasuredHeight()) {//显示是 fade 动画 不能以相等来判断了
+                //显示
+                removeCallbacks(landShowRunnable);
+                removeCallbacks(landHideRunnable);
+                post(landShowRunnable);
+                Log.e(TAG, "点击 显示");
+//                }
             } else {
                 //横屏,隐藏
                 removeCallbacks(landShowRunnable);
@@ -1028,7 +1028,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PLAYING;
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
+        //暴力处理吧,不知道该在哪里隐藏了
 
+        postDelayed(portHideRunnable, 3000);//#118022
+//        postDelayed(landHideRunnable, 3000);
+        postDelayed(() -> {
+
+        }, 3000);
         //分享账号不显示啊.
         if (JFGRules.isShareDevice(uuid)) return;
 //        if (!getHistoryWheelHandler(presenter).isBusy()) {//拖动时间轴时屏蔽 rtcp 时间更新,防止显示异常
@@ -1529,10 +1535,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case R.id.imgV_cam_live_land_nav_back:
                 post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
                         ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+                // TODO: 2017/8/16 现在需要自动横屏
+                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
+                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
                 break;
             case R.id.imgV_cam_zoom_to_full_screen://点击全屏
                 post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+                // TODO: 2017/8/16 现在需要自动横屏
+                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
+                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
+
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放
                 if (playClickListener != null) playClickListener.onClick(v);

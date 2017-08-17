@@ -211,11 +211,21 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     private boolean textShowSdBtn(CamMessageBean item) {
         //考虑这个bean的条件.
+        // TODO: 2017/8/16  不光要看 hasSDCard 还要看 err 是否为0 #118051
+        // TODO: 2017/8/16 Android（1.1.0.534）720设备 报警中心界面 提示"检车到新的Micro SD卡，需要先初始化才能存储视频" 右下角没有查看详情 按钮
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+        boolean hasSdcard = false;
+        int err = -1;
         if (item.sdcardSummary != null) {
-            if (!item.sdcardSummary.hasSdcard) return false;
+            hasSdcard = item.sdcardSummary.hasSdcard;
+            err = item.sdcardSummary.errCode;
+        } else if (status != null) {
+            hasSdcard = status.hasSdcard;
+            err = status.err;
         }
-        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        return status.hasSdcard && status.err != 0 && !isSharedDevice;
+
+        return hasSdcard && err != 0 && (!isSharedDevice || JFGRules.isPan720(device.pid));
     }
 
     /**
