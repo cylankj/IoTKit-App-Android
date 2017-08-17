@@ -297,7 +297,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.sv_setting_device_wifi:
-                handleJumpToConfig();
+                handleJumpToConfig(true);
                 break;
             case R.id.sbtn_setting_sight:
                 Intent intent = new Intent(this, SightSettingActivity.class);
@@ -343,7 +343,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 break;
 
             case R.id.sv_setting_device_home_mode:
-                handleJumpToConfig();
+                handleJumpToConfig(false);
                 break;
             case R.id.sv_setting_direct_mode:
                 intent = new Intent();
@@ -474,7 +474,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
 
-    private void handleJumpToConfig() {
+    private void handleJumpToConfig(boolean justSend) {
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) {
             finishExt();
@@ -494,7 +494,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else if (JFGRules.isCatEeyBell(device.pid)) {//猫眼门铃特殊处理
             Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
             intent.setClass(getContext(), BindAnimationActivity.class);
-            intent.putExtra(JUST_SEND_INFO, uuid);
+            if (justSend) {
+                intent.putExtra(JUST_SEND_INFO, uuid);
+            }
             intent.putExtra("just_config", true);
             intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
@@ -502,7 +504,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else if (JFGRules.isBell(device.pid)) {
             Intent intent = new Intent(this, BindBellActivity.class);
             intent.putExtra(JConstant.KEY_SSID_PREFIX, BindUtils.BELL_AP);
-            intent.putExtra(JUST_SEND_INFO, uuid);
+            if (justSend) {
+                intent.putExtra(JUST_SEND_INFO, uuid);
+            }
             intent.putExtra("just_config", true);
             intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
@@ -512,7 +516,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 //设备离线
                 Intent intent = BindUtils.getIntentByPid(device.pid, getContext());
                 intent.putExtra("PanoramaConfigure", "Family");
-                intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+                if (justSend) {
+                    intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+                }
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 startActivity(intent);
             } else {

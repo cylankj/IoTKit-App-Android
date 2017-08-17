@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Created by yanzhendong on 2017/3/1.
+ *
+ * @deprecated 为了离线操作而设置, 太复杂, 已不适用当前场景
  */
 
 public class BaseDPTaskFactory implements IDPTaskFactory {

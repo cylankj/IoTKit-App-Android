@@ -227,16 +227,17 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         AppLogger.e("stopViewer");
         // TODO: 2017/8/16 需要同步性很高, rx 的线程切换可能带来不一致性,所以不使用线程切换了
         if (!TextUtils.isEmpty(getViewHandler()) && liveStreamAction.hasStarted) {
+            String viewHandler = getViewHandler();
             liveStreamAction.reset();
             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-            disconn.remote = getViewHandler();
+            disconn.remote = viewHandler;
             disconn.code = STOP_VIERER_BY_SYSTEM;
             RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
-            AppLogger.d("正在发送停止直播消息:" + getViewHandler());
+            AppLogger.d("正在发送停止直播消息:" + viewHandler);
             Schedulers.io().createWorker().schedule(() -> {
                 try {
                     byte[] screenshot = appCmd.screenshot(false);
-                    appCmd.stopPlay(getViewHandler());
+                    appCmd.stopPlay(viewHandler);
                     if (screenshot != null) {
                         int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
                         int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;

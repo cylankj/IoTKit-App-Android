@@ -1095,14 +1095,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case ERROR_CODE_HTTP_NOT_AVAILABLE: {
                 if (!alertHttpNotAvailable) return;
                 //松开弹
-//                if (useAlert) {
-//                    deviceReportDialog.setMessage(getString(R.string.DOOR_SET_WIFI_MSG));
-//                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (dialog, which) -> alertHttpNotAvailable = false);
-//                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable = false));
-//                    deviceReportDialog.show();
-//                } else {
-//                    ToastUtil.showNegativeToast(getString(R.string.Switch_Mode_Pop));
-//                }
+                if (useAlert) {
+                    deviceReportDialog.setMessage(getString(R.string.Switch_Mode));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (dialog, which) -> alertHttpNotAvailable = false);
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable = false));
+                    deviceReportDialog.show();
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Switch_Mode));
+                }
             }
         }
 

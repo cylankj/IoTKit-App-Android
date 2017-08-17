@@ -250,17 +250,30 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         IMEUtils.hide(this);
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_AddDevice_tips), getString(R.string.Tap1_AddDevice_tips),
                 getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    if (getIntent() != null && getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
-                        finishExt();
-                    } else {
-                        if (getIntent().getStringExtra("PanoramaConfigure") != null) {
-                            finishExt();
-                        } else {
-                            Intent intent = new Intent(ConfigWifiActivity.this, BindDeviceActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        }
-                    }
+                    final String className = getIntent().getStringExtra(JConstant.KEY_BIND_BACK_ACTIVITY);
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName(this, className));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finishExt();
+
+//                    if (getIntent() != null && getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
+//                        finishExt();
+//                    } else {
+//                        if (getIntent().getStringExtra("PanoramaConfigure") != null) {
+//                            finishExt();
+//                        } else {
+//                            final String className = getIntent().getStringExtra(JConstant.KEY_BIND_BACK_ACTIVITY);
+//                            Intent intent = new Intent();
+//                            intent.setComponent(new ComponentName(this, className));
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent);
+//                            finishExt();
+////                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+////                            Intent intent = new Intent(ConfigWifiActivity.this, BindDeviceActivity.class);
+////                            startActivity(intent);
+//                        }
+//                    }
 
                 }, getString(R.string.CANCEL), null, false);
     }
@@ -354,7 +367,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
         LoadingDialog.dismissLoading();
-        if (getIntent().hasExtra(JUST_SEND_INFO)) {
+        if (getIntent().hasExtra(JUST_SEND_INFO) && !getIntent().getBooleanExtra("just_config", false)) {
             runOnUiThread(() -> ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG)));
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -8,6 +8,8 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by yanzhendong on 2017/3/3.
+ *
+ * @deprecated
  */
 
 public class DPMultiDeleteConfirmTaskTask extends BaseDPTask<BaseDPTaskResult> {

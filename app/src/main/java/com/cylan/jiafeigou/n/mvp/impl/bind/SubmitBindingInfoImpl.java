@@ -9,6 +9,7 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -110,7 +111,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
         private static final long TIME_OUT = 90 * 1000;
         private String uuid;
 
-//        private boolean sendBindInfo;
+        //        private boolean sendBindInfo;
         private static final int INTERVAL = 3;
 
         public void clean() {
@@ -204,6 +205,8 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         AppLogger.d("正在查询设备网络状态:" + new Gson().toJson(net));
                         if (JFGRules.isDeviceOnline(net)) {
                             //成功了
+                            // TODO: 2017/8/17 绑定成功了同步所有的属性
+                            DataSourceManager.getInstance().syncAllProperty();
                             bindState = BIND_SUC;
                             throw new RxEvent.HelperBreaker("good");
                         }

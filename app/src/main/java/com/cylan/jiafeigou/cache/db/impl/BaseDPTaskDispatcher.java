@@ -25,6 +25,8 @@ import rx.schedulers.Schedulers;
 
 /**
  * 用于客户端和服务器之间的数据交互
+ *
+ * @deprecated 没有灵活性 ,直接使用 appCmd
  */
 public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
     private IDPTaskFactory taskFactory;

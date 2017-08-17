@@ -154,7 +154,7 @@ public class BasePanoramaApiHelper {
                         device.updateProperty(204, property);
                     }
                     return ret;
-                }) : BaseForwardHelper.getInstance().setDataPoint(uuid, 218, 0)
+                }).onErrorResumeNext(Observable.just(null)) : BaseForwardHelper.getInstance().setDataPoint(uuid, 218, 0)
                         .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                                 .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                                 .first(robotoSyncData -> {

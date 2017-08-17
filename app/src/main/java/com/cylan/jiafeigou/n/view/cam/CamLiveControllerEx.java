@@ -980,7 +980,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private int getVideoFinalWidth() {
         if (MiscUtils.isLand()) {
             //横屏需要区分睿视
-            if (isRSCam) {
+            // TODO: 2017/8/17 #118156 Android（1.1.0.535）睿视设备 OS81的鱼缸效果不正确 全屏时，不做4:3的比例 而是图像是满屏效果/(ㄒoㄒ)/~~
+            Device device = DataSourceManager.getInstance().getDevice(uuid);
+            if (isRSCam && device.getPid() != 81) {
                 //保持4:3
                 Log.d("isRSCam", "isRSCam....");
                 return (int) (Resources.getSystem().getDisplayMetrics().heightPixels * (float) 4 / 3);
@@ -1536,15 +1538,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
                         ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
                 // TODO: 2017/8/16 现在需要自动横屏
-                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
-                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
+//                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
+//                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
                 break;
             case R.id.imgV_cam_zoom_to_full_screen://点击全屏
                 post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
                 // TODO: 2017/8/16 现在需要自动横屏
-                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
-                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
+//                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
+//                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
 
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放

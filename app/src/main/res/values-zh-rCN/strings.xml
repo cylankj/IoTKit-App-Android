@@ -85,7 +85,7 @@
   <string name="Change_ID">更换微信号</string>
   <string name="ChargingLight">充电灯</string>
   <string name="ChargingLight_BlueFlashing">蓝色闪烁：正在充电</string>
-  <string name="ChargingLight_SteadyBlue">蓝色长亮：充满</string>
+  <string name="ChargingLight_SteadyBlue">蓝色常亮：充满</string>
   <string name="Choose_Album">选择相册</string>
   <string name="Clear_Sdcard">清空SD卡数据</string>
   <string name="Clear_Sdcard_tips">清空SD卡数据后将不可恢复，是否继续？</string>
@@ -122,6 +122,7 @@
   <string name="DEVICE_ADDING">正在绑定，请稍候&#8230;</string>
   <string name="DEVICE_BLUETOOTH_ONLINE">蓝牙已连接</string>
   <string name="DEVICE_CONNECTING">设备正在连接网络&#8230;</string>
+  <string name="DEVICE_CONNECTING_WIFI">正在连接，请稍候&#8230;</string>
   <string name="DEVICE_EXISTED">此账号已经绑定该设备</string>
   <string name="DEVICE_NO_RES">绑定完成 \n 请到列表查看设备状态</string>
   <string name="DEVICE_OFFLINE1">请检查设备是否已开机</string>
@@ -174,6 +175,7 @@
   <string name="Delete_Share">是否删除分享</string>
   <string name="Detection_Pop">关闭后将不再推送侦测报警消息，确定关闭？</string>
   <string name="Device_Disconnected">对端断开</string>
+  <string name="Dont_Show_Again">不再提示</string>
   <string name="Download_Then_Share">请先下载视频再分享</string>
   <string name="Downloading">视频正在下载中</string>
   <string name="EDIT_IMAGE">图片编辑</string>
@@ -417,6 +419,7 @@
   <string name="PLEASE_WAIT_1">登录中，请稍后&#8230;</string>
   <string name="PLEASE_WAIT_2">正在绑定，请稍候&#8230;</string>
   <string name="PROFILE_PHOTO">头像</string>
+  <string name="PROXY_INTERNET">正在使用代理上网，请先关闭代理再绑定</string>
   <string name="PULL_TO_LOAD">上拉加载更多</string>
   <string name="PULL_TO_REFRESH">下拉刷新</string>
   <string name="PUSH_MSG">APP接收消息通知</string>
@@ -429,7 +432,7 @@
   <string name="Phone">电话</string>
   <string name="PowerLight_BlueFlashing">蓝色闪烁：低电量</string>
   <string name="PowerLight_BlueOut">蓝色灯灭：关机</string>
-  <string name="PowerLight_SteadyBlue">蓝色长亮：开机</string>
+  <string name="PowerLight_SteadyBlue">蓝色常亮：开机</string>
   <string name="Qiaoan_Blinking">接通电源后，等待至摄像头红灯闪烁并语音提示“等待连接”</string>
   <string name="Qiaoan_ResetDevice">重置设备</string>
   <string name="Qiaoan_VoiceTips">未听到语音提示？</string>
@@ -595,6 +598,7 @@
   <string name="SURE_DELETE">确定删除该设备的所有消息？</string>
   <string name="SURE_DELETE_1">确定删除“%s”及相关数据吗？</string>
   <string name="SWITCH_LOCATIONS">位置切换</string>
+  <string name="SWITCH_VIEW_POP">当前平视视角不支持使用该功能，是否切换至俯视？</string>
   <string name="SYSTEM">系统通知</string>
   <string name="SYSTEM_MSG">系统通知</string>
   <string name="SYSTME_VERSION">系统版本</string>
@@ -626,6 +630,7 @@
   <string name="Start_instructions_G">关注“加菲狗官微服务”公众号后，进入主页面，点击菜单栏的“服务”，选择“绑定账号”。</string>
   <string name="Start_instructions_H">绑定账号</string>
   <string name="Start_instructions_I">请输入加菲狗手机/邮箱账号进行绑定，如忘记密码请到加菲狗客户端找回</string>
+  <string name="Switch_Mode">当前网络拍摄内容请到设置切换至直连查看</string>
   <string name="Switch_Off">始终关闭</string>
   <string name="Switch_On">始终开启</string>
   <string name="TAKE_PHOTO">拍一张</string>
@@ -994,13 +999,13 @@
   <string name="WIFI_OFF">请打开WiFi开关，再重试</string>
   <string name="WIFI_PWD">WiFi密码</string>
   <string name="WIFI_PWD_1">WiFi密码：</string>
-  <string name="WIFI_SET_2">1.请检查设备WiFi灯是否蓝色闪烁,如果没有,请长按WiFi键约3秒\n2.打开iPhone的设置&#45;>无线网络,选择\“%s\”WiFi加入,密码8个1</string>
-  <string name="WIFI_SET_3">请在系统设置&#45;>无线局域网，选择“DOG&#45;**&#45;******”加入，密码8个1</string>
-  <string name="WIFI_SET_3_1">请在系统设置&#45;>无线局域网，选择“DOG&#45;ML&#45;******”加入，密码8个1</string>
+  <string name="WIFI_SET_2">1.请检查设备WiFi灯是否蓝色闪烁,如果没有,请长按WiFi键约3秒\n2.打开iPhone的设置&#8211;>无线网络,选择\“%s\”WiFi加入,密码8个1</string>
+  <string name="WIFI_SET_3">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;**&#8211;******”加入，密码8个1</string>
+  <string name="WIFI_SET_3_1">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;ML&#8211;******”加入，密码8个1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
-  <string name="WIFI_SET_RS">请在系统设置&#45;>无线局域网，选择“RS&#45;CAM&#45;******”加入，密码8个1</string>
-  <string name="WIFI_SET_VER">请在系统设置&#45;>无线局域网，选择“%s”加入，密码8个1</string>
+  <string name="WIFI_SET_RS">请在系统设置&#8211;>无线局域网，选择“RS&#8211;CAM&#8211;******”加入，密码8个1</string>
+  <string name="WIFI_SET_VER">请在系统设置&#8211;>无线局域网，选择“%s”加入，密码8个1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1008,7 +1013,7 @@
   <string name="WiFiLight_BlueFlashing">蓝色闪烁：WiFi配置模式</string>
   <string name="WiFiLight_RedFlashing">红色闪烁：连接中</string>
   <string name="WiFiLight_RedNBlueFlashing">红/蓝闪烁：固件升级中</string>
-  <string name="WiFiLight_SteadyBlue">蓝色长亮：WiFi在线</string>
+  <string name="WiFiLight_SteadyBlue">蓝色常亮：WiFi在线</string>
   <string name="Wifi_Hotspot">在设备的【设置>无线局域网】请选择一个WiFi热点连接。</string>
   <string name="Wifi_Method">WiFi网络：</string>
   <string name="Wifi_Set_Up">立即去设置</string>
@@ -1031,7 +1036,7 @@
   <string name="connecting_ap">正在获取&#8230;</string>
   <string name="contacts_auth">通讯录</string>
   <string name="copy">复制</string>
-  <string name="copyrightEn">Copyright ©2005&#45;%s Cylan.All Rights Reserved</string>
+  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n可能是一个电话号码，你可以：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1040,7 +1045,7 @@
   <string name="getting">获取中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">未发现Micro SD卡</string>
-  <string name="help_url">https://%1$s:8081/helps/zh&#45;rCN%2$s.html</string>
+  <string name="help_url">https://%1$s:8081/helps/zh&#8211;rCN%2$s.html</string>
   <string name="infrared_night_vision">红外夜视</string>
   <string name="infrared_night_vision_Descript">开启红外夜视可在光线较暗的环境下得到清晰的视频画面</string>
   <string name="isStorageLow">Micro SD卡存储空间不足，无法下载。</string>
@@ -1054,7 +1059,7 @@
   <string name="please_choose_wifi">请选择WiFi网络</string>
   <string name="receive_new_news">收到%s条新消息</string>
   <string name="rename">编辑名称</string>
-  <string name="service_phonenum">400&#45;716&#45;3232</string>
+  <string name="service_phonenum">400&#8211;716&#8211;3232</string>
   <string name="set_failed">保存失败</string>
   <string name="setwifi_check">请设置手机连接到“%s”WiFi网络，再进行配置</string>
   <string name="share_content">最近我在用这款手机APP，很不错哦~ 配合一个摄像头可以随时随地看到家里的老人、宝宝和财物，非常好用！推荐你也试试哦~~~</string>

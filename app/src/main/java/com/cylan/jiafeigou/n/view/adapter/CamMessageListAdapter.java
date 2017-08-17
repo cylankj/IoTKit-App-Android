@@ -54,6 +54,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private Map<Integer, Integer> selectedMap = new HashMap<>();
 
     private boolean isSharedDevice = false;
+    private DpMsgDefine.DPSdcardSummary summary;
+    private boolean status;
 
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -232,8 +234,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        DpMsgDefine.DPSdStatus nowStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        updateItemFrom(position);
+        if (this.status != status) {//不一样才 notify
+            this.status = status;
+            updateItemFrom(position);
+        }
     }
 
     public void notifyDeviceOnlineState(boolean online, int position) {
@@ -419,4 +423,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             return false;
         }
     };
+
+    public void setCurrentSDcardSummary(DpMsgDefine.DPSdcardSummary summary) {
+        this.summary = summary;
+    }
 }

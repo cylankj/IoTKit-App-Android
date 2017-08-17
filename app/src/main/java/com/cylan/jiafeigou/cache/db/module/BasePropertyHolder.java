@@ -13,8 +13,9 @@ import java.util.ArrayList;
 
 /**
  * Created by yanzhendong on 2017/3/25.
+ *
+ * @Deprecated Use Device Instead
  */
-
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
 
     @Deprecated //使用 ValueResolver 来解析,反射效率比较低

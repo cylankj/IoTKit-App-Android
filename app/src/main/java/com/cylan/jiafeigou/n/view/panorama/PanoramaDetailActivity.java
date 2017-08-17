@@ -774,10 +774,15 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             if (download != null) {
                 String targetPath = downloadInfo.getTargetPath();
                 if (FileUtils.isFileExist(targetPath)) {
-                    download.setText(R.string.Tap1_Album_Downloaded);
-                    download.setEnabled(false);
+                    if (bean != null) {
+                        download.setText(R.string.SAVE_PHONE);
+                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+                    } else {
+                        download.setText(R.string.Tap1_Album_Downloaded);
+                        download.setEnabled(false);
+                    }
                 } else {
-                    download.setText(R.string.Tap1_Album_Download);
+                    download.setText(bean != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
                     download.setEnabled(true);
                     DownloadManager.getInstance().removeTask(downloadInfo.getTaskKey());
                     downloadInfo.setState(DownloadManager.NONE);
@@ -789,7 +794,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         @Override
         public void onError(DownloadInfo downloadInfo, String s, Exception e) {
             if (download != null) {
-                download.setText(R.string.Tap1_Album_Download);
+                download.setText(bean != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
                 download.setEnabled(true);
             }
         }
