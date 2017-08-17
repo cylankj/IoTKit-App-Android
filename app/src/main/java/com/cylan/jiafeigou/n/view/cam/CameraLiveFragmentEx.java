@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -18,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -91,6 +93,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @BindView(R.id.cam_live_control_layer)
     CamLiveControllerEx camLiveControlLayer;
     private boolean isNormalView;
+    private MyEventListener eventListener;
 
     public CameraLiveFragmentEx() {
         // Required empty public constructor
@@ -114,6 +117,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         super.onCreate(savedInstanceState);
         Device device = getDevice();
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
+        eventListener = new MyEventListener(getActivity());
+        boolean autoRotateOn = (Settings.System.getInt(getContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
+        //检查系统是否开启自动旋转
+        if (autoRotateOn) {
+            eventListener.enable();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (eventListener != null) {
+            eventListener.disable();
+        }
     }
 
     @Override
@@ -688,4 +705,51 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
 //
 //    }
+
+    class MyEventListener extends OrientationEventListener {
+
+        public MyEventListener(Context context) {
+            super(context);
+        }
+
+        public MyEventListener(Context context, int rate) {
+            super(context, rate);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            int screenOrientation = getResources().getConfiguration().orientation;
+            if (((orientation >= 0) && (orientation < 45)) || (orientation > 315)) {//设置竖屏
+                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && orientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+//                    Log.d(TAG, "设置竖屏");
+                    if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    }
+                }
+            } else if (orientation > 225 && orientation < 315) { //设置横屏
+//                Log.d(TAG, "设置横屏");
+                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    }
+                }
+            } else if (orientation > 45 && orientation < 135) {// 设置反向横屏
+//                Log.d(TAG, "反向横屏");
+                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                    if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                    }
+                }
+            } else if (orientation > 135 && orientation < 225) {
+//                Log.d(TAG, "反向竖屏");
+                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                    if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                        if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

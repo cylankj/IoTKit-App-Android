@@ -16,8 +16,12 @@ import java.util.ArrayList;
  */
 
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
+
+    @Deprecated //使用 ValueResolver 来解析,反射效率比较低
     protected transient IPropertyParser propertyParser;
+
     protected transient SparseArray<DPEntity> properties = new SparseArray<>();
+
     private static final Object lock = new Object();
 
     protected abstract int pid();
@@ -27,6 +31,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      * @param defaultValue
      * @param <V>
      * @return
+     * @deprecated
      */
     public <V> V $(int msgId, V defaultValue) {
         synchronized (lock) {
@@ -77,6 +82,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
         return property != null && property.setValue(value, value == null ? null : value.toBytes(), value == null ? 0 : value.getVersion());
     }
 
+    @Deprecated
     public DPEntity getProperty(int msgId) {
         if (propertyParser == null || !propertyParser.accept(pid(), msgId)) return null;
         return properties.get(msgId);

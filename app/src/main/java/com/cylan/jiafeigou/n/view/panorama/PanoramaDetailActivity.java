@@ -912,7 +912,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
 
     @Override
     public void OnUpdateProgress(long l, int i) {
-        AppLogger.d("当前播放进度为:" + i + "," + l);
+//        AppLogger.d("当前播放进度为:" + i + "," + l);
         runOnUiThread(() -> updateProgress(i, panoramaPanelSeekBar.getMax()));
     }
 
@@ -1059,6 +1059,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     }
 
     private void refreshControllerView(boolean enable) {
+        boolean isVREnable = false;
+        if (panoramicView720Ext != null) {
+            isVREnable = panoramicView720Ext.isVREnabled();
+        }
         topMenuShare.setEnabled(enable);
         topMenuMore.setEnabled(enable);
         bottomVideoMenuPlay.setEnabled(enable);
@@ -1066,10 +1070,10 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         bottomPictureMenuPicture.setEnabled(enable);
         bottomPictureMenuVR.setEnabled(enable);
         bottomVideoMenuVR.setEnabled(enable);
-        bottomVideoMenuMode.setEnabled(enable);
-        bottomPictureMenuMode.setEnabled(enable);
-        bottomPictureMenuGyroscope.setEnabled(enable);
-        bottomVideoMenuGyroscope.setEnabled(enable);
+        bottomVideoMenuMode.setEnabled(enable && !isVREnable);
+        bottomPictureMenuMode.setEnabled(enable && !isVREnable);
+        bottomPictureMenuGyroscope.setEnabled(enable && !isVREnable);
+        bottomVideoMenuGyroscope.setEnabled(enable && !isVREnable);
         panoramaPanelSeekBar.setEnabled(enable);
         bottomVideoMenuPlayTime.setEnabled(enable);
         if (!enable) {
@@ -1106,12 +1110,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 //                    oriBtn.setText("横屏");
                 }
+                popPictureVrTips.setVisibility(View.GONE);
             } else if (orientation > 45 && orientation < 135) {// 设置反向横屏
 //                Log.d(TAG, "反向横屏");
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 //                    oriBtn.setText("反向横屏");
                 }
+                popPictureVrTips.setVisibility(View.GONE);
             } else if (orientation > 135 && orientation < 225) {
 //                Log.d(TAG, "反向竖屏");
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {

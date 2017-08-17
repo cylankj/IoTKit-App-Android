@@ -240,8 +240,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //            if (camMessageListAdapter.getCount() == 0)
             startRequest(true);//需要每次刷新,而不是第一次刷新
             ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//            SensorManager sensorManager= (SensorManager) getActivity().getSystemService(Activity.SENSOR_SERVICE);
-//            SensorManager.getOrientation()
         }
     }
 

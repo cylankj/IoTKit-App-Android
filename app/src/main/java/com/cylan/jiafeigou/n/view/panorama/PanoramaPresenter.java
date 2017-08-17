@@ -162,25 +162,36 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             //屏蔽掉204 消息
-                            if (msg.id == 222 ) {//? 204 或者 222?
-                                DpMsgDefine.DPSdStatus status = null;
+                            if (msg.id == 222) {//? 204 或者 222?
+                                DpMsgDefine.DPSdcardSummary sdcardSummary = null;
                                 try {
-                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    sdcardSummary = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                                 } catch (Exception e) {
-                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
-                                    status = new DpMsgDefine.DPSdStatus();
-                                    status.total = statusInt.total;
-                                    status.used = statusInt.used;
-                                    status.err = statusInt.err;
-                                    status.hasSdcard = statusInt.hasSdcard == 1;
+//                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
+//                                    status = new DpMsgDefine.DPSdStatus();
+//                                    status.total = statusInt.total;
+//                                    status.used = statusInt.used;
+//                                    status.err = statusInt.err;
+//                                    status.hasSdcard = statusInt.hasSdcard == 1;
                                 }
-                                AppLogger.e("204:" + new Gson().toJson(status));
-                                if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                AppLogger.e("204:" + new Gson().toJson(sdcardSummary));
+                                if (sdcardSummary != null && !sdcardSummary.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
-                                } else if (status != null && status.err != 0) {//SDCard 需要格式化
+                                } else if (sdcardSummary != null && sdcardSummary.errCode != 0) {//SDCard 需要格式化
                                     mView.onReportDeviceError(2022, true);
                                 }
 //                                shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
+                            } else if (msg.id == 204) {
+                                // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
+                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                    DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                        mView.onReportDeviceError(2004, true);
+                                    } else if (status != null && status.err != 0) {//SDCard 需要格式化
+                                        mView.onReportDeviceError(2022, true);
+                                    }
+                                }
                             } else if (msg.id == 205) {
                                 boolean charge = unpackData(msg.packValue, boolean.class);
                                 if (charge) {

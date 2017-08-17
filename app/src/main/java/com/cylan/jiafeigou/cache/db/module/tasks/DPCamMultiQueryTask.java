@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
@@ -186,6 +187,32 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     AppLogger.d("uuid?" + multiEntity.get(0).getUuid() + " ");
                     return TextUtils.equals(ret.identity, multiEntity.get(0).getUuid());
                 })
-                .flatMap(robotoGetDataRsp -> performLocal());//数据回来了，并且已经存到db中。
+                .map(robotoGetDataRsp -> {
+                    // TODO: 2017/8/17 缓存的副作用很多,这里就不使用缓存了
+                    long todayStart = TimeUtils.getSpecificDayStartTime(option.timeStart);
+                    long todayEnd = TimeUtils.getSpecificDayEndTime(option.timeStart);
+                    long versionMin = option.asc ? option.timeStart : todayStart;
+                    long versionMax = option.asc ? todayEnd : option.timeStart;
+                    if (timeMax != -1) {
+                        //向后查timeMax可能是隔天的数据.
+                        versionMax = Math.min(timeMax, versionMax);
+                    }
+                    if (timeMin != -1) {//向前查询,timeMin可能是隔天的数据了.
+                        versionMin = Math.max(timeMin, versionMin);
+                    }
+                    List<DataPoint> result = new ArrayList<>();
+                    if (robotoGetDataRsp != null && robotoGetDataRsp.map != null) {
+                        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
+                            for (JFGDPMsg msg : entry.getValue()) {
+                                if (msg.version >= versionMin && msg.version <= versionMax) {
+                                    DataPoint point = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                                    result.add(point);
+                                }
+                            }
+                        }
+                    }
+                    Collections.sort(result, (o1, o2) -> (int) (o2.getVersion() - o1.getVersion()));
+                    return new BaseDPTaskResult().setResultCode(0).setResultResponse(result);
+                });//数据回来了，并且已经存到db中。
     }
 }

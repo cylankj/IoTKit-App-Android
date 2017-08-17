@@ -15,7 +15,9 @@ import java.util.TimeZone;
  * Created by cylan-hunt on 16-11-9.
  */
 
-
+/**
+ * @Deprecated msgPack 将升级到0.8 版本,不以反射的方式来解析了,将会通过静态方法的方式
+ */
 public class DpMsgDefine {
     @Message
     public static final class DPStandby extends BaseDataPoint {

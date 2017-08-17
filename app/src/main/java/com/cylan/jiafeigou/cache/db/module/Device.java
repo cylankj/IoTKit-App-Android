@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import android.util.SparseArray;
+
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
@@ -10,6 +12,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
+import org.msgpack.value.Value;
 
 /**
  * Created by yanzhendong on 2017/3/4.
@@ -26,15 +29,33 @@ public class Device extends BasePropertyHolder<Device> {
     public int pid;
     public String vid;
     public String account;
+    @Deprecated
     public int regionType;
+    @Deprecated
     public String server;
+    @Deprecated
     public String action;
+    @Deprecated
     public String state;
+    @Deprecated
     public String option;
 
+    @Deprecated
     private transient boolean available = false;
 
+    //    @Convert(columnType = byte[].class, converter = ValueConverter.class)
+    private transient SparseArray<Value> mProperties;
+
+    //暂未支持
+    public Value getValue(int msgId) {
+        if (mProperties != null) {
+            return mProperties.get(msgId);
+        }
+        return null;
+    }
+
     @Keep()
+
     public Device(Long _id, String uuid, String sn, String alias, String shareAccount,
                   int pid, String vid, String account, int regionType, String server, String action,
                   String state, String option) {

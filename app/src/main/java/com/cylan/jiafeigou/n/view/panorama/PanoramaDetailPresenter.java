@@ -11,12 +11,15 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -59,21 +62,29 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 222) {
-                                DpMsgDefine.DPSdStatus status = null;
+                                DpMsgDefine.DPSdcardSummary status = null;
                                 try {
-                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                                 } catch (Exception e) {
-                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
-                                    status.total = statusInt.total;
-                                    status.err = statusInt.err;
-                                    status.used = statusInt.used;
-                                    status.hasSdcard = statusInt.hasSdcard == 1;
+                                    AppLogger.e(e.getMessage());
                                 }
                                 if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
-                                } else if (status != null && status.err != 0) {//SDCard 需要格式化
+                                } else if (status != null && status.errCode != 0) {//SDCard 需要格式化
                                     mView.onReportDeviceError(2022, true);
                                 }
+                            } else if (msg.id == 204) {
+                                // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
+                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                    DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                        mView.onReportDeviceError(2004, true);
+                                    } else if (status != null && status.err != 0) {//SDCard 需要格式化
+                                        mView.onReportDeviceError(2022, true);
+                                    }
+                                }
+
                             }
                         }
                     } catch (Exception e) {

@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 
 /**
- * Created by yanzhendong on 2017/3/2.
+ * @Deprecated 数据库缓存即将废弃, 因为数据库缓存需要建模, 当前使用场景无法建立模型,
+ * 使用 ObjectBox 缓存来简化流程 ,
  */
-
 public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTask<T>, IDPMultiTask<T> {
     protected IDPEntity entity;
     protected List<IDPEntity> multiEntity;
@@ -97,3 +97,6 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
                 .filter(ret -> ret.seq == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 }
+/**
+ * Created by yanzhendong on 2017/3/2.
+ */

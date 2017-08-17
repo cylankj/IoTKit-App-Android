@@ -79,10 +79,7 @@ android {
     signingConfigs {
         debug {
             v2SigningEnabled true
-//            storeFile file('../debug.keystore')
-//            storePassword 'android'
-//            keyAlias 'AndroidDebugKey'
-//            keyPassword 'android'
+
 
             Properties properties = new Properties()
             File localProperties = project.rootProject.file('local.properties')
@@ -97,6 +94,11 @@ android {
                     storePassword store_pwd
                     keyAlias store_alias
                     keyPassword store_alias_pwd
+                } else {
+                    storeFile file('./cy.keystore')
+                    storePassword = "111111"
+                    keyPassword = "111111"
+                    keyAlias = "cyalias.keystore"
                 }
             }
         }
@@ -304,10 +306,6 @@ dependencies {
                 ext : 'aar'
         ])
     }
-
-
-
-
     //谷歌推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile('com.mikepenz:fastadapter:2.6.2@aar') {
@@ -351,7 +349,8 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.mcxiaoke.packer-ng:helper:2.0.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:+"
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:+'
+    compile 'org.msgpack:msgpack-core:0.8.13'
 }
 /////////////////编译过滤器/////////////////////////////////
 //只需要在一个文件中读出需要编译的 variant名字

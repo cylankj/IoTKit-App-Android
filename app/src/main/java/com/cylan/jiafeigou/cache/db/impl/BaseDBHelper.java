@@ -53,6 +53,8 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by yanzhendong on 2017/2/27.
+ *
+ * @deprecated 当前场景下不适合使用数据库缓存, 使用 object 缓存来替代数据库缓存
  */
 
 public class BaseDBHelper implements IDBHelper {

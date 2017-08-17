@@ -53,6 +53,11 @@ public class PanoramaMessageWrapperActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onPrepareToExit(Action action) {
+        super.onPrepareToExit(action);
+    }
+
     private void removeHint() {
         try {
             BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003, 1004, 1005);
