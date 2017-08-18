@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -44,6 +46,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -78,6 +81,7 @@ import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
+import com.cylan.panorama.Panoramic360ViewRS;
 import com.daimajia.androidanimations.library.BaseViewAnimator;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -166,7 +170,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     View vLine;
     //历史录像条
     @BindView(R.id.layout_e)
-    RelativeLayout layoutE;
+    FrameLayout layoutE;
     @BindView(R.id.imgV_cam_switch_speaker)
     ImageView imgVCamSwitchSpeaker;
     @BindView(R.id.imgV_cam_trigger_mic)
@@ -184,12 +188,27 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @BindView(R.id.sw_cam_live_wheel)
     SuperWheelExt superWheelExt;
 
+
+    //圆形 柱状 四分一 模式切换
+    @BindView(R.id.layout_g)
+    FrameLayout layoutG;
+    @BindView(R.id.rg_view_mode_switch_parent)
+    RadioGroup rbViewModeSwitchParent;
+    @BindView(R.id.iv_view_mode_switch)
+    ImageView ivViewModeSwitch;
+    @BindView(R.id.ll_switch_view_mode)
+    LinearLayout ll_view_mode_container;
+    @BindView(R.id.imgV_land_cam_switch_xunhuan)
+    ImageView ivModeXunHuan;
+
+
     private String uuid;
     private static final String TAG = "CamLiveControllerEx";
     private ILiveControl.Action action;
 
 
     private float portRatio = -1;
+    @Deprecated //boolean 只能表示两种状况,已不适应当前需求,用 pid 来判断更灵活,创建播放 view 也应该用 pid 来判断
     private boolean isNormalView;
     private int livePlayState;
     private int livePlayType;
@@ -211,6 +230,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * 设备的时区
      */
     private SimpleDateFormat liveTimeDateFormat;
+    private VideoViewFactory.IVideoView videoView;
+    private Device device;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -244,6 +265,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             imgVLandCamSwitchSpeaker.setOnClickListener(this);
             imgVLandCamTriggerMic.setOnClickListener(this);
             imgVLandCamTriggerCapture.setOnClickListener(this);
+            ivModeXunHuan.setOnClickListener(this);
         }
         //isFriend.流量
         //c.loading
@@ -268,6 +290,115 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AppLogger.d("需要手动获取sd卡");
             getSdcardStatus();
         });
+//        LayoutTransition transition = new LayoutTransition();
+//
+//        //使用翻转进入的动画代替默认动画
+//        Animator appearAnim = ObjectAnimator
+//                .ofFloat(null, "translateY", 90f, 0)
+//                .setDuration(transition.getDuration(LayoutTransition.APPEARING));
+//        transition.setAnimator(LayoutTransition.APPEARING, appearAnim);
+//
+//        //使用翻转消失的动画代替默认动画
+//        Animator disappearAnim = ObjectAnimator.ofFloat(null, "translationY", 0,
+//                90f).setDuration(
+//                transition.getDuration(LayoutTransition.DISAPPEARING));
+//        transition.setAnimator(LayoutTransition.DISAPPEARING, disappearAnim);
+//
+////        //使用滑动动画代替默认布局改变的动画
+////        //这个动画会让视图滑动进入并短暂地缩小一半，具有平滑和缩放的效果
+////        PropertyValuesHolder pvhSlide = PropertyValuesHolder.ofFloat("y", 0, 1);
+////
+////
+////        //这里将上面三个动画综合
+////        Animator changingDisappearAnim = ObjectAnimator.ofPropertyValuesHolder(this, pvhSlide);
+////        changingDisappearAnim.setDuration(transition.getDuration(LayoutTransition.CHANGE_DISAPPEARING));
+////        transition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING,
+////                changingDisappearAnim);
+//
+//        ll_view_mode_container.setLayoutTransition(transition);
+
+        ivModeXunHuan.setEnabled(false);
+        ivViewModeSwitch.setEnabled(false);
+        ivViewModeSwitch.setOnClickListener(this::toggleSwitchMenu);
+        rbViewModeSwitchParent.setOnCheckedChangeListener(this::switchViewMode);
+
+    }
+
+    public Device getDevice() {
+        if (device == null) {
+            device = DataSourceManager.getInstance().getDevice(uuid);
+        }
+        return device;
+    }
+
+    private int getCheckIdByViewMode(int viewMode) {
+        switch (viewMode) {
+            case Panoramic360ViewRS.SFM_Cylinder:
+                return R.id.rb_view_mode_column;
+            case Panoramic360ViewRS.SFM_Normal:
+                return R.id.rb_view_mode_circular;
+            case Panoramic360ViewRS.SFM_Quad:
+                return R.id.rb_view_mode_four;
+        }
+        return R.id.rb_view_mode_circular;
+    }
+
+    private void toggleSwitchMenu(View view) {
+        //平视,1.平视.0俯视.默认平视
+        String dpPrimary = device.$(509, "1");
+        if ("1".equals(dpPrimary) && JFGRules.hasViewAngle(device.pid)) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(R.string.SWITCH_VIEW_POP)
+                    .setNegativeButton(R.string.CANCEL, null)
+                    .setPositiveButton(R.string.OK, (dialog, which) -> {
+                        try {
+                            BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, new DpMsgDefine.DPPrimary<String>("0"), DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                        } catch (IllegalAccessException e) {
+                            AppLogger.e("err: ");
+                        }
+                        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+                            rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+                        }
+                        rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+                    });
+        } else if ("0".equals(dpPrimary) || !JFGRules.hasViewAngle(device.pid)) {
+            if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+                rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+            }
+            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+        } else {
+            // TODO: 2017/8/18 怎么处理好呢?
+            AppLogger.d("怎么处理呢?没有开启平视,但又支持视图切换功能");
+        }
+//        try {
+//            //0:俯视
+//            rbtnSightHorizontal.setChecked(TextUtils.equals("1", dpPrimary));
+//            rbtnSightVertical.setChecked(TextUtils.equals("0", dpPrimary));
+//        } catch (Exception e) {
+//        }
+    }
+
+    private void switchViewMode(RadioGroup radioGroup, int checkId) {
+        switch (checkId) {
+            case R.id.rb_view_mode_circular:
+                if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+                    ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Normal);
+                }
+                break;
+            case R.id.rb_view_mode_column:
+                if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+                    ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Cylinder);
+                }
+                break;
+            case R.id.rb_view_mode_four:
+                if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+                    ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Quad);
+                }
+                break;
+        }
+//        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+//            ivModeXunHuan.setEnabled(((Panoramic360ViewRS) videoView).getDisplayMode() == Panoramic360ViewRS.SFM_Cylinder);
+//        }
     }
 
     private void getSdcardStatus() {
@@ -371,17 +502,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamTriggerCapture.setEnabled(false);
         imgVCamZoomToFullScreen.setEnabled(false);
         tvLive.setEnabled(false);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         isRSCam = JFGRules.isRS(device.pid);
         if (device == null) {
             AppLogger.e("device is null");
             return;
         }
         this.pid = device.pid;
-        isNormalView = JFGRules.isNeedNormalRadio(device.pid);
-        boolean tankVeiw = JFGRules.isNeedTankView(device.pid);
-        VideoViewFactory.IVideoView videoView = VideoViewFactory.CreateRendererExt(!isNormalView,
-                getContext(), true, false);
+//        isNormalView = JFGRules.isNeedNormalRadio(device.pid);
+//        boolean tankVeiw = JFGRules.isNeedTankView(device.pid);
+        videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
         videoView.setInterActListener(new VideoViewFactory.InterActListener() {
 
             @Override
@@ -431,6 +561,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
         });
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
+        layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+        ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
     }
@@ -599,6 +733,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         @Override
         public void run() {
             layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
+            layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+            ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             if (layoutD.getAlpha() == 0.0f)
                 YoYo.with(Techniques.FadeIn)
                         .duration(200)
@@ -656,6 +794,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         }
                     })
                     .playOn(layoutE);
+            YoYo.with(Techniques.FadeOutDown)
+                    .duration(200)
+                    .playOn(layoutG);
         }
     };
 
@@ -699,6 +840,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             YoYo.with(Techniques.FadeInUp)
                     .duration(250)
                     .playOn(layoutE);
+            YoYo.with(Techniques.FadeInUp)
+                    .duration(200)
+                    .playOn(layoutG);
             postDelayed(landHideRunnable, 3000);
         }
     };
@@ -747,6 +891,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamZoomToFullScreen.setEnabled(true);
         //暂时隐藏吧,用户不喜欢
         post(portHideRunnable);
+        layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+        ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
 
 
@@ -780,6 +928,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamTriggerCapture.setEnabled(false);
         liveViewWithThumbnail.onLiveStop();
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
+        layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+        ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
 
     /**
@@ -945,9 +1097,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //直播
         tvLive.setEnabled(playType == TYPE_HISTORY);
         @SuppressLint("WrongViewCast") LayoutParams lp = (LayoutParams) layoutE.getLayoutParams();
+        @SuppressLint("WrongViewCast") LayoutParams glp = (LayoutParams) layoutG.getLayoutParams();
         if (isLand) {
             lp.removeRule(3);//remove below rules
             lp.addRule(2, R.id.v_guide);//set above v_guide
+//            android:layout_above="@+id/layout_d"
+            glp.addRule(RelativeLayout.ABOVE, R.id.layout_e);
             liveViewWithThumbnail.updateLayoutParameters(LayoutParams.MATCH_PARENT, getVideoFinalWidth());
             imgVCamZoomToFullScreen.setVisibility(INVISIBLE);
             layoutD.setBackgroundResource(android.R.color.transparent);
@@ -958,7 +1113,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             ((TextView) imgVCamLiveLandNavBack)
                     .setText(alias);
             imgVCamLiveLandPlay.setVisibility(VISIBLE);
+
         } else {
+            glp.addRule(RelativeLayout.ABOVE, R.id.layout_d);
             imgVCamLiveLandPlay.setVisibility(GONE);
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
@@ -974,6 +1131,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
 
         layoutE.setLayoutParams(lp);
+        layoutG.setLayoutParams(glp);
         resetAndPrepareNextAnimation(isLand);
     }
 
@@ -981,11 +1139,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (MiscUtils.isLand()) {
             //横屏需要区分睿视
             // TODO: 2017/8/17 #118156 Android（1.1.0.535）睿视设备 OS81的鱼缸效果不正确 全屏时，不做4:3的比例 而是图像是满屏效果/(ㄒoㄒ)/~~
-            Device device = DataSourceManager.getInstance().getDevice(uuid);
-            if (isRSCam && device.getPid() != 81) {
-                //保持4:3
-                Log.d("isRSCam", "isRSCam....");
-                return (int) (Resources.getSystem().getDisplayMetrics().heightPixels * (float) 4 / 3);
+            if (JFGRules.isRoundRadio(device.pid)) {
+                return ViewGroup.LayoutParams.MATCH_PARENT;
+            } else {
+                // TODO: 2017/8/18 再说吧
+                if (isRSCam && device.getPid() != 81) {
+                    //保持4:3
+                    Log.d("isRSCam", "isRSCam....");
+                    return (int) (Resources.getSystem().getDisplayMetrics().heightPixels * (float) 4 / 3);
+                }
             }
             return ViewGroup.LayoutParams.MATCH_PARENT;
         } else {
@@ -999,9 +1161,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutA.setTranslationY(0);
         layoutD.setTranslationY(0);
         layoutE.setTranslationY(0);
+        layoutG.setTranslationY(0);
         layoutA.setAlpha(1);
         layoutD.setAlpha(1);
         layoutE.setAlpha(1);
+        layoutG.setAlpha(1);
+
         if (land) {
             layoutE.setVisibility(VISIBLE);
             removeCallbacks(portHideRunnable);
@@ -1011,6 +1176,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } else {
             //只有播放是才显示 LayoutD
             layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
+            layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+            ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             removeCallbacks(portHideRunnable);
             removeCallbacks(landHideRunnable);
             removeCallbacks(landShowRunnable);
@@ -1132,7 +1301,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } catch (JfgException e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
-        float ratio = isNormalView ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
+        Device device = getDevice();
+        float ratio = JFGRules.isNeedNormalRadio(device.pid) ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
                 isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
                         Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
         if (portRatio == -1 && !isLand()) portRatio = ratio;
@@ -1272,7 +1442,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private void changeViewState() {
-        layoutD.setVisibility(GONE);
+        // TODO: 2017/8/18 设置为 gone 会导致布局不正确
+//        layoutD.setVisibility(INVISIBLE);
         liveViewWithThumbnail.showFlowView(false, null);
         liveViewWithThumbnail.setThumbnail();
         setHotSeatState(-1, false, false, false, false, false, false);
@@ -1307,6 +1478,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             livePlayState = judge ? PLAY_STATE_STOP : PLAY_STATE_IDLE;
             setLoadingState(null, null);
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
+            layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+            ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
             btnLoadHistory
                     .setEnabled(NetUtils.getJfgNetType() != 0 && online);
@@ -1437,6 +1612,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         imgVCamTriggerCapture.setEnabled(true);
         imgVLandCamTriggerCapture.setEnabled(true);
+        ivModeXunHuan.setEnabled(true);
+        ivViewModeSwitch.setEnabled(true);
     }
 
     @Override
@@ -1564,6 +1741,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case R.id.imgV_cam_trigger_capture:
             case R.id.imgV_land_cam_trigger_capture:
                 break;
+            case R.id.imgV_land_cam_switch_xunhuan:
+                switchXunHuanMode();
+                break;
+        }
+    }
+
+    private void switchXunHuanMode() {
+        ivModeXunHuan.setSelected(!ivModeXunHuan.isSelected());
+        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+            ((Panoramic360ViewRS) videoView).enableAutoRotation(ivModeXunHuan.isSelected());
         }
     }
 

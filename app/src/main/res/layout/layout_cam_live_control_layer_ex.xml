@@ -46,6 +46,18 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/imgV_land_cam_switch_xunhuan"
+                style="@style/ripple_background"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingLeft="@dimen/x18"
+                android:paddingRight="@dimen/x18"
+                android:src="@drawable/icon_xunhuan_selector" />
+
+            <ImageView
                 android:id="@+id/imgV_land_cam_switch_speaker"
                 style="@style/ripple_background"
                 android:layout_width="wrap_content"
@@ -77,26 +89,79 @@
         </LinearLayout>
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/layout_b"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/layout_top"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/x14"
-        android:background="@drawable/flow_bg"
-        android:gravity="center"
-        android:textColor="@color/color_white"
-        android:visibility="gone" />
-
 
     <com.cylan.jiafeigou.widget.live.LiveControlView
         android:id="@+id/layout_c"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/v_guide"
-        android:padding="@dimen/x10" />
+        android:padding="@dimen/x10">
+
+        <TextView
+            android:id="@+id/layout_b"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
+            android:background="@drawable/flow_bg"
+            android:gravity="center"
+            android:textColor="@color/color_white"
+            android:visibility="gone" />
+    </com.cylan.jiafeigou.widget.live.LiveControlView>
+
+    <FrameLayout
+        android:id="@+id/layout_g"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_d"
+        android:layout_marginBottom="@dimen/y8"
+        android:layout_marginStart="@dimen/y15">
+
+        <LinearLayout
+            android:id="@+id/ll_switch_view_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_view_mode_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_view_switcher_selector" />
+
+            <RadioGroup
+                android:id="@+id/rg_view_mode_switch_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RadioButton
+                    android:id="@+id/rb_view_mode_circular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/y18"
+                    android:button="@drawable/icon_circular_selector" />
+
+                <RadioButton
+                    android:id="@+id/rb_view_mode_column"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/y18"
+                    android:button="@drawable/icon_column_selector" />
+
+                <RadioButton
+                    android:id="@+id/rb_view_mode_four"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/y18"
+                    android:button="@drawable/icon_four_selector" />
+            </RadioGroup>
+
+        </LinearLayout>
+    </FrameLayout>
 
 
     <FrameLayout
@@ -117,12 +182,14 @@
             android:id="@+id/live_time_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:layout_gravity="end"
             android:orientation="horizontal">
 
@@ -147,7 +214,7 @@
         </LinearLayout>
     </FrameLayout>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/layout_e"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y52"
@@ -265,7 +332,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             android:background="@color/color_f2f2f2" />
-    </RelativeLayout>
+    </FrameLayout>
 
 
     <FrameLayout
@@ -280,6 +347,7 @@
             android:id="@+id/imgV_cam_switch_speaker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/x30"
             android:layout_marginRight="@dimen/x30"
@@ -292,6 +360,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+
             android:clickable="true"
             android:padding="@dimen/x10"
             android:src="@drawable/icon_port_mic_off_selector" />

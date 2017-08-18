@@ -701,6 +701,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }, false);
     }
 
+    @Override
+    public void onBackPressed() {
+        AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 onStop 延迟调用");
+        basePresenter.stopPlayVideo(true).subscribe(ret -> {
+        }, AppLogger::e);
+    }
+
 //    @Override
 //    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
 //

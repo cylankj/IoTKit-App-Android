@@ -142,11 +142,14 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (!status.hasSdcard) oldOption = -1;
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!alarm) oldOption = -1;
-//        if (record24) {
-//            rbMotion.setChecked(oldOption == 0);
-//            rb24Hours.setChecked(oldOption == 1);
-//            rbNever.setChecked(oldOption == 2);
-//        }
+
+
+        //#117813 Android（1.1.0.523）设备有SD卡且处于相册界面 此时拔出设备的SD卡后，弹窗提示：SD卡已被拔出 选项：确定 .实际结果：没有这个提示
+        siv_mode_motion.setRadioButtonChecked(oldOption == 0);
+        siv_mode_24_hours.setRadioButtonChecked(oldOption == 1);
+        siv_mode_never.setChecked(oldOption == 2);
+
+
         AppLogger.d("");
         siv_mode_motion.setOnCheckedChangeListener(null);
         siv_mode_motion.setChecked(oldOption == 0);

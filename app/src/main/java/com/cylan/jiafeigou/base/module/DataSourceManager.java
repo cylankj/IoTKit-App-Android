@@ -728,7 +728,6 @@ public class DataSourceManager implements JFGSourceManager {
                         try {
                             List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                             BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
-                                    .subscribeOn(Schedulers.io())
                                     .subscribe(ret -> {
                                     }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
                         } catch (Exception e) {
@@ -1141,6 +1140,3 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
     }
 }
-/**
- * Created by yzd on 16-12-28.
- */

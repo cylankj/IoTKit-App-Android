@@ -48,6 +48,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private boolean notifyBatteryLow = true;
     private boolean isRecording = false;
 
+    private boolean hasSDCard = false;
+
     @Override
     public boolean isApiAvailable() {
         RxEvent.PanoramaApiAvailable event = RxBus.getCacheInstance().getStickyEvent(RxEvent.PanoramaApiAvailable.class);
@@ -180,18 +182,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 } else if (sdcardSummary != null && sdcardSummary.errCode != 0) {//SDCard 需要格式化
                                     mView.onReportDeviceError(2022, true);
                                 }
+                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard && sdcardSummary.errCode == 0;
 //                                shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
                             } else if (msg.id == 204) {
                                 // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
                                 Device device = DataSourceManager.getInstance().getDevice(uuid);
-                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
-                                    DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                    if (status != null && !status.hasSdcard) {//SDCard 不存在
-                                        mView.onReportDeviceError(2004, true);
-                                    } else if (status != null && status.err != 0) {//SDCard 需要格式化
-                                        mView.onReportDeviceError(2022, true);
-                                    }
+//                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                if (status != null && !status.hasSdcard && hasSDCard) {//SDCard 不存在
+                                    mView.onReportDeviceError(2004, true);
+                                } else if (status != null && status.err != 0 && hasSDCard) {//SDCard 需要格式化
+                                    mView.onReportDeviceError(2022, true);
                                 }
+                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
+//                                }
                             } else if (msg.id == 205) {
                                 boolean charge = unpackData(msg.packValue, boolean.class);
                                 if (charge) {

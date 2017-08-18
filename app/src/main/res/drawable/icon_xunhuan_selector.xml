@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/icon_xunhuan_close_disable" android:state_enabled="false" />
+    <item android:drawable="@drawable/icon_xunhuan_close" android:state_selected="false" />
+    <item android:drawable="@drawable/icon_xunhuan_open" android:state_selected="true" />
+</selector>

@@ -731,7 +731,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
             if (downloadInfo == null || (downloadInfo.getState() != DownloadManager.FINISH && downloadInfo.getState() != DownloadManager.DOWNLOADING)) {
                 download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
             } else if (downloadInfo.getState() == DownloadManager.FINISH) {
-                download.setText(R.string.Tap1_Album_Downloaded);
+                download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
                 download.setEnabled(false);
             } else {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");

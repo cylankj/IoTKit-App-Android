@@ -165,6 +165,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     @OnClick(R.id.btn_bind_failed_repeat)
     public void onBindNext() {
+        basePresenter.stop();
         final String className = getIntent().getStringExtra(JConstant.KEY_BIND_BACK_ACTIVITY);
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(this, className));

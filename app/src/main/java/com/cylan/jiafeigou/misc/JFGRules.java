@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -520,6 +521,19 @@ public class JFGRules {
         IProperty productProperty = BaseApplication.getAppComponent().getProductProperty();
         String property = productProperty.property(pid, "VIEW");
         return !TextUtils.isEmpty(property) && property.contains("切掉上下部分");
+    }
+
+    public static boolean showSwitchModeButton(int pid) {
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String view_mode = loader.property(pid, "VIEW_MODE");
+        String view = loader.property(pid, "VIEW");
+        return !TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1");
+    }
+
+    public static boolean hasViewAngle(int pid) {
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String view_mode = loader.property(pid, "VIEWANGLE");
+        return !TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1");
     }
 
     public static class PlayErr {

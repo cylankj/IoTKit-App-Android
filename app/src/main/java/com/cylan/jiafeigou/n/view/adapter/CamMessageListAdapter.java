@@ -75,7 +75,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private boolean hasSdcard() {
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        return status.hasSdcard && status.err == 0;
+
+        return this.status = status.hasSdcard && status.err == 0;
     }
 
     private boolean online() {

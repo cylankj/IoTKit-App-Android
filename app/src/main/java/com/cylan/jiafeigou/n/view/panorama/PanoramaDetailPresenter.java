@@ -11,15 +11,12 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -46,6 +43,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  */
 
 public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact.View> implements PanoramaDetailContact.Presenter {
+    private boolean hasSDCard = false;
 
     @Override
     protected void onRegisterSubscription() {
@@ -62,28 +60,30 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 222) {
-                                DpMsgDefine.DPSdcardSummary status = null;
+                                DpMsgDefine.DPSdcardSummary sdcardSummary = null;
                                 try {
-                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+                                    sdcardSummary = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                                 } catch (Exception e) {
                                     AppLogger.e(e.getMessage());
                                 }
-                                if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                if (sdcardSummary != null && !sdcardSummary.hasSdcard && hasSDCard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
-                                } else if (status != null && status.errCode != 0) {//SDCard 需要格式化
+                                } else if (sdcardSummary != null && sdcardSummary.errCode != 0 && hasSDCard) {//SDCard 需要格式化
                                     mView.onReportDeviceError(2022, true);
                                 }
+                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard && sdcardSummary.errCode == 0;
                             } else if (msg.id == 204) {
                                 // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
-                                Device device = DataSourceManager.getInstance().getDevice(uuid);
-                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
-                                    DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                    if (status != null && !status.hasSdcard) {//SDCard 不存在
-                                        mView.onReportDeviceError(2004, true);
-                                    } else if (status != null && status.err != 0) {//SDCard 需要格式化
-                                        mView.onReportDeviceError(2022, true);
-                                    }
+//                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+//                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                if (status != null && !status.hasSdcard && hasSDCard) {//SDCard 不存在
+                                    mView.onReportDeviceError(2004, true);
+                                } else if (status != null && status.err != 0 && hasSDCard) {//SDCard 需要格式化
+                                    mView.onReportDeviceError(2022, true);
                                 }
+                                hasSDCard = status != null && status.hasSdcard && status.err == 0;
+//                                }
 
                             }
                         }

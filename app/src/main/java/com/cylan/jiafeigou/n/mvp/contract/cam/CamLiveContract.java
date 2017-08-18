@@ -117,6 +117,8 @@ public interface CamLiveContract {
         void onHistoryLoadFinished();
 
         void onDeviceUnBind();
+
+        void onBackPressed();
     }
 
     interface Presenter extends BasePresenter {
