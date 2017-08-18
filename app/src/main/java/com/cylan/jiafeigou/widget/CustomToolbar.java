@@ -298,4 +298,8 @@ public class CustomToolbar extends LinearLayout implements ITheme {
     public void setLeftTextSize(int textSize) {
         tvToolbarIcon.setTextSize(textSize);
     }
+
+    public void setCustomToolbarBackgroundColor(int colorRes) {
+        viewGroup.setBackgroundResource(colorRes);
+    }
 }

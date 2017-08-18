@@ -142,6 +142,8 @@ public class VideoViewFactory {
             return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_PANORAMA_360_RS, context, true);
         } else if (!TextUtils.isEmpty(view) && view.contains("圆形")) {
             return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_PANORAMA_360, context, true);
+        } else if (!TextUtils.isEmpty(view) && view.contains("鱼缸")) {
+            return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_PANORAMA_360_RS, context, true);
         }
         return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_DEFAULT, context, true);
     }

@@ -352,6 +352,9 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:+'
     compile 'org.msgpack:msgpack-core:0.8.13'
 
+
+
+
 }
 /////////////////编译过滤器/////////////////////////////////
 //只需要在一个文件中读出需要编译的 variant名字

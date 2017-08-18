@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".n.view.bell.BellLiveActivity">
 
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true"
+        app:ct_icon="@drawable/nav_icon_back_white"
+        app:ct_left_title_color="@color/color_white"
+        app:ct_title_color="@color/color_black" />
+
     <FrameLayout
         android:id="@+id/fLayout_bell_live_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/y288"
+        android:layout_below="@id/custom_toolbar"
         android:background="@color/color_4b9fd5">
 
         <FrameLayout
             android:id="@+id/act_bell_live_video_view_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#000" />
+            android:layout_height="wrap_content"
+            android:background="#000">
 
-        <ImageView
-            android:id="@+id/act_bell_live_video_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY" />
+            <ImageView
+                android:id="@+id/act_bell_live_video_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+        </FrameLayout>
 
         <com.cylan.jiafeigou.widget.live.LivePlayControlView
             android:id="@+id/act_bell_live_video_play_controller"
@@ -41,50 +58,52 @@
             android:src="@drawable/icon_port_fullscreen_selector"
             android:visibility="invisible" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_bell_live_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y21"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/y21"
+            android:layout_marginTop="@dimen/y18"
+            android:background="@drawable/live_flow_transparent_bg"
+            android:gravity="center"
+            android:paddingLeft="@dimen/y8"
+            android:paddingRight="@dimen/y8"
+            android:text="0K/s"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp13"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/act_bell_live_back"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/doorbell_shadow">
-
-            <TextView
-                android:id="@+id/act_bell_live_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/y15"
-                android:layout_marginTop="@dimen/y40"
-                android:drawablePadding="@dimen/y20"
-                android:drawableStart="@drawable/nav_icon_back_white"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_bell_live_flow"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y21"
-                android:layout_gravity="end"
-                android:layout_marginEnd="@dimen/y15"
-                android:layout_marginTop="@dimen/y40"
-                android:background="@drawable/live_flow_transparent_bg"
-                android:gravity="center"
-                android:paddingLeft="@dimen/y8"
-                android:paddingRight="@dimen/y8"
-                android:text="0K/s"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp13"
-                android:visibility="visible" />
-        </FrameLayout>
+            android:drawableStart="@drawable/nav_icon_back_white"
+            android:padding="@dimen/y20"
+            android:paddingStart="@dimen/y20"
+            android:paddingTop="@dimen/y20"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp16" />
     </FrameLayout>
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/y113">
+        android:layout_below="@+id/fLayout_bell_live_holder">
 
-        <include layout="@layout/layout_bell_pre_live_hot_seat" />
+        <include
+            layout="@layout/layout_bell_pre_live_hot_seat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
 
-        <include layout="@layout/layout_bell_after_live_hot_seat" />
+        <include
+            layout="@layout/layout_bell_after_live_hot_seat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
 
     </FrameLayout>
 
-</LinearLayout>
+</RelativeLayout>

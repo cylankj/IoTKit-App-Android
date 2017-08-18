@@ -28,6 +28,8 @@ import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.panorama.Panoramic360View;
+import com.cylan.panorama.Panoramic360ViewRS;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -77,6 +79,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     public void performTouch() {
         videoView.performTouch();
+    }
+
+    public TextView getTvLiveFlow() {
+        return tvLiveFlow;
     }
 
     /**
@@ -165,7 +171,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void setLiveView(VideoViewFactory.IVideoView iVideoView) {
-        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
+        if (iVideoView instanceof Panoramic360ViewRS || iVideoView instanceof Panoramic360View) {
+            isNormalView = false;
+        } else {
+            isNormalView = true;
+        }
+//        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
         this.videoView = iVideoView;
         ((View) videoView).setId("videoView".hashCode());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

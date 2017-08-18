@@ -232,6 +232,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private SimpleDateFormat liveTimeDateFormat;
     private VideoViewFactory.IVideoView videoView;
     private Device device;
+    private YoYo.YoYoString landAnimationLayoutA;
+    private YoYo.YoYoString landAnimationLayoutD;
+    private YoYo.YoYoString landAnimationLayoutE;
+    private YoYo.YoYoString landAnimationLayoutG;
+    private YoYo.YoYoString flowTextAnimation;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -366,6 +371,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
             }
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+
         } else {
             // TODO: 2017/8/18 怎么处理好呢?
             AppLogger.d("怎么处理呢?没有开启平视,但又支持视图切换功能");
@@ -396,6 +402,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 }
                 break;
         }
+        rbViewModeSwitchParent.setVisibility(GONE);
 //        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
 //            ivModeXunHuan.setEnabled(((Panoramic360ViewRS) videoView).getDisplayMode() == Panoramic360ViewRS.SFM_Cylinder);
 //        }
@@ -435,6 +442,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         toLoadingHistory();
                     }
                 }, throwable -> ToastUtil.showToast(getResources().getString(R.string.NO_SDCARD)));
+
         presenter.addSubscription("getSdcardStatus", subscription);
     }
 
@@ -509,8 +517,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         this.pid = device.pid;
-//        isNormalView = JFGRules.isNeedNormalRadio(device.pid);
-//        boolean tankVeiw = JFGRules.isNeedTankView(device.pid);
         videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
         videoView.setInterActListener(new VideoViewFactory.InterActListener() {
 
@@ -753,7 +759,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     };
 
+
     private Runnable landHideRunnable = new Runnable() {
+
+
         @Override
         public void run() {
             if (historyWheelHandler != null && historyWheelHandler.isBusy()) {
@@ -768,10 +777,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutC.setVisibility(VISIBLE);//loading 必须显示
             }
             svSwitchStream.setVisibility(GONE);
-            YoYo.with(Techniques.FadeOutUp)
-                    .duration(200)
+            if (landAnimationLayoutA != null) landAnimationLayoutA.stop();
+            landAnimationLayoutA = YoYo.with(Techniques.FadeOutUp)
+                    .duration(250)
                     .playOn(layoutA);
-            YoYo.with(new BaseViewAnimator() {
+            if (landAnimationLayoutD != null) landAnimationLayoutD.stop();
+            landAnimationLayoutD = YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
                     ViewGroup parent = (ViewGroup) target.getParent();
@@ -780,10 +791,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
                 }
             })
-                    .duration(200)
+                    .duration(250)
                     .playOn(layoutD);
-            YoYo.with(Techniques.FadeOutDown)
-                    .duration(200)
+            if (landAnimationLayoutE != null) landAnimationLayoutE.stop();
+            landAnimationLayoutE = YoYo.with(Techniques.FadeOutDown)
+                    .duration(250)
                     .withListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -794,9 +806,20 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         }
                     })
                     .playOn(layoutE);
-            YoYo.with(Techniques.FadeOutDown)
-                    .duration(200)
+            if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
+            landAnimationLayoutG = YoYo.with(Techniques.FadeOutDown)
+                    .duration(250)
                     .playOn(layoutG);
+            if (flowTextAnimation != null) flowTextAnimation.stop();
+            flowTextAnimation = YoYo.with(new BaseViewAnimator() {
+                @Override
+                protected void prepare(View target) {
+                    int distance = layoutA.getHeight();
+                    this.getAnimatorAgent().play(ObjectAnimator.ofFloat(target, "translationY", 0.0F, -(float) distance));
+                }
+            })
+                    .duration(250)
+                    .playOn(liveViewWithThumbnail.getTvLiveFlow());
         }
     };
 
@@ -807,7 +830,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private Runnable landShowRunnable = new Runnable() {
-
 
         @Override
         public void run() {
@@ -822,7 +844,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     .playOn(layoutA);
             if (!layoutD.isShown())
                 layoutD.setVisibility(VISIBLE);//
-            YoYo.with(new BaseViewAnimator() {
+            if (landAnimationLayoutD != null) landAnimationLayoutD.stop();
+            landAnimationLayoutD = YoYo.with(new BaseViewAnimator() {
                 @Override
                 protected void prepare(View target) {
                     ViewGroup parent = (ViewGroup) target.getParent();
@@ -837,12 +860,24 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (device != null && JFGRules.isShareDevice(device)) {
                 vsLayoutWheel.setVisibility(INVISIBLE);
             }
-            YoYo.with(Techniques.FadeInUp)
+            if (landAnimationLayoutE != null) landAnimationLayoutE.stop();
+            landAnimationLayoutE = YoYo.with(Techniques.FadeInUp)
                     .duration(250)
                     .playOn(layoutE);
-            YoYo.with(Techniques.FadeInUp)
+            if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
+            landAnimationLayoutG = YoYo.with(Techniques.FadeInUp)
                     .duration(200)
                     .playOn(layoutG);
+            if (flowTextAnimation != null) flowTextAnimation.stop();
+            flowTextAnimation = YoYo.with(new BaseViewAnimator() {
+                @Override
+                protected void prepare(View target) {
+                    int distance = layoutA.getHeight();
+                    this.getAnimatorAgent().play(ObjectAnimator.ofFloat(target, "translationY", (float) (-distance), 0.0F));
+                }
+            })
+                    .duration(250)
+                    .playOn(liveViewWithThumbnail.getTvLiveFlow());
             postDelayed(landHideRunnable, 3000);
         }
     };
@@ -1162,10 +1197,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.setTranslationY(0);
         layoutE.setTranslationY(0);
         layoutG.setTranslationY(0);
+        liveViewWithThumbnail.getTvLiveFlow().setTranslationY(0);
         layoutA.setAlpha(1);
         layoutD.setAlpha(1);
         layoutE.setAlpha(1);
         layoutG.setAlpha(1);
+        liveViewWithThumbnail.getTvLiveFlow().setAlpha(1);
 
         if (land) {
             layoutE.setVisibility(VISIBLE);
@@ -1296,6 +1333,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onResolutionRsp(JFGMsgVideoResolution resolution) {
+        AppLogger.d("收到分辨率消息,正在准备直播");
         try {
             BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, (View) liveViewWithThumbnail.getVideoView());
         } catch (JfgException e) {
