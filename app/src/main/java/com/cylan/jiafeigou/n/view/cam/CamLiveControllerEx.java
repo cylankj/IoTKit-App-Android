@@ -230,7 +230,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * 设备的时区
      */
     private SimpleDateFormat liveTimeDateFormat;
-    private VideoViewFactory.IVideoView videoView;
+    //    private VideoViewFactory.IVideoView videoView;
     private Device device;
     private YoYo.YoYoString landAnimationLayoutA;
     private YoYo.YoYoString landAnimationLayoutD;
@@ -361,20 +361,41 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         } catch (IllegalAccessException e) {
                             AppLogger.e("err: ");
                         }
-                        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+                        rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+
+                        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+                        if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
+                            ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                             rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
                         }
-                        rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
                     });
-        } else if ("0".equals(dpPrimary) || !JFGRules.hasViewAngle(device.pid)) {
-            if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+        } else if ("0".equals(dpPrimary)) {
+            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
+//                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                 rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
             }
-            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
 
-        } else {
+        } else if ("1".equals(dpPrimary) && !JFGRules.hasViewAngle(device.pid)) {
             // TODO: 2017/8/18 怎么处理好呢?
-            AppLogger.d("怎么处理呢?没有开启平视,但又支持视图切换功能");
+            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
+                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
+                if (rbViewModeSwitchParent.getCheckedRadioButtonId() == -1) {
+                    rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+                }
+            }
+            AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
+        } else if (!JFGRules.hasViewAngle(device.pid)) {
+            rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
+
+                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
+                rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+            }
         }
 //        try {
 //            //0:俯视
@@ -385,20 +406,24 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private void switchViewMode(RadioGroup radioGroup, int checkId) {
+        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
         switch (checkId) {
             case R.id.rb_view_mode_circular:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Normal);
+                    AppLogger.d("正在切换到圆形视图");
                 }
                 break;
             case R.id.rb_view_mode_column:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Cylinder);
+                    AppLogger.d("正在切换到柱状视图");
                 }
                 break;
             case R.id.rb_view_mode_four:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Quad);
+                    AppLogger.d("正在切换到四合一视图");
                 }
                 break;
         }
@@ -517,7 +542,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             return;
         }
         this.pid = device.pid;
-        videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
+        VideoViewFactory.IVideoView videoView = VideoViewFactory.CreateRendererExt(device.pid, getContext());
+        if (!JFGRules.showSwitchModeButton(device.pid) && videoView instanceof Panoramic360ViewRS) {
+            ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+        }
         videoView.setInterActListener(new VideoViewFactory.InterActListener() {
 
             @Override
@@ -569,9 +597,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
         layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
+            ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+        }
         ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
-        liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) ? VISIBLE : INVISIBLE);
+        liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
+        tvLive.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -741,6 +773,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
             ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
+                ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+            }
             ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             if (layoutD.getAlpha() == 0.0f)
@@ -928,6 +964,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         post(portHideRunnable);
         layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+        if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
+            ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+        }
         ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
@@ -965,6 +1005,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
         layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
         ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+        if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
+            try {
+                ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+            } catch (NullPointerException e) {
+
+            }
+        }
         ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
@@ -1215,6 +1263,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutD.setVisibility(livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
             ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
+                ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+            }
             ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             removeCallbacks(portHideRunnable);
@@ -1303,7 +1355,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
         Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
-        if (JFGRules.hasSDFeature(pid)) {
+        if (JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
             ((LiveTimeLayout) liveTimeLayout).setContent(type, timestamp);
         }
         if (livePlayState == PLAY_STATE_PREPARE) return;
@@ -1518,6 +1570,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutD.setVisibility(!judge ? INVISIBLE : livePlayState == PLAY_STATE_PLAYING ? VISIBLE : INVISIBLE);
             layoutG.setVisibility(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
             ivModeXunHuan.setVisibility(JFGRules.showSwitchModeButton(device.pid) ? VISIBLE : INVISIBLE);
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
+                ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
+            }
             ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
@@ -1532,6 +1588,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void updateLiveViewMode(String mode) {
+        if (device.pid == 39 || device.pid == 49)
+            mode = "0";
         if (!needShowSight) {
             updateCamParam(presenter.getDevice().$(510, new DpMsgDefine.DpCoordinate()));
         } else {
@@ -1787,6 +1845,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void switchXunHuanMode() {
         ivModeXunHuan.setSelected(!ivModeXunHuan.isSelected());
+        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
         if (videoView != null && videoView instanceof Panoramic360ViewRS) {
             ((Panoramic360ViewRS) videoView).enableAutoRotation(ivModeXunHuan.isSelected());
         }

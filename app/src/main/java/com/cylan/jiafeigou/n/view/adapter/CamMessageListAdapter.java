@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -27,7 +28,6 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.widget.AspectRatioImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -277,7 +277,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .listener(loadListener)
-                    .into((AspectRatioImageView) holder.getView(id));
+                    .into((ImageView) holder.getView(id));
             holder.setOnClickListener(id, onClickListener);
         }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));

@@ -404,6 +404,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (msgId == 509) {
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
             String _509 = device.$(509, "1");
+            if (device.pid == 39 || device.pid == 49)
+                _509 = "0";
             camLiveControlLayer.updateLiveViewMode(_509);
         }
         camLiveControlLayer.dpUpdate(msg, getDevice());

@@ -7,7 +7,7 @@ import org.robolectric.annotation.Config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
@@ -44,4 +44,6 @@ public class ExampleUnitTest {
             System.out.println(entry.getValue());
         }
     }
+
+
 }

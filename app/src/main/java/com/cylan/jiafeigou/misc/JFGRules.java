@@ -323,6 +323,7 @@ public class JFGRules {
         String[] ret = sdContent.split(",");
         if (ret.length < 2 || !sdContent.contains(".")) return false;
         try {
+            // TODO: 2017/8/18 可能会有问题
             return BindUtils.versionCompare(version, ret[1]) >= 0;
         } catch (Exception e) {
             return false;

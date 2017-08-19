@@ -10,11 +10,15 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
+import org.msgpack.core.MessageBufferPacker;
+import org.msgpack.core.MessageUnpacker;
 
 import java.io.File;
 import java.io.IOException;
@@ -234,5 +238,22 @@ public class DP {
         System.out.println(messagePack.toString());
     }
 
+
+    @Test
+    public void testDP() throws Exception {
+        MessageBufferPacker packer = org.msgpack.core.MessagePack.newDefaultBufferPacker();
+
+        packer.packInt(4);
+        byte[] bytes = packer.toByteArray();
+
+        MessageUnpacker messageUnpacker = org.msgpack.core.MessagePack.newDefaultUnpacker(bytes);
+        String toString = messageUnpacker.unpackValue().toString();
+
+        JsonObject fromJson = new Gson().fromJson(toString, new TypeToken<JsonObject>() {
+        }.getType());
+        System.out.println(new Gson().toJson(fromJson));
+//        System.out.println(messageUnpacker.unpackValue().toJson());
+
+    }
 
 }

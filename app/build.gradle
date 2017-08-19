@@ -3,6 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 apply plugin: 'kotlin-android'
+apply plugin: 'io.objectbox'
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -244,6 +245,7 @@ repositories {
         dirs 'libs'
     }
     mavenCentral()
+    maven { url "http://objectbox.net/beta-repo/" }
 }
 
 greendao {
@@ -255,6 +257,8 @@ dependencies {
     //这种方式可以解决:Warning:Conflict with dependency 'com.google.guava:guava'. Resolved versions for app (18.0) and test app (19.0) differ. See http://g.co/androidstudio/app-test-app-conflict for details.
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-annotations:+'
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:+'
+
     }
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
@@ -351,10 +355,8 @@ dependencies {
     compile 'com.mcxiaoke.packer-ng:helper:2.0.0'
     compile 'org.jetbrains.kotlin:kotlin-stdlib:+'
     compile 'org.msgpack:msgpack-core:0.8.13'
-
-
-
-
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'io.objectbox:objectbox-android:0.9.13'
 }
 /////////////////编译过滤器/////////////////////////////////
 //只需要在一个文件中读出需要编译的 variant名字

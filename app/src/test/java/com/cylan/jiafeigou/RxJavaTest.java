@@ -1,10 +1,14 @@
 package com.cylan.jiafeigou;
 
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.server.MessageMapper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import org.junit.Test;
+import org.msgpack.core.MessageBufferPacker;
+import org.msgpack.core.MessagePack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,7 +185,7 @@ public class RxJavaTest {
     }
 
     @Test
-    public void testNull(){
+    public void testNull() {
         Observable.create(subscriber -> {
             try {
                 subscriber.onNext(null);
@@ -189,10 +193,25 @@ public class RxJavaTest {
             } catch (Exception e) {
                 subscriber.onError(e);
             }
-        }).subscribe(ret->{
-            System.out.println("result:"+ret);
+        }).subscribe(ret -> {
+            System.out.println("result:" + ret);
         }, AppLogger::e);
 
 
+    }
+
+    @Test
+    public void testDPWrapper() throws Exception {
+        MessageBufferPacker messageBufferPacker = MessagePack.newDefaultBufferPacker();
+        messageBufferPacker.packArrayHeader(3)
+                .packLong(0).packLong(0)
+                .packArrayHeader(3)
+                .packInt(1).packInt(4).packInt(3);
+        byte[] byteArray = messageBufferPacker.toByteArray();
+        String toJson = MessagePack.newDefaultUnpacker(byteArray).unpackValue().toJson();
+        JsonArray jsonElements = new Gson().fromJson(toJson, JsonArray.class);
+        JsonArray objects = MessageMapper.DPIDCameraObjectDetect.INSTANCE.getObjects(jsonElements);
+
+        System.out.println(objects);
     }
 }

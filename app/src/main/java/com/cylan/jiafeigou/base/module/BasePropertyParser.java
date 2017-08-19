@@ -67,6 +67,8 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_701_SYS_PUSH_FLAG;
 
 /**
  * Created by yanzhendong on 2017/3/25.
+ *
+ * @deprecated 即将废弃 请使用 MessageMapper
  */
 
 public class BasePropertyParser implements IPropertyParser {
