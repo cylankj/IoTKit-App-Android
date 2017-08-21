@@ -89,6 +89,16 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         JConstant.KEY_CURRENT_PLAY_VIEW = this.getClass().getName();
     }
 
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 onStop 延迟调用 bug #118078
+        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+            ((CameraLiveFragmentEx) fragment).onBackPressed();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
