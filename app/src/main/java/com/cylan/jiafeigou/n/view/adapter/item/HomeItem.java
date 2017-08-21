@@ -49,6 +49,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         return this;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,6 +87,18 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         super.bindView(holder, payloads);
         this.mContext = holder.imgDeviceIcon.getContext();
         handleState(holder);
+
+        // TODO: 2017/8/21 需要 RxJava2的支持 ,直接将界面上的属性 bind 到 ObjectBox 中 ,可以简化逻辑
+        //            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
+//
+//            BaseApplication.getDeviceBox().query().build().subscribe().
+//
+//            String uuid = String.valueOf(device.getUuid());
+//            long[] properties = new long[]{
+//                    CacheHolderKt.msgIdKey(uuid, 201),
+//                    CacheHolderKt.msgIdKey(uuid, 206),
+//                    CacheHolderKt.msgIdKey(uuid, 508),
+//                    CacheHolderKt.msgIdKey(uuid, 501),
     }
 
 
@@ -317,6 +330,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
     @Override
     public void unbindView(ViewHolder holder) {
         super.unbindView(holder);
+        // TODO: 2017/8/21 解除对数据的订阅  需要 RxJava2 的支持
     }
 
     @Override
@@ -352,10 +366,36 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         @BindView(R.id.img_device_state_standby)
         ImageView imgDeviceState4;
 
+        com.cylan.jiafeigou.server.cache.Device device;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        public void bindSubscibe(com.cylan.jiafeigou.server.cache.Device device) {
+            this.device = device;
+            // TODO: 2017/8/21 不支持 RxJava1 暂时不做
+//            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
+//
+//            BaseApplication.getDeviceBox().query().build().subscribe().
+//
+//            String uuid = String.valueOf(device.getUuid());
+//            long[] properties = new long[]{
+//                    CacheHolderKt.msgIdKey(uuid, 201),
+//                    CacheHolderKt.msgIdKey(uuid, 206),
+//                    CacheHolderKt.msgIdKey(uuid, 508),
+//                    CacheHolderKt.msgIdKey(uuid, 501),
+//
+//
+//            };
+//            itemBox.query().in(PropertyItem_.__ID_PROPERTY, properties)
+        }
+
+        public void unbindSubscibe() {
+
+        }
+
 
     }
 

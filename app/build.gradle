@@ -3,7 +3,10 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'project-report'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.objectbox'
+//apply plugin: 'io.objectbox'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.objectbox.android.transform'
+
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -138,6 +141,12 @@ android {
                 signingConfig signingConfigs.release
             }
         }
+    }
+
+    packagingOptions{
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/DEPENDENCIES'
     }
 
 
@@ -283,10 +292,10 @@ dependencies {
     compile rootProject.ext.appCardview
     /////////////////android///////////////////////
     compile rootProject.ext.butterknife
-    annotationProcessor rootProject.ext.butterknifeApt
+    kapt rootProject.ext.butterknifeApt
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
-    annotationProcessor rootProject.ext.permisApt
+    kapt rootProject.ext.permisApt
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     compile rootProject.ext.buglySdk
@@ -323,7 +332,7 @@ dependencies {
     //可以单独使用，不需要依赖下方的扩展包
     //RxJava扩展支持，根据需要添加
     compile 'com.cylan.ext:annotations:0.1.0'
-    annotationProcessor project(':processor')
+    kapt project(':processor')
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
@@ -351,13 +360,19 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+    kapt 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.mcxiaoke.packer-ng:helper:2.0.0'
     compile 'org.jetbrains.kotlin:kotlin-stdlib:+'
     compile 'org.msgpack:msgpack-core:0.8.13'
+    compile 'org.msgpack:jackson-dataformat-msgpack:+'
     compile 'com.google.code.gson:gson:2.8.1'
-    compile 'io.objectbox:objectbox-android:0.9.13'
+//    compile 'de.greenrobot:java-common:2.3.1'
+    compile "io.objectbox:objectbox-android:$objectBoxVersion"
+    compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
+    kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
+    kapt "com.android.databinding:compiler:2.3.3"
 }
+
 /////////////////编译过滤器/////////////////////////////////
 //只需要在一个文件中读出需要编译的 variant名字
 def List<String> getBuildVariantList() {

@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext. objectBoxVersion = "0.9.13"
     repositories {
         jcenter()
 //        maven { url 'https://maven.fabric.io/public' }
@@ -18,7 +19,7 @@ buildscript {
         //谷歌推送
         classpath 'com.google.gms:google-services:3.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:+"
-        classpath 'io.objectbox:objectbox-gradle-plugin:0.9.13'
+        classpath "io.objectbox:objectbox-gradle-plugin:$objectBoxVersion"
     }
 }
 
@@ -79,4 +80,6 @@ ext {
     switchButton = 'com.kyleduo.switchbutton:library:1.4.1'
     leakcanaryAndroid = 'com.squareup.leakcanary:leakcanary-android:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+
+
 }

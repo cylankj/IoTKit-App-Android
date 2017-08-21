@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 
 import java.util.ArrayList;
 
@@ -149,6 +150,10 @@ public class BasePropertyParser implements IPropertyParser {
     @Override
     public boolean accept(int pid, int msgId) {
         DPProperty property = properties.get(msgId);
+
+        PropertyItem propertyItem = new PropertyItem();
+        boolean aBoolean = propertyItem.asBoolean(false);
+
         return property != null && property.accept(DPDevice.belong(pid));
     }
 

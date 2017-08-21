@@ -119,6 +119,7 @@ public interface CamLiveContract {
         void onDeviceUnBind();
 
         void onBackPressed();
+
     }
 
     interface Presenter extends BasePresenter {
