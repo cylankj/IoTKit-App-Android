@@ -68,7 +68,7 @@ public class VideoViewFactory {
         /**
          * 截图
          */
-        void takeSnapshot();
+        void takeSnapshot(boolean tag);
 
         void performTouch();
 

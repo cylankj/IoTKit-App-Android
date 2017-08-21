@@ -64,8 +64,8 @@ public class PanoramicView360RS_Ext extends Panoramic360ViewRS implements VideoV
     }
 
     @Override
-    public void takeSnapshot() {
-
+    public void takeSnapshot(boolean tag) {
+        super.takeSnapshot(tag);
     }
 
     @Override

@@ -558,6 +558,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             @Override
             public void onSnapshot(Bitmap bitmap, boolean tag) {
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
+                PerformanceUtils.stopTrace("takeShotFromLocalView");
             }
         });
         liveViewWithThumbnail.setLiveView(videoView);
@@ -1394,6 +1395,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void updateLiveViewRectHeight(float ratio) {
         liveViewWithThumbnail.updateLayoutParameters((int) (Resources.getSystem().getDisplayMetrics().widthPixels * ratio),
                 getVideoFinalWidth());
+    }
+
+    public LiveViewWithThumbnail getLiveViewWithThumbnail() {
+        return liveViewWithThumbnail;
     }
 
     @Override

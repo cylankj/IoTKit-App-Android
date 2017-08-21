@@ -435,7 +435,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     switch (vId) {
                         case R.id.imgV_cam_trigger_capture:
                         case R.id.imgV_land_cam_trigger_capture:
-                            basePresenter.takeSnapShot(true);
+                            if (camLiveControlLayer != null && camLiveControlLayer.getLiveViewWithThumbnail() != null &&
+                                    camLiveControlLayer.getLiveViewWithThumbnail().getVideoView() != null)
+                                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView()
+                                        .takeSnapshot(true);
+                            PerformanceUtils.startTrace("takeShotFromLocalView");
+//                            basePresenter.takeSnapShot(true);
                             break;
                     }
                 });
@@ -739,7 +744,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && orientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
 //                    Log.d(TAG, "设置竖屏");
                     if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                        ViewUtils.setRequestedOrientation(getActivity(),ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                     }
                 }
             } else if (orientation > 225 && orientation < 315) { //设置横屏
@@ -753,7 +758,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //                Log.d(TAG, "反向横屏");
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
                     if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                        ViewUtils.setRequestedOrientation(getActivity(),ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                        ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
                     }
                 }
             } else if (orientation > 135 && orientation < 225) {
@@ -761,7 +766,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
                     if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
                         if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                            ViewUtils.setRequestedOrientation(getActivity(),ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
                         }
                     }
                 }

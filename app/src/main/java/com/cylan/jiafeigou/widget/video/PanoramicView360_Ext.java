@@ -64,8 +64,8 @@ public class PanoramicView360_Ext extends Panoramic360View implements VideoViewF
     }
 
     @Override
-    public void takeSnapshot() {
-
+    public void takeSnapshot(boolean tag) {
+        super.takeSnapshot(tag);
     }
 
     @Override

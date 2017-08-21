@@ -54,8 +54,8 @@ public class PanoramicView720_Ext extends Panoramic720View implements VideoViewF
     }
 
     @Override
-    public void takeSnapshot() {
-
+    public void takeSnapshot(boolean tag) {
+        super.takeSnapshot(tag);
     }
 
     @Override
