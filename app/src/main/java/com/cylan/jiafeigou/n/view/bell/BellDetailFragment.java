@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.bell;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,6 +105,9 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @OnClick(R.id.sv_setting_device_alias)
     public void onClick() {
         editDialogFragment = EditFragmentDialog.newInstance(null);
+        editDialogFragment.setDefaultFilter(new InputFilter[]{
+                new InputFilter.LengthFilter(24)
+        });
         Bundle bundle = new Bundle();
         bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
         bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
