@@ -1296,13 +1296,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         }, 3000);
         //分享账号不显示啊.
-        if (JFGRules.isShareDevice(uuid)) return;
-//        if (!getHistoryWheelHandler(presenter).isBusy()) {//拖动时间轴时屏蔽 rtcp 时间更新,防止显示异常
-        boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
-        Log.d("setLiveRectTime", "isBusy?" + isWheelBusy);
-        if (!isWheelBusy) {
-            setLiveRectTime(livePlayType, rtcp.timestamp, true);
-        }
+//        if (JFGRules.isShareDevice(uuid)) return;
+        setLiveRectTime(livePlayType, rtcp.timestamp, true);
         //点击事件
         if (liveTimeRectListener == null) {
             liveTimeRectListener = v -> {
@@ -1340,25 +1335,18 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-//    /**
-//     * 时间轴刷新不需要 那么频繁
-//     */
-//    private long fuckTheTime;
-
     private void setLiveRectTime(int type, long timestamp, boolean useDamp) {
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
-
-        boolean isWheelBusy = historyWheelHandler != null && historyWheelHandler.isBusy();
+        boolean isWheelBusy = historyWheelHandler.isBusy();
         boolean shouldUpdateWheelTime = !useDamp ||
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
         Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
         if (JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
-            ((LiveTimeLayout) liveTimeLayout).setContent(type, timestamp);
+            liveTimeLayout.setContent(type, timestamp);
         }
-        if (livePlayState == PLAY_STATE_PREPARE) return;
         if (!isWheelBusy && type == TYPE_HISTORY && presenter != null
                 && presenter.getPlayState() == PLAY_STATE_PLAYING && shouldUpdateWheelTime) {
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
@@ -1366,20 +1354,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-    private String getTime(long time) {
-        if (liveTimeDateFormat == null)
-            liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
-        return liveTimeDateFormat.format(new Date(time));
-    }
-
     public void setFlipListener(FlipImageView.OnFlipListener flipListener) {
-        ((FlipLayout) layoutLandFlip).setFlipListener(flipListener);
-        ((FlipLayout) layoutPortFlip).setFlipListener(flipListener);
+        (layoutLandFlip).setFlipListener(flipListener);
+        (layoutPortFlip).setFlipListener(flipListener);
     }
 
     public void setFlipped(boolean flip) {
-        ((FlipLayout) layoutLandFlip).setFlipped(flip);
-        ((FlipLayout) layoutPortFlip).setFlipped(flip);
+        (layoutLandFlip).setFlipped(flip);
+        (layoutPortFlip).setFlipped(flip);
     }
 
 
@@ -1422,7 +1404,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
-            AppLogger.d("onHistoryDataRsp");
             setLiveRectTime(TYPE_HISTORY, time, false);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
         });
         tvCamLiveLandBottom.setVisibility(VISIBLE);
@@ -1769,8 +1750,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         btnLoadHistory.setEnabled(true);
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);
-                        if (presenter != null
-                                && presenter.getHistoryDataProvider() != null
+                        if (presenter.getHistoryDataProvider() != null
                                 && presenter.getHistoryDataProvider().getDataCount() == 0)
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                     }
@@ -1862,14 +1842,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void setLiveTextClick(OnClickListener liveTextClick) {
         this.liveTextClick = liveTextClick;
-    }
-
-    public void hideHistoryWheel() {
-        IData historyDataProvider = presenter.getHistoryDataProvider();
-        if (historyDataProvider != null) {
-            historyDataProvider.clean();
-        }
-        historyWheelHandler.dateUpdate();
     }
 
     public void showPlayHistoryButton() {

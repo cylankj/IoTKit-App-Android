@@ -278,7 +278,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setAliasName(String name) {
-        AppLogger.e("用户昵称:" + name + "add:" + isVisible());
+        AppLogger.d("用户昵称:" + name + "add:" + isVisible());
         tvHomeMineNick.setText(name);
     }
 

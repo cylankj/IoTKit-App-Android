@@ -157,7 +157,7 @@ public class HomeMinePresenterImpl extends AbstractFragmentPresenter<HomeMineCon
                 .observeOn(Schedulers.io())
                 .map(accountArrived -> {
                     AutoSignIn.SignType signType = AutoSignIn.getInstance().getSignType();
-                    AppLogger.e("监听到用户信息回调!");
+                    AppLogger.d("监听到用户信息回调!");
                     isOpenLogin = signType != null && signType.type >= 3;
                     if (isOpenLogin) {
                         String photoUrl = isDefaultPhoto(accountArrived.account.getPhotoUrl()) ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : null;

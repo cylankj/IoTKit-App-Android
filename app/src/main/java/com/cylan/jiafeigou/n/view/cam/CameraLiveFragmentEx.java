@@ -118,19 +118,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         Device device = getDevice();
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
         eventListener = new MyEventListener(getActivity());
-        boolean autoRotateOn = (Settings.System.getInt(getContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
-        //检查系统是否开启自动旋转
-        if (autoRotateOn) {
-            eventListener.enable();
-        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (eventListener != null) {
-            eventListener.disable();
-        }
     }
 
     @Override
@@ -273,6 +265,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onStop() {
         super.onStop();
+        enableSensor(false);
         if (basePresenter != null)
             basePresenter.stopPlayVideo(true).subscribe(ret -> {
             }, AppLogger::e);
@@ -284,7 +277,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (basePresenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
 //            camLiveControlLayer.showUseCase();
             // TODO: 2017/8/16 直播页需要自动横屏了
-            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            //直播成功之后，才触发sensor.
+//            ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             Device device = basePresenter.getDevice();
             DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
             if (standby.standby) return;
@@ -417,8 +411,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null) getView().post(() -> camLiveControlLayer.onLivePrepared(type));
     }
 
+    private void enableSensor(boolean enable) {
+        boolean autoRotateOn = (Settings.System.getInt(getContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
+        //检查系统是否开启自动旋转
+        if (autoRotateOn && enable) {
+            AppLogger.d("耗电大户");
+            eventListener.enable();
+        } else if (eventListener != null) {
+            eventListener.disable();
+        }
+    }
+
     @Override
     public void onLiveStarted(int type) {
+        enableSensor(true);
         if (getView() != null) getView().setKeepScreenOn(true);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         camLiveControlLayer.onLiveStart(basePresenter, device);
@@ -527,6 +533,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onLiveStop(int playType, int errId) {
+        enableSensor(false);
         if (!isAdded()) return;
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
         if (getView() != null)
@@ -732,21 +739,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && orientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
 //                    Log.d(TAG, "设置竖屏");
                     if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        ViewUtils.setRequestedOrientation(getActivity(),ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                     }
                 }
             } else if (orientation > 225 && orientation < 315) { //设置横屏
 //                Log.d(TAG, "设置横屏");
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                     if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     }
                 }
             } else if (orientation > 45 && orientation < 135) {// 设置反向横屏
 //                Log.d(TAG, "反向横屏");
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
                     if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                        ViewUtils.setRequestedOrientation(getActivity(),ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
                     }
                 }
             } else if (orientation > 135 && orientation < 225) {
@@ -754,7 +761,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
                     if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
                         if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                            ViewUtils.setRequestedOrientation(getActivity(),ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
                         }
                     }
                 }
