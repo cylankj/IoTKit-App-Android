@@ -777,15 +777,21 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }, AppLogger::e, () -> AppLogger.d("take screen finish"));
     }
 
-    @Override
-    public void takeSnapShot(boolean forPopWindow, boolean fromLocalView) {
-
-    }
-
 
     @Override
     public void saveAlarmFlag(boolean flag) {
         Log.d("saveAlarmFlag", "saveAlarmFlag: " + flag);
+    }
+
+    @Override
+    public void saveAndShareBitmap(Bitmap bitmap) {
+        AppLogger.d("take shot initSubscription");
+        Observable.just(bitmap)
+                .subscribeOn(Schedulers.io())
+                .map(new TakeSnapShootHelper(uuid, true, mView))
+                .observeOn(Schedulers.io())
+                .subscribe(pair -> {
+                }, AppLogger::e, () -> AppLogger.d("take screen finish"));
     }
 
     @Override
@@ -982,15 +988,40 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
     }
 
+    private static class TakeSnapShootHelper extends TakeSnapShootLogicHelper {
+
+        TakeSnapShootHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
+            super(uuid, forPopWindow, v);
+        }
+
+        @Override
+        public Pair<Bitmap, String> call(Object o) {
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            PerformanceUtils.startTrace("takeCapture");
+            Bitmap bitmap = (Bitmap) o;
+            if (weakReference.get() != null)
+                weakReference.get().onTakeSnapShot(bitmap);//弹窗
+            final String fileName = "." + uuid + System.currentTimeMillis();
+            final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+            removeLastPreview();
+            SimpleCache.getInstance().addCache(filePath, bitmap);
+            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+            //需要删除之前的一条记录.
+            BitmapUtils.saveBitmap2file(bitmap, filePath);
+            MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+            shareSnapshot(true, filePath);//最后一步处理分享
+            return new Pair<>(bitmap, filePath);
+        }
+    }
 
     /**
      * 静态内部类
      */
     private static class TakeSnapShootLogicHelper implements Func1<Object, Pair<Bitmap, String>> {
 
-        private WeakReference<CamLiveContract.View> weakReference;
+        WeakReference<CamLiveContract.View> weakReference;
         boolean forPopWindow;
-        private String uuid;
+        String uuid;
 
         TakeSnapShootLogicHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
             weakReference = new WeakReference<>(v);
@@ -1038,7 +1069,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return new Pair<>(bitmap, filePath);
         }
 
-        private void removeLastPreview() {
+        protected void removeLastPreview() {
             final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
             try {
                 if (SimpleCache.getInstance().getPreviewKeyList() != null) {
@@ -1066,7 +1097,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          *
          * @param needShare
          */
-        private void shareSnapshot(boolean needShare, String localPath) {
+        protected void shareSnapshot(boolean needShare, String localPath) {
             Observable.just(localPath)
                     .subscribeOn(Schedulers.io())
                     .filter(path -> {
