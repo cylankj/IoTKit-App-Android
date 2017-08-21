@@ -99,6 +99,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
     @Override
     public void bindState(int state) {
         runOnUiThread(() -> {
+            if (isFinishing()) return;
             if (state == BindUtils.BIND_FAILED) {//失败
                 vsLayoutSwitch.showNext();
                 if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
