@@ -60,7 +60,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void onStart() {
         super.onStart();
         BaseDeviceInformationFetcher.getInstance().init(uuid);
-        DataSourceManager.getInstance().syncAllProperty();
+        DataSourceManager.getInstance().syncAllProperty(uuid);
     }
 
     @Override

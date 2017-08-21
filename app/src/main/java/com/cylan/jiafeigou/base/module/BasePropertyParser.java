@@ -137,9 +137,9 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_216_DEVICE_VOLTAGE, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_215_DEVICE_RTMP, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA));
         properties.put(ID_214_DEVICE_TIME_ZONE, new DPProperty(DpMsgDefine.DPTimeZone.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_213_DEVICE_P2P_VERSION, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_212_DEVICE_UPLOAD_LOG, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_211_APP_UPLOAD_LOG, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_213_DEVICE_P2P_VERSION, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_212_DEVICE_UPLOAD_LOG, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_211_APP_UPLOAD_LOG, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_210_UP_TIME, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_209_LED_INDICATOR, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_208_DEVICE_SYS_VERSION, new DPProperty(String.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));

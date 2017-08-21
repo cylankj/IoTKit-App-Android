@@ -337,7 +337,7 @@ public class DataSourceManager implements JFGSourceManager {
                 array[i] = parameters.get(i);
             }
             map.put(uuid, array);
-            if (deviceCount % 8 == 0) {
+            if (deviceCount % 6 == 0) {
                 mapList.add(map);
                 map = new HashMap<>();
             }

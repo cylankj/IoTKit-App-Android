@@ -206,7 +206,7 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                         if (JFGRules.isDeviceOnline(net)) {
                             //成功了
                             // TODO: 2017/8/17 绑定成功了同步所有的属性
-                            DataSourceManager.getInstance().syncAllProperty();
+                            DataSourceManager.getInstance().syncAllProperty(device.uuid);
                             bindState = BIND_SUC;
                             throw new RxEvent.HelperBreaker("good");
                         }
