@@ -170,7 +170,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     View vLine;
     //历史录像条
     @BindView(R.id.layout_e)
-    FrameLayout layoutE;
+    RelativeLayout layoutE;
     @BindView(R.id.imgV_cam_switch_speaker)
     ImageView imgVCamSwitchSpeaker;
     @BindView(R.id.imgV_cam_trigger_mic)
@@ -559,6 +559,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             public void onSnapshot(Bitmap bitmap, boolean tag) {
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
                 PerformanceUtils.stopTrace("takeShotFromLocalView");
+                onCaptureRsp((FragmentActivity) getContext(), bitmap);
             }
         });
         liveViewWithThumbnail.setLiveView(videoView);
@@ -948,7 +949,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayState = PLAY_STATE_PLAYING;
         boolean isPlayHistory = livePlayType == TYPE_HISTORY;
         //左下角直播,竖屏下:左下角按钮已经隐藏
-        ((ImageView) imgVCamLiveLandPlay).setImageResource(R.drawable.icon_landscape_playing);
+        (imgVCamLiveLandPlay).setImageResource(R.drawable.icon_landscape_playing);
         //|直播| 按钮
         post(portShowRunnable);
         //现在显示的条件就是手动点击其他情况都不显示
@@ -1465,12 +1466,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onCaptureRsp(FragmentActivity activity, Bitmap bitmap) {
-        if (MiscUtils.isLand()) return;
+        if (MiscUtils.isLand() || activity == null || activity.isFinishing()) return;
         try {
             PerformanceUtils.startTrace("showPopupWindow");
-            roundCardPopup = new RoundCardPopup(getContext(), view -> {
-                view.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
-            }, v -> {
+            roundCardPopup = new RoundCardPopup(getContext(), view -> view.setImageDrawable(new BitmapDrawable(getResources(), bitmap)), v -> {
                 roundCardPopup.dismiss();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(JConstant.KEY_SHARE_ELEMENT_BYTE, bitmap);
