@@ -109,7 +109,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_601_ACCOUNT_STATE, new DPProperty(DpMsgDefine.DPMineMesg.class));
         properties.put(ID_515_CAM_ObjectDetect, new DPProperty(int[].class, DPProperty.LEVEL_HOME, CAMERA, DOORBELL, PROPERTY));
         properties.put(ID_514_CAM_WARNINTERVAL, new DPProperty(int.class, DPProperty.LEVEL_HOME, CAMERA, DOORBELL, PROPERTY));
-        properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, CAMERA, DOORBELL));//清晰度,分辨率
+//        properties.put(ID_513_CAM_RESOLUTION, new DPProperty(int.class, CAMERA, DOORBELL));//清晰度,分辨率
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
         properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(DpMsgDefine.DpCoordinate.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
@@ -125,17 +125,17 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_401_BELL_CALL_STATE, new DPProperty(DpMsgDefine.DPBellCallRecord.class));//set
         properties.put(ID_304_DEVICE_CAMERA_ROTATE, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(228, new DPProperty(DpMsgDefine.DPBaseUpgradeStatus.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_223_MOBILE_NET, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));//
         properties.put(ID_222_SDCARD_SUMMARY, new DPProperty(DpMsgDefine.DPSdcardSummary.class));//set
-        properties.put(ID_220_SDK_VERSION, new DPProperty(String.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_219_DEVICE_BIND_LOG, new DPProperty(DpMsgDefine.DPBindLog.class, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_220_SDK_VERSION, new DPProperty(String.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
+//        properties.put(ID_219_DEVICE_BIND_LOG, new DPProperty(DpMsgDefine.DPBindLog.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_218_DEVICE_FORMAT_SDCARD, new DPProperty(int.class, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_217_DEVICE_MOBILE_NET_PRIORITY, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
         properties.put(ID_216_DEVICE_VOLTAGE, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
-        properties.put(ID_215_DEVICE_RTMP, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA));
+//        properties.put(ID_215_DEVICE_RTMP, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA));
         properties.put(ID_214_DEVICE_TIME_ZONE, new DPProperty(DpMsgDefine.DPTimeZone.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
 //        properties.put(ID_213_DEVICE_P2P_VERSION, new DPProperty(int.class, DPProperty.LEVEL_HOME, PROPERTY, CAMERA, DOORBELL));
 //        properties.put(ID_212_DEVICE_UPLOAD_LOG, new DPProperty(String.class, PROPERTY, CAMERA, DOORBELL));
