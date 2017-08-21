@@ -1360,6 +1360,51 @@ public class DpMsgDefine {
         };
     }
 
+    @Message
+    public static final class BellDeepSleep extends BaseDataPoint {
+        @Index(0)
+        public boolean enable;
+        @Index(1)
+        public int startTime;
+        @Index(2)
+        public int endTime;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeByte(this.enable ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.startTime);
+            dest.writeInt(this.endTime);
+        }
+
+        public BellDeepSleep() {
+        }
+
+        protected BellDeepSleep(Parcel in) {
+            super(in);
+            this.enable = in.readByte() != 0;
+            this.startTime = in.readInt();
+            this.endTime = in.readInt();
+        }
+
+        public static final Creator<BellDeepSleep> CREATOR = new Creator<BellDeepSleep>() {
+            @Override
+            public BellDeepSleep createFromParcel(Parcel source) {
+                return new BellDeepSleep(source);
+            }
+
+            @Override
+            public BellDeepSleep[] newArray(int size) {
+                return new BellDeepSleep[size];
+            }
+        };
+    }
+
 //    @Message
 //    public static class DPWarnInterval extends BaseDataPoint {
 //

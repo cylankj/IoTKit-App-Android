@@ -29,20 +29,12 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_208_DEVICE_SYS_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_210_UP_TIME;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_211_APP_UPLOAD_LOG;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_212_DEVICE_UPLOAD_LOG;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_213_DEVICE_P2P_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_214_DEVICE_TIME_ZONE;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_215_DEVICE_RTMP;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_216_DEVICE_VOLTAGE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_219_DEVICE_BIND_LOG;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_220_SDK_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_222_SDCARD_SUMMARY;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_223_MOBILE_NET;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_301_DEVICE_MIC;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_302_DEVICE_SPEAKER;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_401_BELL_CALL_STATE;
@@ -58,7 +50,6 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_509_CAMERA_MOUNT_MODE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_510_CAMERA_COORDINATE;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_511_CAMERAWARNANDWONDER;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_512_CAMERA_ALARM_MSG_V3;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_513_CAM_RESOLUTION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_514_CAM_WARNINTERVAL;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_515_CAM_ObjectDetect;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_601_ACCOUNT_STATE;
@@ -90,6 +81,7 @@ public class BasePropertyParser implements IPropertyParser {
     private void init() {
         //ip
         properties.put(227, new DPProperty(String.class, DPProperty.LEVEL_HOME, DOORBELL, CAMERA));
+        properties.put(404, new DPProperty(DpMsgDefine.BellDeepSleep.class, DPProperty.LEVEL_HOME, DOORBELL));
         //客户端配置/设备端查询 设备是否使用有线网络
         properties.put(226, new DPProperty(boolean.class, DPProperty.LEVEL_HOME, DOORBELL, CAMERA));
         //设备端是否存在可用的有线网络。

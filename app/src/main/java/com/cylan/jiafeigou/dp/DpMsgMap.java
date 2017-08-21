@@ -44,6 +44,7 @@ public final class DpMsgMap {
     public static final int ID_303_DEVICE_AUTO_VIDEO_RECORD = 303;
 
     public static final int ID_402_BELL_VOICE_MSG = 402;
+    public static final int ID_404_BELL_DEEP_SLEEP = 404;
     public static final int ID_511_CAMERAWARNANDWONDER = 511;
     public static final int ID_510_CAMERA_COORDINATE = 510;
 
