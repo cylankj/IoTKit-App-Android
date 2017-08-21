@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.misc.MethodFilter;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
@@ -118,7 +119,7 @@ BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.RessetAccountBack(jfgResult));
                 break;
         }
-        if (login) {
+        if (login && MethodFilter.run("PushPickerIntentService", 5 * 1000)) {
             PushPickerIntentService.start();
             Observable.just(new FetchFeedbackTask(),
                     new FetchFriendsTask(),
