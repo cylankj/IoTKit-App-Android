@@ -197,6 +197,13 @@ public interface CamLiveContract {
         void takeSnapShot(boolean forPopWindow);
 
         /**
+         * 预览专用？
+         *
+         * @param forPopWindow
+         */
+        void takeSnapShot(boolean forPopWindow, boolean fromLocalView);
+
+        /**
          * 保存标志
          *
          * @param flag

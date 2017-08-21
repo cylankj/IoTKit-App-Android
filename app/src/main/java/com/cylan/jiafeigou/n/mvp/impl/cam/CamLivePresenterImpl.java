@@ -773,10 +773,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .map(new TakeSnapShootLogicHelper(uuid, forPopWindow, mView))
                 .observeOn(Schedulers.io())
-                .filter(pair -> pair != null)
                 .subscribe(pair -> {
-                        }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()),
-                        () -> AppLogger.d("take screen finish"));
+                }, AppLogger::e, () -> AppLogger.d("take screen finish"));
+    }
+
+    @Override
+    public void takeSnapShot(boolean forPopWindow, boolean fromLocalView) {
+
     }
 
 
@@ -1025,8 +1028,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //需要删除之前的一条记录.
             }
             BitmapUtils.saveBitmap2file(bitmap, filePath);
-            if (forPopWindow)//添加到相册
-            {
+            if (forPopWindow) {//添加到相册
                 MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
             }
 //            MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
@@ -1038,7 +1040,6 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
         private void removeLastPreview() {
             final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-            if (TextUtils.isEmpty(pre)) return;
             try {
                 if (SimpleCache.getInstance().getPreviewKeyList() != null) {
                     List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
@@ -1050,9 +1051,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
             } catch (Exception e) {
             }
-            Observable.just("go")
+            String[] file = new File(JConstant.MEDIA_PATH).list((dir, name) -> !TextUtils.isEmpty(name) && name.contains(uuid));
+            if (file.length == 0) return;
+            Observable.just(file)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
+                    .subscribe(ret -> {
+                        for (String fileName : ret)
+                            FileUtils.deleteFile(JConstant.MEDIA_PATH + File.separator + fileName);
+                    }, AppLogger::e);
         }
 
         /**

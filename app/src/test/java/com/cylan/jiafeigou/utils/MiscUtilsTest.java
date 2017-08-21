@@ -5,6 +5,8 @@ import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -32,6 +34,14 @@ public class MiscUtilsTest {
 
     @Test
     public void testWechat() {
+        String[] file = new File("/home/hds").list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.contains("back");
+            }
+        });
+        for (String f : file)
+            System.out.println(f);
     }
 
     @Test
