@@ -529,8 +529,16 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 bottomVideoMenuGyroscope.setImageResource(gyroEnabled ? R.drawable.video_icon_gyroscope_selector : R.drawable.video_icon_manual_selector);
                 bottomPictureMenuGyroscope.setEnabled(true);
                 bottomVideoMenuGyroscope.setEnabled(true);
-                bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_panorama_selector);
-                bottomVideoMenuMode.setImageResource(R.drawable.video_icon_panorama_selector);
+                if (displayMode == PanoramicView720_Ext.DM_Fisheye) {
+                    bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_fisheye_selector);
+                    bottomVideoMenuMode.setImageResource(R.drawable.video_icon_fisheye_selector);
+                } else if (displayMode == PanoramicView720_Ext.DM_LittlePlanet) {
+                    bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_asteroid_selector);
+                    bottomVideoMenuMode.setImageResource(R.drawable.video_icon_asteroid_selector);
+                } else {
+                    bottomPictureMenuMode.setImageResource(R.drawable.photos_icon_panorama_selector);
+                    bottomVideoMenuMode.setImageResource(R.drawable.video_icon_panorama_selector);
+                }
                 bottomPictureMenuMode.setEnabled(true);
                 bottomVideoMenuMode.setEnabled(true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -737,7 +745,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                 download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
             } else if (downloadInfo.getState() == DownloadManager.FINISH) {
                 download.setText(bean != null && bean.alarmMsg != null ? R.string.SAVE_PHONE : R.string.Tap1_Album_Download);
-                download.setEnabled(false);
+                download.setEnabled(bean != null && bean.alarmMsg != null);
             } else {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");
                 downloadInfo.setListener(listener);
@@ -816,12 +824,14 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     String taskKey = PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName);
                     GetRequest request = OkGo.get(toString);
                     DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
-                    if (downloadInfo != null) {
+                    if (downloadInfo != null && downloadInfo.getState() == DownloadManager.FINISH) {
+                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+                    } else if (downloadInfo != null) {
                         downloadInfo.setRequest(request);
                         downloadInfo.setUrl(request.getBaseUrl());
                         DownloadDBManager.INSTANCE.replace(downloadInfo);
+                        DownloadManager.getInstance().addTask(taskKey, request, listener);
                     }
-                    DownloadManager.getInstance().addTask(taskKey, request, listener);
                     this.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
