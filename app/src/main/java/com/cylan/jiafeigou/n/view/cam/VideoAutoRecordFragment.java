@@ -231,6 +231,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 0;
                 basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                siv_mode_24_hours.setRadioButtonChecked(false);
+                siv_mode_never.setRadioButtonChecked(false);
             }
             break;
             case R.id.lLayout_mode_24_hours: {
@@ -247,6 +249,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 1;
                 basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                siv_mode_motion.setRadioButtonChecked(false);
+                siv_mode_never.setRadioButtonChecked(false);
             }
             break;
             case R.id.lLayout_mode_never: {
@@ -259,6 +263,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 2;
                 basePresenter.updateInfoReq(flag, ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                siv_mode_24_hours.setRadioButtonChecked(false);
+                siv_mode_motion.setRadioButtonChecked(false);
             }
             break;
         }
