@@ -145,7 +145,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
-//        swipeRefreshLayout.setRefreshing(true);
         panoramaAdapter.notifyDataSetChanged();
     }
 
@@ -342,7 +341,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onDelete(int position) {
-        panoramaAdapter.notifyItemRemoved(position);
+        panoramaAdapter.remove(position);
     }
 
     @Override

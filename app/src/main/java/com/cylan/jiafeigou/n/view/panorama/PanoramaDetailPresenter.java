@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -102,6 +103,10 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
+            if (!JFGRules.isDeviceOnline(uuid)) {
+                mView.onDeleteResult(0);//本地删除了,设备删除失败
+                return;
+            }
             Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
                     .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                     .subscribeOn(Schedulers.io())

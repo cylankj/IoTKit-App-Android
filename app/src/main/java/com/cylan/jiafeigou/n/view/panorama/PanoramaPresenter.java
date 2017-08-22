@@ -255,7 +255,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             } else {
                                 mView.onShowPreviewPicture(null);
                                 // TODO: 2017/8/7  显示可以公网查看视频了所以不弹这个提示了
-//                                mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
+                                mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                             }
                         }
                     } else {
@@ -281,6 +281,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         }
 
         subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus(uuid)
+                .onErrorResumeNext(Observable.just(null))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {
@@ -292,8 +293,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return !isUpgrade;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus(uuid))
-                .timeout(30, TimeUnit.SECONDS)
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus(uuid).onErrorResumeNext(Observable.just(null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp != null && rsp.ret == 0 && rsp.videoType != 3) {//检查录像状态
@@ -317,19 +317,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-//                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getSdInfo())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(ret -> {
-//                    if (ret != null && !ret.sdIsExist) {//SDCard 不存在
-////                        mView.onReportDeviceError(2004);
-//                        shouldRefreshRecord = false;
-//                    } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
-////                        mView.onReportDeviceError(2022);
-//                        shouldRefreshRecord = false;
-//                    }
-//                    return ret;
-//                })
-//                .observeOn(Schedulers.io())
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine(uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
@@ -346,7 +333,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 Device device = sourceManager.getDevice(uuid);
                                 DPEntity property = device.getProperty(206);
                                 if (property == null) {
-                                    device.getEmptyProperty(206);
+                                    property = device.getEmptyProperty(206);
                                 }
                                 property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
                                 if (bat.battery <= 20 && isFirst) {//检查电量

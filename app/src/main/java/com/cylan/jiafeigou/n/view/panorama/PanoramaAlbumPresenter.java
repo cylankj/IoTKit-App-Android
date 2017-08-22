@@ -40,6 +40,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.View> implements PanoramaAlbumContact.Presenter {
     private Subscription fetchSubscription;
     private Subscription deleteSubscription;
+    private Subscription monitorDeleteSubscription;
 
     private boolean hasSDCard;
 
@@ -48,6 +49,18 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.MEDIA_PATH + File.separator + uuid);
         BaseDeviceInformationFetcher.getInstance().init(uuid);
+        if (monitorDeleteSubscription != null && !monitorDeleteSubscription.isUnsubscribed()) {
+            monitorDeleteSubscription.unsubscribe();
+        }
+        monitorDeleteSubscription = monitorDeleteUpdateSub();
+    }
+
+    @Override
+    public void onViewDetached() {
+        super.onViewDetached();
+        if (monitorDeleteSubscription != null && !monitorDeleteSubscription.isUnsubscribed()) {
+            monitorDeleteSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -64,7 +77,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         super.onRegisterSubscription();
 //        registerSubscription(monitorPanoramaAPI());
         registerSubscription(monitorSDCardUnMount());
-        registerSubscription(monitorDeleteUpdateSub());
+//        registerSubscription(monitorDeleteUpdateSub());
     }
 
     private Subscription monitorDeleteUpdateSub() {
@@ -243,7 +256,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         for (DownloadInfo item : items) {
                             int itemTime = parseTime(item.getFileName());
                             if (itemTime >= finalTime) continue;
-                            boolean endsWith = item.getTargetPath() != null && item.getTargetPath().endsWith(File.separator + uuid + File.separator + item.getFileName());
+                            boolean endsWith = item.getTargetPath() != null && item.getTaskKey().startsWith(uuid + "/images");
+                            ;
                             if (item.getState() == 4 && FileUtils.isFileExist(item.getTargetPath()) && result.size() < 20 && endsWith) {
                                 try {
                                     panoramaItem = new PanoramaAlbumContact.PanoramaItem(item.getFileName());

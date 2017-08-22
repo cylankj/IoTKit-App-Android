@@ -94,6 +94,10 @@ public interface PanoramaAlbumContact {
             return uuid + "/images/" + fileName;
         }
 
+        public static String getMessageTaskKey(String uuid, String fileName) {
+            return uuid + ":" + fileName;
+        }
+
         public static boolean accept(String account, String uuid, String filePath) {
             return filePath.matches("/" + account + "/" + uuid);
         }

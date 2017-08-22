@@ -276,6 +276,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
+    public void refreshDevices() {
+
+//        MIDServerAPI.INSTANCE.getPageMessage(PAGE_MESSAGE.PAGE_HOME);
+
+    }
+
+    @Override
     protected String[] registerNetworkAction() {
         return new String[]{WifiManager.NETWORK_STATE_CHANGED_ACTION, ConnectivityManager.CONNECTIVITY_ACTION};
     }
