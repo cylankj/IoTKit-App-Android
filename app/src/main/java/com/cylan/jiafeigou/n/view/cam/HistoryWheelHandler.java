@@ -166,7 +166,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     public void setNav2Time(long time) {
-        superWheelExt.post(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time)));
+        superWheelExt.post(() -> superWheelExt.setPositionByTime(TimeUtils.wrapToLong(time), false));
     }
 
 //    public void setNav2Time(long time, long delay) {
@@ -189,18 +189,16 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         tmpTime = time;
         switch (state) {
             case STATE_DRAGGING:
-                Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
+                Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time) + ",time:" + time);
                 if (datePickerListener != null)
                     datePickerListener.onPickDate(time / 1000, STATE_DRAGGING);
                 superWheelExt.removeCallbacks(dragRunnable);
                 break;
             case STATE_ADSORB:
-                Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
+                Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time) + ",time:" + time);
                 break;
             case STATE_FINISH:
-                Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
-                if (datePickerListener != null)
-                    datePickerListener.onPickDate(time / 1000, STATE_FINISH);
+                Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time) + ",time:" + time);
                 superWheelExt.removeCallbacks(dragRunnable);
                 superWheelExt.postDelayed(dragRunnable, 400);
                 break;
@@ -212,6 +210,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         @Override
         public void run() {
             presenter.startPlayHistory(tmpTime);
+            if (datePickerListener != null)
+                datePickerListener.onPickDate(tmpTime / 1000, STATE_FINISH);
             AppLogger.d("拖动停止了:" + tmpTime);
         }
     };

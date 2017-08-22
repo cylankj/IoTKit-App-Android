@@ -46,7 +46,7 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
      * 判定为拖动的最小移动像素数
      */
 
-    public ITouchHandler(SuperWheelExt superWheel) {
+    ITouchHandler(SuperWheelExt superWheel) {
         this.superWheel = superWheel;
         Context context = superWheel.getContext();
         scroller = new OverScroller(context, new OvershootInterpolator(), 0.5f, 0);
@@ -182,6 +182,12 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
         dragOrFling = DragOrFling.NONE;//清空fling标志.
     }
 
+    public void startScroll(int startX, int dx) {
+        scroller.startScroll(startX, 0, dx, 0, 0);
+        superWheel.invalidate();
+        dragOrFling = DragOrFling.NONE;//清空fling标志.
+    }
+
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (Math.abs(distanceX) >= mTouchSlop) {
@@ -212,7 +218,8 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
 
 
     private void updateScrollStateIfRequired(int newState) {
-        Log.d(TAG, "updateScroll:" + dragOrFling + " state:" + newState + " moveDirection:" + moveDirection);
+        if (SuperWheelExt.DEBUG)
+            Log.d(TAG, "updateScroll:" + dragOrFling + " state:" + newState + " moveDirection:" + moveDirection);
         superWheel.autoSettle(newState, moveDirection);
 //        superWheel.autoSettle(newState, MoveDirection.RIGHT);
     }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
@@ -25,7 +26,7 @@ public class SuperWheelExt extends View {
     public static final int STATE_DRAGGING = 0;
     public static final int STATE_ADSORB = 1;//吸附
     public static final int STATE_FINISH = 2;
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = BuildConfig.DEBUG;
 
     public static final String TAG = "SuperWheelExt";
 
@@ -67,7 +68,7 @@ public class SuperWheelExt extends View {
     private IData iDataProvider;
     private long lastUpdateTime;
     private long nextTarget;
-    private long currentTatget;
+    private long currentTarget;
 
     public IData getDataProvider() {
         return iDataProvider;
@@ -264,7 +265,7 @@ public class SuperWheelExt extends View {
                 rect.bottom = getHeight();
                 canvas.drawRect(rect, dataMaskPaint);
                 if (DEBUG)
-                    Log.d("drawDataMask", "drawDataMask: " + rectStart + " " + rectEnd);
+                    Log.d(TAG, "drawDataMask: " + rectStart + " " + rectEnd);
             }
         }
     }
@@ -334,74 +335,72 @@ public class SuperWheelExt extends View {
      * @param moveDirection
      */
     public void autoSettle(int newState, @ITouchHandler.MoveDirection int moveDirection) {
-        if (iDataProvider != null) {
-            //通过
-            boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;//判断当前的位置是否是热区,即:mask区域.
-            long timeCurrent = getCurrentFocusTime();
-            if (tmpCurrentTime == timeCurrent) {
-                if (idle && !iDataProvider.isHotRect(timeCurrent))//dragging finish,空白区域
-                {
-                    long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
-//                    long timeTarget = iDataProvider.getNextTarget(timeCurrent);
-                    setPositionByTime(timeTarget);
-                    Log.d("tmpCurrentTime", "tmpCurrentTime==");
-                }
-                return;
+        if (iDataProvider == null) return;
+        //通过
+        boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;
+        long timeCurrent = getCurrentFocusTime();
+        if (tmpCurrentTime == timeCurrent && !idle) {//不是停止状态，效果更好。
+            //判断当前的位置是否是热区,即:mask区域.
+            if (!iDataProvider.isHotRect(timeCurrent)) {
+                //dragging finish,空白区域,
+                long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+                setPositionByTime(timeTarget, false);
             }
-            tmpCurrentTime = timeCurrent;
-            long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
-//            long timeTarget = iDataProvider.getNextTarget(timeCurrent);
-            Log.d("timeCurrent", "timeCurrent: " + timeCurrent);
-            Log.d("timeCurrent", "timeTarget: " + timeTarget + "," + idle);
-            boolean next = moveDirection != ITouchHandler.MoveDirection.NONE && idle;
-            Log.d("timeCurrent", "next:" + next);
-            if (next) {
-                //开始吸附过程
-                if (wheelRollListener != null)
-                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
-                timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.RIGHT);
-//                timeTarget = iDataProvider.getNextTarget(timeCurrent);
-                setPositionByTime(timeTarget);
-                if (wheelRollListener != null)
-                    wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
-            } else {
-                if (!idle && (wheelRollListener != null)) {
-                    boolean finish = touchHandler.isFinished();
-                    Log.d("Tfinish", "Tfinish:" + touchHandler.isTouchDown());
-                    if (!finish || touchHandler.isTouchDown()) {
+            return;
+        }
+        tmpCurrentTime = timeCurrent;
+        long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
+        boolean next = moveDirection != ITouchHandler.MoveDirection.NONE && idle;
+        if (DEBUG)
+            Log.d(TAG, String.format("timeCurrent:%s,timeTarget:%s,idle:%s,next:%s", timeCurrent, timeTarget, idle, next));
+        if (next) {
+            //开始吸附过程
+            if (wheelRollListener != null)
+                wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
+            if (DEBUG)
+                Log.d(TAG, "DRAG? STATE_ADSORB");
+            timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.RIGHT);
+            setPositionByTime(timeTarget, true);
+            if (wheelRollListener != null)
+                wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);//回调的应该是 target 的
+            if (DEBUG)
+                Log.d(TAG, "DRAG? STATE_FINISH");
+        } else {
+            if (DEBUG)
+                Log.d(TAG, String.format("idle:%s", idle));
+            if (!idle) {
+                boolean finish = !touchHandler.isFinished() || touchHandler.isTouchDown();
+                if (DEBUG)
+                    Log.d(TAG, String.format("finish:%s", finish));
+                if (finish) {
+                    if (wheelRollListener != null)
                         wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
-                    } else if (!touchHandler.isTouchDown())
+                    if (DEBUG)
+                        Log.d(TAG, "DRAG? STATE_DRAGGING ");
+                } else if (!touchHandler.isTouchDown()) {
+                    if (wheelRollListener != null)
                         wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
+                    if (DEBUG)
+                        Log.d(TAG, "DRAG? STATE_FINISH");
+                }
+            } else {
+                if (iDataProvider.isHotRect(timeCurrent)) {
+                    //拖拽停止.
+                    if (wheelRollListener != null)
+                        wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
+                    if (DEBUG)
+                        Log.d(TAG, "DRAG? STATE_FINISH");
                 } else {
-
-                    if (iDataProvider.isHotRect(timeCurrent)) {
-                        //拖拽停止.
-                        if (wheelRollListener != null)
-                            wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_FINISH);
-                        if (DEBUG)
-                            Log.d(TAG, "hit");
-                    } else {
-                        //可能需要恢复到起点或者最后的点,因为这个两侧的区域,超出了数据的范围.
-                        if (timeCurrent > iDataProvider.getFlattenMaxTime() || timeCurrent < iDataProvider.getFlattenMinTime()) {
-                            float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
-                            touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
-                            return;
-                        }
+                    //可能需要恢复到起点或者最后的点,因为这个两侧的区域,超出了数据的范围.
+                    if (timeCurrent > iDataProvider.getFlattenMaxTime() || timeCurrent < iDataProvider.getFlattenMinTime()) {
+                        float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
+                        touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
                     }
                 }
             }
-            if (DEBUG)
-                Log.d(TAG, String.format("idle:%s,direction:%s", idle, moveDirection));
         }
-    }
-
-    /**
-     * drag拖动过程
-     *
-     * @param newState
-     */
-    public void autoSettle(int newState) {
-        autoSettle(newState, ITouchHandler.MoveDirection.NONE);
+        if (DEBUG)
+            Log.d(TAG, String.format("idle:%s,direction:%s", idle, moveDirection));
     }
 
     /**
@@ -409,20 +408,25 @@ public class SuperWheelExt extends View {
      *
      * @param timeTarget
      */
-    public void setPositionByTime(long timeTarget) {
+    public void setPositionByTime(long timeTarget, boolean animate) {
         if (timeTarget == 0) return;
         long timeCurrent = getCurrentFocusTime();
         float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
-        Log.i("setPositionByTime", "setPositionByTime:" + timeTarget + "," + deltaDx);
-        touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+        if (DEBUG)
+            Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx);
+        if (animate) {
+            touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+        } else {
+            touchHandler.startScroll(getScrollX(), (int) deltaDx);
+        }
         this.lastUpdateTime = System.currentTimeMillis();
-        this.currentTatget = timeTarget;
-//        this.nextTarget = iDataProvider.getNextFocusTime(timeTarget, ITouchHandler.MoveDirection.RIGHT, false);
+        this.currentTarget = timeTarget;
         if (iDataProvider != null) {
             this.nextTarget = iDataProvider.getNextTarget(timeTarget / 1000) * 1000L;
         }
-        this.nextTarget = Math.max(currentTatget, nextTarget);
-        Log.i("setPositionByTime", "current:" + (currentTatget / 1000) + ",next:" + (nextTarget / 1000));
+        this.nextTarget = Math.max(currentTarget, nextTarget);
+        if (DEBUG)
+            Log.d(TAG, "current:" + (currentTarget / 1000) + ",next:" + (nextTarget / 1000));
     }
 
     /**
@@ -447,8 +451,9 @@ public class SuperWheelExt extends View {
     }
 
     public long getNextTimeDistance() {
-        Log.i(TAG, "getNextTimeDistance: " + nextTarget + ",current:" + currentTatget);
-        return nextTarget - currentTatget;
+        if (DEBUG)
+            Log.i(TAG, "getNextTimeDistance: " + nextTarget + ",current:" + currentTarget);
+        return nextTarget - currentTarget;
     }
 
     public long getNextFocusTime(long time) {

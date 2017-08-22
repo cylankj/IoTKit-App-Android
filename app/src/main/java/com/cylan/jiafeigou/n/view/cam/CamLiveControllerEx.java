@@ -1339,6 +1339,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private void setLiveRectTime(int type, long timestamp, boolean useDamp) {
+        //历史视频的时候，使用rtcp自带时间戳。
+        if (livePlayType == TYPE_HISTORY && timestamp == 0) return;
+        //直播时候，使用本地时间戳。
+        if (livePlayType == TYPE_LIVE && timestamp != 0) return;
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
