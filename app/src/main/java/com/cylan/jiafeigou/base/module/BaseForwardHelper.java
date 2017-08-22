@@ -263,6 +263,7 @@ public class BaseForwardHelper {
                             msgList.add(msg.msg());
                         }
                         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(true, forward.mCaller, msgList));//这里会直接写入数据库 中
+                        RxBus.getCacheInstance().post(reportMsgList);
                     }
                     break;
                 }

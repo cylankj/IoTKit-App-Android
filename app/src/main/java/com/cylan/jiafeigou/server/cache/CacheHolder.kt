@@ -19,18 +19,20 @@ import java.nio.charset.Charset
 
 
 class PropertyItemConverter : PropertyConverter<Any, ByteArray> {
-    override fun convertToDatabaseValue(value: Any?): ByteArray = when (value) {
-        is ByteArray -> value
-        else -> objectMapper.get().writeValueAsBytes(value)
+    override fun convertToDatabaseValue(value: Any?): ByteArray = try {
+        when (value) {
+            is ByteArray -> value
+            else -> objectMapper.get().writeValueAsBytes(value)
+        }
+    } catch (e: Exception) {
+        byteArrayOf()
     }
-
 
     override fun convertToEntityProperty(byteArray: ByteArray?): Any? = try {
         objectMapper.get().readValue(byteArray, Any::class.java)
     } catch (e: Exception) {
         0
     }
-
 
 }
 
@@ -46,7 +48,7 @@ fun String.longHash(): Long {
     return fnV64.value
 }
 
-fun msgIdKey(uuid: String?, msgId: Int) = "${uuid ?: ""}:$msgId".longHash()
+fun msgIdKey(uuid: String?, msgId: Int) = "$uuid:$msgId".longHash()
 
 fun versionKey(uuid: String?, msgId: Int, version: Long) = "$uuid:$msgId:$version".longHash()
 
