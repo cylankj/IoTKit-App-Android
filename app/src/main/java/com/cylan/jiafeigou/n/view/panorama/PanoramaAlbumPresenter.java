@@ -78,6 +78,18 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 //        registerSubscription(monitorPanoramaAPI());
         registerSubscription(monitorSDCardUnMount());
 //        registerSubscription(monitorDeleteUpdateSub());
+        registerSubscription(getNetWorkMonitorSub());
+    }
+
+
+    private Subscription getNetWorkMonitorSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    AppLogger.e("监听到网络状态发生变化");
+                    BaseDeviceInformationFetcher.getInstance().init(uuid);
+                }, e -> {
+                });
     }
 
     private Subscription monitorDeleteUpdateSub() {

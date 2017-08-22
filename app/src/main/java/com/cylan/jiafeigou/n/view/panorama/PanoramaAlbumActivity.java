@@ -341,7 +341,16 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onDelete(int position) {
-        panoramaAdapter.remove(position);
+        if (position < panoramaAdapter.getCount()) {
+            panoramaAdapter.remove(position);
+        }
+        //setEmptyView
+        emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+        tvAlbumDelete.setEnabled(panoramaAdapter.getCount() > 0);
+        panoramaAdapter.setInEditMode(false);
+        if (panoramaAdapter.getCount() == 0) {
+            panoramaAdapter.removeFooterView();
+        }
     }
 
     @Override

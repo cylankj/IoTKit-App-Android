@@ -10,6 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -17,7 +18,6 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -102,33 +102,23 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
-            DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
-            if (!JFGRules.isDeviceOnline(uuid)) {
-                mView.onDeleteResult(0);//本地删除了,设备删除失败
-                return;
-            }
             Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
-                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-//                    .map(ret -> {
-////                        if (ret != null && ret.ret == 0) {
-//
-////                        }
-//                        return ret;
-//                    })
+                    .timeout(500, TimeUnit.MILLISECONDS, Observable.just(null))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
-                        mView.onDeleteResult(0);//本地删除了,设备删除失败
-//                        if (ret != null && ret.ret == 0) {//删除成功
-//                            mView.onDeleteResult(0);
-//                        } else {
-////                            mView.onDeleteResult(-1);//本地删除了,设备删除失败
-//                            mView.onDeleteResult(0);//本地删除了,设备删除失败
-//                        }
+                        DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
+                        mView.onDeleteResult(0);
                     }, e -> {
                         AppLogger.e(e.getMessage());
                     });
+//                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(ret -> {
+//                        mView.onDeleteResult(0);
+//                    }, e -> {
+//                        AppLogger.e(e.getMessage());
+//                    });
             registerSubscription(subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3  
@@ -161,6 +151,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
+                    BaseDeviceInformationFetcher.getInstance().init(uuid);
                     if (event.mobile != null && event.mobile.isConnected()) {
                         mView.onRefreshConnectionMode(event.mobile.getType());
                     } else if (event.wifi != null && event.wifi.isConnected()) {

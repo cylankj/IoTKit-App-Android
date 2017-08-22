@@ -114,6 +114,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
+                    BaseDeviceInformationFetcher.getInstance().init(uuid);
                     if (event.mobile != null && event.mobile.isConnected()) {
                         mView.onRefreshConnectionMode(event.mobile.getType());
                     } else if (event.wifi != null && event.wifi.isConnected()) {
