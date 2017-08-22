@@ -49,6 +49,7 @@ import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.item.HomeItem;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -567,6 +568,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         //不使用post,因为会泄露
+
+        List<PropertyItem> all = BaseApplication.getPropertyItemBox().getAll();
+        Log.e("AAAA", all.toString());
         if (refreshFinish) {
             srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
 

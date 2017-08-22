@@ -1015,6 +1015,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
             }
         }
+
         ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }

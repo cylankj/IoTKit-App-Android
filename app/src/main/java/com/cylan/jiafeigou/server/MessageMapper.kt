@@ -10,584 +10,601 @@ import org.msgpack.core.MessageUnpacker
  * Created by yanzhendong on 2017/8/19.
  */
 @SuppressWarnings("unused")
-object MessageMapper {
 
-    fun getPrimary(jsonArray: JsonArray?) = jsonArray?.get(2)
+fun getPrimary(jsonArray: JsonArray?) = jsonArray?.get(2)
 
-    fun getArray(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray
+fun getArray(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray
 
-    private val unpacker: ThreadLocal<MessageUnpacker>  by lazy {
-        object : ThreadLocal<MessageUnpacker>() {
-            override fun initialValue() = MessagePack.newDefaultUnpacker(byteArrayOf())
-        }
+fun getBodyAsList(value: Any?) = ((value as? List<*>)?.getOrNull(2) as? List<*>)
+
+fun getBodyAsAny(value: Any?) = (value as? List<*>)?.getOrNull(2)
+
+private val unpacker: ThreadLocal<MessageUnpacker>  by lazy {
+    object : ThreadLocal<MessageUnpacker>() {
+        override fun initialValue() = MessagePack.newDefaultUnpacker(byteArrayOf())
     }
+}
 
-    private val packer: ThreadLocal<MessageBufferPacker> by lazy {
-        object : ThreadLocal<MessageBufferPacker>() {
-            override fun initialValue() = MessagePack.newDefaultBufferPacker()
-        }
+private val packer: ThreadLocal<MessageBufferPacker> by lazy {
+    object : ThreadLocal<MessageBufferPacker>() {
+        override fun initialValue() = MessagePack.newDefaultBufferPacker()
     }
+}
 
-    object DPIDRelayServer {
-        val KEY = 1
 
-        fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
-    }
+object DPIDRelayServer {
+    val KEY = 1
 
-    object DPIDHeartbeat {
-        val KEY = 2
+    fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
+}
 
-        fun getHeartbeat(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDHeartbeat {
+    val KEY = 2
+    fun getHeartbeat(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDCloudStorage {
-        val KEY = 3
-    }
+object DPIDCloudStorage {
+    val KEY = 3
+}
 
-    object DPIDClientUpgradeConfig {
-        val KEY = 5
+object DPIDClientUpgradeConfig {
+    val KEY = 5
 
-        fun getUrl(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+    fun getUrl(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
-        fun getIsUpgrade(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
-    }
+    fun getIsUpgrade(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+}
 
-    object DPIDBaseNet {
-        val KEY = 201
 
-        fun pack(net: Int = 0, ssid: String = "") {}
+object DPIDBaseNet {
+    val KEY = 201
 
-        fun getNet(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(0)?.asInt ?: 0
+    val NET_INT_KEY = 0
 
-        fun getSSID(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(1)?.asString ?: ""
-    }
+    val SSID_STRING_KEY = 1
 
-    object DPIDBaseMac {
-        val KEY = 202
-        fun getMac(jsonArray: JsonArray?) = jsonArray?.get(2)?.asString ?: ""
-    }
+    fun pack(net: Int = 0, ssid: String = "") {}
 
-    object DPIDBaseFormatSDAck {
-        val KEY = 203
+    fun getNet(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(0)?.asInt ?: 0
 
-        fun getStorage(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(0)?.asLong ?: 0
+    fun getSSID(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(1)?.asString ?: ""
+}
 
-        fun getStorageUsed(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(1)?.asLong ?: 0
+object DPIDBaseMac {
+    val KEY = 202
 
-        fun getSdcardErrno(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(2)?.asInt ?: 0
+    val PRIMARY_STRING = null
+    fun getMac(jsonArray: JsonArray?) = jsonArray?.get(2)?.asString ?: ""
+}
 
-        fun getSdcard(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(3)?.asBoolean ?: false
-    }
+object DPIDBaseFormatSDAck {
+    val KEY = 203
 
-    object DPIDBaseSDStatus {
-        val KEY = 204
+    val STORAGE_LONG_KEY = 0
+    val STORAGE_USED_LONG_KEY = 1
+    val SDCARD_ERR_NO_INT_KEY = 2
+    val SDCARD_BOOLEAN_KEY = 3
 
-        fun getStorage(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(0)?.asLong ?: 0
 
-        fun getStorageUsed(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(1)?.asLong ?: 0
+    fun getStorage(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(0)?.asLong ?: 0
 
-        fun getSdcardErrno(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(2)?.asInt ?: 0
+    fun getStorageUsed(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(1)?.asLong ?: 0
 
-        fun getSdcard(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(3)?.asBoolean ?: false
-    }
+    fun getSdcardErrno(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(2)?.asInt ?: 0
 
-    object DPIDBasePower {
-        val KEY = 205
+    fun getSdcard(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(3)?.asBoolean ?: false
+}
 
-        fun getPower(jsonArray: JsonArray?) = jsonArray?.get(2)?.asBoolean ?: false
-    }
+object DPIDBaseSDStatus {
+    val KEY = 204
 
-    object DPIDBaseBattery {
-        val KEY = 206
+    val STORAGE_LONG_KEY = 0
+    val STORAGE_USED_LONG_KEY = 1
+    val SDCARD_ERR_NO_INT_KEY = 2
+    val SDCARD_BOOLEAN_KEY = 3
 
-        fun getBattery(jsonArray: JsonArray?) = jsonArray?.get(2)?.asInt ?: 0
-    }
+    fun getStorage(value: Any?, defaultValue: Long) = getBodyAsList(value)?.getOrNull(0) as? Long ?: defaultValue
 
-    object DPIDBaseVersion {
-        val KEY = 207
+    fun getStorageUsed(value: Any?, defaultValue: Long) = getBodyAsList(value)?.getOrNull(1) as?Long ?: defaultValue
 
-        fun getVersion(jsonArray: JsonArray?) = jsonArray?.get(2)?.asString ?: ""
-    }
+    fun getSdcardErrno(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(2) as? Int ?: defaultValue
 
-    object DPIDBaseSysVersion {
-        val KEY = 208
+    fun getSdcard(value: Any?, defaultValue: Boolean) = getBodyAsList(value)?.getOrNull(3) as? Boolean ?: defaultValue
+}
 
-        fun getSysVersion(jsonArray: JsonArray?) = jsonArray?.get(2)?.asString ?: ""
-    }
+object DPIDBasePower {
+    val KEY = 205
 
-    object DPIDBaseLED {
-        val KEY = 209
+    fun getPower(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as? Boolean ?: defaultValue
+}
 
-        fun getLed(jsonArray: JsonArray?) = jsonArray?.get(2)?.asBoolean ?: false
-    }
+object DPIDBaseBattery {
+    val KEY = 206
 
-    object DPIDBaseUptime {
-        val KEY = 210
+    fun getBattery(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue
+}
 
-        fun getPowerOn(jsonArray: JsonArray?) = jsonArray?.get(2)?.asInt ?: 0
-    }
+object DPIDBaseVersion {
+    val KEY = 207
 
-    object DPIDBaseCidLog {
-        val KEY = 212
+    fun getVersion(value: Any?, defaultValue: String) = getBodyAsAny(value) as? String ?: defaultValue  //jsonArray?.get(2)?.asString ?: ""
+}
 
-        fun getLog(jsonArray: JsonArray?) = jsonArray?.get(2)?.asString ?: ""
-    }
+object DPIDBaseSysVersion {
+    val KEY = 208
 
-    object DPIDBaseP2PVersion {
-        val KEY = 213
+    fun getSysVersion(value: Any?, defaultValue: String) = getBodyAsAny(value) as? String ?: defaultValue  //jsonArray?.get(2)?.asString ?: ""
+}
 
-        fun getVersion(jsonArray: JsonArray?) = jsonArray?.get(2)?.asInt ?: 0
-    }
+object DPIDBaseLED {
+    val KEY = 209
 
-    object DPIDBaseTimezone {
-        val KEY = 214
+    fun getLed(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as? Boolean ?: defaultValue  //jsonArray?.get(2)?.asBoolean ?: false
+}
 
-        fun getTimezone(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(0)?.asString ?: ""
+object DPIDBaseUptime {
+    val KEY = 210
 
-        fun getOffset(jsonArray: JsonArray?) = jsonArray?.get(2)?.asJsonArray?.get(1)?.asInt ?: 0
-    }
+    fun getPowerOn(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //jsonArray?.get(2)?.asInt ?: 0
+}
 
-    object DPIDBaseIsPushFlow {
-        val KEY = 215
+object DPIDBaseCidLog {
+    val KEY = 212
 
-        fun getIsPushFlow(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+    fun getLog(value: Any?, defaultValue: String) = getBodyAsAny(value) as? String ?: defaultValue// jsonArray?.get(2)?.asString ?: ""
+}
 
-    object DPIDBaseIsNTSC {
-        val KEY = 216
+object DPIDBaseP2PVersion {
+    val KEY = 213
 
-        fun getIsNTSC(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+    fun getVersion(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //jsonArray?.get(2)?.asInt ?: 0
+}
 
-    object DPIDBaseIsMobile {
-        val KEY = 217
+object DPIDBaseTimezone {
+    val KEY = 214
 
-        fun getIsMobile(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+    fun getTimezone(value: Any?, defaultValue: String) = getBodyAsList(value)?.getOrNull(0) as? String ?: defaultValue //jsonArray?.get(2)?.asJsonArray?.get(0)?.asString ?: ""
 
-    object DPIDBaseFormatSD {
-        val KEY = 218
+    fun getOffset(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as? Int ?: defaultValue //jsonArray?.get(2)?.asJsonArray?.get(1)?.asInt ?: 0
+}
 
-        fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDBaseIsPushFlow {
+    val KEY = 215
 
-    object DPIDBaseBind {
-        val KEY = 219
+    fun getIsPushFlow(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as? Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getIsBind(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asBoolean ?: false
+object DPIDBaseIsNTSC {
+    val KEY = 216
 
-        fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asString ?: ""
+    fun getIsNTSC(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as? Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getOldAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
-    }
+object DPIDBaseIsMobile {
+    val KEY = 217
 
-    object DPIDBaseSdkVersion {
-        val KEY = 220
+    fun getIsMobile(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as? Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getVersion(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
-    }
+object DPIDBaseFormatSD {
+    val KEY = 218
 
-    object DPIDBaseCtrlLog {
-        val KEY = 221
+    fun getValue(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getIp(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+object DPIDBaseBind {
+    val KEY = 219
 
-        fun getPort(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getIsBind(value: Any?, defaultValue: Boolean) = getBodyAsList(value)?.getOrNull(0) as? Boolean ?: defaultValue //getArray(jsonArray)?.get(0)?.asBoolean ?: false
 
-        fun getTimeEnd(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
-    }
+    fun getAccount(value: Any?, defaultValue: String) = getBodyAsList(value)?.getOrNull(1) as? String ?: defaultValue //getArray(jsonArray)?.get(1)?.asString ?: ""
 
-    object DPIDBaseSDInfoOnOff {
-        val KEY = 222
+    fun getOldAccount(value: Any?, defaultValue: String) = getBodyAsList(value)?.getOrNull(2) as? String ?: defaultValue //getArray(jsonArray)?.get(2)?.asString ?: ""
+}
 
-        fun getSdcard(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asBoolean ?: false
+object DPIDBaseSdkVersion {
+    val KEY = 220
 
-        fun getSdcardErrno(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
-    }
+    fun getVersion(value: Any?, defaultValue: String) = getBodyAsAny(value) as? String ?: defaultValue //getPrimary(jsonArray)?.asString ?: ""
+}
 
-    object DPIDBaseIsExistMobile {
-        val KEY = 223
+object DPIDBaseCtrlLog {
+    val KEY = 221
 
-        fun getSim(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getIp(value: Any?, defaultValue: String) = getBodyAsList(value)?.getOrNull(0) as? String ?: defaultValue //getArray(jsonArray)?.get(0)?.asString ?: ""
 
-    object DPIDBaseCtrlLogUploadFile {
-        val KEY = 224
+    fun getPort(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as? Int ?: defaultValue //getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getFilename(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
-    }
+    fun getTimeEnd(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(2) as? Int ?: defaultValue //getArray(jsonArray)?.get(2)?.asInt ?: 0
+}
 
-    object DPIDBaseIsExistNetWired {
-        val KEY = 225
+object DPIDBaseSDInfoOnOff {
+    val KEY = 222
 
-        fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getSdcard(value: Any?, defaultValue: Boolean) = getBodyAsList(value)?.getOrNull(0) as? Boolean ?: defaultValue //getArray(jsonArray)?.get(0)?.asBoolean ?: false
 
-    object DPIDBaseIsNetWired {
-        val KEY = 226
+    fun getSdcardErrno(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as? Int ?: defaultValue //getArray(jsonArray)?.get(1)?.asInt ?: 0
+}
 
-        fun getIsWiredNet(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
+object DPIDBaseIsExistMobile {
+    val KEY = 223
 
-    }
+    fun getSim(value: Any?, defaultValue: Int) = getBodyAsAny(value) as?Int ?: defaultValue  //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDBasePrivateIP {
-        val KEY = 227
+object DPIDBaseCtrlLogUploadFile {
+    val KEY = 224
 
-        fun getIP(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
-    }
+    fun getFilename(value: Any?, defaultValue: String) = getBodyAsAny(value) as? String ?: defaultValue //getPrimary(jsonArray)?.asString ?: ""
+}
 
-    object DPIDBaseUpgradeStatus {
-        val KEY = 228
+object DPIDBaseIsExistNetWired {
+    val KEY = 225
 
-        fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getValue(value: Any?, defaultValue: Int) = getBodyAsAny(value) as?Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDBaseVoltage {
-        val KEY = 229
+object DPIDBaseIsNetWired {
+    val KEY = 226
 
-        fun getVoltage(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getIsWiredNet(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as?Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
 
-    object DPIDBaseRegion {
-        val KEY = 230
+}
 
-        fun getRegion(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDBasePrivateIP {
+    val KEY = 227
 
-    object DPIDVideoMic {
-        val KEY = 301
+    fun getIP(value: Any?, defaultValue: String) = getBodyAsAny(value) as?String ?: defaultValue  //getPrimary(jsonArray)?.asString ?: ""
+}
 
-        fun getMike(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+object DPIDBaseUpgradeStatus {
+    val KEY = 228
 
-    object DPIDVideoSpeaker {
-        val KEY = 302
+    fun getValue(value: Any?, defaultValue: Int) = getBodyAsAny(value) as?Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getSpeaker(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+object DPIDBaseVoltage {
+    val KEY = 229
 
-    object DPIDVideoAutoRecord {
-        val KEY = 303
+    fun getVoltage(value: Any?, defaultValue: Int) = getBodyAsAny(value) as?Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getAutoRecord(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDBaseRegion {
+    val KEY = 230
 
-    object DPIDVideoDirection {
-        val KEY = 304
+    fun getRegion(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getDirection(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDVideoMic {
+    val KEY = 301
 
-    object DPIDViewVideoRecord {
-        val KEY = 305
+    fun getMike(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as?Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getRecordEnable(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+object DPIDVideoSpeaker {
+    val KEY = 302
 
-    object DPIDBellCallMsg {
-        val KEY = 401
+    fun getSpeaker(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as?Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getIsOK(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+object DPIDVideoAutoRecord {
+    val KEY = 303
 
-        fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getAutoRecord(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue  //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getTimeDuration(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+object DPIDVideoDirection {
+    val KEY = 304
 
-        fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+    fun getDirection(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getIsRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asInt ?: 0
-    }
+object DPIDViewVideoRecord {
+    val KEY = 305
 
-    object DPIDBellLeaveMsg {
-        val KEY = 402
+    fun getRecordEnable(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as?Boolean ?: defaultValue //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDBellCallMsg {
+    val KEY = 401
 
-    object DPIDBellCallMsgV3 {
-        val KEY = 403
+    fun getIsOK(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(0) as?Int ?: defaultValue //getArray(jsonArray)?.get(0)?.asInt ?: 0
 
-        fun getIsOK(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+    fun getTime(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as?Int ?: defaultValue // getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getTimeDuration(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(2) as? Int ?: defaultValue //getArray(jsonArray)?.get(2)?.asInt ?: 0
 
-        fun getTimeDuration(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getRegionType(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(3) as?Int ?: defaultValue //getArray(jsonArray)?.get(3)?.asInt ?: 0
 
-        fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+    fun getIsRecord(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(4) as? Int ?: defaultValue //getArray(jsonArray)?.get(4)?.asInt ?: 0
+}
 
-        fun getIsRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asInt ?: 0
+object DPIDBellLeaveMsg {
+    val KEY = 402
 
-    }
+    fun getValue(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDBellDeepSleep {
-        val KEY = 404
+object DPIDBellCallMsgV3 {
+    val KEY = 403
 
-        fun getEnbale(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asBoolean ?: false
+    fun getIsOK(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(0) as?Int ?: defaultValue //getArray(jsonArray)?.get(0)?.asInt ?: 0
 
-        fun getBeginTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asLong ?: 0
+    fun getTime(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as?Int ?: defaultValue //getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getEndTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asLong ?: 0
-    }
+    fun getTimeDuration(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(2) as?Int ?: defaultValue  //getArray(jsonArray)?.get(2)?.asInt ?: 0
 
-    object DPIDCameraWarnEnable {
-        val KEY = 501
+    fun getRegionType(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(3) as? Int ?: defaultValue //getArray(jsonArray)?.get(3)?.asInt ?: 0
 
-        fun getEnable(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asBoolean ?: false
-    }
+    fun getIsRecord(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(4) as? Int ?: defaultValue //getArray(jsonArray)?.get(4)?.asInt ?: 0
 
-    object DPIDCameraWarnTime {
-        val KEY = 502
+}
 
-        fun getBeginTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+object DPIDBellDeepSleep {
+    val KEY = 404
 
-        fun getEndTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getEnbale(value: Any?, defaultValue: Boolean) = getBodyAsList(value)?.getOrNull(0) as? Boolean ?: defaultValue //getArray(jsonArray)?.get(0)?.asBoolean ?: false
 
-        fun getWeek(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
-    }
+    fun getBeginTime(value: Any?, defaultValue: Long) = getBodyAsList(value)?.getOrNull(1) as? Long ?: defaultValue //getArray(jsonArray)?.get(1)?.asLong ?: 0
 
-    object DPIDCameraWarnSensitivity {
-        val KEY = 503
+    fun getEndTime(value: Any?, defaultValue: Long) = getBodyAsList(value)?.getOrNull(2) as? Long ?: defaultValue //getArray(jsonArray)?.get(2)?.asLong ?: 0
+}
 
-        fun getSensitivity(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDCameraWarnEnable {
+    val KEY = 501
 
-    object DPIDCameraWarnSound {
-        val KEY = 504
+    fun getEnable(value: Any?, defaultValue: Boolean) = getBodyAsAny(value) as?Boolean ?: defaultValue  //getPrimary(jsonArray)?.asBoolean ?: false
+}
 
-        fun getSound(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+object DPIDCameraWarnTime {
+    val KEY = 502
 
-        fun getSoundLong(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
-    }
+    fun getBeginTime(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(0) as? Int ?: defaultValue  //getArray(jsonArray)?.get(0)?.asInt ?: 0
 
-    object DPIDCameraWarnMsg {
-        val KEY = 505
+    fun getEndTime(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as? Int ?: defaultValue //getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+    fun getWeek(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(2) as? Int ?: defaultValue  //getArray(jsonArray)?.get(2)?.asInt ?: 0
+}
 
-        fun getIsRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+object DPIDCameraWarnSensitivity {
+    val KEY = 503
 
-        fun getFile(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getSensitivity(value: Any?, defaultValue: Int) = getBodyAsAny(value) as? Int ?: defaultValue //getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+object DPIDCameraWarnSound {
+    val KEY = 504
 
-        fun getTly(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
+    fun getSound(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(0) as? Int ?: defaultValue  //getArray(jsonArray)?.get(0)?.asInt ?: 0
 
-        fun getObjects(jsonArray: JsonArray?) = getArray(jsonArray)?.get(5)?.asJsonArray ?: JsonArray(0)
+    fun getSoundLong(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as? Int ?: defaultValue  //getArray(jsonArray)?.get(1)?.asInt ?: 0
+}
 
-        fun getHumanNum(jsonArray: JsonArray?) = getArray(jsonArray)?.get(6)?.asInt ?: 0
-    }
+object DPIDCameraWarnMsg {
+    val KEY = 505
 
-    object DPIDCameraTimeLapse {
-        val KEY = 506
+    fun getTime(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(0) as? Int ?: defaultValue //getArray(jsonArray)?.get(0)?.asInt ?: 0
 
-        fun getBeginTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+    fun getIsRecord(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(1) as? Int ?: defaultValue  //getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getTimeCycle(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getFile(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(2) as? Int ?: defaultValue //getArray(jsonArray)?.get(2)?.asInt ?: 0
 
-        fun getTimeDuration(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getRegionType(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(3) as? Int ?: defaultValue  //getArray(jsonArray)?.get(3)?.asInt ?: 0
 
-        fun getStatus(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
-    }
+    fun getTly(value: Any?, defaultValue: String) = getBodyAsList(value)?.getOrNull(4) as? String ?: defaultValue //getArray(jsonArray)?.get(4)?.asString ?: ""
 
-    object DPIDCameraStandby {
-        val KEY = 508
+    fun getObjects(value: Any?, defaultValue: List<Int>) = getBodyAsList(value)?.getOrNull(5) as? List<*> ?: defaultValue  //getArray(jsonArray)?.get(5)?.asJsonArray ?: JsonArray(0)
 
-        fun getStandby(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asBoolean ?: false
+    fun getHumanNum(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(6) as? Int ?: defaultValue//getArray(jsonArray)?.get(6)?.asInt ?: 0
+}
 
-        fun getWarnEnable(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
+object DPIDCameraTimeLapse {
+    val KEY = 506
 
-        fun getLed(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asBoolean ?: false
+    fun getBeginTime(value: Any?, defaultValue: Int) = getBodyAsList(value)?.getOrNull(0) as? Int ?: defaultValue //getArray(jsonArray)?.get(0)?.asInt ?: 0
 
-        fun getAutoRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
-    }
+    fun getTimeCycle(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-    object DPIDCameraHangMode {
-        val KEY = 509
+    fun getTimeDuration(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
 
-        fun getTly(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
-    }
+    fun getStatus(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+}
 
-    object DPIDCameraCoord {
-        val KEY = 510
-
-        fun getX(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
-        fun getY(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
-        fun getR(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
-        fun getW(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
-        fun getH(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asInt ?: 0
-    }
+object DPIDCameraStandby {
+    val KEY = 508
 
-    object DPIDCameraWarnAndWonder {
-        val KEY = 511
+    fun getStandby(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asBoolean ?: false
 
-        fun getCtimeMsec(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asLong ?: 0
-    }
+    fun getWarnEnable(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
 
-    object DPIDCameraWarnMsgV3 {
-        val KEY = 512
+    fun getLed(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asBoolean ?: false
 
-        fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
-        fun getIsRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
-        fun getFile(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
-        fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
-        fun getTly(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
+    fun getAutoRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+}
 
-    }
+object DPIDCameraHangMode {
+    val KEY = 509
 
-    object DPIDCameraResolution {
-        val KEY = 513
+    fun getTly(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
+}
 
-        fun getResolution(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDCameraCoord {
+    val KEY = 510
 
-    object DPIDCameraWarnInterval {
-        val KEY = 514
+    fun getX(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+    fun getY(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getR(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getW(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+    fun getH(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asInt ?: 0
+}
 
-        fun getSec(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+object DPIDCameraWarnAndWonder {
+    val KEY = 511
 
-    object DPIDCameraObjectDetect {
-        val KEY = 515
+    fun getCtimeMsec(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asLong ?: 0
+}
 
-        fun getObjects(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asJsonArray ?: JsonArray(0)
-    }
+object DPIDCameraWarnMsgV3 {
+    val KEY = 512
 
-    object DPIDAccountBind {
-        val KEY = 601
+    fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asInt ?: 0
+    fun getIsRecord(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+    fun getFile(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+    fun getTly(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
 
-        fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+}
 
-        fun getIsBind(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
+object DPIDCameraResolution {
+    val KEY = 513
 
-        fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
+    fun getResolution(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-        fun getSn(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asString ?: ""
+object DPIDCameraWarnInterval {
+    val KEY = 514
 
-        fun getPid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asInt ?: 0
-    }
+    fun getSec(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDAccountWonder {
-        val KEY = 602
+object DPIDCameraObjectDetect {
+    val KEY = 515
 
-        fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+    fun getObjects(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asJsonArray ?: JsonArray(0)
+}
 
-        fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+object DPIDAccountBind {
+    val KEY = 601
 
-        fun getMsgType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
-        fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+    fun getIsBind(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
 
-        fun getFileName(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
+    fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
 
-        fun getAlias(jsonArray: JsonArray?) = getArray(jsonArray)?.get(5)?.asString ?: ""
+    fun getSn(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asString ?: ""
 
-        fun getFavoriteTimeMsec(jsonArray: JsonArray?) = getArray(jsonArray)?.get(6)?.asLong ?: 0
-    }
+    fun getPid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asInt ?: 0
+}
 
-    object DPIDAccountShare {
-        val KEY = 603
+object DPIDAccountWonder {
+    val KEY = 602
 
-        fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+    fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
-        fun getIsShare(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
+    fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
-    }
+    fun getMsgType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
 
-    object DPIDAccountIsShared {
-        val KEY = 604
+    fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
 
-        fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+    fun getFileName(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
 
-        fun getIsShare(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
+    fun getAlias(jsonArray: JsonArray?) = getArray(jsonArray)?.get(5)?.asString ?: ""
 
-        fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
-    }
+    fun getFavoriteTimeMsec(jsonArray: JsonArray?) = getArray(jsonArray)?.get(6)?.asLong ?: 0
+}
 
-    object DPIDAccountLog {
-        val KEY = 605
+object DPIDAccountShare {
+    val KEY = 603
 
-        fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
-    }
+    fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
-    object DPIDAccountWonderV2 {
-        val KEY = 606
+    fun getIsShare(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
 
-        fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
+    fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
+}
 
-        fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
+object DPIDAccountIsShared {
+    val KEY = 604
 
-        fun getMsgType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
+    fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
-        fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
+    fun getIsShare(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asBoolean ?: false
 
-        fun getFileName(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
+    fun getAccount(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asString ?: ""
+}
 
-        fun getDesc(jsonArray: JsonArray?) = getArray(jsonArray)?.get(5)?.asString ?: ""
+object DPIDAccountLog {
+    val KEY = 605
 
-        fun getUrl(jsonArray: JsonArray?) = getArray(jsonArray)?.get(6)?.asString ?: ""
-    }
+    fun getValue(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asString ?: ""
+}
 
-    object DPIDCountUnReadCameraWarnMsg {
-        val KEY = 1001
+object DPIDAccountWonderV2 {
+    val KEY = 606
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
-    object DPIDCountUnReadCameraWarnMsgV3 {
-        val KEY = 1002
+    fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getMsgType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(2)?.asInt ?: 0
 
-    object DPIDCountUnReadBaseSDInfo {
-        val KEY = 1003
+    fun getRegionType(jsonArray: JsonArray?) = getArray(jsonArray)?.get(3)?.asInt ?: 0
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getFileName(jsonArray: JsonArray?) = getArray(jsonArray)?.get(4)?.asString ?: ""
 
-    object DPIDCountUnReadBellCallMsg {
-        val KEY = 1004
+    fun getDesc(jsonArray: JsonArray?) = getArray(jsonArray)?.get(5)?.asString ?: ""
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getUrl(jsonArray: JsonArray?) = getArray(jsonArray)?.get(6)?.asString ?: ""
+}
 
-    object DPIDCountUnReadBellCallMsgV3 {
-        val KEY = 1005
+object DPIDCountUnReadCameraWarnMsg {
+    val KEY = 1001
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDCountUnReadAccountBind {
-        val KEY = 1101
+object DPIDCountUnReadCameraWarnMsgV3 {
+    val KEY = 1002
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDCountUnReadAccountWonder {
-        val KEY = 1102
+object DPIDCountUnReadBaseSDInfo {
+    val KEY = 1003
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDCountUnReadAccountShare {
-        val KEY = 1103
+object DPIDCountUnReadBellCallMsg {
+    val KEY = 1004
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDCountUnReadAccountIsShared {
-        val KEY = 1104
+object DPIDCountUnReadBellCallMsgV3 {
+    val KEY = 1005
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
-    object DPIDCountUnReadSystemMsg {
-        val KEY = 1105
+object DPIDCountUnReadAccountBind {
+    val KEY = 1101
 
-        fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
-    }
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
+
+object DPIDCountUnReadAccountWonder {
+    val KEY = 1102
+
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
+
+object DPIDCountUnReadAccountShare {
+    val KEY = 1103
+
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
+
+object DPIDCountUnReadAccountIsShared {
+    val KEY = 1104
 
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+}
 
+object DPIDCountUnReadSystemMsg {
+    val KEY = 1105
 
+    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
 }

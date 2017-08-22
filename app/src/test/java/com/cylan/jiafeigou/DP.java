@@ -242,7 +242,6 @@ public class DP {
     @Test
     public void testDP() throws Exception {
         MessageBufferPacker packer = org.msgpack.core.MessagePack.newDefaultBufferPacker();
-
         packer.packInt(4);
         byte[] bytes = packer.toByteArray();
 

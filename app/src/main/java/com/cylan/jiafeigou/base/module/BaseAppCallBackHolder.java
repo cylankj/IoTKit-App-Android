@@ -33,6 +33,8 @@ import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.server.cache.CacheHolderKt;
+import com.cylan.jiafeigou.server.cache.HashStrategyFactory;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -41,7 +43,9 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -142,6 +146,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnRobotGetDataRsp :" + gson.toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
+
+
+        CacheHolderKt.saveProperty(robotoGetDataRsp.identity, (Map<Integer, List<?>>) (Object) robotoGetDataRsp.map, null);
     }
 
     @Override
@@ -211,6 +218,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
+
+        /*过渡性使用,将来会废弃*/
+        CacheHolderKt.saveProperty(s, arrayList, null);
     }
 
     @Override
@@ -370,12 +380,31 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnRobotCountMultiDataRsp(long l, Object o) {
+
+
         AppLogger.d("OnRobotCountMultiDataRsp:" + o.toString());
     }
 
     @Override
     public void OnRobotGetMultiDataRsp(long l, Object o) {
         AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
+
+//        ObjectMapper mapper = CacheHolderKt.getObjectMapper().get();
+//
+//        try {
+//            byte[] asBytes = mapper.writeValueAsBytes(o);
+//
+//            TypeReference<Map<String, Map<Long, List<JFGDPValue>>>> typeReference = new TypeReference<Map<String, Map<Long, List<JFGDPValue>>>>() {
+//            };
+//            Object v = mapper.readValue(asBytes, typeReference);
+//
+//            Log.e("AAAA", "value is" + v);
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         if (o != null && o instanceof HashMap) {
             HashMap<String, HashMap<Long, JFGDPValue[]>> rawMap = (HashMap<String, HashMap<Long, JFGDPValue[]>>) o;
             Set<String> set = rawMap.keySet();
@@ -400,6 +429,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
                 }
                 RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
             }
+
+            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.INSTANCE::select);
             Log.d("OnRobotGetMultiDataRsp", "size: " + count);
         }
     }
