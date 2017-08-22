@@ -74,6 +74,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            }
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
+
+        CacheHolderKt.saveDevices(jfgDevices);
     }
 
     @Override

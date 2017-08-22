@@ -64,9 +64,20 @@
           "name": "value"
         }
       ]
+    },
+    {
+      "id": "3:7368654240903069688",
+      "lastPropertyId": "1:5839261069203627536",
+      "name": "Account",
+      "properties": [
+        {
+          "id": "1:5839261069203627536",
+          "name": "id"
+        }
+      ]
     }
   ],
-  "lastEntityId": "2:9164031478013509112",
+  "lastEntityId": "3:7368654240903069688",
   "lastIndexId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 2,
