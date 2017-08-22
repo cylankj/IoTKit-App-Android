@@ -60,7 +60,9 @@ public class BellPuller {
         BaseApplication.getAppComponent().getInitializationManager().initialization();//在这里做初始化
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         System.out.println(PUSH_TAG + "fireBellCalling end" + sourceManager.getAccount());
-        AppLogger.d(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response);
+        final boolean isBellCall = isBellCall(response);
+        AppLogger.d(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response + "," + isBellCall);
+        if (!isBellCall) return;
         if (sourceManager.getAccount() == null || TextUtils.isEmpty(sourceManager.getAccount().getAccount())) {
             //表明没有登录,这种情况比较多{1.登出,2.App正常离线,3.反正就是处于后台,系统管控着}
             Observable.just(response)
@@ -89,17 +91,25 @@ public class BellPuller {
         prepareForBelling(response);
     }
 
-    private void prepareForBelling(String response) {
+    private boolean isBellCall(String response) {
         //[16,'500000000385','',1488012270,1]
         if (TextUtils.isEmpty(response)) {
-            return;
+            return false;
         }
 
         String[] items = response.split(",");
         if (items.length != 5) {
-            return;
+            return false;
         }
+        if (TextUtils.isDigitsOnly(items[0]) || !TextUtils.isDigitsOnly(items[1])) {
+            return false;
+        }
+        return true;
+    }
 
+    private void prepareForBelling(String response) {
+        //[16,'500000000385','',1488012270,1]
+        String[] items = response.split(",");
         String cid = items[1].replace("\'", "");
         long time = Long.parseLong(items[3]);
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
