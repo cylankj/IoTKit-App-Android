@@ -115,9 +115,9 @@ public class BaseDeviceInformationFetcher extends BroadcastReceiver {
     }
 
     public void init(String uuid) {
-        if (deviceInformation == null || !TextUtils.equals(deviceInformation.uuid, uuid)) {
-            deviceInformation = new DeviceInformation(uuid);
-        }
+//        if (deviceInformation == null || !TextUtils.equals(deviceInformation.uuid, uuid)) {
+        deviceInformation = new DeviceInformation(uuid);
+//        }
         RxBus.getCacheInstance().postSticky(RxEvent.FetchDeviceInformation.STARTED);
     }
 

@@ -12,3 +12,8 @@ import com.cylan.jiafeigou.server.cache.saveProperty
 fun saveRobotSyncData(fromDevice: Boolean, uuid: String? = "", msgs: MutableList<JFGDPMsg>?) {
     saveProperty(uuid, msgs, null)
 }
+
+fun getPageMessage(uuid: String?,page: PAGE_MESSAGE) {
+//    page.message
+
+}

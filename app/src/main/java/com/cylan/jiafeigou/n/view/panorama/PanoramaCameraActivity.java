@@ -233,7 +233,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         panoramaToolBar.setBackgroundResource(JFGRules.getTimeRule() == 0 ? R.color.color_0ba8cf : R.color.color_23344e);
 //        alertSDFormatError = true;
         deviceReportDialog = new AlertDialog.Builder(this).setCancelable(false).create();
-        alertHttpNotAvailable = PreferencesUtils.getBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable);
+        alertHttpNotAvailable = PreferencesUtils.getBoolean(JConstant.SWITCH_MODE_POP + ":" + uuid, alertHttpNotAvailable);
 
 
         Pair<DPEntity, Integer> pair = handleUnreadCount(device);
@@ -1031,7 +1031,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    public void onReportDeviceError(int err, boolean useAlert) {
+    public void onReportDeviceError(int err, boolean sync) {
         onRefreshViewModeUI(panoramaViewMode, true, false);
         onRefreshControllerViewVisible(true);
         bottomPanelPhotoGraphItem.setEnabled(presenter.getLiveAction().hasResolution);//有长按事件,需要特殊对待
@@ -1042,7 +1042,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 break;
             case 2003://sd 卡没有容量
                 AppLogger.d("SD 卡内存已满");
-                if (useAlert) {
+                if (sync) {
                     deviceReportDialog.setMessage(getString(R.string.Tap1_SDCardFullyTips));
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Tap1_SDCardFullyTips), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, (DialogInterface.OnClickListener) null);
@@ -1053,7 +1053,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 break;
             case 2004://没有 sd 卡
                 AppLogger.d("未检测到 SD 卡");
-                if (useAlert) {
+                if (sync) {
                     deviceReportDialog.dismiss();
                     deviceReportDialog.setMessage(getString(R.string.MSG_SD_OFF));
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.OK), (DialogInterface.OnClickListener) null);
@@ -1073,7 +1073,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 break;
             case 2022://sd卡识别失败，需要格式化
                 AppLogger.d("SD卡识别失败,需要格式化");
-                if (alertSDFormatError) {//设备会一直推消息,这里过滤掉
+                if (alertSDFormatError || !sync) {//设备会一直推消息,这里过滤掉
                     alertSDFormatError = false;
                     deviceReportDialog.dismiss();
                     deviceReportDialog.setMessage(getString(R.string.Tap1_NeedsInitializedTips));
@@ -1083,6 +1083,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     });
                     deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.CANCEL), (DialogInterface.OnClickListener) null);
                     deviceReportDialog.show();
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
                 }
                 break;
 //                }
@@ -1095,10 +1097,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             case ERROR_CODE_HTTP_NOT_AVAILABLE: {
                 if (!alertHttpNotAvailable) return;
                 //松开弹
-                if (useAlert) {
+                if (sync) {
                     deviceReportDialog.setMessage(getString(R.string.Switch_Mode));
                     deviceReportDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.WELL_OK), (dialog, which) -> alertHttpNotAvailable = false);
-                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP, alertHttpNotAvailable = false));
+                    deviceReportDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Dont_Show_Again), (dialog, which) -> PreferencesUtils.putBoolean(JConstant.SWITCH_MODE_POP + ":" + uuid, alertHttpNotAvailable = false));
                     deviceReportDialog.show();
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Switch_Mode));

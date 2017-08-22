@@ -650,7 +650,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
 //        int count = 0;
 //        if (device != null) {
-//            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));
+//            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getMessageByOS(1004), device.getMessageByOS(1005));
 //            if (entity != null) {
 //                count = entity.getValue(0);
 //            }
