@@ -50,6 +50,8 @@ public final class DpMsgMap {
 
     public static final int ID_218_DEVICE_FORMAT_SDCARD = 218;
 
+    public static final int ID_305_VIEW_VIDEO_RECORD = 305;
+
     public static final int ID_219_DEVICE_BIND_LOG = 219;
 
     public static final int ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY = 506;
@@ -63,6 +65,8 @@ public final class DpMsgMap {
     public static final int ID_215_DEVICE_RTMP = 215;
 
     public static final int ID_222_SDCARD_SUMMARY = 222;
+    public static final int ID_225_IS_EXIST_NET_WIRED = 225;
+    public static final int ID_226_IS_NET_WIRED = 226;
 
     public static final int ID_301_DEVICE_MIC = 301;
 

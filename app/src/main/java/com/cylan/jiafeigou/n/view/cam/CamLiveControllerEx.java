@@ -410,25 +410,28 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case R.id.rb_view_mode_circular:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Normal);
+                    ivModeXunHuan.setEnabled(true);
                     AppLogger.d("正在切换到圆形视图");
                 }
                 break;
             case R.id.rb_view_mode_column:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Cylinder);
+                    ivModeXunHuan.setEnabled(false);
                     AppLogger.d("正在切换到柱状视图");
                 }
                 break;
             case R.id.rb_view_mode_four:
                 if (videoView != null && videoView instanceof Panoramic360ViewRS) {
                     ((Panoramic360ViewRS) videoView).setDisplayMode(Panoramic360ViewRS.SFM_Quad);
+                    ivModeXunHuan.setEnabled(false);
                     AppLogger.d("正在切换到四合一视图");
                 }
                 break;
         }
         rbViewModeSwitchParent.setVisibility(GONE);
 //        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-//            ivModeXunHuan.setEnabled(((Panoramic360ViewRS) videoView).getDisplayMode() == Panoramic360ViewRS.SFM_Cylinder);
+//
 //        }
     }
 

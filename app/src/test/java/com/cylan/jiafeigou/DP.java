@@ -7,6 +7,8 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.server.OS_PROPERTY;
+import com.cylan.jiafeigou.server.PAGE_MESSAGE;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.google.gson.Gson;
@@ -255,4 +257,11 @@ public class DP {
 
     }
 
+
+    @Test
+    public void testPageMessage() {
+        List<Integer> filter = PAGE_MESSAGE.PAGE_HOME.filter(OS_PROPERTY.OS_DOG_1W_V2_2000_7.getProperties());
+
+        System.out.println(filter);
+    }
 }
