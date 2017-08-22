@@ -1,0 +1,77 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:6016813836558431021",
+      "lastPropertyId": "7:5598807215543368997",
+      "name": "Device",
+      "properties": [
+        {
+          "id": "1:4664843913273978552",
+          "name": "uuid"
+        },
+        {
+          "id": "2:7778292962073289297",
+          "name": "sn"
+        },
+        {
+          "id": "3:7031328754200658216",
+          "name": "alias"
+        },
+        {
+          "id": "4:5669646108494905857",
+          "name": "shareAccount"
+        },
+        {
+          "id": "5:3158168715246948103",
+          "name": "pid"
+        },
+        {
+          "id": "6:8112985635712812767",
+          "name": "regionType"
+        },
+        {
+          "id": "7:5598807215543368997",
+          "name": "vid"
+        }
+      ]
+    },
+    {
+      "id": "2:9164031478013509112",
+      "lastPropertyId": "5:7706579356325329849",
+      "name": "PropertyItem",
+      "properties": [
+        {
+          "id": "1:3502274132458311215",
+          "name": "hash"
+        },
+        {
+          "id": "2:8524672465412448248",
+          "name": "uuid"
+        },
+        {
+          "id": "3:5049453544620017542",
+          "name": "msgId"
+        },
+        {
+          "id": "4:6029222756656154956",
+          "name": "version"
+        },
+        {
+          "id": "5:7706579356325329849",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "2:9164031478013509112",
+  "lastIndexId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 2,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "version": 1
+}
