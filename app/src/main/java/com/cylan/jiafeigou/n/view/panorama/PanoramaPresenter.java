@@ -48,7 +48,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private boolean notifyBatteryLow = true;
     private boolean isRecording = false;
 
-    private boolean hasSDCard = false;
+//    private boolean hasSDCard = false;
 
     @Override
     public boolean isApiAvailable() {
@@ -165,6 +165,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             //屏蔽掉204 消息
+                            boolean hasSDCard = false;
                             if (msg.id == 222) {//? 204 或者 222?
                                 DpMsgDefine.DPSdcardSummary sdcardSummary = null;
                                 try {
@@ -181,19 +182,19 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 if (sdcardSummary != null && !sdcardSummary.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
                                 } else if (sdcardSummary != null && sdcardSummary.errCode != 0) {//SDCard 需要格式化
-                                    mView.onReportDeviceError(2022, true);
+//                                    mView.onReportDeviceError(2022, true);//只有SD 卡不存在才弹
                                 }
-                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard && sdcardSummary.errCode == 0;
+//                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard && sdcardSummary.errCode == 0;
 //                                shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
                             } else if (msg.id == 204) {
                                 // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
                                 Device device = DataSourceManager.getInstance().getDevice(uuid);
 //                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
                                 DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
-                                if (status != null && !status.hasSdcard && hasSDCard) {//SDCard 不存在
+                                if (status != null && !status.hasSdcard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
-                                } else if (status != null && status.err != 0 && hasSDCard) {//SDCard 需要格式化
-                                    mView.onReportDeviceError(2022, true);
+                                } else if (status != null && status.err != 0) {//SDCard 需要格式化
+//                                    mView.onReportDeviceError(2022, true);
                                 }
                                 hasSDCard = status != null && status.hasSdcard && status.err == 0;
 //                                }
@@ -238,11 +239,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE, true, false);
                         mView.onRefreshControllerViewVisible(true);
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
-                            if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
-                                mView.onShowPreviewPicture(null);
-                            } else {
-                                mView.onShowPreviewPicture(null);
-                                // TODO: 2017/8/7  显示可以公网查看视频了所以不弹这个提示了
+                            mView.onShowPreviewPicture(null);
+                            if (BasePanoramaApiHelper.getInstance().getDeviceIp() == null) {
                                 mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                             }
                         }

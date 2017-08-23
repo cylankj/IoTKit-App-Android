@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.server
 
+import com.cylan.jiafeigou.server.cache.PropertyItem
 import com.google.gson.JsonArray
 import org.msgpack.core.MessageBufferPacker
 import org.msgpack.core.MessagePack
@@ -534,6 +535,9 @@ object DPIDAccountLog {
 object DPIDAccountWonderV2 {
     val KEY = 606
 
+    val CID_STRING_KEY = 0
+    val TIME_INT_KEY = 1
+
     fun getCid(jsonArray: JsonArray?) = getArray(jsonArray)?.get(0)?.asString ?: ""
 
     fun getTime(jsonArray: JsonArray?) = getArray(jsonArray)?.get(1)?.asInt ?: 0
@@ -575,36 +579,34 @@ object DPIDCountUnReadBellCallMsg {
 
 object DPIDCountUnReadBellCallMsgV3 {
     val KEY = 1005
-
+    val COUNT_INT_PRIMARY = null
     fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
 }
 
 object DPIDCountUnReadAccountBind {
     val KEY = 1101
-
+    val COUNT_INT_PRIMARY = null
     fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
 }
 
 object DPIDCountUnReadAccountWonder {
     val KEY = 1102
-
+    val COUNT_INT_PRIMARY = null
     fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
 }
 
 object DPIDCountUnReadAccountShare {
     val KEY = 1103
-
+    val COUNT_INT_PRIMARY = null
     fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
 }
 
 object DPIDCountUnReadAccountIsShared {
     val KEY = 1104
-
-    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+    fun getCount(propertyItem: PropertyItem?, defaultValue: Int) = propertyItem?.asInt(defaultValue) ?: defaultValue
 }
 
 object DPIDCountUnReadSystemMsg {
     val KEY = 1105
-
-    fun getCount(jsonArray: JsonArray?) = getPrimary(jsonArray)?.asInt ?: 0
+    fun getCount(propertyItem: PropertyItem?, defaultValue: Int) = propertyItem?.asInt(defaultValue) ?: defaultValue
 }

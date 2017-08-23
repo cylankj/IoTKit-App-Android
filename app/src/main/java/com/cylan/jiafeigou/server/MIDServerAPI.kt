@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.server
 
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.jiafeigou.n.base.BaseApplication
+import com.cylan.jiafeigou.server.cache.PropertyItem
 import org.msgpack.core.MessageBufferPacker
 import org.msgpack.core.MessagePack
 import org.msgpack.core.MessageUnpacker
@@ -2475,10 +2476,14 @@ object MIDServerAPI {
         val params: HashMap<String, Array<JFGDPMsg>> = hashMapOf()
 
         os_pid.forEach {
-//          OS_PROPERTY.valueOf()
+            //          OS_PROPERTY.valueOf()
         }
 
         BaseApplication.getAppComponent().cmd.robotGetMultiData(params, 1, false, 0)
+
+    }
+
+    fun PropertyItem.go() {
 
     }
 

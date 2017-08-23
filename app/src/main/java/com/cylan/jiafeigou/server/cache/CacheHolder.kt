@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.server.cache
 
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.entity.jniCall.JFGDPValue
+import com.cylan.entity.jniCall.JFGDevice
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.objectbox.annotation.Convert
@@ -185,6 +186,13 @@ fun saveProperty(maps: Map<String, Map<Long, *>>, hashStrategy: ((String?, Int, 
 
 }
 
+fun saveDevices(devices: Array<JFGDevice>) {
+    val items: MutableList<Device> = mutableListOf()
+    devices.forEach {
+        items.add(Device(it.uuid.toLong(), it.sn, it.alias, it.shareAccount, it.pid, it.regionType, it.vid))
+    }.apply { BaseApplication.getDeviceBox().put(items) }
+}
+
 //fun saveProperty(Map<String, Map<Long, List<JFGDPValue>>>)
 
 object HashStrategyFactory {
@@ -209,4 +217,7 @@ int,      regionType  //详见 DPIDCloudStorage
 string,   vid
  * */
 @Entity
-data class Device(@Id(assignable = true) var uuid: Long = 0, var sn: String?, var alias: String?, var shareAccount: String? = "", var pid: Int? = 0, var regionType: Int? = 0, var vid: String?)
+data class Device(@Id(assignable = true) var uuid: Long, var sn: String?, var alias: String?, var shareAccount: String? = "", var pid: Int? = 0, var regionType: Int? = 0, var vid: String?)
+
+@Entity
+data class Account(@Id(assignable = true) var id: Long)
