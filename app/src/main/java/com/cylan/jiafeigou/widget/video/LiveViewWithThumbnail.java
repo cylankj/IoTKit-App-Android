@@ -32,6 +32,8 @@ import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
 
+import org.webrtc.videoengine.ViEAndroidGLES20;
+
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 
@@ -81,6 +83,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     public void performTouch() {
         if (videoView instanceof CommonPanoramicView) {
             ((CommonPanoramicView) videoView).onSingleTap(0, 0);
+        }
+        if (videoView instanceof ViEAndroidGLES20) {
+//            ((ViEAndroidGLES20) videoView).onTouch()
+            //普通view应该有问题的
         }
     }
 
