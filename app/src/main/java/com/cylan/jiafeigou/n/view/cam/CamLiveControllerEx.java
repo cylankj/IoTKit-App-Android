@@ -483,10 +483,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .flatMap(o -> Observable.just(o.isEmpty))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isEmpty -> {
-                    AppLogger.d("加载成功:" + isEmpty);
-                    presenter.startPlayHistory(DataExt.getInstance().getFlattenMinTime());
-                    btnLoadHistory.setEnabled(true);
-                    if (isEmpty) {
+                    AppLogger.d("加载成功: isEmpty" + isEmpty);
+                    if (!isEmpty) {
+                        presenter.startPlayHistory(DataExt.getInstance().getFlattenMinTime());
+                    } else {
+                        btnLoadHistory.setEnabled(true);
                         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
                         livePlayState = PLAY_STATE_STOP;
                         setLoadingState(PLAY_STATE_STOP, null);
