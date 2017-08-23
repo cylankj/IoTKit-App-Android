@@ -1157,10 +1157,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             ViewUtils.increaseMargins(svSwitchStream, 0, 0, 0, (int) getResources().getDimension(R.dimen.y10));
         } else {
-            if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
-                tvLive.setVisibility(GONE);
-                vFlag.setVisibility(GONE);
-            }
+//            if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
+//                tvLive.setVisibility(GONE);
+//                vFlag.setVisibility(GONE);
+//            }
             IData dataProvider = presenter.getHistoryDataProvider();
             if (dataProvider != null && dataProvider.getDataCount() != 0) {
                 if (vsLayoutWheel.getDisplayedChild() == 0) {
