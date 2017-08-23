@@ -28,6 +28,7 @@ import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.panorama.CommonPanoramicView;
 import com.cylan.panorama.Panoramic360View;
 import com.cylan.panorama.Panoramic360ViewRS;
 
@@ -78,7 +79,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     public void performTouch() {
-        videoView.performTouch();
+        if (videoView instanceof CommonPanoramicView) {
+            ((CommonPanoramicView) videoView).onSingleTap(0, 0);
+        }
     }
 
     public TextView getTvLiveFlow() {
@@ -311,8 +314,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                         imageViewRef.get().setBackgroundDrawable(bd);
                     }
                 } else {
-                    imageViewRef.get().setVisibility(GONE);
                     videoViewWeakReference.get().loadBitmap(resource);
+                    imageViewRef.get().setVisibility(GONE);
+                    imageViewRef.get().setImageResource(android.R.color.transparent);
                     AppLogger.d("开始加载全景预览图");
                 }
             } else {
