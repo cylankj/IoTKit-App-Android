@@ -67,6 +67,9 @@ public class BasePanoramaApiHelper {
                     AppLogger.e("http 请求返回的结果:" + new Gson().toJson(string));
                     return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
                 })
+                .connectTimeout(120, TimeUnit.SECONDS)//这里设置的长一点,在距离的 API 里再设置超时时间
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(120, TimeUnit.SECONDS)
                 .build();
         this.httpApi = new Retrofit.Builder().client(okHttpClient)
                 .baseUrl("http://192.168.10.2/")

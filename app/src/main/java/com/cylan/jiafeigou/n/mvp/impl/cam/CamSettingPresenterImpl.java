@@ -79,6 +79,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public void onNetworkChanged(Context context, Intent intent) {
         String action = intent.getAction();
         if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            BaseDeviceInformationFetcher.getInstance().init(uuid);
             ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
             Observable.just(status)
                     .throttleFirst(500, TimeUnit.MILLISECONDS)

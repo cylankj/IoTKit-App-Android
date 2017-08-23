@@ -19,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -728,7 +727,10 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //
 //    }
 
-    class MyEventListener extends OrientationEventListener {
+
+    class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
+
+        private boolean isShake = false;
 
         public MyEventListener(Context context) {
             super(context);
@@ -739,7 +741,26 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         }
 
         @Override
+        public void onSensorChanged(int sensor, float[] values) {
+            super.onSensorChanged(sensor, values);
+
+            float x = values[0];
+            float y = values[1];
+            float z = values[2];
+            if ((Math.abs(x) > 17 || Math.abs(y) > 17 || Math
+                    .abs(z) > 17) && !isShake) {
+                // TODO: 2016/10/19 实现摇动逻辑, 摇动后进行震动
+                if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                    isShake = true;
+                    camLiveControlLayer.onShake();
+                    camLiveControlLayer.postDelayed(() -> isShake = false, 2000);//一秒只允许摇一摇一次
+                }
+            }
+        }
+
+        @Override
         public void onOrientationChanged(int orientation) {
+            if (isShake) return;
             int screenOrientation = getResources().getConfiguration().orientation;
             if (((orientation >= 0) && (orientation < 45)) || (orientation > 315)) {//设置竖屏
                 if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && orientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {

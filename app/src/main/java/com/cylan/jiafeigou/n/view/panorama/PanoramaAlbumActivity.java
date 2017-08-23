@@ -127,6 +127,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         swipeRefreshLayout.setRefreshing(true);
         presenter.fetch(0, albumViewMode);
         alertDialog = new AlertDialog.Builder(this).create();
+
     }
 
     private void onLoadMore() {

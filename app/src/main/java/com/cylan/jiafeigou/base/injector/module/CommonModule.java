@@ -153,6 +153,8 @@ public class CommonModule {
                     return proceed.newBuilder().body(new RealResponseBody(proceed.headers(), new Buffer().writeString(string, Charsets.UTF_8))).build();
                 })
                 .connectTimeout(120, TimeUnit.SECONDS)//sd 卡格式化需要120 秒的超时
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(120, TimeUnit.SECONDS)
                 .build();
     }
 

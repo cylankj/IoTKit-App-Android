@@ -76,6 +76,7 @@ import com.cylan.jiafeigou.widget.live.LiveControlView;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
+import com.cylan.jiafeigou.widget.video.PanoramicView360RS_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -101,6 +102,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.CYLAN_TAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
@@ -854,6 +856,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     })
                     .playOn(layoutE);
             if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
+            rbViewModeSwitchParent.setVisibility(GONE);
             landAnimationLayoutG = YoYo.with(Techniques.FadeOutDown)
                     .duration(250)
                     .playOn(layoutG);
@@ -1395,6 +1398,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
         if (portRatio == -1 && !isLand()) portRatio = ratio;
         updateLiveViewRectHeight(ratio);
+        ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
 
     private float getLandFillScreen() {
@@ -1843,10 +1847,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void switchXunHuanMode() {
         ivModeXunHuan.setSelected(!ivModeXunHuan.isSelected());
-        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
-        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
-            ((Panoramic360ViewRS) videoView).enableAutoRotation(ivModeXunHuan.isSelected());
-        }
+//        VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+//        if (videoView != null && videoView instanceof Panoramic360ViewRS) {
+//            ((Panoramic360ViewRS) videoView).enableAutoRotation(ivModeXunHuan.isSelected());
+//        }
     }
 
     public void setLoadingState(int state, String content) {
@@ -1887,4 +1891,18 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             vLine.setBackgroundColor(getResources().getColor(R.color.color_f2f2f2));
         }
     }
+
+    public void onShake() {
+        // TODO: 2017/8/23 摇一摇
+        Log.i(CYLAN_TAG, "我需要摇一摇");
+
+        if (ivModeXunHuan.isSelected() && ivModeXunHuan.isEnabled()) {
+            VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
+            if (videoView != null && videoView instanceof PanoramicView360RS_Ext) {
+                ((PanoramicView360RS_Ext) videoView).enableAutoRotation(true);
+                ((PanoramicView360RS_Ext) videoView).phoneShook();
+            }
+        }
+    }
+
 }

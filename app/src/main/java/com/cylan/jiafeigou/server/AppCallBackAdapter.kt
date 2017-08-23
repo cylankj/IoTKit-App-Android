@@ -13,7 +13,9 @@ fun saveRobotSyncData(fromDevice: Boolean, uuid: String? = "", msgs: MutableList
     saveProperty(uuid, msgs, null)
 }
 
-fun getPageMessage(uuid: String?,page: PAGE_MESSAGE) {
+fun getPageMessage(uuid: String?, page: PAGE_MESSAGE) {
 //    page.message
 
 }
+
+var header: Array<Any>? = null

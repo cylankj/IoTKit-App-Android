@@ -1044,6 +1044,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void onNetworkChanged(boolean connected) {
+
         DpMsgDefine.DPStandby dpStandby = basePresenter.getDevice().$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         svSettingDeviceMobileNetwork.setEnabled(!dpStandby.standby && connected);
         svSettingDeviceDelayCapture.setEnabled(connected);
