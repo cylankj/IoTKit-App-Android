@@ -492,8 +492,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     } else {
                         btnLoadHistory.setEnabled(true);
                         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
-                        livePlayState = PLAY_STATE_STOP;
-                        setLoadingState(PLAY_STATE_STOP, null);
+                        presenter.startPlay();
+//                        livePlayState = PLAY_STATE_STOP;
+//                        setLoadingState(PLAY_STATE_STOP, null);
                         return;
                     }
                     if (vsLayoutWheel.getCurrentView() instanceof ViewGroup) {
