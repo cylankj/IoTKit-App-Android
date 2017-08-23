@@ -185,6 +185,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         camLiveControlLayer.setFlipListener(new FlipImageView.FlipListener() {
             @Override
             public void onClick(FlipImageView view) {
+                if (camLiveControlLayer.isActionBarHide()) return;//动画过程中
                 Device device = basePresenter.getDevice();
                 DpMsgDefine.DPSdStatus dpSdStatus = device.$(204, new DpMsgDefine.DPSdStatus());
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);

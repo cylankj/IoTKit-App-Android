@@ -96,8 +96,6 @@ public final class BaseInitializationManager {
                                      BaseForwardHelper forwardHelper,
                                      IProperty iProperty
     ) {
-
-        compositeSubscription = new CompositeSubscription();
         this.manager = manager;
         this.helper = helper;
         this.parser = parser;
@@ -209,8 +207,8 @@ public final class BaseInitializationManager {
     private void initGlobalSubscription() {
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
-            compositeSubscription = new CompositeSubscription();
         }
+        compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(resultParser.initSubscription());
         compositeSubscription.add(udpParser.initSubscription());
         compositeSubscription.add(bellCallEventListener.initSubscription());
