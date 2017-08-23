@@ -366,6 +366,7 @@ dependencies {
     compile "io.objectbox:objectbox-kotlin:$objectBoxVersion"
     kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
     kapt "com.android.databinding:compiler:2.3.3"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
 }
 
 /////////////////编译过滤器/////////////////////////////////

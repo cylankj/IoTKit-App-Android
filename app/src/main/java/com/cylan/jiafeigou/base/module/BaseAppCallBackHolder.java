@@ -503,6 +503,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUniversalDataRsp(long l, int i, byte[] bytes) {
+        try {
+            Object value = CacheHolderKt.getObjectMapper().get().readValue(bytes, Object.class);
+            Log.i(JConstant.CYLAN_TAG, "OnUniversalDataRsp:" + value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         RxBus.getCacheInstance().post(new RxEvent.UniversalDataRsp(l, i, bytes));
     }
 

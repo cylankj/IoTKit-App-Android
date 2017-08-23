@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.server
 
 import com.cylan.jiafeigou.server.cache.PropertyItem
-import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.google.gson.JsonArray
 import org.msgpack.core.MessageBufferPacker
 import org.msgpack.core.MessagePack
@@ -38,10 +38,9 @@ private val packer: ThreadLocal<MessageBufferPacker> by lazy {
 //
 //}
 
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+data class MIDMessageHeader(val msgId: Int, val caller: String, val callee: String, val seq: Long, val body: Any? = null)
 
-data class MIDMessageHeader(val msgId: Int, val caller: String, val callee: String, val seq: Long, var body: Any) {
-    @JsonCreator constructor(header: List<Any>) : this(header[0] as Int, header[1] as String, header[2] as String, header[3] as Long, header[4])
-}
 
 data class H(var a: Int, var caller: String, var callee: String, var seq: Long, var body: Any)
 
