@@ -11,8 +11,8 @@ public class MethodFilter {
     private static HashMap<String, Long> methodMap = new HashMap<>();
 
     public static boolean run(String methodName, long interval) {
-        long lastTime = methodMap.get(methodName);
-        if (lastTime == 0) {
+        Long lastTime = methodMap.get(methodName);
+        if (lastTime == null || lastTime == 0) {
             methodMap.put(methodName, System.currentTimeMillis());
             return true;
         }
