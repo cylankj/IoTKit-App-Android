@@ -210,6 +210,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
         Log.d(TAG, "onLiveStart");
         if (subscription != null) subscription.unsubscribe();
+        if (imgThumbnail != null && imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
     }
 
     @Override
@@ -221,6 +222,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 //        }
 //        imgThumbnail.bringToFront();
 //        imgThumbnail.setImageResource(android.R.color.black);
+        if (!isNormalView()) {
+            imgThumbnail.setImageResource(android.R.color.transparent);
+            imgThumbnail.setVisibility(VISIBLE);
+        }
         Log.d(TAG, "onLiveStop");
     }
 

@@ -495,10 +495,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private Subscription timeoutSub() {
         return Observable.just("timeout")
-                .subscribeOn(Schedulers.io())
-                .timeout(30, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .delay(30, TimeUnit.SECONDS)
                 .doOnError(ret -> AppLogger.e("30s 超时了"))
                 .subscribe(ret -> {
+                    //需要发送超时
+                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(what -> {
+                    }, AppLogger::e);
                     BaseBellCallEventListener.getInstance().currentCaller(null);
                 }, AppLogger::e);
     }
