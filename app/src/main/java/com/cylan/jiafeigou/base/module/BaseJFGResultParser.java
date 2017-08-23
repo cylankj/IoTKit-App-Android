@@ -70,10 +70,13 @@ BaseJFGResultParser {
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
                 AppLogger.d("登录成功了");
-                BaseApplication.getAppComponent().getCmd().getAccount();
-                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
-                PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
-                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                //最短3s种一次。
+                if (MethodFilter.run("parserResultLoginSuc", 3 * 1000)) {
+                    BaseApplication.getAppComponent().getCmd().getAccount();
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
+                    PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
+                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备

@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -206,6 +207,10 @@ public final class BaseInitializationManager {
     }
 
     private void initGlobalSubscription() {
+        if (compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
+            compositeSubscription = new CompositeSubscription();
+        }
         compositeSubscription.add(resultParser.initSubscription());
         compositeSubscription.add(udpParser.initSubscription());
         compositeSubscription.add(bellCallEventListener.initSubscription());
