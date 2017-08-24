@@ -336,6 +336,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .timeout(30, TimeUnit.SECONDS)
                         .flatMap(rsp -> makeTimeDelayForList()))
+                .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onHistoryLoadFinished();
@@ -352,10 +353,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
      */
     private Observable<Boolean> makeTimeDelayForList() {
+        drawTheDay();
         return Observable.just("")
                 .subscribeOn(Schedulers.io())
                 .flatMap(list -> {
-                    drawTheDay();
                     //更新日历
                     ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
                     AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
@@ -517,6 +518,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
                 .observeOn(Schedulers.io())
                 .map(resolution -> {
+                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     removeTimeoutSub();
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
 
@@ -579,7 +581,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     feedRtcp.stop();
                     addSubscription(videoDisconnectSub(), "videoDisconnectSub");
                     addSubscription(errCodeSub(), "errCodeSub");
-                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
+                    //挪到resolutionSub里面
+//                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     addSubscription(resolutionSub(), "resolutionSub");
                     addSubscription(timeoutSub(), "timeoutSub");
                     addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");

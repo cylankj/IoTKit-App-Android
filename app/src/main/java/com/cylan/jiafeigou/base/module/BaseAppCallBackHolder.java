@@ -179,9 +179,11 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnlineStatus(boolean b) {
-        AppLogger.d("OnlineStatus :" + b);
-        RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
-        BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
+        if (b != BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+            AppLogger.d("OnlineStatus :" + b);
+            RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
+            BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
+        }
     }
 
     @Override

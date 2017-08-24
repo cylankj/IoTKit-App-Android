@@ -200,7 +200,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time) + ",time:" + time);
                 superWheelExt.removeCallbacks(dragRunnable);
-                superWheelExt.postDelayed(dragRunnable, 400);
+                superWheelExt.postDelayed(dragRunnable, 700);
                 break;
         }
     }
