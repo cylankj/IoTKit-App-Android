@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.server
 import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.server.cache.PropertyItem
+import com.cylan.jiafeigou.server.cache.objectMapper
 import org.msgpack.core.MessageBufferPacker
 import org.msgpack.core.MessagePack
 import org.msgpack.core.MessageUnpacker
@@ -46,6 +47,10 @@ object MIDServerAPI {
         val byteArray = bufferPacker.toByteArray()
 
         TODO("发送到服务器的逻辑")
+    }
+
+    fun send(midMessageHeader: MIDMessageHeader) {
+      objectMapper.get().writeValueAsBytes(midMessageHeader)
     }
 
     fun sendMessageWithReqList(msgId: Int?, caller: String?, callee: String?, seq: Long?, reqList: Array<ByteArray>?) {

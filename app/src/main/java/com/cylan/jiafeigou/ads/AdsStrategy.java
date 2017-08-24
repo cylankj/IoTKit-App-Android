@@ -73,7 +73,7 @@ public class AdsStrategy {
                                             cmd.GetAdPolicy(JFGRules.getLanguageType(ContextUtils.getContext()),
                                                     PackageUtils.getAppVersionName(ContextUtils.getContext()),
                                                     getResolutionForAds());
-                                            AppLogger.d("开始获取广告");
+                                            AppLogger.w("开始获取广告");
                                             RxBus.getCacheInstance().removeStickyEvent(AdsStrategy.AdsDescription.class);
                                         } catch (JfgException e) {
                                             if (BuildConfig.DEBUG)
@@ -87,7 +87,7 @@ public class AdsStrategy {
                             .first()
                             .subscribeOn(AndroidSchedulers.mainThread())
                             .flatMap(adsRsp -> {
-                                AppLogger.d("广告啊:" + adsRsp);
+                                AppLogger.w("广告啊:" + adsRsp);
                                 String content = PreferencesUtils.getString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), "");
                                 if (!TextUtils.isEmpty(content)) {
                                     //判断是否同一个广告
@@ -120,7 +120,7 @@ public class AdsStrategy {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.d("广告下载失败: " + MiscUtils.getErr(e));
+                        AppLogger.w("广告下载失败: " + MiscUtils.getErr(e));
                         //表示找不到.
                     }
 
@@ -142,7 +142,7 @@ public class AdsStrategy {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         //下载成功,才发出
-                        AppLogger.d("广告下载成功: ");
+                        AppLogger.w("广告下载成功: ");
                         PreferencesUtils.putString(JConstant.KEY_ADD_DESC + JFGRules.getLanguageType(), new Gson().toJson(description));
                     }
                 });

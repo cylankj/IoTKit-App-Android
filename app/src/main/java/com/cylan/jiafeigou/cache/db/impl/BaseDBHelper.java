@@ -28,8 +28,10 @@ import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -47,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import io.objectbox.Box;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -107,12 +110,25 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs) {
+
+        Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
+
+
         return getActiveAccount().map(account -> {
             Log.d("saveDPByteInTx", "saveDPByteInTx:" + uuid);
             Set<DPEntity> result = new HashSet<>();
+
+            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
+            PropertyItem propertyItem = null;
             Device device = sourceManager.getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
+
+//                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, (int) msg.id, msg.version),
+//                        uuid, (int) msg.id, msg.version, msg.packValue);
+
+//                propertyItems.add(propertyItem);
+
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
@@ -138,6 +154,7 @@ public class BaseDBHelper implements IDBHelper {
                 result.add(dpEntity);
                 dpEntity = null;
             }
+            itemBox.put(propertyItems);
             mEntityDao.insertOrReplaceInTx(result);
             return result;
         });
@@ -148,10 +165,20 @@ public class BaseDBHelper implements IDBHelper {
         return getActiveAccount().map(account -> {
             if (dataRsp.map == null) return null;
             Set<DPEntity> result = new HashSet<>();
+            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
+            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
+            PropertyItem item = null;
             Device device = sourceManager.getDevice(dataRsp.identity);
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
+
+//                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, (int) msg.id, msg.version),
+//                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
+//                    );
+////                    propertyItems.add(item);
+
+
                     if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
@@ -178,6 +205,7 @@ public class BaseDBHelper implements IDBHelper {
                     dpEntity = null;
                 }
             }
+            itemBox.put(propertyItems);
             mEntityDao.insertOrReplaceInTx(result);
             return result;
         });

@@ -1,7 +1,11 @@
 package com.cylan.jiafeigou.utils
 
-import com.cylan.jiafeigou.server.H
+import com.cylan.jiafeigou.server.MIDMessageHeader
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.convertValue
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.Test
 import org.msgpack.jackson.dataformat.MessagePackFactory
 
@@ -27,19 +31,27 @@ class HelloWorld {
 
 
     }
+
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    data class SS(val a: String, val b: String)
+
     @Test
     fun testT() {
-        val mapper = ObjectMapper(MessagePackFactory())
-
+        val mapper = jacksonObjectMapper()
 
         var header = arrayOf(20000, "www", "ggg", 8476979L, arrayOf("AAA", "BBB"))
 
+        val midMessageHeader = MIDMessageHeader(304, "GGGG", "EEEE", 796969, arrayOf("AAA", "BBB"))
+
+        val asBytes = mapper.writeValueAsBytes(midMessageHeader)
+
         val bytes = mapper.writeValueAsBytes(header)
 
-        var ss= mapper.readValue(bytes, H::class.java)
+        var ss = mapper.readValue<MIDMessageHeader>(asBytes)
 
-        print("$ss")
+        val value = mapper.convertValue<SS>(ss.body!!)
 
+        println("$value")
 
     }
 

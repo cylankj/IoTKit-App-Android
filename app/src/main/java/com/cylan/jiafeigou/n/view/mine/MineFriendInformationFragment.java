@@ -143,33 +143,33 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
                 break;
             case R.id.change_name_message_title:
                 ViewUtils.deBounceClick(friendDetailBinding.changeNameMessageTitle);
-                AppLogger.e("rl_change_name");
+                AppLogger.w("rl_change_name");
                 enterEditAccountMarkNameFragment();
                 break;
             case R.id.delete_friend_title:
                 ViewUtils.deBounceClick(friendDetailBinding.deleteFriendTitle);
-                AppLogger.e("rl_delete_relativeandfriend");
+                AppLogger.w("rl_delete_relativeandfriend");
                 showDeleteFriendAlert();
                 break;
             case R.id.share_delete_function:
                 ViewUtils.deBounceClick(friendDetailBinding.shareDeleteFunction);
-                AppLogger.e("tv_share_device");
+                AppLogger.w("tv_share_device");
                 if (isFriend.get()) {
-                    AppLogger.d("将分享设备");
+                    AppLogger.w("将分享设备");
                     if (presenter.getOwnerDeviceCount() > 0) {
                         enterShareDeviceListFragment();
                     } else {
                         ToastUtil.showNegativeToast(getString(R.string.Tap1_Index_NoDevice));
                     }
                 } else {//添加亲友
-                    AppLogger.d("将添加亲友");
+                    AppLogger.w("将添加亲友");
                     presenter.consentFriend(friendItem);
                 }
 //
                 break;
             case R.id.friend_info_picture:
                 ViewUtils.deBounceClick(friendDetailBinding.friendInfoPicture);
-                AppLogger.e("iv_detail_user_head");
+                AppLogger.w("iv_detail_user_head");
                 enterUserBigPictureFragment();
                 break;
         }
@@ -273,7 +273,7 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
 
     @Override
     public void onRequestExpired(FriendContextItem item) {
-        AppLogger.d("好友添加请求已过期!!!");
+        AppLogger.w("好友添加请求已过期!!!");
         new AlertDialog.Builder(getContext())
                 .setMessage(R.string.Tap3_FriendsAdd_ExpiredTips)
                 .setPositiveButton(R.string.Tap3_FriendsAdd_Send, (dialog, which) -> {
@@ -287,13 +287,13 @@ public class MineFriendInformationFragment extends IBaseFragment implements Mine
 
     @Override
     public void onRequestByOwner(FriendContextItem friendContextItem) {
-        AppLogger.d("是主动添加请求,不是接受添加请求");
+        AppLogger.w("是主动添加请求,不是接受添加请求");
         enterAddRequestFragment();
     }
 
     @Override
     public void acceptItemRsp(FriendContextItem friendContextItem, int code) {
-        AppLogger.d("接受好友添加请求的结果为:" + code);
+        AppLogger.w("接受好友添加请求的结果为:" + code);
         switch (code) {
             case -1:
                 ToastUtil.showToast(getString(R.string.Request_TimeOut));

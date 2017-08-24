@@ -70,7 +70,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
 
             case R.id.tv_scan_add:                                      //扫一扫添加
                 ViewUtils.deBounceClick(view);
-                AppLogger.d("tv_scan_add");
+                AppLogger.w("tv_scan_add");
                 MineFriendAddFriendsFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
                 break;
             case R.id.tv_add_from_contract:                             //从通讯录添加
@@ -143,7 +143,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     public void showRationaleForCamera(PermissionRequest request) {
         // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        AppLogger.w(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
         onNeverAskAgainCameraPermission();
     }
 
@@ -178,7 +178,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     public void showRationaleForContacts(PermissionRequest request) {
         // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        AppLogger.w(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
         onNeverAskAgainContactsPermission();
     }
 

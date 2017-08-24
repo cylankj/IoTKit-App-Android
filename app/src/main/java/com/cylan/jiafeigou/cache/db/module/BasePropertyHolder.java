@@ -35,6 +35,16 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      * @deprecated
      */
     public <V> V $(int msgId, V defaultValue) {
+
+//        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
+//        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
+//
+//        Class<V> aClass = (Class<V>) defaultValue.getClass();
+//
+//        V cast = CacheHolderKt.cast(item, aClass);
+//
+//        return cast;
+
         synchronized (lock) {
             try {
                 DPEntity entity = getProperty(msgId);
