@@ -609,7 +609,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
             ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
         }
-        ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+        ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
         tvLive.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
@@ -744,7 +744,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayType = type;
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(null, null);
-        imgVCamZoomToFullScreen.setEnabled(false);
+        imgVCamZoomToFullScreen.setEnabled(true);
         int net = NetUtils.getJfgNetType();
         if (net == 2)
             ToastUtil.showToast(getResources().getString(R.string.LIVE_DATA));
@@ -786,7 +786,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
                 ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
             }
-            ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+            ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             if (layoutD.getAlpha() == 0.0f)
                 YoYo.with(Techniques.FadeIn)
@@ -851,6 +851,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             if (!isLand()) {
                                 layoutE.setTranslationY(0);
                                 layoutE.setAlpha(1);
+                            } else {
+                                layoutE.setOnClickListener(v -> {
+
+                                });
                             }
                         }
                     })
@@ -917,6 +921,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
             landAnimationLayoutG = YoYo.with(Techniques.FadeInUp)
                     .duration(200)
+                    .withListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (MiscUtils.isLand()) {
+                                layoutE.setOnClickListener(null);
+                            }
+                        }
+                    })
                     .playOn(layoutG);
             if (flowTextAnimation != null) flowTextAnimation.stop();
             flowTextAnimation = YoYo.with(new BaseViewAnimator() {
@@ -983,7 +995,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
         }
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
-        ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+        ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
 
 
@@ -1028,7 +1040,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
         }
 
-        ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+        ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
     }
 
@@ -1282,7 +1294,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
                 ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
             }
-            ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+            ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             removeCallbacks(portHideRunnable);
             removeCallbacks(landHideRunnable);
@@ -1577,7 +1589,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (!JFGRules.showSwitchModeButton(device.pid) && videoView != null && videoView instanceof Panoramic360ViewRS) {
                 ((Panoramic360ViewRS) videoView).enableAutoRotation(false);
             }
-            ivViewModeSwitch.setEnabled(livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
+            ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
             boolean online = JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet()));
             btnLoadHistory
@@ -1712,7 +1724,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         imgVCamTriggerCapture.setEnabled(true);
         imgVLandCamTriggerCapture.setEnabled(true);
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE);
-        ivViewModeSwitch.setEnabled(true);
+        ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE);
     }
 
     @Override
