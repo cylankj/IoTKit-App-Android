@@ -455,6 +455,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     switch (vId) {
                         case R.id.imgV_cam_trigger_capture:
                         case R.id.imgV_land_cam_trigger_capture:
+                            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) return;
                             if (camLiveControlLayer != null && camLiveControlLayer.getLiveViewWithThumbnail() != null &&
                                     camLiveControlLayer.getLiveViewWithThumbnail().getVideoView() != null)
                                 camLiveControlLayer.getLiveViewWithThumbnail().getVideoView()
@@ -465,6 +466,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     }
                 });
         camLiveControlLayer.setPlayBtnListener(v -> {
+            if (MiscUtils.isLand() && camLiveControlLayer.isActionBarHide()) return;
             CamLiveContract.LiveStream prePlayType = basePresenter.getLiveStream();
             if (prePlayType.playState == PLAY_STATE_PLAYING) {
                 // 暂停

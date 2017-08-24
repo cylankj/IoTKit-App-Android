@@ -744,7 +744,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         livePlayType = type;
         livePlayState = PLAY_STATE_PREPARE;
         setLoadingState(null, null);
-        imgVCamZoomToFullScreen.setEnabled(true);
+        imgVCamZoomToFullScreen.setEnabled(false);//测试用
         int net = NetUtils.getJfgNetType();
         if (net == 2)
             ToastUtil.showToast(getResources().getString(R.string.LIVE_DATA));
@@ -851,10 +851,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                             if (!isLand()) {
                                 layoutE.setTranslationY(0);
                                 layoutE.setAlpha(1);
-                            } else {
-                                layoutE.setOnClickListener(v -> {
-
-                                });
                             }
                         }
                     })
@@ -921,14 +917,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (landAnimationLayoutG != null) landAnimationLayoutG.stop();
             landAnimationLayoutG = YoYo.with(Techniques.FadeInUp)
                     .duration(200)
-                    .withListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (MiscUtils.isLand()) {
-                                layoutE.setOnClickListener(null);
-                            }
-                        }
-                    })
                     .playOn(layoutG);
             if (flowTextAnimation != null) flowTextAnimation.stop();
             flowTextAnimation = YoYo.with(new BaseViewAnimator() {
@@ -1822,6 +1810,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         int id = v.getId();
         switch (id) {
             case R.id.imgV_cam_live_land_nav_back:
+                if (MiscUtils.isLand() && isActionBarHide()) return;
                 post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
                         ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
                 // TODO: 2017/8/16 现在需要自动横屏
@@ -1837,9 +1826,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放
+                if (MiscUtils.isLand() && isActionBarHide()) return;
                 if (playClickListener != null) playClickListener.onClick(v);
                 break;
             case R.id.tv_live://直播中,按钮disable.历史录像:enable
+                if (MiscUtils.isLand() && isActionBarHide()) return;
                 if (liveTextClick != null) liveTextClick.onClick(v);
                 break;
             case R.id.imgV_cam_switch_speaker:
