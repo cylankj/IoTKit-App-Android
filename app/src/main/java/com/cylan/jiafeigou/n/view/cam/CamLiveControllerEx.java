@@ -490,7 +490,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .subscribe(isEmpty -> {
                     AppLogger.d("加载成功: isEmpty" + isEmpty);
                     if (!isEmpty) {
-                        presenter.startPlayHistory(DataExt.getInstance().getFlattenMinTime());
+                        try {
+                            presenter.startPlayHistory(DataExt.getInstance().getFlattenMinTime());
+                        } catch (Throwable throwable) {
+                            AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                        }
                     } else {
                         btnLoadHistory.setEnabled(true);
                         ToastUtil.showToast(getResources().getString(R.string.NO_CONTENTS_2));
@@ -517,6 +521,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                                 && presenter.getHistoryDataProvider().getDataCount() == 0)
                             ToastUtil.showToast(getResources().getString(R.string.Item_LoadFail));
                     }
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
                 });
         presenter.addSubscription("fetchHistoryBy", subscription);
     }
