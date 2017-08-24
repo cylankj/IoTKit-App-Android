@@ -125,7 +125,8 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
         }
     }
 
-    private void showSystemBar(boolean show, final long delayTime) {
+    public void showSystemBar(boolean show, final long delayTime) {
+        checkSystemHider();
         systemUiHiderWeakReference.get().setSupportAutoHide(!show);
         if (show) {
             systemUiHiderWeakReference.get().show();
@@ -139,7 +140,7 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
      *
      * @param port
      */
-    protected void handleSystemBar(boolean port, final long delay) {
+    public void handleSystemBar(boolean port, final long delay) {
         WindowManager.LayoutParams attrs = getWindow().getAttributes();
         if (port) {
             showSystemUI();

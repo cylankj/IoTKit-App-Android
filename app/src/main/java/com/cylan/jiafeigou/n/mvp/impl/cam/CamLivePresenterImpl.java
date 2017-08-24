@@ -517,6 +517,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
                 .observeOn(Schedulers.io())
                 .map(resolution -> {
+                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     removeTimeoutSub();
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
 
@@ -579,7 +580,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     feedRtcp.stop();
                     addSubscription(videoDisconnectSub(), "videoDisconnectSub");
                     addSubscription(errCodeSub(), "errCodeSub");
-                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
+                    //挪到resolutionSub里面
+//                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     addSubscription(resolutionSub(), "resolutionSub");
                     addSubscription(timeoutSub(), "timeoutSub");
                     addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");

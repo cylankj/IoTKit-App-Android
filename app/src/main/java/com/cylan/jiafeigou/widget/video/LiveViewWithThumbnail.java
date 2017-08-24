@@ -321,7 +321,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     }
                 } else {
                     videoViewWeakReference.get().loadBitmap(resource);
-                    imageViewRef.get().setVisibility(GONE);
+                    imageViewRef.get().setVisibility(VISIBLE);
                     imageViewRef.get().setImageResource(android.R.color.transparent);
                     AppLogger.d("开始加载全景预览图");
                 }

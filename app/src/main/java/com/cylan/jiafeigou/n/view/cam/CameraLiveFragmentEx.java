@@ -38,11 +38,13 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -184,7 +186,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         camLiveControlLayer.setFlipListener(new FlipImageView.FlipListener() {
             @Override
             public void onClick(FlipImageView view) {
-                if (camLiveControlLayer.isActionBarHide()) return;//动画过程中
+                if (camLiveControlLayer.isActionBarHide() && MiscUtils.isLand()) return;//动画过程中
                 Device device = basePresenter.getDevice();
                 DpMsgDefine.DPSdStatus dpSdStatus = device.$(204, new DpMsgDefine.DPSdStatus());
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
@@ -212,7 +214,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
                                 camLiveControlLayer.setFlipped(true);
                                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
-                            }, getString(R.string.CANCEL), null);
+                                if (MiscUtils.isLand()) {
+                                    ((BaseFullScreenFragmentActivity) getActivity())
+                                            .showSystemBar(false, 500);
+                                }
+                            }, getString(R.string.CANCEL), (dialog, which) -> {
+                                if (MiscUtils.isLand()) {
+                                    ((BaseFullScreenFragmentActivity) getActivity())
+                                            .showSystemBar(false, 500);
+                                }
+                            });
                 } else {
                     safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
                     if (safeIsOpen) {
@@ -221,7 +232,16 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                                     DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(false);
                                     basePresenter.updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
                                     camLiveControlLayer.setFlipped(true);
-                                }, getString(R.string.CANCEL), null, false);
+                                    if (MiscUtils.isLand()) {
+                                        ((BaseFullScreenFragmentActivity) getActivity())
+                                                .showSystemBar(false, 500);
+                                    }
+                                }, getString(R.string.CANCEL), (dialog, which) -> {
+                                    if (MiscUtils.isLand()) {
+                                        ((BaseFullScreenFragmentActivity) getActivity())
+                                                .showSystemBar(false, 500);
+                                    }
+                                }, false);
                     } else {
                         DpMsgDefine.DPPrimary<Boolean> safe = new DpMsgDefine.DPPrimary<>(true);
                         basePresenter.updateInfoReq(safe, ID_501_CAMERA_ALARM_FLAG);
