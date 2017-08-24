@@ -44,7 +44,6 @@ import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.server.ConfigKt;
 import com.cylan.jiafeigou.server.PAGE_MESSAGE;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -354,7 +353,7 @@ public class DataSourceManager implements JFGSourceManager {
             e.printStackTrace();
         }
 
-        List<Integer> list = PAGE_MESSAGE.PAGE_HOME.filter(ConfigKt.getMessageByOS("", false));
+//        List<Integer> list = PAGE_MESSAGE.PAGE_HOME.filter(ConfigKt.getMessageByOS("", false));
 
 
         /**

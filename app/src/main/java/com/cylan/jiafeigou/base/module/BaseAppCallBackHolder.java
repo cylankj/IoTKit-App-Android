@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.server.cache.CacheHolderKt;
-import com.cylan.jiafeigou.server.cache.HashStrategyFactory;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -43,9 +42,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -150,7 +147,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
 
 
-        CacheHolderKt.saveProperty(robotoGetDataRsp.identity, (Map<Integer, List<?>>) (Object) robotoGetDataRsp.map, null);
+//        CacheHolderKt.saveProperty(robotoGetDataRsp.identity, (Map<Integer, List<?>>) (Object) robotoGetDataRsp.map, null);
     }
 
     @Override
@@ -222,7 +219,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
 
         /*过渡性使用,将来会废弃*/
-        CacheHolderKt.saveProperty(s, arrayList, null);
+//        CacheHolderKt.saveProperty(s, arrayList, null);
     }
 
     @Override
@@ -432,7 +429,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
                 RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
             }
 
-            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.INSTANCE::select);
+//            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.INSTANCE::select);
             Log.d("OnRobotGetMultiDataRsp", "size: " + count);
         }
     }

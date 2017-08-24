@@ -1090,7 +1090,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                                 LoadingDialog.showLoading(this, getString(R.string.SD_INFO_2), false, null);
                                 presenter.formatSDCard();
                             })
-                            .setNegativeButton(DialogInterface.BUTTON_NEGATIVE, null)
+                            .setNegativeButton(R.string.CANCEL, null)
                             .create();
                     show(dialog1);
                 } else {

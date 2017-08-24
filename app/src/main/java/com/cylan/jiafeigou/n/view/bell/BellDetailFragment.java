@@ -137,7 +137,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         sourceManager.updateDevice(device);
         try {
             appCmd.setAliasByCid(device.uuid, device.alias);
-            AppLogger.d("update alias suc");
+            AppLogger.w("update alias suc");
         } catch (JfgException e) {
             AppLogger.e("err: set up remote alias failed: " + new Gson().toJson(device));
         }

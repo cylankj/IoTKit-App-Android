@@ -1079,7 +1079,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void onDeviceUnBind() {
-        AppLogger.d("当前设备已解绑");
+        AppLogger.w("当前设备已解绑");
         AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
                 getString(R.string.OK), (dialog, which) -> {
                     finish();

@@ -10,7 +10,7 @@ public class PathGetter {
         File file = new File(path);
         if (!file.exists()) {
             boolean mk = file.mkdirs();
-            AppLogger.d("mk: " + mk + " " + path);
+            AppLogger.w("mk: " + mk + " " + path);
         }
         return path;
     }

@@ -81,12 +81,12 @@ public class History {
     public boolean queryHistory(Device device) {
         if (device == null || TextUtils.isEmpty(device.uuid)
                 || !TextUtils.isEmpty(device.shareAccount)) {
-            AppLogger.d("go back:" + device);
+            AppLogger.w("go back:" + device);
             return false;
         }
         try {
             BaseApplication.getAppComponent().getCmd().getVideoList(device.uuid);
-            AppLogger.d("getVideoList");
+            AppLogger.w("getVideoList");
             return true;
         } catch (JfgException e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());
@@ -152,7 +152,7 @@ public class History {
                     Collections.reverse(timeList);
                     try {
                         long timeStart = timeList.get(0), timeEnd = timeList.get(ListUtils.getSize(timeList) - 1);
-                        AppLogger.d(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
+                        AppLogger.w(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
                                 uuid, timeStart, timeEnd, (System.currentTimeMillis() - time)));
                         return Observable.just(new Helper(uuid, timeList, historyFiles));
                     } catch (Exception e) {
@@ -169,16 +169,16 @@ public class History {
                             Math.max(timeStart, timeEnd))
                             .subscribeOn(Schedulers.io())
                             .map(aBoolean -> {
-                                AppLogger.d("delete hisFile:" + aBoolean + ",hisFile:" + ListUtils.getSize(helper.files));
+                                AppLogger.w("delete hisFile:" + aBoolean + ",hisFile:" + ListUtils.getSize(helper.files));
                                 BaseApplication.getAppComponent().getDBHelper().saveHistoryFile(helper.files)
                                         .subscribe(ret -> {
-                                            AppLogger.d("save hisFile tx");
+                                            AppLogger.w("save hisFile tx");
                                             RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
                                                     .setFileList(helper.files).setTimeList(helper.timeList));
                                         }, AppLogger::e);
                                 return null;
                             })
-                            .subscribe(ret -> AppLogger.d("save history good?"),
+                            .subscribe(ret -> AppLogger.w("save history good?"),
                                     throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
                     return null;
                 })

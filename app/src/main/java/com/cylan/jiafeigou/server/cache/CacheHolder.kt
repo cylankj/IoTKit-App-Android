@@ -5,6 +5,7 @@ import com.cylan.entity.jniCall.JFGDPValue
 import com.cylan.entity.jniCall.JFGDevice
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -221,3 +222,10 @@ data class Device(@Id(assignable = true) var uuid: Long, var sn: String?, var al
 
 @Entity
 data class Account(@Id(assignable = true) var id: Long)
+
+fun <V> cast(propertyItem: PropertyItem, clz: Class<V>): V {
+    val mapper = jacksonObjectMapper()
+
+    return mapper.convertValue(propertyItem, clz)
+
+}

@@ -4,6 +4,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 
@@ -36,13 +37,13 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 if (seq <= 0) {
                     throw new JfgException("内部错误!");
                 }
-                AppLogger.d("正在执行删除任务,seq:" + seq + ", uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",version:" + entity.getVersion() + ",option:" + entity.action());
+                AppLogger.w("正在执行删除任务,seq:" + seq + ", uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",version:" + entity.getVersion() + ",option:" + entity.action());
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
                 e.printStackTrace();
                 subscriber.onError(e);
-                AppLogger.d("执行 task 出错了 ,错误信息为:" + e.getMessage());
+                AppLogger.e("执行 task 出错了 ,错误信息为:" + MiscUtils.getErr(e));
             }
         })
                 .subscribeOn(Schedulers.io())

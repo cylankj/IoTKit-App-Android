@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
         }
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                AppLogger.d("正在发送查询请求,uuid:" + entity.getUuid() + ",version:" + entity.getVersion() + ",type" + option.type + "count:" + option.limit + "acs:" + option.asc);
+                AppLogger.w("正在发送查询请求,uuid:" + entity.getUuid() + ",version:" + entity.getVersion() + ",type" + option.type + "count:" + option.limit + "acs:" + option.asc);
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
                 params.add(msg);
@@ -90,13 +91,13 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
-                AppLogger.e(e.getMessage());
+                AppLogger.e(MiscUtils.getErr(e));
                 subscriber.onError(e);
             }
         })
                 .flatMap(this::makeGetDataRspResponse)
                 .flatMap(rsp -> {
-                    AppLogger.d("收到从服务器返回数据!!!");
+                    AppLogger.w("收到从服务器返回数据!!!");
                     return parseServerRsp(rsp);
                 });
     }
