@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou;
 
 import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.server.DPIDCameraObjectDetect;
+//import com.cylan.jiafeigou.server.DPIDCameraObjectDetect;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -210,8 +210,8 @@ public class RxJavaTest {
         byte[] byteArray = messageBufferPacker.toByteArray();
         String toJson = MessagePack.newDefaultUnpacker(byteArray).unpackValue().toJson();
         JsonArray jsonElements = new Gson().fromJson(toJson, JsonArray.class);
-        JsonArray objects = DPIDCameraObjectDetect.INSTANCE.getObjects(jsonElements);
+//        JsonArray objects = DPIDCameraObjectDetect.INSTANCE.getObjects(jsonElements);
 
-        System.out.println(objects);
+//        System.out.println(objects);
     }
 }

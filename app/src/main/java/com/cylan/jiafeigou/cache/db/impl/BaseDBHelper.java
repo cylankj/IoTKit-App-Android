@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.server.cache.HashStrategyFactory;
 import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -124,10 +125,10 @@ public class BaseDBHelper implements IDBHelper {
             Device device = sourceManager.getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
 
-//                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, (int) msg.id, msg.version),
-//                        uuid, (int) msg.id, msg.version, msg.packValue);
+                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, (int) msg.id, msg.version),
+                        uuid, (int) msg.id, msg.version, msg.packValue);
 
-//                propertyItems.add(propertyItem);
+                propertyItems.add(propertyItem);
 
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
@@ -173,10 +174,10 @@ public class BaseDBHelper implements IDBHelper {
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
 
-//                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, (int) msg.id, msg.version),
-//                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
-//                    );
-////                    propertyItems.add(item);
+                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, (int) msg.id, msg.version),
+                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
+                    );
+                    propertyItems.add(item);
 
 
                     if (device != null && device.available()) {

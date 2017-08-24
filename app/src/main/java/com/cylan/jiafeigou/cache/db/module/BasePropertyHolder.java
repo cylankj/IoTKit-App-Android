@@ -7,9 +7,15 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.server.cache.CacheHolderKt;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
+
+import io.objectbox.Box;
 
 /**
  * Created by yanzhendong on 2017/3/25.
@@ -36,13 +42,12 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      */
     public <V> V $(int msgId, V defaultValue) {
 
-//        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
-//        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
-//
-//        Class<V> aClass = (Class<V>) defaultValue.getClass();
-//
-//        V cast = CacheHolderKt.cast(item, aClass);
-//
+        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
+        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
+
+        if (item != null) {
+            Log.i(JConstant.CYLAN_TAG, "item cast :" + item.cast(defaultValue).toString());
+        }
 //        return cast;
 
         synchronized (lock) {

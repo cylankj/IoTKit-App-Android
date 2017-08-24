@@ -40,7 +40,7 @@
     },
     {
       "id": "2:9164031478013509112",
-      "lastPropertyId": "5:7706579356325329849",
+      "lastPropertyId": "6:4269561978506070274",
       "name": "PropertyItem",
       "properties": [
         {
@@ -52,16 +52,16 @@
           "name": "uuid"
         },
         {
-          "id": "3:5049453544620017542",
-          "name": "msgId"
-        },
-        {
           "id": "4:6029222756656154956",
           "name": "version"
         },
         {
           "id": "5:7706579356325329849",
           "name": "value"
+        },
+        {
+          "id": "6:4269561978506070274",
+          "name": "msgId"
         }
       ]
     },
@@ -83,6 +83,8 @@
   "modelVersion": 2,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    5049453544620017542
+  ],
   "version": 1
 }

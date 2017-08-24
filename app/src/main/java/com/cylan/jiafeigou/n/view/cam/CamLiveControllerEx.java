@@ -1896,13 +1896,17 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         // TODO: 2017/8/23 摇一摇
         Log.i(CYLAN_TAG, "我需要摇一摇");
 
-        if (ivModeXunHuan.isSelected() && ivModeXunHuan.isEnabled()) {
+        if (isShakeEnable()) {
             VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof PanoramicView360RS_Ext) {
                 ((PanoramicView360RS_Ext) videoView).enableAutoRotation(true);
                 ((PanoramicView360RS_Ext) videoView).phoneShook();
             }
         }
+    }
+
+    public boolean isShakeEnable() {
+        return ivModeXunHuan.isSelected() && ivModeXunHuan.isEnabled();
     }
 
 }
