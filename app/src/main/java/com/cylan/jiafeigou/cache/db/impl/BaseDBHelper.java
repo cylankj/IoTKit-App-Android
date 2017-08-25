@@ -125,8 +125,8 @@ public class BaseDBHelper implements IDBHelper {
             Device device = sourceManager.getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
 
-                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, (int) msg.id, msg.version),
-                        uuid, (int) msg.id, msg.version, msg.packValue);
+                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, msg.id, msg.version),
+                        uuid, msg.id, msg.version, msg.packValue);
 
                 propertyItems.add(propertyItem);
 
@@ -174,7 +174,7 @@ public class BaseDBHelper implements IDBHelper {
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
 
-                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, (int) msg.id, msg.version),
+                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, msg.id, msg.version),
                             dataRsp.identity, (int) msg.id, msg.version, msg.packValue
                     );
                     propertyItems.add(item);

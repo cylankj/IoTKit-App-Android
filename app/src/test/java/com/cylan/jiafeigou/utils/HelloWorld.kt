@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.utils
 
+import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.server.MIDMessageHeader
 import com.cylan.jiafeigou.server.VersionHeader
-import com.cylan.jiafeigou.server.VersionValue
 import com.cylan.jiafeigou.server.cache.PropertyItem
 import com.cylan.jiafeigou.server.cache.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
@@ -74,14 +74,14 @@ class HelloWorld {
 
     @Test
     fun testA() {
-        val mapper = jacksonObjectMapper()
+        val mapper = objectMapper.get()
 
-        val item = PropertyItem(9, "SSs", 88, 47686, "AAAAA")
+        val dpStandby = mapper.convertValue(arrayListOf(false, false, false, 2), DpMsgDefine.DPStandby::class.java)
 
+        println(dpStandby)
 
-        val cast = item.cast(VersionValue())
-
-        println(cast)
+        print(DpMsgDefine.DPStandby::class.java.fields)
+        print("")
     }
 
 

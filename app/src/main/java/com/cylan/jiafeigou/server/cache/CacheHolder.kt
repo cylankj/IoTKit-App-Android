@@ -5,12 +5,12 @@ import com.cylan.entity.jniCall.JFGDPMsg
 import com.cylan.entity.jniCall.JFGDPValue
 import com.cylan.entity.jniCall.JFGDevice
 import com.cylan.jiafeigou.dp.BaseDataPoint
+import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.server.VersionHeader
 import com.cylan.jiafeigou.server.VersionValue
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.objectbox.annotation.Convert
@@ -19,6 +19,7 @@ import io.objectbox.annotation.Id
 import io.objectbox.converter.PropertyConverter
 import io.objectbox.query.Query
 import org.greenrobot.essentials.hash.FNV64
+import org.msgpack.jackson.dataformat.MessagePackFactory
 import java.nio.charset.Charset
 
 /**
@@ -33,12 +34,14 @@ class PropertyItemConverter : PropertyConverter<Any, ByteArray> {
             else -> objectMapper.get().writeValueAsBytes(value)
         }
     } catch (e: Exception) {
+        Log.i(JConstant.CYLAN_TAG, e.message)
         byteArrayOf()
     }
 
     override fun convertToEntityProperty(byteArray: ByteArray?): Any? = try {
         objectMapper.get().readValue(byteArray, Any::class.java)
     } catch (e: Exception) {
+        Log.i(JConstant.CYLAN_TAG, e.message)
         0
     }
 
@@ -63,16 +66,15 @@ fun versionKey(uuid: String?, msgId: Long, version: Long) = "$uuid:$msgId:$versi
 
 var objectMapper: ThreadLocal<ObjectMapper> = object : ThreadLocal<ObjectMapper>() {
 
-    override fun initialValue() = jacksonObjectMapper()
+    override fun initialValue() = ObjectMapper(MessagePackFactory())
 
 }
 
 @Entity
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 class PropertyItem(@Id(assignable = true)
-                   @JsonIgnore var hash: Long = 0,
-                   @JsonIgnore var uuid: String? = "",
-                   var msgId: Int = 0,
+                   var hash: Long = 0,
+                   var uuid: String? = "",
+                   var msgId: Long = 0,
                    var version: Long = 0,
                    @Convert(dbType = ByteArray::class, converter = PropertyItemConverter::class) var value: Any? = null
 ) {
@@ -82,10 +84,13 @@ class PropertyItem(@Id(assignable = true)
         when (defaultValue) {
             is VersionValue -> VersionValue(value).apply { this.version = version }
             is VersionHeader -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as VersionHeader).version = version }
+            is DpMsgDefine.DPPrimary<*> -> DpMsgDefine.DPPrimary(value)
+            is BaseDataPoint -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as BaseDataPoint).version = version }
             else -> value
         } as T
     } catch (e: Exception) {
-        Log.e(JConstant.CYLAN_TAG, e.message)
+        e.printStackTrace()
+        Log.e(JConstant.CYLAN_TAG, "msgId is:$msgId,value is: $value")
         defaultValue
     }
 
@@ -157,7 +162,7 @@ fun saveProperty(uuid: String? = "", valueMap: MutableMap<Long, List<*>>?, hashS
     valueMap?.forEach { item ->
         item.value.forEach {
             var msg = it as? JFGDPMsg
-            val propertyItem = PropertyItem(hashStrategy?.invoke(uuid, item.key, msg?.version ?: 0) ?: msgIdKey(uuid, item.key), uuid, item.key.toInt(), msg?.version ?: 0, msg?.packValue)
+            val propertyItem = PropertyItem(hashStrategy?.invoke(uuid, item.key, msg?.version ?: 0) ?: msgIdKey(uuid, item.key), uuid, item.key, msg?.version ?: 0, msg?.packValue)
             items.add(propertyItem)
         }
     }?.apply { BaseApplication.getPropertyItemBox().put(items) }
@@ -169,7 +174,7 @@ fun saveProperty(uuid: String? = "", valueList: MutableList<*>?, hashStrategy: (
         var msg = it as? JFGDPMsg
         val msdId = msg?.id ?: 0
         val version = msg?.version ?: 0
-        val item = PropertyItem(hashStrategy?.invoke(uuid, msdId, version) ?: msgIdKey(uuid, msdId), uuid, msdId.toInt(), msg?.version ?: 0, msg?.packValue)
+        val item = PropertyItem(hashStrategy?.invoke(uuid, msdId, version) ?: msgIdKey(uuid, msdId), uuid, msdId, msg?.version ?: 0, msg?.packValue)
         items.add(item)
     }?.apply { BaseApplication.getPropertyItemBox().put(items) }
 }
@@ -189,7 +194,7 @@ fun saveProperty(maps: Map<String, Map<Long, *>>, hashStrategy: ((String?, Int, 
                         val dp = it as? JFGDPValue
                         val version = dp?.version ?: 0
                         val value = dp?.value ?: byteArrayOf()
-                        val item = PropertyItem(hashStrategy?.invoke(cidItem.key, msgItem.key.toInt(), version) ?: msgIdKey(cidItem.key, msgItem.key), cidItem.key, msgItem.key.toInt(), version, value)
+                        val item = PropertyItem(hashStrategy?.invoke(cidItem.key, msgItem.key.toInt(), version) ?: msgIdKey(cidItem.key, msgItem.key), cidItem.key, msgItem.key, version, value)
                         items.add(item)
                     }
                 }
