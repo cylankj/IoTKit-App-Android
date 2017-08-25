@@ -903,10 +903,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //清空呼叫记录设置 ,只有门铃才有清空呼叫记录
         svSettingDeviceClearRecord.setVisibility(productProperty.hasProperty(device.pid, "EMPTIED") ? View.VISIBLE : View.GONE);
 
-        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+//        if (productProperty.hasProperty(device.pid, "VIDEO")) {
 //            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
 //             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-            svSettingDeviceAutoRecord.setVisibility(View.GONE);
+//             TODO: 2017/8/25 hunt
+//            svSettingDeviceAutoRecord.setVisibility(View.GONE);
 //            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
 //            ////////////////////////显示红点//////////////////////////////////////////////
 //            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
@@ -915,7 +916,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 //            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
 //            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
 //            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
-        }
+//        }
 //        else {
 //            svSettingDeviceAutoRecord.setVisibility(View.GONE);
 //        }
