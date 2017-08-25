@@ -34,12 +34,7 @@ public abstract class BaseDataPoint implements Parcelable, DataPoint {
 
 
     public byte[] toBytes() {
-        try {
-            return CacheHolderKt.getObjectMapper().get().writeValueAsBytes(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return new byte[]{0};
+        return DpUtils.pack(this);
     }
 
     public BaseDataPoint() {
