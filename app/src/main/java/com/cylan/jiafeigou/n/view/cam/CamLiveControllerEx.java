@@ -617,7 +617,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
-//        tvLive.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -1165,10 +1164,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             }
             ViewUtils.increaseMargins(svSwitchStream, 0, 0, 0, (int) getResources().getDimension(R.dimen.y10));
         } else {
-//            if (vsLayoutWheel.getCurrentView() instanceof FrameLayout) {
-//                tvLive.setVisibility(GONE);
-//                vFlag.setVisibility(GONE);
-//            }
+            tvLive.setVisibility(vsLayoutWheel.getCurrentView() instanceof FrameLayout ? GONE : VISIBLE);
             IData dataProvider = presenter.getHistoryDataProvider();
             if (dataProvider != null && dataProvider.getDataCount() != 0) {
                 if (vsLayoutWheel.getDisplayedChild() == 0) {
