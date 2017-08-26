@@ -92,7 +92,7 @@ class PropertyItem(@Id(assignable = true)
 //            is VersionHeader -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as VersionHeader).version = version }
             is DpMsgDefine.DPPrimary<*> -> DpMsgDefine.DPPrimary(value)
             is BaseDataPoint -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { val v = (this as BaseDataPoint);v.version = version;v.msgId = msgId }
-            else -> value
+            else -> value as?T ?: defaultValue
         } as T
     } catch (e: Exception) {
         Log.e(JConstant.CYLAN_TAG, e.message)
@@ -227,18 +227,22 @@ fun saveProperty(maps: Map<String, Map<Long, *>>, hashStrategy: ((String?, Int, 
 
 }
 
-fun saveDevices(devices: Array<JFGDevice>) {
-    val items: MutableList<Device> = mutableListOf()
+fun saveDevices(devices: Array<JFGDevice>) = try {
+    {
+        val items: MutableList<Device> = mutableListOf()
 
-    BaseApplication.getDeviceBox().query()
-            .notIn(Device_.uuid, devices.map { it.uuid.toLong() }.toLongArray())
-            .build().find().forEach {
-        //        DataSourceManager.getInstance().unBindDevice(it.uuid.toString())
+        BaseApplication.getDeviceBox().query()
+                .notIn(Device_.uuid, devices.map { it.uuid.toLong() }.toLongArray())
+                .build().find().forEach {
+            //        DataSourceManager.getInstance().unBindDevice(it.uuid.toString())
+        }
+
+        devices.forEach {
+            items.add(Device(it.uuid.toLong(), it.sn, it.alias, it.shareAccount, it.pid, it.regionType, it.vid))
+        }.apply { BaseApplication.getDeviceBox().put(items) }
     }
-
-    devices.forEach {
-        items.add(Device(it.uuid.toLong(), it.sn, it.alias, it.shareAccount, it.pid, it.regionType, it.vid))
-    }.apply { BaseApplication.getDeviceBox().put(items) }
+} catch (e: Exception) {
+    Log.i(JConstant.CYLAN_TAG, e.message)
 }
 
 //fun saveProperty(Map<String, Map<Long, List<JFGDPValue>>>)

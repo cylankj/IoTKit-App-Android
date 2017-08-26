@@ -333,30 +333,30 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
             AppLogger.d("finish manually");
-            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
             presenter.cancelViewer();
         }
         muteAudio(false);
     }
 
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-//            mediaPlayer.setVolume(0, 0);
-//            mediaPlayer.stop();
-//            mediaPlayer.release();
-//            mediaPlayer = null;
-//        }
-//        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
-//            ((GLSurfaceView) mSurfaceView).onPause();
-//            mVideoViewContainer.removeAllViews();
-//            mSurfaceView = null;
-//            AppLogger.d("finish manually");
-//            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-//            presenter.dismiss();
-//        }
-//    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+            ((GLSurfaceView) mSurfaceView).onPause();
+            mVideoViewContainer.removeAllViews();
+            mSurfaceView = null;
+            AppLogger.d("finish manually");
+        }
+        finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+        presenter.dismiss();
+    }
 
 
     private void clearHeadSetEventReceiver() {

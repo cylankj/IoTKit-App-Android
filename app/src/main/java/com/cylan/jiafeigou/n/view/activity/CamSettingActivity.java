@@ -887,7 +887,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
             svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
 //             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+//            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
             ////////////////////////显示红点//////////////////////////////////////////////
             node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
             ////////////////////////////autoRecord////////////////////////////////////////
