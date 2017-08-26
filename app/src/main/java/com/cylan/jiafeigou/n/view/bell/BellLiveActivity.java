@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
@@ -294,19 +293,26 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onStart() {
         super.onStart();
 
-        muteAudio(true);
-//        setNormalBackMargin();
-//        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-//        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
-        newCall();
+//        muteAudio(true);
+////        setNormalBackMargin();
+////        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
+////        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
+//        newCall();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        newCall();
 //        hideStatusBar();
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
+//        if (mediaPlayer == null) {
+//
+//        }
+//        if (mediaPlayer != null) {
+//            mediaPlayer.start();
+//        }
+        if (!presenter.getLiveAction().hasStarted && TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
+            playSoundEffect();
         }
         landBack.setVisibility(isLand() ? View.VISIBLE : View.GONE);
         customToolbar.setVisibility(isLand() ? View.GONE : View.VISIBLE);
@@ -316,12 +322,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onPause() {
         super.onPause();
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying())
-                mediaPlayer.stop();
-            mediaPlayer.reset();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
+            mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+        }
+        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+            ((GLSurfaceView) mSurfaceView).onPause();
+            mVideoViewContainer.removeAllViews();
+            mSurfaceView = null;
+            AppLogger.d("finish manually");
+//            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+            presenter.cancelViewer();
         }
         muteAudio(false);
     }
@@ -340,12 +353,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
             AppLogger.d("finish manually");
-            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
         }
-
-
-        presenter.cancelViewer();
-
+        finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+        presenter.dismiss();
     }
 
 
@@ -784,8 +794,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mVideoViewContainer.addView(mSurfaceView);
         }
         AppLogger.i("initVideoView");
-        mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-        mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
+//        mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+//        mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
     }
 
 
@@ -804,6 +814,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mediaPlayer = null;
         }
         finishExt();
+        if (isTaskRoot()) {
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -861,6 +876,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void playSoundEffect() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.release();
+        }
         mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();

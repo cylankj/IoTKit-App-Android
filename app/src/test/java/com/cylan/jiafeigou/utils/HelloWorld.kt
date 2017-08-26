@@ -1,9 +1,7 @@
 package com.cylan.jiafeigou.utils
 
+import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.server.MIDMessageHeader
-import com.cylan.jiafeigou.server.VersionHeader
-import com.cylan.jiafeigou.server.VersionValue
-import com.cylan.jiafeigou.server.cache.PropertyItem
 import com.cylan.jiafeigou.server.cache.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -58,30 +56,30 @@ class HelloWorld {
 
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
-    data class SSS(var value: Any? = null) : VersionHeader()
-
-
-    /**只针对 array 类型的数据才需要 cast, 如果是原始类型,比如 int string, 直接 asInt ,asString 就行了**/
-    fun <T : Any> cast(propertyItem: PropertyItem, defaultValue: T): T {
-        return try {
-            objectMapper.get().convertValue(propertyItem.value, defaultValue::class.java).apply { (this as? VersionHeader)?.version = propertyItem.version }
-        } catch (e: Exception) {
-            println(e.message)
-            defaultValue
-        }
-    }
+//    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+//    data class SSS(var value: Any? = null) : VersionHeader()
+//
+//
+//    /**只针对 array 类型的数据才需要 cast, 如果是原始类型,比如 int string, 直接 asInt ,asString 就行了**/
+//    fun <T : Any> cast(propertyItem: PropertyItem, defaultValue: T): T {
+//        return try {
+//            objectMapper.get().convertValue(propertyItem.value, defaultValue::class.java).apply { (this as? VersionHeader)?.version = propertyItem.version }
+//        } catch (e: Exception) {
+//            println(e.message)
+//            defaultValue
+//        }
+//    }
 
     @Test
     fun testA() {
-        val mapper = jacksonObjectMapper()
+        val mapper = objectMapper.get()
 
-        val item = PropertyItem(9, "SSs", 88, 47686, "AAAAA")
+        val dpStandby = mapper.convertValue(arrayListOf(false, false, false, 2), DpMsgDefine.DPStandby::class.java)
 
+        println(dpStandby)
 
-        val cast = item.cast(VersionValue())
-
-        println(cast)
+        print(DpMsgDefine.DPStandby::class.java.fields)
+        print("")
     }
 
 

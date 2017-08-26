@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
@@ -23,6 +24,7 @@ import java.util.TimeZone;
 public class DpMsgDefine {
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"standby", "alarmEnable", "led", "autoRecord"})
     public static final class DPStandby extends BaseDataPoint {
         @Index(0)
         public boolean standby;
@@ -88,6 +90,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"net", "ssid"})
     public static final class DPNet extends BaseDataPoint {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
@@ -181,6 +184,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"timezone", "offset"})
     public static final class DPTimeZone extends BaseDataPoint {
         @Index(0)
         public String timezone;
@@ -233,6 +237,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"isBind", "account", "oldAccount"})
     public static final class DPBindLog extends BaseDataPoint {
 
         @Index(0)
@@ -290,6 +295,7 @@ public class DpMsgDefine {
     //系统消息使用
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"hasSdcard", "errCode"})
     public static final class DPSdcardSummary extends BaseDataPoint implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
@@ -361,6 +367,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"total", "used", "err", "hasSdcard"})
     public static final class DPSdStatus extends BaseDataPoint implements Parcelable {
         @Index(0)
         public long total;
@@ -481,6 +488,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"timeStart", "timeEnd"})
     public static final class DPAlarmInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
@@ -542,6 +550,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"time", "isRecording", "fileIndex", "ossType", "tly", "objects"})
     public static final class DPAlarm extends BaseDataPoint implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
@@ -555,7 +564,7 @@ public class DpMsgDefine {
         public String tly;//全景设备陀螺仪。'0'俯视, '1' 平视。
         @Index(5)
         @Optional
-        public int[] objects;
+        public Integer[] objects;
         @Ignore
         public static DPAlarm empty = new DPAlarm();
 
@@ -639,6 +648,7 @@ public class DpMsgDefine {
 
     @Message//504
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"notification", "duration"})
     public static final class DPNotificationInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int notification;
@@ -711,6 +721,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"timeStart", "timePeriod", "timeDuration", "status"})
     public static final class DPTimeLapse extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
@@ -774,6 +785,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"x", "y", "r"})
     public static final class DPCamCoord extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int x;
@@ -832,6 +844,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"isOK", "time", "duration", "type", "isRecording", "fileIndex"})
     public static final class DPBellCallRecord extends BaseDataPoint implements Parcelable {
 
         @Index(0)
@@ -918,6 +931,7 @@ public class DpMsgDefine {
     }
 
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"value"})
     public static final class DPPrimary<T> extends BaseDataPoint {
         @Index(0)
         public T value;
@@ -976,6 +990,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"cid", "time", "msgType", "fileName", "place"})
     public static final class DPWonderItem extends BaseDataPoint implements Parcelable {
 
         public static final int TYPE_PIC = 0;
@@ -1081,6 +1096,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"cid", "isDone", "account", "sn", "pid"})
     public static final class DPMineMesg {
         @Index(0)
         public String cid;
@@ -1110,6 +1126,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"title", "content"})
     public static final class DPSystemMesg {
         @Index(0)
         public String title;
@@ -1127,6 +1144,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"id", "time", "count"})
     public static final class DPUnreadCount {
         @Index(0)
         public int id;
@@ -1157,6 +1175,7 @@ public class DpMsgDefine {
      */
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"beginTime", "limit", "asc"})
     public static final class V3DateListReq {
         @Index(0)
         public int beginTime;
@@ -1180,6 +1199,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"cid", "time", "msgType", "regionType", "fileName", "desc", "url"})
     public static class DPShareItem extends BaseDataPoint {
         @Index(0)
         public String cid;
@@ -1253,6 +1273,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"upgrade"})
     public static class DPBaseUpgradeStatus extends BaseDataPoint {
         @Index(0)
         public int upgrade;
@@ -1290,7 +1311,8 @@ public class DpMsgDefine {
     }
 
     @Message
-    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY, with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY})
+    @JsonPropertyOrder(value = {"recordEnable"})
     public static class DPAutoRecordWatcher extends BaseDataPoint {
         @Index(0)
         public boolean recordEnable;
@@ -1333,6 +1355,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"x", "y", "r", "w", "h"})
     public static class DpCoordinate extends BaseDataPoint {
         @Index(0)
         public int x;
@@ -1387,6 +1410,7 @@ public class DpMsgDefine {
 
     @Message
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder(value = {"enable", "startTime", "endTime"})
     public static final class BellDeepSleep extends BaseDataPoint {
         @Index(0)
         public boolean enable;

@@ -505,4 +505,5 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     }
                 }, e -> AppLogger.d(e.getMessage()));
     }
+
 }

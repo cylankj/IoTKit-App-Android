@@ -204,6 +204,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         boolean enableAI = property.hasProperty(device.pid, "AI_RECOGNITION");//todo 暂时还没有定义该字段
         boolean warmInterval = property.hasProperty(device.pid, "INTERVAL_ALARM");//todo 暂时还没有定义该字段
 
+        int pid = device.pid;
+        if (pid == 10 || pid == 18 || pid == 36 || pid == 37 || pid == 4 || pid == 5 || pid == 7 || pid == 17) {
+            warmInterval = false;
+        }
+
         tvMotionDetectionTitle.setVisibility(protection ? View.VISIBLE : View.GONE);
         flProtectionTitle.setVisibility(protection && show ? View.VISIBLE : View.GONE);
 
@@ -263,12 +268,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     int sec = warnInterval / 60;
                     swMotionInterval.setTvSubTitle(sec > 0 ? "" + sec + getString(R.string.MINUTE_Cloud) : "30" + getString(R.string.REPEAT_TIME));
 
-                    int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{});
-                    if (objectDetect == null || objectDetect.length == 0) {
+                    List<Integer> objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new ArrayList<>());
+                    if (objectDetect == null || objectDetect.size() == 0) {
                         //未开启 AI 识别
                         swMotionAI.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
                     } else {
-                        swMotionAI.setTvSubTitle(JConstant.getAIText(objectDetect));
+                        Integer[] array = objectDetect.toArray(new Integer[2]);
+                        swMotionAI.setTvSubTitle(JConstant.getAIText(array));
                     }
 
                 }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));

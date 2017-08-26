@@ -49,7 +49,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public static BoxStore getBoxStore() {
         return boxStore;
     }
-
+//
     public static Box<PropertyItem> getPropertyItemBox() {
         return propertyItemBox;
     }
@@ -62,7 +62,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         //这是主进程
-
+//
         boxStore = MyObjectBox.builder().androidContext(this).build();
         propertyItemBox = boxStore.boxFor(PropertyItem.class);
         deviceBox = boxStore.boxFor(Device.class);
