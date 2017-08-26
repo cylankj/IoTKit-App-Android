@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -657,9 +658,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 standby.led = isChecked ? ledPreState() : standby.led;//开启待机,保存之前状态到standby.关闭待机,从standby中恢复.
                 standby.autoRecord = isChecked ? autoRecordPreState() : standby.autoRecord;
                 standby.alarmEnable = isChecked ? alarmPreState() : standby.alarmEnable;
+                standby.msgId = 508;
                 List<DataPoint> list = new ArrayList<>();
-                dpStandby.msgId = 508;
-                list.add(dpStandby);
+                list.add(standby);
                 list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.led, ID_209_LED_INDICATOR));
                 list.add(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
                 list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
@@ -892,7 +893,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             ////////////////////////////autoRecord////////////////////////////////////////
             svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
             svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby && (!is720 || !apNet) ? 1.0f : 0.6f);
-            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+            if (productProperty.hasProperty(device.pid, "24RECORD")) {
+                svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+            }
             svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
 //            svSettingDeviceAutoRecord.setAlpha(apNet ? 0.5f : 1f);
         } else {
@@ -903,19 +906,22 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         //清空呼叫记录设置 ,只有门铃才有清空呼叫记录
         svSettingDeviceClearRecord.setVisibility(productProperty.hasProperty(device.pid, "EMPTIED") ? View.VISIBLE : View.GONE);
 
-        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+//        if (productProperty.hasProperty(device.pid, "VIDEO")) {
+////            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
+////             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
 //            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
-//             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-            svSettingDeviceAutoRecord.setVisibility(View.GONE);
-//            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
-//            ////////////////////////显示红点//////////////////////////////////////////////
-//            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
-//            ////////////////////////////autoRecord////////////////////////////////////////
-//            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
-//            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
-//            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
-//            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
-        }
+//            Boolean aBoolean = device.$(305, false);
+////            svSettingDeviceAutoRecord.setTvSubTitle(aBoolean ? getString(R.string.ON) : getString(R.string.OFF));
+//
+////            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+////            ////////////////////////显示红点//////////////////////////////////////////////
+////            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
+////            ////////////////////////////autoRecord////////////////////////////////////////
+////            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
+////            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
+////            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+////            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
+//        }
 //        else {
 //            svSettingDeviceAutoRecord.setVisibility(View.GONE);
 //        }
@@ -950,8 +956,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     svSettingDeviceDetail.setTvSubTitle(statusContent, R.color.color_8c8c8c);
 //                    }
                     //自动录像显示.
-                    DpMsgDefine.DPStandby standby = basePresenter.getDevice().$(508, new DpMsgDefine.DPStandby());
-                    svSettingDeviceAutoRecord.setTvSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+                    Device device = DataSourceManager.getInstance().getDevice(uuid);
+                    if (PropertiesLoader.getInstance().hasProperty(device.pid, "24RECORD")) {//只有有24小时录像选项才显示子标题
+                        DpMsgDefine.DPStandby standby = basePresenter.getDevice().$(508, new DpMsgDefine.DPStandby());
+                        svSettingDeviceAutoRecord.setTvSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+                    }
                 }
                 break;
             case DpMsgMap.ID_223_MOBILE_NET:
@@ -993,6 +1002,23 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
                 LoadingDialog.dismissLoading();
                 break;
+            case 305:
+
+//                try {
+//                    Boolean enable = DpUtils.unpackData(msg.packValue, boolean.class);
+//                    if (enable == null) enable = false;
+//                    svSettingDeviceAutoRecord.setTvSubTitle(enable ? getString(R.string.ON) : getString(R.string.OFF));
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    try {
+//                    } catch (Exception e1) {
+//                        e1.printStackTrace();
+//                    }
+//                }
+                //不显示
+                break;
+
         }
     }
 
@@ -1022,7 +1048,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingSafeProtection.setTvSubTitle(open ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
 
         svSettingDeviceAutoRecord.setEnabled(!open);
-        svSettingDeviceAutoRecord.setTvSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+        if (PropertiesLoader.getInstance().hasProperty(device.pid, "24RECORD")) {
+            svSettingDeviceAutoRecord.setTvSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
+        }
 
         boolean led = !open && dpStandby.led;
         svSettingDeviceLedIndicator.setEnabled(!open);

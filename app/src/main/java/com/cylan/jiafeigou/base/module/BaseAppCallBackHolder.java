@@ -72,7 +72,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
 
-        CacheHolderKt.saveDevices(jfgDevices);
+//        CacheHolderKt.saveDevices(jfgDevices);
     }
 
     @Override
@@ -221,7 +221,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
 
         /*过渡性使用,将来会废弃*/
-//        CacheHolderKt.saveProperty(s, arrayList, null);
+        CacheHolderKt.saveProperty(s, arrayList, null);
     }
 
     @Override

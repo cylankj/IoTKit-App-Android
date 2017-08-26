@@ -42,7 +42,7 @@
                 android:layout_marginEnd="@dimen/y17"
                 android:layout_toStartOf="@+id/imgv_toolbar_right"
                 android:padding="@dimen/y5"
-                android:src="@drawable/icon_news"
+                android:src="@drawable/icon_news_selector"
                 app:t_border_color="@color/color_white"
                 app:t_border_width="@dimen/y1"
                 app:t_point_color="@color/color_red_dot_f43531"

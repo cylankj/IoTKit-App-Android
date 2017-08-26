@@ -44,7 +44,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
-import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -279,17 +278,21 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onPause() {
         super.onPause();
-        basePresenter.saveHotSeatState();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+//        basePresenter.saveHotSeatState();
         enableSensor(false);
         if (basePresenter != null)
             basePresenter.stopPlayVideo(true).subscribe(ret -> {
             }, AppLogger::e);
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        enableSensor(false);
+//        if (basePresenter != null)
+//            basePresenter.stopPlayVideo(true).subscribe(ret -> {
+//            }, AppLogger::e);
+//    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {

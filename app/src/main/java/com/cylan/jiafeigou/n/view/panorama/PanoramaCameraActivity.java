@@ -430,18 +430,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
-        setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
-//        setting.setEnabled(false);
-        onRefreshViewModeUI(panoramaViewMode, false, false);
-        onRefreshControllerView(false, true);
-        updateHint();
-//        setting.setEnabled(true);
-        preNetType = -1;
-        int netType = NetUtils.getNetType(this);
-        //不保存值到 sp 中了,只保存页面变量
-//        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
-//        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
-        onRefreshConnectionMode(netType);
+
 //        }
     }
 
@@ -465,6 +454,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onResume() {
         super.onResume();
+        setting.setShowDot(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
+//        setting.setEnabled(false);
+        onRefreshViewModeUI(panoramaViewMode, false, false);
+        onRefreshControllerView(false, true);
+        updateHint();
+//        setting.setEnabled(true);
+        preNetType = -1;
+        int netType = NetUtils.getNetType(this);
+        //不保存值到 sp 中了,只保存页面变量
+//        boolean alertMobile = netType == ConnectivityManager.TYPE_MOBILE && PreferencesUtils.getBoolean(JConstant.ALERT_MOBILE, true);
+//        if (!hasNetSetting) {//fragment 和 activity 会同时调用生命周期方法我们的播放逻辑必须在当前没有 fragment 的情况下进行
+        onRefreshConnectionMode(netType);
         if (surfaceView != null) {
             surfaceView.onResume();
         }
@@ -474,7 +475,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
-        preNetType = -1;
 //        presenter.dismiss();
     }
 
@@ -484,6 +484,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (surfaceView != null) {
             surfaceView.onPause();
         }
+        presenter.cancelViewer();
+        preNetType = -1;
     }
 
     @Override
@@ -774,6 +776,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onShowNewMsgHint() {
         ivt_newMessageTips.setShowDot(true);
+    }
+
+    @Override
+    public void onDeviceOnLine() {
+        upgrading = false;
+//        if (upgrading || !presenter.getLiveAction().hasStarted) {
+        onRefreshConnectionMode(-1);
+//        }
     }
 
     public void onDeviceUpgrade() {

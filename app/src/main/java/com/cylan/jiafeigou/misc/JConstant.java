@@ -21,7 +21,7 @@ public class JConstant {
      * {@link NewHomeActivity}底部menu对应的FrameLayout的id。用来存放每日精彩的时间控件
      */
 
-    public static final String CYLAN_TAG="CYLAN_TAG";
+    public static final String CYLAN_TAG = "CYLAN_TAG";
 
 
     public static final String KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID = "new_home_menu_id";
@@ -164,13 +164,13 @@ public class JConstant {
     public static final int OBJECT_CAR = 4;
 
 
-    public static String getAIText(int[] objects) {
+    public static String getAIText(Integer[] objects) {
         StringBuilder result = new StringBuilder();
 
         if (objects != null) {
             int length = objects.length;
             for (int i = 0; i < length; i++) {
-                int obj = objects[i];
+                int obj = objects.length;
                 switch (obj) {
                     case JConstant.OBJECT_MAN: {
                         result.append(ContextUtils.getContext().getString(R.string.AI_HUMAN));

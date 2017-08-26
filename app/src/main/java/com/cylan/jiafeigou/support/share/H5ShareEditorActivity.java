@@ -305,6 +305,7 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     @Override
     public void onCancel(SHARE_MEDIA share_media) {
         AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
-        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
+//        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
+        onResult(share_media);
     }
 }

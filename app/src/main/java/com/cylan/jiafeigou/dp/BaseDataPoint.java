@@ -3,9 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.cylan.jiafeigou.server.cache.CacheHolderKt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -34,12 +32,13 @@ public abstract class BaseDataPoint implements Parcelable, DataPoint {
 
 
     public byte[] toBytes() {
-        try {
-            return CacheHolderKt.getObjectMapper().get().writeValueAsBytes(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        byte[] bytes;
+        if (this instanceof DpMsgDefine.DPPrimary) {
+            bytes = DpUtils.pack(((DpMsgDefine.DPPrimary) this).value);
+        } else {
+            bytes = DpUtils.pack(this);
         }
-        return new byte[]{0};
+        return bytes == null ? new byte[]{0} : bytes;
     }
 
     public BaseDataPoint() {

@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
@@ -226,6 +227,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     notifyBatteryLow = true;
                                 }
                                 AppLogger.e("battery:" + battery);
+                            } else if (msg.id == 201) {
+                                DpMsgDefine.DPNet dpNet = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPNet.class);
+
+                                if (dpNet != null && dpNet.net > 0) {
+                                    mView.onDeviceOnLine();
+                                }
                             }
                         }
                     } catch (Exception e) {
