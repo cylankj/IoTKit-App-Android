@@ -40,7 +40,7 @@
     },
     {
       "id": "2:9164031478013509112",
-      "lastPropertyId": "6:4269561978506070274",
+      "lastPropertyId": "7:6758092930486909482",
       "name": "PropertyItem",
       "properties": [
         {
@@ -60,7 +60,7 @@
           "name": "value"
         },
         {
-          "id": "6:4269561978506070274",
+          "id": "7:6758092930486909482",
           "name": "msgId"
         }
       ]
@@ -92,7 +92,8 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    5049453544620017542
+    5049453544620017542,
+    4269561978506070274
   ],
   "version": 1
 }
