@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.dp.BaseDataPoint
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
-import com.cylan.jiafeigou.server.VersionHeader
+//import com.cylan.jiafeigou.server.VersionHeader
 import com.cylan.jiafeigou.server.VersionValue
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -89,7 +89,7 @@ class PropertyItem(@Id(assignable = true)
     fun <T : Any> cast(defaultValue: T): T = try {
         when (defaultValue) {
             is VersionValue -> VersionValue(value).apply { this.version = version }
-            is VersionHeader -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as VersionHeader).version = version }
+//            is VersionHeader -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as VersionHeader).version = version }
             is DpMsgDefine.DPPrimary<*> -> DpMsgDefine.DPPrimary(value)
             is BaseDataPoint -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { val v = (this as BaseDataPoint);v.version = version;v.msgId = msgId }
             else -> value
