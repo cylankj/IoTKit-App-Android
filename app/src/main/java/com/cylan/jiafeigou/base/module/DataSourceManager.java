@@ -118,58 +118,57 @@ public class DataSourceManager implements JFGSourceManager {
 
     public void initFromDB() {//根据需要初始化
 
-        // TODO: 2017/8/25 不再需要 init了
-//        dbHelper.getActiveAccount()
-//                .observeOn(Schedulers.io())
-//                .filter(account -> account != null)
-//                .map(dpAccount -> {
-//                    account = dpAccount;
-//                    int anInt = PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_NONE);
-//                    if (anInt == LogState.STATE_ACCOUNT_ON) {
-//                        account.setOnline(true);
-//                    } else {
-//                        account.setOnline(false);
-//                    }
-//                    return account;
-//                })
-//                .map(dpAccount -> {
-//                    RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
-//                    accountArrived.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
-//                    getCacheInstance().postSticky(accountArrived);
-//                    AppLogger.d("正在从数据库初始化...");
-//                    return dpAccount;
-//                })
-//                .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
-//                .flatMap(Observable::from)
-//                .map(device -> {
-//                    DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
-//                    mCachedDeviceMap.put(device.getUuid(), device);
-//                    rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
-//                    return device;
-//                })
-//                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
-//                        .map(ret -> {
-//                            if (ret != null) {
-//                                DataPoint dataPoint;
-//                                for (DPEntity dpEntity : ret) {
-//                                    dataPoint = propertyParser.parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
-//                                    dpEntity.setValue(dataPoint, dpEntity.getBytes(), dpEntity.getVersion());
-//                                    device.updateProperty(dpEntity.getMsgId(), dpEntity);
-//                                }
-//                            }
-//                            return ret;
-//                        }))
-//                .doOnCompleted(() -> {
-//                    Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
-//                    getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
-////                    queryForwardInformation();
-//                })
-//                .subscribe(ret -> {
-//                }, e -> {
-//                    //减少不必要的崩溃
-//                    AppLogger.e(e.getMessage());
-//                    e.printStackTrace();
-//                });
+        dbHelper.getActiveAccount()
+                .observeOn(Schedulers.io())
+                .filter(account -> account != null)
+                .map(dpAccount -> {
+                    account = dpAccount;
+                    int anInt = PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_NONE);
+                    if (anInt == LogState.STATE_ACCOUNT_ON) {
+                        account.setOnline(true);
+                    } else {
+                        account.setOnline(false);
+                    }
+                    return account;
+                })
+                .map(dpAccount -> {
+                    RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
+                    accountArrived.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
+                    getCacheInstance().postSticky(accountArrived);
+                    AppLogger.d("正在从数据库初始化...");
+                    return dpAccount;
+                })
+                .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
+                .flatMap(Observable::from)
+                .map(device -> {
+                    DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
+                    mCachedDeviceMap.put(device.getUuid(), device);
+                    rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
+                    return device;
+                })
+                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
+                        .map(ret -> {
+                            if (ret != null) {
+                                DataPoint dataPoint;
+                                for (DPEntity dpEntity : ret) {
+                                    dataPoint = propertyParser.parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
+                                    dpEntity.setValue(dataPoint, dpEntity.getBytes(), dpEntity.getVersion());
+                                    device.updateProperty(dpEntity.getMsgId(), dpEntity);
+                                }
+                            }
+                            return ret;
+                        }))
+                .doOnCompleted(() -> {
+                    Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
+                    getCacheInstance().post(new RxEvent.DevicesArrived(getAllDevice()));
+//                    queryForwardInformation();
+                })
+                .subscribe(ret -> {
+                }, e -> {
+                    //减少不必要的崩溃
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     @Override
