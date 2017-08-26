@@ -269,10 +269,10 @@ public class DataSourceManager implements JFGSourceManager {
     public Device getDevice(String uuid) {
         Device device = mCachedDeviceMap == null || TextUtils.isEmpty(uuid) ? new Device() : mCachedDeviceMap.get(uuid);
 
-        if (device == null) {
-            com.cylan.jiafeigou.server.cache.Device device1 = BaseApplication.getDeviceBox().get(Long.parseLong(uuid));
-            device = device1 == null ? null : device1.cast();
-        }
+//        if (device == null) {
+//            com.cylan.jiafeigou.server.cache.Device device1 = BaseApplication.getDeviceBox().get(Long.parseLong(uuid));
+//            device = device1 == null ? null : device1.cast();
+//        }
 
         if (device == null) {
             device = new Device();
@@ -283,18 +283,18 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public List<Device> getAllDevice() {
-        if (mCachedDeviceMap == null || mCachedDeviceMap.size() == 0) {
-            List<com.cylan.jiafeigou.server.cache.Device> devices = BaseApplication.getDeviceBox().getAll();
-            rawDeviceOrder.clear();
-            if (devices != null) {
-                for (int i = 0; i < devices.size(); i++) {
-                    com.cylan.jiafeigou.server.cache.Device device = devices.get(i);
-
-                    rawDeviceOrder.add(new Pair<>(i, String.valueOf(device.getUuid())));
-                    mCachedDeviceMap.put(String.valueOf(device.getUuid()), device.cast());
-                }
-            }
-        }
+//        if (mCachedDeviceMap == null || mCachedDeviceMap.size() == 0) {
+//            List<com.cylan.jiafeigou.server.cache.Device> devices = BaseApplication.getDeviceBox().getAll();
+//            rawDeviceOrder.clear();
+//            if (devices != null) {
+//                for (int i = 0; i < devices.size(); i++) {
+//                    com.cylan.jiafeigou.server.cache.Device device = devices.get(i);
+//
+//                    rawDeviceOrder.add(new Pair<>(i, String.valueOf(device.getUuid())));
+//                    mCachedDeviceMap.put(String.valueOf(device.getUuid()), device.cast());
+//                }
+//            }
+//        }
 
         Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
         List<Device> result = new ArrayList<>(rawDeviceOrder.size());
