@@ -92,7 +92,7 @@ class PropertyItem(@Id(assignable = true)
 //            is VersionHeader -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { (this as VersionHeader).version = version }
             is DpMsgDefine.DPPrimary<*> -> DpMsgDefine.DPPrimary(value)
             is BaseDataPoint -> objectMapper.get().convertValue(value, defaultValue::class.java).apply { val v = (this as BaseDataPoint);v.version = version;v.msgId = msgId }
-            else -> value as?T ?: defaultValue
+            else -> if (defaultValue::class.java.isInstance(value)) value else defaultValue
         } as T
     } catch (e: Exception) {
         Log.e(JConstant.CYLAN_TAG, e.message)
