@@ -322,7 +322,7 @@ public class ViewUtils {
      * @param c
      * @return
      */
-    private static boolean isChineseChar(char c) {
+    public static boolean isChineseChar(char c) {
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
         return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS;
 //                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
@@ -331,6 +331,21 @@ public class ViewUtils {
 //                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
 //                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
 //                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
+    }
+
+    public static InputFilter excludeChineseFilter() {
+        return (CharSequence source, int start, int end,
+                Spanned dest, int dstart, int dend) -> {
+            if (source.equals(" ")) return "";
+            for (int i = start; i < end; i++) {
+                if (isChineseChar(source.charAt(i))) {
+                    return "";
+                } else if (source.equals(" ")) {
+                    return "";
+                }
+            }
+            return null;
+        };
     }
 
     public static void forceOpenSoftKeyboard(Context context) {

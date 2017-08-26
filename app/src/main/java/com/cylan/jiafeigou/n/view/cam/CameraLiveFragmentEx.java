@@ -343,7 +343,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (basePresenter != null) {
             if (!judge() || basePresenter.getLiveStream().playState == PLAY_STATE_STOP)
                 return;//还没开始播放
-            basePresenter.restoreHotSeatState();
+//            basePresenter.restoreHotSeatState();
         }
     }
 

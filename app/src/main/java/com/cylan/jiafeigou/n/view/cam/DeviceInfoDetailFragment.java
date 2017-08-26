@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -154,7 +156,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) return;
         //是否分享设备
-        if (!TextUtils.isEmpty(device.shareAccount)&&!JFGRules.isPan720(device.pid)) {//todo 720 分享者享有所有权限
+        if (!TextUtils.isEmpty(device.shareAccount) && !JFGRules.isPan720(device.pid)) {//todo 720 分享者享有所有权限
             tvDeviceAlias.showDivider(false);
             tvDeviceTimeZone.setVisibility(View.GONE);
             tvDeviceSdcardState.setVisibility(View.GONE);
@@ -369,6 +371,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 //        if (editDialogFragment.isVisible())
 //            return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
+        editDialogFragment.setDefaultFilter(new InputFilter[]{
+                new InputFilter.LengthFilter(24)
+        });
         editDialogFragment.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
