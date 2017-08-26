@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.cache.db.module;
 import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -117,7 +118,7 @@ public class Device extends BasePropertyHolder<Device> {
     @Override
     public DPEntity getProperty(int msgId) {
         DPEntity entity = super.getProperty(msgId);
-        if (entity == null && propertyParser.accept(this.pid, msgId)) {
+        if (entity == null && BasePropertyParser.getInstance().accept(this.pid, msgId)) {
             entity = getEmptyProperty(msgId);
             properties.put(msgId, entity);
         }
