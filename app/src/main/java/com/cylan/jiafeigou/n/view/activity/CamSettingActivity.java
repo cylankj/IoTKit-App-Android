@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.SdcardDetailActivity;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.badge.Badge;
 import com.cylan.jiafeigou.support.badge.TreeNode;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -70,6 +71,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -83,7 +86,7 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 @Badge(parentTag = "CameraLiveActivity")
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
-        implements CamSettingContract.View {
+        implements CamSettingContract.View, DataObserver<List<PropertyItem>> {
 
     private static final int REQ_DELAY_RECORD = 122;
     @BindView(R.id.sv_setting_device_detail)
@@ -139,6 +142,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     //    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
 //    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
     private SimpleDialogFragment mClearRecordFragment;
+    private DataSubscription observer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +167,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean http = JFGRules.isPan720(device.pid);
         if (http) BaseDeviceInformationFetcher.getInstance().init(uuid);
+
+
+//        observer = BaseApplication.getPropertyItemBox().query()
+//                .equal(PropertyItem_.uuid, Long.parseLong(uuid))
+//                .in(PropertyItem_.msgId, new int[]{})
+//                .build().subscribe().observer(this);
     }
 
     private void initProductLayout(Device device) {
@@ -192,6 +202,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     protected void onStart() {
         super.onStart();
         initBackListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (observer != null && !observer.isCanceled()) {
+            observer.cancel();
+            observer = null;
+        }
     }
 
     private void initBackListener() {
@@ -1137,5 +1156,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (requestCode == REQ_DELAY_RECORD) {
 
         }
+    }
+
+    @Override
+    public void onData(List<PropertyItem> propertyItems) {
+        Log.i(JConstant.CYLAN_TAG, "数据库数据发生了变化,需要更新显示");
     }
 }

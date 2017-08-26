@@ -168,12 +168,20 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     }
 
     private void onSwitcherModeMotion(CompoundButton button, boolean checked) {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (checked) {
-            if (!hasSdcard()) {//先提示没有 sd卡再提示关闭移动侦测
+            if (status == null || !status.hasSdcard) {//先提示没有 sd卡再提示关闭移动侦测
                 ToastUtil.showToast(getString(R.string.has_not_sdcard));
                 siv_mode_motion.setChecked(false);
                 return;
             }
+
+            if (status.err != 0) {
+                ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
+                siv_mode_motion.setChecked(false);
+            }
+
             if (!alarmDisable()) {
                 siv_mode_motion.setChecked(false);
                 openAlarm(0);

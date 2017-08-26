@@ -814,6 +814,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mediaPlayer = null;
         }
         finishExt();
+        if (isTaskRoot()) {
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -871,6 +876,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void playSoundEffect() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.release();
+        }
         mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
