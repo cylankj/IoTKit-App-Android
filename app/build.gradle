@@ -367,6 +367,8 @@ dependencies {
     kapt "io.objectbox:objectbox-processor:$objectBoxVersion"
     kapt "com.android.databinding:compiler:2.3.3"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+    //youtube-live-api
+    compile 'com.google.api-client:google-api-client:1.22.0'
 }
 
 /////////////////编译过滤器/////////////////////////////////
