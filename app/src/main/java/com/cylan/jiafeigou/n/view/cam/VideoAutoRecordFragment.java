@@ -157,7 +157,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (property.hasProperty(device.pid, "VIDEO")) {
             rlAlarmSettingContainer.setVisibility(View.GONE);
             rlWatchVideoContainer.setVisibility(View.VISIBLE);
-            DpMsgDefine.DPAutoRecordWatcher recordWatcher = device.$(305, new DpMsgDefine.DPAutoRecordWatcher(false));
+            boolean recordWatcher = device.$(305, false);
             onRecordWatcherSync(recordWatcher);
         } else {
             rlAlarmSettingContainer.setVisibility(View.VISIBLE);
@@ -189,13 +189,13 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private void clickWatchVideoSwitcher(CompoundButton button, boolean checked) {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (checked && !status.hasSdcard) {
+        if (checked && (!status.hasSdcard || status.err != 0)) {
             ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
             button.setChecked(false);
             return;
         }
         AppLogger.d("开启自动录像:" + checked);
-        basePresenter.updateInfoReq(new DpMsgDefine.DPAutoRecordWatcher(checked), 305);
+        basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(checked), 305);
     }
 
     @Override
@@ -327,14 +327,14 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
      */
     @Override
     public void onSDCardSync(DpMsgDefine.DPSdStatus status) {
-        if (!status.hasSdcard) {
+        if (!hasSdcard()) {
             sivWatchVideoSwitcher.setChecked(false, false);
-//            sivWatchVideoSwitcher.setCheckEnable(false);
         }
+//            sivWatchVideoSwitcher.setCheckEnable(false);
     }
 
     @Override
-    public void onRecordWatcherSync(DpMsgDefine.DPAutoRecordWatcher recordWatcher) {
-        sivWatchVideoSwitcher.setChecked(recordWatcher.recordEnable);
+    public void onRecordWatcherSync(boolean recordWatcher) {
+        sivWatchVideoSwitcher.setChecked(recordWatcher && hasSdcard(), false);
     }
 }
