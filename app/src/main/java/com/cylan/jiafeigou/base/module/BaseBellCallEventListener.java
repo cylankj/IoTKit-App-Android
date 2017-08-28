@@ -34,10 +34,10 @@ public class BaseBellCallEventListener {
     private String caller = null;
 
     public static BaseBellCallEventListener getInstance() {
-        if (instance==null){
-            synchronized(BaseBellCallEventListener.class){
-                if (instance==null){
-                    instance= new BaseBellCallEventListener(ContextUtils.getContext());
+        if (instance == null) {
+            synchronized (BaseBellCallEventListener.class) {
+                if (instance == null) {
+                    instance = new BaseBellCallEventListener(ContextUtils.getContext());
                 }
             }
         }
@@ -68,7 +68,10 @@ public class BaseBellCallEventListener {
         //2、在直播界面查看直播时不拉起呼叫页面，在查看历史录像时拉起呼叫页面。
         if (TextUtils.equals(callEvent.caller.cid, caller)) return;
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, callEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, callEvent.caller.time);

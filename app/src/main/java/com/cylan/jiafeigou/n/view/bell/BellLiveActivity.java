@@ -179,6 +179,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //                handlePortClick();
 //            }
 //        });
+
+        newCall();
     }
 
     @OnClick(R.id.act_bell_live_back)
@@ -269,10 +271,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-//        setIntent(intent);//直接無視新的呼叫
-//        newCall();
-        parse(intent);
+//        super.onNewIntent(intent);
+////        setIntent(intent);//直接無視新的呼叫
+////        newCall();
+//        finish();
+//        startActivity(intent);
+//        parse(intent);
     }
 
     private void parse(Intent intent) {
@@ -301,7 +305,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 ////        setNormalBackMargin();
 ////        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
 ////        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
-        newCall();
+
     }
 
     @Override
@@ -343,11 +347,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             AppLogger.d("finish manually");
 
             presenter.cancelViewer();
-        } else {
-            //            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-            finish();
         }
+//        else {
+//            finish();
+//        }
         muteAudio(false);
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
     }
 
     @Override
