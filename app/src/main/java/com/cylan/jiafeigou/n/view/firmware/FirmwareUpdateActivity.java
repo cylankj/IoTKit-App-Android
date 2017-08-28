@@ -395,7 +395,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         for (int i = 0; i < count; i++) {
             DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(binVersion.getList().get(i).url);
             if (info != null) {
-                fileNameList.add(info.getTargetPath());
+                fileNameList.add(info.getFileName());
             }
         }
         return fileNameList;

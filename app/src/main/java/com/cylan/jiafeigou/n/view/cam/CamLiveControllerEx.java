@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -367,7 +368,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
                         if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
                             ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                            rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+                            ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
+                            rbViewModeSwitchParent.setVisibility(VISIBLE);
                         }
                     });
         } else if ("0".equals(dpPrimary)) {
@@ -375,7 +377,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
 //                ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+                ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
+                rbViewModeSwitchParent.setVisibility(VISIBLE);
             }
 
         } else if ("1".equals(dpPrimary) && !JFGRules.hasViewAngle(device.pid)) {
@@ -385,7 +388,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
                 ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
                 if (rbViewModeSwitchParent.getCheckedRadioButtonId() == -1) {
-                    rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+                    ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
+                    rbViewModeSwitchParent.setVisibility(VISIBLE);
+
+//                    rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
                 }
             }
             AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
@@ -393,9 +399,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
             VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
             if (videoView != null && videoView instanceof Panoramic360ViewRS && rbViewModeSwitchParent.getVisibility() == VISIBLE) {
-
                 ((Panoramic360ViewRS) videoView).setMountMode(Panoramic360ViewRS.MountMode.TOP);
-                rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
+                ((RadioButton) rbViewModeSwitchParent.findViewById(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()))).setChecked(true);
+                rbViewModeSwitchParent.setVisibility(VISIBLE);
             }
         }
 //        try {
@@ -407,6 +413,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     private void switchViewMode(RadioGroup radioGroup, int checkId) {
+        ((RadioButton) radioGroup.findViewById(checkId)).setChecked(true);
         VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
         switch (checkId) {
             case R.id.rb_view_mode_circular:

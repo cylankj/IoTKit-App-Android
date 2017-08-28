@@ -863,6 +863,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onRefreshConnectionMode(int connectionType) {//1:mobile,0:wifi
+        if (upgrading) return;
+
         bannerSwitcher.setVisibility(View.VISIBLE);
         cameraUpgrading.setVisibility(View.GONE);
         Device device = sourceManager.getDevice(uuid);

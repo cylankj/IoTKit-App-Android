@@ -517,7 +517,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (justSend) {
                 intent.putExtra(JUST_SEND_INFO, uuid);
             }
-            intent.putExtra("just_config", true);
+//            intent.putExtra("just_config", true);
             intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
 
@@ -527,7 +527,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (justSend) {
                 intent.putExtra(JUST_SEND_INFO, uuid);
             }
-            intent.putExtra("just_config", true);
+//            intent.putExtra("just_config", true);
             intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
             startActivity(intent);
         } else {
@@ -538,6 +538,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 intent.putExtra("PanoramaConfigure", "Family");
                 if (justSend) {
                     intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
+                }
+                if (JFGRules.isPan720(device.pid)) {
+                    intent.putExtra("just_config", true);
                 }
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 startActivity(intent);

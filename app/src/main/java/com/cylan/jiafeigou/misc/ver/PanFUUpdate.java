@@ -121,7 +121,7 @@ public class PanFUUpdate extends BaseFUUpdate {
     private void prepareSending(String remoteIp, int port) {
         String localIp = NetUtils.getReadableIp();
         //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
-        String localUrl = "http://" + localIp + ":8765" + getWiredContent();
+        String localUrl = "http://" + localIp + ":8765/" + getWiredContent();
         AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
         if (listener != null) listener.upgradeStart();
         resetRspRecv(true);
