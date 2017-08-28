@@ -300,8 +300,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         if (TextUtils.equals(tvCurrentVersion.getText(), tvNewVersionName.getText())) {
             //相同版本
             ToastUtil.showToast(getString(R.string.NEW_VERSION));
-//            return false;
-            return true;//mock¬
+            return false;
+//            return true;//mock¬
         }
         String deviceMac = device.$(202, "");
         String routMac = NetUtils.getRouterMacAddress();
@@ -345,13 +345,13 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             if (!checkEnv()) return;
             //2.电量
             int battery = basePresenter.getDevice().$(206, 0);
-//            if (battery <= 30) {
-//                AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Firmware_DataTips),
-//                        "设备电量低于30%，无法更新，请先充足电后重试!",
-//                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
-//                        }, false);
-////                return;
-//            }
+            if (battery <= 30) {
+                AlertDialogManager.getInstance().showDialog(this, FirmwareUpdateActivity.class.getSimpleName(),
+                        getString(R.string.Tap1_Update_Electricity),
+                        getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        }, false);
+                return;
+            }
             //开始升级
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(getUuid());
             BaseFUUpdate update = ClientUpdateManager.getInstance().getUpdatingTask(getUuid());
