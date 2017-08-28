@@ -273,8 +273,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         //未开启 AI 识别
                         swMotionAI.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
                     } else {
-                        Integer[] array = objectDetect.toArray(new Integer[2]);
-                        swMotionAI.setTvSubTitle(JConstant.getAIText(array));
+                        swMotionAI.setTvSubTitle(JConstant.getAIText(objectDetect));
                     }
 
                 }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
@@ -378,20 +377,16 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 AIRecognitionFragment aiRecognitionFragment = AIRecognitionFragment.newInstance(uuid);
                 aiRecognitionFragment.setCallBack(result -> {
                     swMotionAI.showRedHint(false);
-                    if (result instanceof int[]) {
-                        int[] select = (int[]) result;
-                        int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{});
+                    if (result instanceof List) {
+                        List<Integer> select = (List<Integer>) result;
+                        List<Integer> objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new ArrayList<>());
 
-                        List<Integer> list1 = new ArrayList<>(objectDetect.length);
-                        List<Integer> list2 = new ArrayList<>(select.length);
+                        List<Integer> list1 = new ArrayList<>(objectDetect.size());
+                        List<Integer> list2 = new ArrayList<>(select.size());
 
-                        for (int object : objectDetect) {
-                            list1.add(object);
-                        }
+                        list1.addAll(objectDetect);
+                        list2.addAll(select);
 
-                        for (int i : select) {
-                            list2.add(i);
-                        }
                         if (list1.size() != list2.size() || ListUtils.getDiff(list1, list2).size() != 0) {
                             objectDetect = select;
                             basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(objectDetect), DpMsgMap.ID_515_CAM_ObjectDetect);

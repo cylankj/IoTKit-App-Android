@@ -133,7 +133,7 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
 
     private void initObjectDetect() {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{});
+        ArrayList<Integer> objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new ArrayList<Integer>());
         if (objectDetect != null) {
             for (int object : objectDetect) {
                 itemAdapter.select(itemAdapter.getPosition(object));
@@ -160,11 +160,11 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
         super.onDetach();
         if (callBack != null) {
             Set<Integer> selections = itemAdapter.getSelections();
-            int[] result = new int[selections.size()];
 
-            Object[] objects = selections.toArray();
-            for (int i = 0; i < objects.length; i++) {
-                result[i] = itemAdapter.getItem((Integer) objects[i]).objType;
+
+            List<Integer> result = new ArrayList<>(selections.size());
+            for (Integer integer : selections) {
+                result.add(itemAdapter.getItem(integer).objType);
             }
             callBack.callBack(result);
         }

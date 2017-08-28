@@ -16,6 +16,7 @@ public class MediaPlayerManager {
     private MediaPlayer mediaPlayer;
     private int doorbellID;
 
+
     public static MediaPlayerManager getInstance() {
         if (instance == null) {
             synchronized (MediaPlayerManager.class) {
@@ -28,29 +29,25 @@ public class MediaPlayerManager {
     }
 
     private MediaPlayerManager() {
-        mediaPlayer = MediaPlayer.create(ContextUtils.getContext(), R.raw.doorbell_called);
 
     }
 
 
     public void play() {
-//        soundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> soundPool.play(sampleId, 1, 1, 1, -1, 1));
-//        soundPool.load(ContextUtils.getContext(), R.raw.doorbell_called, 1);
-
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.setVolume(0, 0);
-            mediaPlayer.stop();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
-        mediaPlayer.setVolume(1, 1);
+        mediaPlayer = MediaPlayer.create(ContextUtils.getContext(), R.raw.doorbell_called);
+        mediaPlayer.setLooping(true);
         mediaPlayer.start();
-
     }
 
     public void stop() {
-//        soundPool.stop(doorbellID);
-        if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.setVolume(0, 0);
-            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }

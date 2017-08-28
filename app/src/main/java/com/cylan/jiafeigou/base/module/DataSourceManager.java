@@ -746,19 +746,27 @@ public class DataSourceManager implements JFGSourceManager {
 
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
+
                         }
+
+                        List<PropertyItem> items = new ArrayList<>(value.size());
+                        for (T t : value) {
+                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
+                        }
+                        BaseApplication.getPropertyItemBox().put(items);
+
                         List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(AppLogger::e)
                                 .subscribe(ret -> {
-                                    if (ret.getResultCode() == 0) {
-                                        List<PropertyItem> items = new ArrayList<>(value.size());
-                                        for (T t : value) {
-                                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
-                                        }
-                                        BaseApplication.getPropertyItemBox().put(items);
-                                    }
+//                                    if (ret.getResultCode() == 0) {
+//                                        List<PropertyItem> items = new ArrayList<>(value.size());
+//                                        for (T t : value) {
+//                                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
+//                                        }
+//                                        BaseApplication.getPropertyItemBox().put(items);
+//                                    }
                                 }, AppLogger::e);
                     } catch (Exception e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));

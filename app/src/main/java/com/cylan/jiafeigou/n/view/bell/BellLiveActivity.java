@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -135,6 +136,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Inject
     JFGSourceManager sourceManager;
     private float ratio;
+
+    private boolean isAnswerd = false;
+    private boolean isSpeakerON = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -296,13 +301,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 ////        setNormalBackMargin();
 ////        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
 ////        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
-//        newCall();
+        newCall();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        newCall();
+
 //        hideStatusBar();
 //        if (mediaPlayer == null) {
 //
@@ -310,8 +315,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        if (mediaPlayer != null) {
 //            mediaPlayer.start();
 //        }
-        if (!presenter.getLiveAction().hasStarted && TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
+        if (!isAnswerd) {
             playSoundEffect();
+        } else {
+            presenter.startViewer();
         }
         landBack.setVisibility(isLand() ? View.VISIBLE : View.GONE);
         customToolbar.setVisibility(isLand() ? View.GONE : View.VISIBLE);
@@ -327,14 +334,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            mediaPlayer.release();
 //            mediaPlayer = null;
 //        }
+        onShowVideoPreviewPicture(BaseBellCallEventListener.getInstance().getUrl(uuid));
         MediaPlayerManager.getInstance().stop();
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
             AppLogger.d("finish manually");
-//            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+
             presenter.cancelViewer();
+        } else {
+            //            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+            finish();
         }
         muteAudio(false);
     }
@@ -342,13 +353,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStop() {
         super.onStop();
-//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-//            mediaPlayer.setVolume(0, 0);
-//            mediaPlayer.stop();
-//            mediaPlayer.release();
-//            mediaPlayer = null;
-//        }
-        MediaPlayerManager.getInstance().stop();
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
@@ -449,6 +453,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //                mediaPlayer.stop();
 //            }
             MediaPlayerManager.getInstance().stop();
+            isAnswerd = true;
             presenter.pickup();
         }
     }
@@ -510,6 +515,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (!presenter.checkAudio(1)) {
             presenter.switchMicrophone();
         }
+        if (isSpeakerON) {
+            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+        }
+
 //        if (isLanchFromBellCall) {
 //            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
 //        }
@@ -604,8 +613,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
-        presenter.switchSpeaker();
-
+        this.isSpeakerON = true;
+        if (presenter.getLiveAction().hasStarted && presenter.getLiveAction().hasResolution) {
+            presenter.switchSpeaker();
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
@@ -816,7 +827,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            mediaPlayer.release();
 //            mediaPlayer = null;
 //        }
-        MediaPlayerManager.getInstance().stop();
+//        MediaPlayerManager.getInstance().stop();
         finishExt();
         if (isTaskRoot()) {
             Intent intent = new Intent(this, NewHomeActivity.class);

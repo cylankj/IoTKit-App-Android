@@ -34,6 +34,13 @@ public class BaseBellCallEventListener {
     private String caller = null;
 
     public static BaseBellCallEventListener getInstance() {
+        if (instance==null){
+            synchronized(BaseBellCallEventListener.class){
+                if (instance==null){
+                    instance= new BaseBellCallEventListener(ContextUtils.getContext());
+                }
+            }
+        }
         return instance;
     }
 
