@@ -133,7 +133,7 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
 
     private void initObjectDetect() {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        ArrayList<Integer> objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new ArrayList<Integer>());
+        int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{0});
         if (objectDetect != null) {
             for (int object : objectDetect) {
                 itemAdapter.select(itemAdapter.getPosition(object));
