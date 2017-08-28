@@ -936,7 +936,7 @@
     <string name="Tap3_ShareDevice_Tips">该设备已到达最大分享数</string>
     <string name="Tap3_ShareDevice_ToContacts">分享给联系人</string>
     <string name="Tap3_ShareDevice_UnshareTips">是否取消分享？</string>
-    <string name="Tap3_Share_NoBindTips">使用分享设备需要绑定手机/邮箱</string>
+    <string name="Tap3_Share_NoBindTips">使用分享设备需要绑定手机</string>
     <string name="Tap3_TitleName">我的</string>
     <string name="Tap3_TitleName_Notice">通知</string>
     <string name="Tap3_Uploading">上传中&#8230;</string>

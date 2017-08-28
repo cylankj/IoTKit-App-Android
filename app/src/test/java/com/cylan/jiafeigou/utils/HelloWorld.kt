@@ -24,12 +24,13 @@ class HelloWorld {
 
         val bytes = mapper.writeValueAsBytes(header)
 
-        val (msgId, caller, callee, seq, body) = mapper.readValue(bytes, List::class.java)
-        val readValue = mapper.readValue(bytes, List::class.java)
-        var (a, b) = body as List<*>
+        val readValue1 = mapper.readValue(byteArrayOf(-108, 1, 2, 3, 4), Any::class.java)
+//        val readValue = mapper.readValue(bytes, List::class.java)
+//        var (a, b) = body as List<*>
+//
+//        print("$msgId ,$caller,$callee,$seq,$a , $b")
 
-        print("$msgId ,$caller,$callee,$seq,$a , $b")
-
+        println(readValue1)
 
     }
 
