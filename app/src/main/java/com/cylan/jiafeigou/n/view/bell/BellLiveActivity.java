@@ -364,7 +364,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (subscribe != null && !subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
         }
-        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ActivityStartEvent.class).subscribe(ret -> {
+        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ActivityStartEvent.class).first().subscribe(ret -> {
             finish();
         }, AppLogger::e);
     }
