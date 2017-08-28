@@ -204,7 +204,7 @@
         android:layout_alignStart="@+id/fragment_panorama_explain_tv_wifi_title"
         android:layout_below="@id/fragment_panorama_explain_blue_blink_charge"
         android:layout_marginTop="@dimen/y6"
-        android:text="@string/PowerLight_BlueOut"
+        android:text="@string/ChargingLight_SteadyBlue"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp15"
         app:layout_constraintStart_toStartOf="@+id/fragment_panorama_explain_tv_charge_title"

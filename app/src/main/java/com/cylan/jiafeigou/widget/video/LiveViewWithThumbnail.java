@@ -28,6 +28,11 @@ import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.panorama.CommonPanoramicView;
+import com.cylan.panorama.Panoramic360View;
+import com.cylan.panorama.Panoramic360ViewRS;
+
+import org.webrtc.videoengine.ViEAndroidGLES20;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -76,7 +81,17 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     public void performTouch() {
-        videoView.performTouch();
+        if (videoView instanceof CommonPanoramicView) {
+            ((CommonPanoramicView) videoView).onSingleTap(0, 0);
+        }
+        if (videoView instanceof ViEAndroidGLES20) {
+//            ((ViEAndroidGLES20) videoView).onTouch()
+            //普通view应该有问题的
+        }
+    }
+
+    public TextView getTvLiveFlow() {
+        return tvLiveFlow;
     }
 
     /**
@@ -165,7 +180,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void setLiveView(VideoViewFactory.IVideoView iVideoView) {
-        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
+        if (iVideoView instanceof Panoramic360ViewRS || iVideoView instanceof Panoramic360View) {
+            isNormalView = false;
+        } else {
+            isNormalView = true;
+        }
+//        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
         this.videoView = iVideoView;
         ((View) videoView).setId("videoView".hashCode());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -178,7 +198,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (videoView == null) {
             return;
         }
-        AppLogger.e("更新view高度: " + height);
+        AppLogger.d("更新view高度: " + height);
         RelativeLayout.LayoutParams parentLp = (RelativeLayout.LayoutParams) getLayoutParams();
         parentLp.height = height;
         setLayoutParams(parentLp);
@@ -199,6 +219,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         if (imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
         Log.d(TAG, "onLiveStart");
         if (subscription != null) subscription.unsubscribe();
+        if (imgThumbnail != null && imgThumbnail.isShown()) imgThumbnail.setVisibility(GONE);
     }
 
     @Override
@@ -210,6 +231,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 //        }
 //        imgThumbnail.bringToFront();
 //        imgThumbnail.setImageResource(android.R.color.black);
+        if (!isNormalView()) {
+            imgThumbnail.setImageResource(android.R.color.transparent);
+            imgThumbnail.setVisibility(VISIBLE);
+        }
         Log.d(TAG, "onLiveStop");
     }
 
@@ -295,8 +320,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                         imageViewRef.get().setBackgroundDrawable(bd);
                     }
                 } else {
-                    imageViewRef.get().setVisibility(GONE);
                     videoViewWeakReference.get().loadBitmap(resource);
+                    imageViewRef.get().setVisibility(VISIBLE);
+                    imageViewRef.get().setImageResource(android.R.color.transparent);
                     AppLogger.d("开始加载全景预览图");
                 }
             } else {

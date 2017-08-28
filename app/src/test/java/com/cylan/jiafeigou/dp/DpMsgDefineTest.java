@@ -61,8 +61,8 @@ public class DpMsgDefineTest {
     @Test
     public void testObject() throws IOException {
 
-        System.out.println("DPBellCallRecord:" + unpackData(new byte[]{-108, 0, -50, 89, 120, 6, 4, 0, 1},
-                DpMsgDefine.DPBellCallRecord.class));
+        System.out.println("DPSdcardSummary:" + unpackData(new byte[]{-110,-62,0},
+                DpMsgDefine.DPSdcardSummary.class));
         System.out.println("DPBellCallRecord:" + unpackData(new byte[]{-108, 0, -50, 89, 120, 45, -68, 0, 1},
                 DpMsgDefine.DPBellCallRecord.class));
 

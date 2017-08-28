@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -322,6 +323,7 @@ public class JFGRules {
         String[] ret = sdContent.split(",");
         if (ret.length < 2 || !sdContent.contains(".")) return false;
         try {
+            // TODO: 2017/8/18 可能会有问题
             return BindUtils.versionCompare(version, ret[1]) >= 0;
         } catch (Exception e) {
             return false;
@@ -522,6 +524,19 @@ public class JFGRules {
         return !TextUtils.isEmpty(property) && property.contains("切掉上下部分");
     }
 
+    public static boolean showSwitchModeButton(int pid) {
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String view_mode = loader.property(pid, "VIEW_MODE");
+        String view = loader.property(pid, "VIEW");
+        return !TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1");
+    }
+
+    public static boolean hasViewAngle(int pid) {
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String view_mode = loader.property(pid, "VIEWANGLE");
+        return !TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1");
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;
@@ -600,7 +615,7 @@ public class JFGRules {
     public static boolean isRoundRadio(int pid) {
         IProperty property = BaseApplication.getAppComponent().getProductProperty();
         String view = property.property(pid, "VIEW");
-        return !TextUtils.isEmpty(view) && view.contains("圆形");
+        return !TextUtils.isEmpty(view) && (view.contains("圆形") || view.contains("鱼缸"));
     }
 
 
@@ -627,68 +642,40 @@ public class JFGRules {
         return MiscUtils.isAPDirect(mac);
     }
 
-    public static int getPidByCid(String cid) {
-        int pid = -1;
-        if (TextUtils.isEmpty(cid)) {
-            return pid;
-        }
-        if (cid.startsWith("2000") || cid.startsWith("2200") || cid.startsWith("2100")) {
-            pid = 1090;
-        } else if (cid.startsWith("3000")) {
-            pid = 1071;
-        } else if (cid.startsWith("2801")) {
-            pid = 1092;
-        } else if (cid.startsWith("2800") || cid.startsWith("2802") || cid.startsWith("2803")) {
-            pid = 1091;
-        } else if (cid.startsWith("2900")) {
-            pid = 1089;
-        } else if (cid.startsWith("2600")) {
-            pid = 1088;
-        } else if (cid.startsWith("5000")) {
-            pid = 1093;
-        } else if (cid.startsWith("5100")) {
-            pid = 1094;
-        } else if (cid.startsWith("6000")) {
-            pid = 1152;
-        } else if (cid.startsWith("6500")) {
-            pid = 1158;
-        } else if (cid.startsWith("6900")) {
-            pid = 1159;
-        } else if (cid.startsWith("6901")) {
-            pid = 1160;
-        }
-        return pid;
-    }
-
+    /**
+     * 睿视
+     *
+     * @param pid
+     * @return
+     */
     public static boolean isConsumerCam(int pid) {
-        return pid == 39 || pid == 1285
-                || 49 == pid || 1348 == pid
-                || 38 == pid || 1284 == pid;
+        final String value = BaseApplication.getAppComponent()
+                .getProductProperty().property(pid, "value");
+        return !TextUtils.isEmpty(value) && value.startsWith("RS_CAM");//不是下划线,直接去掉
     }
 
     public static boolean isCloudCam(int pid) {
-        return pid == 26 || pid == 1088;
+        final String value = BaseApplication.getAppComponent()
+                .getProductProperty().property(pid, "value");
+        return !TextUtils.isEmpty(value) && value.startsWith("house");//不是下划线,直接去掉
     }
 
     public static boolean isCatEeyBell(int pid) {
-        return pid == 27 || pid == 1160 ||
-                pid == 22;
+        final String value = BaseApplication.getAppComponent()
+                .getProductProperty().property(pid, "product");
+        return !TextUtils.isEmpty(value) && value.contains("猫眼");//不是下划线,直接去掉
     }
 
+    /**
+     * 无电池
+     *
+     * @param pid
+     * @return
+     */
     public static boolean isNoPowerBell(int pid) {
-        return pid == 52 || pid == 1379 ||
-                pid == 15 || pid == 1159;
+        final String value = BaseApplication.getAppComponent()
+                .getProductProperty().property(pid, "product");
+        return !TextUtils.isEmpty(value) && value.contains("有源");//不是下划线,直接去掉
     }
-
-    public static boolean isRsBell(int pid) {
-        return pid == 50 || pid == 1378;
-    }
-
-
-    //设备属性表取值start
-
-
-    //设备属性表取值 end
-
 
 }

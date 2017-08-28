@@ -5,7 +5,9 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -40,12 +42,33 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.View> implements PanoramaAlbumContact.Presenter {
     private Subscription fetchSubscription;
     private Subscription deleteSubscription;
+    private Subscription monitorDeleteSubscription;
+
+    private boolean hasSDCard;
+
 
     @Override
     public void onViewAttached(PanoramaAlbumContact.View view) {
         super.onViewAttached(view);
         DownloadManager.getInstance().setTargetFolder(JConstant.MEDIA_PATH + File.separator + uuid);
         BaseDeviceInformationFetcher.getInstance().init(uuid);
+        if (monitorDeleteSubscription != null && !monitorDeleteSubscription.isUnsubscribed()) {
+            monitorDeleteSubscription.unsubscribe();
+        }
+        monitorDeleteSubscription = monitorDeleteUpdateSub();
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+
+        hasSDCard = status.hasSdcard;
+    }
+
+    @Override
+    public void onViewDetached() {
+        super.onViewDetached();
+        if (monitorDeleteSubscription != null && !monitorDeleteSubscription.isUnsubscribed()) {
+            monitorDeleteSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -62,7 +85,19 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         super.onRegisterSubscription();
 //        registerSubscription(monitorPanoramaAPI());
         registerSubscription(monitorSDCardUnMount());
-        registerSubscription(monitorDeleteUpdateSub());
+//        registerSubscription(monitorDeleteUpdateSub());
+        registerSubscription(getNetWorkMonitorSub());
+    }
+
+
+    private Subscription getNetWorkMonitorSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    AppLogger.e("监听到网络状态发生变化");
+                    BaseDeviceInformationFetcher.getInstance().init(uuid);
+                }, e -> {
+                });
     }
 
     private Subscription monitorDeleteUpdateSub() {
@@ -82,25 +117,32 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 222) {
-                                DpMsgDefine.DPSdStatus status = null;
-
+                                DpMsgDefine.DPSdcardSummary sdcardSummary = null;
                                 try {
-                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    sdcardSummary = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                                 } catch (Exception e) {
-                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
-                                    status = new DpMsgDefine.DPSdStatus();
-                                    status.hasSdcard = statusInt.hasSdcard == 1;
-                                    status.err = statusInt.err;
-                                    status.used = statusInt.used;
-                                    status.total = statusInt.total;
+                                    AppLogger.e(e.getMessage());
                                 }
 
-                                if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                if (sdcardSummary != null && !sdcardSummary.hasSdcard && hasSDCard) {//SDCard 不存在
+                                    mView.onSDCardCheckResult(0);
+                                } else if (sdcardSummary != null && sdcardSummary.errCode != 0) {//SDCard 需要格式化
+//                                    mView.onSDCardCheckResult(0);
+                                }
+                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard;
+                            } else if (msg.id == 204) {
+                                // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
+//                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+//                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                if (status != null && !status.hasSdcard && hasSDCard) {//SDCard 不存在
                                     mView.onSDCardCheckResult(0);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
-                                    mView.onSDCardCheckResult(0);
+//                                    mView.onSDCardCheckResult(0);
                                 }
-                                boolean hasSDCard = status != null && status.hasSdcard && status.err == 0;
+                                hasSDCard = status != null && status.hasSdcard;
+//                                }
+
                             }
                         }
                     } catch (Exception e) {
@@ -110,16 +152,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     AppLogger.e(e.getMessage());
                 });
     }
-
-//    private Subscription monitorPanoramaAPI() {
-//        return BasePanoramaApiHelper.getInstance().monitorPanoramaApi()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(api -> {
-////                    mView.onViewModeChanged(api.ApiType == 0 ? 2 : 0, api.ApiType == -1);
-//                    mView.onViewModeChanged(2, api.ApiType == -1);
-//                }, e -> {
-//                });
-//    }
 
 
     public void checkSDCardAndInit() {
@@ -214,9 +246,13 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         PanoramaAlbumContact.PanoramaItem item;
                         for (String file : files.files) {
                             if (TextUtils.isEmpty(file)) continue;
-                            item = new PanoramaAlbumContact.PanoramaItem(file);
-                            item.location = 1;
-                            result.add(item);
+                            try {
+                                item = new PanoramaAlbumContact.PanoramaItem(file);
+                                item.location = 1;
+                                result.add(item);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     return result;
@@ -240,12 +276,17 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         for (DownloadInfo item : items) {
                             int itemTime = parseTime(item.getFileName());
                             if (itemTime >= finalTime) continue;
-                            boolean endsWith = item.getTargetPath() != null && item.getTargetPath().endsWith(File.separator + uuid + File.separator + item.getFileName());
+                            boolean endsWith = item.getTargetPath() != null && item.getTaskKey().startsWith(uuid + "/images");
+                            ;
                             if (item.getState() == 4 && FileUtils.isFileExist(item.getTargetPath()) && result.size() < 20 && endsWith) {
-                                panoramaItem = new PanoramaAlbumContact.PanoramaItem(item.getFileName());
-                                panoramaItem.location = 0;
-                                panoramaItem.downloadInfo = item;
-                                result.add(panoramaItem);
+                                try {
+                                    panoramaItem = new PanoramaAlbumContact.PanoramaItem(item.getFileName());
+                                    panoramaItem.location = 0;
+                                    panoramaItem.downloadInfo = item;
+                                    result.add(panoramaItem);
+                                } catch (Exception e) {
+                                    AppLogger.e(e.getMessage());
+                                }
                             }
                         }
                     }

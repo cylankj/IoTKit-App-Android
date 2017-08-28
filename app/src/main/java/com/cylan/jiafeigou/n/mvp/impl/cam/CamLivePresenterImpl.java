@@ -336,6 +336,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .timeout(30, TimeUnit.SECONDS)
                         .flatMap(rsp -> makeTimeDelayForList()))
+                .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
                     mView.onHistoryLoadFinished();
@@ -352,10 +353,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 只需要初始化一天的就可以啦.丢throwable就是为了让订阅链断开
      */
     private Observable<Boolean> makeTimeDelayForList() {
+        drawTheDay();
         return Observable.just("")
                 .subscribeOn(Schedulers.io())
                 .flatMap(list -> {
-                    drawTheDay();
                     //更新日历
                     ArrayList<Long> dateList = History.getHistory().getDateList(uuid);
                     AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
@@ -495,10 +496,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 
     private Subscription timeoutSub() {
         return Observable.just("timeout")
-                .subscribeOn(Schedulers.io())
-                .timeout(30, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .delay(30, TimeUnit.SECONDS)
                 .doOnError(ret -> AppLogger.e("30s 超时了"))
                 .subscribe(ret -> {
+                    //需要发送超时
+                    stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(what -> {
+                    }, AppLogger::e);
                     BaseBellCallEventListener.getInstance().currentCaller(null);
                 }, AppLogger::e);
     }
@@ -514,6 +518,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
                 .observeOn(Schedulers.io())
                 .map(resolution -> {
+                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     removeTimeoutSub();
                     PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
 
@@ -576,7 +581,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     feedRtcp.stop();
                     addSubscription(videoDisconnectSub(), "videoDisconnectSub");
                     addSubscription(errCodeSub(), "errCodeSub");
-                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
+                    //挪到resolutionSub里面
+//                    addSubscription(RTCPNotifySub(), "RTCPNotifySub");
                     addSubscription(resolutionSub(), "resolutionSub");
                     addSubscription(timeoutSub(), "timeoutSub");
                     addSubscription(getFirstRTCPNotification(), "getFirstRTCPNotification");
@@ -773,16 +779,25 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribeOn(Schedulers.io())
                 .map(new TakeSnapShootLogicHelper(uuid, forPopWindow, mView))
                 .observeOn(Schedulers.io())
-                .filter(pair -> pair != null)
                 .subscribe(pair -> {
-                        }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()),
-                        () -> AppLogger.d("take screen finish"));
+                }, AppLogger::e, () -> AppLogger.d("take screen finish"));
     }
 
 
     @Override
     public void saveAlarmFlag(boolean flag) {
         Log.d("saveAlarmFlag", "saveAlarmFlag: " + flag);
+    }
+
+    @Override
+    public void saveAndShareBitmap(Bitmap bitmap) {
+        AppLogger.d("take shot initSubscription");
+        Observable.just(bitmap)
+                .subscribeOn(Schedulers.io())
+                .map(new TakeSnapShootHelper(uuid, true, mView))
+                .observeOn(Schedulers.io())
+                .subscribe(pair -> {
+                }, AppLogger::e, () -> AppLogger.d("take screen finish"));
     }
 
     @Override
@@ -979,15 +994,40 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         }
     }
 
+    private static class TakeSnapShootHelper extends TakeSnapShootLogicHelper {
+
+        TakeSnapShootHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
+            super(uuid, forPopWindow, v);
+        }
+
+        @Override
+        public Pair<Bitmap, String> call(Object o) {
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            PerformanceUtils.startTrace("takeCapture");
+            Bitmap bitmap = (Bitmap) o;
+            if (weakReference.get() != null)
+                weakReference.get().onTakeSnapShot(bitmap);//弹窗
+            final String fileName = "." + uuid + System.currentTimeMillis();
+            final String filePath = JConstant.MEDIA_PATH + File.separator + fileName;
+            removeLastPreview();
+            SimpleCache.getInstance().addCache(filePath, bitmap);
+            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+            //需要删除之前的一条记录.
+            BitmapUtils.saveBitmap2file(bitmap, filePath);
+            MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
+            shareSnapshot(true, filePath);//最后一步处理分享
+            return new Pair<>(bitmap, filePath);
+        }
+    }
 
     /**
      * 静态内部类
      */
     private static class TakeSnapShootLogicHelper implements Func1<Object, Pair<Bitmap, String>> {
 
-        private WeakReference<CamLiveContract.View> weakReference;
+        WeakReference<CamLiveContract.View> weakReference;
         boolean forPopWindow;
-        private String uuid;
+        String uuid;
 
         TakeSnapShootLogicHelper(String uuid, boolean forPopWindow, CamLiveContract.View v) {
             weakReference = new WeakReference<>(v);
@@ -1025,8 +1065,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 //需要删除之前的一条记录.
             }
             BitmapUtils.saveBitmap2file(bitmap, filePath);
-            if (forPopWindow)//添加到相册
-            {
+            if (forPopWindow) {//添加到相册
                 MiscUtils.insertImage(JConstant.MEDIA_PATH, fileName);
             }
 //            MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
@@ -1036,9 +1075,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             return new Pair<>(bitmap, filePath);
         }
 
-        private void removeLastPreview() {
+        protected void removeLastPreview() {
             final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
-            if (TextUtils.isEmpty(pre)) return;
             try {
                 if (SimpleCache.getInstance().getPreviewKeyList() != null) {
                     List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
@@ -1050,9 +1088,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 }
             } catch (Exception e) {
             }
-            Observable.just("go")
+            String[] file = new File(JConstant.MEDIA_PATH).list((dir, name) -> !TextUtils.isEmpty(name) && name.contains(uuid));
+            if (file.length == 0) return;
+            Observable.just(file)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
+                    .subscribe(ret -> {
+                        for (String fileName : ret)
+                            FileUtils.deleteFile(JConstant.MEDIA_PATH + File.separator + fileName);
+                    }, AppLogger::e);
         }
 
         /**
@@ -1060,7 +1103,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
          *
          * @param needShare
          */
-        private void shareSnapshot(boolean needShare, String localPath) {
+        protected void shareSnapshot(boolean needShare, String localPath) {
             Observable.just(localPath)
                     .subscribeOn(Schedulers.io())
                     .filter(path -> {

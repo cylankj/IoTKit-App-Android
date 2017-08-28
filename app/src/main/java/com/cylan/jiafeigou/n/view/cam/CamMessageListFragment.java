@@ -240,8 +240,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 //            if (camMessageListAdapter.getCount() == 0)
             startRequest(true);//需要每次刷新,而不是第一次刷新
             ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//            SensorManager sensorManager= (SensorManager) getActivity().getSystemService(Activity.SENSOR_SERVICE);
-//            SensorManager.getOrientation()
         }
     }
 
@@ -351,6 +349,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void deviceInfoChanged(int id, JFGDPMsg o) throws IOException {
+        // TODO: 2017/8/17 为什么消息页会需要监听同步消息? #118120
+        // TODO:Android（1.1.0.534）局域网（公网），设备插入坏卡（显示读写失败-22），在报警消息页面刷新，会一直发初始化的消息，如图
         final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
                 .findLastVisibleItemPosition();
         switch (id) {
@@ -360,26 +360,33 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.notifyDeviceOnlineState(net.net > 0, lPos);
                 break;
             case DpMsgMap.ID_222_SDCARD_SUMMARY:
-                rvCamMessageList.postDelayed(() -> {
-                    try {
-                        DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(o.packValue, DpMsgDefine.DPSdcardSummary.class);
-                        if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
-                        camMessageListAdapter.notifySdcardStatus(summary.hasSdcard, lPos);
-                        CamMessageBean bean = new CamMessageBean();
-                        bean.sdcardSummary = summary;
-                        bean.id = DpMsgMap.ID_222_SDCARD_SUMMARY;
-                        bean.version = o.version;
-                        ArrayList<CamMessageBean> totalList = camMessageListAdapter.getSelectedItems();
-                        if (totalList != null && totalList.contains(bean)) {
-                            return;//重复了
-                        }
-                        camMessageListAdapter.add(0, bean);
-                        rvCamMessageList.scrollToPosition(0);
-                        lLayoutNoMessage.setVisibility(View.GONE);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }, 200);
+//                rvCamMessageList.postDelayed(() -> {
+                // TODO: 2017/8/17 只标志下当前有没有 SD 卡,而不把这条消息加入到 adapter 里去,@see:#118120
+                try {
+                    DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(o.packValue, DpMsgDefine.DPSdcardSummary.class);
+                    camMessageListAdapter.notifySdcardStatus(summary != null && summary.errCode == 0 && summary.hasSdcard, lPos);
+//                    if (summary != null) {
+//                        camMessageListAdapter.setCurrentSDcardSummary(summary);
+//                    }
+////                    if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
+////                    camMessageListAdapter.notifySdcardStatus(summary.hasSdcard, lPos);
+////                    CamMessageBean bean = new CamMessageBean();
+////                    bean.sdcardSummary = summary;
+////                    bean.id = DpMsgMap.ID_222_SDCARD_SUMMARY;
+////                    bean.version = o.version;
+////                    ArrayList<CamMessageBean> totalList = camMessageListAdapter.getSelectedItems();
+////                    if (totalList != null && totalList.contains(bean)) {
+////                        return;//重复了
+////                    }
+////                    camMessageListAdapter.add(0, bean);
+////                    rvCamMessageList.scrollToPosition(0);
+////                    lLayoutNoMessage.setVisibility(View.GONE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+//        }
+//                , 200);
                 break;
         }
 

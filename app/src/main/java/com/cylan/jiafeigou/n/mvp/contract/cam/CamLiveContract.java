@@ -117,6 +117,9 @@ public interface CamLiveContract {
         void onHistoryLoadFinished();
 
         void onDeviceUnBind();
+
+        void onBackPressed();
+
     }
 
     interface Presenter extends BasePresenter {
@@ -200,6 +203,8 @@ public interface CamLiveContract {
          * @param flag
          */
         void saveAlarmFlag(boolean flag);
+
+        void saveAndShareBitmap(Bitmap bitmap);
 
         /**
          * @return <Integer:天数,Long:时间戳>

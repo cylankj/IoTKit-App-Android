@@ -122,6 +122,7 @@
   <string name="DEVICE_ADDING">正在绑定，請稍候&#8230;</string>
   <string name="DEVICE_BLUETOOTH_ONLINE">藍牙已連接</string>
   <string name="DEVICE_CONNECTING">設備正在連接網路</string>
+  <string name="DEVICE_CONNECTING_WIFI">正在連接，請稍候&#8230;</string>
   <string name="DEVICE_EXISTED">此帳號已設定為該設備</string>
   <string name="DEVICE_NO_RES">绑定完成\n請至列表查看設備狀態</string>
   <string name="DEVICE_OFFLINE1">請檢查設備是否已開機</string>
@@ -174,6 +175,7 @@
   <string name="Delete_Share">是否刪除分享</string>
   <string name="Detection_Pop">關閉後將不再推送偵測報警消息，確定關閉？</string>
   <string name="Device_Disconnected">對端斷開</string>
+  <string name="Dont_Show_Again">不再提示</string>
   <string name="Download_Then_Share">請先下載視頻再分享</string>
   <string name="Downloading">視頻正在下載中</string>
   <string name="EDIT_IMAGE">圖片編輯</string>
@@ -417,6 +419,7 @@
   <string name="PLEASE_WAIT_1">登錄中，請稍後&#8230;</string>
   <string name="PLEASE_WAIT_2">正在绑定，請稍候&#8230;</string>
   <string name="PROFILE_PHOTO">檔案照片</string>
+  <string name="PROXY_INTERNET">正在使用代理上網，請先關閉代理再綁定</string>
   <string name="PULL_TO_LOAD">下拉載入</string>
   <string name="PULL_TO_REFRESH">下拉更新</string>
   <string name="PUSH_MSG">APP接收訊息通知</string>
@@ -595,6 +598,7 @@
   <string name="SURE_DELETE">確定刪除該設備的所有訊息</string>
   <string name="SURE_DELETE_1">確定刪除“%s”及相關數據嗎？</string>
   <string name="SWITCH_LOCATIONS">位置切換</string>
+  <string name="SWITCH_VIEW_POP">當前平視視角不支持使用該功能，是否切換至俯視？</string>
   <string name="SYSTEM">系統通知</string>
   <string name="SYSTEM_MSG">系統通知</string>
   <string name="SYSTME_VERSION">系統版本</string>
@@ -626,6 +630,7 @@
   <string name="Start_instructions_G">關注“加菲狗官微服务”公眾號後，進入主頁面，點擊菜單欄的“服務”，選擇“綁定賬號”。</string>
   <string name="Start_instructions_H">綁定賬號</string>
   <string name="Start_instructions_I">請輸入加菲狗電子郵件賬號進行綁定，如忘記密碼請到加菲狗客戶端找回</string>
+  <string name="Switch_Mode">當前網絡拍攝內容請到設置切換至直連查看</string>
   <string name="Switch_Off">始終關閉</string>
   <string name="Switch_On">始終開啟</string>
   <string name="TAKE_PHOTO">拍照</string>
@@ -994,13 +999,13 @@
   <string name="WIFI_OFF">您的手機未打開WiFi開關，請打開後重試</string>
   <string name="WIFI_PWD">WiFi密碼</string>
   <string name="WIFI_PWD_1">WiFi密碼：</string>
-  <string name="WIFI_SET_2">1.請檢查設備WiFi燈是否藍色閃爍,如果沒有,請長按WiFi鍵約3秒 \n2.打開iPhone的設置&#45;>無線網路,選擇\“%s\”加入，密碼8個1</string>
-  <string name="WIFI_SET_3">請在系統設置&#45;>無線區域網，選擇“DOG&#45;**&#45;******”加入，密碼8個1</string>
-  <string name="WIFI_SET_3_1">請在系統設置&#45;>無線區域網，選擇“DOG&#45;ML&#45;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_2">1.請檢查設備WiFi燈是否藍色閃爍,如果沒有,請長按WiFi鍵約3秒 \n2.打開iPhone的設置&#8211;>無線網路,選擇\“%s\”加入，密碼8個1</string>
+  <string name="WIFI_SET_3">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;**&#8211;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_3_1">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;ML&#8211;******”加入，密碼8個1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暫不支持5GHz的WiFi信號</string>
-  <string name="WIFI_SET_RS">請在系統設置&#45;>無線區域網，選擇“RS&#45;CAM&#45;******”加入，密碼8個1</string>
-  <string name="WIFI_SET_VER">請在系統設置&#45;>無線區域網，選擇“%s”加入，密碼8個1</string>
+  <string name="WIFI_SET_RS">請在系統設置&#8211;>無線區域網，選擇“RS&#8211;CAM&#8211;******”加入，密碼8個1</string>
+  <string name="WIFI_SET_VER">請在系統設置&#8211;>無線區域網，選擇“%s”加入，密碼8個1</string>
   <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="WeChat">微信</string>
@@ -1031,7 +1036,7 @@
   <string name="connecting_ap">正在連接&#8230;</string>
   <string name="contacts_auth">通訊錄</string>
   <string name="copy">複製</string>
-  <string name="copyrightEn">Copyright ©2005&#45;%s Cylan.All Rights Reserved.</string>
+  <string name="copyrightEn">Copyright ©2005&#8211;%s Cylan.All Rights Reserved.</string>
   <string name="device_Wi_Fi">WiFi</string>
   <string name="dialog_callto_info">%s\n可能是一個電話號碼，你可以：</string>
   <string name="doorbell_title">%1$s(%2$s)</string>
@@ -1054,7 +1059,7 @@
   <string name="please_choose_wifi">請選擇WiFi網路</string>
   <string name="receive_new_news">收到%s條新訊息</string>
   <string name="rename">編輯名稱</string>
-  <string name="service_phonenum">+86 400&#45;716&#45;3232</string>
+  <string name="service_phonenum">+86 400&#8211;716&#8211;3232</string>
   <string name="set_failed">設定失敗</string>
   <string name="setwifi_check">請設置手機連接到“%s”WiFi網路，再進行配置</string>
   <string name="share_content">最近我在用這款APP，配合一個攝像機可以隨時隨地看到家裏，非常好用！推薦你也試試</string>

@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -343,7 +344,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
                 }
                 subscriber.onNext("登录开始了");
-                AppLogger.d("登录过程开始了..." + "username:" + account + ",password:" + password + ",loginType:" + loginType);
+                Log.d("","登录过程开始了..." + "username:" + account + ",password:" + password + ",loginType:" + loginType);
                 subscriber.onCompleted();
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -373,7 +374,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         getView().loginResult(JError.ErrorOK);
                     }
                 }, e -> {
-                    AppLogger.e("获取登录结果失败:" + e.getMessage());
+                    AppLogger.e("获取登录结果失败:" + MiscUtils.getErr(e));
                     if (getView() != null) {
                         getView().loginResult(JError.ErrorConnect);
                     }

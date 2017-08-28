@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.base;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
@@ -15,6 +14,9 @@ import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.server.cache.Device;
+import com.cylan.jiafeigou.server.cache.MyObjectBox;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -23,6 +25,8 @@ import com.danikula.videocache.HttpProxyCacheServer;
 
 import java.util.concurrent.TimeUnit;
 
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
 import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -34,55 +38,35 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static final String TAG = "BaseApplication";
 
-    //    private DaemonClient mDaemonClient;
     private static AppComponent appComponent;
     private static int viewCount = 0;
+    private static BoxStore boxStore;
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-//        mDaemonClient = new DaemonClient(createDaemonConfigurations());
-//        mDaemonClient.onAttachBaseContext(base);
+    private static Box<PropertyItem> propertyItemBox;
+
+    private static Box<Device> deviceBox;
+
+    public static BoxStore getBoxStore() {
+        return boxStore;
+    }
+//
+    public static Box<PropertyItem> getPropertyItemBox() {
+        return propertyItemBox;
     }
 
-
-//    private DaemonConfigurations createDaemonConfigurations() {
-//        DaemonConfigurations.DaemonConfiguration configuration1 = new DaemonConfigurations.DaemonConfiguration(
-//                getPackageName() + ":process1",
-//                DaemonService1.class.getCanonicalName(),
-//                DaemonReceiver1.class.getCanonicalName());
-//        DaemonConfigurations.DaemonConfiguration configuration2 = new DaemonConfigurations.DaemonConfiguration(
-//                getPackageName() + ":process2",
-//                DaemonService2.class.getCanonicalName(),
-//                DaemonReceiver2.class.getCanonicalName());
-//        DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
-//        //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
-//        return new DaemonConfigurations(configuration1, configuration2, listener);
-//    }
-
-
-//    private class MyDaemonListener implements DaemonConfigurations.DaemonListener {
-//        @Override
-//        public void onPersistentStart(Context context) {
-//            AppLogger.d("onPersistentStart");
-//        }
-//
-//        @Override
-//        public void onDaemonAssistantStart(Context context) {
-//            AppLogger.d("onDaemonAssistantStart");
-//        }
-//
-//        @Override
-//        public void onWatchDaemonDaed() {
-//            AppLogger.d("onWatchDaemonDaed");
-//        }
-//    }
-
+    public static Box<Device> getDeviceBox() {
+        return deviceBox;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         //这是主进程
+//
+        boxStore = MyObjectBox.builder().androidContext(this).build();
+        propertyItemBox = boxStore.boxFor(PropertyItem.class);
+        deviceBox = boxStore.boxFor(Device.class);
+
 
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
             viewCount = 0;
@@ -92,6 +76,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appInit");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+
 
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源

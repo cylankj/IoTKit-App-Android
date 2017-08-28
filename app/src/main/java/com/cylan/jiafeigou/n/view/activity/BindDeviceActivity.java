@@ -100,8 +100,10 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.Tap1_AddDevice_CameraTipShort));
         intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
         intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+        intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
         startActivity(intent);
         ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_panorama_camera));
+
     }
 
     @OnClick({R.id.v_to_bind_camera_cloud,
@@ -122,7 +124,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CloudcameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.DOOR_BLUE_BLINKING));
                 intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
-
                 break;
             case R.id.v_to_bind_consumer_cam://原来睿视
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.bind_reset_rs);
@@ -132,6 +133,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 intent.putExtra(JConstant.KEY_ANIM_TITLE, getString(R.string.RuiShi_Guide));
                 intent.putExtra(JConstant.KEY_ANIM_SUB_TITLE, getString(R.string.Tap1_AddDevice_CameraTips));
                 intent.putExtra(JConstant.KEY_NEXT_STEP, getString(R.string.BLINKING));
+                intent.putExtra(JConstant.KEY_BIND_BACK_ACTIVITY, getClass().getName());
                 break;
             case R.id.v_to_bind_bell_battery:
                 intent.putExtra(JConstant.KEY_ANIM_GIF, R.raw.add_ring);

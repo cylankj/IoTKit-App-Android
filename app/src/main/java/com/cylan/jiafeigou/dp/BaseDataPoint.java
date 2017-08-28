@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -14,11 +15,14 @@ import org.msgpack.annotation.Ignore;
 
 public abstract class BaseDataPoint implements Parcelable, DataPoint {
     @Ignore
+    @JsonIgnore
     private static Gson mGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     @Ignore
+    @JsonIgnore
     public long msgId;
     @Ignore
+    @JsonIgnore
     public long version;
 
     @Override
@@ -28,7 +32,13 @@ public abstract class BaseDataPoint implements Parcelable, DataPoint {
 
 
     public byte[] toBytes() {
-        return DpUtils.pack(this);
+        byte[] bytes;
+        if (this instanceof DpMsgDefine.DPPrimary) {
+            bytes = DpUtils.pack(((DpMsgDefine.DPPrimary) this).value);
+        } else {
+            bytes = DpUtils.pack(this);
+        }
+        return bytes == null ? new byte[]{0} : bytes;
     }
 
     public BaseDataPoint() {

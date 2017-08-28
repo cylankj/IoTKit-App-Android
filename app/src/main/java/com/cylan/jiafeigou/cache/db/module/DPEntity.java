@@ -20,6 +20,9 @@ import java.util.Arrays;
 
 /**
  * Created by yanzhendong on 2017/2/27.
+ *
+ * @Deprecated entity 本质上是 MsgPack Value 直接在 device 里建立一个
+ * MsgPack Value Map 来保存就行了
  */
 @Entity(generateGettersSetters = false, active = true)
 public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {

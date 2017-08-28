@@ -8,6 +8,8 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by yanzhendong on 2017/3/3.
+ *
+ * @deprecated
  */
 
 public class DPMultiDeleteConfirmTaskTask extends BaseDPTask<BaseDPTaskResult> {
@@ -23,7 +25,7 @@ public class DPMultiDeleteConfirmTaskTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performServer() {
-        AppLogger.d("no need to invoke");
+        AppLogger.w("no need to invoke");
         return null;
     }
 }

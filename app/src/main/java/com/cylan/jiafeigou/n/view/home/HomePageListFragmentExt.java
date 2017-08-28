@@ -455,7 +455,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
             tvHeaderNickName.requestLayout();
-            AppLogger.d("JFGAccount: " + new Gson().toJson(greetBean));
+            AppLogger.w("JFGAccount: " + new Gson().toJson(greetBean));
         }
     };
 
@@ -499,7 +499,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 fLayoutHeaderBg.addView(v);
             }
         }
-        AppLogger.i("time tick: " + day + " " + (count == 1));
+        AppLogger.w("time tick: " + day + " " + (count == 1));
     }
 
     @Override
@@ -519,7 +519,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 srLayoutMainContentHolder.setRefreshing(false);
                 srLayoutMainContentHolder.clearAnimation();
                 enableNestedScroll();
-                AppLogger.d("stop refreshing ui");
+                AppLogger.w("stop refreshing ui");
             }
 
         }, 1500);
@@ -567,6 +567,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         //不使用post,因为会泄露
+
+//        List<PropertyItem> all = BaseApplication.getPropertyItemBox().getAll();
+//        Log.e("AAAA", all.toString());
         if (refreshFinish) {
             srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
 
@@ -575,6 +578,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 basePresenter.fetchDeviceList(true);
             }
         }
+
+        basePresenter.refreshDevices();
+
         refreshFinish = false;
     }
 

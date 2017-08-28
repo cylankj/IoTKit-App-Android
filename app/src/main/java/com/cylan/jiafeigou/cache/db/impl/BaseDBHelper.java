@@ -30,6 +30,8 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.server.cache.CacheHolderKt;
+import com.cylan.jiafeigou.server.cache.HashStrategyFactory;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -53,6 +55,8 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by yanzhendong on 2017/2/27.
+ *
+ * @deprecated 当前场景下不适合使用数据库缓存, 使用 object 缓存来替代数据库缓存
  */
 
 public class BaseDBHelper implements IDBHelper {
@@ -105,12 +109,27 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs) {
+
+//        Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
+
+
         return getActiveAccount().map(account -> {
             Log.d("saveDPByteInTx", "saveDPByteInTx:" + uuid);
             Set<DPEntity> result = new HashSet<>();
+            CacheHolderKt.saveProperty(uuid, (List<?>) msgs, HashStrategyFactory.INSTANCE::select);
+
+//            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
+//            PropertyItem propertyItem = null;
             Device device = sourceManager.getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
+
+//                propertyItem = new PropertyItem(HashStrategyFactory.INSTANCE.select(uuid, (int) msg.id, msg.version),
+//                        uuid, (int) msg.id, msg.version, msg.packValue);
+//
+//                propertyItems.add(propertyItem);
+
+
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
@@ -136,6 +155,7 @@ public class BaseDBHelper implements IDBHelper {
                 result.add(dpEntity);
                 dpEntity = null;
             }
+//            itemBox.put(propertyItems);
             mEntityDao.insertOrReplaceInTx(result);
             return result;
         });
@@ -146,10 +166,23 @@ public class BaseDBHelper implements IDBHelper {
         return getActiveAccount().map(account -> {
             if (dataRsp.map == null) return null;
             Set<DPEntity> result = new HashSet<>();
+//            Box<PropertyItem> itemBox = BaseApplication.getPropertyItemBox();
+//            List<PropertyItem> propertyItems = new ArrayList<>();
             DPEntity dpEntity = null;
+//            PropertyItem item = null;
             Device device = sourceManager.getDevice(dataRsp.identity);
+
+            CacheHolderKt.saveProperty(dataRsp.identity, (Map<Long, List<?>>) (Object) dataRsp.map, HashStrategyFactory.INSTANCE::select);
+
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
+
+//                    item = new PropertyItem(HashStrategyFactory.INSTANCE.select(dataRsp.identity, (int) msg.id, msg.version),
+//                            dataRsp.identity, (int) msg.id, msg.version, msg.packValue
+//                    );
+//                    propertyItems.add(item);
+
+
                     if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
@@ -176,6 +209,7 @@ public class BaseDBHelper implements IDBHelper {
                     dpEntity = null;
                 }
             }
+//            itemBox.put(propertyItems);
             mEntityDao.insertOrReplaceInTx(result);
             return result;
         });
@@ -513,6 +547,10 @@ public class BaseDBHelper implements IDBHelper {
                     QueryBuilder<Device> queryBuilder = null;
                     Device dpDevice = null;
                     JFGDevice dev;
+
+                    CacheHolderKt.saveDevices(device);
+
+
                     List<Device> remove = buildDPDeviceQueryBuilder(account.getAccount(), getServer(), null, null, null, null).list();
                     if (remove != null) {
                         deviceDao.deleteInTx(remove);

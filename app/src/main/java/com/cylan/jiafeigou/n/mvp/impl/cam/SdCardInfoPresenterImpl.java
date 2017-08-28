@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.JfgEvent;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -250,6 +251,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
+        BaseDeviceInformationFetcher.getInstance().init(uuid);
         if (mView != null) {
             mView.onNetworkChanged(NetUtils.getJfgNetType() > 0);
         }

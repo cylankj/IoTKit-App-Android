@@ -35,9 +35,13 @@ public class Account extends BasePropertyHolder<Account> {
     private String email;
     private boolean enableVibrate;
     private String photoUrl;
+    @Deprecated
     private String action;
+    @Deprecated
     private String state;
+    @Deprecated
     private String option;
+    @Deprecated
     private String accountJson;
     private transient boolean isOnline;
     private transient boolean available = false;

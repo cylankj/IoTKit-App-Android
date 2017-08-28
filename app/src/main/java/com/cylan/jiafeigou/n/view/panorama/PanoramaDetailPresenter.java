@@ -10,9 +10,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -43,11 +46,22 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  */
 
 public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact.View> implements PanoramaDetailContact.Presenter {
+    private boolean hasSDCard;
 
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getReportMsgSub(), getNetWorkMonitorSub());
+    }
+
+    @Override
+    public void onViewAttached(PanoramaDetailContact.View view) {
+        super.onViewAttached(view);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+
+        hasSDCard = status.hasSdcard;
     }
 
     private Subscription getReportMsgSub() {
@@ -59,21 +73,31 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             if (msg.id == 222) {
-                                DpMsgDefine.DPSdStatus status = null;
+                                DpMsgDefine.DPSdcardSummary sdcardSummary = null;
                                 try {
-                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    sdcardSummary = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                                 } catch (Exception e) {
-                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
-                                    status.total = statusInt.total;
-                                    status.err = statusInt.err;
-                                    status.used = statusInt.used;
-                                    status.hasSdcard = statusInt.hasSdcard == 1;
+                                    AppLogger.e(e.getMessage());
                                 }
-                                if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                if (sdcardSummary != null && !sdcardSummary.hasSdcard && hasSDCard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
-                                } else if (status != null && status.err != 0) {//SDCard 需要格式化
-                                    mView.onReportDeviceError(2022, true);
+                                } else if (sdcardSummary != null && sdcardSummary.errCode != 0 /*&& hasSDCard*/) {//SDCard 需要格式化
+//                                    mView.onReportDeviceError(2022, true);
                                 }
+                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard;
+                            } else if (msg.id == 204) {
+                                // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
+//                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+//                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                if (status != null && !status.hasSdcard && hasSDCard) {//SDCard 不存在
+                                    mView.onReportDeviceError(2004, true);
+                                } else if (status != null && status.err != 0 /*&& hasSDCard*/) {//SDCard 需要格式化
+//                                    mView.onReportDeviceError(2022, true);
+                                }
+                                hasSDCard = status != null && status.hasSdcard;
+//                                }
+
                             }
                         }
                     } catch (Exception e) {
@@ -90,29 +114,23 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
             DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             mView.onDeleteResult(0);
         } else if (mode == 1 || mode == 2) {
-            DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
             Subscription subscribe = BasePanoramaApiHelper.getInstance().delete(uuid, 1, 0, Collections.singletonList(item.fileName))
-                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-//                    .map(ret -> {
-////                        if (ret != null && ret.ret == 0) {
-//
-////                        }
-//                        return ret;
-//                    })
+                    .timeout(500, TimeUnit.MILLISECONDS, Observable.just(null))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ret -> {
-                        mView.onDeleteResult(0);//本地删除了,设备删除失败
-//                        if (ret != null && ret.ret == 0) {//删除成功
-//                            mView.onDeleteResult(0);
-//                        } else {
-////                            mView.onDeleteResult(-1);//本地删除了,设备删除失败
-//                            mView.onDeleteResult(0);//本地删除了,设备删除失败
-//                        }
+                        DownloadManager.getInstance().removeTask(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, item.fileName));
+                        mView.onDeleteResult(0);
                     }, e -> {
                         AppLogger.e(e.getMessage());
                     });
+//                    .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(ret -> {
+//                        mView.onDeleteResult(0);
+//                    }, e -> {
+//                        AppLogger.e(e.getMessage());
+//                    });
             registerSubscription(subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3  
@@ -145,6 +163,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
+                    BaseDeviceInformationFetcher.getInstance().init(uuid);
                     if (event.mobile != null && event.mobile.isConnected()) {
                         mView.onRefreshConnectionMode(event.mobile.getType());
                     } else if (event.wifi != null && event.wifi.isConnected()) {

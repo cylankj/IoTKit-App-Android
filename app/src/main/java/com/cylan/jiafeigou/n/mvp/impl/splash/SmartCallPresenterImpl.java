@@ -79,8 +79,8 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {
                         AppLogger.d("超时");
-                        getView().loginSuccess();
                     }
+                    getView().loginSuccess();
                 });
         addSubscription(subscribe);
     }

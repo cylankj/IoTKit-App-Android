@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -27,7 +28,6 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.widget.AspectRatioImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +54,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private Map<Integer, Integer> selectedMap = new HashMap<>();
 
     private boolean isSharedDevice = false;
+    private DpMsgDefine.DPSdcardSummary summary;
+    private boolean status;
 
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -73,7 +75,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private boolean hasSdcard() {
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        return status.hasSdcard && status.err == 0;
+
+        return this.status = status.hasSdcard && status.err == 0;
     }
 
     private boolean online() {
@@ -232,8 +235,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        DpMsgDefine.DPSdStatus nowStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        updateItemFrom(position);
+        if (this.status != status) {//不一样才 notify
+            this.status = status;
+            updateItemFrom(position);
+        }
     }
 
     public void notifyDeviceOnlineState(boolean online, int position) {
@@ -272,7 +277,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .listener(loadListener)
-                    .into((AspectRatioImageView) holder.getView(id));
+                    .into((ImageView) holder.getView(id));
             holder.setOnClickListener(id, onClickListener);
         }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
@@ -419,4 +424,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             return false;
         }
     };
+
+    public void setCurrentSDcardSummary(DpMsgDefine.DPSdcardSummary summary) {
+        this.summary = summary;
+    }
 }

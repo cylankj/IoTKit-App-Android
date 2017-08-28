@@ -40,6 +40,8 @@ public interface PanoramaCameraContact {
 
         void onShowNewMsgHint();
 
+        void onDeviceOnLine();
+
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
@@ -82,7 +84,7 @@ public interface PanoramaCameraContact {
 
         void onRefreshVideoRecordUI(int second, int type);
 
-        void onReportDeviceError(int err, boolean useAlert);
+        void onReportDeviceError(int err, boolean sync);
 
         void onNewFirmwareRsp();
 

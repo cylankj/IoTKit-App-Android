@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.misc.MethodFilter;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.task.FetchFeedbackTask;
 import com.cylan.jiafeigou.n.task.FetchFriendsTask;
@@ -69,10 +70,13 @@ BaseJFGResultParser {
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
                 AppLogger.d("登录成功了");
-                BaseApplication.getAppComponent().getCmd().getAccount();
-                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
-                PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
-                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                //最短3s种一次。
+                if (MethodFilter.run("parserResultLoginSuc", 3 * 1000)) {
+                    BaseApplication.getAppComponent().getCmd().getAccount();
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
+                    PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
+                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
@@ -118,7 +122,7 @@ BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.RessetAccountBack(jfgResult));
                 break;
         }
-        if (login) {
+        if (login && MethodFilter.run("PushPickerIntentService", 5 * 1000)) {
             PushPickerIntentService.start();
             Observable.just(new FetchFeedbackTask(),
                     new FetchFriendsTask(),

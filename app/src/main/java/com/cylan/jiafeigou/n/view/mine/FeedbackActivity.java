@@ -262,7 +262,7 @@ public class FeedbackActivity extends BaseFullScreenFragmentActivity<FeedBackCon
         });
         KPSwitchConflictUtil.attach(panelRoot, mEtSuggestion,
                 switchToPanel -> {
-                    AppLogger.d("KPSwitchConflictUtil:" + switchToPanel);
+                    AppLogger.w("KPSwitchConflictUtil:" + switchToPanel);
                     if (switchToPanel) {
                         mEtSuggestion.clearFocus();
                     } else {

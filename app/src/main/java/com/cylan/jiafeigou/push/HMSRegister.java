@@ -36,7 +36,7 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
 
     @Override
     public void onConnected() {
-        AppLogger.d(PUSH_TAG + "华为推送连接成功");
+        AppLogger.w(PUSH_TAG + "华为推送连接成功");
         HuaweiPush.HuaweiPushApi.getToken(client).setResultCallback(result -> {
 //此处不需要handle  token,token会在 HuaweiPushReceiver#onToken回调
 //            AppLogger.d(PUSH_TAG + "token:" + result.getTokenRes().getToken());
@@ -45,15 +45,15 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
 
     @Override
     public void onConnectionSuspended(int i) {
-        AppLogger.d(PUSH_TAG + "onConnectionSuspended" + i);
+        AppLogger.w(PUSH_TAG + "onConnectionSuspended" + i);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
         if (result.getErrorCode() == 1) {
-            AppLogger.d(PUSH_TAG + "未安装华为推送服务");
+            AppLogger.w(PUSH_TAG + "未安装华为推送服务");
         }
-        AppLogger.d(PUSH_TAG + "华为推送连接失败:" + result.getErrorCode());
+        AppLogger.e(PUSH_TAG + "华为推送连接失败:" + result.getErrorCode());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        AppLogger.d(PUSH_TAG + "正在初始化华为推送SDK");
+        AppLogger.w(PUSH_TAG + "正在初始化华为推送SDK");
         client = new HuaweiApiClient.Builder(getApplicationContext())
                 .addApi(HuaweiPush.PUSH_API)
                 .addConnectionCallbacks(this)

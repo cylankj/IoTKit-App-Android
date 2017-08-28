@@ -76,7 +76,7 @@ public interface PanoramaAlbumContact {
             String[] split = name.split("\\.");
             type = TextUtils.equals("mp4", split[1]) ? PANORAMA_ITEM_TYPE.TYPE_VIDEO : PANORAMA_ITEM_TYPE.TYPE_PICTURE;
             if (type == PANORAMA_ITEM_TYPE.TYPE_PICTURE) {
-                time = Integer.parseInt(split[0]);
+                time = Integer.parseInt(split[0].split("_")[0]);
             } else if (type == PANORAMA_ITEM_TYPE.TYPE_VIDEO) {
                 String[] strings = split[0].split("_");
                 time = Integer.parseInt(strings[0]);
@@ -92,6 +92,10 @@ public interface PanoramaAlbumContact {
 
         public static String getTaskKey(String uuid, String fileName) {
             return uuid + "/images/" + fileName;
+        }
+
+        public static String getMessageTaskKey(String uuid, String fileName) {
+            return uuid + ":" + fileName;
         }
 
         public static boolean accept(String account, String uuid, String filePath) {

@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
@@ -47,6 +48,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private int battery;
     private boolean notifyBatteryLow = true;
     private boolean isRecording = false;
+    private boolean hasSDCard;
 
     @Override
     public boolean isApiAvailable() {
@@ -55,10 +57,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
+    public void onViewAttached(PanoramaCameraContact.View view) {
+        super.onViewAttached(view);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+
+        hasSDCard = status.hasSdcard;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         BaseDeviceInformationFetcher.getInstance().init(uuid);
-        DataSourceManager.getInstance().syncAllProperty();
+        DataSourceManager.getInstance().syncAllProperty(uuid);
     }
 
     @Override
@@ -112,6 +124,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     AppLogger.e("监听到网络状态发生变化");
+                    BaseDeviceInformationFetcher.getInstance().init(uuid);
                     if (event.mobile != null && event.mobile.isConnected()) {
                         mView.onRefreshConnectionMode(event.mobile.getType());
                     } else if (event.wifi != null && event.wifi.isConnected()) {
@@ -162,25 +175,38 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     try {
                         for (JFGDPMsg msg : result.dpList) {
                             //屏蔽掉204 消息
-                            if (msg.id == 222 ) {//? 204 或者 222?
-                                DpMsgDefine.DPSdStatus status = null;
+                            if (msg.id == 222) {//? 204 或者 222?
+                                DpMsgDefine.DPSdcardSummary sdcardSummary = null;
                                 try {
-                                    status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                    sdcardSummary = unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                                 } catch (Exception e) {
-                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
-                                    status = new DpMsgDefine.DPSdStatus();
-                                    status.total = statusInt.total;
-                                    status.used = statusInt.used;
-                                    status.err = statusInt.err;
-                                    status.hasSdcard = statusInt.hasSdcard == 1;
+//                                    DpMsgDefine.DPSdStatusInt statusInt = unpackData(msg.packValue, DpMsgDefine.DPSdStatusInt.class);
+//                                    status = new DpMsgDefine.DPSdStatus();
+//                                    status.total = statusInt.total;
+//                                    status.used = statusInt.used;
+//                                    status.err = statusInt.err;
+//                                    status.hasSdcard = statusInt.hasSdcard == 1;
                                 }
-                                AppLogger.e("204:" + new Gson().toJson(status));
-                                if (status != null && !status.hasSdcard) {//SDCard 不存在
+                                AppLogger.e("204:" + new Gson().toJson(sdcardSummary));
+                                if (sdcardSummary != null && !sdcardSummary.hasSdcard && hasSDCard) {//SDCard 不存在
+                                    mView.onReportDeviceError(2004, true);
+                                } else if (sdcardSummary != null && sdcardSummary.errCode != 0) {//SDCard 需要格式化
+//                                    mView.onReportDeviceError(2022, true);//只有SD 卡不存在才弹
+                                }
+                                hasSDCard = sdcardSummary != null && sdcardSummary.hasSdcard;
+//                                shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
+                            } else if (msg.id == 204) {
+                                // TODO: 2017/8/17 AP 模式下发的是204 消息,需要特殊处理
+                                Device device = DataSourceManager.getInstance().getDevice(uuid);
+//                                if (JFGRules.isAPDirect(uuid, device.$(202, ""))) {
+                                DpMsgDefine.DPSdStatus status = unpackData(msg.packValue, DpMsgDefine.DPSdStatus.class);
+                                if (status != null && !status.hasSdcard && hasSDCard) {//SDCard 不存在
                                     mView.onReportDeviceError(2004, true);
                                 } else if (status != null && status.err != 0) {//SDCard 需要格式化
-                                    mView.onReportDeviceError(2022, true);
+//                                    mView.onReportDeviceError(2022, true);
                                 }
-//                                shouldRefreshRecord = status != null && status.hasSdcard && status.err == 0;
+                                hasSDCard = status != null && status.hasSdcard;
+//                                }
                             } else if (msg.id == 205) {
                                 boolean charge = unpackData(msg.packValue, boolean.class);
                                 if (charge) {
@@ -201,6 +227,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     notifyBatteryLow = true;
                                 }
                                 AppLogger.e("battery:" + battery);
+                            } else if (msg.id == 201) {
+                                DpMsgDefine.DPNet dpNet = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPNet.class);
+
+                                if (dpNet != null && dpNet.net > 0) {
+                                    mView.onDeviceOnLine();
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -210,19 +242,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     AppLogger.e(e.getMessage());
                 });
     }
-//
-//    private Subscription getApiMonitorSub() {
-//        return RxBus.getCacheInstance().toObservable(RxEvent.PanoramaApiAvailable.class)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(ret -> {
-//                    if (ret.ApiType < 0) {
-////                        mView.onRefreshControllerView(false, false);
-//                    } else {
-////                        mView.onRefreshControllerView(true, false);
-//                        checkAndInitRecord();
-//                    }
-//                }, AppLogger::e);
-//    }
 
     @Override
     public void makePhotograph() {
@@ -235,15 +254,15 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_PICTURE, true, false);
                         mView.onRefreshControllerViewVisible(true);
                         if (msgFileRsp.files != null && msgFileRsp.files.size() > 0) {
-                            if (BasePanoramaApiHelper.getInstance().getDeviceIp() != null) {
-                                mView.onShowPreviewPicture(null);
-                            } else {
-                                mView.onShowPreviewPicture(null);
-                                // TODO: 2017/8/7  显示可以公网查看视频了所以不弹这个提示了
-//                                mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
+                            mView.onShowPreviewPicture(null);
+                            if (BasePanoramaApiHelper.getInstance().getDeviceIp() == null) {
+                                mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                             }
                         }
                     } else {
+                        if (msgFileRsp.ret == 2004) {
+                            hasSDCard = false;
+                        }
                         mView.onReportDeviceError(msgFileRsp.ret, false);
                     }
                     AppLogger.d("拍照返回结果为:" + new Gson().toJson(msgFileRsp));
@@ -266,6 +285,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         }
 
         subscribe = BasePanoramaApiHelper.getInstance().getUpgradeStatus(uuid)
+                .onErrorResumeNext(Observable.just(null))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> {
@@ -277,8 +297,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return !isUpgrade;
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus(uuid))
-                .timeout(30, TimeUnit.SECONDS)
+                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getRecStatus(uuid).onErrorResumeNext(Observable.just(null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rsp -> {
                     if (rsp != null && rsp.ret == 0 && rsp.videoType != 3) {//检查录像状态
@@ -302,19 +321,6 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return ret;
                 })
                 .observeOn(Schedulers.io())
-//                .flatMap(ret -> BasePanoramaApiHelper.getInstance().getSdInfo())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(ret -> {
-//                    if (ret != null && !ret.sdIsExist) {//SDCard 不存在
-////                        mView.onReportDeviceError(2004);
-//                        shouldRefreshRecord = false;
-//                    } else if (ret != null && ret.sdcard_recogntion != 0) {//SDCard 需要格式化
-////                        mView.onReportDeviceError(2022);
-//                        shouldRefreshRecord = false;
-//                    }
-//                    return ret;
-//                })
-//                .observeOn(Schedulers.io())
                 .flatMap(ret -> BasePanoramaApiHelper.getInstance().getPowerLine(uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
@@ -331,7 +337,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                 Device device = sourceManager.getDevice(uuid);
                                 DPEntity property = device.getProperty(206);
                                 if (property == null) {
-                                    device.getEmptyProperty(206);
+                                    property = device.getEmptyProperty(206);
                                 }
                                 property.setValue(new DpMsgDefine.DPPrimary<>(this.battery), pack(this.battery), property.getVersion());
                                 if (bat.battery <= 20 && isFirst) {//检查电量
@@ -403,6 +409,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 //                        }
                     } else {
 //                        shouldRefreshRecord = false;
+                        if (rsp.ret == 2004) {
+                            hasSDCard = false;
+                        }
                         mView.onReportDeviceError(rsp.ret, false);
                     }
                 }, e -> {
@@ -427,6 +436,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             mView.onReportDeviceError(ERROR_CODE_HTTP_NOT_AVAILABLE, true);
                         }
                     } else {//失败了
+                        if (ret.ret == 2004) {
+                            hasSDCard = false;
+                        }
                         mView.onReportDeviceError(ret.ret, false);
                     }
                     AppLogger.d("停止直播返回结果为:" + new Gson().toJson(ret));

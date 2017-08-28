@@ -44,10 +44,13 @@ public final class DpMsgMap {
     public static final int ID_303_DEVICE_AUTO_VIDEO_RECORD = 303;
 
     public static final int ID_402_BELL_VOICE_MSG = 402;
+    public static final int ID_404_BELL_DEEP_SLEEP = 404;
     public static final int ID_511_CAMERAWARNANDWONDER = 511;
     public static final int ID_510_CAMERA_COORDINATE = 510;
 
     public static final int ID_218_DEVICE_FORMAT_SDCARD = 218;
+
+    public static final int ID_305_VIEW_VIDEO_RECORD = 305;
 
     public static final int ID_219_DEVICE_BIND_LOG = 219;
 
@@ -62,6 +65,8 @@ public final class DpMsgMap {
     public static final int ID_215_DEVICE_RTMP = 215;
 
     public static final int ID_222_SDCARD_SUMMARY = 222;
+    public static final int ID_225_IS_EXIST_NET_WIRED = 225;
+    public static final int ID_226_IS_NET_WIRED = 226;
 
     public static final int ID_301_DEVICE_MIC = 301;
 

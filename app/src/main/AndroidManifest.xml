@@ -243,7 +243,7 @@
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:keepScreenOn="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -319,13 +319,13 @@
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:theme" />
-        <!--<activity-->
-        <!--android:name=".n.view.panorPanoramaCameraActivityment"-->
-        <!--android:configChanges="locale|orientation|keyboardHidden"-->
-        <!--android:launchMode="singleTask"-->
-        <!--android:screenOrientation="portrait"-->
-        <!--android:theme="@style/CamActivityTheme"-->
-        <!--android:windowSoftInputMode="adjustPan|stateHidden" />-->
+        <!-- <activity -->
+        <!-- android:name=".n.view.panorPanoramaCameraActivityment" -->
+        <!-- android:configChanges="locale|orientation|keyboardHidden" -->
+        <!-- android:launchMode="singleTask" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:theme="@style/CamActivityTheme" -->
+        <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -711,15 +711,16 @@
             android:name=".n.view.mine.ShareContentWebH5Activity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/CamActivityTheme" />
-        <!--<activity-->
-        <!--android:name=".n.view.panorama.CameraMainActivity"-->
-        <!--android:configChanges="locale|orientation|keyboardHidden"-->
-        <!--android:launchMode="singleTask"-->
-        <!--android:screenOrientation="portrait"-->
-        <!--android:theme="@style/CamActivityTheme"-->
-        <!--android:windowSoftInputMode="adjustPan|stateHidden">-->
+        <!-- <activity -->
+        <!-- android:name=".n.view.panorama.CameraMainActivity" -->
+        <!-- android:configChanges="locale|orientation|keyboardHidden" -->
+        <!-- android:launchMode="singleTask" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:theme="@style/CamActivityTheme" -->
+        <!-- android:windowSoftInputMode="adjustPan|stateHidden"> -->
 
-        <!--</activity>-->
+
+        <!-- </activity> -->
         <activity
             android:name=".n.view.panorama.ConnectionActivity"
             android:configChanges="locale|orientation|keyboardHidden"
@@ -748,6 +749,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service
+            android:name=".server.MyService"
+            android:enabled="false"
+            android:exported="false"></service>
     </application>
 
 </manifest>

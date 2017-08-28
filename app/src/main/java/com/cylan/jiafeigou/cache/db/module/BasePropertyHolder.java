@@ -4,20 +4,31 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.server.cache.CacheHolderKt;
+import com.cylan.jiafeigou.server.cache.PropertyItem;
 
 import java.util.ArrayList;
 
+import io.objectbox.Box;
+
 /**
  * Created by yanzhendong on 2017/3/25.
+ *
+ * @Deprecated Use Device Instead
  */
-
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
+
+    @Deprecated //使用 ValueResolver 来解析,反射效率比较低
     protected transient IPropertyParser propertyParser;
+
     protected transient SparseArray<DPEntity> properties = new SparseArray<>();
+
     private static final Object lock = new Object();
 
     protected abstract int pid();
@@ -27,22 +38,33 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      * @param defaultValue
      * @param <V>
      * @return
+     * @deprecated
      */
     public <V> V $(int msgId, V defaultValue) {
-        synchronized (lock) {
-            try {
-                DPEntity entity = getProperty(msgId);
-                V result = entity == null ? null : entity.getValue(defaultValue);
-                result = result == null ? defaultValue : result;
-                if (result != null && defaultValue != null && defaultValue.getClass().isInstance(result)) {
-                    return result;
-                }
-                return defaultValue;
-            } catch (Throwable e) {
-                AppLogger.e("unpack err::" + msgId);
-                return defaultValue;
-            }
+
+        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
+        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
+        V cast = null;
+        if (item != null) {
+            cast = item.cast(defaultValue);
+            Log.i(JConstant.CYLAN_TAG, "item cast :" + cast.toString());
         }
+        return cast == null ? defaultValue : cast;
+
+//        synchronized (lock) {
+//            try {
+//                DPEntity entity = getProperty(msgId);
+//                V result = entity == null ? null : entity.getValue(defaultValue);
+//                result = result == null ? defaultValue : result;
+//                if (result != null && defaultValue != null && defaultValue.getClass().isInstance(result)) {
+//                    return result;
+//                }
+//                return defaultValue;
+//            } catch (Throwable e) {
+//                AppLogger.e("unpack err::" + msgId);
+//                return defaultValue;
+//            }
+//        }
     }
 
     @Override
@@ -52,7 +74,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Override
     public final ArrayList<JFGDPMsg> getQueryParams() {
-        return propertyParser.getQueryParameters(pid());
+        return BasePropertyParser.getInstance().getQueryParameters(pid());
     }
 
     @Override
@@ -62,7 +84,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Override
     public ArrayList<JFGDPMsg> getQueryParameters(int pid, int level) {
-        return propertyParser.getQueryParameters(pid(), level);
+        return BasePropertyParser.getInstance().getQueryParameters(pid(), level);
     }
 
     @Override
@@ -77,14 +99,15 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
         return property != null && property.setValue(value, value == null ? null : value.toBytes(), value == null ? 0 : value.getVersion());
     }
 
+    @Deprecated
     public DPEntity getProperty(int msgId) {
-        if (propertyParser == null || !propertyParser.accept(pid(), msgId)) return null;
+        if (BasePropertyParser.getInstance().accept(pid(), msgId)) return null;
         return properties.get(msgId);
     }
 
     @Override
     public void updateProperty(int msgId, DPEntity entity) {
-        if (!propertyParser.accept(pid(), msgId)) return;
+        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) return;
         Log.d("updateProperty", "updateProperty:" + msgId + "," + (entity == null ? "" : entity.getUuid()));
         properties.put(msgId, entity);
     }

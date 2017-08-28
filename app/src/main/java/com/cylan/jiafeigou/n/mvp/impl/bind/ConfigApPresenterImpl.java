@@ -92,15 +92,15 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(Schedulers.io())
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    AppLogger.d(BIND_TAG + "last state");
+                    AppLogger.w(BIND_TAG + "last state");
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
                     if (device.available()) {
                         device.setValue(201, new DpMsgDefine.DPNet());//先清空防止过早绑定成功
                     }
                     if (aFullBind != null) {
-                        AppLogger.d("setServerLanguage");
+                        AppLogger.w("setServerLanguage");
                         aFullBind.setServerLanguage(udpDevicePortrait);
-                        AppLogger.d("sendWifiInfo");
+                        AppLogger.w("sendWifiInfo");
                         aFullBind.sendWifiInfo(ssid, pwd, type);
                     }
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
@@ -117,7 +117,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     String mac = device.$(202, "");
                     aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
                             .subscribe(ret -> {
-                                AppLogger.d("already send info");
+                                AppLogger.w("already send info");
                                 getView().onSetWifiFinished(aFullBind.getDevicePortrait());
                                 //需要恢复网络.
                                 MiscUtils.recoveryWiFi();
@@ -131,12 +131,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
                     getView().onSetWifiFinished(null);
-                    AppLogger.d("发送配置成功");
+                    AppLogger.w("发送配置成功");
                 }, throwable -> {
-                    AppLogger.d("err:" + throwable.getLocalizedMessage());
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
                     if (throwable instanceof TimeoutException) {
                         getView().sendWifiInfoFailed();
-                        AppLogger.d("发送配置失败");
+                        AppLogger.e("发送配置失败");
                     }
                 });
     }
@@ -168,11 +168,11 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .delay(1, TimeUnit.SECONDS)
                 //网络为3
                 .filter(udpDevicePortrait -> {
-                    AppLogger.d(UdpConstant.BIND_TAG + new Gson().toJson(udpDevicePortrait));
+                    AppLogger.w(UdpConstant.BIND_TAG + new Gson().toJson(udpDevicePortrait));
                     return udpDevicePortrait != null && udpDevicePortrait.net > 1;
                 })
                 .map(udpDevicePortrait -> {
-                    AppLogger.d(UdpConstant.BIND_TAG + "initSubscription bind 3g last state");
+                    AppLogger.w(UdpConstant.BIND_TAG + "initSubscription bind 3g last state");
                     if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo("", "", 0);
@@ -182,7 +182,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .doOnCompleted(() -> {
-                    AppLogger.d("取消loading");
+                    AppLogger.w("取消loading");
                     mView.check3gFinish();
                 })
                 .subscribe(result -> {

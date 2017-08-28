@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.server.cache.CacheHolderKt;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -70,6 +71,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //            }
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
+
+//        CacheHolderKt.saveDevices(jfgDevices);
     }
 
     @Override
@@ -142,6 +145,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnRobotGetDataRsp :" + gson.toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
+
+
+//        CacheHolderKt.saveProperty(robotoGetDataRsp.identity, (Map<Integer, List<?>>) (Object) robotoGetDataRsp.map, null);
     }
 
     @Override
@@ -173,9 +179,11 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnlineStatus(boolean b) {
-        AppLogger.d("OnlineStatus :" + b);
-        RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
-        BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
+        if (b != BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+            AppLogger.d("OnlineStatus :" + b);
+            RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
+            BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
+        }
     }
 
     @Override
@@ -211,6 +219,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
+
+        /*过渡性使用,将来会废弃*/
+        CacheHolderKt.saveProperty(s, arrayList, null);
     }
 
     @Override
@@ -370,12 +381,31 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnRobotCountMultiDataRsp(long l, Object o) {
+
+
         AppLogger.d("OnRobotCountMultiDataRsp:" + o.toString());
     }
 
     @Override
     public void OnRobotGetMultiDataRsp(long l, Object o) {
         AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
+
+//        ObjectMapper mapper = CacheHolderKt.getObjectMapper().get();
+//
+//        try {
+//            byte[] asBytes = mapper.writeValueAsBytes(o);
+//
+//            TypeReference<Map<String, Map<Long, List<JFGDPValue>>>> typeReference = new TypeReference<Map<String, Map<Long, List<JFGDPValue>>>>() {
+//            };
+//            Object v = mapper.readValue(asBytes, typeReference);
+//
+//            Log.e("AAAA", "value is" + v);
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         if (o != null && o instanceof HashMap) {
             HashMap<String, HashMap<Long, JFGDPValue[]>> rawMap = (HashMap<String, HashMap<Long, JFGDPValue[]>>) o;
             Set<String> set = rawMap.keySet();
@@ -400,6 +430,8 @@ public class BaseAppCallBackHolder implements AppCallBack {
                 }
                 RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(rsp));
             }
+
+//            CacheHolderKt.saveProperty((Map<String, Map<Long, JFGDPValue[]>>) (Object) rawMap, HashStrategyFactory.INSTANCE::select);
             Log.d("OnRobotGetMultiDataRsp", "size: " + count);
         }
     }
@@ -470,6 +502,13 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUniversalDataRsp(long l, int i, byte[] bytes) {
+        try {
+            Object value = CacheHolderKt.getObjectMapper().get().readValue(bytes, Object.class);
+            Log.i(JConstant.CYLAN_TAG, "OnUniversalDataRsp:" + value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         RxBus.getCacheInstance().post(new RxEvent.UniversalDataRsp(l, i, bytes));
     }
 

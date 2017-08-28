@@ -3,8 +3,10 @@ package com.cylan.jiafeigou.widget.video;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.cylan.jiafeigou.misc.pty.PropertiesLoader;
 import com.cylan.panorama.CameraParam;
 
 import org.webrtc.videoengine.ViEAndroidGLES20;
@@ -66,7 +68,7 @@ public class VideoViewFactory {
         /**
          * 截图
          */
-        void takeSnapshot();
+        void takeSnapshot(boolean tag);
 
         void performTouch();
 
@@ -130,23 +132,31 @@ public class VideoViewFactory {
     }
 
     /**
-     * @param viewType 0:normalView 1:PanoramicView 2:鱼缸 view
+     * @param pid:normalView 1:PanoramicView 2:鱼缸 view
      */
-    public static IVideoView CreateRendererExt(int viewType, Context context, boolean useOpenGLES2) {
-        switch (viewType) {
-            case 0:
-                return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context) ? new ViEAndroidGLES20_Ext(context) : new SurfaceView_Ext(context));
-            case 1:
-                return new PanoramicView360_Ext(context);
-            case 2:
-                return null;
+    public static IVideoView CreateRendererExt(int pid, Context context) {
+        PropertiesLoader loader = PropertiesLoader.getInstance();
+        String view_mode = loader.property(pid, "VIEW_MODE");
+        String view = loader.property(pid, "VIEW");
+        if (!TextUtils.isEmpty(view_mode) && TextUtils.equals(view_mode, "1")) {
+            return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_PANORAMA_360_RS, context, true);
+        } else if (!TextUtils.isEmpty(view) && view.contains("圆形")) {
+            return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_PANORAMA_360, context, true);
+        } else if (!TextUtils.isEmpty(view) && view.contains("鱼缸")) {
+            return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_PANORAMA_360_RS, context, true);
         }
-        return null;
+        return CreateRendererExt(RENDERER_VIEW_TYPE.TYPE_DEFAULT, context, true);
     }
 
 
+//    public static float getRendererVideoRadio(int pid, int expectWidth, int expectHeight, boolean land) {
+//        float ratio = isNormalView ? (isLand() ? getLandFillScreen() : (float) resolution.height / resolution.width) :
+//                isLand() ? (float) Resources.getSystem().getDisplayMetrics().heightPixels /
+//                        Resources.getSystem().getDisplayMetrics().widthPixels : 1.0f;
+//    }
+
     public enum RENDERER_VIEW_TYPE {
-        TYPE_PANORAMA_360, TYPE_PANORAMA_720, TYPE_DEFAULT
+        TYPE_PANORAMA_360, TYPE_PANORAMA_720, TYPE_DEFAULT, TYPE_PANORAMA_360_RS
     }
 
     public static IVideoView CreateRendererExt(RENDERER_VIEW_TYPE view_type, Context context, boolean useOpenGLES2) {
@@ -155,6 +165,8 @@ public class VideoViewFactory {
                 return new PanoramicView360_Ext(context);
             case TYPE_PANORAMA_720:
                 return new PanoramicView720_Ext(context);
+            case TYPE_PANORAMA_360_RS:
+                return new PanoramicView360RS_Ext(context);
             default:
                 return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context) ? new ViEAndroidGLES20_Ext(context) : new SurfaceView_Ext(context));
         }

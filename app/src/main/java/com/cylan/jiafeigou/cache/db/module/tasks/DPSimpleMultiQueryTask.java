@@ -69,7 +69,7 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
             try {
                 String uuid = multiEntity.get(0).getUuid();
                 option = multiEntity.get(0).option(DBOption.SimpleMultiDpQueryOption.class);
-                AppLogger.d("正在发送查询请求,uuid:" + multiEntity.get(0));
+                AppLogger.w("正在发送查询请求,uuid:" + multiEntity.get(0));
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 for (int i = 0; i < multiEntity.size(); i++) {
                     JFGDPMsg msg = new JFGDPMsg(multiEntity.get(i).getMsgId(), multiEntity.get(i).getVersion());
@@ -87,7 +87,7 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .filter(seq -> seq > 0)
                 .flatMap(this::makeGetDataRspResponse)
                 .flatMap(rsp -> {
-                    AppLogger.d("收到从服务器返回数据!!!");
+                    AppLogger.w("收到从服务器返回数据!!!");
                     return performLocal();
                 });
     }

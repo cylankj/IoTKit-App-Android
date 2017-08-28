@@ -45,7 +45,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 })
                 .buffer(multiEntity.size())
                 .flatMap(longs -> {
-                    AppLogger.d("更新server dp: " + longs);
+                    AppLogger.w("更新server dp: " + longs);
                     BaseDPTaskResult result = new BaseDPTaskResult();
                     result.setResultCode(0);
                     result.setResultResponse(longs);
@@ -75,7 +75,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 long seq = appCmd.robotSetData(uuid, list);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
-                AppLogger.d("更新server dp,seq:" + seq + "," + list);
+                AppLogger.w("更新server dp,seq:" + seq + "," + list);
             } catch (Exception e) {
                 AppLogger.e(e.getMessage());
                 subscriber.onError(e);
@@ -84,11 +84,11 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeSetDataRspResponse)
                 .doOnError(throwable -> {
                     if (throwable != null && throwable instanceof TimeoutException) {
-                        AppLogger.d("更新server dp超时:");
+                        AppLogger.w("更新server dp超时:");
                     }
                 })
                 .flatMap(ret -> {
-                    AppLogger.d("更新server dp seq:" + ret.seq);
+                    AppLogger.w("更新server dp seq:" + ret.seq);
                     return Observable.just(SUCCESS);
                 });
     }

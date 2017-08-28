@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -78,6 +79,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public void onNetworkChanged(Context context, Intent intent) {
         String action = intent.getAction();
         if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            BaseDeviceInformationFetcher.getInstance().init(uuid);
             ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
             Observable.just(status)
                     .throttleFirst(500, TimeUnit.MILLISECONDS)
@@ -93,6 +95,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         super.start();
         DataSourceManager.getInstance().syncAllProperty(uuid, 204, 222);
         getView().deviceUpdate(getDevice());
+        if (JFGRules.isPan720(getDevice().pid)) {
+            BaseDeviceInformationFetcher.getInstance().init(uuid);
+            BasePanoramaApiHelper.getInstance().getSdInfo(uuid)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> {
+                        getView().deviceUpdate(getDevice());
+                    }, e -> {
+                        AppLogger.e(e.getMessage());
+                    });
+        }
     }
 
     /**
@@ -492,4 +505,5 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     }
                 }, e -> AppLogger.d(e.getMessage()));
     }
+
 }

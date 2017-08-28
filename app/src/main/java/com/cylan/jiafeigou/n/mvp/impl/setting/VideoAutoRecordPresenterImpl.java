@@ -73,10 +73,8 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                                 }
 
                             } else if (msg.id == 305) {
-                                DpMsgDefine.DPAutoRecordWatcher recordWatcher = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPAutoRecordWatcher.class);
-                                if (recordWatcher != null) {
-                                    getView().onRecordWatcherSync(recordWatcher);
-                                }
+                                boolean recordWatcher = DpUtils.unpackData(msg.packValue, boolean.class);
+                                getView().onRecordWatcherSync(recordWatcher);
                             }
                         }
                     } catch (IOException e) {

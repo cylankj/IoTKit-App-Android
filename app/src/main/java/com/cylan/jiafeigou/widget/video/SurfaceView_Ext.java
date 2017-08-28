@@ -75,7 +75,7 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
     }
 
     @Override
-    public void takeSnapshot() {
+    public void takeSnapshot(boolean tag) {
 
     }
 

@@ -69,6 +69,7 @@ public class PanDeviceVersionChecker extends AbstractVersion<AbstractVersion.Bin
                         .subscribeOn(Schedulers.io())
                         .filter(ret -> ret != null && TextUtils.equals(uuid, ret.getUuid())))
                 .flatMap(ret -> {
+                    setBinVersion(ret.getVersion());
                     BinVersion oldVersion = getVersionFrom(uuid);
                     long time = oldVersion.getLastShowTime();
                     oldVersion = ret.getVersion();

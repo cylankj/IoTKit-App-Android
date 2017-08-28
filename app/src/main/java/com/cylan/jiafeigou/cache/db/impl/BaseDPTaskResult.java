@@ -4,8 +4,9 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 
 /**
  * Created by yanzhendong on 2017/3/2.
+ *
+ * @deprecated 统一解析有很多 bug ,应该尽量自己解析自己需要的数据
  */
-
 public class BaseDPTaskResult implements IDPTaskResult {
 
     public static final BaseDPTaskResult SUCCESS = new BaseDPTaskResult().setResultCode(0);

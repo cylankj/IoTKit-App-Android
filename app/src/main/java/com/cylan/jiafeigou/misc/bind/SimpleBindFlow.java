@@ -270,13 +270,13 @@ public class SimpleBindFlow extends AFullBind {
                     .timeout(3, TimeUnit.SECONDS)
                     .subscribe(ret -> {
                         AppLogger.d(BIND_TAG + "得到fping消息");
-                        UdpConstant.UdpDevicePortrait d = new UdpConstant.UdpDevicePortrait();
-                        d.uuid = ret.cid;
-                        d.mac = ret.mac;
-                        d.version = ret.version;
-                        d.net = pingAck.net;
+                        devicePortrait = new UdpConstant.UdpDevicePortrait();
+                        devicePortrait.uuid = ret.cid;
+                        devicePortrait.mac = ret.mac;
+                        devicePortrait.version = ret.version;
+                        devicePortrait.net = pingAck.net;
                         if (subscriber != null && !subscriber.isUnsubscribed()) {
-                            subscriber.onNext(d);
+                            subscriber.onNext(devicePortrait);
                             subscriber.onCompleted();
                             //结束本身.
                             subscriptionMap.remove("FPingAck");

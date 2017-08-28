@@ -11,12 +11,12 @@
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <com.cylan.jiafeigou.widget.FateLineView
             android:id="@+id/fl_item_time_line"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:paddingLeft="@dimen/x2"
             android:paddingRight="@dimen/x2"
@@ -43,7 +43,7 @@
     <RelativeLayout
         android:id="@+id/rLayout_cam_message"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/x4"
         android:layout_marginTop="@dimen/y14"
         android:orientation="vertical">
@@ -59,15 +59,14 @@
         <LinearLayout
             android:id="@+id/lLayout_cam_msg_pics_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/fLayout_cam_message_item_bottom"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_cam_message_item_date"
             android:layout_marginTop="@dimen/y10"
             android:orientation="horizontal">
 
-            <com.cylan.jiafeigou.widget.AspectRatioImageView
+            <ImageView
                 android:id="@+id/imgV_cam_message_pic0"
-                android:layout_width="@dimen/x161"
+                android:layout_width="@dimen/y161"
                 android:layout_height="@dimen/y120"
                 android:layout_marginEnd="@dimen/x2"
                 android:layout_marginStart="@dimen/x2"
@@ -79,8 +78,8 @@
         <FrameLayout
             android:id="@+id/fLayout_cam_message_item_bottom"
             android:layout_width="match_parent"
+            android:layout_below="@+id/lLayout_cam_msg_pics_container"
             android:layout_height="@dimen/y48"
-            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom">
 
 

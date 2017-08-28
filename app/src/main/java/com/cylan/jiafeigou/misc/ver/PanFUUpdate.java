@@ -97,6 +97,8 @@ public class PanFUUpdate extends BaseFUUpdate {
         try {
             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
             BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.PIP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.Ping().toBytes());
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
             AppLogger.d("send fping :" + UdpConstant.IP);
         } catch (JfgException e) {
             e.printStackTrace();
@@ -119,7 +121,7 @@ public class PanFUUpdate extends BaseFUUpdate {
     private void prepareSending(String remoteIp, int port) {
         String localIp = NetUtils.getReadableIp();
         //需要说明,http_server映射的路径是 /data/data/com.cylan.jiafeigou/files/.200000000086
-        String localUrl = "http://" + localIp + ":8765/temp/" + getWiredContent();
+        String localUrl = "http://" + localIp + ":8765" + getWiredContent();
         AppLogger.d("ip:" + localIp + ",localUrl" + localUrl);
         if (listener != null) listener.upgradeStart();
         resetRspRecv(true);

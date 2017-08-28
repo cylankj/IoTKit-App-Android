@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        AppLogger.d("执行删除:");
+        AppLogger.w("执行删除:");
         if (!sourceManager.isOnline()) {
             return Observable.just(new BaseDPTaskResult().setResultCode(-1).setMessage("当前网络无法发生请求到服务器"));
         }
@@ -34,7 +34,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            AppLogger.d("正在执行批量删除操作, uuid 为:" + entity.getUuid());
+            AppLogger.w("正在执行批量删除操作, uuid 为:" + entity.getUuid());
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             JFGDPMsg msg;
             for (IDPEntity entity : multiEntity) {
@@ -49,7 +49,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
             } catch (JfgException e) {
                 e.printStackTrace();
                 subscriber.onCompleted();
-                AppLogger.d("执行 task 出错了 ,错误信息为:" + e.getMessage());
+                AppLogger.e("执行 task 出错了 ,错误信息为:" + e.getMessage());
             }
         })//1491922972000
                 .subscribeOn(Schedulers.io())
