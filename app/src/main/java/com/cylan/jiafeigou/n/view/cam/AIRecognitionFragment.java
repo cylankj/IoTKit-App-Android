@@ -160,11 +160,11 @@ public class AIRecognitionFragment extends BaseFragment<AIRecognitionContact.Pre
         super.onDetach();
         if (callBack != null) {
             Set<Integer> selections = itemAdapter.getSelections();
+            int[] result = new int[selections.size()];
 
-
-            List<Integer> result = new ArrayList<>(selections.size());
-            for (Integer integer : selections) {
-                result.add(itemAdapter.getItem(integer).objType);
+            Object[] objects = selections.toArray();
+            for (int i = 0; i < objects.length; i++) {
+                result[i] = itemAdapter.getItem((Integer) objects[i]).objType;
             }
             callBack.callBack(result);
         }

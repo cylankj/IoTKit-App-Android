@@ -49,7 +49,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public static BoxStore getBoxStore() {
         return boxStore;
     }
-//
+
+    //
     public static Box<PropertyItem> getPropertyItemBox() {
         return propertyItemBox;
     }
@@ -128,6 +129,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         viewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
         cancelReportTask();
+        RxBus.getCacheInstance().post(new RxEvent.ActivityStartEvent());
     }
 
     @Override

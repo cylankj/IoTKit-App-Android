@@ -12,7 +12,6 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 import org.msgpack.annotation.Optional;
 
-import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -565,7 +564,7 @@ public class DpMsgDefine {
         public String tly;//全景设备陀螺仪。'0'俯视, '1' 平视。
         @Index(5)
         @Optional
-        public List<Integer> objects;
+        public int[] objects;
         @Ignore
         public static DPAlarm empty = new DPAlarm();
 

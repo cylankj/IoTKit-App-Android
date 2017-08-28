@@ -35,7 +35,6 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -46,6 +45,8 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -76,6 +77,7 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Subscription;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
@@ -139,6 +141,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private boolean isAnswerd = false;
     private boolean isSpeakerON = false;
+    private Subscription subscribe;
 
 
     @Override
@@ -295,6 +298,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         caller.callTime = time;
         presenter.newCall(caller);
         parse(getIntent());
+        playSoundEffect();
+        muteAudio(true);
     }
 
     @Override
@@ -319,14 +324,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        if (mediaPlayer != null) {
 //            mediaPlayer.start();
 //        }
-        if (!isAnswerd) {
-            playSoundEffect();
-        } else {
-            presenter.startViewer();
-        }
+//        if (!isAnswerd) {
+//            playSoundEffect();
+//        } else {
+//            presenter.startViewer();
+//        }
+        MediaPlayerManager.getInstance().setVoice(1);
         landBack.setVisibility(isLand() ? View.VISIBLE : View.GONE);
         customToolbar.setVisibility(isLand() ? View.GONE : View.VISIBLE);
-        muteAudio(true);
+
     }
 
     @Override
@@ -338,20 +344,29 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            mediaPlayer.release();
 //            mediaPlayer = null;
 //        }
-        onShowVideoPreviewPicture(BaseBellCallEventListener.getInstance().getUrl(uuid));
-        MediaPlayerManager.getInstance().stop();
-        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
-            ((GLSurfaceView) mSurfaceView).onPause();
-            mVideoViewContainer.removeAllViews();
-            mSurfaceView = null;
-            AppLogger.d("finish manually");
+        MediaPlayerManager.getInstance().setVoice(0);
+//        onShowVideoPreviewPicture(BaseBellCallEventListener.getInstance().getUrl(uuid));
+//        MediaPlayerManager.getInstance().stop();
 
-            presenter.cancelViewer();
-        }
-//        else {
-//            finish();
+//        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+//            ((GLSurfaceView) mSurfaceView).onPause();
+//            mVideoViewContainer.removeAllViews();
+//            mSurfaceView = null;
+//            AppLogger.d("finish manually");
+//
+//            presenter.cancelViewer();
 //        }
-        muteAudio(false);
+////        else {
+////            finish();
+////        }
+//        muteAudio(false);
+
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
+        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ActivityStartEvent.class).subscribe(ret -> {
+            finish();
+        }, AppLogger::e);
     }
 
     @Override
@@ -836,7 +851,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            mediaPlayer.release();
 //            mediaPlayer = null;
 //        }
-//        MediaPlayerManager.getInstance().stop();
+        MediaPlayerManager.getInstance().stop();
         finishExt();
         if (isTaskRoot()) {
             Intent intent = new Intent(this, NewHomeActivity.class);

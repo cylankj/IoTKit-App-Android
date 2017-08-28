@@ -8,14 +8,9 @@ import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.server.cache.CacheHolderKt;
-import com.cylan.jiafeigou.server.cache.PropertyItem;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
-
-import io.objectbox.Box;
 
 /**
  * Created by yanzhendong on 2017/3/25.
@@ -42,29 +37,29 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
      */
     public <V> V $(int msgId, V defaultValue) {
 
-        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
-        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
-        V cast = null;
-        if (item != null) {
-            cast = item.cast(defaultValue);
-            Log.i(JConstant.CYLAN_TAG, "item cast :" + cast.toString());
-        }
-        return cast == null ? defaultValue : cast;
-
-//        synchronized (lock) {
-//            try {
-//                DPEntity entity = getProperty(msgId);
-//                V result = entity == null ? null : entity.getValue(defaultValue);
-//                result = result == null ? defaultValue : result;
-//                if (result != null && defaultValue != null && defaultValue.getClass().isInstance(result)) {
-//                    return result;
-//                }
-//                return defaultValue;
-//            } catch (Throwable e) {
-//                AppLogger.e("unpack err::" + msgId);
-//                return defaultValue;
-//            }
+//        Box<PropertyItem> box = BaseApplication.getPropertyItemBox();
+//        PropertyItem item = box.get(CacheHolderKt.msgIdKey(uuid(), msgId));
+//        V cast = null;
+//        if (item != null) {
+//            cast = item.cast(defaultValue);
+//            Log.i(JConstant.CYLAN_TAG, "item cast :" + cast.toString());
 //        }
+//        return cast == null ? defaultValue : cast;
+
+        synchronized (lock) {
+            try {
+                DPEntity entity = getProperty(msgId);
+                V result = entity == null ? null : entity.getValue(defaultValue);
+                result = result == null ? defaultValue : result;
+                if (result != null && defaultValue != null && defaultValue.getClass().isInstance(result)) {
+                    return result;
+                }
+                return defaultValue;
+            } catch (Throwable e) {
+                AppLogger.e("unpack err::" + msgId);
+                return defaultValue;
+            }
+        }
     }
 
     @Override
@@ -101,7 +96,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Deprecated
     public DPEntity getProperty(int msgId) {
-        if (BasePropertyParser.getInstance().accept(pid(), msgId)) return null;
+        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) return null;
         return properties.get(msgId);
     }
 

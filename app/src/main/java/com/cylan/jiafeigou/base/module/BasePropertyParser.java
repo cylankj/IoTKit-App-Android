@@ -68,6 +68,13 @@ public class BasePropertyParser implements IPropertyParser {
     public static BasePropertyParser instance;
 
     public static BasePropertyParser getInstance() {
+        if (instance == null) {
+            synchronized (BasePropertyParser.class) {
+                if (instance == null) {
+                    instance = new BasePropertyParser();
+                }
+            }
+        }
         return instance;
     }
 

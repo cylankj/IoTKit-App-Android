@@ -33,7 +33,7 @@ public class MediaPlayerManager {
     }
 
 
-    public void play() {
+    public synchronized void play() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.release();
             mediaPlayer = null;
@@ -43,11 +43,17 @@ public class MediaPlayerManager {
         mediaPlayer.start();
     }
 
-    public void stop() {
+    public synchronized void stop() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.setVolume(0, 0);
             mediaPlayer.release();
             mediaPlayer = null;
+        }
+    }
+
+    public synchronized void setVoice(int i) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(i, i);
         }
     }
 }

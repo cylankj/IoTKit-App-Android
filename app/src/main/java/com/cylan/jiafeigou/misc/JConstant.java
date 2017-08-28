@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -165,13 +164,13 @@ public class JConstant {
     public static final int OBJECT_CAR = 4;
 
 
-    public static String getAIText(List<Integer> objects) {
+    public static String getAIText(int[] objects) {
         StringBuilder result = new StringBuilder();
 
         if (objects != null) {
-            int length = objects.size();
+            int length = objects.length;
             for (int i = 0; i < length; i++) {
-                int obj = objects.get(i);
+                int obj = objects[i];
                 switch (obj) {
                     case JConstant.OBJECT_MAN: {
                         result.append(ContextUtils.getContext().getString(R.string.AI_HUMAN));
