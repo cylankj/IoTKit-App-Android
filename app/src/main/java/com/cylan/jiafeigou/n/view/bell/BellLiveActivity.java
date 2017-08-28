@@ -10,7 +10,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -131,7 +130,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private boolean isLandMode = false;
     //    private boolean isLanchFromBellCall = false;
-    private MediaPlayer mediaPlayer;
+//    private MediaPlayer mediaPlayer;
     private RoundCardPopup roundCardPopup;
     @Inject
     JFGSourceManager sourceManager;
@@ -322,12 +321,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onPause() {
         super.onPause();
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.setVolume(0, 0);
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//            mediaPlayer.setVolume(0, 0);
+//            mediaPlayer.stop();
+//            mediaPlayer.release();
+//            mediaPlayer = null;
+//        }
+        MediaPlayerManager.getInstance().stop();
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
@@ -342,12 +342,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStop() {
         super.onStop();
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.setVolume(0, 0);
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//            mediaPlayer.setVolume(0, 0);
+//            mediaPlayer.stop();
+//            mediaPlayer.release();
+//            mediaPlayer = null;
+//        }
+        MediaPlayerManager.getInstance().stop();
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
@@ -436,16 +437,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onRelease(int side) {
         if (side == 0) {
-            if (mediaPlayer != null) {
-                mediaPlayer.setVolume(0, 0);
-                mediaPlayer.stop();
-            }
+//            if (mediaPlayer != null) {
+//                mediaPlayer.setVolume(0, 0);
+//                mediaPlayer.stop();
+//            }
+            MediaPlayerManager.getInstance().stop();
             presenter.dismiss();
         } else {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                mediaPlayer.setVolume(0, 0);
-                mediaPlayer.stop();
-            }
+//            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//                mediaPlayer.setVolume(0, 0);
+//                mediaPlayer.stop();
+//            }
+            MediaPlayerManager.getInstance().stop();
             presenter.pickup();
         }
     }
@@ -808,11 +811,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onDismiss() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//            mediaPlayer.stop();
+//            mediaPlayer.release();
+//            mediaPlayer = null;
+//        }
+        MediaPlayerManager.getInstance().stop();
         finishExt();
         if (isTaskRoot()) {
             Intent intent = new Intent(this, NewHomeActivity.class);
@@ -876,12 +880,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void playSoundEffect() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.release();
-        }
-        mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//            mediaPlayer.release();
+//        }
+//        mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
+//        mediaPlayer.setLooping(true);
+//        mediaPlayer.start();
+        MediaPlayerManager.getInstance().play();
     }
 
     private final AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
