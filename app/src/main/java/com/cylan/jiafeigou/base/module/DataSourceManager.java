@@ -44,7 +44,6 @@ import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.server.PAGE_MESSAGE;
 import com.cylan.jiafeigou.server.cache.CacheHolderKt;
 import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -424,24 +423,25 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void syncHomeProperty() {
         if (mCachedDeviceMap.size() == 0) return;
-        HashMap<String, JFGDPMsg[]> map = new HashMap<>();
+
 
 
           /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
-        List<Integer> msgs = PAGE_MESSAGE.PAGE_HOME.filter(null);
-        JFGDPMsg[] query = new JFGDPMsg[msgs.size()];
-        for (int i = 0; i < msgs.size(); i++) {
-            query[i] = new JFGDPMsg(msgs.get(i), 0);
-        }
-        HashMap<String, JFGDPMsg[]> queryMap = new HashMap<>();
+//        List<Integer> msgs = PAGE_MESSAGE.PAGE_HOME.filter(null);
+//        JFGDPMsg[] query = new JFGDPMsg[msgs.size()];
+//        for (int i = 0; i < msgs.size(); i++) {
+//            query[i] = new JFGDPMsg(msgs.get(i), 0);
+//        }
+//        HashMap<String, JFGDPMsg[]> queryMap = new HashMap<>();
 
 
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+            HashMap<String, JFGDPMsg[]> map = new HashMap<>();
             Device device = mCachedDeviceMap.get(entry.getKey());
             final String uuid = device.uuid;
             if (TextUtils.isEmpty(uuid) || account == null) return;
 
-            queryMap.put(entry.getKey(), query);
+//            queryMap.put(entry.getKey(), query);
 
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
             if (parameters == null || parameters.size() == 0) continue;
@@ -450,17 +450,21 @@ public class DataSourceManager implements JFGSourceManager {
                 array[i] = parameters.get(i);
             }
             map.put(uuid, array);
+            try {
+                appCmd.robotGetMultiData(map, 1, false, 0);
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            appCmd.robotGetMultiData(map, 1, false, 0);
-
-            /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
-            appCmd.robotGetMultiData(queryMap, 1, false, 0);
-            AppLogger.d("刷主页dp");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
+////            appCmd.robotGetMultiData(queryMap, 1, false, 0);
+//            AppLogger.d("刷主页dp");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 
