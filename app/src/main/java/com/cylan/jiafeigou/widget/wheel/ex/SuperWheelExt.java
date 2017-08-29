@@ -16,6 +16,7 @@ import android.view.View;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 
@@ -187,10 +188,11 @@ public class SuperWheelExt extends View {
         int offsetCount = (int) (-getScrollX() / lineIntervalPx);
         final int count = getFullScreenItemsCount();
         int totalCount = iDataProvider == null ? 0 : iDataProvider.getDataCount();
+        if (Math.abs(offsetCount) > totalCount) return null;
         int start = offsetCount >= count / 2 ? Math.abs(count / 2 - offsetCount) : 0;
         int end = totalCount - start > count ? count + start : totalCount;
         if (DEBUG)
-            Log.d(TAG, String.format("offset:%s,count:%s,totalCount:%s,initSubscription:%s,end:%s",
+            Log.d(TAG, String.format("offset:%s,count:%s,totalCount:%s,start:%s,end:%s",
                     offsetCount, count, totalCount, start, end));
         return iDataProvider == null ? new long[]{0, 0} : iDataProvider.getTimeArray(end, start);
     }
@@ -264,7 +266,7 @@ public class SuperWheelExt extends View {
                 rect.top = 0;
                 rect.bottom = getHeight();
                 canvas.drawRect(rect, dataMaskPaint);
-                if (DEBUG)
+                if (false)
                     Log.d(TAG, "drawDataMask: " + rectStart + " " + rectEnd);
             }
         }
@@ -413,7 +415,7 @@ public class SuperWheelExt extends View {
         long timeCurrent = getCurrentFocusTime();
         float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
         if (DEBUG)
-            Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx);
+            Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx + "animate:" + animate);
         if (animate) {
             touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
         } else {
@@ -426,7 +428,7 @@ public class SuperWheelExt extends View {
         }
         this.nextTarget = Math.max(currentTarget, nextTarget);
         if (DEBUG)
-            Log.d(TAG, "current:" + (currentTarget / 1000) + ",next:" + (nextTarget / 1000));
+            Log.d(TAG, "current:" + currentTarget + ":" + TimeUtils.getTimeSpecial(currentTarget) + ",next:" + nextTarget + ":" + TimeUtils.getTimeSpecial(nextTarget));
     }
 
     /**
