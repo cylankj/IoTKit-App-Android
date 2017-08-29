@@ -186,13 +186,14 @@ public class SuperWheelExt extends View {
     private long[] getRawTimeList() {
         //偏移N格,需要找出左节点,和右边节点.
         int offsetCount = (int) (-getScrollX() / lineIntervalPx);
+        Log.d(TAG, "getScrollX:" + -getScaleX() + "," + "scrollCount:" + offsetCount);
         final int count = getFullScreenItemsCount();
         int totalCount = iDataProvider == null ? 0 : iDataProvider.getDataCount();
         if (Math.abs(offsetCount) > totalCount) return null;
         int start = offsetCount >= count / 2 ? Math.abs(count / 2 - offsetCount) : 0;
         int end = totalCount - start > count ? count + start : totalCount;
         if (DEBUG)
-            Log.d(TAG, String.format("offset:%s,count:%s,totalCount:%s,start:%s,end:%s",
+            Log.d(TAG, String.format("offsetCount:%s,count:%s,totalCount:%s,start:%s,end:%s",
                     offsetCount, count, totalCount, start, end));
         return iDataProvider == null ? new long[]{0, 0} : iDataProvider.getTimeArray(end, start);
     }
@@ -345,6 +346,7 @@ public class SuperWheelExt extends View {
             //判断当前的位置是否是热区,即:mask区域.
             if (!iDataProvider.isHotRect(timeCurrent)) {
                 //dragging finish,空白区域,
+                if (touchHandler.isTouchDown()) return;
                 long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
                 setPositionByTime(timeTarget, false);
             }
@@ -415,7 +417,7 @@ public class SuperWheelExt extends View {
         long timeCurrent = getCurrentFocusTime();
         float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
         if (DEBUG)
-            Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx + "animate:" + animate);
+            Log.d(TAG, "setPositionByTime:" + timeTarget + "," + deltaDx + ",animate:" + animate);
         if (animate) {
             touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
         } else {

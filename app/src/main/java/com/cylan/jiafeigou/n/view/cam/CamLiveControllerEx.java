@@ -678,6 +678,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutE.setVisibility(showSdcard
                         ? VISIBLE : INVISIBLE);
                 vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
+                isSightShown = false;
             });
             layout.setOnClickListener(v -> AppLogger.d("don't click me"));
             view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
@@ -685,6 +686,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 Intent intent = new Intent(getContext(), SightSettingActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 getContext().startActivity(intent);
+                isSightShown = false;
             });
             PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
         } else {

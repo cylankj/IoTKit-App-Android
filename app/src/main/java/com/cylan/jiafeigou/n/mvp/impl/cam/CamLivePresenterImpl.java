@@ -117,6 +117,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .syncAllProperty(uuid, 204, 222);
     }
 
+    @Override
+    public void pause() {
+        super.pause();
+        //历史视频播放的时候，如果来了门铃。然而等待onStop，unSubscribe就非常晚。会导致这里的
+        //rtcp还会继续接受数据。继续更新时间轴。
+        removeSubscription("RTCPNotifySub");
+    }
+
     private Subscription getDeviceUnBindSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
                 .subscribeOn(Schedulers.io())

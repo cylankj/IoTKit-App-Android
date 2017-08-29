@@ -174,6 +174,7 @@ public class PanoramicViewFragment extends IBaseFragment {
                 //解决黑屏问题
                 .signature(new StringSignature(System.currentTimeMillis() + ""))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(true)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onLoadStarted(Drawable placeholder) {

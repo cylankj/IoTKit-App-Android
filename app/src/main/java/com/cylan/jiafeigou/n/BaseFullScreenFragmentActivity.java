@@ -79,6 +79,12 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (basePresenter != null) basePresenter.pause();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (basePresenter != null)

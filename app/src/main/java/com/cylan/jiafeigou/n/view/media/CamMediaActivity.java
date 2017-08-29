@@ -168,6 +168,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 Glide.with(this)
                         .load(url)
                         .asBitmap()
+                        .skipMemoryCache(true)
                         .format(DecodeFormat.DEFAULT)
                         .listener(new RequestListener<CamWarnGlideURL, Bitmap>() {
                             @Override

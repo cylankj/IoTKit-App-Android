@@ -64,6 +64,11 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     @Override
+    public void pause() {
+
+    }
+
+    @Override
     public String getUuid() {
         return uuid;
     }

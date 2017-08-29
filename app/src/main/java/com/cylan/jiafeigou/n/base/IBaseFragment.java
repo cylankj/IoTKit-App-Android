@@ -66,6 +66,7 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     public void onPause() {
         Log.d(TAG, TAG + ",onPause");
         super.onPause();
+        if (basePresenter != null) basePresenter.pause();
     }
 
     @Override
