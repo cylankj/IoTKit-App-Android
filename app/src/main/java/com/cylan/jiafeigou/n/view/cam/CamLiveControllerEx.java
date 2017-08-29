@@ -1193,8 +1193,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
 //            Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
 //            if (bitmap == null || bitmap.isRecycled()) {
-                File file = new File(presenter.getThumbnailKey());
-                liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
+            File file = new File(presenter.getThumbnailKey());
+            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
 //            } else
 //                liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
         }
@@ -1556,11 +1556,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         setFlipped(!safeIsOpen);
         updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
+//        if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
 //        Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
 //        if (bitmap == null || bitmap.isRecycled()) {
-            File file = new File(presenter.getThumbnailKey());
-            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
+        File file = new File(presenter.getThumbnailKey());
+        liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
 //        } else
 //            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
         TimeZone timeZone = JFGRules.getDeviceTimezone(device);
