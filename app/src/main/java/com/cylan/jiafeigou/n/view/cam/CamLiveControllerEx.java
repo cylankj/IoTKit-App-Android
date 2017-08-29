@@ -1550,7 +1550,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         setFlipped(!safeIsOpen);
         updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
+//        if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
         Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
         if (bitmap == null || bitmap.isRecycled()) {
             File file = new File(presenter.getThumbnailKey());
