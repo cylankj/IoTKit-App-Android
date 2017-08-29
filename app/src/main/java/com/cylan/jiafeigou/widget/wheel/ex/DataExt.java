@@ -51,8 +51,10 @@ public class DataExt implements IData {
     private Map<Long, String> dateFormatMap = new HashMap<>();
 
     private void initDateFormat(TimeZone zone) {
-        dateFormat = new SimpleDateFormat("HH:mm", Locale.UK);
-        dateFormat.setTimeZone(zone);
+        synchronized (lock) {
+            dateFormat = new SimpleDateFormat("HH:mm", Locale.UK);
+            dateFormat.setTimeZone(zone);
+        }
     }
 
     @Override
@@ -74,7 +76,7 @@ public class DataExt implements IData {
                 for (long time = timeMax; time >= timeMin; ) {
                     flattenDataList.add(time);
                     fillMap(time);
-                    if (DEBUG)
+                    if (false)
                         Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(time));
                     size++;
                     time -= 10 * 60 * 1000L;
@@ -89,9 +91,11 @@ public class DataExt implements IData {
      * @param time ;milliseconds
      */
     private void fillMap(long time) {
-        if (time / 1000L % 3600 == 0) {
-            timeWithType.put(time, 1);
-            dateFormatMap.put(time, TimeUtils.getHistoryTime(time));
+        synchronized (lock) {
+            if (time / 1000L % 3600 == 0) {
+                timeWithType.put(time, 1);
+                dateFormatMap.put(time, TimeUtils.getHistoryTime(time));
+            }
         }
     }
 
@@ -102,11 +106,13 @@ public class DataExt implements IData {
      * @return :四舍五入到10分钟，小于time.
      */
     private long getTenMinuteByTimeRight(long time) {
-        final long currentTimeMinutesInMode = time / 1000 / 60 % 60;
-        final long currentTimeInHour = time / 1000L / 3600;
-        long result = 1000L * 60 * (currentTimeInHour * 60 + currentTimeMinutesInMode
-                - currentTimeMinutesInMode % 10);
-        return result > time ? result : result + 10 * 60 * 1000L;
+        synchronized (lock) {
+            final long currentTimeMinutesInMode = time / 1000 / 60 % 60;
+            final long currentTimeInHour = time / 1000L / 3600;
+            long result = 1000L * 60 * (currentTimeInHour * 60 + currentTimeMinutesInMode
+                    - currentTimeMinutesInMode % 10);
+            return result > time ? result : result + 10 * 60 * 1000L;
+        }
     }
 
     /**
@@ -116,53 +122,65 @@ public class DataExt implements IData {
      * @return :四舍五入到10分钟，小于time.
      */
     private long getTenMinuteByTimeLeft(long time) {
-        final long currentTimeMinutesInMode = time / 1000 / 60 % 60;
-        final long currentTimeInHour = time / 1000L / 3600;
-        long result = 1000L * 60 * (currentTimeInHour * 60 + currentTimeMinutesInMode
-                - currentTimeMinutesInMode % 10);
-        return result > time ? result - 10 * 60 * 1000L : result;
+        synchronized (lock) {
+            final long currentTimeMinutesInMode = time / 1000 / 60 % 60;
+            final long currentTimeInHour = time / 1000L / 3600;
+            long result = 1000L * 60 * (currentTimeInHour * 60 + currentTimeMinutesInMode
+                    - currentTimeMinutesInMode % 10);
+            return result > time ? result - 10 * 60 * 1000L : result;
+        }
     }
 
 
     @Override
     public long[] getTimeArray(int end, int start) {
-        if (DEBUG)
-            Log.d(TAG, String.format("getData:%s,%s", end, start));
-        if (start < 0 || start > end || end > flattenDataList.size()) {
+        synchronized (lock) {
+            if (DEBUG)
+                Log.d(TAG, String.format("getData:%s,%s", end, start));
+            if (start < 0 || start > end || end > flattenDataList.size()) {
 //            System.out.println("出界: " + initSubscription);
-            end = flattenDataList.size() - start;
-            if (end <= 0)
-                return null;
+                end = flattenDataList.size() - start;
+                if (end <= 0)
+                    return null;
+            }
+            if (end <= start) return null;
+            long[] data = new long[end - start];
+            for (int i = start; i < end; i++) {
+                data[i - start] = flattenDataList.get(i);
+            }
+            return data;
         }
-        if (end <= start) return null;
-        long[] data = new long[end - start];
-        for (int i = start; i < end; i++) {
-            data[i - start] = flattenDataList.get(i);
-        }
-        return data;
     }
 
     @Override
     public long getFlattenMaxTime() {
-        int size = flattenDataList.size();
-        return size > 0 ? flattenDataList.get(0) : 0;
+        synchronized (lock) {
+            int size = getDataCount();
+            return size > 0 ? flattenDataList.get(0) : 0;
+        }
     }
 
     @Override
     public long getFlattenMinTime() {
-        int size = flattenDataList.size();
-        return size > 0 ? flattenDataList.get(size - 1) : 0;
+        synchronized (lock) {
+            int size = getDataCount();
+            return size > 0 ? flattenDataList.get(size - 1) : 0;
+        }
     }
 
     @Override
     public int getDataCount() {
-        return ListUtils.getSize(flattenDataList);
+        synchronized (lock) {
+            return ListUtils.getSize(flattenDataList);
+        }
     }
 
     @Override
     public int getBottomType(long time) {
-        Object o = timeWithType.get(time);
-        return o == null ? 0 : (int) o;
+        synchronized (lock) {
+            Object o = timeWithType.get(time);
+            return o == null ? 0 : (int) o;
+        }
     }
 
     @Override
@@ -172,104 +190,115 @@ public class DataExt implements IData {
 
     @Override
     public ArrayList<HistoryFile> getMaskList(long start, long end) {
-        if (rawList == null || rawList.size() == 0)
-            return null;
-        HistoryFile vStart = getVideo(start);
-        HistoryFile vEnd = getVideo(end);
-        int startIndex = Collections.binarySearch(rawList, vStart);
-        if (startIndex < 0) {
-            startIndex = -(startIndex + 1);
-            if (startIndex > 0) {
-                startIndex -= 1;
+        synchronized (lock) {
+            if (rawList == null || rawList.size() == 0)
+                return null;
+            HistoryFile vStart = getVideo(start);
+            HistoryFile vEnd = getVideo(end);
+            int startIndex = Collections.binarySearch(rawList, vStart);
+            if (startIndex < 0) {
+                startIndex = -(startIndex + 1);
+                if (startIndex > 0) {
+                    startIndex -= 1;
+                }
             }
-        }
-        int endIndex = Collections.binarySearch(rawList, vEnd);
-        if (endIndex < 0) {
-            endIndex = -(endIndex + 1);
-            if (rawList.size() - 1 > endIndex) {
-                endIndex += 2;
+            int endIndex = Collections.binarySearch(rawList, vEnd);
+            if (endIndex < 0) {
+                endIndex = -(endIndex + 1);
+                if (rawList.size() - 1 > endIndex) {
+                    endIndex += 2;
+                }
             }
+            if (endIndex < startIndex) return null;
+            ArrayList<HistoryFile> finalList = new ArrayList<>(endIndex - startIndex);
+            for (int i = startIndex; i < endIndex; i++) {
+                finalList.add(rawList.get(i));
+            }
+            return finalList;
         }
-        if (endIndex < startIndex) return null;
-        ArrayList<HistoryFile> finalList = new ArrayList<>(endIndex - startIndex);
-        for (int i = startIndex; i < endIndex; i++) {
-            finalList.add(rawList.get(i));
-        }
-        return finalList;
     }
 
 
     private long getNextFocusTime(long time, boolean modifyIndex) {
-        if (rawList.size() == 0)
-            return 0;
-        HistoryFile v = getVideo(time);
-        int tmpIndex = index;
+        synchronized (lock) {
+            if (rawList.size() == 0)
+                return 0;
+            HistoryFile v = getVideo(time);
+            int tmpIndex = index;
 
-        tmpIndex = Collections.binarySearch(rawList, v);
-        tmpIndex = -(tmpIndex + 1);
+            tmpIndex = Collections.binarySearch(rawList, v);
+            tmpIndex = -(tmpIndex + 1);
 //        Log.d("getNextFocusTime", "getNextFocusTime: " + index);
-        if (tmpIndex < 0 && rawList.size() > 0) {
-            tmpIndex = 0;
-            return rawList.get(0).time * 1000L;
-        }
-        if (tmpIndex > rawList.size() - 1 && rawList.size() > 0) {
-            tmpIndex = rawList.size() - 1;
+            if (tmpIndex < 0 && rawList.size() > 0) {
+                tmpIndex = 0;
+                return rawList.get(0).time * 1000L;
+            }
+            if (tmpIndex > rawList.size() - 1 && rawList.size() > 0) {
+                tmpIndex = rawList.size() - 1;
+                return rawList.get(tmpIndex).time * 1000L;
+            }
+            if (modifyIndex) index = tmpIndex;
             return rawList.get(tmpIndex).time * 1000L;
         }
-        if (modifyIndex) index = tmpIndex;
-        return rawList.get(tmpIndex).time * 1000L;
     }
 
     @Override
     public long getNextFocusTime(long time, int considerDirection) {
 
-
-        return getNextFocusTime(time, considerDirection, true);
+        synchronized (lock) {
+            return getNextFocusTime(time, considerDirection, true);
+        }
     }
 
     @Override
     public long getNextFocusTime(long time, int considerDirection, boolean modifyIndex) {
-        long tmpTime = getNextFocusTime(time, modifyIndex);
-        if (considerDirection == -1)//不考虑方向
-            return tmpTime;
-        //0:向左滑动
-        int tmpIndex = index;
-        if (considerDirection == 0) {
-            tmpIndex += 1;
-            if (tmpIndex > rawList.size() - 1) {
-                tmpIndex = rawList.size() - 1;
+        synchronized (lock) {
+            long tmpTime = getNextFocusTime(time, modifyIndex);
+            if (considerDirection == -1)//不考虑方向
+                return tmpTime;
+            //0:向左滑动
+            int tmpIndex = index;
+            if (considerDirection == 0) {
+                tmpIndex += 1;
+                if (tmpIndex > rawList.size() - 1) {
+                    tmpIndex = rawList.size() - 1;
+                }
+            } else if (considerDirection == 1) {
+                //1:向右滑动
+                tmpIndex -= 1;
+                if (tmpIndex < 0 && rawList.size() > 0) {
+                    tmpIndex = 0;
+                }
             }
-        } else if (considerDirection == 1) {
-            //1:向右滑动
-            tmpIndex -= 1;
-            if (tmpIndex < 0 && rawList.size() > 0) {
-                tmpIndex = 0;
-            }
+            if (modifyIndex) index = tmpIndex;
+            return rawList.get(tmpIndex).time * 1000L;
         }
-        if (modifyIndex) index = tmpIndex;
-        return rawList.get(tmpIndex).time * 1000L;
     }
 
     @Override
     public boolean isHotRect(long time) {
-        if (rawList == null || rawList.size() == 0)
-            return false;
-        HistoryFile v = getVideo(time);
-        int i = Collections.binarySearch(rawList, v);
-        i = -(i + 1);
-        if (i < 0 || i > rawList.size() - 1) {
-            return false;//超出范围
+        synchronized (lock) {
+            if (rawList == null || rawList.size() == 0)
+                return false;
+            HistoryFile v = getVideo(time);
+            int i = Collections.binarySearch(rawList, v);
+            i = -(i + 1);
+            if (i < 0 || i > rawList.size() - 1) {
+                return false;//超出范围
+            }
+            if (DEBUG)
+                Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
+            v = rawList.get(i);
+            return v.time * 1000L <= time && (v.time + v.duration) * 1000L >= time;
         }
-        if (DEBUG)
-            Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
-        v = rawList.get(i);
-        return v.time * 1000L <= time && (v.time + v.duration) * 1000L >= time;
     }
 
     @Override
     public HistoryFile getMaxHistoryFile() {
-        //rawList 是一个降序
-        return ListUtils.getSize(rawList) > 0 ? rawList.get(0) : null;
+        synchronized (lock) {
+            //rawList 是一个降序
+            return ListUtils.getSize(rawList) > 0 ? rawList.get(0) : null;
+        }
     }
 
     @Override
@@ -279,14 +308,16 @@ public class DataExt implements IData {
 
     @Override
     public HistoryFile getMinHistoryFileByStartTime(long startTime) {
-        //rawList是降序的
-        startTime = startTime / 1000;
-        final int count = ListUtils.getSize(rawList);
-        for (int i = count - 1; i >= 0; i--) {
-            if (rawList.get(i).getTime() >= startTime)
-                return rawList.get(i);
+        synchronized (lock) {
+            //rawList是降序的
+            startTime = startTime / 1000;
+            final int count = ListUtils.getSize(rawList);
+            for (int i = count - 1; i >= 0; i--) {
+                if (rawList.get(i).getTime() >= startTime)
+                    return rawList.get(i);
+            }
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -299,25 +330,28 @@ public class DataExt implements IData {
 
     @Override
     public long getNextTarget(long timeTarget) {
-        if (rawList == null || rawList.size() == 0) return 0;
-        HistoryFile temp = null;
-        for (HistoryFile file : rawList) {
-            long current = file.time + file.duration;
-            if (current >= timeTarget) {
-                if (temp == null) {
-                    temp = file;
-                } else if (file.time < temp.time) {
-                    temp = file;
+        synchronized (lock) {
+            if (rawList == null || rawList.size() == 0) return 0;
+            HistoryFile temp = null;
+            for (HistoryFile file : rawList) {
+                long current = file.time + file.duration;
+                if (current >= timeTarget) {
+                    if (temp == null) {
+                        temp = file;
+                    } else if (file.time < temp.time) {
+                        temp = file;
+                    }
                 }
             }
+            return Math.max(timeTarget, temp == null ? 0 : temp.time);
         }
-        return Math.max(timeTarget, temp == null ? 0 : temp.time);
     }
 
     private HistoryFile getVideo(long time) {
-        HistoryFile video = new HistoryFile(0L, time, 0, "", "");
-        video.time = time / 1000L;
-        return video;
+        synchronized (lock) {
+            HistoryFile video = new HistoryFile(0L, time, 0, "", "");
+            video.time = time / 1000L;
+            return video;
+        }
     }
-
 }

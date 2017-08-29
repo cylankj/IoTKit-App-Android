@@ -393,7 +393,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //                    rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
                 }
             }
-            AppLogger.w("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
+            AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
         } else if (!JFGRules.hasViewAngle(device.pid)) {
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
             VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
