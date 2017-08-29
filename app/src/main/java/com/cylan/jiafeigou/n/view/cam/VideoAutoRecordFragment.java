@@ -203,7 +203,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             button.setChecked(false);
             return;
         }
-        AppLogger.d("开启自动录像:" + checked);
+        AppLogger.w("开启自动录像:" + checked);
         basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(checked), 305);
     }
 
