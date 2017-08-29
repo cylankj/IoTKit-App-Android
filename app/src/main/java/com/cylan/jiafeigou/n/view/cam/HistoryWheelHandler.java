@@ -212,7 +212,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             presenter.startPlayHistory(tmpTime);
             if (datePickerListener != null)
                 datePickerListener.onPickDate(tmpTime / 1000, STATE_FINISH);
-            AppLogger.d("拖动停止了:" + tmpTime);
+            AppLogger.d("拖动停止了:" + tmpTime + "," + TimeUtils.getTimeSpecial(tmpTime));
         }
     };
 
