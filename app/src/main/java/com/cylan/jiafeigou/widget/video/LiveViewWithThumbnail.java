@@ -128,15 +128,16 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void setThumbnail(Context context, String token, Uri glideUrl) {
         imgThumbnail.setVisibility(VISIBLE);
-        imgThumbnail.setImageResource(R.drawable.default_diagram_mask);
         if (glideUrl == null || TextUtils.isEmpty(glideUrl.toString())) {
             return;
         }
         Glide.with(context)
                 .load(glideUrl)
                 .asBitmap()
+                .placeholder(R.drawable.default_diagram_mask)
                 .signature(new StringSignature(token))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(!isNormalView)//坑, VideoView 内部会回收 bitmap ,所以内存缓存就不可用了,这样每次都要创建新的 bitmap 了
                 .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
     }
 
@@ -164,6 +165,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                                 .asBitmap()
                                 .signature(new StringSignature(token))
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .skipMemoryCache(!isNormalView)
                                 .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
                         MiscUtils::getErr);
     }

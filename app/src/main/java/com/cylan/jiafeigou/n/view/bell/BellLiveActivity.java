@@ -29,6 +29,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -45,8 +47,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -77,7 +77,6 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
-import rx.Subscription;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
@@ -141,16 +140,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private boolean isAnswerd = false;
     private boolean isSpeakerON = false;
-    private Subscription subscribe;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -161,11 +159,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void initViewAndListener() {
         //锁屏状态下显示门铃呼叫
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |               //这个在锁屏状态下
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         registSreenStatusReceiver();
         initHeadSetEventReceiver();
         Device device = sourceManager.getDevice(uuid);
@@ -173,16 +166,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         }
         customToolbar.setToolbarLeftTitle(mLiveTitle);
-//        ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
-//        fLayoutBellLiveHolder.setOnClickListener(view -> {
-//            if (!isLandMode) {
-//                handlePortClick();
-//            }
-//        });
-
         newCall();
     }
 
@@ -236,17 +222,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         manager.setSpeakerphoneOn(true);
     }
 
-//    private void handlePortClick() {
-//        int visibility = mVideoViewContainer.getSystemUiVisibility();
-//        if (visibility != View.SYSTEM_UI_FLAG_VISIBLE) {//说明状态栏被隐藏了,则显示三秒后隐藏
-//            setNormalBackMargin();
-//        } else {//说明状态栏没有隐藏,则直接隐藏
-//            hideStatusBar();
-//        }
-//    }
-
-//    private Runnable mHideStatusBarAction = this::hideStatusBar;
-
     public void hideStatusBar() {
         mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -254,23 +229,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        setHideBackMargin();
     }
 
-//    private void setNormalBackMargin() {
-//        mBellLiveBack.setVisibility(View.VISIBLE);
-//        mBellLiveBack.animate().setDuration(200).translationY(0);
-//        mBellFlow.animate().setDuration(200).translationY(0);
-//        mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-//        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-//        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
-//    }
-
-//    private void setHideBackMargin() {
-//        mBellLiveBack.setVisibility(View.VISIBLE);
-//        mBellLiveBack.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y21));
-//        mBellFlow.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y20));
-//    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -298,93 +258,48 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         caller.callTime = time;
         presenter.newCall(caller);
         parse(getIntent());
-        playSoundEffect();
-        muteAudio(true);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-//        muteAudio(true);
-////        setNormalBackMargin();
-////        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-////        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-//        hideStatusBar();
-//        if (mediaPlayer == null) {
-//
-//        }
-//        if (mediaPlayer != null) {
-//            mediaPlayer.start();
-//        }
-//        if (!isAnswerd) {
-//            playSoundEffect();
-//        } else {
-//            presenter.startViewer();
-//        }
-        MediaPlayerManager.getInstance().setVoice(1);
         landBack.setVisibility(isLand() ? View.VISIBLE : View.GONE);
         customToolbar.setVisibility(isLand() ? View.GONE : View.VISIBLE);
-
+        muteAudio(true);
+        if (!presenter.getLiveAction().hasStarted) {
+            playSoundEffect();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-//            mediaPlayer.setVolume(0, 0);
-//            mediaPlayer.stop();
-//            mediaPlayer.release();
-//            mediaPlayer = null;
-//        }
-        MediaPlayerManager.getInstance().setVoice(0);
-//        onShowVideoPreviewPicture(BaseBellCallEventListener.getInstance().getUrl(uuid));
-//        MediaPlayerManager.getInstance().stop();
-
-//        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
-//            ((GLSurfaceView) mSurfaceView).onPause();
-//            mVideoViewContainer.removeAllViews();
-//            mSurfaceView = null;
-//            AppLogger.d("finish manually");
-//
-//            presenter.cancelViewer();
-//        }
-////        else {
-////            finish();
-////        }
-//        muteAudio(false);
-
-        if (subscribe != null && !subscribe.isUnsubscribed()) {
-            subscribe.unsubscribe();
-        }
-        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ActivityStartEvent.class).first().subscribe(ret -> {
-            finish();
-        }, AppLogger::e);
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
+        MediaPlayerManager.getInstance().stop();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
-            ((GLSurfaceView) mSurfaceView).onPause();
-            mVideoViewContainer.removeAllViews();
-            mSurfaceView = null;
-            AppLogger.d("finish manually");
+        muteAudio(false);
+
+        if (presenter.getLiveAction().hasStarted) {
+            if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+                ((GLSurfaceView) mSurfaceView).onPause();
+                mVideoViewContainer.removeAllViews();
+                mSurfaceView = null;
+                AppLogger.d("finish manually");
+                finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+            }
+            presenter.dismiss();
         }
-        finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-        presenter.dismiss();
     }
 
 
@@ -756,19 +671,26 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onConnectDeviceTimeOut() {
         ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
-        presenter.dismiss();
+        onDismiss();
+//        presenter.dismiss();
     }
 
     @Override
     public void onShowVideoPreviewPicture(String URL) {
 //        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        Glide.with(this).load(URL).
-                placeholder(R.drawable.default_diagram_mask)
+        Glide.with(this).load(URL)
+                .asBitmap()
+                .placeholder(R.drawable.default_diagram_mask)
                 .error(R.drawable.default_diagram_mask)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
-                .into(mBellLiveVideoPicture);
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                    }
+                });
     }
 
 
@@ -846,16 +768,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onDismiss() {
-//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-//            mediaPlayer.stop();
-//            mediaPlayer.release();
-//            mediaPlayer = null;
-//        }
         MediaPlayerManager.getInstance().stop();
         finishExt();
         if (isTaskRoot()) {
             Intent intent = new Intent(this, NewHomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }

@@ -284,13 +284,13 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
-        tvForgetPwdSubmit.setEnabled(false);
-
+        tvForgetPwdSubmit.setEnabled(true);
     }
 
     //判读是手机号还是邮箱
     private void next() {
         final int type = checkInputType();
+        tvForgetPwdSubmit.setEnabled(true);
         switch (type) {
             case JConstant.TYPE_INVALID:
                 Toast.makeText(getActivity(), getString(R.string.ACCOUNT_ERR_1), Toast.LENGTH_SHORT).show();
@@ -300,7 +300,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
                     //获取验证码
                     if (presenter != null) {
-                        tvForgetPwdSubmit.setEnabled(false);
+//                        tvForgetPwdSubmit.setEnabled(true);
                         presenter.getVerifyCode(ViewUtils.getTextViewContent(etForgetUsername));
 
                     }
@@ -515,6 +515,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (getView() != null) {
             switch (event) {
                 case JConstant.AUTHORIZE_MAIL:
+                    tvForgetPwdSubmit.setEnabled(true);
                     prepareMailView();
                     break;
                 case JConstant.AUTHORIZE_PHONE_SMS:
@@ -531,10 +532,12 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     break;
                 case JFG_RESULT_VERIFY_SMS:
                     if (errId == 0) {
+                        tvForgetPwdSubmit.setEnabled(true);
                         preparePhoneView();
                     }
                     break;
                 case JConstant.CHECK_TIMEOUT:
+                    tvForgetPwdSubmit.setEnabled(true);
                     ToastUtil.showToast(getString(R.string.Request_TimeOut));
                     break;
                 case JResultEvent.JFG_RESULT_CHANGE_PASS:
@@ -546,19 +549,24 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             }
             switch (errId) {
                 case JError.ErrorAccountNotExist:
+                    tvForgetPwdSubmit.setEnabled(true);
                     ToastUtil.showToast(getString(R.string.INVALID_ACCOUNT));
                     break;
                 case JError.ErrorGetCodeTooFrequent:
+                    tvForgetPwdSubmit.setEnabled(true);
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     break;
                 case JError.ErrorSamePass:
+                    tvForgetPwdSubmit.setEnabled(true);
                     ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
                     break;
                 case JError.ErrorSMSCodeTimeout: {
+                    tvForgetPwdSubmit.setEnabled(true);
                     ToastUtil.showToast(getString(R.string.INVALID_CODE));
                     break;
                 }
                 case JError.ErrorSMSCodeNotMatch:
+                    tvForgetPwdSubmit.setEnabled(true);
                     ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
                     break;
             }

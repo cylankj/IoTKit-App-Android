@@ -218,6 +218,16 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return false;
     }
 
+    protected void saveBitmap(Bitmap bitmap) {
+        Schedulers.io().createWorker().schedule(() -> {
+            removeLastPreview();
+            String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+            PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+            BitmapUtils.saveBitmap2file(bitmap, filePath);
+            AppLogger.e("截图文件地址:" + filePath);
+        });
+    }
+
     /**
      * stopViewer是被动的,dismiss是主动的,即stop虽然停止了直播,但不会清除播放状态
      * 这样当我们onPause时停止直播后可以在onResume中进行恢复,dismiss不仅会停止直播
@@ -241,12 +251,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     if (screenshot != null) {
                         int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
                         int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
-                        removeLastPreview();
-                        Bitmap bitmap = JfgUtils.byte2bitmap(w, h, screenshot);
-                        String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
-                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
-                        Schedulers.io().createWorker().schedule(() -> BitmapUtils.saveBitmap2file(bitmap, filePath));
-                        AppLogger.e("截图文件地址:" + filePath);
+                        saveBitmap(JfgUtils.byte2bitmap(w, h, screenshot));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

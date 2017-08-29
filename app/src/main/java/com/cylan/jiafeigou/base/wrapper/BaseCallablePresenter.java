@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.graphics.Bitmap;
 import android.support.annotation.CallSuper;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
@@ -151,15 +151,18 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     private void preload(String url) {
         if (mView != null && mView.getAppContext() != null && url != null)
             Glide.with(mView.getActivityContext()).load(url)
-                    .listener(new RequestListener<String, GlideDrawable>() {
+                    .asBitmap()
+                    .listener(new RequestListener<String, Bitmap>() {
                         @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             RxBus.getCacheInstance().post(new Notify(true));
+                            // TODO: 2017/8/29 门铃截图也需要保存起来
+                            saveBitmap(resource);
                             return false;
                         }
                     })

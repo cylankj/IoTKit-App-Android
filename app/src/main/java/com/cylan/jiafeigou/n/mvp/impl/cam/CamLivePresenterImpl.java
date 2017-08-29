@@ -1043,6 +1043,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             this.uuid = uuid;
         }
 
+        private void doNext() {
+
+        }
+
         @Override
         public Pair<Bitmap, String> call(Object o) {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -1052,6 +1056,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (forPopWindow && weakReference.get() != null)
                     weakReference.get().onTakeSnapShot(null);//弹窗
                 AppLogger.e("截图失败,data为空");
+
+                // TODO: 2017/8/29 做一次尝试用 VideoView 截图
+
                 return null;
             }
             int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
@@ -1068,7 +1075,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             } else {
                 filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
                 removeLastPreview();
-                SimpleCache.getInstance().addCache(filePath, bitmap);
+//                SimpleCache.getInstance().addCache(filePath, bitmap);
                 PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
                 //需要删除之前的一条记录.
             }
