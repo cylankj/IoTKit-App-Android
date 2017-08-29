@@ -170,7 +170,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
-        newCall();
+
     }
 
     @OnClick(R.id.act_bell_live_back)
@@ -265,8 +265,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStart() {
         super.onStart();
-
-
+        newCall();
     }
 
     @Override

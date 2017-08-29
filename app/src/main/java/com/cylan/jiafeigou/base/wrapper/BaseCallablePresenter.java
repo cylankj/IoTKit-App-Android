@@ -31,6 +31,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     protected Caller mCaller;
     protected Caller mHolderCaller;
     protected boolean mIsInViewerMode = false;
+    private Subscription subscription;
+    private Subscription subscribe;
 
     @Override
     @CallSuper
@@ -65,7 +67,13 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void newCall(Caller caller) {
-        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
+        //直播中的门铃呼叫
+//                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
+//说明不是自己接听的
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
+        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
                 .mergeWith(
                         Observable.just(mHolderCaller = caller)
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -121,7 +129,10 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
         registerSubscription(subscription);
     }
@@ -162,7 +173,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             RxBus.getCacheInstance().post(new Notify(true));
                             // TODO: 2017/8/29 门铃截图也需要保存起来
-//                            saveBitmap(resource);
+                            saveBitmap(resource);
                             return false;
                         }
                     })
