@@ -144,6 +144,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |

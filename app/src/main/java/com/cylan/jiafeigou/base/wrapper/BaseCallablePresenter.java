@@ -162,7 +162,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             RxBus.getCacheInstance().post(new Notify(true));
                             // TODO: 2017/8/29 门铃截图也需要保存起来
-                            saveBitmap(resource);
+//                            saveBitmap(resource);
                             return false;
                         }
                     })
