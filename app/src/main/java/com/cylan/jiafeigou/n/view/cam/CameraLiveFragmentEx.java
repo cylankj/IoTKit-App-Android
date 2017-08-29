@@ -158,6 +158,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_PLAYING:
                         //下一步stop
                         basePresenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+//                            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
                         }, AppLogger::e);
                         break;
                 }
@@ -282,6 +283,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         enableSensor(false);
         if (basePresenter != null)
             basePresenter.stopPlayVideo(true).subscribe(ret -> {
+//                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
     }
 
@@ -323,6 +325,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //            basePresenter.startPlay();
         } else if (basePresenter != null && isResumed() && !isVisibleToUser) {
             basePresenter.stopPlayVideo(PLAY_STATE_STOP).subscribe(ret -> {
+//                camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
             }, AppLogger::e);
             AppLogger.d("stop play");
         } else {
@@ -379,6 +382,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         });
                 if (basePresenter.getPlayType() == TYPE_HISTORY) {
                     basePresenter.stopPlayVideo(TYPE_HISTORY).subscribe(ret -> {
+//                        camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
                     }, AppLogger::e);
                 }
                 AppLogger.e("sdcard数据被清空，唐宽，还没实现");
@@ -390,6 +394,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (standby != null && standby.standby) {
                 basePresenter.stopPlayVideo(JFGRules.PlayErr.STOP_MAUNALLY)
                         .subscribe(ret -> {
+//                            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
                         }, AppLogger::e);
             } else {
                 if (basePresenter.getLiveStream().playState != JConstant.PLAY_STATE_PLAYING) {
@@ -474,6 +479,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (prePlayType.playState == PLAY_STATE_PLAYING) {
                 // 暂停
                 basePresenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+//                    camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
                 }, AppLogger::e);
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
             } else {
@@ -731,6 +737,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑");
         basePresenter.stopPlayVideo(STOP_MAUNALLY).subscribe(ret -> {
+//            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
         }, AppLogger::e);
         AlertDialogManager.getInstance().showDialog(getActivity(), getString(R.string.Tap1_device_deleted), getString(R.string.Tap1_device_deleted),
                 getString(R.string.OK), (dialog, which) -> {
@@ -744,6 +751,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onBackPressed() {
         AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 onStop 延迟调用");
         basePresenter.stopPlayVideo(true).subscribe(ret -> {
+//            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
         }, AppLogger::e);
     }
 

@@ -41,7 +41,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -394,7 +393,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //                    rbViewModeSwitchParent.check(getCheckIdByViewMode(((Panoramic360ViewRS) videoView).getDisplayMode()));
                 }
             }
-            AppLogger.d("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
+            AppLogger.w("当前视图不支持视角切换,但又支持视图切换,强制开始平视视图");
         } else if (!JFGRules.hasViewAngle(device.pid)) {
             rbViewModeSwitchParent.setVisibility(rbViewModeSwitchParent.getVisibility() == VISIBLE ? GONE : VISIBLE);
             VideoViewFactory.IVideoView videoView = liveViewWithThumbnail.getVideoView();
@@ -404,12 +403,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 rbViewModeSwitchParent.setVisibility(VISIBLE);
             }
         }
-//        try {
-//            //0:俯视
-//            rbtnSightHorizontal.setChecked(TextUtils.equals("1", dpPrimary));
-//            rbtnSightVertical.setChecked(TextUtils.equals("0", dpPrimary));
-//        } catch (Exception e) {
-//        }
     }
 
     private void switchViewMode(RadioGroup radioGroup, int checkId) {
@@ -830,6 +823,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 postDelayed(this, 3000);
                 return;
             }
+
+            // TODO: 2017/8/28 模式切换显示时不要自动隐藏
+            if (rbViewModeSwitchParent.getVisibility() == VISIBLE) {
+                return;
+            }
+
             setLoadingState(null, null);
             if (livePlayState == PLAY_STATE_PLAYING) {
                 layoutC.setVisibility(INVISIBLE);
@@ -1192,12 +1191,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         if (presenter.getPlayState() != PLAY_STATE_PLAYING) {//显示缩略图
 
-            Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
-            if (bitmap == null || bitmap.isRecycled()) {
+//            Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
+//            if (bitmap == null || bitmap.isRecycled()) {
                 File file = new File(presenter.getThumbnailKey());
                 liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
-            } else
-                liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
+//            } else
+//                liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
         }
 
         //直播
@@ -1558,12 +1557,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         updateLiveViewMode(device.$(509, "1"));
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(net)) return;//设备离线,不需要显示了
-        Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
-        if (bitmap == null || bitmap.isRecycled()) {
+//        Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
+//        if (bitmap == null || bitmap.isRecycled()) {
             File file = new File(presenter.getThumbnailKey());
             liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
-        } else
-            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
+//        } else
+//            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
         TimeZone timeZone = JFGRules.getDeviceTimezone(device);
         liveTimeDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
         liveTimeDateFormat.setTimeZone(timeZone);

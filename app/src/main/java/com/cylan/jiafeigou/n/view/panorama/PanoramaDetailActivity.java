@@ -367,7 +367,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
         LoadingDialog.dismissLoading();
         if (bean != null && bean.alarmMsg != null) {
-            downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
+//            downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
         } else {
             downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
         }
@@ -828,6 +828,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("将进行下载");
 
         if (bean != null) {
+            if (morePopMenu != null && morePopMenu.isShowing()) {
+                morePopMenu.dismiss();
+            }
             String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
             if (bean.alarmMsg.isRecording == 0) {
                 try {

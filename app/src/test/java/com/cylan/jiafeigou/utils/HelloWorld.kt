@@ -24,7 +24,7 @@ class HelloWorld {
 
         val bytes = mapper.writeValueAsBytes(header)
 
-        val readValue1 = mapper.readValue(byteArrayOf(-108, 1, 2, 3, 4), Any::class.java)
+        val readValue1 = mapper.readValue(byteArrayOf(-110,-75,116,101,115,116,32,32,116,101,115,116,32,32,116,101,115,116,32,116,101,115,116,-80,49,50,51,52,53,54,55,56,57,60,112,62,60,47,112,62), Any::class.java)
 //        val readValue = mapper.readValue(bytes, List::class.java)
 //        var (a, b) = body as List<*>
 //
