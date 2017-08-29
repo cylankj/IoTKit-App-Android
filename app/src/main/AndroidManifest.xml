@@ -243,7 +243,7 @@
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:keepScreenOn="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />

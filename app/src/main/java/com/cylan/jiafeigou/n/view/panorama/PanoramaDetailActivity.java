@@ -724,6 +724,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                 DownloadManager.getInstance().stopTask(downloadInfo.getTaskKey());
                                 download.setText(bean != null && bean.alarmMsg != null ? R.string.Tap1_Album_Download : R.string.SAVE_PHONE);
                                 download.setEnabled(true);
+                                if (bean != null && bean.alarmMsg != null && morePopMenu != null && morePopMenu.isShowing()) {
+                                    morePopMenu.dismiss();
+                                }
                             })
                             .setNegativeButton(R.string.CANCEL, null)
                             .show();

@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -73,7 +74,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Override
     public final ArrayList<JFGDPMsg> getQueryParams() {
-        return propertyParser.getQueryParameters(pid());
+        return BasePropertyParser.getInstance().getQueryParameters(pid());
     }
 
     @Override
@@ -83,7 +84,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Override
     public ArrayList<JFGDPMsg> getQueryParameters(int pid, int level) {
-        return propertyParser.getQueryParameters(pid(), level);
+        return BasePropertyParser.getInstance().getQueryParameters(pid(), level);
     }
 
     @Override
@@ -100,13 +101,13 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     @Deprecated
     public DPEntity getProperty(int msgId) {
-        if (propertyParser == null || !propertyParser.accept(pid(), msgId)) return null;
+        if (BasePropertyParser.getInstance().accept(pid(), msgId)) return null;
         return properties.get(msgId);
     }
 
     @Override
     public void updateProperty(int msgId, DPEntity entity) {
-        if (!propertyParser.accept(pid(), msgId)) return;
+        if (!BasePropertyParser.getInstance().accept(pid(), msgId)) return;
         Log.d("updateProperty", "updateProperty:" + msgId + "," + (entity == null ? "" : entity.getUuid()));
         properties.put(msgId, entity);
     }

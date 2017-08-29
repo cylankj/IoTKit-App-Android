@@ -176,12 +176,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 siv_mode_motion.setChecked(false);
                 return;
             }
-
-            if (status.err != 0) {
-                ToastUtil.showToast(getString(R.string.VIDEO_SD_DESC));
-                siv_mode_motion.setChecked(false);
-            }
-
             if (!alarmDisable()) {
                 siv_mode_motion.setChecked(false);
                 openAlarm(0);
@@ -197,8 +191,13 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private void clickWatchVideoSwitcher(CompoundButton button, boolean checked) {
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (checked && (!status.hasSdcard || status.err != 0)) {
+        if (checked && (!status.hasSdcard)) {
             ToastUtil.showNegativeToast(getString(R.string.NO_SDCARD));
+            button.setChecked(false);
+            return;
+        }
+        if (checked && status.err != 0) {
+            ToastUtil.showNegativeToast(getString(R.string.VIDEO_SD_DESC));
             button.setChecked(false);
             return;
         }
