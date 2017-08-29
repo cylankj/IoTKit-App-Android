@@ -915,7 +915,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             ////////////////////////////autoRecord////////////////////////////////////////
             svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
             svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby && (!is720 || !apNet) ? 1.0f : 0.6f);
-            if (productProperty.hasProperty(device.pid, "24RECORD")) {
+            if (!productProperty.hasProperty(device.pid, "VIDEO")) {
                 svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
             }
             svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
@@ -979,7 +979,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 //                    }
                     //自动录像显示.
                     Device device = DataSourceManager.getInstance().getDevice(uuid);
-                    if (PropertiesLoader.getInstance().hasProperty(device.pid, "24RECORD")) {//只有有24小时录像选项才显示子标题
+                    if (!PropertiesLoader.getInstance().hasProperty(device.pid, "VIDEO")) {//只有有24小时录像选项才显示子标题
                         DpMsgDefine.DPStandby standby = basePresenter.getDevice().$(508, new DpMsgDefine.DPStandby());
                         svSettingDeviceAutoRecord.setTvSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
                     }
@@ -1071,7 +1071,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
         svSettingDeviceAutoRecord.setEnabled(!open);
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        if (PropertiesLoader.getInstance().hasProperty(device.pid, "24RECORD")) {
+        if (!PropertiesLoader.getInstance().hasProperty(device.pid, "VIDEO")) {
             svSettingDeviceAutoRecord.setTvSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
         }
 

@@ -122,15 +122,17 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
 //        rb24Hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
         siv_mode_24_hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        siv_mode_24_hours.setShowRadioButton(record24);
+        siv_mode_24_hours.setShowRadioButton(true);
 
 //        boolean isRSBell = JFGRules.isRsBell(device.pid);
-        siv_mode_never.setVisibility(record24 ? View.VISIBLE : View.GONE);
+//        siv_mode_never.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_never.setVisibility(View.VISIBLE);
 //        rbNever.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        siv_mode_never.setShowRadioButton(record24);
+        siv_mode_never.setShowRadioButton(true);
 
-        siv_mode_motion.setSwitcherVisibility(record24 ? View.GONE : View.VISIBLE);
-        siv_mode_motion.setShowRadioButton(record24);
+//        siv_mode_motion.setSwitcherVisibility(record24 ? View.GONE : View.VISIBLE);
+//        siv_mode_motion.setSwitcherVisibility(View.VISIBLE);
+        siv_mode_motion.setShowRadioButton(true);
 //        rbMotion.setVisibility(record24 ? View.VISIBLE : View.GONE);
 
         DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());

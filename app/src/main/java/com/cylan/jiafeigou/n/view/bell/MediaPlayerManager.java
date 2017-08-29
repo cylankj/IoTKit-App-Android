@@ -34,7 +34,8 @@ public class MediaPlayerManager {
 
 
     public synchronized void play() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
             mediaPlayer.release();
             mediaPlayer = null;
         }
@@ -44,8 +45,8 @@ public class MediaPlayerManager {
     }
 
     public synchronized void stop() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.setVolume(0, 0);
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
             mediaPlayer.release();
             mediaPlayer = null;
         }
