@@ -29,6 +29,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -669,19 +671,26 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onConnectDeviceTimeOut() {
         ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
-        presenter.dismiss();
+        onDismiss();
+//        presenter.dismiss();
     }
 
     @Override
     public void onShowVideoPreviewPicture(String URL) {
 //        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        Glide.with(this).load(URL).
-                placeholder(R.drawable.default_diagram_mask)
+        Glide.with(this).load(URL)
+                .asBitmap()
+                .placeholder(R.drawable.default_diagram_mask)
                 .error(R.drawable.default_diagram_mask)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
-                .into(mBellLiveVideoPicture);
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                    }
+                });
     }
 
 
