@@ -68,7 +68,7 @@ public class BaseBellCallEventListener {
         //2、在直播界面查看直播时不拉起呼叫页面，在查看历史录像时拉起呼叫页面。
         if (TextUtils.equals(callEvent.caller.cid, caller)) return;
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
 //                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 //                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -87,7 +87,7 @@ public class BaseBellCallEventListener {
                 AppLogger.e(e);
             }
         }
-        appContext.startActivity(intent);
+        ContextUtils.getContext().startActivity(intent);
     }
 
     public String getUrl(String cid) {

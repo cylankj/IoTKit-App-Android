@@ -66,6 +66,32 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         }
     }
 
+    @Override
+    public void onViewDetached() {
+        super.onViewDetached();
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+            subscribe = null;
+        }
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+            subscription = null;
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+            subscribe = null;
+        }
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+            subscription = null;
+        }
+    }
+
     public void newCall(Caller caller) {
         //直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
@@ -114,11 +140,12 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mHolderCaller = null;
+                        AppLogger.w("门铃呼叫超时了!!!");
                         mView.onNewCallTimeOut();
                     }
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(subscribe);
+//        registerSubscription(subscribe);
     }
 
     @Override
@@ -134,7 +161,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         }
         subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(subscription);
+//        registerSubscription(subscription);
     }
 
     protected Observable<Long> load(String url) {
