@@ -31,8 +31,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     protected Caller mCaller;
     protected Caller mHolderCaller;
     protected boolean mIsInViewerMode = false;
-    private Subscription subscription;
-    private Subscription subscribe;
 
     @Override
     @CallSuper
@@ -66,40 +64,12 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         }
     }
 
-    @Override
-    public void onViewDetached() {
-        super.onViewDetached();
-        if (subscribe != null && !subscribe.isUnsubscribed()) {
-            subscribe.unsubscribe();
-            subscribe = null;
-        }
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-            subscription = null;
-        }
-    }
-
-    @Override
-    public void dismiss() {
-        super.dismiss();
-        if (subscribe != null && !subscribe.isUnsubscribed()) {
-            subscribe.unsubscribe();
-            subscribe = null;
-        }
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-            subscription = null;
-        }
-    }
 
     public void newCall(Caller caller) {
         //直播中的门铃呼叫
 //                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
 //说明不是自己接听的
-        if (subscribe != null && !subscribe.isUnsubscribed()) {
-            subscribe.unsubscribe();
-        }
-        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
                 .mergeWith(
                         Observable.just(mHolderCaller = caller)
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -145,7 +115,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                     AppLogger.e(e.getMessage());
                 });
-//        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe);
     }
 
     @Override
@@ -156,12 +126,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
+        Subscription subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
-//        registerSubscription(subscription);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscription);
     }
 
     protected Observable<Long> load(String url) {

@@ -34,7 +34,7 @@ public class AIRecognitionPresenter extends BasePresenter<AIRecognitionContact.V
     @Override
     public void onStart() {
         super.onStart();
-        registerSubscription(getSyncSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getSyncSub());
     }
 
     private Subscription getSyncSub() {

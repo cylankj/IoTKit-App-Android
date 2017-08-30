@@ -74,9 +74,9 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             mView.onDeviceUnBind();
         } else {
             mView.onShowProperty(device);
-            registerSubscription(getClearDataSub());
-            registerSubscription(getNewFirmware());
-            registerSubscription(getDeviceUnBindSub());
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getClearDataSub());
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getNewFirmware());
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceUnBindSub());
 
         }
     }
@@ -152,7 +152,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         e.printStackTrace();
                     }
                 }, () -> mView.onRecordsListRsp(null));
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
@@ -197,7 +197,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     @Override

@@ -273,7 +273,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onResume();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.setVolume(1, 1);
-            mediaPlayer = null;
         }
         landBack.setVisibility(isLand() ? View.VISIBLE : View.GONE);
         customToolbar.setVisibility(isLand() ? View.GONE : View.VISIBLE);
@@ -285,7 +284,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onPause();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.setVolume(0, 0);
-            mediaPlayer = null;
         }
     }
 
@@ -891,7 +889,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             if (SCREEN_ON.equals(intent.getAction())) {
 
             } else if (SCREEN_OFF.equals(intent.getAction())) {
-//                RxBus.getCacheInstance().post(new RxEvent.CallResponse(true));
+                presenter.dismiss();
             }
         }
     }
