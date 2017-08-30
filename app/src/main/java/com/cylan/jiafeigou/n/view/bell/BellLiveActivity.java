@@ -773,7 +773,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mediaPlayer = null;
         }
         finishExt();
-        if (isTaskRoot()) {
+        if (getIntent().getBooleanExtra(JConstant.IS_IN_BACKGROUND, false)) {
             Intent intent = new Intent(this, NewHomeActivity.class);
             startActivity(intent);
         }

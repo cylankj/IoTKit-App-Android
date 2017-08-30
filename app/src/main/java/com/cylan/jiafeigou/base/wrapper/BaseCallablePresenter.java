@@ -6,11 +6,11 @@ import android.support.annotation.CallSuper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -126,7 +126,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
+        Subscription subscription = load(BellPuller.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscription);
     }

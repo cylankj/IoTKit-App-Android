@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.huawei.hms.support.api.push.PushReceiver;
 
 import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
@@ -22,7 +21,7 @@ public class HuaweiPushReceiver extends PushReceiver {
     public void onToken(Context context, String token, Bundle extras) {
         String belongId = extras.getString("belongId");
         String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
-        AppLogger.d(PUSH_TAG + "HwPush Token success:" + content);
+        System.out.println(PUSH_TAG + "HwPush Token success:" + content);
         Intent intent = new Intent();
         intent.setAction(PUSH_TOKEN);
         intent.putExtra(PUSH_TOKEN, token);
@@ -33,18 +32,18 @@ public class HuaweiPushReceiver extends PushReceiver {
 
     @Override
     public void onPushMsg(Context context, byte[] bytes, String s) {
-        AppLogger.d(PUSH_TAG + "onPushMsg?" + s + "," + new String(bytes));
+        System.out.println(PUSH_TAG + "onPushMsg?" + s + "," + new String(bytes));
     }
 
     @Override
     public void onPushState(Context context, boolean b) {
-        AppLogger.d(PUSH_TAG + "onPushState?" + b);
+        System.out.println(PUSH_TAG + "onPushState?" + b);
     }
 
     @Override
     public boolean onPushMsg(Context context, byte[] bytes, Bundle bundle) {
         String pushMessage = new String(bytes);
-        AppLogger.e(PUSH_TAG + "收到华为推送消息:" + pushMessage + "," + bundle + ",context:" + context.getApplicationContext().getPackageName() + ",\n" + context.getApplicationInfo().processName);
+        System.out.println(PUSH_TAG + "收到华为推送消息:" + pushMessage + "," + bundle + ",context:" + context.getApplicationContext().getPackageName() + ",\n" + context.getApplicationInfo().processName);
         BellPuller.getInstance().fireBellCalling(context, pushMessage, bundle);
         return super.onPushMsg(context, bytes, bundle);
     }
