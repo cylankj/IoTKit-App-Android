@@ -258,6 +258,11 @@ public class SubmitBindingInfoImpl extends AbstractPresenter<SubmitBindingInfoCo
                                 list.add(_303);
                                 list.add(_501);
                             }
+                            if (device.pid == 42) {//康凯斯门铃
+                                JFGDPMsg _501 = new JFGDPMsg(501, System.currentTimeMillis());
+                                _501.packValue = DpUtils.pack(false);
+                                list.add(_501);
+                            }
                             list.add(_timeZone);
                             AppLogger.d("设置睿视属性?" + isRs);
                             BaseApplication.getAppComponent().getCmd().robotSetData(uuid, list);
