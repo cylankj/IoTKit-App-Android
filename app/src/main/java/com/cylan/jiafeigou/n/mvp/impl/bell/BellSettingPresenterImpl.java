@@ -57,7 +57,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     e.printStackTrace();
                 }, () -> {
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     @Override
@@ -84,6 +84,6 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     AppLogger.d(e.getMessage());
                     AppLogger.d("清空呼叫记录失败!");
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 }

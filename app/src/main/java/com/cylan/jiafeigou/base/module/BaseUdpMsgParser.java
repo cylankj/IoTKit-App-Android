@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.base.module;
 
-import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -61,11 +61,12 @@ public class BaseUdpMsgParser {
                 case UdpConstant.DOORBELL_RING: {
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(header.cid);
                     if (device != null && device.available()) {//说明当前账号有这个设备
-                        JFGDoorBellCaller caller = new JFGDoorBellCaller();
-                        caller.cid = header.cid;
-                        RxEvent.BellCallEvent callEvent = new RxEvent.BellCallEvent(caller);
-                        callEvent.isFromLocal = true;
-                        RxBus.getCacheInstance().post(callEvent);
+//                        JFGDoorBellCaller caller = new JFGDoorBellCaller();
+//                        caller.cid = header.cid;
+//                        RxEvent.BellCallEvent callEvent = new RxEvent.BellCallEvent(caller);
+//                        callEvent.isFromLocal = true;
+//                        RxBus.getCacheInstance().post(callEvent);
+                        BellPuller.getInstance().launchBellLive(header.cid, null, System.currentTimeMillis() / 1000);
                     }
                     break;
                 }

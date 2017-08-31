@@ -60,8 +60,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getDeviceUnBindSub());
-        registerSubscription(getLoadSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceUnBindSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getLoadSub());
     }
 
     protected Subscription getLoadSub() {
@@ -200,7 +200,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 //                        }
                     }
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     protected boolean shouldShowPreview() {
@@ -211,7 +211,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void cancelViewer() {
         Subscription subscribe = stopViewer().subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     protected boolean disconnectBeforePlay() {
@@ -396,7 +396,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         mView.onDismiss();
                     }
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     @Override
@@ -411,7 +411,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     @Override
@@ -426,7 +426,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     private Observable<Boolean> setMicrophone(boolean on) {

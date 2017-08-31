@@ -2,12 +2,12 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -70,12 +70,13 @@ public class GlobalUdpDataSource {
                             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(recvHeard.cid);
                             if (device != null && TextUtils.equals(device.uuid, recvHeard.cid)) {//说明当前账号有这个设备
                                 AppLogger.d("当前保存的 NTP 时间为:" + PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL));
-                                JFGDoorBellCaller caller = new JFGDoorBellCaller();
-                                caller.time = System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL);
-                                caller.cid = recvHeard.cid;
-                                RxEvent.BellCallEvent callEvent = new RxEvent.BellCallEvent(caller);
-                                callEvent.isFromLocal = true;
-                                RxBus.getCacheInstance().post(callEvent);
+//                                JFGDoorBellCaller caller = new JFGDoorBellCaller();
+//                                caller.time = System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL);
+//                                caller.cid = recvHeard.cid;
+//                                RxEvent.BellCallEvent callEvent = new RxEvent.BellCallEvent(caller);
+//                                callEvent.isFromLocal = true;
+//                                RxBus.getCacheInstance().post(callEvent);
+                                BellPuller.getInstance().launchBellLive(recvHeard.cid, null, System.currentTimeMillis() / 1000L);
                             }
                             AppLogger.i(new Gson().toJson(recvHeard));
                         } else if (TextUtils.equals(headTag, "do_set_wifi_ack")) {

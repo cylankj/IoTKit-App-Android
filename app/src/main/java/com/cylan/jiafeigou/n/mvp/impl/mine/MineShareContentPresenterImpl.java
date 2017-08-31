@@ -58,7 +58,7 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     @Override
@@ -90,6 +90,6 @@ public class MineShareContentPresenterImpl extends BasePresenter<MineShareConten
                 }, e -> {
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 }

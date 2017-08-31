@@ -162,6 +162,7 @@ public class JConstant {
     public static final int OBJECT_CAT = 2;
     public static final int OBJECT_DOG = 3;
     public static final int OBJECT_CAR = 4;
+    public static final String IS_IN_BACKGROUND = "IS_IN_BACKGROUND";
 
 
     public static String getAIText(int[] objects) {

@@ -167,6 +167,13 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         }
         onSDCardSync(status);
         sivWatchVideoSwitcher.setOnCheckedChangeListener(this::clickWatchVideoSwitcher);
+
+        if (JFGRules.isPan720(device.pid)) {
+            siv_mode_motion.setSwitcherVisibility(View.VISIBLE);
+            siv_mode_motion.setShowRadioButton(false);
+            siv_mode_never.setVisibility(View.GONE);
+//            siv_mode_motion.setOnCheckedChangeListener();
+        }
     }
 
     private void onSwitcherModeMotion(CompoundButton button, boolean checked) {

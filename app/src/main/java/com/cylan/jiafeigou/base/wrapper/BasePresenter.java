@@ -22,7 +22,9 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -41,7 +43,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     protected JFGSourceManager sourceManager;
     protected IDPTaskDispatcher taskDispatcher;
     protected AppCmd appCmd;
-    private CompositeSubscription compositeSubscription;
+    private Map<LIFE_CYCLE, CompositeSubscription> lifeCycleCompositeSubscriptionMap;
 
     protected V mView;
 
@@ -95,7 +97,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     @CallSuper
     protected void onRegisterSubscription() {
         registerSubscription(
-                getDeviceSyncSub(),
+                LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceSyncSub(),
                 getLoginStateSub(),
                 getDeleteDataRspSub()
         );
@@ -107,16 +109,20 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
     /**
      * 如果不需要在onStop中进行反注册,可以重写这个方法,然后在自定义的地方反注册
+     *
+     * @param lifeCycle
      */
-    protected void onUnRegisterSubscription() {
-        unSubscribe(compositeSubscription);
-        compositeSubscription = null;
+    protected void onUnRegisterSubscription(LIFE_CYCLE lifeCycle) {
+        if (lifeCycleCompositeSubscriptionMap != null) {
+            CompositeSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.remove(lifeCycle);
+            unSubscribe(compositeSubscription);
+        }
     }
 
     @Override
     @CallSuper
     public void onStop() {
-        onUnRegisterSubscription();
+        onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP);
         if (registerTimeTick()) {
             if (timeTick != null)
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
@@ -125,6 +131,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
     @Override
     public void onViewDetached() {
+        onUnRegisterSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY);
         mView = null;
         sourceManager = null;
     }
@@ -143,7 +150,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onLoginStateChanged, e -> {
                     e.printStackTrace();
-                    registerSubscription(getLoginStateSub());//出现异常了要重现注册
+                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getLoginStateSub());//出现异常了要重现注册
                 });
     }
 
@@ -159,7 +166,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
                     onDeviceSync();
                 }, e -> {
                     e.printStackTrace();//打印错误日志以便排错
-                    registerSubscription(getDeviceSyncSub());//基类不能崩,否则一些功能异常
+                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeviceSyncSub());//基类不能崩,否则一些功能异常
                 });
     }
 
@@ -174,7 +181,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
                 }, e -> {
                     e.printStackTrace();
-                    registerSubscription(getDeleteDataRspSub());
+                    registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getDeleteDataRspSub());
                 });
     }
 
@@ -232,14 +239,26 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     }
 
 
-    protected void registerSubscription(Subscription... subscriptions) {
-        if (compositeSubscription == null) {
+    public enum LIFE_CYCLE {
+        LIFE_CYCLE_STOP,
+        LIFE_CYCLE_DESTROY,
+    }
+
+    protected void registerSubscription(LIFE_CYCLE lifeCycle, Subscription... subscriptions) {
+        if (lifeCycleCompositeSubscriptionMap == null) {
             synchronized (this) {
-                if (compositeSubscription == null) {
-                    compositeSubscription = new CompositeSubscription();
+                if (lifeCycleCompositeSubscriptionMap == null) {
+                    lifeCycleCompositeSubscriptionMap = new HashMap<>();
                 }
             }
         }
+        CompositeSubscription compositeSubscription = lifeCycleCompositeSubscriptionMap.get(lifeCycle);
+
+        if (compositeSubscription == null) {
+            compositeSubscription = new CompositeSubscription();
+            lifeCycleCompositeSubscriptionMap.put(lifeCycle, compositeSubscription);
+        }
+
         if (subscriptions != null) {
             for (Subscription subscription : subscriptions) {
                 compositeSubscription.add(subscription);

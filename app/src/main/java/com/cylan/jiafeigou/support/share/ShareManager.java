@@ -165,7 +165,7 @@ public class ShareManager {
         public void onCancel(SHARE_MEDIA share_media) {
             AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
             if (activity != null) {
-                ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_CanceldeTips));
+                ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_SuccessTips));
             }
             clean();
         }
