@@ -252,7 +252,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         });
         initTvTextClick();
 
-        camLiveControlLayer.setOrientationHandle(this::setRequestedOrientation);
+        camLiveControlLayer.setOrientationHandle(eventListener::setRequestedOrientation);
     }
 
     /**
@@ -763,22 +763,6 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //
 //    }
 
-    private int customOrientation = -1;
-
-    public void setRequestedOrientation(int requestedOrientation, boolean fromUser) {
-        if (fromUser) {
-            customOrientation = eventListener.getOrientation();
-            ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-        } else {
-            if (customOrientation != requestedOrientation) {
-                customOrientation = -1;
-                if (requestedOrientation != getActivity().getRequestedOrientation()) {
-                    ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
-                }
-            }
-        }
-    }
-
 
     class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
 
@@ -786,10 +770,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
         private volatile int orientation = -1;
 
+        private int customOrientation = -1;
+
         public int getOrientation() {
             return orientation;
         }
 
+        public int getCustomOrientation() {
+            return customOrientation;
+        }
+
+        public void setCustomOrientation(int customOrientation) {
+            this.customOrientation = customOrientation;
+        }
 
         public MyEventListener(Context context) {
             super(context);
@@ -812,7 +805,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
                     isShake = true;
                     camLiveControlLayer.onShake();
-                    camLiveControlLayer.postDelayed(() -> isShake = false, 2000);//一秒只允许摇一摇一次
+                    camLiveControlLayer.postDelayed(() -> {
+                        // TODO: 2017/8/31 摇一摇后重置 customOrientation
+                        isShake = false;
+                        customOrientation = -1;
+                    }, 2000);//一秒只允许摇一摇一次
                 }
             }
         }
@@ -850,6 +847,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }
             }
 
+        }
+
+        public void setRequestedOrientation(int requestedOrientation, boolean fromUser) {
+            if (fromUser) {
+                customOrientation = orientation;
+                ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
+            } else {
+                if (orientation != requestedOrientation) {
+                    customOrientation = -1;
+                    if (requestedOrientation != getActivity().getRequestedOrientation()) {
+                        ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
+                    }
+                }
+            }
         }
     }
 }
