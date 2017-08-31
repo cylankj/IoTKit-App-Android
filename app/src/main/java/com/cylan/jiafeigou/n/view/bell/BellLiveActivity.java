@@ -293,15 +293,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mediaPlayer.setVolume(0, 0);
         }
     }
-//
-//    @Override
-//    protected void onUserLeaveHint() {
-//        super.onUserLeaveHint();
-//        if (presenter.getLiveAction().hasStarted) {
-//            presenter.dismiss();
-//        }
-//        finish();
-//    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (presenter.getLiveAction().hasStarted) {
+            presenter.dismiss();
+        }
+        finish();
+    }
 
     @Override
     protected void onStop() {
@@ -956,18 +956,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
                 if (reason == null)
                     return;
-
+                // TODO: 2017/8/31 R11上监听不到
                 // Home键
-                if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
-                    presenter.dismiss();
-                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-                }
-
-                // 最近任务列表键
-                if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
-                    presenter.dismiss();
-                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
-                }
+//                if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
+//                    presenter.dismiss();
+//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//                }
+//
+//                // 最近任务列表键
+//                if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
+//                    presenter.dismiss();
+//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//                }
             }
         }
     }

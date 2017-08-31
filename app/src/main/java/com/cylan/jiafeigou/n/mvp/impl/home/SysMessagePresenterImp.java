@@ -26,6 +26,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -129,6 +130,7 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                                     results.add(bean);
                                 }
                             }
+                            Collections.sort(results, (o1, o2) -> (int) (o2.time - o1.time));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
