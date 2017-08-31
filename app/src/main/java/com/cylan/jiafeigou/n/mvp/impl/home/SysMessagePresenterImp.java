@@ -130,11 +130,14 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                                     results.add(bean);
                                 }
                             }
-                            Collections.sort(results, (o1, o2) -> (int) (o2.time - o1.time));
+                            Collections.sort(results, (o1, o2) -> {
+                                long t = o2.time - o1.time;
+                                return t > 0 ? 1 : t < 0 ? -1 : 0;
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        BaseApplication.getAppComponent().getDBHelper().saveDPByteInTx(robotoGetDataRsp);
+                        BaseApplication.getAppComponent().getDBHelper().saveDPByteInTx(robotoGetDataRsp).subscribe();
                         return Observable.just(results);
                     }
                 })
