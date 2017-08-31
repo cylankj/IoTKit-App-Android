@@ -50,7 +50,7 @@ public class SnPresenter extends AbstractFragmentPresenter<SnContract.View> impl
                     throw new RxEvent.HelperBreaker("手动结束");
                 }, throwable -> {
                     if (throwable instanceof TimeoutException) {
-                        mView.getPidRsp(-1, -1);
+                        mView.getPidRsp(-1, -2);
                     }
                 });
         addSubscription(subscription, "getPid");
