@@ -54,7 +54,7 @@ public class CommonModule {
     @Provides
     @Singleton
     public static JFGSourceManager provideSourceManager() {
-        return new DataSourceManager();
+        return DataSourceManager.getInstance();
     }
 
     @Provides

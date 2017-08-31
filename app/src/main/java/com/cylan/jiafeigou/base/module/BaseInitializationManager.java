@@ -7,7 +7,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.cylan.jfgapp.interfases.AppCmd;
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -17,7 +16,6 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.pty.IProperty;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
-import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.push.PushResultReceiver;
 import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -218,23 +216,23 @@ public final class BaseInitializationManager {
         //全局订阅者资源释放
         if (!compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-            CompositeSubscription compositeSubscription = null;
+            compositeSubscription = null;
         }
-        JFGSourceManager manager = null;
-        IDBHelper helper = null;
-        IPropertyParser parser = null;
-        IDPTaskFactory factory = null;
-        IDPTaskDispatcher dispatcher = null;
-        BaseAppCallBackHolder callBackHolder = null;
+        manager = null;
+        helper = null;
+        parser = null;
+        factory = null;
+        dispatcher = null;
+        callBackHolder = null;
 
         /*appCmd 资源释放*/
         appCmd.releaseApi();
-        JfgAppCmd appCmd = null;
-        String vkey = null;
-        String vid = null;
-        String serverAddress = null;
-        String logPath = null;
-        BaseJFGResultParser resultParser = null;
+        appCmd = null;
+        vkey = null;
+        vid = null;
+        serverAddress = null;
+        logPath = null;
+        resultParser = null;
         GlobalResetPwdSource.getInstance().unRegister();
     }
 

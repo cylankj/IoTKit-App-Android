@@ -106,6 +106,13 @@ public class DataSourceManager implements JFGSourceManager {
     private int loginType;
 
     public static DataSourceManager getInstance() {
+        if (instance == null) {
+            synchronized (DataSourceManager.class) {
+                if (instance == null) {
+                    instance = new DataSourceManager();
+                }
+            }
+        }
         return instance;
     }
 
@@ -132,7 +139,7 @@ public class DataSourceManager implements JFGSourceManager {
                     RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
                     accountArrived.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
                     getCacheInstance().postSticky(accountArrived);
-                    AppLogger.d("正在从数据库初始化...");
+                    AppLogger.w("正在从数据库初始化...");
                     return dpAccount;
                 })
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))

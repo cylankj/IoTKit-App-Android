@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.server.cache
 
+//import com.cylan.jiafeigou.server.VersionHeader
 import android.util.Log
-import com.cylan.entity.jniCall.JFGDPMsg
-import com.cylan.entity.jniCall.JFGDPValue
 import com.cylan.entity.jniCall.JFGDevice
 import com.cylan.jiafeigou.dp.BaseDataPoint
 import com.cylan.jiafeigou.dp.DpMsgDefine
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.n.base.BaseApplication
-//import com.cylan.jiafeigou.server.VersionHeader
 import com.cylan.jiafeigou.server.VersionValue
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -168,7 +166,7 @@ fun getPropertyListQuery(uuid: String? = "", msgId: Long): Query<PropertyItem> =
 fun saveProperty(uuid: String? = "", valueMap: MutableMap<Long, List<*>>?, hashStrategy: ((String?, Long, Long) -> Long?)?) = try {
     {
 
-//        var items: MutableList<PropertyItem> = mutableListOf()
+        //        var items: MutableList<PropertyItem> = mutableListOf()
 //
 //        valueMap?.forEach { item ->
 //            item.value.forEach {
@@ -229,7 +227,7 @@ fun saveProperty(maps: Map<String, Map<Long, *>>, hashStrategy: ((String?, Int, 
 
 fun saveDevices(devices: Array<JFGDevice>) = try {
     {
-//        val items: MutableList<Device> = mutableListOf()
+        //        val items: MutableList<Device> = mutableListOf()
 //
 //        BaseApplication.getDeviceBox().query()
 //                .notIn(Device_.uuid, devices.map { it.uuid.toLong() }.toLongArray())
@@ -301,7 +299,11 @@ data class Device(@Id(assignable = true) var uuid: Long,
 //private String photoUrl;
 
 @Entity
-data class Account(@Id(assignable = true) var id: Long, var account: String, var password: String)
+data class Account(@Id(assignable = true) var hash: Long,
+                   var account: String,
+                   var password: String,
+                   var loginType:Int
+)
 
 fun <V : Any> cast(propertyItem: PropertyItem?, defaultValue: V): V {
     val mapper = jacksonObjectMapper()
@@ -314,15 +316,3 @@ fun <V : Any> cast(propertyItem: PropertyItem?, defaultValue: V): V {
     } ?: defaultValue
 
 }
-
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-data class A(var standby: Boolean, var alarmEnable: Boolean, var led: Boolean, var autoRecord: Int)
-
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-data class AD(var standby: Boolean, var alarmEnable: Boolean, var led: Boolean, var autoRecord: Int) : BaseDataPoint()
-
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-data class B(var total: Long, var used: Long, var err: Int, var hasSdcard: Boolean)
-
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-data class BD(var total: Long, var used: Long, var err: Int, var hasSdcard: Boolean) : BaseDataPoint()

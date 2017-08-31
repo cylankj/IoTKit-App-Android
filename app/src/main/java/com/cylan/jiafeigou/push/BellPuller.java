@@ -29,7 +29,6 @@ import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
 /**
  * Created by hds on 17-4-24.
  */
-
 public class BellPuller {
 
     private static BellPuller instance;

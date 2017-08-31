@@ -78,6 +78,7 @@ public class PanoramicViewFragment extends IBaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 
