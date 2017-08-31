@@ -661,7 +661,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionGrant_Mic() {
-        basePresenter.switchMic();
+        if (basePresenter.getPlayState() == PLAY_STATE_PLAYING)
+            basePresenter.switchMic();
     }
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO})
