@@ -141,6 +141,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private boolean isAnswerd = false;
     private boolean isSpeakerON = false;
+    private boolean onUserLeaveHint = false;
 
 
     @Override
@@ -272,6 +273,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStart() {
         super.onStart();
+        onUserLeaveHint = false;
 
     }
 
@@ -297,11 +299,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if (presenter.getLiveAction().hasStarted) {
-            presenter.dismiss();
-        }
-        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
-        finish();
+        this.onUserLeaveHint = true;
+//        if (presenter.getLiveAction().hasStarted) {
+//            presenter.dismiss();
+//        }
+//        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
+//        finish();
     }
 
     @Override
@@ -309,7 +312,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onStop();
         muteAudio(false);
 
-        if (presenter.getLiveAction().hasStarted) {
+        if (presenter.getLiveAction().hasStarted || onUserLeaveHint) {
             if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
                 ((GLSurfaceView) mSurfaceView).onPause();
                 mVideoViewContainer.removeAllViews();
@@ -332,7 +335,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onScreenRotationChanged(boolean land) {
         isLandMode = land;
         handleScreenUpdate(!land);
-//        getWindow().getDecorView().post(() -> handleSystemBar(!land, 100));
     }
 
     @Override
