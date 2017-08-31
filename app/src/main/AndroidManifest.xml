@@ -246,7 +246,7 @@
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:excludeFromRecents="true"
             android:keepScreenOn="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />

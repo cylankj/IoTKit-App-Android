@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.HintTextView;
@@ -314,19 +312,17 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             return;
         } else if (checkExtraFragment())
             return;
-        if (this.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE) {
-            ViewUtils.setRequestedOrientation(this,
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            return;
-        }
+
         // TODO: 2017/8/18 需要手动通知 CameraLiveFragment 调用 stop  避免 onStop 延迟调用 bug #118078
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
             ((CameraLiveFragmentEx) fragment).onBackPressed();
         }
-        finishExt();
+        if (this.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            finishExt();
+        }
     }
 
     public void onNavBack() {
