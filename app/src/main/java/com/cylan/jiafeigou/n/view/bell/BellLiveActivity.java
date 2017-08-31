@@ -300,6 +300,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (presenter.getLiveAction().hasStarted) {
             presenter.dismiss();
         }
+        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
         finish();
     }
 
