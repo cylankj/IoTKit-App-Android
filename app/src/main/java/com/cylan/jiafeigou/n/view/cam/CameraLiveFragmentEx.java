@@ -54,6 +54,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -250,6 +251,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         });
         initTvTextClick();
+
+        camLiveControlLayer.setOrientationHandle(this::setRequestedOrientation);
     }
 
     /**
@@ -760,10 +763,33 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //
 //    }
 
+    private int customOrientation = -1;
+
+    public void setRequestedOrientation(int requestedOrientation, boolean fromUser) {
+        if (fromUser) {
+            customOrientation = eventListener.getOrientation();
+            ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
+        } else {
+            if (customOrientation != requestedOrientation) {
+                customOrientation = -1;
+                if (requestedOrientation != getActivity().getRequestedOrientation()) {
+                    ViewUtils.setRequestedOrientation(getActivity(), requestedOrientation);
+                }
+            }
+        }
+    }
+
 
     class MyEventListener extends com.cylan.jiafeigou.misc.OrientationListener {
 
         private boolean isShake = false;
+
+        private volatile int orientation = -1;
+
+        public int getOrientation() {
+            return orientation;
+        }
+
 
         public MyEventListener(Context context) {
             super(context);
@@ -794,58 +820,35 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
         @Override
         public void onOrientationChanged(int orientation) {
-            if (isShake) return;
-//            int screenOrientation = getResources().getConfiguration().orientation;
 
 
             // TODO: 2017/8/30 只能从一个方向旋转到另一个方向,不能从一个方向旋转回自己的方向
 
             if (((orientation >= 0) && (orientation < 45)) || (orientation > 315)) {//设置竖屏
-//                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && orientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
 //                    Log.d(TAG, "设置竖屏");
+                this.orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-                if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                    if (!camLiveControlLayer.isShakeEnable()) {
-                        // TODO: 2017/8/24 摇一摇开启后不允许自动转屏
-                        camLiveControlLayer.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, false);
-//                            ViewUtils.setRequestedOrientation(getActivity(), beforeOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    }
-                }
-//                }
             } else if (orientation > 225 && orientation < 315) { //设置横屏
 //                Log.d(TAG, "设置横屏");
-//                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                    if (!camLiveControlLayer.isShakeEnable()) {
-                        camLiveControlLayer.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, false);
-//                            ViewUtils.setRequestedOrientation(getActivity(), beforeOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    }
-                }
-//                }
+                this.orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+
             } else if (orientation > 45 && orientation < 135) {// 设置反向横屏
 //                Log.d(TAG, "反向横屏");
-//                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                    if (!camLiveControlLayer.isShakeEnable()) {
-                        camLiveControlLayer.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE, false);
-//                            ViewUtils.setRequestedOrientation(getActivity(), beforeOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                    }
-                }
-//                }
+                this.orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+
             } else if (orientation > 135 && orientation < 225) {
+                this.orientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT;
 //                Log.d(TAG, "反向竖屏");
-//                if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-//                    if (screenOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                    if (!camLiveControlLayer.isShakeEnable()) {
-                        camLiveControlLayer.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT, false);
-//                                ViewUtils.setRequestedOrientation(getActivity(), beforeOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-                    }
-                }
-//                    }
-//                }
             }
 
+            if (isShake) return;
+
+            if (basePresenter != null && isUserVisible() && isResumed() && getActivity() != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                if (!camLiveControlLayer.isShakeEnable()) {
+                    // TODO: 2017/8/24 摇一摇开启后不允许自动转屏
+                    setRequestedOrientation(this.orientation, false);
+                }
+            }
 
         }
     }

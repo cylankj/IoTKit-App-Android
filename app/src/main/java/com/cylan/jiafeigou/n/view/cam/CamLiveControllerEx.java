@@ -239,6 +239,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private YoYo.YoYoString landAnimationLayoutG;
     private YoYo.YoYoString flowTextAnimation;
 
+
     public CamLiveControllerEx(Context context) {
         this(context, null);
     }
@@ -1814,19 +1815,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-    private int beforeOrientation = -1;
-
-    public void setRequestedOrientation(int requestedOrientation, boolean fromUser) {
-
-        if (requestedOrientation == beforeOrientation) {
-            return;
-        }
-
-        post(() -> {
-            ViewUtils.setRequestedOrientation((Activity) getContext(), requestedOrientation);
-            beforeOrientation = fromUser ? requestedOrientation : -1;
-        });
-    }
 
     @Override
     public void onClick(View v) {
@@ -1836,7 +1824,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 if (MiscUtils.isLand() && isActionBarHide()) return;
 //                post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
 //                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
+                if (orientationHandle != null) {
+                    orientationHandle.setRequestOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
+                }
+
                 // TODO: 2017/8/16 现在需要自动横屏
 //                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
 //                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
@@ -1844,7 +1835,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case R.id.imgV_cam_zoom_to_full_screen://点击全屏
 //                post(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
 //                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, true);
+                if (orientationHandle != null) {
+                    orientationHandle.setRequestOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, true);
+                }
                 // TODO: 2017/8/16 现在需要自动横屏
 //                postDelayed(() -> ViewUtils.setRequestedOrientation((Activity) getContext(),
 //                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), 3000);
@@ -1935,6 +1928,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public boolean isShakeEnable() {
         return ivModeXunHuan.isSelected() && ivModeXunHuan.isEnabled();
+    }
+
+    interface OrientationHandle {
+        void setRequestOrientation(int orientation, boolean fromUser);
+    }
+
+    private OrientationHandle orientationHandle;
+
+    public void setOrientationHandle(OrientationHandle handle) {
+        this.orientationHandle = handle;
     }
 
 }
