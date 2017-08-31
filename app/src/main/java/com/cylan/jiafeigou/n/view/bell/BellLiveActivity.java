@@ -162,6 +162,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         //锁屏状态下显示门铃呼叫
         registSreenStatusReceiver();
         initHeadSetEventReceiver();
+        initHomeListenReceiver();
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
@@ -171,6 +172,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
         newCall();
+    }
+
+    private void initHomeListenReceiver() {
+        homeListen = new HomeListen();
+        IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(homeListen, homeFilter);
     }
 
     @OnClick(R.id.act_bell_live_back)
@@ -288,6 +295,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (presenter.getLiveAction().hasStarted) {
+            presenter.dismiss();
+        }
+        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
+        finish();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         muteAudio(false);
@@ -298,9 +315,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoViewContainer.removeAllViews();
                 mSurfaceView = null;
                 AppLogger.d("finish manually");
-                finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
             }
             presenter.dismiss();
+            finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
         }
     }
 
@@ -890,6 +907,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
             } else if (SCREEN_OFF.equals(intent.getAction())) {
                 presenter.dismiss();
+                finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
             }
         }
     }
@@ -898,6 +916,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mScreenStatusReceiver);
+        if (homeListen != null) {
+            unregisterReceiver(homeListen);
+        }
         clearHeadSetEventReceiver();
     }
 
@@ -919,4 +940,38 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            decorView.setSystemUiVisibility(uiOptions);
 //        }
 //    }
+
+    private HomeListen homeListen;
+
+    private class HomeListen extends BroadcastReceiver {
+
+        private final String SYSTEM_DIALOG_REASON_KEY = "reason";
+        private final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
+        private final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
+
+                if (reason == null)
+                    return;
+                // TODO: 2017/8/31 R11上监听不到
+                // Home键
+//                if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
+//                    presenter.dismiss();
+//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//                }
+//
+//                // 最近任务列表键
+//                if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
+//                    presenter.dismiss();
+//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//                }
+            }
+        }
+    }
+
+
 }
