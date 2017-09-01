@@ -751,14 +751,18 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 }, false);
     }
 
+    public void removeVideoView() {
+        if (!isUserVisible() && camLiveControlLayer != null)//可以解决退出activity,TransitionAnimation，出现黑屏
+            camLiveControlLayer.removeAllViews();
+    }
+
     @Override
     public void onBackPressed() {
 
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             this.eventListener.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, true);
         } else {
-            if (!isUserVisible())//可以解决退出activity,TransitionAnimation，出现黑屏
-                camLiveControlLayer.removeAllViews();
+
             AppLogger.d("用户按下了返回键,需要手动停止播放直播,Bug:Android 7.0 以上 onStop 延迟调用");
             basePresenter.stopPlayVideo(true).subscribe(ret -> {
 //            camLiveControlLayer.getLiveViewWithThumbnail().getVideoView().takeSnapshot(true);
