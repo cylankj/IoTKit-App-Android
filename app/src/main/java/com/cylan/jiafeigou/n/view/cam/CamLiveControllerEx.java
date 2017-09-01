@@ -1320,9 +1320,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
         postDelayed(portHideRunnable, 3000);//#118022
 //        postDelayed(landHideRunnable, 3000);
-        postDelayed(() -> {
-
-        }, 3000);
+//        postDelayed(() -> {
+//
+//        }, 3000);
         //分享账号不显示啊.
 //        if (JFGRules.isShareDevice(uuid)) return;
         setLiveRectTime(livePlayType, rtcp.timestamp, true);
@@ -1376,7 +1376,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
                 || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
         Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
-        if (JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
+        //拖动的时候，拒绝外部设置时间。
+        if (!isWheelBusy && JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
             liveTimeLayout.setContent(type, timestamp);
         }
         if (!isWheelBusy && type == TYPE_HISTORY && presenter != null
@@ -1724,7 +1725,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         imgVCamTriggerCapture.setEnabled(true);
         imgVLandCamTriggerCapture.setEnabled(true);
-        ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE&&enableAutoRotate);
+        ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && enableAutoRotate);
         ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE);
     }
 
