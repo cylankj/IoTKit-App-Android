@@ -49,14 +49,6 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContract.Presenter>
         implements VideoAutoRecordContract.View {
 
-    //    @BindView(R.id.rg_auto_record_mode)
-//    RadioGroup rgAutoRecordMode;
-//    @BindView(R.id.rb_motion)
-//    RadioButton rbMotion;
-//    @BindView(R.id.rb_24_hours)
-//    RadioButton rb24Hours;
-//    @BindView(R.id.rb_never)
-//    RadioButton rbNever;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.lLayout_mode_motion)
@@ -117,33 +109,40 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         IProperty property = BaseApplication.getAppComponent().getProductProperty();
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
 
-        //如果有24小时录像选项的,开启三个选项,没有24小时录像的,开启一个选项
+        //每个条目一个字段,有就显示没有就不显示,只有一个条目就显示 switch
         boolean record24 = property.hasProperty(device.pid, "24RECORD");
 
-//        rb24Hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        // TODO: 2017/8/31 字段名称 motion
+        boolean motion = property.hasProperty(device.pid, "AUTORECORD");
+
+        // TODO: 2017/8/31 字段名称 never
+        boolean never = property.hasProperty(device.pid, "NEVER");
+
+        boolean video = property.hasProperty(device.pid, "VIDEO");
+
+
         siv_mode_24_hours.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        siv_mode_24_hours.setShowRadioButton(true);
+        siv_mode_24_hours.setShowRadioButton(record24 && (motion || never));
 
-//        boolean isRSBell = JFGRules.isRsBell(device.pid);
-//        siv_mode_never.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        siv_mode_never.setVisibility(View.VISIBLE);
-//        rbNever.setVisibility(record24 ? View.VISIBLE : View.GONE);
-        siv_mode_never.setShowRadioButton(true);
+        siv_mode_never.setVisibility(never ? View.VISIBLE : View.GONE);
+        siv_mode_never.setShowRadioButton(never && (motion || record24));
 
-//        siv_mode_motion.setSwitcherVisibility(record24 ? View.GONE : View.VISIBLE);
-//        siv_mode_motion.setSwitcherVisibility(View.VISIBLE);
-        siv_mode_motion.setShowRadioButton(true);
-//        rbMotion.setVisibility(record24 ? View.VISIBLE : View.GONE);
+        siv_mode_motion.setVisibility(motion ? View.VISIBLE : View.GONE);
+        siv_mode_motion.setShowRadioButton(motion && (record24 || never));
+        siv_mode_motion.setSwitcherVisibility((motion && !never && !record24) ? View.VISIBLE : View.GONE);
 
-        DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+        rlWatchVideoContainer.setVisibility(video ? View.VISIBLE : View.GONE);
+
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
+
         boolean isRs = JFGRules.isRS(device.pid);
-        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
 
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
-        if (!status.hasSdcard) oldOption = -1;
+        boolean recordWatcher = device.$(305, false);
         boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        if (!alarm) oldOption = -1;
+
+        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, isRs ? 2 : -1);
+        if (!status.hasSdcard || !alarm) oldOption = -1;
 
 
         //#117813 Android（1.1.0.523）设备有SD卡且处于相册界面 此时拔出设备的SD卡后，弹窗提示：SD卡已被拔出 选项：确定 .实际结果：没有这个提示
@@ -151,29 +150,13 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         siv_mode_24_hours.setRadioButtonChecked(oldOption == 1);
         siv_mode_never.setRadioButtonChecked(oldOption == 2);
 
-
-        AppLogger.d("");
-        siv_mode_motion.setOnCheckedChangeListener(null);
         siv_mode_motion.setChecked(oldOption == 0);
         siv_mode_motion.setOnCheckedChangeListener(this::onSwitcherModeMotion);
-        if (property.hasProperty(device.pid, "VIDEO")) {
-            rlAlarmSettingContainer.setVisibility(View.GONE);
-            rlWatchVideoContainer.setVisibility(View.VISIBLE);
-            boolean recordWatcher = device.$(305, false);
-            onRecordWatcherSync(recordWatcher);
-        } else {
-            rlAlarmSettingContainer.setVisibility(View.VISIBLE);
-            rlWatchVideoContainer.setVisibility(View.GONE);
-        }
-        onSDCardSync(status);
+
         sivWatchVideoSwitcher.setOnCheckedChangeListener(this::clickWatchVideoSwitcher);
 
-        if (JFGRules.isPan720(device.pid)) {
-            siv_mode_motion.setSwitcherVisibility(View.VISIBLE);
-            siv_mode_motion.setShowRadioButton(false);
-            siv_mode_never.setVisibility(View.GONE);
-//            siv_mode_motion.setOnCheckedChangeListener();
-        }
+        onSDCardSync(status);
+        onRecordWatcherSync(recordWatcher);
     }
 
     private void onSwitcherModeMotion(CompoundButton button, boolean checked) {
@@ -252,15 +235,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             }
             break;
             case R.id.lLayout_mode_24_hours: {
-//                if (!alarmDisable()) {
-//                    openAlarm(1);
-//                    return;
-//                }
                 if (!hasSdcard()) {
                     ToastUtil.showToast(getString(R.string.has_not_sdcard));
                     return;
                 }
-//                rb24Hours.setChecked(true);
                 siv_mode_24_hours.setRadioButtonChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 1;
@@ -274,7 +252,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     ToastUtil.showToast(getString(R.string.has_not_sdcard));
                     return;
                 }
-//                rbNever.setChecked(true);
                 siv_mode_never.setRadioButtonChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 2;
@@ -299,11 +276,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     basePresenter.updateInfoReq(wFlag, ID_501_CAMERA_ALARM_FLAG);
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     if (index == 1) {
-////                        rb24Hours.setChecked(true);
                         siv_mode_24_hours.setRadioButtonChecked(true);
                     } else {
-////                        rbMotion.setChecked(true);
-//                        siv_mode_motion.setChecked(true);
                         siv_mode_motion.setChecked(true);
                         siv_mode_motion.setRadioButtonChecked(true);
                     }
@@ -346,7 +320,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         if (!hasSdcard()) {
             sivWatchVideoSwitcher.setChecked(false, false);
         }
-//            sivWatchVideoSwitcher.setCheckEnable(false);
     }
 
     @Override

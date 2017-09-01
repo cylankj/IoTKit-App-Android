@@ -115,6 +115,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+
         Log.d(TAG, "onLowMemory: ");
     }
 

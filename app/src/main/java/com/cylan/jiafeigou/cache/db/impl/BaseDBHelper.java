@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.server.cache.CacheHolderKt;
@@ -69,6 +70,19 @@ public class BaseDBHelper implements IDBHelper {
     private DaoSession daoSession;
     private JFGSourceManager sourceManager;
 
+    private static BaseDBHelper instance;
+
+    public static BaseDBHelper getInstance() {
+        if (instance == null) {
+            synchronized (BaseDBHelper.class) {
+                if (instance == null) {
+                    instance = new BaseDBHelper();
+                }
+            }
+        }
+        return instance;
+    }
+
     public BaseDBHelper() {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
 //        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
@@ -79,6 +93,7 @@ public class BaseDBHelper implements IDBHelper {
         deviceDao = daoSession.getDeviceDao();
         historyFileDao = daoSession.getHistoryFileDao();
     }
+
 
     public DaoSession getDaoSession() {
         return daoSession;
@@ -693,6 +708,10 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> logout() {
+        // TODO: 2017/8/31 objectbox 可以直接当内存缓存用,不用担心内存重启
+        BaseApplication.getDeviceBox().removeAll();
+        BaseApplication.getPropertyItemBox().removeAll();
+
         return getActiveAccount().map(account -> {
             this.dpAccount = null;
             if (account != null) {

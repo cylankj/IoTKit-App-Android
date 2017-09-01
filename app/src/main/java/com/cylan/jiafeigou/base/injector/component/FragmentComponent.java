@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordDeviceFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordMainFragment;
-import com.cylan.jiafeigou.support.share.H5ShareEditorActivity;
 
 import dagger.Component;
 
