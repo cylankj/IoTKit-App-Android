@@ -20,7 +20,10 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -206,7 +209,18 @@ public class PanoramicViewFragment extends IBaseFragment {
     }
 
     public void loadBitmap(int index) {
-        String mode = camMessageBean.alarmMsg == null ? "0" : camMessageBean.alarmMsg.tly;
+
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
+
+        // TODO: 2017/9/1 哪些设备需要平视,哪些设备需要俯视
+
+        boolean hasViewAngle = JFGRules.hasViewAngle(device.pid);
+        String mode = camMessageBean.alarmMsg != null ? camMessageBean.alarmMsg.tly : hasViewAngle ? "0" : "1";
+
+
+//        String mode = camMessageBean.alarmMsg == null ? "0" : camMessageBean.alarmMsg.tly;
+
+
         Log.d("loadBitmap", "loadBitmap: " + mode);
         if (subscription != null) subscription.unsubscribe();
         subscription = Observable.just(mode)

@@ -127,7 +127,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         siv_mode_never.setVisibility(never ? View.VISIBLE : View.GONE);
         siv_mode_never.setShowRadioButton(never && (motion || record24));
 
-        siv_mode_motion.setVisibility(motion ? View.GONE : View.VISIBLE);
+        siv_mode_motion.setVisibility(motion ? View.VISIBLE : View.GONE);
         siv_mode_motion.setShowRadioButton(motion && (record24 || never));
         siv_mode_motion.setSwitcherVisibility((motion && !never && !record24) ? View.VISIBLE : View.GONE);
 
