@@ -113,10 +113,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         boolean record24 = property.hasProperty(device.pid, "24RECORD");
 
         // TODO: 2017/8/31 字段名称 motion
-        boolean motion = property.hasProperty(device.pid, "");
+        boolean motion = property.hasProperty(device.pid, "AUTORECORD");
 
         // TODO: 2017/8/31 字段名称 never
-        boolean never = property.hasProperty(device.pid, "");
+        boolean never = property.hasProperty(device.pid, "NEVER");
 
         boolean video = property.hasProperty(device.pid, "VIDEO");
 
