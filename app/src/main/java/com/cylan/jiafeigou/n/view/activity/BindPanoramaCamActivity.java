@@ -120,7 +120,7 @@ public class BindPanoramaCamActivity extends BaseBindActivity {
                     super.onAnimationEnd(animation);
                     bg.setVisibility(View.VISIBLE);
                     imgVCameraRedDot.setVisibility(View.VISIBLE);
-                    imgVCameraRedDot.setImageAlpha(1);
+                    imgVCameraRedDot.setImageAlpha(255);
                 }
             });
 
