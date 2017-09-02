@@ -154,7 +154,7 @@ public class SuperWheelExt extends View {
     }
 
     public boolean isBusy() {
-        return touchHandler != null && touchHandler.isTouchDown() || !touchHandler.isFinished();
+        return touchHandler != null && (touchHandler.isTouchDown() || !touchHandler.isFinished());
     }
 
     /**
@@ -359,8 +359,8 @@ public class SuperWheelExt extends View {
             Log.d(TAG, String.format("timeCurrent:%s,timeTarget:%s,idle:%s,next:%s", timeCurrent, timeTarget, idle, next));
         if (next) {
             //开始吸附过程
-            if (wheelRollListener != null)
-                wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
+//            if (wheelRollListener != null)
+//                wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_ADSORB);
             if (DEBUG)
                 Log.d(TAG, "DRAG? STATE_ADSORB");
             timeTarget = iDataProvider.getNextFocusTime(timeCurrent, ITouchHandler.MoveDirection.RIGHT);
