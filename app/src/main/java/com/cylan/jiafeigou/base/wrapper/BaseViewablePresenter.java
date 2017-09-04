@@ -74,9 +74,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return RxBus.getCacheInstance().toObservable(RxEvent.VideoLoadingEvent.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(load -> {
-                    AppLogger.d("正在加载中" + load.slow);
+                    AppLogger.w("正在加载中" + load.slow);
                     if (load.slow && !sourceManager.isOnline() && liveStreamAction.hasStarted && !ApFilter.isAPMode(uuid)) {
-                        AppLogger.d("无网络连接");
+                        AppLogger.w("无网络连接");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = BAD_NET_WORK;
                         disconn.remote = getViewHandler();
@@ -136,19 +136,19 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
                         if (disconnectBeforePlay()) {
                             appCmd.stopPlay(handle);
-                            AppLogger.d("播放前先发送断开消息!");
+                            AppLogger.w("播放前先发送断开消息!");
                         }
                         int ret = appCmd.playVideo(handle);
                         AppLogger.d("准备开始直播返回的结果码为:" + ret);
                         if (ret != 0) {
                             appCmd.stopPlay(handle);
                             appCmd.playVideo(handle);
-                            AppLogger.d("正在重试播放直播");
+                            AppLogger.w("正在重试播放直播");
                         }
                         liveStreamAction.hasStarted = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
-                        AppLogger.d("准备开始直播失败!");
+                        AppLogger.w("准备开始直播失败!");
                     }
                     return handle;
                 })
@@ -161,12 +161,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     try {
                         liveStreamAction.hasResolution = true;
                         if (mView != null) {
-                            AppLogger.d("接收到分辨率消息,准备播放直播");
-                            registerHeadSetObservable();
+                            AppLogger.w("接收到分辨率消息,准备播放直播");
                             mView.onResolution(rsp);
                         }
                         mViewLaunchType = onResolveViewIdentify();
                         RxBus.getCacheInstance().post(new BaseCallablePresenter.Notify(false));//发送一条 Notify 消息表明不需要再查询预览图了
+                        registerHeadSetObservable();
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -189,7 +189,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     feedRtcp.setMonitorListener(null);
                     e.printStackTrace();
                     if (e instanceof TimeoutException) {
-                        AppLogger.d("连接设备超时,即将退出!");
+                        AppLogger.w("连接设备超时,即将退出!");
                         liveStreamAction.reset();
                         try {
                             appCmd.stopPlay(getViewHandler());
@@ -231,7 +231,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
             String filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
             PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
             BitmapUtils.saveBitmap2file(bitmap, filePath);
-            AppLogger.e("截图文件地址:" + filePath);
+            AppLogger.w("截图文件地址:" + filePath);
         });
     }
 
@@ -241,7 +241,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      * 而且还会清除播放状态
      */
     protected Observable<Boolean> stopViewer() {
-        AppLogger.e("stopViewer");
+        AppLogger.w("stopViewer");
         // TODO: 2017/8/16 需要同步性很高, rx 的线程切换可能带来不一致性,所以不使用线程切换了
         if (!TextUtils.isEmpty(getViewHandler()) && liveStreamAction.hasStarted) {
             String viewHandler = getViewHandler();
@@ -250,7 +250,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
             disconn.remote = viewHandler;
             disconn.code = STOP_VIERER_BY_SYSTEM;
             RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
-            AppLogger.d("正在发送停止直播消息:" + viewHandler);
+            AppLogger.w("正在发送停止直播消息:" + viewHandler);
             Schedulers.io().createWorker().schedule(() -> {
                 try {
                     byte[] screenshot = appCmd.screenshot(false);
@@ -262,7 +262,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    AppLogger.d("停止直播失败");
+                    AppLogger.w("停止直播失败");
                 }
             });
             return Observable.just(true);
@@ -299,7 +299,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(dis -> {
-                            AppLogger.d("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
+                            AppLogger.w("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
                             if (mView != null) {
                                 switch (dis.code) {
                                     case STOP_VIERER_BY_SYSTEM:
@@ -325,7 +325,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .first(dis -> {
-                    AppLogger.d("收到了断开视频的消息:" + dis.code);
+                    AppLogger.w("收到了断开视频的消息:" + dis.code);
                     liveStreamAction.reset();
                     feedRtcp.stop();
                     if (dis.code != STOP_VIERER_BY_SYSTEM) {
@@ -341,7 +341,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .subscribe(ret -> {
                     try {
-                        AppLogger.d("网络状态发生变化,正在发送断开视频消息");
+                        AppLogger.w("网络状态发生变化,正在发送断开视频消息");
                         JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                         disconn.code = ErrorVideoPeerDisconnect;//连接互联网不可用,
                         disconn.remote = getViewHandler();
@@ -442,7 +442,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return Observable.just(on)
                 .observeOn(Schedulers.io())
                 .map(s -> {
-                    AppLogger.d("正在切换 setMicrophone :" + on);
+                    AppLogger.w("正在切换 setMicrophone :" + on);
                     switchSpeakAndMicroPhone(true, true, on);
                     switchSpeakAndMicroPhone(false, on, true);
                     liveStreamAction.microphoneOn = !on;
@@ -454,7 +454,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         return Observable.just(on)
                 .observeOn(Schedulers.io())
                 .map(s -> {
-                    AppLogger.d("正在切换 Speaker :" + on);
+                    AppLogger.w("正在切换 Speaker :" + on);
                     //sdk存在bug.不能连续两次打开mic.
                     boolean success = switchSpeakAndMicroPhone(true, true, on);
                     switchSpeakAndMicroPhone(false, on, true);
@@ -479,7 +479,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 return false;
             }
         }
-        Log.d("switchSpeakAndMicro", "local:" + local + ",speaker:" + speaker + ",mic:" + microphone);
+        Log.w("switchSpeakAndMicro", "local:" + local + ",speaker:" + speaker + ",mic:" + microphone);
         appCmd.setAudio(local, microphone, speaker);//开启设备的扬声器和麦克风
 //        appCmd.setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
         return true;
@@ -528,13 +528,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void registerHeadSetObservable() {
         if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
         headsetObserver.addObserver(this);
-        AppLogger.d("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
-        AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
+        AppLogger.w("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
+        AppLogger.w("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
     }
 
     @Override
     public void onHeadSetPlugIn(boolean plugIn) {
-        AppLogger.d("耳机接入?:" + plugIn);
+        AppLogger.w("耳机接入?:" + plugIn);
         switchEarpiece(plugIn);
     }
 
@@ -552,7 +552,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void unRegisterHeadSetObservable() {
         if (headsetObserver == null) return;
         headsetObserver.removeObserver(this);
-        AppLogger.d("反注册注册监听耳机:" + TAG);
+        AppLogger.w("反注册注册监听耳机:" + TAG);
     }
 
     /**
