@@ -207,6 +207,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 //                        }
                     }
                 });
+        
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
