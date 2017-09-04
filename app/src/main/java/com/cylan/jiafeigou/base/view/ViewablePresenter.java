@@ -18,6 +18,8 @@ public interface ViewablePresenter<V extends ViewableView> extends JFGPresenter<
 
     void switchMicrophone();
 
+    void onHeadSetPlugIn(boolean plugIn);
+
     @IntDef({0, 1})
     @Retention(RetentionPolicy.SOURCE)
     @interface AudioType {

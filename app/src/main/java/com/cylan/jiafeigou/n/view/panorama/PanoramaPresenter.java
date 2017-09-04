@@ -40,7 +40,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 /**
  * Created by yanzhendong on 2017/3/8.
  */
-public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter {
+public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter{
 
     private boolean isFirst = true;
     private Subscription subscribe;
@@ -496,4 +496,5 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private boolean filterNewMsgId(long id) {
         return id == 505 || id == 222 || id == 512;
     }
+
 }

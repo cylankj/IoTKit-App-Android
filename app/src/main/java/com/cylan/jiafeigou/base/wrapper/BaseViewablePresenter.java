@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.text.TextUtils;
@@ -23,8 +25,10 @@ import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -51,11 +55,13 @@ import static com.cylan.jiafeigou.misc.JError.ErrorVideoPeerDisconnect;
  * Created by yzd on 16-12-30.
  */
 
-public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter<V>, IFeedRtcp.MonitorListener {
+public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter<V>, IFeedRtcp.MonitorListener, HeadsetObserver.HeadsetListener {
     protected String mViewLaunchType;
 
     protected ViewableView.LiveStreamAction liveStreamAction = new ViewableView.LiveStreamAction();
     IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
+    protected HeadsetObserver headsetObserver;
+    protected AudioManager audioManager;
 
     @Override
     protected void onRegisterSubscription() {
@@ -156,6 +162,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         liveStreamAction.hasResolution = true;
                         if (mView != null) {
                             AppLogger.d("接收到分辨率消息,准备播放直播");
+                            registerHeadSetObservable();
                             mView.onResolution(rsp);
                         }
                         mViewLaunchType = onResolveViewIdentify();
@@ -374,6 +381,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
             stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
 //            }
         }
+        abandonAudioFocus();
+        unRegisterHeadSetObservable();
     }
 
     protected void setViewHandler(String handler) {
@@ -515,4 +524,49 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onFrameRate(boolean slow) {
         RxBus.getCacheInstance().post(new RxEvent.VideoLoadingEvent(slow));
     }
+
+    protected void registerHeadSetObservable() {
+        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        headsetObserver.addObserver(this);
+        AppLogger.d("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
+        AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
+    }
+
+    @Override
+    public void onHeadSetPlugIn(boolean plugIn) {
+        AppLogger.d("耳机接入?:" + plugIn);
+        switchEarpiece(plugIn);
+    }
+
+    public void switchEarpiece(boolean enable) {
+        getAudioManager().setMode(enable ? AudioManager.MODE_CURRENT : AudioManager.MODE_IN_CALL);
+        getAudioManager().setSpeakerphoneOn(!enable);
+    }
+
+    public AudioManager getAudioManager() {
+        if (audioManager == null)
+            audioManager = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
+        return audioManager;
+    }
+
+    protected void unRegisterHeadSetObservable() {
+        if (headsetObserver == null) return;
+        headsetObserver.removeObserver(this);
+        AppLogger.d("反注册注册监听耳机:" + TAG);
+    }
+
+    /**
+     * 反注册
+     */
+    protected void abandonAudioFocus() {
+        getAudioManager().abandonAudioFocus(afChangeListener);
+    }
+
+    private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                audioManager.abandonAudioFocus(afChangeListener);
+            }
+        }
+    };
 }
