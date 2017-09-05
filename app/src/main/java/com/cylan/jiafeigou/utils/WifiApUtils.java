@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -50,14 +51,14 @@ public class WifiApUtils {
 
     private WifiManager mgr;
 
-    private WifiApUtils(WifiManager mgr) {
-        this.mgr = mgr;
+    private WifiApUtils() {
+        this.mgr = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
-    public static WifiApUtils getApControl(WifiManager mgr) {
+    public static WifiApUtils getApControl() {
         if (!isApSupported())
             return null;
-        return new WifiApUtils(mgr);
+        return new WifiApUtils();
     }
 
     public boolean isWifiApEnabled() {
@@ -94,5 +95,25 @@ public class WifiApUtils {
             Log.v("BatPhone", e.toString(), e); // shouldn't happen
             return false;
         }
+    }
+
+    /**
+     * @param ssid
+     * @param pwd
+     * @param security {@link WifiConfiguration.KeyMgmt#WPA_PSK}
+     * @param enabled
+     * @return
+     */
+    public boolean setWifiApEnabled(String ssid, String pwd, int security, boolean enabled) {
+        WifiConfiguration apConfig = new WifiConfiguration();
+        apConfig.SSID = ssid;
+        // 热点的配置类
+        // 配置热点的名称(可以在名字后面加点随机数什么的)
+        // 配置热点的密码
+        apConfig.preSharedKey = pwd;
+        // 安全：WPA2_PSK
+        apConfig.allowedKeyManagement.set(security);
+        setWifiApEnabled(apConfig, true);
+        return true;
     }
 }
