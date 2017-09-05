@@ -100,6 +100,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 帧率记录
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
+    private volatile boolean ignoreTimeStamp;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
@@ -408,6 +409,8 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);  // 先停止播放
                     switchInterface = true;
                 }
+                // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+//                getLiveStream().playStartTime = System.currentTimeMillis();
                 ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
 
                 AppLogger.d("play video ret :" + ret + "," + switchInterface);
@@ -495,11 +498,19 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
                     try {
-                        getView().onRtcp(rtcp);
+                        // TODO: 2017/9/2 startPlay 后的三秒内禁止更新时间,只允许更新流量 ,避免时间轴跳动,只针对于历史录像
+                        if (rtcp.timestamp - getLiveStream().playStartTime < 30000) {
+                            ignoreTimeStamp = false;
+                        }
+                        getView().onRtcp(rtcp, ignoreTimeStamp);
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
                 }, AppLogger::e);
+    }
+
+    private Boolean isDampOver() {
+        return null;
     }
 
     private Subscription timeoutSub() {
@@ -656,7 +667,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             t = 1;
             if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
         }
+        if (t == getLiveStream().playStartTime) {
+            return;//多次调用了,过滤掉即可
+        }
         final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
+        // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+        ignoreTimeStamp = true;
+        getLiveStream().playStartTime = time;
         getView().onLivePrepare(TYPE_HISTORY);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(net)) {
@@ -673,7 +690,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
 //                    AppLogger.i(" stop video .first......");
                 }
+
+
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
+
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
                 BellPuller.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);

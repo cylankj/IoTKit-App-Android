@@ -637,9 +637,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     }
 
     @Override
-    public void onRtcp(JFGMsgVideoRtcp rtcp) {
+    public void onRtcp(JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp) {
         AppLogger.d("onRtcp: " + new Gson().toJson(rtcp));
-        camLiveControlLayer.onRtcpCallback(basePresenter.getPlayType(), rtcp);
+        camLiveControlLayer.onRtcpCallback(basePresenter.getPlayType(), rtcp, false);
     }
 
     @Override

@@ -41,7 +41,7 @@ public interface CamLiveContract {
 
         void onHistoryDataRsp(IData dataProvider);
 
-        void onRtcp(JFGMsgVideoRtcp rtcp);
+        void onRtcp(JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp);
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
@@ -254,6 +254,8 @@ public interface CamLiveContract {
         public int type = TYPE_LIVE;
         public long time = -1;
         public int playState = PLAY_STATE_STOP;
+
+        public volatile long playStartTime = 0;
 
         @Override
         public String toString() {

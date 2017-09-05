@@ -132,6 +132,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         siv_mode_motion.setSwitcherVisibility((motion && !never && !record24) ? View.VISIBLE : View.GONE);
 
         rlWatchVideoContainer.setVisibility(video ? View.VISIBLE : View.GONE);
+        siv_mode_motion.setVisibility(video ? View.GONE : View.VISIBLE);
 
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
 

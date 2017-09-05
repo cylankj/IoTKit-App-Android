@@ -90,7 +90,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="-20dp"
-                android:alpha="0"
                 android:src="@drawable/add_image_red_dot"
                 android:visibility="visible" />
 

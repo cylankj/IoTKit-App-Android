@@ -618,7 +618,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid));
         ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && JFGRules.showSwitchModeButton(device.pid) && enableAutoRotate);
-        liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
+        // TODO: 2017/9/4 此时还没有 rtcp 过来,在这里设置可见性过早,会有一个空的圆圈
+//        liveTimeLayout.setVisibility(JFGRules.hasSDFeature(device.pid) && !JFGRules.isShareDevice(uuid) ? VISIBLE : INVISIBLE);
         AppLogger.d("需要重置清晰度");
     }
 
@@ -1312,7 +1313,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp) {
+    public void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp, boolean ignoreTimeStamp) {
         livePlayState = PLAY_STATE_PLAYING;
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
@@ -1325,7 +1326,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //        }, 3000);
         //分享账号不显示啊.
 //        if (JFGRules.isShareDevice(uuid)) return;
-        setLiveRectTime(livePlayType, rtcp.timestamp, true);
+        historyWheelHandler = getHistoryWheelHandler(presenter);
+        boolean isWheelBusy = historyWheelHandler.isBusy();
+        if (!isWheelBusy && (livePlayType == TYPE_LIVE || !ignoreTimeStamp)) {
+            setLiveRectTime(livePlayType, rtcp.timestamp);
+        }
         //点击事件
         if (liveTimeRectListener == null) {
             liveTimeRectListener = v -> {
@@ -1363,25 +1368,21 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
-    private void setLiveRectTime(int type, long timestamp, boolean useDamp) {
+    private void setLiveRectTime(int type, long timestamp) {
         //历史视频的时候，使用rtcp自带时间戳。
         if (livePlayType == TYPE_HISTORY && timestamp == 0) return;
         //直播时候，使用本地时间戳。
-        if (livePlayType == TYPE_LIVE && timestamp != 0) return;
+//        if (livePlayType == TYPE_LIVE && timestamp != 0) return;
         //全景的时间戳是0,使用设备的时区
         //wifi狗是格林尼治时间戳,需要-8个时区.
         historyWheelHandler = getHistoryWheelHandler(presenter);
         boolean isWheelBusy = historyWheelHandler.isBusy();
-        boolean shouldUpdateWheelTime = !useDamp ||
-                System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime() > DAMP_DISTANCE
-                || historyWheelHandler.getNextTimeDistance() > DAMP_DISTANCE;
-        Log.d("useDamp", "useDamp:" + useDamp + ",touchDistance:" + (System.currentTimeMillis() - historyWheelHandler.getLastUpdateTime()) + ",nextDistance:" + historyWheelHandler.getNextTimeDistance());
         //拖动的时候，拒绝外部设置时间。
         if (!isWheelBusy && JFGRules.hasSDFeature(pid) && !JFGRules.isShareDevice(uuid)) {
             liveTimeLayout.setContent(type, timestamp);
         }
-        if (!isWheelBusy && type == TYPE_HISTORY && presenter != null
-                && presenter.getPlayState() == PLAY_STATE_PLAYING && shouldUpdateWheelTime) {
+        if (type == TYPE_HISTORY && presenter != null
+                && presenter.getPlayState() == PLAY_STATE_PLAYING) {
             Log.d("TYPE_HISTORY time", "time: " + timestamp);
             historyWheelHandler.setNav2Time(TimeUtils.wrapToLong(timestamp));
         }
@@ -1442,7 +1443,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         historyWheelHandler.dateUpdate();
         historyWheelHandler.setDatePickerListener((time, state) -> {
             //选择时间,更新时间区域
-            setLiveRectTime(TYPE_HISTORY, time, false);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
+            setLiveRectTime(TYPE_HISTORY, time);//wheelView 回调的是毫秒时间, rtcp 回调的是秒,这里要除以1000
         });
         tvCamLiveLandBottom.setVisibility(VISIBLE);
     }
@@ -1725,7 +1726,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         imgVCamTriggerCapture.setEnabled(true);
         imgVLandCamTriggerCapture.setEnabled(true);
-        ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && enableAutoRotate);
+        ivModeXunHuan.setEnabled(livePlayType == TYPE_LIVE && livePlayState == PLAY_STATE_PLAYING && enableAutoRotate);
         ivViewModeSwitch.setEnabled(livePlayType == TYPE_LIVE);
     }
 
@@ -1777,7 +1778,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                         AppLogger.d("需要展示 遮罩");
                     }
                     HistoryWheelHandler handler = getHistoryWheelHandler(presenter);
-                    setLiveRectTime(TYPE_HISTORY, timeTarget / 1000, false);
+                    setLiveRectTime(TYPE_HISTORY, timeTarget / 1000);
                     handler.setNav2Time(timeTarget);//2000不一定正确,因为画时间轴需要时间,画出来,才能定位.
                     presenter.startPlayHistory(timeTarget);
                     AppLogger.d("目标历史录像时间?" + timeTarget);
