@@ -4,10 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
+import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Inject;
 
 import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.FOOT;
 import static com.cylan.jiafeigou.n.mvp.model.CamMessageBean.ViewType.ONE_PIC;
@@ -64,7 +67,6 @@ public class CamMessageBean implements Parcelable {
         if (o == null || getClass() != o.getClass()) return false;
 
         CamMessageBean that = (CamMessageBean) o;
-
         if (id != that.id) return false;
         return version == that.version;
 

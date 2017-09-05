@@ -38,7 +38,7 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 
     @Override
@@ -54,6 +54,6 @@ public class PanoramaLogoConfigurePresenter extends BasePresenter<PanoramaLogoCo
                 }, e -> {
                     AppLogger.e(e);
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
     }
 }

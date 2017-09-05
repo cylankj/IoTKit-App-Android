@@ -51,7 +51,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getReportMsgSub(), getNetWorkMonitorSub());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, getReportMsgSub(), getNetWorkMonitorSub());
     }
 
     @Override
@@ -131,7 +131,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
 //                    }, e -> {
 //                        AppLogger.e(e.getMessage());
 //                    });
-            registerSubscription(subscribe);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
         } else if (mode == 3) {
             // TODO: 2017/8/3  
             Subscription subscribe = Observable.just(version)
@@ -153,7 +153,7 @@ public class PanoramaDetailPresenter extends BasePresenter<PanoramaDetailContact
                         e.printStackTrace();
                         AppLogger.d(e.getMessage());
                     });
-            registerSubscription(subscribe);
+            registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, subscribe);
 
         }
     }

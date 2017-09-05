@@ -119,7 +119,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 if (basePresenter != null)
                     basePresenter.stop();
                 String panoramaConfigure = getIntent().getStringExtra("PanoramaConfigure");
-                AppLogger.e("AAAAAAAAAA" + panoramaConfigure);
+                AppLogger.d("panoramaConfigure:" + panoramaConfigure);
                 if (TextUtils.isEmpty(panoramaConfigure)) {
                     Bundle bundle = new Bundle();
                     bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));

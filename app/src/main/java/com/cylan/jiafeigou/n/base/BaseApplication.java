@@ -50,6 +50,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         return boxStore;
     }
 
+    //
     public static Box<PropertyItem> getPropertyItemBox() {
         return propertyItemBox;
     }
@@ -62,7 +63,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         //这是主进程
-
+//
         boxStore = MyObjectBox.builder().androidContext(this).build();
         propertyItemBox = boxStore.boxFor(PropertyItem.class);
         deviceBox = boxStore.boxFor(Device.class);
@@ -114,6 +115,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+
         Log.d(TAG, "onLowMemory: ");
     }
 
@@ -128,6 +130,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         viewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
         cancelReportTask();
+        RxBus.getCacheInstance().post(new RxEvent.ActivityStartEvent());
     }
 
     @Override

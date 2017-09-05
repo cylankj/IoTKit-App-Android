@@ -18,10 +18,11 @@
         style="@style/ripple_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20"
-        android:layout_marginTop="@dimen/y55"
+        android:layout_marginEnd="@dimen/y20"
+        android:layout_marginStart="@dimen/y20"
+        android:layout_marginTop="@dimen/y50"
         android:drawableRight="@drawable/add_icon_drop_down"
+        android:ellipsize="end"
         android:gravity="center"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp15" />
@@ -38,7 +39,7 @@
         android:id="@+id/rLayout_wifi_pwd_input_box"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"
-        android:layout_marginTop="@dimen/y29">
+        android:layout_marginTop="@dimen/y28">
 
         <LinearLayout
             android:id="@+id/lLayout_space"

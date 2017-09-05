@@ -105,8 +105,8 @@ public class HomeMineShareManagerFragment extends BaseFragment implements View.O
 //                    return;
 //                }
 
-                if (manager.getLoginType() >= 3 && TextUtils.isEmpty(sourceManager.getAccount().getEmail()) &&
-                        TextUtils.isEmpty(sourceManager.getAccount().getPhone())) {
+                if (manager.getLoginType() >= 3 && TextUtils.isEmpty(manager.getAccount().getEmail()) &&
+                        TextUtils.isEmpty(manager.getAccount().getPhone())) {
                     showBindPhoneOrEmailDialog(getString(R.string.Tap3_Share_NoBindTips));
                     return;
                 }

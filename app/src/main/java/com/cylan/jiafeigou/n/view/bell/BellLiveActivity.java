@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
@@ -31,6 +30,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -138,13 +139,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     JFGSourceManager sourceManager;
     private float ratio;
 
+    private boolean isAnswerd = false;
+    private boolean isSpeakerON = false;
+    private boolean onUserLeaveHint = false;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -155,27 +161,24 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void initViewAndListener() {
         //锁屏状态下显示门铃呼叫
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |               //这个在锁屏状态下
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         registSreenStatusReceiver();
         initHeadSetEventReceiver();
+        initHomeListenReceiver();
         Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         }
         customToolbar.setToolbarLeftTitle(mLiveTitle);
-//        ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         mVideoPlayController.setAction(this);
         customToolbar.setBackAction(this::onBack);
-//        fLayoutBellLiveHolder.setOnClickListener(view -> {
-//            if (!isLandMode) {
-//                handlePortClick();
-//            }
-//        });
+        newCall();
+    }
+
+    private void initHomeListenReceiver() {
+        homeListen = new HomeListen();
+        IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(homeListen, homeFilter);
     }
 
     @OnClick(R.id.act_bell_live_back)
@@ -228,17 +231,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         manager.setSpeakerphoneOn(true);
     }
 
-//    private void handlePortClick() {
-//        int visibility = mVideoViewContainer.getSystemUiVisibility();
-//        if (visibility != View.SYSTEM_UI_FLAG_VISIBLE) {//说明状态栏被隐藏了,则显示三秒后隐藏
-//            setNormalBackMargin();
-//        } else {//说明状态栏没有隐藏,则直接隐藏
-//            hideStatusBar();
-//        }
-//    }
-
-//    private Runnable mHideStatusBarAction = this::hideStatusBar;
-
     public void hideStatusBar() {
         mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -246,30 +238,17 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        setHideBackMargin();
     }
 
-//    private void setNormalBackMargin() {
-//        mBellLiveBack.setVisibility(View.VISIBLE);
-//        mBellLiveBack.animate().setDuration(200).translationY(0);
-//        mBellFlow.animate().setDuration(200).translationY(0);
-//        mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-//        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-//        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
-//    }
-
-//    private void setHideBackMargin() {
-//        mBellLiveBack.setVisibility(View.VISIBLE);
-//        mBellLiveBack.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y21));
-//        mBellFlow.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y20));
-//    }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-//        setIntent(intent);//直接無視新的呼叫
-//        newCall();
-        parse(intent);
+//        super.onNewIntent(intent);
+////        setIntent(intent);//直接無視新的呼叫
+////        newCall();
+//        finish();
+//        startActivity(intent);
+//        parse(intent);
     }
 
     private void parse(Intent intent) {
@@ -288,25 +267,21 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         caller.callTime = time;
         presenter.newCall(caller);
         parse(getIntent());
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        onUserLeaveHint = false;
 
-        muteAudio(true);
-//        setNormalBackMargin();
-//        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-//        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
-        newCall();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        hideStatusBar();
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(1, 1);
         }
         landBack.setVisibility(isLand() ? View.VISIBLE : View.GONE);
         customToolbar.setVisibility(isLand() ? View.GONE : View.VISIBLE);
@@ -316,36 +291,37 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onPause() {
         super.onPause();
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying())
-                mediaPlayer.stop();
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            mediaPlayer = null;
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
         }
-        muteAudio(false);
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        this.onUserLeaveHint = true;
+//        if (presenter.getLiveAction().hasStarted) {
+//            presenter.dismiss();
+//        }
+//        // TODO: 2017/8/31 home键,最近任务键 会调用这个,但是系统权限弹窗也会调用这个,不好判断
+//        finish();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.setVolume(0, 0);
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
-            ((GLSurfaceView) mSurfaceView).onPause();
-            mVideoViewContainer.removeAllViews();
-            mSurfaceView = null;
-            AppLogger.d("finish manually");
+        muteAudio(false);
+
+        if (presenter.getLiveAction().hasStarted || onUserLeaveHint) {
+            if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+                ((GLSurfaceView) mSurfaceView).onPause();
+                mVideoViewContainer.removeAllViews();
+                mSurfaceView = null;
+                AppLogger.d("finish manually");
+            }
+            presenter.dismiss();
             finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
         }
-
-
-        presenter.cancelViewer();
-
     }
 
 
@@ -359,7 +335,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onScreenRotationChanged(boolean land) {
         isLandMode = land;
         handleScreenUpdate(!land);
-//        getWindow().getDecorView().post(() -> handleSystemBar(!land, 100));
     }
 
     @Override
@@ -425,17 +400,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onRelease(int side) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         if (side == 0) {
-            if (mediaPlayer != null) {
-                mediaPlayer.setVolume(0, 0);
-                mediaPlayer.stop();
-            }
             presenter.dismiss();
         } else {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                mediaPlayer.setVolume(0, 0);
-                mediaPlayer.stop();
-            }
+            isAnswerd = true;
             presenter.pickup();
         }
     }
@@ -497,6 +471,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (!presenter.checkAudio(1)) {
             presenter.switchMicrophone();
         }
+        if (isSpeakerON) {
+            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+        }
+
 //        if (isLanchFromBellCall) {
 //            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
 //        }
@@ -591,8 +569,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
-        presenter.switchSpeaker();
-
+        this.isSpeakerON = true;
+        if (presenter.getLiveAction().hasStarted && presenter.getLiveAction().hasResolution) {
+            presenter.switchSpeaker();
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
@@ -708,19 +688,26 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onConnectDeviceTimeOut() {
         ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
-        presenter.dismiss();
+        onDismiss();
+//        presenter.dismiss();
     }
 
     @Override
     public void onShowVideoPreviewPicture(String URL) {
 //        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        Glide.with(this).load(URL).
-                placeholder(R.drawable.default_diagram_mask)
+        Glide.with(this).load(URL)
+                .asBitmap()
+                .placeholder(R.drawable.default_diagram_mask)
                 .error(R.drawable.default_diagram_mask)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
-                .into(mBellLiveVideoPicture);
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                    }
+                });
     }
 
 
@@ -784,8 +771,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mVideoViewContainer.addView(mSurfaceView);
         }
         AppLogger.i("initVideoView");
-        mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-        mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
+//        mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+//        mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
     }
 
 
@@ -799,11 +786,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onDismiss() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
         }
         finishExt();
+        if (getIntent().getBooleanExtra(JConstant.IS_IN_BACKGROUND, false)) {
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -861,6 +853,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void playSoundEffect() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.setVolume(0, 0);
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
@@ -910,7 +908,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             if (SCREEN_ON.equals(intent.getAction())) {
 
             } else if (SCREEN_OFF.equals(intent.getAction())) {
-                finish();
+                presenter.dismiss();
+                finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
             }
         }
     }
@@ -919,6 +918,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mScreenStatusReceiver);
+        if (homeListen != null) {
+            unregisterReceiver(homeListen);
+        }
         clearHeadSetEventReceiver();
     }
 
@@ -940,4 +942,38 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //            decorView.setSystemUiVisibility(uiOptions);
 //        }
 //    }
+
+    private HomeListen homeListen;
+
+    private class HomeListen extends BroadcastReceiver {
+
+        private final String SYSTEM_DIALOG_REASON_KEY = "reason";
+        private final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
+        private final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
+
+                if (reason == null)
+                    return;
+                // TODO: 2017/8/31 R11上监听不到
+                // Home键
+//                if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
+//                    presenter.dismiss();
+//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//                }
+//
+//                // 最近任务列表键
+//                if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
+//                    presenter.dismiss();
+//                    finish();//115763 //门铃呼叫 弹出呼叫界面后，退到后台/打开其他软件时，再返回app时，需要断开门铃弹窗
+//                }
+            }
+        }
+    }
+
+
 }

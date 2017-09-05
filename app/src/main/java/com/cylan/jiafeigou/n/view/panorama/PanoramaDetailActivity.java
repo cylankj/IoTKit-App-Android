@@ -367,7 +367,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private void initPanoramaContent(PanoramaAlbumContact.PanoramaItem panoramaItem) {
         LoadingDialog.dismissLoading();
         if (bean != null && bean.alarmMsg != null) {
-            downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
+//            downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
         } else {
             downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getTaskKey(uuid, panoramaItem.fileName));
         }
@@ -724,6 +724,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                                 DownloadManager.getInstance().stopTask(downloadInfo.getTaskKey());
                                 download.setText(bean != null && bean.alarmMsg != null ? R.string.Tap1_Album_Download : R.string.SAVE_PHONE);
                                 download.setEnabled(true);
+                                if (bean != null && bean.alarmMsg != null && morePopMenu != null && morePopMenu.isShowing()) {
+                                    morePopMenu.dismiss();
+                                }
                             })
                             .setNegativeButton(R.string.CANCEL, null)
                             .show();
@@ -785,7 +788,7 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     private DownloadListener listener = new DownloadListener() {
         @Override
         public void onProgress(DownloadInfo downloadInfo) {
-            if (download != null) {
+            if (download != null && bean == null) {
                 download.setText((int) (downloadInfo.getProgress() * 100) + "%");
             }
         }
@@ -825,6 +828,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
         AppLogger.d("将进行下载");
 
         if (bean != null) {
+            if (morePopMenu != null && morePopMenu.isShowing()) {
+                morePopMenu.dismiss();
+            }
             String deviceIp = BasePanoramaApiHelper.getInstance().getDeviceIp();
             if (bean.alarmMsg.isRecording == 0) {
                 try {
@@ -834,16 +840,25 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
                     DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(taskKey);
                     if (downloadInfo != null && downloadInfo.getState() == DownloadManager.FINISH) {
                         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
-                    } else if (downloadInfo != null) {
-                        downloadInfo.setRequest(request);
-                        downloadInfo.setUrl(request.getBaseUrl());
-                        DownloadDBManager.INSTANCE.replace(downloadInfo);
+                    } else {
+                        if (downloadInfo != null) {
+                            downloadInfo.setRequest(request);
+                            downloadInfo.setUrl(request.getBaseUrl());
+                            DownloadDBManager.INSTANCE.replace(downloadInfo);
+                        }
                         DownloadManager.getInstance().addTask(taskKey, request, listener);
+                        this.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
+                        if (this.downloadInfo != null) {
+                            this.downloadInfo.setListener(listener);
+                        }
                     }
-                    this.downloadInfo = DownloadManager.getInstance().getDownloadInfo(PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName));
+
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+
+//                screenShot();
+
             } else if (deviceIp != null) {
                 GetRequest request = OkGo.get(deviceIp + "/md/" + panoramaItem.fileName);
                 String taskKey = PanoramaAlbumContact.PanoramaItem.getMessageTaskKey(uuid, panoramaItem.fileName);
@@ -1037,6 +1052,9 @@ public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.P
     @Override
     public void onSnapshot(Bitmap bitmap, boolean b) {
         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+        if (morePopMenu != null && morePopMenu.isShowing()) {
+            morePopMenu.dismiss();
+        }
         Schedulers.io().createWorker().schedule(() -> BitmapUtils.saveBitmap2file(bitmap, JConstant.MEDIA_PATH + "/" + System.currentTimeMillis() / 1000 + ".jpg"));
     }
 

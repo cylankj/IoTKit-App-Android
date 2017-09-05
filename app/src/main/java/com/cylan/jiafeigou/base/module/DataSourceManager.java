@@ -44,7 +44,6 @@ import com.cylan.jiafeigou.n.view.mine.FeedbackActivity;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.server.PAGE_MESSAGE;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -107,6 +106,13 @@ public class DataSourceManager implements JFGSourceManager {
     private int loginType;
 
     public static DataSourceManager getInstance() {
+        if (instance == null) {
+            synchronized (DataSourceManager.class) {
+                if (instance == null) {
+                    instance = new DataSourceManager();
+                }
+            }
+        }
         return instance;
     }
 
@@ -115,6 +121,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     public void initFromDB() {//根据需要初始化
+
         dbHelper.getActiveAccount()
                 .observeOn(Schedulers.io())
                 .filter(account -> account != null)
@@ -132,7 +139,7 @@ public class DataSourceManager implements JFGSourceManager {
                     RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
                     accountArrived.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
                     getCacheInstance().postSticky(accountArrived);
-                    AppLogger.d("正在从数据库初始化...");
+                    AppLogger.w("正在从数据库初始化...");
                     return dpAccount;
                 })
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
@@ -264,15 +271,34 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Device getDevice(String uuid) {
         Device device = mCachedDeviceMap == null || TextUtils.isEmpty(uuid) ? new Device() : mCachedDeviceMap.get(uuid);
+
+//        if (device == null) {
+//            com.cylan.jiafeigou.server.cache.Device device1 = BaseApplication.getDeviceBox().get(Long.parseLong(uuid));
+//            device = device1 == null ? null : device1.cast();
+//        }
+
         if (device == null) {
             device = new Device();
-            device.setPropertyParser(propertyParser);
         }
+        device.setPropertyParser(propertyParser);
         return device;//给一个默认的 device, 防止出现空指针
     }
 
     @Override
     public List<Device> getAllDevice() {
+//        if (mCachedDeviceMap == null || mCachedDeviceMap.size() == 0) {
+//            List<com.cylan.jiafeigou.server.cache.Device> devices = BaseApplication.getDeviceBox().getAll();
+//            rawDeviceOrder.clear();
+//            if (devices != null) {
+//                for (int i = 0; i < devices.size(); i++) {
+//                    com.cylan.jiafeigou.server.cache.Device device = devices.get(i);
+//
+//                    rawDeviceOrder.add(new Pair<>(i, String.valueOf(device.getUuid())));
+//                    mCachedDeviceMap.put(String.valueOf(device.getUuid()), device.cast());
+//                }
+//            }
+//        }
+
         Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
         List<Device> result = new ArrayList<>(rawDeviceOrder.size());
         List<Pair<Integer, String>> copyList = new ArrayList<>(rawDeviceOrder);
@@ -284,6 +310,7 @@ public class DataSourceManager implements JFGSourceManager {
                 AppLogger.d("yes list contains d: " + d);
             }
         }
+
         return result;
     }
 
@@ -401,24 +428,25 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void syncHomeProperty() {
         if (mCachedDeviceMap.size() == 0) return;
-        HashMap<String, JFGDPMsg[]> map = new HashMap<>();
+
 
 
           /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
-        List<Integer> msgs = PAGE_MESSAGE.PAGE_HOME.filter(null);
-        JFGDPMsg[] query = new JFGDPMsg[msgs.size()];
-        for (int i = 0; i < msgs.size(); i++) {
-            query[i] = new JFGDPMsg(msgs.get(i), 0);
-        }
-        HashMap<String, JFGDPMsg[]> queryMap = new HashMap<>();
+//        List<Integer> msgs = PAGE_MESSAGE.PAGE_HOME.filter(null);
+//        JFGDPMsg[] query = new JFGDPMsg[msgs.size()];
+//        for (int i = 0; i < msgs.size(); i++) {
+//            query[i] = new JFGDPMsg(msgs.get(i), 0);
+//        }
+//        HashMap<String, JFGDPMsg[]> queryMap = new HashMap<>();
 
 
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+            HashMap<String, JFGDPMsg[]> map = new HashMap<>();
             Device device = mCachedDeviceMap.get(entry.getKey());
             final String uuid = device.uuid;
             if (TextUtils.isEmpty(uuid) || account == null) return;
 
-            queryMap.put(entry.getKey(), query);
+//            queryMap.put(entry.getKey(), query);
 
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(device.pid, DPProperty.LEVEL_HOME);
             if (parameters == null || parameters.size() == 0) continue;
@@ -427,17 +455,21 @@ public class DataSourceManager implements JFGSourceManager {
                 array[i] = parameters.get(i);
             }
             map.put(uuid, array);
+            try {
+                appCmd.robotGetMultiData(map, 1, false, 0);
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            appCmd.robotGetMultiData(map, 1, false, 0);
-
-            /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
-            appCmd.robotGetMultiData(queryMap, 1, false, 0);
-            AppLogger.d("刷主页dp");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            /*beta 测试版,请求的数据过少,可能 引起其他页面读取 Device 获取不到数据*/
+////            appCmd.robotGetMultiData(queryMap, 1, false, 0);
+//            AppLogger.d("刷主页dp");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -716,14 +748,30 @@ public class DataSourceManager implements JFGSourceManager {
                             boolean result = device.setValue((int) data.getMsgId(), data);
                             AppLogger.d("update dp:" + result + " " + data.getMsgId());
                             JFGDPMsg jfgdpMsg = new JFGDPMsg(data.getMsgId(), System.currentTimeMillis());
+
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
+
                         }
+
+//                        List<PropertyItem> items = new ArrayList<>(value.size());
+//                        for (T t : value) {
+//                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
+//                        }
+//                        BaseApplication.getPropertyItemBox().put(items);
+
                         List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(AppLogger::e)
                                 .subscribe(ret -> {
+//                                    if (ret.getResultCode() == 0) {
+//                                        List<PropertyItem> items = new ArrayList<>(value.size());
+//                                        for (T t : value) {
+//                                            items.add(new PropertyItem(CacheHolderKt.msgIdKey(uuid, t.getMsgId()), uuid, (int) t.getMsgId(), t.getVersion(), t.toBytes()));
+//                                        }
+//                                        BaseApplication.getPropertyItemBox().put(items);
+//                                    }
                                 }, AppLogger::e);
                     } catch (Exception e) {
                         AppLogger.e("err:" + MiscUtils.getErr(e));

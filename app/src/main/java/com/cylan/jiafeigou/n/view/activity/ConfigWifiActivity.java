@@ -107,7 +107,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         basePresenter = new ConfigApPresenterImpl(this);
         //默认隐藏
         ViewUtils.showPwd(etWifiPwd, false);
-        ViewUtils.setViewMarginStatusBar(customToolbar);
+//        ViewUtils.setViewMarginStatusBar(customToolbar);
         if (getIntent().hasExtra(JConstant.KEY_BIND_DEVICE_ALIAS)
                 && TextUtils.equals(getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE_ALIAS),
                 getString(R.string._720PanoramicCamera))) {

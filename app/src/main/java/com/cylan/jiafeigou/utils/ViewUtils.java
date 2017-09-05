@@ -151,6 +151,10 @@ public class ViewUtils {
         textView.setFilters(filterArray);
     }
 
+    public static InputFilter getMaxLenInputFilter(final int maxLen) {
+        return new InputFilter.LengthFilter(maxLen);
+    }
+
     public static String getTextViewContent(TextView textView) {
         if (textView != null) {
             final CharSequence text = textView.getText();
@@ -333,7 +337,7 @@ public class ViewUtils {
 //                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
     }
 
-    public static InputFilter excludeChineseFilter() {
+    public static InputFilter excludeChineseAndBlankFilter() {
         return (CharSequence source, int start, int end,
                 Spanned dest, int dstart, int dend) -> {
             if (source.equals(" ")) return "";
@@ -341,6 +345,18 @@ public class ViewUtils {
                 if (isChineseChar(source.charAt(i))) {
                     return "";
                 } else if (source.equals(" ")) {
+                    return "";
+                }
+            }
+            return null;
+        };
+    }
+
+    public static InputFilter excludeChineseFilter() {
+        return (CharSequence source, int start, int end,
+                Spanned dest, int dstart, int dend) -> {
+            for (int i = start; i < end; i++) {
+                if (isChineseChar(source.charAt(i))) {
                     return "";
                 }
             }

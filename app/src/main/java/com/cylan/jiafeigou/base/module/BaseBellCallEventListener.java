@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -27,6 +28,7 @@ import rx.schedulers.Schedulers;
  * Created by yanzhendong on 2017/4/14.
  */
 @Singleton
+@Deprecated //这个类的功能已经合并到 bellpull 里面去了因此废弃掉
 public class BaseBellCallEventListener {
     private Context appContext;
     private Map<String, String> urlMap = new HashMap<>();
@@ -34,6 +36,13 @@ public class BaseBellCallEventListener {
     private String caller = null;
 
     public static BaseBellCallEventListener getInstance() {
+        if (instance == null) {
+            synchronized (BaseBellCallEventListener.class) {
+                if (instance == null) {
+                    instance = new BaseBellCallEventListener(ContextUtils.getContext());
+                }
+            }
+        }
         return instance;
     }
 
@@ -57,14 +66,18 @@ public class BaseBellCallEventListener {
                 .subscribe(this::makeNewCall, AppLogger::e);
     }
 
-    private void makeNewCall(RxEvent.BellCallEvent callEvent) {
+    public void makeNewCall(RxEvent.BellCallEvent callEvent) {
         //2、在直播界面查看直播时不拉起呼叫页面，在查看历史录像时拉起呼叫页面。
         if (TextUtils.equals(callEvent.caller.cid, caller)) return;
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, callEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, callEvent.caller.time);
+        intent.putExtra(JConstant.IS_IN_BACKGROUND, BaseApplication.isBackground());
         urlMap.remove(callEvent.caller.cid);
         if (!callEvent.isFromLocal) {
             try {
@@ -77,8 +90,10 @@ public class BaseBellCallEventListener {
                 AppLogger.e(e);
             }
         }
-        appContext.startActivity(intent);
+//        AppLogger.d("当前活跃的 Activity:" + BaseApplication.isBackground());
+        ContextUtils.getContext().startActivity(intent);
     }
+
 
     public String getUrl(String cid) {
         return urlMap.get(cid);

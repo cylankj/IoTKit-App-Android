@@ -119,7 +119,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
                 WifiInfo info = wifiManager.getConnectionInfo();
                 if (info != null && info.getSupplicantState() == SupplicantState.COMPLETED) {
                     final String ssidName = NetUtils.getNetName(context);
-                    Log.d("bbbbb", "name:" + NetUtils.getNetName(context));
+                    AppLogger.d("能够跳转？" + ApFilter.accept(ssidName));
                     if (ApFilter.accept(ssidName)) {
                         if (weakReference.get() != null) {
                             Intent toIntent = null;
@@ -131,6 +131,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
                                 toIntent.setClass(weakReference.get(),
                                         BindGuideActivity.class);
                             }
+                            AppLogger.d("可以跳转：" + toIntent.getComponent().getClassName());
                             toIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             weakReference.get().startActivity(toIntent);
                         } else {

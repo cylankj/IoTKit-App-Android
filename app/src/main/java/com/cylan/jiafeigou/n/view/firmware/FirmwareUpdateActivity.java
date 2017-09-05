@@ -301,6 +301,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             //相同版本
             ToastUtil.showToast(getString(R.string.NEW_VERSION));
             return false;
+//            return true;//mock¬
         }
         String deviceMac = device.$(202, "");
         String routMac = NetUtils.getRouterMacAddress();
@@ -345,8 +346,8 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
             //2.电量
             int battery = basePresenter.getDevice().$(206, 0);
             if (battery <= 30) {
-                AlertDialogManager.getInstance().showDialog(this, getString(R.string.Tap1_Firmware_DataTips),
-                        "设备电量低于30%，无法更新，请先充足电后重试!",
+                AlertDialogManager.getInstance().showDialog(this, FirmwareUpdateActivity.class.getSimpleName(),
+                        getString(R.string.Tap1_Update_Electricity),
                         getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         }, false);
                 return;
@@ -394,7 +395,7 @@ public class FirmwareUpdateActivity extends BaseFullScreenFragmentActivity<Firmw
         for (int i = 0; i < count; i++) {
             DownloadInfo info = DownloadManager.getInstance().getDownloadInfo(binVersion.getList().get(i).url);
             if (info != null) {
-                fileNameList.add(info.getTargetPath());
+                fileNameList.add(info.getFileName());
             }
         }
         return fileNameList;

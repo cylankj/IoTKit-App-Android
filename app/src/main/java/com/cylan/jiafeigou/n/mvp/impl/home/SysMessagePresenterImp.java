@@ -26,7 +26,10 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -48,20 +51,120 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
         super(view);
     }
 
-    @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                getAccount()};
-    }
+//    @Override
+//    protected Subscription[] register() {
+//        return new Subscription[]{
+//                getAccount()};
+//    }
 
     @Override
     public void start() {
         super.start();
-        Subscription subscription = findAllFromDb().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handlerDataResult, AppLogger::e);
-        addSubscription(subscription, "go");
+//        Subscription subscription =
+//
+//                findAllFromDb().subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(this::handlerDataResult, AppLogger::e);
+        loadSystemMessageFromServer();
+//        addSubscription(subscription, "go");
     }
+
+    private void loadSystemMessageFromServer() {
+        Subscription subscribe = getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
+                .observeOn(Schedulers.io())
+                .map(accountArrived -> {
+                    markMesgHasRead();
+                    long seq = -1;
+                    try {
+                        JFGDPMsg msg1 = new JFGDPMsg(601, 0);
+                        JFGDPMsg msg4 = new JFGDPMsg(701, 0);
+                        ArrayList<JFGDPMsg> params = new ArrayList<>();
+                        params.add(msg1);
+                        params.add(msg4);
+                        seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 15, false, 0);
+                        Log.d(TAG, "getMesgDpData:" + seq);
+                    } catch (Exception e) {
+                        AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                    return seq;
+
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> {
+                    Log.d(TAG, "seq:" + rsp.seq + ",before seq:" + seq);
+                    return rsp.seq == seq;
+                }))
+                .first()
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
+                .flatMap(robotoGetDataRsp -> {
+                    Log.d(TAG, "getMesgDpData: robotoGetDataRsp");
+                    if (robotoGetDataRsp == null) {
+                        return findAllFromDb();
+                    } else {
+                        clearALLFromDB();
+                        ArrayList<SysMsgBean> results = new ArrayList<>();
+                        try {
+                            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
+                                for (JFGDPMsg msg : entry.getValue()) {
+                                    SysMsgBean bean = new SysMsgBean();
+                                    bean.type = (int) msg.id;
+                                    if (bean.type == 701) {
+                                        DpMsgDefine.DPSystemMesg sysMesg = convert(701, msg.packValue, DpMsgDefine.DPSystemMesg.class);
+                                        if (sysMesg == null) continue;
+                                        bean.name = sysMesg.content.trim();
+                                        bean.content = sysMesg.title.trim();
+                                        bean.time = msg.version;
+                                        bean.isDone = 0;
+                                    } else if (bean.type == 601) {
+                                        if (msg.packValue == null) continue;
+                                        Log.d(TAG, "byte/" + Arrays.toString(msg.packValue));
+                                        DpMsgDefine.DPMineMesg mesg = convert(601, msg.packValue, DpMsgDefine.DPMineMesg.class);
+                                        if (mesg == null) continue;
+                                        bean.name = mesg.account.trim();
+                                        bean.isDone = mesg.isDone ? 1 : 0;
+                                        bean.content = mesg.cid.trim();
+                                        bean.time = msg.version;
+                                        bean.sn = mesg.sn;
+                                        bean.pid = mesg.pid;
+                                    }
+                                    results.add(bean);
+                                }
+                            }
+                            Collections.sort(results, (o1, o2) -> {
+                                long t = o2.time - o1.time;
+                                return t > 0 ? 1 : t < 0 ? -1 : 0;
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        BaseApplication.getAppComponent().getDBHelper().saveDPByteInTx(robotoGetDataRsp).subscribe();
+                        return Observable.just(results);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    if (getView() != null) {
+                        if (list.size() != 0) {
+                            getView().hideNoMesgView();
+                            getView().initRecycleView(list);
+                        } else {
+                            getView().showNoMesgView();
+                            getView().initRecycleView(new ArrayList<>());
+                        }
+                    }
+                }, AppLogger::e);
+        addSubscription(subscribe, "go");
+    }
+
+    private void clearALLFromDB() {
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (account == null || TextUtils.isEmpty(account.getAccount())) return;
+        QueryBuilder<DPEntity> builder = BaseApplication.getAppComponent().getDBHelper().getDpEntityQueryBuilder();
+        builder.whereOr(DPEntityDao.Properties.MsgId.eq(601), DPEntityDao.Properties.MsgId.eq(701))
+                .where(DPEntityDao.Properties.Account.eq(account.getAccount()));
+        builder.buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
 
     /**
      * 处理数据的显示
@@ -199,9 +302,16 @@ public class SysMessagePresenterImp extends AbstractPresenter<SysMessageContract
                     return rsp.seq == seq;
                 }))
                 .first()
+                .timeout(10, TimeUnit.SECONDS, Observable.just(null))
                 .flatMap(robotoGetDataRsp -> {
                     Log.d(TAG, "getMesgDpData: robotoGetDataRsp");
-                    return findAllFromDb();
+                    if (robotoGetDataRsp == null) {
+                        return findAllFromDb();
+                    } else {
+
+
+                        return Observable.just(null);
+                    }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(list -> {

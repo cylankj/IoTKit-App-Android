@@ -186,7 +186,10 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     mView.check3gFinish();
                 })
                 .subscribe(result -> {
-                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+                }, throwable -> {
+                    mView.check3gFinish();
+                    AppLogger.e("err: " + throwable.getLocalizedMessage());
+                });
         addSubscription(subscription, "getBindObservable");
     }
 

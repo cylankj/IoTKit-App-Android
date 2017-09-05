@@ -32,7 +32,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(checkNewVersionBack());
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_STOP, checkNewVersionBack());
     }
 
     @Override

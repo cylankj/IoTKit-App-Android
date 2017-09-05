@@ -13,14 +13,12 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -31,10 +29,10 @@ import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
 /**
  * Created by hds on 17-4-24.
  */
-
 public class BellPuller {
 
     private static BellPuller instance;
+    private String caller;
 
     private BellPuller() {
     }
@@ -61,7 +59,7 @@ public class BellPuller {
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         System.out.println(PUSH_TAG + "fireBellCalling end" + sourceManager.getAccount());
         final boolean isBellCall = isBellCall(response);
-        AppLogger.d(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response + "," + isBellCall);
+        System.out.println(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response + "," + isBellCall);
         if (!isBellCall) return;
         if (sourceManager.getAccount() == null || TextUtils.isEmpty(sourceManager.getAccount().getAccount())) {
             //表明没有登录,这种情况比较多{1.登出,2.App正常离线,3.反正就是处于后台,系统管控着}
@@ -77,11 +75,11 @@ public class BellPuller {
                     .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class))
                     .subscribe(ret -> {
                         System.out.println("登录成功");
-                        AppLogger.d("push,登录成功:" + new Gson().toJson(ret.devices));
+                        System.out.println("push,登录成功:" + new Gson().toJson(ret.devices));
                         prepareForBelling(response);
                     }, throwable -> {
                         System.out.println("登录 timeout");
-                        AppLogger.e("收到门铃呼叫推送,但是登录超时?" + MiscUtils.getErr(throwable));
+                        System.out.println("收到门铃呼叫推送,但是登录超时?" + MiscUtils.getErr(throwable));
                         //也有可能,本地缓存了该设备.
                         prepareForBelling(response);
                     });
@@ -98,17 +96,21 @@ public class BellPuller {
         }
 
         String[] items = response.split(",");
-        if (items.length != 5) {
+        if (items.length == 0) {
             return false;
         }
-        if (TextUtils.isDigitsOnly(items[0]) || !TextUtils.isDigitsOnly(items[1])) {
+        try {
+            long msgId = Long.parseLong(items[0].replaceAll("\\D", ""));
+            return msgId == 2516;
+        } catch (Exception e) {
             return false;
         }
-        return true;
     }
 
     private void prepareForBelling(String response) {
         //[16,'500000000385','',1488012270,1]
+
+
         String[] items = response.split(",");
         String cid = items[1].replace("\'", "");
         long time = Long.parseLong(items[3]);
@@ -116,24 +118,35 @@ public class BellPuller {
         Device device = sourceManager.getDevice(cid);
         System.out.println(PUSH_TAG + "device," + device + "," + device.available());
         if (device == null || !device.available()) {
-            AppLogger.d(PUSH_TAG + "当前列表没有这个设备");
+            System.out.println(PUSH_TAG + "当前列表没有这个设备");
             return;
         }
-        String url = null;
-        try {
-            url = new JFGGlideURL(cid, time + ".jpg", device.regionType).toURL().toString();
-            AppLogger.d(PUSH_TAG + "门铃截图地址:" + url);
-        } catch (MalformedURLException e) {
-            AppLogger.e(PUSH_TAG + "err:" + MiscUtils.getErr(e));
-
-        }
-        System.out.println(PUSH_TAG + "time," + PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL));
-        if (System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL) - time < 30) {
-            launchBellLive(cid, url, time);
-        }
+        String url = items[4].replace("\'", "");
+        launchBellLive(cid, url, time);
     }
 
-    private void launchBellLive(String cid, String url, long time) {
+    public void launchBellLive(String cid, String url, long time) {
+
+        urlMap.remove(cid);
+        if (url != null) {
+            urlMap.put(cid, url);
+        }
+
+        // TODO: 2017/8/30 直播中不允许新的门铃呼叫,这里直接忽略掉
+        if (TextUtils.equals(cid, caller)) {
+            System.out.println(PUSH_TAG + "直播中不允许新的门铃呼叫,这里直接忽略掉");
+            return;
+        }
+
+        Long callTime = callTimeMap.get(cid);
+        if (callTime != null && Math.abs(time - callTime) < 30) {
+            // TODO: 2017/8/30 说明两次呼叫在30秒以内,应该正常情况下一个cid 两次呼叫不可能在
+            //30秒以内,则这个呼叫很有可能是 通过其他渠道推送过来的则直接忽略掉即可
+            System.out.println(PUSH_TAG + "通过其他渠道推送过来的则直接忽略掉即可");
+            return;
+        }
+
+
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
@@ -144,7 +157,31 @@ public class BellPuller {
                 .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(JConstant.IS_IN_BACKGROUND, BaseApplication.isBackground());
         ContextUtils.getContext().startActivity(intent);
-        AppLogger.e(PUSH_TAG + "收到华为推送 拉起呼叫界面:");
+        System.out.println(PUSH_TAG + "收到华为推送 拉起呼叫界面:");
+    }
+
+
+    private Map<String, String> urlMap = new HashMap<>();
+
+    private Map<String, Long> callTimeMap = new HashMap<>();
+
+    public String getUrl(String cid) {
+        return urlMap.get(cid);
+    }
+
+    private boolean allowNewBellCall = true;
+
+    public boolean isAllowNewBellCall() {
+        return allowNewBellCall;
+    }
+
+    public void setAllowNewBellCall(boolean allowNewBellCall) {
+        this.allowNewBellCall = allowNewBellCall;
+    }
+
+    public void currentCaller(String caller) {
+        this.caller = caller;
     }
 }

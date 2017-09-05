@@ -31,15 +31,18 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.server.cache.CacheHolderKt;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -72,7 +75,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 //        }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
 
-        CacheHolderKt.saveDevices(jfgDevices);
+//        CacheHolderKt.saveDevices(jfgDevices);
     }
 
     @Override
@@ -195,7 +198,14 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
         AppLogger.d("OnDoorBellCall :" + gson.toJson(jfgDoorBellCaller));
-        RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller, false));
+//        RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller, false));
+        try {
+            String url = new JFGGlideURL(jfgDoorBellCaller.cid, jfgDoorBellCaller.time + ".jpg", jfgDoorBellCaller.regionType).toURL().toString();
+             BellPuller.getInstance().launchBellLive(jfgDoorBellCaller.cid, null, jfgDoorBellCaller.time);
+            AppLogger.d("门铃截图地址:" + url);
+        } catch (MalformedURLException e) {
+            AppLogger.e(e);
+        }
     }
 
     @Override
@@ -221,7 +231,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
 
         /*过渡性使用,将来会废弃*/
-//        CacheHolderKt.saveProperty(s, arrayList, null);
+        CacheHolderKt.saveProperty(s, arrayList, null);
     }
 
     @Override

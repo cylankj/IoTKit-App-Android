@@ -5,9 +5,7 @@
     android:versionCode="999"
     android:versionName="888">
 
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="23" />
+    <uses-sdk android:minSdkVersion="14" />
 
     <supports-screens
         android:anyDensity="true"
@@ -33,6 +31,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 应用程序使用802.11网络（WIFI）功能的设备上的。 -->
@@ -51,12 +50,35 @@
     <!-- 写入联系人，但不可读取 -->
     <!-- <uses-permission android:name="android.permission.WRITE_CONTACTS" /> -->
     <!-- 允许程序访问手机状态信息 -->
-    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE" /> -->
     <!-- <uses-permission android:name="android.permission.RECEIVE_SMS"/> -->
     <!-- <uses-permission android:name="android.permission.READ_SMS"/> -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
+
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- 闪光灯 -->
     <uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -76,6 +98,7 @@
     <!-- //谷歌推送 -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <permission
         android:name="${ApplicationId}.permission.C2D_MESSAGE"
@@ -242,8 +265,9 @@
         <activity
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:excludeFromRecents="true"
             android:keepScreenOn="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -543,8 +567,6 @@
             android:name="${ApplicationId}.permission.MIPUSH_RECEIVE"
             android:protectionLevel="signature" />
 
-        <!-- <uses-permission android:name="${ApplicationId}.permission.MIPUSH_RECEIVE" /> -->
-        <uses-permission android:name="android.permission.VIBRATE" />
 
         <service
             android:name="com.xiaomi.push.service.XMJobService"
@@ -753,7 +775,15 @@
         <service
             android:name=".server.MyService"
             android:enabled="false"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".n.view.activity.ApSettingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

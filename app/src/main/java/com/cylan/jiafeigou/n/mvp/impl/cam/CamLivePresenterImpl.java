@@ -19,7 +19,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -40,6 +39,7 @@ import com.cylan.jiafeigou.misc.ver.DeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractFragmentPresenter;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -100,6 +100,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
      * 帧率记录
      */
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
+    private volatile boolean ignoreTimeStamp;
 
     public CamLivePresenterImpl(CamLiveContract.View view) {
         super(view);
@@ -115,6 +116,14 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
         super.start();
         BaseApplication.getAppComponent().getSourceManager()
                 .syncAllProperty(uuid, 204, 222);
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        //历史视频播放的时候，如果来了门铃。然而等待onStop，unSubscribe就非常晚。会导致这里的
+        //rtcp还会继续接受数据。继续更新时间轴。
+        removeSubscription("RTCPNotifySub");
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -207,7 +216,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ret -> {
-                    BaseBellCallEventListener.getInstance().currentCaller(null);
+                    BellPuller.getInstance().currentCaller(null);
                     updateLiveStream(getLiveStream().type, -1, PLAY_STATE_IDLE);
                     getView().onLiveStop(getLiveStream().type, ret.code);
 //                    feedRtcp.stop();
@@ -400,13 +409,15 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);  // 先停止播放
                     switchInterface = true;
                 }
+                // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+//                getLiveStream().playStartTime = System.currentTimeMillis();
                 ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
 
                 AppLogger.d("play video ret :" + ret + "," + switchInterface);
 
                 // TODO: 2017/7/12 判断当前是否需要拦截呼叫事件 针对所有的门铃产品
 //                if (JFGRules.isBell(getDevice().pid)) {
-                BaseBellCallEventListener.getInstance().currentCaller(uuid);//查看直播时禁止呼叫
+                BellPuller.getInstance().currentCaller(uuid);//查看直播时禁止呼叫
 //                }
                 getHotSeatStateMaintainer().saveRestore();
                 AppLogger.i("play video: " + uuid + " " + ret);
@@ -487,11 +498,19 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
                     try {
-                        getView().onRtcp(rtcp);
+                        // TODO: 2017/9/2 startPlay 后的三秒内禁止更新时间,只允许更新流量 ,避免时间轴跳动,只针对于历史录像
+                        if (rtcp.timestamp - getLiveStream().playStartTime < 30000) {
+                            ignoreTimeStamp = false;
+                        }
+                        getView().onRtcp(rtcp, ignoreTimeStamp);
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
                 }, AppLogger::e);
+    }
+
+    private Boolean isDampOver() {
+        return null;
     }
 
     private Subscription timeoutSub() {
@@ -503,7 +522,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     //需要发送超时
                     stopPlayVideo(JFGRules.PlayErr.ERR_NOT_FLOW).subscribe(what -> {
                     }, AppLogger::e);
-                    BaseBellCallEventListener.getInstance().currentCaller(null);
+                    BellPuller.getInstance().currentCaller(null);
                 }, AppLogger::e);
     }
 
@@ -648,7 +667,13 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             t = 1;
             if (BuildConfig.DEBUG) throw new IllegalArgumentException("怎么会有这种情况发生");
         }
+        if (t == getLiveStream().playStartTime) {
+            return;//多次调用了,过滤掉即可
+        }
         final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
+        // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+        ignoreTimeStamp = true;
+        getLiveStream().playStartTime = time;
         getView().onLivePrepare(TYPE_HISTORY);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
         if (!JFGRules.isDeviceOnline(net)) {
@@ -665,9 +690,12 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
 //                    BaseApplication.getAppComponent().getCmd().playVideo(uuid);
 //                    AppLogger.i(" stop video .first......");
                 }
+
+
                 ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time);
+
                 //说明现在是在查看历史录像了,泽允许进行门铃呼叫
-                BaseBellCallEventListener.getInstance().currentCaller(null);
+                BellPuller.getInstance().currentCaller(null);
                 updateLiveStream(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
                 AppLogger.i("play history video: " + uuid + " time:" + JfgUtils.date2String(JfgUtils.DetailedDateFormat, TimeUtils.wrapToLong(time)) + " ret:" + ret);
             } catch (JfgException e) {
@@ -696,7 +724,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
                         getHotSeatStateMaintainer().reset();
                         updateLiveStream(getLiveStream().type, -1, reasonOrState);
-                        BaseBellCallEventListener.getInstance().currentCaller(null);
+                        BellPuller.getInstance().currentCaller(null);
                         AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());
@@ -1035,6 +1063,10 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             this.uuid = uuid;
         }
 
+        private void doNext() {
+
+        }
+
         @Override
         public Pair<Bitmap, String> call(Object o) {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -1044,6 +1076,9 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 if (forPopWindow && weakReference.get() != null)
                     weakReference.get().onTakeSnapShot(null);//弹窗
                 AppLogger.e("截图失败,data为空");
+
+                // TODO: 2017/8/29 做一次尝试用 VideoView 截图
+
                 return null;
             }
             int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
@@ -1060,7 +1095,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
             } else {
                 filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
                 removeLastPreview();
-                SimpleCache.getInstance().addCache(filePath, bitmap);
+//                SimpleCache.getInstance().addCache(filePath, bitmap);
                 PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
                 //需要删除之前的一条记录.
             }

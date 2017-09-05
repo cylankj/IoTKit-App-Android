@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'io.objectbox'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.objectbox.android.transform'
-
+apply plugin: 'kotlin-android-extensions'
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -27,7 +27,6 @@ def boolean hasSignKey() {
     }
     return false
 }
-
 
 android {
     compileOptions {
@@ -81,8 +80,19 @@ android {
     }
 
     signingConfigs {
+
+//        config {
+//            p.load(project.rootProject.file('local.properties').newDataInputStream())
+//            storeFile file(p['key.store'])
+//            storePassword p['key.store.password']
+//            keyPassword p['key.alias.password']
+//            keyAlias p['key.alias']
+//        }
+
+
         debug {
             v2SigningEnabled true
+
 
 
             Properties properties = new Properties()
@@ -125,8 +135,9 @@ android {
         }
     }
     buildTypes {
-        debug {
-        }
+//        debug {
+//            signingConfig signingConfigs.config
+//        }
         release {
             if (hasSignKey()) {
 //                shrinkResources true

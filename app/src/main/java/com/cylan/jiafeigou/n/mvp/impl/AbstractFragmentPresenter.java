@@ -116,6 +116,12 @@ public abstract class AbstractFragmentPresenter<T extends BaseFragmentView> impl
         }
     }
 
+    @CallSuper
+    @Override
+    public void pause() {
+
+    }
+
     /**
      * 注册网络广播
      *

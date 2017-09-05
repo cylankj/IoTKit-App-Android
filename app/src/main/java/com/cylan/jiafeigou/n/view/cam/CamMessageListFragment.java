@@ -561,7 +561,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.imgV_cam_message_pic1:
                 if (!camMessageListAdapter.isEditMode()) {//编辑模式下点击不应该进入详情页
-                    startActivity(getIntent(position, 0));
+                    startActivity(getIntent(position, 1));
                 } else {
                     boolean itemSelected = camMessageListAdapter.markItemSelected(position);
                     int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());
@@ -573,7 +573,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.imgV_cam_message_pic2:
                 if (!camMessageListAdapter.isEditMode()) {//编辑模式下点击不应该进入详情页
-                    startActivity(getIntent(position, 0));
+                    startActivity(getIntent(position, 2));
                 } else {
                     boolean itemSelected = camMessageListAdapter.markItemSelected(position);
                     int size = ListUtils.getSize(camMessageListAdapter.getSelectedItems());

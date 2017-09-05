@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.BindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -45,9 +48,33 @@ public class BindMailPresenterImpl extends AbstractPresenter<BindMailContract.Vi
      */
     @Override
     public void sendSetAccountReq(String newEmail) {
+
+
         addSubscription(Observable.just(newEmail)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        // TODO: 2017/8/28 需要检查是否已经被使用
+                        long req = BaseApplication.getAppComponent().getCmd().checkFriendAccount(newEmail);
+                        Log.d(TAG, "校验邮箱是否被注册: " + req);
+                    } catch (JfgException e) {
+                        AppLogger.e(e.getMessage());
+                    }
+                    return cmd;
+                })
+                .flatMap(ret -> RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class).first())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(result -> {
+                    if (!TextUtils.isEmpty(result.account) && TextUtils.equals(newEmail, result.account)) {
+                        //与当前号码一致.此号码已经被注册
+                        //返回错误码
+
+                        getView().showSendReqResult(JError.ErrorEmailExist);
+                        return false;
+                    }
+                    return true;
+                })
                 .map(cmd -> {
                     try {
                         JFGAccount jfgAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();

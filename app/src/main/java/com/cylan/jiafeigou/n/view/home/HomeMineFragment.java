@@ -55,6 +55,7 @@ import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -195,7 +196,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     getString(R.string.Tap2_Index_Open_NoDeviceOption),
                     (DialogInterface dialog, int which) -> {
                         Bundle bundle = new Bundle();
-                        MineInfoBindPhoneFragment fragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                        Fragment fragment = null;
+                        Locale locale = getResources().getConfiguration().locale;
+                        String language = locale.getLanguage();
+                        if (language.endsWith("zh")) {
+                            fragment = MineInfoBindPhoneFragment.newInstance(bundle);
+                        } else {
+                            fragment = BindMailFragment.newInstance(bundle);
+                        }
                         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, android.R.id.content, "bindStack");
                     }, getString(R.string.CANCEL), null, false);
         }

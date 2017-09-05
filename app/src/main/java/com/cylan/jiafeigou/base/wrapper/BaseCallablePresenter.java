@@ -1,16 +1,16 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.graphics.Bitmap;
 import android.support.annotation.CallSuper;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.cylan.jiafeigou.base.module.BaseBellCallEventListener;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -64,7 +64,11 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         }
     }
 
+
     public void newCall(Caller caller) {
+        //直播中的门铃呼叫
+//                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
+//说明不是自己接听的
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
                 .mergeWith(
                         Observable.just(mHolderCaller = caller)
@@ -106,11 +110,12 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mHolderCaller = null;
+                        AppLogger.w("门铃呼叫超时了!!!");
                         mView.onNewCallTimeOut();
                     }
                     AppLogger.e(e.getMessage());
                 });
-        registerSubscription(subscribe);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe);
     }
 
     @Override
@@ -121,9 +126,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     public void loadPreview(String url) {
-        Subscription subscription = load(BaseBellCallEventListener.getInstance().getUrl(uuid)).subscribe(ret -> {
+        Subscription subscription = load(BellPuller.getInstance().getUrl(uuid)).subscribe(ret -> {
         }, AppLogger::e);
-        registerSubscription(subscription);
+        registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscription);
     }
 
     protected Observable<Long> load(String url) {
@@ -151,15 +156,18 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     private void preload(String url) {
         if (mView != null && mView.getAppContext() != null && url != null)
             Glide.with(mView.getActivityContext()).load(url)
-                    .listener(new RequestListener<String, GlideDrawable>() {
+                    .asBitmap()
+                    .listener(new RequestListener<String, Bitmap>() {
                         @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             RxBus.getCacheInstance().post(new Notify(true));
+                            // TODO: 2017/8/29 门铃截图也需要保存起来
+                            saveBitmap(resource);
                             return false;
                         }
                     })

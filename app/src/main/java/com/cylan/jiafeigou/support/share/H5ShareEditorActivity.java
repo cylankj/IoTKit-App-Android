@@ -152,10 +152,13 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
         Glide.with(this).load(filePath).into(shareBinding.sharePreview);
         // TODO: 2017/8/12 并不能判断服务器是否有这个文件 ,废弃掉了
 //        if (presenter != null) presenter.check(uuid, shareItem.time);
-        if (presenter != null) {
+        if (presenter != null && !uploadSuccess.get()) {
             presenter.upload(shareItem.fileName, filePath);
             startCount();
+        } else {
+            share(null);
         }
+
     }
 
     private String getNameByType(int shareType) {
@@ -180,6 +183,7 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
 
     @Override
     public void onUploadResult(int code) {
+
         if (code != -1) {
             if (code == 200) {
                 endCount();
@@ -305,6 +309,13 @@ public class H5ShareEditorActivity extends BaseActivity<PanoramaShareContact.Pre
     @Override
     public void onCancel(SHARE_MEDIA share_media) {
         AppLogger.e("onCancel,分享取消啦!,当前分享到的平台为:" + share_media);
-        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
+//        ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
+        onResult(share_media);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LoadingDialog.dismissLoading();
     }
 }
