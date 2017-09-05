@@ -32,11 +32,9 @@ class LiveSettingActivity : BaseActivity<LiveSettingContact.Presenter>(), LiveSe
     }
 
     override fun onTabReselected(tab: XTabLayout.Tab?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onTabUnselected(tab: XTabLayout.Tab?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onTabSelected(tab: XTabLayout.Tab?) {
