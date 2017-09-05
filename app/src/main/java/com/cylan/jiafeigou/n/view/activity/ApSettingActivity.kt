@@ -24,14 +24,32 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<BasePresenter>() {
         if (apConfig.SSID == null)
             et_ap_name.setText(getString(R.string.ENTER_WIFI))
         else et_ap_name.setText(apConfig.SSID)
+        //禁止中文输入，长度最大32
+        et_ap_name.filters = arrayOf(ViewUtils.excludeChineseAndBlankFilter(),
+                ViewUtils.getMaxLenInputFilter(32))
         tv_submit_ap.setOnClickListener {
-            if (TextUtils.isEmpty(et_ap_name.text)) {
+            val ssid: String = et_ap_name.text.toString()
+            val pwd: String = et_ap_pwd.text.toString()
+            if (TextUtils.isEmpty(ssid)) {
                 ToastUtil.showToast("请输入热点名称")
                 return@setOnClickListener
             }
-
+            if (TextUtils.isEmpty(pwd)) {
+                ToastUtil.showToast("请输入热点密码")
+                return@setOnClickListener
+            }
+            if (pwd.length < 8) {
+                ToastUtil.showToast("密码不能少于8位")
+                return@setOnClickListener
+            }
+            //先发送完wifi配置，再自身启热点.
+            // 此处非常反人类
+            // 1.客户端连接设备，然后发送配置信息.
+            // 2.设备连接客户端，开始直播.
+            // 各位领导，体验一下茄子快传的交互吧.
         }
-
+        //默认显示
+        ViewUtils.showPwd(et_ap_pwd, true)
         cb_show_pwd.setOnCheckedChangeListener { _, isChecked ->
             ViewUtils.showPwd(et_ap_pwd, isChecked)
         }
