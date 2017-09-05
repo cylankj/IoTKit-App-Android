@@ -82,7 +82,7 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
             ivMinePersonalInformationNewNameClear.setVisibility(View.GONE);
         } else {
             customToolbar.setTvToolbarRightEnable(true);
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
             viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
             ivMinePersonalInformationNewNameClear.setVisibility(View.VISIBLE);
         }
@@ -180,7 +180,7 @@ public class MineSetUserAliasFragment extends IBaseFragment<MineInfoSetAliasCont
             customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
         } else {
             customToolbar.setTvToolbarRightEnable(true);
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
         }
     }
 

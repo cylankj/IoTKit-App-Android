@@ -9,6 +9,7 @@ import android.view.View;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -68,7 +69,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        Device device = sourceManager.getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         deviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         deviceDetail.showRedHint(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         toolbarContainer.setBackAction(this::exit);
@@ -102,7 +103,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
 
     @OnClick(R.id.sv_setting_device_wifi)
     public void showDeviceFamliySetting() {
-        Device device = sourceManager.getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         if (device == null) {
             finish();
             return;
@@ -115,7 +116,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
 
     @OnClick(R.id.sv_setting_device_mode)
     public void showDeviceOutDoorSetting() {
-        Device device = sourceManager.getDevice(uuid);
+        Device device = DataSourceManager.getInstance().getDevice(uuid);
         if (device == null) {
             finish();
             return;

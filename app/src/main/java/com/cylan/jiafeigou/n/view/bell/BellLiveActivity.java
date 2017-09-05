@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.misc.AlertDialogManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -461,7 +462,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
-        appCmd.enableRenderSingleRemoteView(true, mSurfaceView);
+        BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
         mVideoPlayController.setState(JConstant.PLAY_STATE_IDLE, null);
         imgvBellLiveCapture.setEnabled(true);

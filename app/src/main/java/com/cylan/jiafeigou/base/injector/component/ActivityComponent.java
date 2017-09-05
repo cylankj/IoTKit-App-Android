@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.base.injector.module.ActivityModule;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellRecordDetailActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
+import com.cylan.jiafeigou.n.view.panorama.LiveSettingActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaDetailActivity;
@@ -49,4 +50,6 @@ public interface ActivityComponent {
     void inject(PanoramaCameraActivity activity);
 
     void inject(H5ShareEditorActivity fragment);
+
+    void inject(LiveSettingActivity activity);
 }

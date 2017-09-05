@@ -410,6 +410,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                     switchInterface = true;
                 }
                 // TODO: 2017/9/2 记录开始播放时间,在开始播放的最初几秒内禁止 Rtcp回调
+                getLiveStream().playStartTime = System.currentTimeMillis() / 1000;
 //                getLiveStream().playStartTime = System.currentTimeMillis();
                 ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
 
@@ -499,7 +500,7 @@ public class CamLivePresenterImpl extends AbstractFragmentPresenter<CamLiveContr
                 .subscribe(rtcp -> {
                     try {
                         // TODO: 2017/9/2 startPlay 后的三秒内禁止更新时间,只允许更新流量 ,避免时间轴跳动,只针对于历史录像
-                        if (rtcp.timestamp - getLiveStream().playStartTime < 30000) {
+                        if (rtcp.timestamp - getLiveStream().playStartTime < 30) {// TODO: 2017/9/4 rtcp 回调的时间是秒
                             ignoreTimeStamp = false;
                         }
                         getView().onRtcp(rtcp, ignoreTimeStamp);

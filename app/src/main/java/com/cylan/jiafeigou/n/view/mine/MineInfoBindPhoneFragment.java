@@ -108,7 +108,7 @@ public class MineInfoBindPhoneFragment extends IBaseFragment<MineBindPhoneContra
     @OnTextChanged(R.id.et_verification_input)
     public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
         if (s.length() == 6 && JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
             customToolbar.setTvToolbarRightEnable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
         } else {

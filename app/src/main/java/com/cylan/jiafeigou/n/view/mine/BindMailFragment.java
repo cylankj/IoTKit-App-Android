@@ -166,7 +166,7 @@ public class BindMailFragment extends IBaseFragment<BindMailContract.Presenter> 
         boolean isEmpty = TextUtils.isEmpty(s);
         mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
-        customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable : R.drawable.me_icon_finish_normal);
+        customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable : R.drawable.icon_finish_normal);
         customToolbar.setTvToolbarRightEnable(!isEmpty);
     }
 

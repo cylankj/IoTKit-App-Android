@@ -525,4 +525,10 @@
     <style name="CustomAlertStyle">
 
     </style>
+
+    <style name="LiveSettingTab" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:textSize">@dimen/sp14</item>
+    </style>
+
 </resources>

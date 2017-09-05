@@ -195,6 +195,7 @@ public class HomeItem extends AbstractItem<HomeItem, HomeItem.ViewHolder> {
         int online = JConstant.getOnlineIcon(mDevice.pid);
         int offline = JConstant.getOfflineIcon(mDevice.pid);
         boolean apMode = JFGRules.isAPDirect(getUUid(), getDevice().$(202, ""));
+
         int iconRes = (deviceOnline && NetUtils.getJfgNetType(holder.imgDeviceState3.getContext()) > 0) || (JFGRules.isPan720(mDevice.pid) && apMode) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));

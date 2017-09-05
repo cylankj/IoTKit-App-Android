@@ -14,13 +14,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerActivityComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -39,10 +36,10 @@ import butterknife.ButterKnife;
 public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView {
     @Inject
     protected P presenter;
-    @Inject
-    protected JFGSourceManager sourceManager;
-    @Inject
-    protected AppCmd appCmd;
+//    @Inject
+//    protected JFGSourceManager sourceManager;
+//    @Inject
+//    protected AppCmd appCmd;
 
     protected String uuid;
     protected AlertDialog alert;
@@ -68,19 +65,17 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        component = DaggerActivityComponent.builder().appComponent(BaseApplication.getAppComponent()).build();
+        setActivityComponent(this.component);
         super.onCreate(savedInstanceState);
+
         if (getContentViewID() != -1) {
             setContentView(getContentViewID());
             ButterKnife.bind(this);
         } else if (getContentRootView() != null) {
             setContentView(getContentRootView());
         }
-        AppComponent appComponent = BaseApplication.getAppComponent();
-        this.component = DaggerActivityComponent.builder().appComponent(appComponent).build();
-        if (this.component != null) {
-            setActivityComponent(this.component);
-        }
-        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         if (presenter != null) {
             presenter.onSetViewUUID(uuid);
             presenter.onViewAttached(this);

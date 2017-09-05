@@ -180,7 +180,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void showFinishBtn() {
         shareDevicesBinding.customToolbar.setTvToolbarRightEnable(true);
-        shareDevicesBinding.customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+        shareDevicesBinding.customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
     }
 
     /**

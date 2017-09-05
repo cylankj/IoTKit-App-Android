@@ -101,7 +101,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
             customToolbar.setTvToolbarRightEnable(false);
         } else {
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
             customToolbar.setTvToolbarRightEnable(true);
         }
         ivMinePersonalInformationOldPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
@@ -115,7 +115,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
             customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
             customToolbar.setTvToolbarRightEnable(false);
         } else {
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
             customToolbar.setTvToolbarRightEnable(true);
         }
         ivMinePersonalInformationNewPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
@@ -128,7 +128,7 @@ public class MineInfoSetPassWordFragment extends IBaseFragment<MineInfoSetPassWo
         if (TextUtils.isEmpty(getNewPassword()) || TextUtils.isEmpty(getOldPassword())) {
             customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
         } else {
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
         }
     }
 

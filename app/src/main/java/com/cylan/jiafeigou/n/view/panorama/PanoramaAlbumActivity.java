@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.databinding.LayoutBottomFooterBinding;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -112,7 +113,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         });
         recyclerView.setAdapter(panoramaAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
-        String mac = sourceManager.getDevice(uuid).$(ID_202_MAC, "");
+        String mac = DataSourceManager.getInstance().getDevice(uuid).$(ID_202_MAC, "");
 //        if (mac != null) {
 //            String routerMac = NetUtils.getRouterMacAddress(getApplication());
 //            if (TextUtils.equals(mac, routerMac)) {

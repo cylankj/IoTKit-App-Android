@@ -84,8 +84,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_toolbar"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_toolbar">
 
         <RelativeLayout
             android:id="@+id/act_panorama_camera_banner_information"
@@ -198,8 +197,9 @@
 
     <TextView
         android:id="@+id/act_panorama_camera_flow_speed"
-        android:layout_width="60dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/y60"
+        android:layout_height="@dimen/y21"
+        android:layout_marginEnd="@dimen/y14"
         android:layout_marginTop="@dimen/y4"
         android:background="@color/color_33000000"
         android:gravity="center"
@@ -207,8 +207,7 @@
         android:textColor="#FFFFFF"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_banner"
-        tools:layout_editor_absoluteX="351dp" />
+        app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_banner" />
 
 
     <com.cylan.jiafeigou.widget.live.LivePlayControlView
@@ -219,7 +218,6 @@
         app:layout_constraintBottom_toTopOf="@+id/act_panorama_camera_bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_toolbar" />
 
     <TextView
@@ -244,33 +242,32 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/act_panorama_camera_bottom_panel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/act_panorama_camera_bottom_panel"
         android:layout_width="0dp"
-        android:layout_height="161dp"
+        android:layout_height="@dimen/y138"
         android:background="@color/color_F2333333"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintStart_toStartOf="parent">
 
         <ViewSwitcher
             android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/act_panorama_bottom_panel_camera_photograph"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <RadioGroup
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -285,54 +282,38 @@
                     android:id="@+id/act_panorama_camera_bottom_panel_video"
                     android:layout_width="@dimen/y26"
                     android:layout_height="@dimen/y26"
-                    android:layout_marginLeft="@dimen/y19"
-                    android:layout_marginStart="@dimen/y19"
+                    android:layout_marginEnd="@dimen/y32"
+                    android:layout_marginStart="@dimen/y32"
                     android:button="@drawable/camera720_icon_video_selector" />
+
+                <RadioButton
+                    android:id="@+id/act_panorama_camera_bottom_panel_rtmp"
+                    android:layout_width="@dimen/y26"
+                    android:layout_height="@dimen/y26"
+                    android:button="@drawable/camera720_icon_live_selector" />
             </RadioGroup>
 
-            <android.support.constraint.ConstraintLayout
+            <TextView
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center">
-
-                <TextView
-                    android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:gravity="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="@dimen/sp16"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
-                    android:layout_width="@dimen/y8"
-                    android:layout_height="@dimen/y8"
-                    android:layout_marginEnd="@dimen/y8"
-                    android:src="@drawable/panorama_redording_red_dot"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
-                    app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time" />
-
-            </android.support.constraint.ConstraintLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/y15"
+                android:layout_marginStart="@dimen/y15"
+                android:drawablePadding="@dimen/y8"
+                android:drawableStart="@drawable/panorama_redording_red_dot"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="ddddddddddddddddddddddddddddddddddddddd"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/sp16" />
 
         </ViewSwitcher>
 
         <com.cylan.jiafeigou.support.photoselect.CircleImageView
             android:id="@+id/act_panorama_camera_bottom_panel_album"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="@dimen/y32"
-            android:layout_marginEnd="@dimen/y62"
-            android:layout_marginLeft="@dimen/y32"
-            android:layout_marginRight="@dimen/y62"
-            android:layout_marginStart="@dimen/y32"
+            android:layout_width="@dimen/y43"
+            android:layout_height="@dimen/y43"
+            android:layout_marginStart="@dimen/y40"
             android:src="@drawable/camera720_icon_album_selector"
             app:civ_border_color="@color/color_white"
             app:civ_border_overlay="true"
@@ -340,22 +321,23 @@
             app:civ_hint_color="@color/color_red"
             app:civ_hint_radius="@dimen/y4"
             app:civ_show_hint="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/act_panorama_bottom_panel_camera_photograph"
+            app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/act_panorama_bottom_panel_camera_photograph"
             app:riv_oval="false" />
 
         <ImageButton
             android:id="@+id/act_panorama_bottom_panel_camera_photograph"
-            android:layout_width="81dp"
-            android:layout_height="81dp"
-            android:layout_marginBottom="@dimen/y18"
+            android:layout_width="@dimen/y70"
+            android:layout_height="@dimen/y70"
             android:background="@android:color/transparent"
+            android:scaleType="fitXY"
             android:src="@drawable/camera720_icon_photograph_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/act_panorama_camera_bottom_panel_switcher_menu" />
 
         <ProgressBar
             android:id="@+id/act_panorama_bottom_panel_loading"
@@ -364,25 +346,34 @@
             android:indeterminateDrawable="@drawable/camera720_loading"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
-            app:layout_constraintEnd_toEndOf="@id/act_panorama_bottom_panel_camera_photograph"
-            app:layout_constraintStart_toStartOf="@id/act_panorama_bottom_panel_camera_photograph"
+            app:layout_constraintEnd_toEndOf="@+id/act_panorama_bottom_panel_camera_photograph"
+            app:layout_constraintStart_toStartOf="@+id/act_panorama_bottom_panel_camera_photograph"
+            app:layout_constraintTop_toTopOf="@+id/act_panorama_bottom_panel_camera_photograph" />
+
+        <ImageButton
+            android:id="@+id/act_panorama_camera_bottom_panel_live_setting"
+            android:layout_width="@dimen/y26"
+            android:layout_height="@dimen/y26"
+            android:background="@android:color/transparent"
+            android:src="@drawable/camera720_icon_live_menu_selector"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
+            app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_bottom_panel_more"
+            app:layout_constraintStart_toEndOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintTop_toTopOf="@+id/act_panorama_bottom_panel_camera_photograph" />
 
         <ImageButton
             android:id="@+id/act_panorama_camera_bottom_panel_more"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="@dimen/y32"
-            android:layout_marginEnd="@dimen/y32"
-            android:layout_marginLeft="@dimen/y62"
-            android:layout_marginRight="@dimen/y32"
-            android:layout_marginStart="@dimen/y62"
+            android:layout_width="@dimen/y40"
+            android:layout_height="@dimen/y40"
             android:background="@android:color/transparent"
+            android:scaleType="fitXY"
             android:src="@drawable/camera720_icon_more_selector"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/act_panorama_bottom_panel_camera_photograph" />
+            app:layout_constraintStart_toEndOf="@+id/act_panorama_camera_bottom_panel_live_setting"
+            app:layout_constraintTop_toTopOf="@+id/act_panorama_bottom_panel_camera_photograph" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

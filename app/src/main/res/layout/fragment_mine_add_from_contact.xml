@@ -17,7 +17,7 @@
         hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_icon_right="@drawable/me_icon_finish_normal"
+        hunt:ct_icon_right="@drawable/icon_finish_normal"
         hunt:ct_left_title="@string/Tap3_FriendsAdd_SendButton"
         hunt:ct_left_title_color="@color/color_white" />
 

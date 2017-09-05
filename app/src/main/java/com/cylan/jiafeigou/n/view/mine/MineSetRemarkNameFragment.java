@@ -112,7 +112,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
             viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
             customToolbar.setTvToolbarRightEnable(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
             viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
@@ -207,7 +207,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             customToolbar.setTvToolbarRightEnable(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
         } else {
-            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_normal);
             customToolbar.setTvToolbarRightEnable(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
         }

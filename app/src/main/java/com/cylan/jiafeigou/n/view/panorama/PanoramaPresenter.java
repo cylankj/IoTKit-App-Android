@@ -58,6 +58,16 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
+    public void startLiveRecord() {
+
+    }
+
+    @Override
+    public void stopLiveRecord() {
+
+    }
+
+    @Override
     public void onViewAttached(PanoramaCameraContact.View view) {
         super.onViewAttached(view);
         Device device = DataSourceManager.getInstance().getDevice(uuid);
@@ -100,6 +110,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         if (!isRecording) {
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
                             if (deviceState.videoType != 3) {
+                                mView.onRefreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
                                 refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
                             }
                         }

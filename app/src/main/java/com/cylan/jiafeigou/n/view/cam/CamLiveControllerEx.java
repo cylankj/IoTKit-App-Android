@@ -655,7 +655,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         isSightShown = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
         Log.d("initSightSetting", "judge? " + isSightShown);
         if (!isSightShown) return;//不是第一次
-        layoutE.setVisibility(INVISIBLE);//需要隐藏历史录像时间轴
+        layoutE.setVisibility(GONE);//需要隐藏历史录像时间轴
         View oldLayout = liveViewWithThumbnail.findViewById(R.id.fLayout_cam_sight_setting);
         if (oldLayout == null) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
@@ -674,7 +674,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 //需要隐藏历史录像时间轴
                 boolean showSdcard = JFGRules.showSdcard(basePresenter.getDevice());
                 layoutE.setVisibility(showSdcard
-                        ? VISIBLE : INVISIBLE);
+                        ? VISIBLE : GONE);
                 vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
                 isSightShown = false;
             });
@@ -737,7 +737,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //4.被分享用户不显示
         if (JFGRules.isShareDevice(device)) {
             AppLogger.d("is share device");
-            layoutE.setVisibility(INVISIBLE);
+            layoutE.setVisibility(GONE);
             return;
         }
         //3.没有历史录像
@@ -747,7 +747,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutE.setVisibility(VISIBLE);
             return;
         }
-        layoutE.setVisibility(show ? VISIBLE : INVISIBLE);
+        layoutE.setVisibility(show ? VISIBLE : GONE);
     }
 
     @Override
@@ -1478,10 +1478,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         if (!isLand()) {
             if (standby.standby) {
-                layoutE.setVisibility(INVISIBLE);
+                layoutE.setVisibility(GONE);
             } else {
                 boolean showSdcard = JFGRules.showSdcard(device);
-                layoutE.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
+                layoutE.setVisibility(showSdcard ? VISIBLE : GONE);
                 vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             }
         }
@@ -1600,7 +1600,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             btnLoadHistory
                     .setEnabled(NetUtils.getJfgNetType() != 0 && online);
             boolean showSdcard = JFGRules.showSdcard(device);
-            layoutE.setVisibility(judge && showSdcard ? VISIBLE : INVISIBLE);
+            layoutE.setVisibility(judge && showSdcard ? VISIBLE : GONE);
             vsLayoutWheel.setVisibility(showSdcard ? VISIBLE : INVISIBLE);
             if (!isUserVisible) return;
         }, 100);

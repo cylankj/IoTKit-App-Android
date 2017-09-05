@@ -66,6 +66,7 @@ public interface PanoramaCameraContact {
             int MODE_PICTURE = 0;
             int MODE_VIDEO = 1;
             int MODE_HIDE = 2;
+            int MODE_LIVE = 3;
         }
 
         @IntDef({MODE_NONE, MODE_SHORT, MODE_LONG})
@@ -75,6 +76,7 @@ public interface PanoramaCameraContact {
             int MODE_SHORT = 1;
             int MODE_LONG = 2;
             int MODE_SHORT_MD = 3;
+            int MODE_LIVE = 4;
         }
 
 
@@ -119,5 +121,9 @@ public interface PanoramaCameraContact {
         void formatSDCard();
 
         boolean isApiAvailable();
+
+        void startLiveRecord();
+
+        void stopLiveRecord();
     }
 }
