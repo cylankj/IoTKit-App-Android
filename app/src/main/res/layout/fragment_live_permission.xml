@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_shadow="false"
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true"
+        app:ct_icon="@drawable/nav_icon_back_white"
+        app:ct_left_title="权限设置"
+        app:ct_left_title_color="@color/color_white"
+        app:ct_title_color="@color/color_black" />
+
+    <worker8.com.github.radiogroupplus.RadioGroupPlus
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/y24"
+        android:orientation="vertical">
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_public"
+            app:sv_show_radio_button="true"
+            app:sv_title="公开"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_friends"
+            app:sv_show_radio_button="true"
+            app:sv_title="好友"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_only_me"
+            app:sv_show_radio_button="true"
+            app:sv_title="仅自己"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_close_friends"
+            app:sv_show_radio_button="true"
+            app:sv_title="Close Friends"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_acquaintance"
+            app:sv_show_radio_button="true"
+            app:sv_title="Acquaintance"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_family"
+            app:sv_show_radio_button="true"
+            app:sv_title="Family"
+            app:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:sv_radio_button_id="@+id/live_permission_good_friends"
+            app:sv_show_radio_button="true"
+            app:sv_title="Good Friends"
+            app:sv_v_divider="true" />
+    </worker8.com.github.radiogroupplus.RadioGroupPlus>
+</LinearLayout>

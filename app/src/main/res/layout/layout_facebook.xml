@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f4f4f4"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/y20">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y121"
+        android:background="@color/color_white"
+        android:gravity="start|top"
+        android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
+        android:padding="@dimen/y15"
+        android:textSize="@dimen/sp14" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y20"
+        android:background="@color/color_white"
+        app:sv_sub_title="Jane"
+        app:sv_title="@string/LIVE_PLATFORM_FACEBOOK"
+        app:sv_v_divider="true" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/facebook_permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_white"
+        app:sv_sub_title="Jane"
+        app:sv_title="权限设置" />
+
+</LinearLayout>

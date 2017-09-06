@@ -5,23 +5,21 @@ import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 
 /**
- * Created by yanzhendong on 2017/9/5.
+ * Created by yanzhendong on 2017/9/6.
  */
-class LivePermissionFragment : BaseFragment<LivePremissionContract.Presenter>(), LivePremissionContract.View {
+class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Presenter>(), YouTubeLiveCreateContract.View {
     override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
 
     }
 
     override fun getContentViewID(): Int {
-        return R.layout.fragment_live_permission
+        return R.layout.fragment_youtube_create_live
     }
 
-
-
     companion object {
-        fun newInstance(): LivePermissionFragment {
-            val fragment = LivePermissionFragment()
-       R.id.live_permission_close_friends
+        fun newInstance(): YouTubeLiveCreateFragment {
+            val fragment = YouTubeLiveCreateFragment()
+
             return fragment
         }
     }

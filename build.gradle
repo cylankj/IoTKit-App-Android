@@ -6,6 +6,7 @@ buildscript {
         jcenter()
 //        maven { url 'https://maven.fabric.io/public' }
         maven { url "http://objectbox.net/beta-repo/" }
+        maven { url "https://jitpack.io" }
 
     }
     dependencies {
@@ -34,7 +35,7 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/cylan/Iot'
         }
-
+        maven { url "https://jitpack.io" }
     }
 }
 

@@ -29,11 +29,11 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
-import com.cylan.jiafeigou.widget.SettingItemView0RadioGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import worker8.com.github.radiogroupplus.RadioGroupPlus;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
@@ -61,7 +61,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private int oldOption;
 
     @BindView(R.id.rl_alarm_setting_container)
-    SettingItemView0RadioGroup rlAlarmSettingContainer;
+    RadioGroupPlus rlAlarmSettingContainer;
     @BindView(R.id.rl_watch_video_container)
     RelativeLayout rlWatchVideoContainer;
     @BindView(R.id.siv_watch_video_switcher)

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f4f4f4"
+    android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.panorama.LiveSettingActivity">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -22,11 +23,9 @@
         app:ct_left_title_color="@color/color_white"
         app:ct_title_color="@color/color_black" />
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:scrollbars="none"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +33,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <com.androidkun.xtablayout.XTabLayout
@@ -76,315 +75,34 @@
 
             </com.androidkun.xtablayout.XTabLayout>
 
-            <!--<RadioGroup-->
-            <!--android:id="@+id/act_live_setting_tabs"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/color_white"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rtmp_type_facebook"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:button="@null"-->
-            <!--android:drawableBottom="@drawable/shape_live_setting_indicator"-->
-            <!--android:drawablePadding="@dimen/y10"-->
-            <!--android:drawableTop="@drawable/choose_icon_facebook"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:paddingBottom="@dimen/y10"-->
-            <!--android:paddingTop="@dimen/y22"-->
-            <!--android:text="@string/LIVE_PLATFORM_FACEBOOK"-->
-            <!--android:textColor="@color/color_333333"-->
-            <!--android:textSize="@dimen/sp14" />-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rtmp_type_youtube"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:button="@null"-->
-            <!--android:drawablePadding="@dimen/y10"-->
-            <!--android:drawableTop="@drawable/choose_icon_youtube"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:paddingBottom="@dimen/y10"-->
-            <!--android:paddingTop="@dimen/y22"-->
-            <!--android:text="@string/LIVE_PLATFORM_YOUTUBE"-->
-            <!--android:textColor="@color/color_333333"-->
-            <!--android:textSize="@dimen/sp14" />-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rtmp_type_weibo"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:button="@null"-->
-            <!--android:checked="true"-->
-            <!--android:drawablePadding="@dimen/y10"-->
-            <!--android:drawableTop="@drawable/choose_icon_weibo"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:paddingBottom="@dimen/y10"-->
-            <!--android:paddingTop="@dimen/y22"-->
-            <!--android:text="@string/LIVE_PLATFORM_WEIBO"-->
-            <!--android:textColor="@color/color_333333"-->
-            <!--android:textSize="@dimen/sp14" />-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rtmp_type_rtmp"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:button="@null"-->
-            <!--android:drawablePadding="@dimen/y10"-->
-            <!--android:drawableTop="@drawable/choose_icon_rtmp"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:paddingBottom="@dimen/y10"-->
-            <!--android:paddingTop="@dimen/y22"-->
-            <!--android:text="RTMP"-->
-            <!--android:textColor="@color/color_333333"-->
-            <!--android:textSize="@dimen/sp14" />-->
-
-            <!--</RadioGroup>-->
-
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/color_f4f4f4">
+                android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/layout_facebook_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                <include
+                    android:id="@+id/page_facebook"
+                    layout="@layout/layout_facebook" />
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y121"
-                        android:layout_marginTop="@dimen/y20"
-                        android:background="@color/color_white"
-                        android:gravity="start|top"
-                        android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
-                        android:textSize="@dimen/sp14" />
+                <include
+                    android:id="@+id/page_youtube"
+                    layout="@layout/layout_youtube" />
 
-                    <com.cylan.jiafeigou.widget.SettingItemView0
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/y20"
-                        android:background="@color/color_white"
-                        app:sv_sub_title="Jane"
-                        app:sv_title="@string/LIVE_PLATFORM_FACEBOOK"
-                        app:sv_v_divider="true" />
+                <include
+                    android:id="@+id/page_weibo"
+                    layout="@layout/layout_weibo" />
 
-                    <com.cylan.jiafeigou.widget.SettingItemView0
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/color_white"
-                        app:sv_sub_title="Jane"
-                        app:sv_title="权限设置" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_youtube_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <com.cylan.jiafeigou.widget.SettingItemView0
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/y20"
-                        android:background="@color/color_white"
-                        app:sv_sub_title="Jane"
-                        app:sv_title="@string/LIVE_PLATFORM_FACEBOOK"
-                        app:sv_v_divider="true" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y54"
-                        android:layout_marginTop="@dimen/y20"
-                        android:background="@color/color_white"
-                        android:gravity="center"
-                        android:text="@string/LIVE_CREATE_BUTTON"
-                        android:textColor="@color/color_333333"
-                        android:textSize="@dimen/sp16" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/y20"
-                        android:paddingEnd="@dimen/y15"
-                        android:paddingStart="@dimen/y15"
-                        android:text="@string/LIVE_CURRENT_TEXT"
-                        android:textColor="@color/color_888888"
-                        android:textSize="@dimen/sp14" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y54"
-                        android:layout_marginTop="@dimen/y8"
-                        android:background="@color/color_white"
-                        android:paddingEnd="@dimen/y15"
-                        android:paddingStart="@dimen/y15">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/y60"
-                            android:layout_toStartOf="@+id/live_setting_youtube_share"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="@string/LIVE_DETAIL_DEFAULT_CONTENT"
-                            android:textColor="@color/color_333333"
-                            android:textSize="@dimen/sp16" />
-
-                        <TextView
-                            android:id="@+id/live_setting_youtube_share"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/btn_accept_add_request_shape"
-                            android:gravity="center"
-                            android:paddingEnd="@dimen/y14"
-                            android:paddingStart="@dimen/y14"
-                            android:text="@string/Tap3_ShareDevice_Button"
-                            android:textColor="@color/color_4b9fd5"
-                            android:textSize="@dimen/sp13" />
-
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_weibo_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y121"
-                        android:layout_marginTop="@dimen/y20">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-
-                            android:background="@color/color_white"
-                            android:gravity="start|top"
-                            android:hint="@string/LIVE_DETAIL_DEFAULT_CONTENT"
-                            android:textSize="@dimen/sp14" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|bottom"
-                            android:layout_marginBottom="@dimen/y15"
-                            android:layout_marginEnd="@dimen/y15"
-                            android:text="110"
-
-                            android:textColor="@color/color_adadad"
-                            android:textSize="@dimen/sp13" />
-
-                    </FrameLayout>
-
-
-                    <com.cylan.jiafeigou.widget.SettingItemView0
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/y20"
-                        android:background="@color/color_white"
-                        app:sv_sub_title="Jane"
-                        app:sv_title="@string/LIVE_PLATFORM_FACEBOOK"
-                        app:sv_v_divider="true" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_rtmp_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/y27"
-                        android:paddingEnd="@dimen/y15"
-                        android:paddingStart="@dimen/y15"
-                        android:text="@string/RTMP_SERVER_URL"
-                        android:textColor="@color/color_888888"
-                        android:textSize="@dimen/sp14" />
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y121"
-                        android:layout_marginTop="@dimen/y8"
-                        android:background="@color/color_white">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:gravity="start"
-                            android:hint="rtmp://"
-                            android:padding="@dimen/y15"
-                            android:textColorHint="@color/color_cecece" />
-                    </FrameLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/y20"
-                        android:paddingEnd="@dimen/y15"
-                        android:paddingStart="@dimen/y15"
-                        android:text="@string/RTMP_SERVER_URL"
-                        android:textColor="@color/color_888888"
-                        android:textSize="@dimen/sp14" />
-
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/y54"
-                        android:layout_marginTop="@dimen/y8"
-                        android:background="@color/color_white">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/y54"
-                            android:layout_toStartOf="@+id/rtmp_password_show"
-                            android:background="@null"
-                            android:hint="请输入密钥"
-                            android:padding="@dimen/y15"
-                            android:textColorHint="@color/color_cecece" />
-
-                        <ImageView
-                            android:id="@+id/rtmp_password_show"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/y15"
-                            android:layout_marginStart="@dimen/y15"
-                            android:src="@drawable/icon_lock_noshow_password" />
-
-                    </RelativeLayout>
-
-
-                </LinearLayout>
-
+                <include
+                    android:id="@+id/page_rtmp"
+                    layout="@layout/layout_rtmp" />
 
             </FrameLayout>
-
-
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout
+        android:id="@+id/panel_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y200"
+        android:orientation="vertical"
+        android:visibility="gone" />
+</LinearLayout>

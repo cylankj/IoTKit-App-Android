@@ -4,16 +4,16 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 
 /**
- * Created by yanzhendong on 2017/9/5.
+ * Created by yanzhendong on 2017/9/6.
  */
 
-public interface LivePremissionContract {
+public interface YouTubeLiveCreateContract {
 
     interface View extends JFGView {
 
     }
 
     interface Presenter extends JFGPresenter<View> {
-
     }
+
 }

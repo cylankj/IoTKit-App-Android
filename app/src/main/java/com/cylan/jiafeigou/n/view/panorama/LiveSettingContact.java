@@ -14,7 +14,7 @@ public interface LiveSettingContact {
     }
 
     interface Presenter extends JFGPresenter<View> {
-
+        void getAccount(int accountType);
     }
 
 

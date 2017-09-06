@@ -27,10 +27,11 @@
         android:background="@drawable/little_shape" />
 
 
-    <com.cylan.jiafeigou.widget.SettingItemView0RadioGroup
+    <worker8.com.github.radiogroupplus.RadioGroupPlus
         android:id="@+id/rl_alarm_setting_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/lLayout_mode_motion"
@@ -61,7 +62,7 @@
             hunt:sv_title="@string/RECORD_MODE_2"
             hunt:sv_v_divider="true" />
 
-    </com.cylan.jiafeigou.widget.SettingItemView0RadioGroup>
+    </worker8.com.github.radiogroupplus.RadioGroupPlus>
 
     <!--<RelativeLayout-->
     <!--android:id="@+id/rl_alarm_setting_container"-->

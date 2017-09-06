@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f4f4f4"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/y27">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/y15"
+        android:paddingStart="@dimen/y15"
+        android:text="@string/RTMP_SERVER_URL"
+        android:textColor="@color/color_888888"
+        android:textSize="@dimen/sp14" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y121"
+        android:layout_marginTop="@dimen/y8"
+        android:background="@color/color_white">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="start"
+            android:hint="rtmp://"
+            android:padding="@dimen/y15"
+            android:textColorHint="@color/color_cecece" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y20"
+        android:paddingEnd="@dimen/y15"
+        android:paddingStart="@dimen/y15"
+        android:text="@string/RTMP_SERVER_URL"
+        android:textColor="@color/color_888888"
+        android:textSize="@dimen/sp14" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y54"
+        android:layout_marginTop="@dimen/y8"
+        android:background="@color/color_white">
+
+        <EditText
+            android:id="@+id/rtmp_et_miyao"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y54"
+            android:layout_toStartOf="@+id/rtmp_password_show"
+            android:background="@null"
+            android:hint="请输入密钥"
+            android:padding="@dimen/y15"
+            android:textColorHint="@color/color_cecece" />
+
+        <ImageView
+            android:id="@+id/rtmp_password_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y15"
+            android:layout_marginStart="@dimen/y15"
+            android:src="@drawable/icon_lock_noshow_password" />
+
+    </RelativeLayout>
+</LinearLayout>

@@ -84,7 +84,7 @@ public class SettingItemView0 extends RelativeLayout {
         boolean radioButtonVisibility = ta.getBoolean(R.styleable.SettingItemViewStyle_sv_show_radio_button, false);
         rbRadioButton.setVisibility(radioButtonVisibility ? VISIBLE : GONE);
         if (radioButtonVisibility) switchButton.setVisibility(GONE);
-        int radioButtonId = ta.getInt(R.styleable.SettingItemViewStyle_sv_radio_button_id, -1);
+        int radioButtonId = ta.getResourceId(R.styleable.SettingItemViewStyle_sv_radio_button_id, -1);
         if (radioButtonId != -1) {
             rbRadioButton.setId(radioButtonId);
         }
