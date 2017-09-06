@@ -787,7 +787,8 @@
         </activity>
             android:exported="false" />
 
-        <activity android:name=".n.view.panorama.LiveSettingActivity"></activity>
+        <activity
+            android:name=".n.view.panorama.LiveSettingActivity" />
     </application>
 
 </manifest>
