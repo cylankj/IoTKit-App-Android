@@ -76,24 +76,9 @@
             </com.androidkun.xtablayout.XTabLayout>
 
             <FrameLayout
+                android:id="@+id/page_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <include
-                    android:id="@+id/page_facebook"
-                    layout="@layout/layout_facebook" />
-
-                <include
-                    android:id="@+id/page_youtube"
-                    layout="@layout/layout_youtube" />
-
-                <include
-                    android:id="@+id/page_weibo"
-                    layout="@layout/layout_weibo" />
-
-                <include
-                    android:id="@+id/page_rtmp"
-                    layout="@layout/layout_rtmp" />
 
             </FrameLayout>
         </LinearLayout>

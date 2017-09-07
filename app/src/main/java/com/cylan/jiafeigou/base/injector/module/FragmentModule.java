@@ -15,12 +15,12 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareContentPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AIRecognitionPresenter;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullContract;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullPresenter;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureContact;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigurePresenter;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaPresenter;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaShareContact;
-import com.cylan.jiafeigou.n.view.panorama.PanoramaSharePresenter;
+import com.cylan.jiafeigou.n.view.panorama.YouTubeLiveCreateContract;
+import com.cylan.jiafeigou.n.view.panorama.YouTubeLiveCreatePresenter;
+import com.cylan.jiafeigou.n.view.panorama.YouTubeLiveSetting;
+import com.cylan.jiafeigou.n.view.panorama.YouTubeLiveSettingPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -72,14 +72,24 @@ public class FragmentModule {
         return injector.inject(new MineShareContentPresenterImpl());
     }
 
-
-
-
-
     @Provides
     @PerFragment
     public static AIRecognitionContact.Presenter provideAIRecognitionPresenter(BasePresenterInjector injector) {
         AIRecognitionPresenter presenter = injector.inject(new AIRecognitionPresenter());
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public static YouTubeLiveSetting.Presenter provideYoutubeLiveSettingPresenter(BasePresenterInjector injector) {
+        YouTubeLiveSettingPresenter presenter = injector.inject(new YouTubeLiveSettingPresenter());
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public static YouTubeLiveCreateContract.Presenter provideYoutubeLiveCreatePresenter(BasePresenterInjector injector) {
+        YouTubeLiveCreatePresenter presenter = injector.inject(new YouTubeLiveCreatePresenter());
         return presenter;
     }
 

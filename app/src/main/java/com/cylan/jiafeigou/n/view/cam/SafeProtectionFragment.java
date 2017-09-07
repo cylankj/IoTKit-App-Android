@@ -248,32 +248,32 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     //提示音
                     DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
-                    fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
+                    fLayoutProtectionWarnEffect.setSubTitle(getString(notificationInfo.notification == 0
                             ? R.string.MUTE : (notificationInfo.notification == 1
                             ? R.string.BARKING : R.string.ALARM)));
                     //灵敏度
                     int s = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 1);
-                    fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
+                    fLayoutProtectionSensitivity.setSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
                             : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
                     //报警周期
                     DpMsgDefine.DPAlarmInfo info = device.$(502, new DpMsgDefine.DPAlarmInfo());
-                    fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));
+                    fLayoutProtectionRepeatPeriod.setSubTitle(basePresenter.getRepeatMode(getContext()));
                     if (info != null) {
-                        fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
-                        fLayoutProtectionEndTime.setTvSubTitle(MiscUtils.parse2Time(info.timeEnd));
+                        fLayoutProtectionStartTime.setSubTitle(MiscUtils.parse2Time(info.timeStart));
+                        fLayoutProtectionEndTime.setSubTitle(MiscUtils.parse2Time(info.timeEnd));
                     }
 
                     //报警间隔
                     int warnInterval = device.$(DpMsgMap.ID_514_CAM_WARNINTERVAL, 0);
                     int sec = warnInterval / 60;
-                    swMotionInterval.setTvSubTitle(sec > 0 ? "" + sec + getString(R.string.MINUTE_Cloud) : "30" + getString(R.string.REPEAT_TIME));
+                    swMotionInterval.setSubTitle(sec > 0 ? "" + sec + getString(R.string.MINUTE_Cloud) : "30" + getString(R.string.REPEAT_TIME));
 
                     int[] objectDetect = device.$(DpMsgMap.ID_515_CAM_ObjectDetect, new int[]{0});
                     if (objectDetect == null || objectDetect.length == 0) {
                         //未开启 AI 识别
-                        swMotionAI.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+                        swMotionAI.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
                     } else {
-                        swMotionAI.setTvSubTitle(JConstant.getAIText(objectDetect));
+                        swMotionAI.setSubTitle(JConstant.getAIText(objectDetect));
                     }
 
                 }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
@@ -298,7 +298,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         DpMsgDefine.DPPrimary<Integer> wFlag = new DpMsgDefine.DPPrimary<>();
                         wFlag.value = level;
                         basePresenter.updateInfoReq(wFlag, ID_503_CAMERA_ALARM_SENSITIVITY);
-                        fLayoutProtectionSensitivity.setTvSubTitle(level == 0 ? getString(R.string.SENSITIVI_LOW)
+                        fLayoutProtectionSensitivity.setSubTitle(level == 0 ? getString(R.string.SENSITIVI_LOW)
                                 : (level == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
                         ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     }

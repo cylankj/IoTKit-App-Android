@@ -14,6 +14,8 @@ public interface YouTubeLiveCreateContract {
     }
 
     interface Presenter extends JFGPresenter<View> {
+
+        void createLiveBroadcast(String title,String description,long startTime,long endTime);
     }
 
 }

@@ -16,6 +16,7 @@
         app:ct_enable_theme="true"
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_icon_back_white"
+        app:ct_icon_right="@drawable/icon_finish_selector"
         app:ct_left_title="@string/LIVE_CREATE_BUTTON"
         app:ct_left_title_color="@color/color_white"
         app:ct_title_color="@color/color_black" />
@@ -47,6 +48,7 @@
                 android:background="@color/color_white">
 
                 <EditText
+                    android:id="@+id/youtube_create_live_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
@@ -74,6 +76,7 @@
                 android:background="@color/color_white">
 
                 <EditText
+                    android:id="@+id/youtube_create_live_description"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
@@ -95,6 +98,7 @@
                 android:textSize="@dimen/sp14" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/youtube_create_live_start_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/y8"
@@ -104,6 +108,7 @@
                 app:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/youtube_create_live_end_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_white"

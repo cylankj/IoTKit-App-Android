@@ -425,15 +425,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         Device mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean isAp = JFGRules.isAPDirect(mDevice.uuid, mDevice.$(202, ""));
         if (isAp) {
-            svSettingDeviceHomeMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
-            svSettingDeviceDirectMode.setTvSubTitle(getString(R.string.Tap1_OutdoorMode_Opened));
+            svSettingDeviceHomeMode.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            svSettingDeviceDirectMode.setSubTitle(getString(R.string.Tap1_OutdoorMode_Opened));
         } else {
-            svSettingDeviceDirectMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            svSettingDeviceDirectMode.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
             DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
             if (JFGRules.isDeviceOnline(net)) {
-                svSettingDeviceHomeMode.setTvSubTitle(net.ssid);
+                svSettingDeviceHomeMode.setSubTitle(net.ssid);
             } else {
-                svSettingDeviceHomeMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+                svSettingDeviceHomeMode.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
             }
         }
     }
@@ -648,9 +648,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
         String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
 //        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
-//            svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
+//            svSettingDeviceDetail.setSubTitle(detailInfo, android.R.color.holo_red_dark);
 //        } else
-        svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
+        svSettingDeviceDetail.setSubTitle(detailInfo, R.color.color_8C8C8C);
         ////////////////////////standby////////////////////////////////////////////
         DpMsgDefine.DPStandby dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         if (!JFGRules.showStandbyItem(device.pid, false)) {
@@ -713,7 +713,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ////////////////////////////net////////////////////////////////////////
 
         boolean isMobileNet = net.net > 1;
-        svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
+        svSettingDeviceWifi.setSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         tvNetWorkSettingTitle.setVisibility(View.VISIBLE);
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
@@ -769,14 +769,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         sbtnSettingSight.setVisibility(JFGRules.showSight(device.pid, false) ? View.VISIBLE : View.GONE);
         try {
             String dpPrimary = device.$(509, "1");
-            sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+            sbtnSettingSight.setSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
         } catch (Exception e) {
         }
         if (JFGRules.showSight(device.pid, false)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
             try {
                 String dpPrimary = device.$(509, "1");
-                sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+                sbtnSettingSight.setSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
             } catch (Exception e) {
             }
         } else sbtnSettingSight.setVisibility(View.GONE);
@@ -792,7 +792,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         boolean wiredModeOnline = device.$(226, 0) == 1;
         if (wiredModeOnline) {
             svSettingDeviceWifi.setEnabled(false);
-            svSettingDeviceWifi.setTvSubTitle("");
+            svSettingDeviceWifi.setSubTitle("");
         }
         svSettingDeviceWiredMode.setChecked(wiredModeEnable);
         svSettingDeviceWiredMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
@@ -856,9 +856,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
             String statusContent = getSdcardState(status.hasSdcard, status.err);
             if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-                svSettingDeviceSDCard.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+                svSettingDeviceSDCard.setSubTitle(statusContent, android.R.color.holo_red_dark);
             } else {
-                svSettingDeviceSDCard.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+                svSettingDeviceSDCard.setSubTitle(statusContent, R.color.color_8c8c8c);
             }
         } else {
             svSettingDeviceSDCard.setVisibility(View.GONE);
@@ -902,21 +902,21 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingSafeProtection.showRedHint(node != null && node.getNodeCount() > 0);
         svSettingSafeProtection.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
         svSettingSafeProtection.setAlpha(!dpStandby.standby && !apNet ? 1.0f : 0.6f);
-        svSettingSafeProtection.setTvSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
+        svSettingSafeProtection.setSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
 //        svSettingSafeProtection.setAlpha(apNet ? 0.5f : 1f);
 
         /////////////////////////////////////////////////////录像设置//////////////////////////////////////////////////////
         if (productProperty.hasProperty(device.pid, "AUTORECORD")) {
             svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
 //             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
-//            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+//            svSettingDeviceAutoRecord.setSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
             ////////////////////////显示红点//////////////////////////////////////////////
             node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
             ////////////////////////////autoRecord////////////////////////////////////////
             svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby && (!is720 || !apNet));//ap 模式下有网操作选项需要置灰
             svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby && (!is720 || !apNet) ? 1.0f : 0.6f);
             if (!productProperty.hasProperty(device.pid, "VIDEO") && !is720) {
-                svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+                svSettingDeviceAutoRecord.setSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
             }
             svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
 //            svSettingDeviceAutoRecord.setAlpha(apNet ? 0.5f : 1f);
@@ -933,15 +933,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 ////             TODO: 2017/7/7 获取自动录像是否开启 ,现在默认关闭
 //            svSettingDeviceAutoRecord.setVisibility(View.VISIBLE);
 //            Boolean aBoolean = device.$(305, false);
-////            svSettingDeviceAutoRecord.setTvSubTitle(aBoolean ? getString(R.string.ON) : getString(R.string.OFF));
+////            svSettingDeviceAutoRecord.setSubTitle(aBoolean ? getString(R.string.ON) : getString(R.string.OFF));
 //
-////            svSettingDeviceAutoRecord.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
+////            svSettingDeviceAutoRecord.setSubTitle(getString(R.string.Tap1_Setting_Unopened), R.color.color_8c8c8c);
 ////            ////////////////////////显示红点//////////////////////////////////////////////
 ////            node = BaseApplication.getAppComponent().getTreeHelper().findTreeNodeByName(VideoAutoRecordFragment.class.getSimpleName());
 ////            ////////////////////////////autoRecord////////////////////////////////////////
 ////            svSettingDeviceAutoRecord.setEnabled(!dpStandby.standby);
 ////            svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
-////            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+////            svSettingDeviceAutoRecord.setSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
 ////            svSettingDeviceAutoRecord.showRedHint(node != null && node.getNodeCount() > 0);
 //        }
 //        else {
@@ -973,15 +973,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     //sd
                     String statusContent = basePresenter.getDetailsSubTitle(getContext(), summary.hasSdcard, summary.errCode);
 //                    if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-//                        svSettingDeviceDetail.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+//                        svSettingDeviceDetail.setSubTitle(statusContent, android.R.color.holo_red_dark);
 //                    } else {
-                    svSettingDeviceDetail.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+                    svSettingDeviceDetail.setSubTitle(statusContent, R.color.color_8c8c8c);
 //                    }
                     //自动录像显示.
                     Device device = DataSourceManager.getInstance().getDevice(uuid);
                     if (!PropertiesLoader.getInstance().hasProperty(device.pid, "VIDEO") && !JFGRules.isPan720(device.pid)) {//只有有24小时录像选项才显示子标题
                         DpMsgDefine.DPStandby standby = basePresenter.getDevice().$(508, new DpMsgDefine.DPStandby());
-                        svSettingDeviceAutoRecord.setTvSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
+                        svSettingDeviceAutoRecord.setSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
                     }
                 }
                 break;
@@ -1019,9 +1019,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 if (status == null) status = new DpMsgDefine.DPSdStatus();
                 String detailInfo = basePresenter.getDetailsSubTitle(getContext(), status.hasSdcard, status.err);
 //                if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
-//                    svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
+//                    svSettingDeviceDetail.setSubTitle(detailInfo, android.R.color.holo_red_dark);
 //                } else
-                svSettingDeviceDetail.setTvSubTitle(detailInfo, R.color.color_8C8C8C);
+                svSettingDeviceDetail.setSubTitle(detailInfo, R.color.color_8C8C8C);
                 LoadingDialog.dismissLoading();
                 break;
             case 305:
@@ -1029,7 +1029,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 //                try {
 //                    Boolean enable = DpUtils.unpackData(msg.packValue, boolean.class);
 //                    if (enable == null) enable = false;
-//                    svSettingDeviceAutoRecord.setTvSubTitle(enable ? getString(R.string.ON) : getString(R.string.OFF));
+//                    svSettingDeviceAutoRecord.setSubTitle(enable ? getString(R.string.ON) : getString(R.string.OFF));
 //
 //                } catch (Exception e) {
 //                    e.printStackTrace();
@@ -1067,12 +1067,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void triggerStandby(DpMsgDefine.DPStandby dpStandby) {
         boolean open = dpStandby.standby;
         svSettingSafeProtection.setEnabled(!open);
-        svSettingSafeProtection.setTvSubTitle(open ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
+        svSettingSafeProtection.setSubTitle(open ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
 
         svSettingDeviceAutoRecord.setEnabled(!open);
         Device device = DataSourceManager.getInstance().getDevice(uuid);
         if (!PropertiesLoader.getInstance().hasProperty(device.pid, "VIDEO") && !JFGRules.isPan720(device.pid)) {
-            svSettingDeviceAutoRecord.setTvSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
+            svSettingDeviceAutoRecord.setSubTitle(open ? "" : basePresenter.getAutoRecordTitle(getContext()));
         }
 
         boolean led = !open && dpStandby.led;

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f4f4f4"
+    android:orientation="vertical">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_shadow="false"
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true"
+        app:ct_icon="@drawable/nav_icon_back_white"
+        app:ct_icon_right="@drawable/icon_finish_selector"
+        app:ct_left_title="@string/LIVE_CREATE_BUTTON"
+        app:ct_left_title_color="@color/color_white"
+        app:ct_title_color="@color/color_black" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/y20"
+        android:src="@drawable/pic_youtube" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y23"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingEnd="@dimen/y15"
+
+        android:paddingStart="@dimen/y15"
+        android:singleLine="true"
+        android:text="我正在用UniCam720°全景相机进行全景"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp17" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y8"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingEnd="@dimen/y15"
+        android:paddingStart="@dimen/y15"
+        android:text="我正在用UniCam720°全景相机进行全景直播我正在用全景相机进行全景直播我正在用全景相机进行全景直播我正在用"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp14" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y48"
+        android:background="@color/color_white"
+        app:sv_sub_title="Jane"
+        app:sv_title="@string/LIVE_PLATFORM_YOUTUBE"
+        app:sv_v_divider="true" />
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_white"
+        app:sv_sub_title="Jane"
+        app:sv_title="@string/LIVE_PLATFORM_YOUTUBE"
+        app:sv_v_divider="true" />
+</LinearLayout>

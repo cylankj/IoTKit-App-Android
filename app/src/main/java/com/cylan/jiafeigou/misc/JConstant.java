@@ -9,8 +9,6 @@ import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -165,8 +163,8 @@ public class JConstant {
     public static final int OBJECT_DOG = 3;
     public static final int OBJECT_CAR = 4;
     public static final String IS_IN_BACKGROUND = "IS_IN_BACKGROUND";
-    @Nullable
     public static final String YOUTUBE_PREF_ACCOUNT_NAME = "YOUTUBE_PREF_ACCOUNT_NAME";
+    public static final String YOUTUBE_PREF_LIVEBROADCAST_ID = "YOUTUBE_PREF_LIVEBROADCAST_ID";
 
 
     public static String getAIText(int[] objects) {

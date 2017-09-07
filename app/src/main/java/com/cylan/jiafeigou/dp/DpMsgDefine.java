@@ -1455,6 +1455,59 @@ public class DpMsgDefine {
         };
     }
 
+    @Message
+    public static class DPCameraLiveRtmpStatus extends BaseDataPoint {
+        @Index(0)
+        public int liveType;//直播类型：1 facebook; 2 youtube; 3 weibo; 4 rtmp
+        @Index(1)
+        public String url;//rtmp推流地址。示例：rtmp://a.rtmp.youtube.com/live2
+        @Index(2)
+        public int flag;//状态特征值： 1 准备直播； 2 直播中； 3 直播结束；
+        @Index(3)
+        public int timestamp;//开始直播的时间戳，其它情况置位0
+        @Index(4)
+        public int error;//错误特征值： 0 正确； 1 错误；
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(this.liveType);
+            dest.writeString(this.url);
+            dest.writeInt(this.flag);
+            dest.writeInt(this.timestamp);
+            dest.writeInt(this.error);
+        }
+
+        public DPCameraLiveRtmpStatus() {
+        }
+
+        protected DPCameraLiveRtmpStatus(Parcel in) {
+            super(in);
+            this.liveType = in.readInt();
+            this.url = in.readString();
+            this.flag = in.readInt();
+            this.timestamp = in.readInt();
+            this.error = in.readInt();
+        }
+
+        public static final Creator<DPCameraLiveRtmpStatus> CREATOR = new Creator<DPCameraLiveRtmpStatus>() {
+            @Override
+            public DPCameraLiveRtmpStatus createFromParcel(Parcel source) {
+                return new DPCameraLiveRtmpStatus(source);
+            }
+
+            @Override
+            public DPCameraLiveRtmpStatus[] newArray(int size) {
+                return new DPCameraLiveRtmpStatus[size];
+            }
+        };
+    }
+
 //    @Message
 //    public static class DPWarnInterval extends BaseDataPoint {
 //

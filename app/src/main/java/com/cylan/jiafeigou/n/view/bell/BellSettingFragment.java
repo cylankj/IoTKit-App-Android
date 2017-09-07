@@ -192,7 +192,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
 
     @Override
     public void onShowProperty(Device device) {
-        svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias)
+        svSettingDeviceDetail.setSubTitle(TextUtils.isEmpty(device.alias)
                 ? device.uuid : device.alias);
         if (!TextUtils.isEmpty(device.shareAccount)) {
             final int count = lLayoutSettingContainer.getChildCount();
@@ -201,10 +201,10 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 v.setVisibility(View.GONE);
             }
         }
-//        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
+//        svSettingDeviceWifi.setSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
 
         DpMsgDefine.DPNet net = sourceManager.getDevice(uuid).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-        if (net != null) svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(net));
+        if (net != null) svSettingDeviceWifi.setSubTitle(DpMsgDefine.DPNet.getNormalString(net));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }

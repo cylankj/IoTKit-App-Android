@@ -295,38 +295,38 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
                 })
                 .into(homeMineInfoBinding.userImageHead);
         if (!TextUtils.isEmpty(account.getPhone())) {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(account.getPhone());
+            homeMineInfoBinding.tvMyId.setSubTitle(account.getPhone());
         } else if (!TextUtils.isEmpty(account.getEmail())) {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(account.getEmail());
+            homeMineInfoBinding.tvMyId.setSubTitle(account.getEmail());
         } else if (account.getLoginType() == 3) {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? getString(R.string.LOGIN_QQ) : account.getEmail()) : account.getPhone());
+            homeMineInfoBinding.tvMyId.setSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? getString(R.string.LOGIN_QQ) : account.getEmail()) : account.getPhone());
         } else if (account.getLoginType() == 4) {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? getString(R.string.LOGIN_WEIBO) : account.getEmail()) : account.getPhone());
+            homeMineInfoBinding.tvMyId.setSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? getString(R.string.LOGIN_WEIBO) : account.getEmail()) : account.getPhone());
         } else if (account.getLoginType() == 6) {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? "Twitter LOGIN" : account.getEmail()) : account.getPhone());
+            homeMineInfoBinding.tvMyId.setSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? "Twitter LOGIN" : account.getEmail()) : account.getPhone());
         } else if (account.getLoginType() == 7) {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? "FaceBook LOGIN" : account.getEmail()) : account.getPhone());
+            homeMineInfoBinding.tvMyId.setSubTitle(TextUtils.isEmpty(account.getPhone()) ? (TextUtils.isEmpty(account.getEmail()) ? "FaceBook LOGIN" : account.getEmail()) : account.getPhone());
         } else {
-            homeMineInfoBinding.tvMyId.setTvSubTitle(account.getAccount());
+            homeMineInfoBinding.tvMyId.setSubTitle(account.getAccount());
         }
 
         if (basePresenter.checkOpenLogin() && TextUtils.isEmpty(account.getAlias())) {
             String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-            homeMineInfoBinding.svAlias.setTvSubTitle(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
+            homeMineInfoBinding.svAlias.setSubTitle(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
         } else {
-            homeMineInfoBinding.svAlias.setTvSubTitle(TextUtils.isEmpty(account.getAlias()) ? getString(R.string.NO_SET) : account.getAlias());
+            homeMineInfoBinding.svAlias.setSubTitle(TextUtils.isEmpty(account.getAlias()) ? getString(R.string.NO_SET) : account.getAlias());
         }
 
         if (TextUtils.isEmpty(account.getEmail())) {
-            homeMineInfoBinding.svEmail.setTvSubTitle(getString(R.string.NO_SET));
+            homeMineInfoBinding.svEmail.setSubTitle(getString(R.string.NO_SET));
         } else {
-            homeMineInfoBinding.svEmail.setTvSubTitle(account.getEmail());
+            homeMineInfoBinding.svEmail.setSubTitle(account.getEmail());
         }
 
         if (TextUtils.isEmpty(account.getPhone())) {
-            homeMineInfoBinding.svPhone.setTvSubTitle(getString(R.string.NO_SET));
+            homeMineInfoBinding.svPhone.setSubTitle(getString(R.string.NO_SET));
         } else {
-            homeMineInfoBinding.svPhone.setTvSubTitle(account.getPhone());
+            homeMineInfoBinding.svPhone.setSubTitle(account.getPhone());
         }
         showSetPwd(!basePresenter.checkOpenLogin());
     }
@@ -372,7 +372,7 @@ public class MineInfoActivity extends BaseFullScreenFragmentActivity<MineInfoCon
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                 bindPhoneFragment, android.R.id.content, "bindStack");
-        bindPhoneFragment.setOnChangePhoneListener(phone -> homeMineInfoBinding.svPhone.setTvSubTitle(phone));
+        bindPhoneFragment.setOnChangePhoneListener(phone -> homeMineInfoBinding.svPhone.setSubTitle(phone));
     }
 
 

@@ -129,7 +129,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
         updateHint();
         svHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
         customToolbar.setBackAction(click -> getActivity().getSupportFragmentManager().popBackStack());
-        svHomeSettingClear.setTvSubTitle(basePresenter.calculateCacheSize());
+        svHomeSettingClear.setSubTitle(basePresenter.calculateCacheSize());
     }
 
     private void initPresenter() {
@@ -207,7 +207,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
 
     @Override
     public void setCacheSize(String size) {
-        svHomeSettingClear.setTvSubTitle(size);
+        svHomeSettingClear.setSubTitle(size);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class HomeSettingFragment extends IBaseFragment<HomeSettingContract.Prese
     @Override
     public void clearFinish() {
         if (!isAdded()) return;
-        svHomeSettingClear.setTvSubTitle("0.0M");
+        svHomeSettingClear.setSubTitle("0.0M");
         ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }
 

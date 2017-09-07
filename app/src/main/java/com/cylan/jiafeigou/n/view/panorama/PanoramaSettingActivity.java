@@ -70,7 +70,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     protected void initViewAndListener() {
         super.initViewAndListener();
         Device device = DataSourceManager.getInstance().getDevice(uuid);
-        deviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
+        deviceDetail.setSubTitle(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         deviceDetail.showRedHint(!TextUtils.isEmpty(PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + uuid)));
         toolbarContainer.setBackAction(this::exit);
     }
@@ -157,14 +157,14 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
         Device mDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean isAp = JFGRules.isAPDirect(mDevice.uuid, mDevice.$(202, ""));
         if (isAp) {
-            svSettingDeviceWifi.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
-            svSettingDeviceMode.setTvSubTitle(getString(R.string.Tap1_OutdoorMode_Opened));
+            svSettingDeviceWifi.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            svSettingDeviceMode.setSubTitle(getString(R.string.Tap1_OutdoorMode_Opened));
         } else {
-            svSettingDeviceMode.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+            svSettingDeviceMode.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
             DpMsgDefine.DPNet net = mDevice.$(201, new DpMsgDefine.DPNet());
             if (JFGRules.isDeviceOnline(net)) {
-                svSettingDeviceWifi.setTvSubTitle(net.ssid);
-            } else svSettingDeviceWifi.setTvSubTitle(getString(R.string.Tap1_Setting_Unopened));
+                svSettingDeviceWifi.setSubTitle(net.ssid);
+            } else svSettingDeviceWifi.setSubTitle(getString(R.string.Tap1_Setting_Unopened));
         }
 
 

@@ -45,6 +45,90 @@ public class YouTubeApi {
     public static final String BROADCAST_ID_KEY = "broadcastId";
     private static final int FUTURE_DATE_OFFSET_MILLIS = 5 * 1000;
 
+    public static LiveBroadcast createLiveEvent(YouTube youtube, String description,
+                                                String title, long startTime, long endTime) {
+        // We need a date that's in the proper ISO format and is in the future,
+        // since the API won't
+        // create events that start in the past.
+        try {
+            LiveBroadcastSnippet broadcastSnippet = new LiveBroadcastSnippet();
+            broadcastSnippet.setTitle(title);
+            broadcastSnippet.setScheduledStartTime(new DateTime(startTime));
+
+            LiveBroadcastContentDetails contentDetails = new LiveBroadcastContentDetails();
+            MonitorStreamInfo monitorStream = new MonitorStreamInfo();
+            monitorStream.setEnableMonitorStream(false);
+            contentDetails.setMonitorStream(monitorStream);
+            contentDetails.set("projection", "360");//这里控制以360 视角直播
+
+            // Create LiveBroadcastStatus with privacy status.
+            LiveBroadcastStatus status = new LiveBroadcastStatus();
+            status.setPrivacyStatus("unlisted");
+
+            LiveBroadcast broadcast = new LiveBroadcast();
+            broadcast.setKind("youtube#liveBroadcast");
+            broadcast.setSnippet(broadcastSnippet);
+            broadcast.setStatus(status);
+            broadcast.setContentDetails(contentDetails);
+
+            // Create the insert request
+            YouTube.LiveBroadcasts.Insert liveBroadcastInsert = youtube
+                    .liveBroadcasts().insert("snippet,status,contentDetails",
+                            broadcast);
+
+            // Request is executed and inserted broadcast is returned
+            LiveBroadcast returnedBroadcast = liveBroadcastInsert.execute();
+
+            // Create a snippet with title.
+            LiveStreamSnippet streamSnippet = new LiveStreamSnippet();
+            streamSnippet.setTitle(title);
+
+            // Create content distribution network with format and ingestion
+            // type.
+            CdnSettings cdn = new CdnSettings();
+            cdn.setFormat("1080p");
+            cdn.setIngestionType("rtmp");
+
+            LiveStream stream = new LiveStream();
+            stream.setKind("youtube#liveStream");
+            stream.setSnippet(streamSnippet);
+            stream.setCdn(cdn);
+
+            // Create the insert request
+            YouTube.LiveStreams.Insert liveStreamInsert = youtube.liveStreams()
+                    .insert("snippet,cdn", stream);
+
+            // Request is executed and inserted stream is returned
+            LiveStream returnedStream = liveStreamInsert.execute();
+
+            // Create the bind request
+            YouTube.LiveBroadcasts.Bind liveBroadcastBind = youtube
+                    .liveBroadcasts().bind(returnedBroadcast.getId(),
+                            "id,contentDetails");
+
+            // Set stream id to bind
+            liveBroadcastBind.setStreamId(returnedStream.getId());
+
+            // Request is executed and bound broadcast is returned
+            return liveBroadcastBind.execute();
+
+        } catch (GoogleJsonResponseException e) {
+            System.err.println("GoogleJsonResponseException code: "
+                    + e.getDetails().getCode() + " : "
+                    + e.getDetails().getMessage());
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Throwable t) {
+            System.err.println("Throwable: " + t.getStackTrace());
+            t.printStackTrace();
+        }
+        return null;
+    }
+
+
     public static void createLiveEvent(YouTube youtube, String description,
                                        String name) {
         // We need a date that's in the proper ISO format and is in the future,
@@ -140,13 +224,44 @@ public class YouTubeApi {
         }
     }
 
-    // TODO: Catch those exceptions and handle them here.
+    public static List<EventData> getLiveEvents(
+            YouTube youtube, String liveBroadcastId) throws IOException {
+        AppLogger.w("Requesting live events.with id:" + liveBroadcastId);
+
+        YouTube.LiveBroadcasts.List liveBroadcastRequest = youtube
+                .liveBroadcasts().list("id,snippet,contentDetails,status")
+                .setId(liveBroadcastId);
+        // liveBroadcastRequest.setMine(true);
+        liveBroadcastRequest.setBroadcastStatus("all");
+
+        // List request is executed and list of broadcasts are returned
+        LiveBroadcastListResponse returnedListResponse = liveBroadcastRequest.execute();
+
+        // Get the list of broadcasts associated with the user.
+        List<LiveBroadcast> returnedList = returnedListResponse.getItems();
+
+        List<EventData> resultList = new ArrayList<>(returnedList.size());
+        EventData event;
+
+        for (LiveBroadcast broadcast : returnedList) {
+            event = new EventData();
+            event.setEvent(broadcast);
+            String streamId = broadcast.getContentDetails().getBoundStreamId();
+            if (streamId != null) {
+                String ingestionAddress = getIngestionAddress(youtube, streamId);
+                event.setIngestionAddress(ingestionAddress);
+            }
+            resultList.add(event);
+        }
+        return resultList;
+    }
+
     public static List<EventData> getLiveEvents(
             YouTube youtube) throws IOException {
         AppLogger.w("Requesting live events.");
 
         YouTube.LiveBroadcasts.List liveBroadcastRequest = youtube
-                .liveBroadcasts().list("id,snippet,contentDetails");
+                .liveBroadcasts().list("id,snippet,contentDetails,status");
         // liveBroadcastRequest.setMine(true);
         liveBroadcastRequest.setBroadcastStatus("upcoming");
 
@@ -156,12 +271,11 @@ public class YouTubeApi {
         // Get the list of broadcasts associated with the user.
         List<LiveBroadcast> returnedList = returnedListResponse.getItems();
 
-        List<EventData> resultList = new ArrayList<EventData>(returnedList.size());
+        List<EventData> resultList = new ArrayList<>(returnedList.size());
         EventData event;
 
         for (LiveBroadcast broadcast : returnedList) {
             event = new EventData();
-            broadcast.getSnippet().setDescription("72在此");
             event.setEvent(broadcast);
             String streamId = broadcast.getContentDetails().getBoundStreamId();
             if (streamId != null) {
@@ -206,7 +320,6 @@ public class YouTubeApi {
             return "";
         }
         IngestionInfo ingestionInfo = streamList.get(0).getCdn().getIngestionInfo();
-        return ingestionInfo.getIngestionAddress() + "/"
-                + ingestionInfo.getStreamName();
+        return ingestionInfo.getIngestionAddress() + "/" + ingestionInfo.getStreamName();
     }
 }

@@ -123,7 +123,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
                 if (!TextUtils.isEmpty(content)
                         && device != null && !TextUtils.equals(device.alias, content)) {
                     device.alias = content;
-                    svSettingDeviceAlias.setTvSubTitle(content);
+                    svSettingDeviceAlias.setSubTitle(content);
                     HandlerThreadUtils.post(() -> {
                         updateAlias(device);
                     });
@@ -152,18 +152,18 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @Override
     public void onShowProperty(Device device) {
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-        svSettingDeviceAlias.setTvSubTitle(alias);
-        svSettingDeviceCid.setTvSubTitle(device.uuid);
-        svSettingDeviceMac.setTvSubTitle(device.$(ID_202_MAC, ""));
-        svSettingDeviceSysVersion.setTvSubTitle(device.$(ID_208_DEVICE_SYS_VERSION, ""));
-        svSettingDeviceVersion.setTvSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
+        svSettingDeviceAlias.setSubTitle(alias);
+        svSettingDeviceCid.setSubTitle(device.uuid);
+        svSettingDeviceMac.setSubTitle(device.$(ID_202_MAC, ""));
+        svSettingDeviceSysVersion.setSubTitle(device.$(ID_208_DEVICE_SYS_VERSION, ""));
+        svSettingDeviceVersion.setSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
         int battery = device.$(ID_206_BATTERY, 0);
-        svSettingDeviceBattery.setTvSubTitle(battery + "%");
+        svSettingDeviceBattery.setSubTitle(battery + "%");
         DpMsgDefine.DPNet net = device.$(ID_201_NET, new DpMsgDefine.DPNet());
         String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
-        svSettingDeviceWifi.setTvSubTitle(ssid);
+        svSettingDeviceWifi.setSubTitle(ssid);
         if (net.net > 0) {
-            svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.$(ID_210_UP_TIME, 0)));
+            svSettingDeviceUptime.setSubTitle(TimeUtils.getUptime(device.$(ID_210_UP_TIME, 0)));
         } else {
             svSettingDeviceUptime.setVisibility(View.GONE);
         }
@@ -171,7 +171,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         if (!TextUtils.isEmpty(device.shareAccount)) {
             rlHardwareUpdate.setVisibility(View.GONE);
         } else {
-            svSettingHardwareUpdate.setTvSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
+            svSettingHardwareUpdate.setSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
             if (presenter != null)
                 presenter.checkNewVersion(uuid);
         }
@@ -218,7 +218,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         this.checkDevVersion = checkDevVersionRsp;
         if (checkDevVersionRsp.hasNew) {
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
-            svSettingHardwareUpdate.setTvSubTitle(getString(R.string.Tap1_NewFirmware));
+            svSettingHardwareUpdate.setSubTitle(getString(R.string.Tap1_NewFirmware));
         }
     }
 }

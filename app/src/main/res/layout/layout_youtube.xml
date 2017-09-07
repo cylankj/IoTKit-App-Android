@@ -11,68 +11,89 @@
     android:paddingTop="@dimen/y20">
 
     <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/setting_youtube_account_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_white"
         app:sv_sub_title="Jane"
-        app:sv_title="@string/LIVE_PLATFORM_FACEBOOK"
+        app:sv_title="@string/LIVE_PLATFORM_YOUTUBE"
         app:sv_v_divider="true" />
 
-    <TextView
-        android:id="@+id/youtube_create_live"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        android:layout_marginTop="@dimen/y20"
-        android:background="@color/color_white"
-        android:gravity="center"
-        android:text="@string/LIVE_CREATE_BUTTON"
-        android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp16" />
-
-    <TextView
+    <LinearLayout
+        android:id="@+id/setting_youtube_option_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y20"
-        android:paddingEnd="@dimen/y15"
-        android:paddingStart="@dimen/y15"
-        android:text="@string/LIVE_CURRENT_TEXT"
-        android:textColor="@color/color_888888"
-        android:textSize="@dimen/sp14" />
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y54"
-        android:layout_marginTop="@dimen/y8"
-        android:background="@color/color_white"
-        android:paddingEnd="@dimen/y15"
-        android:paddingStart="@dimen/y15">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/y60"
-            android:layout_toStartOf="@+id/live_setting_youtube_share"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/LIVE_DETAIL_DEFAULT_CONTENT"
+            android:id="@+id/youtube_create_live"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y54"
+            android:layout_marginTop="@dimen/y20"
+            android:background="@color/color_white"
+            android:gravity="center"
+            android:text="@string/LIVE_CREATE_BUTTON"
             android:textColor="@color/color_333333"
             android:textSize="@dimen/sp16" />
 
-        <TextView
-            android:id="@+id/live_setting_youtube_share"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:id="@+id/live_event_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/btn_accept_add_request_shape"
-            android:gravity="center"
-            android:paddingEnd="@dimen/y14"
-            android:paddingStart="@dimen/y14"
-            android:text="@string/Tap3_ShareDevice_Button"
-            android:textColor="@color/color_4b9fd5"
-            android:textSize="@dimen/sp13" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:paddingEnd="@dimen/y15"
+                android:paddingStart="@dimen/y15"
+                android:text="@string/LIVE_CURRENT_TEXT"
+                android:textColor="@color/color_888888"
+                android:textSize="@dimen/sp14" />
+
+            <RelativeLayout
+                android:id="@+id/live_event_item_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54"
+                android:layout_marginTop="@dimen/y8"
+                android:background="@color/color_white"
+                android:paddingEnd="@dimen/y15"
+                android:paddingStart="@dimen/y15">
+
+                <TextView
+                    android:id="@+id/live_event_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/live_setting_youtube_share"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/LIVE_DETAIL_DEFAULT_CONTENT"
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/sp16" />
+
+                <TextView
+                    android:id="@+id/live_setting_youtube_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/btn_accept_add_request_shape"
+                    android:gravity="center"
+                    android:paddingEnd="@dimen/y14"
+                    android:paddingStart="@dimen/y14"
+                    android:text="@string/Tap3_ShareDevice_Button"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="@dimen/sp13" />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

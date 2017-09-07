@@ -96,7 +96,7 @@ public class SettingItemView0 extends RelativeLayout {
      *
      * @param charSequence
      */
-    public void setTvSubTitle(CharSequence charSequence) {
+    public void setSubTitle(CharSequence charSequence) {
         tvSubTitle.setVisibility(VISIBLE);
         tvSubTitle.setText(charSequence);
     }
@@ -106,7 +106,7 @@ public class SettingItemView0 extends RelativeLayout {
      *
      * @param charSequence
      */
-    public void setTvSubTitle(CharSequence charSequence, @ColorRes int color) {
+    public void setSubTitle(CharSequence charSequence, @ColorRes int color) {
         tvSubTitle.setVisibility(VISIBLE);
         tvSubTitle.setTextColor(getResources().getColor(color));
         tvSubTitle.setText(charSequence);

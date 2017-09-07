@@ -100,7 +100,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
         for (int i = 0; i < count; i++) {
             if (effect == i) ((RadioButton) rgWarnEffect.getChildAt(i)).setChecked(true);
         }
-        svWarnRepeatMode.setTvSubTitle(String.format(Locale.getDefault(), getString(R.string.EFAMILY_CALL_DURATION_S),
+        svWarnRepeatMode.setSubTitle(String.format(Locale.getDefault(), getString(R.string.EFAMILY_CALL_DURATION_S),
                 notificationInfo.duration));
         svWarnRepeatMode.setVisibility(effect == 0 ? View.GONE : View.VISIBLE);
     }
@@ -151,7 +151,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                 DurationDialogFragment durationDialogFragment = DurationDialogFragment.newInstance(null);
                 durationDialogFragment.setValue(notificationInfo.duration);
                 durationDialogFragment.setAction((int id, Object value) -> {
-                    svWarnRepeatMode.setTvSubTitle(String.format(Locale.getDefault(), "%ss", value));
+                    svWarnRepeatMode.setSubTitle(String.format(Locale.getDefault(), "%ss", value));
                     notificationInfo.duration = (int) value;
                     basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                 });

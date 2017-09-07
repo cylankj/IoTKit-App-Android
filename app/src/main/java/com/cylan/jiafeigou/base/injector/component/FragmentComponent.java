@@ -8,9 +8,10 @@ import com.cylan.jiafeigou.n.view.cam.AIRecognitionFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareContentFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineShareManagerFragment;
-import com.cylan.jiafeigou.n.view.mine.ShareContentWebH5Activity;
 import com.cylan.jiafeigou.n.view.panorama.Pan720FullFragment;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaLogoConfigureFragment;
+import com.cylan.jiafeigou.n.view.panorama.YouTubeLiveCreateFragment;
+import com.cylan.jiafeigou.n.view.panorama.YouTubeLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordDeviceFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordMainFragment;
@@ -44,11 +45,9 @@ public interface FragmentComponent {
 
     void inject(HomeMineShareContentFragment fragment);
 
-
-
-    void inject(ShareContentWebH5Activity fragment);
-
-
-
     void inject(AIRecognitionFragment fragment);
+
+    void inject(YouTubeLiveSettingFragment fragment);
+
+    void inject(YouTubeLiveCreateFragment fragment);
 }

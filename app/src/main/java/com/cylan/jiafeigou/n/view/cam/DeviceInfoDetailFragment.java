@@ -32,7 +32,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -170,7 +169,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
         tvDeviceMobileNet.setVisibility(JFGRules.showMobileNet(device.pid, false) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
+        tvDeviceMobileNet.setSubTitle(getMobileNet(hasSimCard, net));
 
         //控制时区显示与隐藏
         boolean showTimezone = JFGRules.showTimeZone(device.pid, false);
@@ -185,7 +184,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             if (list != null) {
                                 int index = list.indexOf(bean);
                                 if (index >= 0 && index < list.size()) {
-                                    tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                    tvDeviceTimeZone.setSubTitle(list.get(index).getName());
                                 }
                             }
                         }, AppLogger::e);
@@ -195,35 +194,35 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         String statusContent = getSdcardState(status.hasSdcard, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-            tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+            tvDeviceSdcardState.setSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
-            tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+            tvDeviceSdcardState.setSubTitle(statusContent, R.color.color_8c8c8c);
         }
-        tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
-        tvDeviceCid.setTvSubTitle(uuid);
+        tvDeviceAlias.setSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
+        tvDeviceCid.setSubTitle(uuid);
         String m = device.$(ID_202_MAC, "");
         if (TextUtils.isEmpty(m)) {
             m = PreferencesUtils.getString(JConstant.KEY_DEVICE_MAC + uuid);
         }
-        tvDeviceMac.setTvSubTitle(m);
+        tvDeviceMac.setSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
         int b = device.$(DpMsgMap.ID_206_BATTERY, 0);
         boolean apMode = JFGRules.isAPDirect(uuid, m);
-        tvDeviceBatteryLevel.setTvSubTitle((JFGRules.isDeviceOnline(net) || apMode) ? (charging ? getString(R.string.CHARGING) + (b + "%") : (b + "%")) : "");
+        tvDeviceBatteryLevel.setSubTitle((JFGRules.isDeviceOnline(net) || apMode) ? (charging ? getString(R.string.CHARGING) + (b + "%") : (b + "%")) : "");
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
-        tvDeviceSystemVersion.setTvSubTitle(v);
+        tvDeviceSystemVersion.setSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
-        tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(JFGRules.isDeviceOnline(net) ? u : 0));
+        tvDeviceUptime.setSubTitle(TimeUtils.getUptime(JFGRules.isDeviceOnline(net) ? u : 0));
         boolean isMobileNet = net.net > 1;
         if (apMode || (JFGRules.isPan720(device.pid) && net.net <= 0)) {//针对离线的720设备以及直连AP模式下，wifi显示：未启用
-            tvDeviceWifiState.setTvSubTitle(getString(R.string.OFF));
+            tvDeviceWifiState.setSubTitle(getString(R.string.OFF));
         } else {
-            tvDeviceWifiState.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
+            tvDeviceWifiState.setSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? getString(R.string.OFF) : net.ssid) : getString(R.string.OFF_LINE));
         }
         String softWare = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
-        tvDeviceSoftwareVersion.setTvSubTitle(softWare);
+        tvDeviceSoftwareVersion.setSubTitle(softWare);
         //ip地址
-        tvDeviceIp.setTvSubTitle(JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet())) ? device.$(227, "") : "");
+        tvDeviceIp.setSubTitle(JFGRules.isDeviceOnline(device.$(201, new DpMsgDefine.DPNet())) ? device.$(227, "") : "");
 
 
     }
@@ -344,7 +343,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             if (list != null) {
                                 int index = list.indexOf(bean);
                                 if (index >= 0 && index < list.size()) {
-                                    tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                    tvDeviceTimeZone.setSubTitle(list.get(index).getName());
                                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                                 }
                             }
@@ -380,7 +379,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
                     device.alias = content;
-                    tvDeviceAlias.setTvSubTitle((CharSequence) value);
+                    tvDeviceAlias.setSubTitle((CharSequence) value);
                     if (basePresenter != null) basePresenter.updateAlias(device);
                 }
             }
@@ -394,10 +393,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     public void checkDevResult() {
         String s = device.$(207, "");
-        rlHardwareUpdate.setTvSubTitle(s);
+        rlHardwareUpdate.setSubTitle(s);
         try {
             String content = PreferencesUtils.getString(JConstant.KEY_FIRMWARE_CONTENT + getUuid());
-            rlHardwareUpdate.setTvSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
+            rlHardwareUpdate.setSubTitle(!TextUtils.isEmpty(content) ? getString(R.string.Tap1_NewFirmware) : s);
 
             rlHardwareUpdate.showRedHint(!TextUtils.isEmpty(content));
         } catch (Exception e) {
@@ -443,9 +442,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     //sd
                     String statusContent = getSdcardState(summary.hasSdcard, summary.errCode);
                     if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-                        tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+                        tvDeviceSdcardState.setSubTitle(statusContent, android.R.color.holo_red_dark);
                     } else {
-                        tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+                        tvDeviceSdcardState.setSubTitle(statusContent, R.color.color_8c8c8c);
                     }
                 }
                 break;
@@ -463,7 +462,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             if (list != null) {
                                 int index = list.indexOf(bean);
                                 if (index >= 0 && index < list.size()) {
-                                    tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                    tvDeviceTimeZone.setSubTitle(list.get(index).getName());
                                 }
                             }
                         }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
@@ -472,7 +471,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 //wifi
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-                tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+                tvDeviceWifiState.setSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
                 break;
             case 206:
 //                updateDetails();
