@@ -34,6 +34,8 @@ import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -60,6 +62,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     private PanoramicView360_Ext panoramicView;
     private CamMessageBean camMessageBean;
     private Subscription subscription;
+    private HashMap<String, Integer> tryCount = new HashMap<>();
 
     public PanoramicViewFragment() {
         // Required empty public constructor
@@ -123,6 +126,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        tryCount.clear();
         showLoading(false);
     }
 
@@ -136,11 +140,23 @@ public class PanoramicViewFragment extends IBaseFragment {
 //        }
     }
 
+    private boolean updateCount(int index) {
+        Integer count = tryCount.get(String.valueOf(index));
+        if (count == null) {
+            tryCount.put(String.valueOf(index), 0);
+            return true;
+        } else if (count > 3) return false;
+        else {
+            count++;
+            tryCount.put(String.valueOf(index), count);
+            return true;
+        }
+    }
+
     private Target target;
-    private int lastLoadIndex;
 
     public void loadBitmap(int index, String mode) {
-        lastLoadIndex = index;
+        if (!updateCount(index)) return;
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
             panoramicView = new PanoramicView360_Ext(getContext());
@@ -172,40 +188,14 @@ public class PanoramicViewFragment extends IBaseFragment {
 
         }
         //填满
-        Glide.with(ContextUtils.getContext())
+        target = Glide.with(ContextUtils.getContext())
                 .load(MiscUtils.getCamWarnUrl(uuid, camMessageBean, index + 1))
                 .asBitmap()
                 //解决黑屏问题
                 .signature(new StringSignature(System.currentTimeMillis() + ""))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        showLoading(true);
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        try {
-                            if (resource != null && !resource.isRecycled())
-                                panoramicView.loadImage(resource);
-                            else {
-                                AppLogger.e("bitmap is recycled");
-                            }
-                        } catch (Exception e) {
-                            AppLogger.e("pan view is out date,");
-                        }
-                        showLoading(false);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.e(MiscUtils.getErr(e));
-                        loadBitmap(lastLoadIndex);
-                        showLoading(false);
-                    }
-                });
+                .into(new Loader(this, index));
     }
 
     public void loadBitmap(int index) {
@@ -227,8 +217,54 @@ public class PanoramicViewFragment extends IBaseFragment {
                 .subscribeOn(Schedulers.io())
                 .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ret -> {
-                    loadBitmap(index, mode);
-                }, AppLogger::e);
+                .subscribe(ret -> loadBitmap(index, mode), AppLogger::e);
+    }
+
+    private static class Loader extends SimpleTarget<Bitmap> {
+
+        private WeakReference<PanoramicViewFragment>
+                panoramicViewFragmentWeakReference;
+        private int index;
+
+        public Loader(PanoramicViewFragment fragment, int index) {
+            panoramicViewFragmentWeakReference = new WeakReference<>(fragment);
+            this.index = index;
+        }
+
+        @Override
+        public void onLoadStarted(Drawable placeholder) {
+            if (panoramicViewFragmentWeakReference.get() == null) return;
+            panoramicViewFragmentWeakReference.get().showLoading(true);
+        }
+
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+            if (panoramicViewFragmentWeakReference.get() == null) return;
+            try {
+                if (resource != null && !resource.isRecycled())
+                    panoramicViewFragmentWeakReference.get().panoramicView.loadImage(resource);
+                else {
+                    AppLogger.e("bitmap is recycled");
+                }
+            } catch (Exception e) {
+                AppLogger.e("pan view is out date,");
+            }
+            panoramicViewFragmentWeakReference.get().showLoading(false);
+        }
+
+        @Override
+        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+            AppLogger.e(MiscUtils.getErr(e));
+            if (e != null && e.getLocalizedMessage() != null) {
+                if (e.getLocalizedMessage().contains("Forbidden")) {
+                    AppLogger.d("服务器出错，没必要循环加载");
+                    return;
+                }
+            }
+            if (panoramicViewFragmentWeakReference.get() == null) return;
+            panoramicViewFragmentWeakReference.get().loadBitmap(index);
+            panoramicViewFragmentWeakReference.get().showLoading(false);
+        }
+
     }
 }
