@@ -14,7 +14,9 @@
 
 package com.cylan.jiafeigou.rtmp.youtube.util;
 
+import com.google.api.client.util.Key;
 import com.google.api.services.youtube.model.LiveBroadcast;
+import com.google.api.services.youtube.model.ThumbnailDetails;
 
 /**
  * @author Ibrahim Ulukaya <ulukaya@google.com>
@@ -22,8 +24,13 @@ import com.google.api.services.youtube.model.LiveBroadcast;
  *         Helper class to handle YouTube videos.
  */
 public class EventData {
+    @Key
     private LiveBroadcast mEvent;
+    @Key
     private String mIngestionAddress;
+
+    @Key
+    private String title;
 
     public LiveBroadcast getEvent() {
         return mEvent;
@@ -34,20 +41,33 @@ public class EventData {
     }
 
     public String getId() {
-        return mEvent.getId();
+        if (mEvent != null) {
+            return mEvent.getId();
+        } else {
+            return null;
+        }
     }
 
     public String getTitle() {
-        return mEvent.getSnippet().getTitle();
+        if (mEvent != null && mEvent.getSnippet() != null) {
+            return mEvent.getSnippet().getTitle();
+        }
+        return null;
     }
 
     public String getThumbUri() {
-        String url = mEvent.getSnippet().getThumbnails().getDefault().getUrl();
-        // if protocol is not defined, pick https
-        if (url.startsWith("//")) {
-            url = "https:" + url;
+        if (mEvent != null && mEvent.getSnippet() != null) {
+            ThumbnailDetails thumbnails = mEvent.getSnippet().getThumbnails();
+            if (thumbnails != null && thumbnails.getDefault() != null) {
+                String url = thumbnails.getDefault().getUrl();
+                // if protocol is not defined, pick https
+                if (url.startsWith("//")) {
+                    url = "https:" + url;
+                }
+                return url;
+            }
         }
-        return url;
+        return null;
     }
 
     public String getIngestionAddress() {

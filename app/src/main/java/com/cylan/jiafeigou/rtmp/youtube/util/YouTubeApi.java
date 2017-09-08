@@ -112,7 +112,7 @@ public class YouTubeApi {
         // Create the bind request
         YouTube.LiveBroadcasts.Bind liveBroadcastBind = youtube
                 .liveBroadcasts().bind(returnedBroadcast.getId(),
-                        "id,contentDetails");
+                        "id,snippet,contentDetails,status");
 
         // Set stream id to bind
         liveBroadcastBind.setStreamId(returnedStream.getId());

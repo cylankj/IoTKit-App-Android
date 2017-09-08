@@ -46,7 +46,11 @@ class TimePickerFragment : DialogFragment() {
         time_picker_year.viewAdapter = initYearAdapter()
         time_picker_month_day.viewAdapter = initMonthDayAdapter()
         time_picker_hour.viewAdapter = initHourAdapter()
-        time_picker_minute.viewAdapter = initHourAdapter()
+        time_picker_minute.viewAdapter = initMinuteAdapter()
+
+        time_picker_month_day.currentItem = minCalendar.get(Calendar.DAY_OF_YEAR) - 1
+        time_picker_hour.currentItem = minCalendar.get(Calendar.HOUR_OF_DAY)
+        time_picker_minute.currentItem = minCalendar.get(Calendar.MINUTE)
 
         btn_cancel.setOnClickListener { dismiss() }
         btn_ok.setOnClickListener { select() }
@@ -102,7 +106,7 @@ class TimePickerFragment : DialogFragment() {
             override fun getItemText(index: Int): CharSequence {
                 tempCalendar.timeInMillis = calendar.timeInMillis
                 tempCalendar.set(Calendar.DAY_OF_YEAR, index + 1)
-                return TimeUtils.getDatePickFormat(calendar.timeInMillis, TimeZone.getDefault())
+                return TimeUtils.getDatePickFormat(tempCalendar.timeInMillis, TimeZone.getDefault())
             }
 
         }

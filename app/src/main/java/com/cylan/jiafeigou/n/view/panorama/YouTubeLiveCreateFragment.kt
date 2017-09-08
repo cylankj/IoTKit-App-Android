@@ -49,7 +49,12 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         custom_toolbar.setRightAction { createLiveEvent() }
     }
 
-    private val title: String
+    private var title: String?
+        set(value) {
+            if (value == null) {
+                youtube_create_live_title.text = null
+            }
+        }
         get() {
             return if (youtube_create_live_title.text.isNullOrEmpty()) {
                 youtube_create_live_title.hint.toString()
@@ -57,7 +62,12 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
                 youtube_create_live_title.text.toString()
             }
         }
-    private val description: String
+    private var description: String?
+        set(value) {
+            if (value == null) {
+                youtube_create_live_description.text = null
+            }
+        }
         get() {
             return if (youtube_create_live_description.text.isNullOrEmpty()) {
                 youtube_create_live_description.hint.toString()
@@ -119,6 +129,14 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
             youtube_create_live_end_time.visibility = View.VISIBLE
             youtube_create_live_manager_end_time.text = getString(R.string.LIVE_DETAIL_DEL_END_TIME)
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        title = null
+        description = null
+        startTime = 0
+        endTime = 0
     }
 
 

@@ -95,7 +95,11 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     private val youtubeCreateFragment by lazy {
         val fragment = YouTubeLiveCreateFragment.newInstance(uuid)
-        fragment.listener = { loadLiveBroadCast() }
+        fragment.listener = {
+            loadLiveBroadCast()
+            fragmentManager.popBackStack()
+        }
+
         fragment
     }
     private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
@@ -124,7 +128,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     private fun loadLiveBroadCast() {
         if (account != null && youtubeEvent != null) {
             setting_youtube_option_container.visibility = View.VISIBLE
-            live_event_description.visibility = View.VISIBLE
+            live_event_container.visibility = View.VISIBLE
             live_event_description.text = youtubeEvent?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT)
         }
     }
