@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.view.View
 import butterknife.OnClick
 import com.cylan.jiafeigou.R
@@ -17,18 +18,19 @@ import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.ActivityUtils
+import com.cylan.jiafeigou.utils.MiscUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.cylan.jiafeigou.utils.ToastUtil
+import com.google.android.gms.common.AccountPicker
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.client.util.ExponentialBackOff
-import com.google.api.services.youtube.YouTubeScopes
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.youtube.model.LiveBroadcast
 import kotlinx.android.synthetic.main.layout_youtube.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.util.*
 
 /**
  * Created by yanzhendong on 2017/9/7.
@@ -54,19 +56,9 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     }
 
 
-    private val SCOPES = arrayOf(YouTubeScopes.YOUTUBE_READONLY)
-    private val mCredential: GoogleAccountCredential by lazy {
-        val credential = GoogleAccountCredential.usingOAuth2(
-                activity.applicationContext, Arrays.asList(*SCOPES))
-                .setBackOff(ExponentialBackOff())
-        credential.selectedAccountName = account
-        credential
-    }
-
     private var account: String? = null
         set(value) {
             field = value
-            mCredential.selectedAccountName = field
             setting_youtube_account_item.subTitle = field ?: getString(R.string.NO_SET)
             setting_youtube_option_container.visibility = if (field == null) View.GONE else View.VISIBLE
             if (field != null) {
@@ -85,35 +77,24 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
             return field
         }
 
-    private var liveEvent: EventData? = null
-        set(value) {
-            field = value
-            live_event_container.visibility = if (field == null) View.GONE else View.VISIBLE
-            live_event_description.text = field?.title
-        }
 
-    private var liveBroadcastId: String? = null
-        set(value) {
-            field = value
-            if (field != null) {
-                PreferencesUtils.putString(JConstant.YOUTUBE_PREF_LIVEBROADCAST_ID, field)
-                if (account != null) {
-                    presenter.getLiveList(mCredential, field!!)
-                }
-            } else {
-                PreferencesUtils.remove(JConstant.YOUTUBE_PREF_LIVEBROADCAST_ID)
-            }
-        }
+    private var youtubeBroadcast: LiveBroadcast? = null
+        private set
         get() {
-            field = field ?: PreferencesUtils.getString(JConstant.YOUTUBE_PREF_LIVEBROADCAST_ID)
-            if (field == null) {
-                PreferencesUtils.remove(JConstant.YOUTUBE_PREF_LIVEBROADCAST_ID)
+            val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_LIVEBROADCAST, null)
+            if (!TextUtils.isEmpty(broadcast)) {
+                field = try {
+                    JacksonFactory.getDefaultInstance().fromString(broadcast, LiveBroadcast::class.java)
+                } catch (e: Exception) {
+                    AppLogger.e(MiscUtils.getErr(e))
+                    null
+                }
             }
             return field
         }
 
 
-    private val youtubeCreateFragment by lazy { YouTubeLiveCreateFragment.newInstance() }
+    private val youtubeCreateFragment by lazy { YouTubeLiveCreateFragment.newInstance(uuid) }
     private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
 
 
@@ -128,8 +109,20 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     override fun initViewAndListener() {
         super.initViewAndListener()
-        if (account != null && liveBroadcastId != null) {
-            presenter.getLiveList(mCredential, liveBroadcastId!!)
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadLiveBroadCast()
+    }
+
+    private fun loadLiveBroadCast() {
+        if (account != null && youtubeBroadcast != null) {
+            setting_youtube_option_container.visibility = View.VISIBLE
+            live_event_description.visibility = View.VISIBLE
+            live_event_description.text = youtubeBroadcast?.snippet?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT)
         }
     }
 
@@ -150,7 +143,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     }
 
     override fun onLiveEventResponse(rtmp: EventData) {
-        liveEvent = rtmp
+//        liveEvent = rtmp
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -162,15 +155,13 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GOOGLE_PLAY_SERVICES -> {
-
                 if (resultCode != Activity.RESULT_OK) {
                     AppLogger.w("谷歌服务未开启")
-                } else {
-                    getResultsFromApi()
+                } else if (account == null) {
+                    chooseAccount()
                 }
 
             }
-
             REQUEST_ACCOUNT_PICKER -> {
 
                 if (resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
@@ -178,16 +169,6 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                 }
 
             }
-
-
-            REQUEST_AUTHORIZATION -> {
-
-                if (resultCode == Activity.RESULT_OK) {
-                    getResultsFromApi()
-                }
-
-            }
-
         }
     }
 
@@ -216,11 +197,25 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
                     })
                     .show()
         } else if (EasyPermissions.hasPermissions(context, Manifest.permission.GET_ACCOUNTS)) {
-            if (account != null && liveBroadcastId != null) {
-                presenter.getLiveList(mCredential, liveBroadcastId!!)
-            } else {
+//            if (account != null && liveBroadcastId != null) {
+//                presenter.getLiveList(mCredential, liveBroadcastId!!)
+//            }
+            if (TextUtils.isEmpty(account)) {
                 // Start a dialog from which the user can choose an account
-                startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
+                if (isGooglePlayServicesAvailable()) {
+                    startActivityForResult(AccountPicker.newChooseAccountIntent(
+                            null,
+                            null,
+                            arrayOf(GoogleAccountManager.ACCOUNT_TYPE),
+                            true,
+                            null,
+                            null,
+                            null,
+                            null),
+                            REQUEST_ACCOUNT_PICKER)
+                } else {
+                    acquireGooglePlayServices()
+                }
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
@@ -242,10 +237,12 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     private fun getResultsFromApi() {
         if (!isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices()
-        } else if (mCredential.selectedAccountName == null) {
+        } else if (account == null) {
             chooseAccount()
         } else if (!isDeviceOnline()) {
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1))
+        } else {
+//            presenter.getLiveList(mCredential, liveBroadcastId)
         }
     }
 

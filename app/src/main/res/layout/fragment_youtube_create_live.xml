@@ -117,6 +117,7 @@
                 app:sv_v_divider="true" />
 
             <TextView
+                android:id="@+id/youtube_create_live_manager_end_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/y25"

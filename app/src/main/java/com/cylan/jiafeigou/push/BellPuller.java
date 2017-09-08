@@ -146,6 +146,7 @@ public class BellPuller {
             return;
         }
 
+        callTimeMap.put(cid, time);
 
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, cid);

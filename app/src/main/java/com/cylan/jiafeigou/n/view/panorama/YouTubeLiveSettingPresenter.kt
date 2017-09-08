@@ -10,9 +10,12 @@ import com.cylan.jiafeigou.n.base.BaseApplication
 import com.cylan.jiafeigou.rtmp.youtube.util.YouTubeApi
 import com.cylan.jiafeigou.rx.RxBus
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.utils.MiscUtils
 import com.cylan.utils.ContextUtils
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.youtube.YouTube
 import rx.Observable
@@ -24,7 +27,7 @@ import java.util.concurrent.TimeUnit
  * Created by yanzhendong on 2017/9/7.
  */
 class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), YouTubeLiveSetting.Presenter {
-    override fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String) {
+    override fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?) {
         AppLogger.w("YOUTUBE:getLiveList ,the id is $liveBroadcastID")
         val subscribe = Observable.just("getLiveList")
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -43,7 +46,19 @@ class YouTubeLiveSettingPresenter : BasePresenter<YouTubeLiveSetting.View>(), Yo
                 .subscribe({
                     mView.onLiveEventResponse(it[0])
                     AppLogger.w("YOUTUBE: ${it[0]},${it[0].title}")
-                }, {})
+                }, {
+                    when (it) {
+                        is GooglePlayServicesAvailabilityIOException -> {
+                            mView.showGooglePlayServicesAvailabilityErrorDialog(it.connectionStatusCode)
+                        }
+                        is UserRecoverableAuthIOException -> {
+                            mView.onUserRecoverableAuthIOException(it)
+                        }
+                        else -> {
+                            AppLogger.w(MiscUtils.getErr(it))
+                        }
+                    }
+                })
         registerSubscription(LIFE_CYCLE.LIFE_CYCLE_DESTROY, subscribe)
     }
 

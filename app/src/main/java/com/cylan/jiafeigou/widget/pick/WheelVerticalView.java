@@ -80,7 +80,7 @@ public class WheelVerticalView extends AbstractWheelView {
      * @param attrs   A delete of attributes.
      */
     public WheelVerticalView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.abstractWheelViewStyle);
+        this(context, attrs, 0);
     }
 
     /**

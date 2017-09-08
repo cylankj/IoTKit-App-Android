@@ -20,7 +20,7 @@ interface YouTubeLiveSetting {
 
     interface Presenter : JFGPresenter<View> {
 
-        fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String)
+        fun getLiveList(credential: GoogleAccountCredential, liveBroadcastID: String?)
 
         fun getLiveFromDevice()
     }

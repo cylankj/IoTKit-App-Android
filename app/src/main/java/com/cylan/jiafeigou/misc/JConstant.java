@@ -164,7 +164,7 @@ public class JConstant {
     public static final int OBJECT_CAR = 4;
     public static final String IS_IN_BACKGROUND = "IS_IN_BACKGROUND";
     public static final String YOUTUBE_PREF_ACCOUNT_NAME = "YOUTUBE_PREF_ACCOUNT_NAME";
-    public static final String YOUTUBE_PREF_LIVEBROADCAST_ID = "YOUTUBE_PREF_LIVEBROADCAST_ID";
+    public static final String YOUTUBE_PREF_LIVEBROADCAST = "YOUTUBE_PREF_LIVEBROADCAST";
 
 
     public static String getAIText(int[] objects) {
