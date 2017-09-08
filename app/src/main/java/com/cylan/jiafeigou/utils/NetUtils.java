@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
@@ -578,4 +579,56 @@ public class NetUtils {
             "Mozilla/5.0 (Linux; Android 5.1.1; SHIELD Tablet Build/LMY48C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Safari/537.36",
             "Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-T550 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.3 Chrome/38.0.2125.102 Safari/537.36"
     };
+
+
+    //三星 S6-7.0 S7-7.0(api:24)
+    // note3-5.0(api:21)
+    // 小米3-4.4(api:19)
+    // 魅族Pro6-6.0(api:23)
+
+    //小米6-7.1(api:25) 失败。
+    public static void createHotSpot(WifiManager wifiManager, final String ssid, final String pwd) {
+        if (wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
+        WifiConfiguration netConfig = new WifiConfiguration();
+        netConfig.SSID = ssid;
+        netConfig.preSharedKey = pwd;
+        if (TextUtils.isEmpty(netConfig.preSharedKey)) {
+            netConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            netConfig.allowedAuthAlgorithms.clear();
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        } else {
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            netConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+            netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+            netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        }
+        try {
+            Method setWifiApMethod = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+            boolean apstatus = (Boolean) setWifiApMethod.invoke(wifiManager, netConfig, true);
+            Method isWifiApEnabledmethod = wifiManager.getClass().getMethod("isWifiApEnabled");
+            while (!(Boolean) isWifiApEnabledmethod.invoke(wifiManager)) {
+            }
+            Method getWifiApStateMethod = wifiManager.getClass().getMethod("getWifiApState");
+            int apstate = (Integer) getWifiApStateMethod.invoke(wifiManager);
+            Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
+            netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
+            Log.e("CLIENT", "\nSSID:" + netConfig.SSID + "\nPassword:" + netConfig.preSharedKey + "\n");
+        } catch (Exception e) {
+            Log.e("ConfigAp", "", e);
+        }
+    }
 }

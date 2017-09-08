@@ -12,6 +12,7 @@ import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -822,5 +823,15 @@ public class MiscUtils {
                 return true;
         }
         return false;
+    }
+
+    public static void dumpSystemInfo() {
+        AppLogger.d(PackageUtils.getAppVersionName(ContextUtils.getContext()));
+        AppLogger.d("" + PackageUtils.getAppVersionCode(ContextUtils.getContext()));
+        AppLogger.d(ProcessUtils.myProcessName(ContextUtils.getContext()));
+        AppLogger.d(Build.DISPLAY);
+        AppLogger.d(Build.MODEL);
+        AppLogger.d(Build.MANUFACTURER);
+        AppLogger.d(Build.VERSION.SDK_INT + " " + Build.VERSION.RELEASE);
     }
 }
