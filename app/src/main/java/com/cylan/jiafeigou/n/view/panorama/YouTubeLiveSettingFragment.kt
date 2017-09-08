@@ -27,7 +27,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.youtube.model.LiveBroadcast
 import kotlinx.android.synthetic.main.layout_youtube.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -78,13 +77,13 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         }
 
 
-    private var youtubeBroadcast: LiveBroadcast? = null
+    private var youtubeEvent: EventData? = null
         private set
         get() {
             val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_LIVEBROADCAST, null)
             if (!TextUtils.isEmpty(broadcast)) {
                 field = try {
-                    JacksonFactory.getDefaultInstance().fromString(broadcast, LiveBroadcast::class.java)
+                    JacksonFactory.getDefaultInstance().fromString(broadcast, EventData::class.java)
                 } catch (e: Exception) {
                     AppLogger.e(MiscUtils.getErr(e))
                     null
@@ -94,7 +93,11 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         }
 
 
-    private val youtubeCreateFragment by lazy { YouTubeLiveCreateFragment.newInstance(uuid) }
+    private val youtubeCreateFragment by lazy {
+        val fragment = YouTubeLiveCreateFragment.newInstance(uuid)
+        fragment.listener = { loadLiveBroadCast() }
+        fragment
+    }
     private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
 
 
@@ -119,10 +122,10 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     }
 
     private fun loadLiveBroadCast() {
-        if (account != null && youtubeBroadcast != null) {
+        if (account != null && youtubeEvent != null) {
             setting_youtube_option_container.visibility = View.VISIBLE
             live_event_description.visibility = View.VISIBLE
-            live_event_description.text = youtubeBroadcast?.snippet?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT)
+            live_event_description.text = youtubeEvent?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT)
         }
     }
 

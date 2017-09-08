@@ -2,9 +2,9 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.rtmp.youtube.util.EventData;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.services.youtube.model.LiveBroadcast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public interface YouTubeLiveCreateContract {
 
         void onUserRecoverableAuthIOException(@NotNull UserRecoverableAuthIOException it);
 
-        void onCreateLiveBroadcastSuccess(@Nullable LiveBroadcast liveBroadcast);
+        void onCreateLiveBroadcastSuccess(@Nullable EventData eventData);
     }
 
     interface Presenter extends JFGPresenter<View> {

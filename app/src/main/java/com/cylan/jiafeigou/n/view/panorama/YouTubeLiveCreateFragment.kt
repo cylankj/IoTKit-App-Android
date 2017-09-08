@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.R
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent
 import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
+import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.support.log.AppLogger
 import com.cylan.jiafeigou.utils.PreferencesUtils
 import com.cylan.jiafeigou.utils.TimeUtils
@@ -24,7 +25,6 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTubeScopes
-import com.google.api.services.youtube.model.LiveBroadcast
 import kotlinx.android.synthetic.main.fragment_youtube_create_live.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -293,9 +293,11 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         startActivityForResult(error.intent, REQUEST_AUTHORIZATION)
     }
 
-    override fun onCreateLiveBroadcastSuccess(liveBroadcast: LiveBroadcast?) {
-
+    override fun onCreateLiveBroadcastSuccess(eventData: EventData?) {
+        listener?.invoke()
     }
+
+    var listener: (() -> Unit)? = null
 
     companion object {
         private const val REQUEST_PERMISSION_GET_ACCOUNTS = 5000

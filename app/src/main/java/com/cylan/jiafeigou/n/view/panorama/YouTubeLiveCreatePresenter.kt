@@ -38,9 +38,10 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_LIVEBROADCAST_ID, it.id)
+                    val json = JacksonFactory.getDefaultInstance().toString(it)
+                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_LIVEBROADCAST, json)
                     mView.onCreateLiveBroadcastSuccess(it)
-                    AppLogger.w("返回的 频道 ID 为 ${it.id}")
+                    AppLogger.w("返回的结果为:$json")
                 }, {
                     when (it) {
                         is GooglePlayServicesAvailabilityIOException -> {

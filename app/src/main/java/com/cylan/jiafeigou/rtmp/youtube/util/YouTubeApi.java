@@ -47,8 +47,8 @@ public class YouTubeApi {
     public static final String BROADCAST_ID_KEY = "broadcastId";
     private static final int FUTURE_DATE_OFFSET_MILLIS = 5 * 1000;
 
-    public static LiveBroadcast createLiveEvent(YouTube youtube, String description,
-                                                String title, long startTime, long endTime) throws IOException {
+    public static EventData createLiveEvent(YouTube youtube, String description,
+                                            String title, long startTime, long endTime) throws IOException {
         // We need a date that's in the proper ISO format and is in the future,
         // since the API won't
         // create events that start in the past.
@@ -118,7 +118,13 @@ public class YouTubeApi {
         liveBroadcastBind.setStreamId(returnedStream.getId());
 
         // Request is executed and bound broadcast is returned
-        return liveBroadcastBind.execute();
+        LiveBroadcast liveBroadcast = liveBroadcastBind.execute();
+
+        EventData eventData = new EventData();
+        eventData.setEvent(liveBroadcast);
+        IngestionInfo ingestionInfo = returnedStream.getCdn().getIngestionInfo();
+        eventData.setIngestionAddress(ingestionInfo.getIngestionAddress() + "/" + ingestionInfo.getStreamName());
+        return eventData;
     }
 
 
