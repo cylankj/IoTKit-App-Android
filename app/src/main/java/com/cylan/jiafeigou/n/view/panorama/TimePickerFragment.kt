@@ -58,7 +58,7 @@ class TimePickerFragment : DialogFragment() {
 
     fun select() {
         if (calendar.before(minCalendar)) {
-            AppLogger.w("非法的时间")
+            AppLogger.w("非法的时间:${Date(calendar.timeInMillis).toLocaleString()}")
         } else {
             resultListener?.invoke(calendar.timeInMillis)
             dismiss()
@@ -113,8 +113,8 @@ class TimePickerFragment : DialogFragment() {
         adapter.itemResource = R.layout.item_text_view
         time_picker_month_day.setInterpolator(AnticipateOvershootInterpolator())
         time_picker_month_day.visibleItems = 3
-        time_picker_month_day.addChangingListener { _, oldValue, newValue ->
-            calendar.roll(Calendar.DAY_OF_YEAR, newValue - oldValue)
+        time_picker_month_day.addChangingListener { _, _, newValue ->
+            calendar.roll(Calendar.DAY_OF_YEAR, newValue - calendar.get(Calendar.DAY_OF_YEAR) + 1)
         }
         return adapter
     }
@@ -134,8 +134,8 @@ class TimePickerFragment : DialogFragment() {
         adapter.itemResource = R.layout.item_text_view
         time_picker_hour.setInterpolator(AnticipateOvershootInterpolator())
         time_picker_hour.visibleItems = 3
-        time_picker_hour.addChangingListener { _, oldValue, newValue ->
-            calendar.roll(Calendar.HOUR_OF_DAY, newValue - oldValue)
+        time_picker_hour.addChangingListener { _, _, newValue ->
+            calendar.roll(Calendar.HOUR_OF_DAY, newValue - calendar.get(Calendar.HOUR_OF_DAY))
         }
         return adapter
     }
@@ -154,8 +154,8 @@ class TimePickerFragment : DialogFragment() {
         adapter.itemResource = R.layout.item_text_view
         time_picker_minute.setInterpolator(AnticipateOvershootInterpolator())
         time_picker_minute.visibleItems = 3
-        time_picker_minute.addChangingListener { _, oldValue, newValue ->
-            calendar.roll(Calendar.MINUTE, newValue - oldValue)
+        time_picker_minute.addChangingListener { _, _, newValue ->
+            calendar.roll(Calendar.MINUTE, newValue - calendar.get(Calendar.MINUTE))
         }
         return adapter
     }

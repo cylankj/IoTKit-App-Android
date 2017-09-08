@@ -47,14 +47,10 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
         super.initViewAndListener()
         custom_toolbar.setBackAction { activity.onBackPressed() }
         custom_toolbar.setRightAction { createLiveEvent() }
+
     }
 
-    private var title: String?
-        set(value) {
-            if (value == null) {
-                youtube_create_live_title.text = null
-            }
-        }
+    private val title: String
         get() {
             return if (youtube_create_live_title.text.isNullOrEmpty()) {
                 youtube_create_live_title.hint.toString()
@@ -62,12 +58,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
                 youtube_create_live_title.text.toString()
             }
         }
-    private var description: String?
-        set(value) {
-            if (value == null) {
-                youtube_create_live_description.text = null
-            }
-        }
+    private val description: String?
         get() {
             return if (youtube_create_live_description.text.isNullOrEmpty()) {
                 youtube_create_live_description.hint.toString()
@@ -89,18 +80,6 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
             }
         }
 
-    private val timeStartPicker by lazy {
-        val timePickerFragment = TimePickerFragment.newInstance(uuid, getString(R.string.Tap1_CameraFun_Timelapse_StartTime), startTime)
-        timePickerFragment.onTimePickerResult { startTime = it }
-        return@lazy timePickerFragment
-    }
-
-    private val timeEndPicker by lazy {
-        val timePickerFragment = TimePickerFragment.newInstance(uuid, getString(R.string.TO), startTime)
-        timePickerFragment.onTimePickerResult { endTime = it }
-        return@lazy timePickerFragment
-    }
-
     private fun createLiveEvent() {
         presenter.createLiveBroadcast(mCredential, title, description, startTime, endTime)
     }
@@ -108,12 +87,16 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
     @OnClick(R.id.youtube_create_live_start_time)
     fun selectStartTime() {
         AppLogger.w("选择开始时间")
+        val timeStartPicker = TimePickerFragment.newInstance(uuid, getString(R.string.Tap1_CameraFun_Timelapse_StartTime), startTime)
+        timeStartPicker.onTimePickerResult { startTime = it }
         timeStartPicker.show(fragmentManager, TimePickerFragment::class.java.simpleName)
     }
 
     @OnClick(R.id.youtube_create_live_end_time)
     fun selectEndTime() {
         AppLogger.w("选择结束时间")
+        val timeEndPicker = TimePickerFragment.newInstance(uuid, getString(R.string.TO), startTime)
+        timeEndPicker.onTimePickerResult { endTime = it }
         timeEndPicker.show(fragmentManager, TimePickerFragment::class.java.simpleName)
     }
 
@@ -130,15 +113,6 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
             youtube_create_live_manager_end_time.text = getString(R.string.LIVE_DETAIL_DEL_END_TIME)
         }
     }
-
-    override fun onDetach() {
-        super.onDetach()
-        title = null
-        description = null
-        startTime = 0
-        endTime = 0
-    }
-
 
     private val mCredential: GoogleAccountCredential by lazy {
         val credential = GoogleAccountCredential.usingOAuth2(
