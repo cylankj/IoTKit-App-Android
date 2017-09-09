@@ -94,6 +94,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
 
                 return@setOnClickListener
             }
+            ToastUtil.showToast("设计缺陷:确保sim正常使用")
             val fullCid: String = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID)
             LoadingDialog.showLoading(this, getString(R.string.Start_Hotspot))
 //            basePresenter.addSubscription("getDevicePortrait",
