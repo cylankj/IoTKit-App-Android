@@ -87,7 +87,7 @@ class YouTubeLiveCreateFragment : BaseFragment<YouTubeLiveCreateContract.Present
     @OnClick(R.id.youtube_create_live_start_time)
     fun selectStartTime() {
         AppLogger.w("选择开始时间")
-        val timeStartPicker = TimePickerFragment.newInstance(uuid, getString(R.string.Tap1_CameraFun_Timelapse_StartTime), startTime)
+        val timeStartPicker = TimePickerFragment.newInstance(uuid, getString(R.string.Tap1_CameraFun_Timelapse_StartTime), System.currentTimeMillis())
         timeStartPicker.onTimePickerResult { startTime = it }
         timeStartPicker.show(fragmentManager, TimePickerFragment::class.java.simpleName)
     }
