@@ -680,6 +680,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void switchViewerModeToRtmpLive() {
         AppLogger.w("switchViewerModeToRtmpLive");
         onRefreshViewModeUI(PANORAMA_VIEW_MODE.MODE_LIVE, true, false);
+        // TODO: 2017/9/9 just for test
+        bottomPanelPhotoGraphItem.setEnabled(true);
     }
 
 

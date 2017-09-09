@@ -2,10 +2,10 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEvent;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -21,14 +21,22 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ver.AbstractVersion;
 import com.cylan.jiafeigou.misc.ver.PanDeviceVersionChecker;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.rtmp.youtube.util.EventData;
+import com.cylan.jiafeigou.rtmp.youtube.util.YouTubeApi;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.YouTubeScopes;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +70,39 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return event != null && event.ApiType >= 0;
     }
 
+    private void startLiveEventByPlatform(int platform) throws IOException {
+        switch (platform) {
+            case 0: {
+
+            }
+            break;
+            case 1: {
+                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mView.getAppContext(), YouTubeScopes.all());
+                credential.setSelectedAccountName(PreferencesUtils.getString(JConstant.YOUTUBE_PREF_ACCOUNT_NAME));
+                YouTube youTube = new YouTube.Builder(AndroidHttp.newCompatibleTransport(),
+                        JacksonFactory.getDefaultInstance(),
+                        credential
+                )
+                        .setApplicationName(mView.getAppContext().getString(R.string.app_name))
+                        .build();
+                String string = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null);
+                EventData eventData = JacksonFactory.getDefaultInstance().fromString(string, EventData.class);
+                if (eventData != null) {
+                    YouTubeApi.startEvent(youTube, eventData.getId(), eventData.getEvent().getContentDetails().getBoundStreamId());
+                }
+            }
+            break;
+            case 2: {
+
+            }
+            break;
+            case 3: {
+
+            }
+            break;
+        }
+    }
+
     @Override
     public void cameraLiveRtmpCtrl(int livePlatform, String url, int enable) {
         Observable.just("cameraLiveRtmpCtrl")
@@ -70,7 +111,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .map(cmd -> {
                     try {
                         ArrayList<JFGDPMsg> params = new ArrayList<>();
-                        JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(new DpMsgDefine.DPCameraLiveRtmpCtrl(url, enable)));
+                        DpMsgDefine.DPCameraLiveRtmpCtrl ctrl = new DpMsgDefine.DPCameraLiveRtmpCtrl(url, enable);
+                        AppLogger.w("ctrl is " + ctrl.toString());
+                        JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(ctrl));
                         params.add(msg);
                         return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
                     } catch (JfgException e) {
@@ -79,15 +122,26 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return -1L;
                 })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(JfgEvent.RobotoSetDataRsp.class).filter(robotoSetDataRsp -> robotoSetDataRsp.seq == seq))
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(setDataRsp -> setDataRsp.seq == seq))
                 .map(rsp -> {
-                    if (rsp != null && rsp.dataList != null && rsp.dataList.size() > 0) {
-                        JFGDPMsgRet msgRet = rsp.dataList.get(0);
+                    if (rsp != null && rsp.rets != null && rsp.rets.size() > 0) {
+                        JFGDPMsgRet msgRet = rsp.rets.get(0);
                         return msgRet.ret;
                     }
                     return -1;
                 })
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .filter(rsp -> {
+                    if (rsp == 0) {
+                        try {
+                            startLiveEventByPlatform(livePlatform);
+                        } catch (IOException e) {
+                            AppLogger.e(MiscUtils.getErr(e));
+                            e.printStackTrace();
+                        }
+                    }
+                    return rsp == 0;
+                })
+                .timeout(120, TimeUnit.SECONDS, Observable.just(null))
                 .first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {

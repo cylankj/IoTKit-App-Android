@@ -1468,6 +1468,14 @@ public class DpMsgDefine {
         }
 
         @Override
+        public String toString() {
+            return "DPCameraLiveRtmpCtrl{" +
+                    "url='" + url + '\'' +
+                    ", enable=" + enable +
+                    '}';
+        }
+
+        @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeString(this.url);
