@@ -9,9 +9,9 @@
         </targets>
     </fade>
     <!--<slide android:slideEdge="top">-->
-        <!--<targets>-->
-            <!--<target android:targetId="@id/fLayout_details_title" />-->
-        <!--</targets>-->
+    <!--<targets>-->
+    <!--<target android:targetId="@id/fLayout_details_title" />-->
+    <!--</targets>-->
     <!--</slide>-->
     <slide android:slideEdge="bottom">
         <targets>

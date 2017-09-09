@@ -9,5 +9,5 @@
         android:duration="1000"
         android:repeatCount="-1"
         android:drawable="@drawable/listview_loading"
-        android:visible="true"/>
+        android:visible="true" />
 </set>

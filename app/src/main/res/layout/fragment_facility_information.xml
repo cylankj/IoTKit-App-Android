@@ -61,14 +61,14 @@
                 hunt:sv_v_divider="false" />
 
             <!--<TextView-->
-                <!--android:id="@+id/tv_storage"-->
-                <!--style="@style/information_item"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/y15"-->
-                <!--android:text="@string/VALID_STORAGE"-->
-                <!--android:textColor="#4B9FD5"-->
-                <!--android:textSize="@dimen/sp14" />-->
+            <!--android:id="@+id/tv_storage"-->
+            <!--style="@style/information_item"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/y15"-->
+            <!--android:text="@string/VALID_STORAGE"-->
+            <!--android:textColor="#4B9FD5"-->
+            <!--android:textSize="@dimen/sp14" />-->
 
             <!-- “储存”相关模块 -->
             <com.cylan.jiafeigou.widget.SettingItemView0

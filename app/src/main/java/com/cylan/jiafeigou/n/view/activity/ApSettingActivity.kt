@@ -37,14 +37,14 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
 
 
     override fun success() {
-        ToastUtil.showToast("连接成功")
+        ToastUtil.showToast(getString(R.string.PWD_OK_2))
         finishExt()
     }
 
     override fun timeout() {
         //连接失败，请重试。
         //失败后，必须重新 恢复状态。
-        ToastUtil.showToast(getString(R.string.NO_NETWORK_2))
+        ToastUtil.showToast(getString(R.string.HOTSPOTS_CONNECT_TIMEOUT_TIPS))
     }
 
     val BACK_FROM_TETHER_SETTINGS: Int = 5000
@@ -77,15 +77,15 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
             val ssid: String = et_ap_name.text.toString()
             val pwd: String = et_ap_pwd.text.toString()
             if (TextUtils.isEmpty(ssid)) {
-                ToastUtil.showToast("请输入热点名称")
+                ToastUtil.showToast("缺语言包：请输入热点名称")
                 return@setOnClickListener
             }
             if (TextUtils.isEmpty(pwd)) {
-                ToastUtil.showToast("请输入热点密码")
+                ToastUtil.showToast(getString(R.string.HOTSPOT_PASSWORD))
                 return@setOnClickListener
             }
             if (pwd.length < 8) {
-                ToastUtil.showToast("密码不能少于8位")
+                ToastUtil.showToast(getString(R.string.HOTSPOT_PASSWORD_ERROR))
                 return@setOnClickListener
             }
             if (needTurnOnWriteSetting()) {
@@ -118,7 +118,7 @@ class ApSettingActivity : BaseFullScreenFragmentActivity<ApSettingContract.Prese
                         val result: String = r.localizedMessage
                         if (result.contains("ingFailed")) {
                             //设备找不到
-                            ToastUtil.showToast("不在同一个局域网")
+                            ToastUtil.showToast("缺语言包:不在同一个局域网")
                         } else if (result.contains("sendWifiInfoFailed")) {
                             //设置wifi失败
                         }
