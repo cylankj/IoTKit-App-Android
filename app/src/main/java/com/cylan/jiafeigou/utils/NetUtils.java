@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -25,6 +26,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * 网络工具类
@@ -172,7 +176,7 @@ public class NetUtils {
     }
 
     public static WifiManager getWifiManager() {
-        return (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        return (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
 
@@ -435,7 +439,7 @@ public class NetUtils {
 
     public static String getRouterMacAddress() {
         Context context = ContextUtils.getContext();
-        WifiManager mWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager mWifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifi.isWifiEnabled()) {
             WifiInfo wifiInfo = mWifi.getConnectionInfo();
             String netMac = wifiInfo.getBSSID(); //获取被连接网络的mac地址
@@ -495,7 +499,7 @@ public class NetUtils {
     }
 
     public static String getReadableIp() {
-        WifiManager mWifi = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager mWifi = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifi.isWifiEnabled()) {
             WifiInfo wifiInfo = mWifi.getConnectionInfo();
             return intToIp(wifiInfo.getIpAddress());
@@ -587,7 +591,7 @@ public class NetUtils {
     // 魅族Pro6-6.0(api:23)
 
     //小米6-7.1(api:25) 失败。
-    public static void createHotSpot(WifiManager wifiManager, final String ssid, final String pwd) {
+    public static boolean createHotSpot(WifiManager wifiManager, final String ssid, final String pwd) {
         if (wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(false);
         }
@@ -627,8 +631,121 @@ public class NetUtils {
             Method getWifiApConfigurationMethod = wifiManager.getClass().getMethod("getWifiApConfiguration");
             netConfig = (WifiConfiguration) getWifiApConfigurationMethod.invoke(wifiManager);
             Log.e("CLIENT", "\nSSID:" + netConfig.SSID + "\nPassword:" + netConfig.preSharedKey + "\n");
+            return true;
         } catch (Exception e) {
             Log.e("ConfigAp", "", e);
+            return false;
         }
+    }
+
+    public static boolean createHotSpot(final String ssid, final String pwd) {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        return createHotSpot(wifiManager, ssid, pwd);
+    }
+
+
+    public static class ClientScanResult {
+        private String IpAddr;
+        private String HWAddr;
+        private String Device;
+        private boolean isReachable;
+
+        public ClientScanResult(String ipAddr, String hWAddr, String device, boolean isReachable) {
+            super();
+            this.IpAddr = ipAddr;
+            this.HWAddr = hWAddr;
+            this.Device = device;
+            this.isReachable = isReachable;
+        }
+
+        public String getIpAddr() {
+            return IpAddr;
+        }
+
+        public void setIpAddr(String ipAddr) {
+            IpAddr = ipAddr;
+        }
+
+
+        public String getHWAddr() {
+            return HWAddr;
+        }
+
+        public void setHWAddr(String hWAddr) {
+            HWAddr = hWAddr;
+        }
+
+
+        public String getDevice() {
+            return Device;
+        }
+
+        public void setDevice(String device) {
+            Device = device;
+        }
+
+
+        public boolean isReachable() {
+            return isReachable;
+        }
+
+        public void setReachable(boolean isReachable) {
+            this.isReachable = isReachable;
+        }
+
+        @Override
+        public String toString() {
+            return "ClientScanResult{" +
+                    "IpAddr='" + IpAddr + '\'' +
+                    ", HWAddr='" + HWAddr + '\'' +
+                    ", Device='" + Device + '\'' +
+                    ", isReachable=" + isReachable +
+                    '}';
+        }
+    }
+
+    /**
+     * Gets a list of the clients connected to the Hotspot
+     *
+     * @param onlyReachables   {@code false} if the list should contain unreachable (probably disconnected) clients, {@code true} otherwise
+     * @param reachableTimeout Reachable Timout in miliseconds
+     */
+    public static ArrayList<ClientScanResult> getClientList(final boolean onlyReachables,
+                                                     final int reachableTimeout) {
+        final ArrayList<ClientScanResult> result = new ArrayList<>();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("/proc/net/arp"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] splitted = line.split(" +");
+                if ((splitted != null) && (splitted.length >= 4)) {
+                    // Basic sanity check
+                    String mac = splitted[3];
+                    if (mac.matches("..:..:..:..:..:..")) {
+                        boolean isReachable = InetAddress.getByName(splitted[0]).isReachable(reachableTimeout);
+                        if (!onlyReachables || isReachable) {
+                            result.add(new ClientScanResult(splitted[0], splitted[3], splitted[5], isReachable));
+                        }
+                    }
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            Log.e("", e.toString());
+            return null;
+        } finally {
+            CloseUtils.closeQuietly(br);
+        }
+    }
+
+    /**
+     * 获取连上hotsSpot
+     * @return
+     */
+    public static Observable<ArrayList<ClientScanResult>> getReachableDevs() {
+        return Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .map(s -> NetUtils.getClientList(true, 1000));
     }
 }

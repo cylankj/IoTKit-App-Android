@@ -532,4 +532,17 @@ public class RxBusTest {
     }
 
 
+    @Test
+    public void testInterval() throws InterruptedException {
+        Observable.interval(2, TimeUnit.SECONDS)
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        System.out.println(".." + aLong);
+                    }
+                });
+
+        Thread.sleep(5000000);
+    }
+
 }
