@@ -21,8 +21,18 @@ public class ShareOptionMenuDialog extends DialogFragment {
     private ShareOptionClickListener listener;
     private DialogInterface.OnCancelListener dismiss;
 
-    public static ShareOptionMenuDialog newInstance(ShareOptionClickListener listener, DialogInterface.OnCancelListener dismiss) {
+    public static ShareOptionMenuDialog newInstance(ShareOptionClickListener listener, boolean showTimeLine, boolean showWechatFriends, boolean showQQ, boolean showQZone, boolean showWeibo, boolean showTwitter, boolean showFacebook, boolean showLinks, DialogInterface.OnCancelListener dismiss) {
         ShareOptionMenuDialog dialog = new ShareOptionMenuDialog();
+        Bundle argument = new Bundle();
+        argument.putBoolean("showTimeLine", showTimeLine);
+        argument.putBoolean("showWechatFriends", showWechatFriends);
+        argument.putBoolean("showQQ", showQQ);
+        argument.putBoolean("showQZone", showQZone);
+        argument.putBoolean("showWeibo", showWeibo);
+        argument.putBoolean("showTwitter", showTwitter);
+        argument.putBoolean("showFacebook", showFacebook);
+        argument.putBoolean("showLinks", showLinks);
+        dialog.setArguments(argument);
         dialog.listener = listener;
         dialog.dismiss = dismiss;
         return dialog;
@@ -35,6 +45,15 @@ public class ShareOptionMenuDialog extends DialogFragment {
         if (listener != null) {
             shareBinding.setOptionListener(listener);
         }
+        Bundle arguments = getArguments();
+        shareBinding.tvShareToTimeline.setVisibility(arguments.getBoolean("showTimeLine", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToWechatFriends.setVisibility(arguments.getBoolean("showWechatFriends", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToTencentQq.setVisibility(arguments.getBoolean("showQQ", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToTencentQzone.setVisibility(arguments.getBoolean("showQZone", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToSinaWeibo.setVisibility(arguments.getBoolean("showWeibo", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToTwitterFriends.setVisibility(arguments.getBoolean("showTwitter", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToFacebookFriends.setVisibility(arguments.getBoolean("showFacebook", true) ? View.VISIBLE : View.GONE);
+        shareBinding.tvShareToByLinks.setVisibility(arguments.getBoolean("showLinks", true) ? View.VISIBLE : View.GONE);
         return shareBinding.getRoot();
     }
 

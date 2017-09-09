@@ -39,7 +39,7 @@ class YouTubeLiveCreatePresenter : BasePresenter<YouTubeLiveCreateContract.View>
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     val json = JacksonFactory.getDefaultInstance().toString(it)
-                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_LIVEBROADCAST, json)
+                    PreferencesUtils.putString(JConstant.YOUTUBE_PREF_CONFIGURE, json)
                     mView.onCreateLiveBroadcastSuccess(it)
                     AppLogger.w("返回的结果为:$json")
                 }, {

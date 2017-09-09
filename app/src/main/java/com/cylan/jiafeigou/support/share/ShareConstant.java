@@ -26,4 +26,5 @@ public interface ShareConstant {
     int SHARE_PLATFORM_TYPE_WEIBO = 4;
     int SHARE_PLATFORM_TYPE_TWITTER = 5;
     int SHARE_PLATFORM_TYPE_FACEBOOK = 6;
+    int SHARE_PLATFORM_TYPE_LINKS = 7;
 }

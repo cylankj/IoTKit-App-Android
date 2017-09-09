@@ -163,8 +163,17 @@ public class JConstant {
     public static final int OBJECT_DOG = 3;
     public static final int OBJECT_CAR = 4;
     public static final String IS_IN_BACKGROUND = "IS_IN_BACKGROUND";
+
+    public static final String LIVE_PLATFORM_KEY = "LIVE_PLATFORM_KEY";
+
+    public static final String FACEBOOK_PREF_ACCOUNT_NAME = "FACEBOOK_PREF_ACCOUNT_NAME";
     public static final String YOUTUBE_PREF_ACCOUNT_NAME = "YOUTUBE_PREF_ACCOUNT_NAME";
-    public static final String YOUTUBE_PREF_LIVEBROADCAST = "YOUTUBE_PREF_LIVEBROADCAST";
+    public static final String WEIBO_PREF_ACCOUNT_NAME = "WEIBO_PREF_ACCOUNT_NAME";
+
+    public static final String FACEBOOK_PREF_CONFIGURE = "FACEBOOK_PREF_CONFIGURE";
+    public static final String YOUTUBE_PREF_CONFIGURE = "YOUTUBE_PREF_CONFIGURE";
+    public static final String WEIBO_PREF_CONFIGURE = "WEIBO_PREF_CONFIGURE";
+    public static final String RTMP_PREF_CONFIGURE = "RTMP_PREF_CONFIGURE";
 
 
     public static String getAIText(int[] objects) {

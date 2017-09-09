@@ -2,7 +2,10 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.JfgEvent;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.BaseDeviceInformationFetcher;
 import com.cylan.jiafeigou.base.module.BasePanoramaApiHelper;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -26,6 +29,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -49,6 +53,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     private volatile boolean charge = false;
     private boolean notifyBatteryLow = true;
     private volatile boolean isRecording = false;
+    private volatile boolean isRtmpLive = false;
     private volatile boolean hasSDCard;
 
     @Override
@@ -58,13 +63,43 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
-    public void startLiveRecord() {
-
-    }
-
-    @Override
-    public void stopLiveRecord() {
-
+    public void cameraLiveRtmpCtrl(int livePlatform, String url, int enable) {
+        Observable.just("cameraLiveRtmpCtrl")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(cmd -> {
+                    try {
+                        ArrayList<JFGDPMsg> params = new ArrayList<>();
+                        JFGDPMsg msg = new JFGDPMsg(516, 0, DpUtils.pack(new DpMsgDefine.DPCameraLiveRtmpCtrl(url, enable)));
+                        params.add(msg);
+                        return BaseApplication.getAppComponent().getCmd().robotSetData(uuid, params);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.e(MiscUtils.getErr(e));
+                    }
+                    return -1L;
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(JfgEvent.RobotoSetDataRsp.class).filter(robotoSetDataRsp -> robotoSetDataRsp.seq == seq))
+                .map(rsp -> {
+                    if (rsp != null && rsp.dataList != null && rsp.dataList.size() > 0) {
+                        JFGDPMsgRet msgRet = rsp.dataList.get(0);
+                        return msgRet.ret;
+                    }
+                    return -1;
+                })
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .first()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp == null) {
+                        // TODO: 2017/9/9 超时了
+                        AppLogger.w("发送516超时了");
+                    } else {
+                        mView.onSendCameraRtmpResponse(rsp);
+                    }
+                }, e -> {
+                    AppLogger.e(MiscUtils.getErr(e));
+                });
     }
 
     @Override
@@ -110,6 +145,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         if (!isRecording) {
                             mView.onRefreshViewModeUI(PanoramaCameraContact.View.PANORAMA_VIEW_MODE.MODE_VIDEO, false, true);
                             if (deviceState.videoType != 3) {
+                                isRecording = true;
                                 mView.onRefreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
                                 refreshVideoRecordUI(deviceState.seconds, deviceState.videoType);
                             }
@@ -244,6 +280,27 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
                                 if (dpNet != null && dpNet.net > 0) {
                                     mView.onDeviceOnLine();
+                                }
+                            } else if (msg.id == 517) {
+                                DpMsgDefine.DPCameraLiveRtmpStatus dpCameraLiveRtmpStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPCameraLiveRtmpStatus.class);
+                                if (dpCameraLiveRtmpStatus != null) {
+                                    AppLogger.w("收到 rtmp 消息,url is: " + dpCameraLiveRtmpStatus.url
+                                            + ",liveType is:" + dpCameraLiveRtmpStatus.liveType
+                                            + ",flag is:" + dpCameraLiveRtmpStatus.flag
+                                            + ",timestamp is:" + dpCameraLiveRtmpStatus.timestamp
+                                            + ",error is:" + dpCameraLiveRtmpStatus.error
+                                    );
+
+                                    if (dpCameraLiveRtmpStatus.error != 0) {
+                                        // TODO: 2017/9/9 出错了
+                                        isRtmpLive = false;
+                                    } else if (dpCameraLiveRtmpStatus.flag != 2) {
+                                        // TODO: 2017/9/9 直播还未开始
+                                        isRtmpLive = false;
+                                    } else {
+
+                                    }
+
                                 }
                             }
                         }

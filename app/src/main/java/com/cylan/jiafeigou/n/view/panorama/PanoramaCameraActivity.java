@@ -63,6 +63,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.firmware.FirmwareUpdateActivity;
+import com.cylan.jiafeigou.rtmp.youtube.util.EventData;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -81,6 +82,7 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CommonPanoramicView;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -135,10 +137,14 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     ImageButton bottomPanelMoreItem;
     @BindView(R.id.act_panorama_bottom_panel_camera_photograph)
     ImageButton bottomPanelPhotoGraphItem;
+    @BindView(R.id.act_panorama_camera_bottom_panel_live_setting)
+    ImageButton bottomPanelLivePlatform;
+
     @BindView(R.id.act_panorama_camera_bottom_panel_album)
     CircleImageView bottomPanelAlbumItem;
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_item)
     RadioGroup bottomPanelSwitcherItem1ViewMode;
+
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu)
     ViewSwitcher bottomPanelSwitcher;
     @BindView(R.id.act_panorama_camera_bottom_panel_switcher_menu_information)
@@ -190,6 +196,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
      * 保存前一次的网络类型,只有改变的时候才 toast
      */
     private int preNetType = -1;
+    private int livePlatform;
+    private String rtmpAddress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -438,8 +446,41 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
-
+        initLiveConfigure();
 //        }
+    }
+
+    private void initLiveConfigure() {
+        livePlatform = PreferencesUtils.getInt(JConstant.LIVE_PLATFORM_KEY, -1);
+        switch (livePlatform) {
+            case 0: {
+                String configure = PreferencesUtils.getString(JConstant.FACEBOOK_PREF_CONFIGURE, null);
+                bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_facebook_selector);
+            }
+            break;
+            case 1: {
+                bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_youtube_selector);
+                String youtube = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null);
+                try {
+                    EventData eventData = JacksonFactory.getDefaultInstance().fromString(youtube, EventData.class);
+                    rtmpAddress = eventData.getIngestionAddress();
+                } catch (IOException e) {
+                    AppLogger.e(MiscUtils.getErr(e));
+                }
+            }
+            break;
+            case 2: {
+                bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_weibo_selector);
+            }
+            break;
+            case 3: {
+                bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_rtmp_selector);
+            }
+            break;
+            default: {
+                bottomPanelLivePlatform.setImageResource(R.drawable.camera720_icon_live_menu_facebook_selector);
+            }
+        }
     }
 
 
@@ -534,12 +575,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_bottom_panel_live_setting)
     public void clickedBottomPanelLiveSetting() {
         AppLogger.w("clickedBottomPanelLiveSetting");
-
         Intent intent = new Intent(this, LiveSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
-
-
     }
 
 
@@ -592,10 +630,16 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_NONE) {
                     panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_LIVE;
                     AppLogger.w("将进行 live 直播");
-                    presenter.startLiveRecord();
+                    if (livePlatform == -1) {
+                        clickedBottomPanelLiveSetting();
+                    } else {
+                        if (!TextUtils.isEmpty(rtmpAddress)) {
+                            presenter.cameraLiveRtmpCtrl(livePlatform, rtmpAddress, 1);
+                        }
+                    }
                 } else if (panoramaRecordMode == PANORAMA_RECORD_MODE.MODE_LIVE) {
                     AppLogger.w("将结束 live 直播");
-                    presenter.stopLiveRecord();
+                    presenter.cameraLiveRtmpCtrl(livePlatform, "", 0);
                 }
                 bottomPanelLoading.setVisibility(View.GONE);
             }
@@ -836,6 +880,17 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //        }
     }
 
+    @Override
+    public void onSendCameraRtmpResponse(int code) {
+        if (code == 0) {
+            // TODO: 2017/9/9 成功了
+            AppLogger.w("rtmp 配置消息发送成功");
+        } else {
+            // TODO: 2017/9/9 失败了
+            AppLogger.w("rtmp 配置消息发送失败了");
+        }
+    }
+
     public void onDeviceUpgrade() {
         upgrading = true;
         cameraUpgrading.setVisibility(View.VISIBLE);
@@ -926,7 +981,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelSwitcher.setEnabled(finalEnable);
         bottomPanelPictureMode.setEnabled(finalEnable);
         bottomPanelVideoMode.setEnabled(finalEnable);
-        bottomPanelRtmpMode.setEnabled(finalEnable);
+//        bottomPanelRtmpMode.setEnabled(finalEnable);
 
         bottomPanelMoreItem.setEnabled(finalEnable);
 

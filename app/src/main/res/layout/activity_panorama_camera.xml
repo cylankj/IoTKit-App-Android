@@ -355,7 +355,7 @@
             android:layout_width="@dimen/y26"
             android:layout_height="@dimen/y26"
             android:background="@android:color/transparent"
-            android:src="@drawable/camera720_icon_live_menu_selector"
+            android:src="@drawable/camera720_icon_live_menu_facebook_selector"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/act_panorama_bottom_panel_camera_photograph"
             app:layout_constraintEnd_toStartOf="@+id/act_panorama_camera_bottom_panel_more"

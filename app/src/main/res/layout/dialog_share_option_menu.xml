@@ -131,6 +131,22 @@
                 android:paddingStart="@dimen/x20"
                 android:tag="6"
                 android:text="Facebook" />
+
+            <TextView
+                android:id="@+id/tv_share_to_by_links"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:clickable="true"
+                android:drawablePadding="@dimen/x20"
+                android:drawableStart="@drawable/share_icon_copy"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:onClick="@{()->optionListener.onShareOptionClick(option.SHARE_PLATFORM_TYPE_LINKS)}"
+                android:paddingEnd="@dimen/x20"
+                android:paddingStart="@dimen/x20"
+                android:tag="6"
+                android:text="复制链接"
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </layout>

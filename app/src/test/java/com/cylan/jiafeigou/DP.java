@@ -3,6 +3,7 @@ package com.cylan.jiafeigou;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
@@ -266,5 +267,13 @@ public class DP {
     @Test
     public void testTuple() {
 
+    }
+
+    @Test
+    public void test517() throws IOException {
+//        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+//        Object value = objectMapper.readValue(new byte[]{-107, 2, -95, 2, 1, 0, 1}, Object.class);
+        DpMsgDefine.DPCameraLiveRtmpStatus rtmpStatus = DpUtils.unpackData(new byte[]{-107, 2, -95, 2, 1, 0, 1}, DpMsgDefine.DPCameraLiveRtmpStatus.class);
+        System.out.println(rtmpStatus);
     }
 }

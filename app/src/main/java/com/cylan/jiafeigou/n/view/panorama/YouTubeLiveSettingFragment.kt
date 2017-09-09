@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment
 import com.cylan.jiafeigou.misc.JConstant
 import com.cylan.jiafeigou.rtmp.youtube.util.EventData
 import com.cylan.jiafeigou.support.log.AppLogger
+import com.cylan.jiafeigou.support.share.ShareManager
 import com.cylan.jiafeigou.utils.ActivityUtils
 import com.cylan.jiafeigou.utils.MiscUtils
 import com.cylan.jiafeigou.utils.PreferencesUtils
@@ -80,7 +81,7 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
     private var youtubeEvent: EventData? = null
         private set
         get() {
-            val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_LIVEBROADCAST, null)
+            val broadcast = PreferencesUtils.getString(JConstant.YOUTUBE_PREF_CONFIGURE, null)
             if (!TextUtils.isEmpty(broadcast)) {
                 field = try {
                     JacksonFactory.getDefaultInstance().fromString(broadcast, EventData::class.java)
@@ -93,16 +94,12 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
         }
 
 
-    private val youtubeCreateFragment by lazy {
-        val fragment = YouTubeLiveCreateFragment.newInstance(uuid)
-        fragment.listener = {
-            loadLiveBroadCast()
-            fragmentManager.popBackStack()
-        }
-
-        fragment
-    }
-    private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
+//    private val youtubeCreateFragment by lazy {
+//
+//
+//        fragment
+//    }
+//    private val youtubeDetailFragment by lazy { YouTubeLiveDetailFragment.newInstance(uuid) }
 
 
     override fun setFragmentComponent(fragmentComponent: FragmentComponent?) {
@@ -135,17 +132,44 @@ class YouTubeLiveSettingFragment : BaseFragment<YouTubeLiveSetting.Presenter>(),
 
     @OnClick(R.id.youtube_create_live)
     fun showCreateYoutubeFragment() {
-        ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeCreateFragment, android.R.id.content)
+        if (youtubeEvent == null) {
+            val youtubeCreateFragment = YouTubeLiveCreateFragment.newInstance(uuid)
+            youtubeCreateFragment.listener = {
+                loadLiveBroadCast()
+                fragmentManager.popBackStack()
+            }
+            ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeCreateFragment, android.R.id.content)
+        } else {
+            AlertDialog.Builder(context)
+                    .setMessage("创建新直播,将会使当前地址失效,是否创建?")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.OK, { dialog, _ ->
+                        dialog.dismiss()
+                        val youtubeCreateFragment = YouTubeLiveCreateFragment.newInstance(uuid)
+                        youtubeCreateFragment.listener = {
+                            loadLiveBroadCast()
+                            fragmentManager.popBackStack()
+                        }
+                        ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeCreateFragment, android.R.id.content)
+                    })
+                    .setNegativeButton(R.string.CANCEL, { dialog, _ -> dialog.dismiss() })
+                    .show()
+        }
     }
 
     @OnClick(R.id.live_setting_youtube_share)
     fun shareLive() {
-        AlertDialog.Builder(context)
-                .show()
+        ShareManager.byWeb(activity)
+                .withTitle(youtubeEvent?.title ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT))
+                .withDescription(youtubeEvent?.event?.snippet?.description ?: getString(R.string.LIVE_DETAIL_DEFAULT_CONTENT))
+                .withUrl("https://www.youtube.com/watch?v=${youtubeEvent?.id}")
+                .withThumbRes(R.mipmap.ic_launcher)
+                .shareWithLink()
     }
 
     @OnClick(R.id.live_event_item_container)
     fun showLiveDetail() {
+        val youtubeDetailFragment = YouTubeLiveDetailFragment.newInstance(uuid)
         ActivityUtils.addFragmentSlideInFromRight(fragmentManager, youtubeDetailFragment, android.R.id.content)
     }
 

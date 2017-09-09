@@ -1456,6 +1456,52 @@ public class DpMsgDefine {
     }
 
     @Message
+    public static class DPCameraLiveRtmpCtrl extends BaseDataPoint {
+        @Index(0)
+        public String url;
+        @Index(1)
+        public int enable;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeString(this.url);
+            dest.writeInt(this.enable);
+        }
+
+        public DPCameraLiveRtmpCtrl() {
+        }
+
+        public DPCameraLiveRtmpCtrl(String url, int enable) {
+            this.url = url;
+            this.enable = enable;
+        }
+
+        protected DPCameraLiveRtmpCtrl(Parcel in) {
+            super(in);
+            this.url = in.readString();
+            this.enable = in.readInt();
+        }
+
+        public static final Creator<DPCameraLiveRtmpCtrl> CREATOR = new Creator<DPCameraLiveRtmpCtrl>() {
+            @Override
+            public DPCameraLiveRtmpCtrl createFromParcel(Parcel source) {
+                return new DPCameraLiveRtmpCtrl(source);
+            }
+
+            @Override
+            public DPCameraLiveRtmpCtrl[] newArray(int size) {
+                return new DPCameraLiveRtmpCtrl[size];
+            }
+        };
+    }
+
+    @Message
     public static class DPCameraLiveRtmpStatus extends BaseDataPoint {
         @Index(0)
         public int liveType;//直播类型：1 facebook; 2 youtube; 3 weibo; 4 rtmp
@@ -1467,6 +1513,17 @@ public class DpMsgDefine {
         public int timestamp;//开始直播的时间戳，其它情况置位0
         @Index(4)
         public int error;//错误特征值： 0 正确； 1 错误；
+
+        @Override
+        public String toString() {
+            return "DPCameraLiveRtmpStatus{" +
+                    "liveType=" + liveType +
+                    ", url='" + url + '\'' +
+                    ", flag=" + flag +
+                    ", timestamp=" + timestamp +
+                    ", error=" + error +
+                    '}';
+        }
 
         @Override
         public int describeContents() {

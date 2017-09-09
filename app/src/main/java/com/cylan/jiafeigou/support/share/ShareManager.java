@@ -2,10 +2,14 @@ package com.cylan.jiafeigou.support.share;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -47,10 +51,9 @@ public class ShareManager {
         return new ShareByPictureOption(activity);
     }
 
-
     static abstract class ShareAction implements ShareOptionMenuDialog.ShareOptionClickListener, UMShareListener, DialogInterface.OnCancelListener {
         protected FragmentActivity activity;
-        protected ShareOptionMenuDialog dialog;
+        protected DialogFragment dialog;
         protected String title;
         protected String description;
         private LifeCircle lifeCircle;
@@ -103,13 +106,48 @@ public class ShareManager {
         }
 
         public void share() {
+            share(
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false
+            );
+        }
+
+        public void shareWithLink() {
+            share(
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true
+            );
+        }
+
+        public void share(boolean showTimeLine,
+                          boolean showWechatFriends,
+                          boolean showQQ,
+                          boolean showQZone,
+                          boolean showWeibo,
+                          boolean showTwitter,
+                          boolean showFacebook,
+                          boolean showLinks
+        ) {
             if (dialog == null) {
-                dialog = ShareOptionMenuDialog.newInstance(this, this);
+                dialog = ShareOptionMenuDialog.newInstance(this, showTimeLine, showWechatFriends, showQQ, showQZone, showWeibo, showTwitter, showFacebook, showLinks, this);
             }
             if (activity != null) {
                 dialog.show(activity.getSupportFragmentManager(), ShareOptionMenuDialog.class.getSimpleName());
             }
         }
+
 
         private void clean() {
             activity = null;
@@ -122,13 +160,7 @@ public class ShareManager {
 
         @Override
         public void onShareOptionClick(int shareItemType) {
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-            dialog = null;
-            if (activity != null) {
-                LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING));
-            }
+
         }
 
         @Override
@@ -181,6 +213,7 @@ public class ShareManager {
     public static class ShareByWebLinkOption extends ShareAction {
         protected String webLink;
         protected String webThumb;
+        protected int webThumbRes;
 
         public ShareByWebLinkOption(FragmentActivity activity) {
             super(activity);
@@ -206,16 +239,40 @@ public class ShareManager {
             return this;
         }
 
+        public ShareByWebLinkOption withThumbRes(int res) {
+            this.webThumbRes = res;
+            return this;
+        }
+
 
         @Override
         public void onShareOptionClick(int shareItemType) {
             super.onShareOptionClick(shareItemType);
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            if (shareItemType == ShareConstant.SHARE_PLATFORM_TYPE_LINKS) {
+                ClipboardManager cm = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+                // 将文本内容放到系统剪贴板里。
+                if (cm != null) {
+                    cm.setPrimaryClip(ClipData.newPlainText(null, webLink));
+                    ToastUtil.showToast(activity.getString(R.string.has_copy));
+                }
+                return;
+            }
+            dialog = null;
+            if (activity != null) {
+                LoadingDialog.showLoading(activity, activity.getString(R.string.LOADING));
+            }
             AppLogger.e("网址分享,不带上传");
             if (activity != null) {
                 com.umeng.socialize.ShareAction shareAction = new com.umeng.socialize.ShareAction(activity);
                 UMWeb web = new UMWeb(webLink);
-                if (!TextUtils.isEmpty(webThumb))
+                if (!TextUtils.isEmpty(webThumb)) {
                     web.setThumb(new UMImage(activity, new File(webThumb)));
+                } else if (webThumbRes != 0) {
+                    web.setThumb(new UMImage(activity, webThumbRes));
+                }
                 web.setTitle(!TextUtils.isEmpty(title) ? title : activity.getString(R.string.share_default_title));
                 web.setDescription(!TextUtils.isEmpty(description) ? description : activity.getString(R.string.share_default_description));
                 shareAction.setPlatform(getPlatform(shareItemType));

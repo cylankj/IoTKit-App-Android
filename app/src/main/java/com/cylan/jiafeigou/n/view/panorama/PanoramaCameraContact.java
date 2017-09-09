@@ -42,6 +42,8 @@ public interface PanoramaCameraContact {
 
         void onDeviceOnLine();
 
+        void onSendCameraRtmpResponse(int code);
+
 
         @IntDef({AUTO, FLUENCY, NORMAL, HD})
         @Retention(RetentionPolicy.SOURCE)
@@ -122,8 +124,7 @@ public interface PanoramaCameraContact {
 
         boolean isApiAvailable();
 
-        void startLiveRecord();
+        void cameraLiveRtmpCtrl(int livePlatform, String url, int enable);
 
-        void stopLiveRecord();
     }
 }
