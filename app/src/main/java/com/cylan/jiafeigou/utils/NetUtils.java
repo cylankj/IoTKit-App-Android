@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,6 +30,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 /**
  * 网络工具类
@@ -167,7 +170,7 @@ public class NetUtils {
 
     public static ConnectivityManager getConnectivityManager(Context context) {
         return (ConnectivityManager) context.
-                getSystemService(Context.CONNECTIVITY_SERVICE);
+                getSystemService(CONNECTIVITY_SERVICE);
     }
 
 
@@ -385,7 +388,7 @@ public class NetUtils {
     public static boolean isNetworkAvailable(Context context) {
         context = ContextUtils.getContext();
         ConnectivityManager connectivity = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+                .getSystemService(CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo info = connectivity.getActiveNetworkInfo();
             if (info != null && info.isConnected()) {
@@ -456,7 +459,7 @@ public class NetUtils {
 
     private boolean isNetworkAvailable(Application context) {
         //得到网络连接信息
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
         //去进行判断网络是否连接
         if (manager.getActiveNetworkInfo() != null) {
             return manager.getActiveNetworkInfo().isAvailable();
@@ -619,8 +622,28 @@ public class NetUtils {
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
             netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+            //from system_settings_source
+            netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+            netConfig.allowedKeyManagement.set(4);
         }
         try {
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+//                //1.save config
+//                Object listener = Class.forName("android.net.wifi.WifiManager$ActionListener");
+//                Method save = wifiManager.getClass().getMethod("save", WifiConfiguration.class, listener.getClass());
+//                save.invoke(wifiManager, netConfig, null);
+//                //2.connect
+//                Method connect = wifiManager.getClass().getMethod("connect", WifiConfiguration.class, listener.getClass());
+//                connect.invoke(wifiManager, netConfig, null);
+//                //3.start
+//                ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtils.getContext().getSystemService(CONNECTIVITY_SERVICE);
+//                listener = Class.forName("android.net.ConnectivityManager$OnStartTetheringCallback");
+//                Method startTethering = connectivityManager.getClass().getMethod("startTethering", Integer.TYPE, Boolean.TYPE, listener.getClass());
+//                startTethering.invoke(connectivityManager, 0, true, null);
+//                return true;
+//            }
+
             Method setWifiApMethod = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
             boolean apstatus = (Boolean) setWifiApMethod.invoke(wifiManager, netConfig, true);
             Method isWifiApEnabledmethod = wifiManager.getClass().getMethod("isWifiApEnabled");
@@ -711,7 +734,7 @@ public class NetUtils {
      * @param reachableTimeout Reachable Timout in miliseconds
      */
     public static ArrayList<ClientScanResult> getClientList(final boolean onlyReachables,
-                                                     final int reachableTimeout) {
+                                                            final int reachableTimeout) {
         final ArrayList<ClientScanResult> result = new ArrayList<>();
         BufferedReader br = null;
         try {
@@ -741,6 +764,7 @@ public class NetUtils {
 
     /**
      * 获取连上hotsSpot
+     *
      * @return
      */
     public static Observable<ArrayList<ClientScanResult>> getReachableDevs() {

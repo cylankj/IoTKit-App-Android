@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.base;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.server.cache.Device;
 import com.cylan.jiafeigou.server.cache.MyObjectBox;
 import com.cylan.jiafeigou.server.cache.PropertyItem;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
+import com.cylan.jiafeigou.support.hook.HookHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
@@ -97,6 +99,18 @@ public class BaseApplication extends MultiDexApplication implements Application.
         appComponent.getInitializationManager().clean();
 
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        try {
+            HookHelper.attachContext();
+            HookHelper.hookAMS();
+            HookHelper.hookPackageManager(base);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
