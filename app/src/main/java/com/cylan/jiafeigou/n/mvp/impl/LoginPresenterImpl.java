@@ -344,7 +344,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account, password);
                 }
                 subscriber.onNext("登录开始了");
-                Log.d("","登录过程开始了..." + "username:" + account + ",password:" + password + ",loginType:" + loginType);
+                Log.d("", "登录过程开始了..." + "username:" + account + ",password:" + password + ",loginType:" + loginType);
                 subscriber.onCompleted();
             } catch (JfgException e) {
                 e.printStackTrace();

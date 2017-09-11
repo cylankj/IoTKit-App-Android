@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -427,6 +428,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             case R.id.tv_xlLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
+                //新功能了 http://120.24.247.124/jfgou/1.3.0/#g=1&p=android微博登录授权
+                if (!PackageUtils.isAppInstalled(getContext().getApplicationContext().getPackageManager(),
+                        "com.sina.weibo")) {
+                    ToastUtil.showToast(getString(R.string.Tap0_Login_NoInstalled, getString(R.string.Weibo)));
                     return;
                 }
                 basePresenter.performAuthentication(4);

@@ -861,4 +861,13 @@ public class PackageUtils {
             return "";
         }
     }
+
+    public static boolean isAppInstalled(PackageManager pm, final String pkgName) {
+        try {
+            pm.getPackageInfo(pkgName, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return false;
+    }
 }
