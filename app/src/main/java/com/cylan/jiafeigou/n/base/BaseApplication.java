@@ -105,9 +105,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         try {
-            HookHelper.attachContext();
+//            HookHelper.hookInstrument();
             HookHelper.hookAMS();
-            HookHelper.hookPackageManager(base);
+//            HookHelper.hookPackageManager(base);
         } catch (Exception e) {
             e.printStackTrace();
         }

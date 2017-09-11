@@ -14,7 +14,7 @@ import java.lang.reflect.Proxy;
 
 public class HookHelper {
 
-    public static void attachContext() {
+    public static void hookInstrument() {
         try {
 
             // 先获取到当前的ActivityThread对象
@@ -91,5 +91,10 @@ public class HookHelper {
         } catch (Exception e) {
             throw new RuntimeException("hookPackageManager failed", e);
         }
+    }
+
+
+    public static void HookSysServer() {
+
     }
 }
